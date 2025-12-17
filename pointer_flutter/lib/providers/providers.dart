@@ -8,6 +8,7 @@ import '../services/widget_service.dart';
 import '../services/revenue_cat_service.dart';
 import '../data/pointings.dart';
 import '../models/mood.dart';
+import '../services/affinity_service.dart';
 import '../theme/app_theme.dart';
 
 // ============================================================
@@ -23,6 +24,23 @@ final zenModeProvider = StateProvider<bool>((ref) => false);
 
 /// Current mood provider for personalized pointing selection
 final currentMoodProvider = StateProvider<Mood?>((ref) => null);
+
+// ============================================================
+// Tradition Affinity Learning
+// ============================================================
+
+/// Affinity service provider for tracking tradition preferences
+final affinityServiceProvider = Provider<AffinityService>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return AffinityService(prefs);
+});
+
+// ============================================================
+// Typography Customization
+// ============================================================
+
+/// Font size multiplier (1.0 = default, 0.8-1.4 range)
+final fontSizeMultiplierProvider = StateProvider<double>((ref) => 1.0);
 
 // ============================================================
 // Freemium - Daily Usage Tracking
