@@ -5,11 +5,89 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
+/// Time period for 24h gradient cycle
+enum TimeOfDayPeriod {
+  dawn,    // 5-7am - soft warm colors
+  morning, // 7-12pm - bright, energizing
+  midday,  // 12-2pm - warm, golden
+  afternoon, // 2-5pm - calming transition
+  dusk,    // 5-8pm - warm oranges and purples
+  evening, // 8-10pm - deep purples and blues
+  night,   // 10pm-5am - deep, restful
+}
+
+/// Get current time period for gradient selection
+TimeOfDayPeriod _getCurrentTimePeriod() {
+  final hour = DateTime.now().hour;
+  if (hour >= 5 && hour < 7) return TimeOfDayPeriod.dawn;
+  if (hour >= 7 && hour < 12) return TimeOfDayPeriod.morning;
+  if (hour >= 12 && hour < 14) return TimeOfDayPeriod.midday;
+  if (hour >= 14 && hour < 17) return TimeOfDayPeriod.afternoon;
+  if (hour >= 17 && hour < 20) return TimeOfDayPeriod.dusk;
+  if (hour >= 20 && hour < 22) return TimeOfDayPeriod.evening;
+  return TimeOfDayPeriod.night;
+}
+
+/// Get gradient colors for time period (dark mode)
+LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
+  switch (period) {
+    case TimeOfDayPeriod.dawn:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
+      );
+    case TimeOfDayPeriod.morning:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF0D0D0D), Color(0xFF1a1a2e), Color(0xFF0f0f1a)],
+      );
+    case TimeOfDayPeriod.midday:
+      return const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFF0D0D0D), Color(0xFF050505), Color(0xFF0a0a0a)],
+      );
+    case TimeOfDayPeriod.afternoon:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF0D0D0D), Color(0xFF1a0a2e), Color(0xFF0f0a1a)],
+      );
+    case TimeOfDayPeriod.dusk:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF1a0a1e), Color(0xFF2d0a3e), Color(0xFF0f0a2a)],
+      );
+    case TimeOfDayPeriod.evening:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF0F0524), Color(0xFF1A0A3A), Color(0xFF0a0a1a)],
+      );
+    case TimeOfDayPeriod.night:
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        stops: [0.0, 0.3, 0.7, 1.0],
+        colors: [
+          Color(0xFF0D0D0D),
+          Color(0xFF050505),
+          Color(0xFF000000),
+          Color(0xFF0A0A0A),
+        ],
+      );
+  }
+}
+
 /// Animated gradient background using flutter_animate
 ///
-/// Respects accessibility settings:
-/// - System reduce motion (MediaQuery.disableAnimations)
-/// - App-level override (reduceMotionOverrideProvider)
+/// Features:
+/// - 24h gradient cycle - colors shift based on time of day
+/// - Respects accessibility settings (reduce motion)
+/// - OLED mode support (pure black)
 ///
 /// Excluded from accessibility tree as it's purely decorative.
 /// Set [disableAnimations] to true in tests to prevent timer issues.
@@ -40,19 +118,9 @@ class AnimatedGradient extends ConsumerWidget {
     final appOverride = ref.watch(reduceMotionOverrideProvider);
     final reduceMotion = shouldReduceMotion(context, appOverride);
 
-    // Enhanced dark mode gradient - deep black for liquid glass effect
+    // Time-based gradient for 24h cycle (dark mode) or light theme gradient
     final gradient = isDark
-        ? const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.7, 1.0],
-            colors: [
-              Color(0xFF0D0D0D), // Very dark gray at top
-              Color(0xFF050505), // Near black
-              Color(0xFF000000), // Pure black center
-              Color(0xFF0A0A0A), // Subtle lift at bottom
-            ],
-          )
+        ? _getTimeBasedGradient(_getCurrentTimePeriod())
         : AppGradients.backgroundLight;
 
     // Enhanced shimmer for dark mode - subtle glow effect on black background
