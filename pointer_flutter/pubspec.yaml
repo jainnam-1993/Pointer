@@ -1,0 +1,49 @@
+name: pointer_flutter
+description: "Pointer - Non-Dual Pointings App"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Navigation
+  go_router: ^14.0.0
+
+  # State Management
+  flutter_riverpod: ^2.5.0
+
+  # Storage
+  shared_preferences: ^2.2.0
+
+  # UI Components
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.0
+  flutter_animate: ^4.5.0
+  glassmorphism_ui: ^0.3.0
+
+  # Haptics
+  vibration: ^2.0.0
+
+  # Utilities
+  collection: ^1.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Integration testing
+  integration_test:
+    sdk: flutter
+  patrol: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
