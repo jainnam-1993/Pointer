@@ -7,7 +7,6 @@ import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/glass_card.dart';
-import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
@@ -113,7 +112,7 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
-      expect(find.byType(TraditionBadge), findsOneWidget);
+      // Phase 5.11: TraditionBadge moved inline inside card
       expect(find.text('Zen Buddhism'), findsOneWidget);
     });
 
@@ -151,10 +150,11 @@ void main() {
       expect(find.text('Next'), findsOneWidget);
     });
 
-    testWidgets('has Share button', (tester) async {
+    testWidgets('has Share icon in card header', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      expect(find.text('Share'), findsOneWidget);
+      // Phase 5.11: Share moved to icon in card header
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
     });
 
     testWidgets('shows GlassCard for pointing content', (tester) async {
@@ -164,11 +164,11 @@ void main() {
       expect(find.byType(GlassCard), findsNWidgets(2));
     });
 
-    testWidgets('shows two GlassButtons (Share and Next)', (tester) async {
+    testWidgets('shows one GlassButton (Next)', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Two GlassButtons: Share and Next
-      expect(find.byType(GlassButton), findsNWidgets(2));
+      // Phase 5.11: Only Next button is GlassButton, Share is icon in card header
+      expect(find.byType(GlassButton), findsOneWidget);
     });
 
     testWidgets('has animated gradient background', (tester) async {
@@ -202,10 +202,11 @@ void main() {
       expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
     });
 
-    testWidgets('Share button has share icon', (tester) async {
+    testWidgets('Share icon exists in card header', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      expect(find.byIcon(Icons.share_outlined), findsOneWidget);
+      // Phase 5.11: Share icon is in card header, not a button
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
     });
 
     testWidgets('pointing card is flexible height', (tester) async {
@@ -286,15 +287,16 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
     });
 
-    testWidgets('Share button is tappable', (tester) async {
+    testWidgets('Share icon is tappable', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      final button = find.text('Share');
-      expect(button, findsOneWidget);
+      // Phase 5.11: Share is now an icon in card header
+      final icon = find.byIcon(Icons.ios_share);
+      expect(icon, findsOneWidget);
 
       // Tapping should not throw (share dialog won't open in tests)
-      await tester.tap(button);
-      await tester.pump();
+      await tester.tap(icon);
+      await tester.pump(const Duration(milliseconds: 200)); // Clear timers
     });
 
     testWidgets('tapping Next button triggers animation', (tester) async {
@@ -442,13 +444,13 @@ void main() {
     testWidgets('buttons are accessible', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Find the GlassButtons (there are 2: Share and Next)
+      // Phase 5.11: Only Next button is GlassButton
       final buttons = find.byType(GlassButton);
-      expect(buttons, findsNWidgets(2));
+      expect(buttons, findsOneWidget);
 
-      // Share button should be tappable
-      await tester.tap(find.text('Share'));
-      await tester.pump();
+      // Share icon should be tappable
+      await tester.tap(find.byIcon(Icons.ios_share));
+      await tester.pump(const Duration(milliseconds: 200)); // Clear timers
 
       // Verify Next button exists and is tappable
       expect(find.text('Next'), findsOneWidget);

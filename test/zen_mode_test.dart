@@ -11,6 +11,7 @@ import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/save_confirmation.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/widgets/tradition_badge.dart';
+import 'package:pointer/theme/app_theme.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
@@ -83,6 +84,7 @@ void main() {
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
         oledModeProvider.overrideWith((ref) => false),
         reduceMotionOverrideProvider.overrideWith((ref) => null),
+        themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final notifier = CurrentPointingNotifier();
@@ -123,6 +125,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            sharedPreferencesProvider.overrideWithValue(mockPrefs),
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
@@ -146,6 +149,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            sharedPreferencesProvider.overrideWithValue(mockPrefs),
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
@@ -220,10 +224,9 @@ void main() {
         ),
       );
 
-      // Verify full UI elements are present
-      expect(find.byType(TraditionBadge), findsOneWidget);
+      // Verify full UI elements are present (Phase 5.11: TraditionBadge is inline, Share is icon)
       expect(find.byType(GlassCard), findsNWidgets(2)); // Pointing card + mini-inquiry card
-      expect(find.text('Share'), findsOneWidget);
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
       expect(find.text('Next'), findsOneWidget);
 
       // Verify content is visible
@@ -244,10 +247,9 @@ void main() {
         ),
       );
 
-      // Verify non-essential UI elements are hidden
-      expect(find.byType(TraditionBadge), findsNothing);
+      // Verify non-essential UI elements are hidden (Phase 5.11: TraditionBadge inline, Share is icon)
       expect(find.byType(GlassCard), findsNothing);
-      expect(find.text('Share'), findsNothing);
+      expect(find.byIcon(Icons.ios_share), findsNothing);
       expect(find.text('Next'), findsNothing);
       expect(
         find.text('Tap for another invitation to look'),
@@ -352,9 +354,9 @@ void main() {
       );
       await tester.pump();
 
-      // Initially zen mode is off
+      // Initially zen mode is off (Phase 5.11: TraditionBadge inline)
       expect(capturedRef.read(zenModeProvider), isFalse);
-      expect(find.byType(TraditionBadge), findsOneWidget);
+      expect(find.byType(GlassCard), findsWidgets);
 
       // Find the pointing card (the GlassCard with the pointing content) and double-tap it
       final pointingCard = find.ancestor(
@@ -372,7 +374,7 @@ void main() {
       // Verify zen mode is now on
       expect(capturedRef.read(zenModeProvider), isTrue);
       expect(find.byKey(const ValueKey('zen-mode')), findsOneWidget);
-      expect(find.byType(TraditionBadge), findsNothing);
+      expect(find.byType(GlassCard), findsNothing); // Phase 5.11: TraditionBadge inline
     });
 
     testWidgets('tap on zen mode view toggles zen mode off', (tester) async {
@@ -384,6 +386,7 @@ void main() {
             sharedPreferencesProvider.overrideWithValue(mockPrefs),
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             currentPointingProvider.overrideWith((ref) {
               final notifier = CurrentPointingNotifier();
               notifier.setPointing(testPointing);
@@ -415,7 +418,7 @@ void main() {
       // Verify zen mode is now off
       expect(capturedRef.read(zenModeProvider), isFalse);
       expect(find.byKey(const ValueKey('zen-mode')), findsNothing);
-      expect(find.byType(TraditionBadge), findsOneWidget);
+      expect(find.byType(GlassCard), findsWidgets); // Phase 5.11: TraditionBadge inline
     });
 
     testWidgets('entering zen mode triggers haptic feedback', (tester) async {

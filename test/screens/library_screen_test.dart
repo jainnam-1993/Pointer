@@ -18,6 +18,7 @@ Widget wrapWithProviderScope(Widget child) {
       highContrastProvider.overrideWith((ref) => false),
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
+      themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
     ],
     child: child,
   );
@@ -33,8 +34,8 @@ void main() {
   group('LibraryScreen', () {
     testWidgets('renders header with title and subtitle', (tester) async {
       // Use a larger surface to avoid overflow in featured cards
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -55,8 +56,8 @@ void main() {
     });
 
     testWidgets('displays featured section header', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -76,8 +77,8 @@ void main() {
     });
 
     testWidgets('displays browse by topic section', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -97,8 +98,8 @@ void main() {
     });
 
     testWidgets('displays some category names visible on screen', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -120,8 +121,8 @@ void main() {
     });
 
     testWidgets('renders in light theme', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -141,8 +142,8 @@ void main() {
     });
 
     testWidgets('renders in dark theme', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
+      tester.view.physicalSize = const Size(1920, 4000);
+      tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
