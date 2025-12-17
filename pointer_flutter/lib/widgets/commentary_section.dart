@@ -101,8 +101,12 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
               child: FilledButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  // Navigate to paywall
-                  // context.push('/paywall');
+                  // Navigate to paywall - delayed to allow bottom sheet to close
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamed('/paywall');
+                    }
+                  });
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: colors.accent,
