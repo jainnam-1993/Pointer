@@ -12,16 +12,16 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/screens/home_screen.dart';
-import 'package:pointer_flutter/screens/settings_screen.dart';
-import 'package:pointer_flutter/screens/main_shell.dart';
-import 'package:pointer_flutter/services/storage_service.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/widgets/animated_gradient.dart';
-import 'package:pointer_flutter/widgets/tradition_badge.dart';
-import 'package:pointer_flutter/widgets/glass_card.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/settings_screen.dart';
+import 'package:pointer/screens/main_shell.dart';
+import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:pointer/widgets/tradition_badge.dart';
+import 'package:pointer/widgets/glass_card.dart';
 
 /// Creates a test app with providers configured
 Widget createTestApp({

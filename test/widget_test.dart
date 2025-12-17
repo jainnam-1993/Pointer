@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/data/pointings.dart';
+import 'package:pointer/data/pointings.dart';
 
 void main() {
   group('Pointings Data', () {

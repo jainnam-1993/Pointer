@@ -12,11 +12,23 @@ import '../services/affinity_service.dart';
 import '../theme/app_theme.dart';
 
 // ============================================================
+// TESTING FLAG - Force premium during development
+// ============================================================
+
+/// Set to true to force premium tier during testing
+/// TODO: Set to false before production release
+const bool kForcePremiumForTesting = true;
+
+// ============================================================
 // Zen Mode - Distraction-free reading
 // ============================================================
 
 /// Zen mode provider - hides all UI except pointing text
-final zenModeProvider = StateProvider<bool>((ref) => false);
+/// Initialized from stored settings for persistence across sessions
+final zenModeProvider = StateProvider<bool>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.zenMode;
+});
 
 // ============================================================
 // Mood Matching - Personalized pointing selection
@@ -295,6 +307,16 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   Future<void> _initialize() async {
     if (!mounted) return;
+
+    // Force premium for testing/development
+    if (kForcePremiumForTesting) {
+      state = state.copyWith(
+        tier: SubscriptionTier.premium,
+        isLoading: false,
+      );
+      return;
+    }
+
     state = state.copyWith(isLoading: true);
     try {
       // Initialize RevenueCat SDK
@@ -450,6 +472,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Toggle high contrast mode
   Future<void> setHighContrast(bool enabled) async {
     final newSettings = state.copyWith(highContrast: enabled);
+    await update(newSettings);
+  }
+
+  /// Toggle zen mode
+  Future<void> setZenMode(bool enabled) async {
+    final newSettings = state.copyWith(zenMode: enabled);
     await update(newSettings);
   }
 }

@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 import '../data/pointings.dart';
 import '../data/teachers.dart';
+import '../models/mood.dart';
 import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -18,6 +19,8 @@ import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
 import '../widgets/save_confirmation.dart';
+// HIDDEN: MoodSelector import (UI hidden, logic in models/mood.dart)
+// import '../widgets/mood_selector.dart';
 import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
 
@@ -34,8 +37,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _toggleZenMode() {
     final current = ref.read(zenModeProvider);
-    ref.read(zenModeProvider.notifier).state = !current;
-    if (!current) {
+    final newValue = !current;
+    ref.read(settingsProvider.notifier).setZenMode(newValue);
+    if (newValue) {
       // Entering zen mode - haptic feedback
       HapticFeedback.lightImpact();
     }
@@ -92,8 +96,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Wait for fade out
     await Future.delayed(150.ms);
 
-    // Get next pointing and track usage
-    ref.read(currentPointingProvider.notifier).nextPointing();
+    // Get next pointing based on mood (if set) and track usage
+    PointingContext? moodContext;
+    final mood = ref.read(currentMoodProvider);
+    if (mood != null) {
+      final info = moodInfo[mood]!;
+      // Pick the first matching context as the primary filter
+      final contextStr = info.matchingContexts.first;
+      moodContext = PointingContext.values.firstWhere(
+        (c) => c.name == contextStr,
+        orElse: () => PointingContext.general,
+      );
+    }
+    ref.read(currentPointingProvider.notifier).nextPointing(context: moodContext);
     if (!isPremium) {
       ref.read(dailyUsageProvider.notifier).recordView();
     }
@@ -251,6 +266,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                  // HIDDEN: Mood selector UI (logic preserved in providers)
+                  // TODO: Re-enable when mood feature is ready
+                  // const MoodSelector(),
+                  // const SizedBox(height: 16),
+
                   // Tradition badge - first in focus order
                   Semantics(
                     sortKey: const OrdinalSortKey(1.0),

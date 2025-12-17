@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/widgets/tradition_badge.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
+import 'package:pointer/widgets/tradition_badge.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/theme/app_theme.dart';
 
 void main() {
   group('TraditionBadge', () {

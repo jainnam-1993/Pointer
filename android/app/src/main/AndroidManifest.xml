@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="pointer_flutter"
+        android:label="Pointer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name="com.pointer.pointer_flutter.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
@@ -33,7 +33,7 @@
 
         <!-- Home Screen Widget -->
         <receiver
-            android:name="com.pointer.pointer_flutter.PointerWidgetProvider"
+            android:name=".PointerWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

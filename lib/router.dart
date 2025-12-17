@@ -9,6 +9,7 @@ import 'screens/library_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/paywall_screen.dart';
+import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -30,6 +31,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/paywall',
         builder: (context, state) => const PaywallScreen(),
+      ),
+
+      // History route (outside shell)
+      GoRoute(
+        path: '/history',
+        builder: (context, state) => const HistoryScreen(),
       ),
 
       // Inquiry player route (outside shell - full screen experience)

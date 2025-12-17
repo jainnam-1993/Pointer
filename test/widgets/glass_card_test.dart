@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/widgets/glass_card.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/providers/providers.dart';
+import 'package:pointer/widgets/glass_card.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/providers/providers.dart';
 
 /// Helper to wrap widget with ProviderScope for high contrast tests
 Widget wrapWithProviderScope(Widget child, {bool highContrast = false}) {
@@ -127,7 +127,7 @@ void main() {
         wrapWithProviderScope(const MaterialApp(
           home: Scaffold(
             body: GlassCard(
-              blur: 20,
+              intensity: GlassIntensity.heavy,
               child: Text('Test'),
             ),
           ),

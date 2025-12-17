@@ -3,16 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/screens/inquiry_player_screen.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/providers/inquiry_providers.dart';
-import 'package:pointer_flutter/data/inquiries.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/models/inquiry.dart';
-import 'package:pointer_flutter/widgets/animated_gradient.dart';
-import 'package:pointer_flutter/widgets/inquiry_visual.dart';
-import 'package:pointer_flutter/widgets/inquiry_phase_content.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
+import 'package:pointer/screens/inquiry_player_screen.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/providers/inquiry_providers.dart';
+import 'package:pointer/data/inquiries.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/models/inquiry.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:pointer/widgets/inquiry_visual.dart';
+import 'package:pointer/widgets/inquiry_phase_content.dart';
+import 'package:pointer/theme/app_theme.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

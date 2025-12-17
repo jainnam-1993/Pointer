@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/services/storage_service.dart';
+import 'package:pointer/services/storage_service.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

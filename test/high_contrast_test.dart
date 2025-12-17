@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/services/storage_service.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/widgets/glass_card.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/widgets/glass_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

@@ -7,7 +7,7 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
-class MainShell extends ConsumerWidget {
+class MainShell extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainShell({
@@ -16,23 +16,61 @@ class MainShell extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isZenMode = ref.watch(zenModeProvider);
-    final currentIndex = navigationShell.currentIndex;
+  ConsumerState<MainShell> createState() => _MainShellState();
+}
 
-    // Wrap content with horizontal swipe gesture for tab navigation
+class _MainShellState extends ConsumerState<MainShell> {
+  int _previousIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final isZenMode = ref.watch(zenModeProvider);
+    final currentIndex = widget.navigationShell.currentIndex;
+
+    // Track direction for slide animation
+    final slideFromRight = currentIndex > _previousIndex;
+    if (currentIndex != _previousIndex) {
+      _previousIndex = currentIndex;
+    }
+
+    // Wrap content with horizontal swipe gesture and slide transition
     final content = GestureDetector(
       onHorizontalDragEnd: (details) {
         // Swipe left (negative velocity) -> next tab
         if (details.primaryVelocity! < -200 && currentIndex < 3) {
-          navigationShell.goBranch(currentIndex + 1);
+          widget.navigationShell.goBranch(currentIndex + 1);
         }
         // Swipe right (positive velocity) -> previous tab
         else if (details.primaryVelocity! > 200 && currentIndex > 0) {
-          navigationShell.goBranch(currentIndex - 1);
+          widget.navigationShell.goBranch(currentIndex - 1);
         }
       },
-      child: navigationShell,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        transitionBuilder: (child, animation) {
+          // Slide from right when going forward, from left when going back
+          final offsetBegin = slideFromRight
+              ? const Offset(0.1, 0.0)
+              : const Offset(-0.1, 0.0);
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: offsetBegin,
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey(currentIndex),
+          child: widget.navigationShell,
+        ),
+      ),
     );
 
     // In zen mode, hide bottom nav bar
@@ -60,7 +98,7 @@ class MainShell extends ConsumerWidget {
       extendBody: true,
       bottomNavigationBar: _BottomNavBar(
         currentIndex: currentIndex,
-        onTap: (index) => navigationShell.goBranch(
+        onTap: (index) => widget.navigationShell.goBranch(
           index,
           initialLocation: index == currentIndex,
         ),
@@ -84,12 +122,12 @@ class _BottomNavBar extends StatelessWidget {
     final colors = context.colors;
     final isDark = context.isDarkMode;
 
-    // Enhanced liquid glass gradient for nav bar
+    // Enhanced iOS-style glass gradient
     final glassGradient = isDark
         ? LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.18),
-              Colors.white.withValues(alpha: 0.08),
+              Colors.white.withValues(alpha: 0.22),
+              Colors.white.withValues(alpha: 0.10),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -103,7 +141,6 @@ class _BottomNavBar extends StatelessWidget {
             end: Alignment.bottomRight,
           );
 
-    // Liquid glass border gradient - visible border for glass effect
     final borderGradient = isDark
         ? LinearGradient(
             colors: [
@@ -144,7 +181,7 @@ class _BottomNavBar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+          filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
           child: Container(
             height: 64,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -157,36 +194,36 @@ class _BottomNavBar extends StatelessWidget {
               ),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavItem(
-                  icon: Icons.spa_outlined,
-                  activeIcon: Icons.spa,
-                  label: 'Home',
-                  isActive: currentIndex == 0,
-                  onTap: () => onTap(0),
-                ),
-                _NavItem(
-                  icon: Icons.self_improvement_outlined,
-                  activeIcon: Icons.self_improvement,
-                  label: 'Inquiry',
-                  isActive: currentIndex == 1,
-                  onTap: () => onTap(1),
-                ),
-                _NavItem(
-                  icon: Icons.menu_book_outlined,
-                  activeIcon: Icons.menu_book,
-                  label: 'Library',
-                  isActive: currentIndex == 2,
-                  onTap: () => onTap(2),
-                ),
-                _NavItem(
-                  icon: Icons.settings_outlined,
-                  activeIcon: Icons.settings,
-                  label: 'Settings',
-                  isActive: currentIndex == 3,
-                  onTap: () => onTap(3),
-                ),
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _NavItem(
+                icon: Icons.spa_outlined,
+                activeIcon: Icons.spa,
+                label: 'Home',
+                isActive: currentIndex == 0,
+                onTap: () => onTap(0),
+              ),
+              _NavItem(
+                icon: Icons.self_improvement_outlined,
+                activeIcon: Icons.self_improvement,
+                label: 'Inquiry',
+                isActive: currentIndex == 1,
+                onTap: () => onTap(1),
+              ),
+              _NavItem(
+                icon: Icons.menu_book_outlined,
+                activeIcon: Icons.menu_book,
+                label: 'Library',
+                isActive: currentIndex == 2,
+                onTap: () => onTap(2),
+              ),
+              _NavItem(
+                icon: Icons.settings_outlined,
+                activeIcon: Icons.settings,
+                label: 'Settings',
+                isActive: currentIndex == 3,
+                onTap: () => onTap(3),
+              ),
               ],
             ),
           ),

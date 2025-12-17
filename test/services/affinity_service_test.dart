@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/services/affinity_service.dart';
-import 'package:pointer_flutter/data/pointings.dart';
+import 'package:pointer/services/affinity_service.dart';
+import 'package:pointer/data/pointings.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

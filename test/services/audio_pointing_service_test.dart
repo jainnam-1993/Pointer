@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/services/audio_pointing_service.dart';
+import 'package:pointer/services/audio_pointing_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/services/notification_service.dart';
+import 'package:pointer/services/notification_service.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

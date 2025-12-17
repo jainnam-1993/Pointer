@@ -1,4 +1,4 @@
-package com.pointer.pointer_flutter
+package com.pointer
 
 import io.flutter.embedding.android.FlutterActivity
 

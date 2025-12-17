@@ -16,11 +16,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/services/storage_service.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/widgets/animated_gradient.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
 
 /// Standard device sizes for golden tests
 class GoldenDevices {

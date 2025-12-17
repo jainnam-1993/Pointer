@@ -12,12 +12,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/screens/home_screen.dart';
-import 'package:pointer_flutter/screens/inquiry_screen.dart';
-import 'package:pointer_flutter/screens/lineages_screen.dart';
-import 'package:pointer_flutter/screens/settings_screen.dart';
-import 'package:pointer_flutter/screens/onboarding_screen.dart';
-import 'package:pointer_flutter/screens/paywall_screen.dart';
+import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/inquiry_screen.dart';
+import 'package:pointer/screens/lineages_screen.dart';
+import 'package:pointer/screens/settings_screen.dart';
+import 'package:pointer/screens/onboarding_screen.dart';
+import 'package:pointer/screens/paywall_screen.dart';
 
 import 'test_helpers.dart';
 

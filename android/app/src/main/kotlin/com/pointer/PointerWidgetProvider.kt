@@ -1,4 +1,4 @@
-package com.pointer.pointer_flutter
+package com.pointer
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider

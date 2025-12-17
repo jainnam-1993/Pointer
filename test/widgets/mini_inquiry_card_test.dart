@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pointer_flutter/widgets/mini_inquiry_card.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/providers/providers.dart';
+import 'package:pointer/widgets/mini_inquiry_card.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/providers/providers.dart';
 
 /// Helper to wrap widget with ProviderScope for testing
 Widget wrapWithProviderScope(Widget child) {
@@ -111,7 +111,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('contains forward arrow icon', (tester) async {
+    testWidgets('shows Take a moment label', (tester) async {
       await tester.pumpWidget(
         wrapWithProviderScope(
           MaterialApp(
@@ -124,7 +124,8 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byIcon(Icons.arrow_forward_ios), findsOneWidget);
+      // Collapsed card shows "Take a moment" text
+      expect(find.text('Take a moment'), findsOneWidget);
     });
   });
 }

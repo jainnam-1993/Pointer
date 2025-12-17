@@ -3,12 +3,12 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/data/articles.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/data/teacher_profiles.dart';
-import 'package:pointer_flutter/models/article.dart';
-import 'package:pointer_flutter/models/teacher_profile.dart';
-import 'package:pointer_flutter/providers/library_providers.dart';
+import 'package:pointer/data/articles.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/data/teacher_profiles.dart';
+import 'package:pointer/models/article.dart';
+import 'package:pointer/models/teacher_profile.dart';
+import 'package:pointer/providers/library_providers.dart';
 
 void main() {
   group('Article Model', () {

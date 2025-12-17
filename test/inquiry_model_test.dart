@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/models/inquiry.dart';
-import 'package:pointer_flutter/data/inquiries.dart';
-import 'package:pointer_flutter/data/pointings.dart';
+import 'package:pointer/models/inquiry.dart';
+import 'package:pointer/data/inquiries.dart';
+import 'package:pointer/data/pointings.dart';
 
 void main() {
   group('InquiryType enum', () {

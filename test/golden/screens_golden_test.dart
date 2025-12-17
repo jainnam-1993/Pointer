@@ -11,9 +11,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/screens/home_screen.dart';
-import 'package:pointer_flutter/screens/settings_screen.dart';
-import 'package:pointer_flutter/screens/lineages_screen.dart';
+import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/settings_screen.dart';
+import 'package:pointer/screens/lineages_screen.dart';
 
 import 'golden_test_helpers.dart';
 

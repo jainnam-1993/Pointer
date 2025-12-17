@@ -95,6 +95,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
+    audioUrl: 'asset:///assets/audio/ramana_who_am_i.mp3',
   ),
   Pointing(
     id: 'adv-4',
@@ -109,6 +110,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    audioUrl: 'asset:///assets/audio/nisargadatta_world_in_you.mp3',
   ),
   Pointing(
     id: 'adv-6',
@@ -165,6 +167,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    audioUrl: 'asset:///assets/audio/spira_what_is_looking.mp3',
   ),
   Pointing(
     id: 'dir-3',
@@ -200,6 +203,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Eckhart Tolle',
+    audioUrl: 'asset:///assets/audio/tolle_present_moment.mp3',
   ),
   Pointing(
     id: 'con-3',
@@ -207,6 +211,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Pema Chödrön',
+    audioUrl: 'asset:///assets/audio/pema_sky_weather.mp3',
   ),
 
   // === ORIGINAL ===

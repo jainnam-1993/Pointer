@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/models/mood.dart';
-import 'package:pointer_flutter/data/pointings.dart';
+import 'package:pointer/models/mood.dart';
+import 'package:pointer/data/pointings.dart';
 
 void main() {
   group('Mood enum', () {

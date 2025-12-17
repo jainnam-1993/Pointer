@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -59,17 +60,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('About Pointer'),
-        content: const Text(
+      builder: (context) => GlassDialog(
+        title: 'About Pointer',
+        content: Text(
           'Pointer delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
           'Each pointing is a direct invitation to recognize what you already are.\n\n'
           'Version 1.0.0',
+          style: TextStyle(
+            color: context.colors.textSecondary,
+            fontSize: 14,
+            height: 1.5,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text('Close', style: TextStyle(color: context.colors.accent)),
           ),
         ],
       ),
@@ -93,16 +99,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Permission Required'),
-        content: const Text(
+      builder: (context) => GlassDialog(
+        title: 'Permission Required',
+        content: Text(
           'Notification permission is required to receive daily pointings. '
           'Please enable notifications in your device settings.',
+          style: TextStyle(
+            color: context.colors.textSecondary,
+            fontSize: 14,
+            height: 1.5,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text('OK', style: TextStyle(color: context.colors.accent)),
           ),
         ],
       ),
@@ -257,8 +268,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       if (hasVibrator == true) {
                         Vibration.vibrate(duration: 50, amplitude: 128);
                       }
-                      // Note: Favorites feature not fully implemented yet
-                      // For now, just provide haptic feedback
+                      if (context.mounted) {
+                        context.push('/history');
+                      }
                     },
                   ),
                 ),
@@ -717,90 +729,96 @@ class _NotificationTimesSheet extends ConsumerWidget {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final notificationSettings = ref.watch(notificationSettingsProvider);
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: isDark ? AppGradients.background : AppGradients.backgroundLight,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: bottomPadding + 24,
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Notification Times',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                    ),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: bottomPadding + 24,
               ),
-              const SizedBox(height: 16),
-              if (notificationSettings.times.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Text(
-                      'No notification times configured.\nDefault times: 8am, 12pm, 9pm',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.6)
-                            : AppColorsLight.textSecondary,
-                      ),
-                    ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Notification Times',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                        ),
                   ),
-                )
-              else
-                ...notificationSettings.times.map((time) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                  const SizedBox(height: 16),
+                  if (notificationSettings.times.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Text(
+                          'No notification times configured.\nDefault times: 8am, 12pm, 9pm',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.6)
+                                : AppColorsLight.textSecondary,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    ...notificationSettings.times.map((time) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.schedule,
+                                color: isDark ? Colors.white : AppColorsLight.primary,
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
                     child: GlassCard(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.schedule,
-                            color: isDark ? Colors.white : AppColorsLight.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Center(
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                            color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
-                          const SizedBox(width: 16),
-                          Text(
-                            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: GlassCard(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Center(
-                    child: Text(
-                      'Close',
-                      style: TextStyle(
-                        color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

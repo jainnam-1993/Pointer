@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/main.dart';
-import 'package:pointer_flutter/providers/providers.dart';
+import 'package:pointer/main.dart';
+import 'package:pointer/providers/providers.dart';
 
 /// Test tags for categorizing integration tests
 class TestTags {

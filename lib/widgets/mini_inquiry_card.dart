@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import '../data/inquiries.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
@@ -17,82 +16,56 @@ class MiniInquiryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final inquiry = getRandomInquiry();
 
     return Semantics(
       button: true,
-      label: 'Start guided inquiry: ${inquiry.question}',
+      label: 'Take a moment - start guided inquiry',
       hint: 'Double tap to begin',
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         borderRadius: 20,
         onTap: () {
           HapticFeedback.lightImpact();
           context.push('/inquiry/random');
         },
         child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon container
+            // Diamond icon
             Container(
-              width: 44,
-              height: 44,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: colors.accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Text(
                   '◇',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     color: colors.accent,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
 
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Take a moment',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: colors.accent,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    inquiry.question,
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.3,
-                      color: colors.textPrimary,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+            // Text only - no question preview for cleaner look
+            Text(
+              'Take a moment',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colors.accent,
               ),
-            ),
-
-            // Arrow indicator
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 14,
-              color: colors.textMuted,
             ),
           ],
         ),
       ),
     )
         .animate()
-        .fadeIn(duration: 400.ms, delay: 200.ms)
-        .slideY(begin: 0.1, end: 0, duration: 400.ms, delay: 200.ms);
+        .fadeIn(duration: 400.ms, delay: 200.ms);
   }
 }

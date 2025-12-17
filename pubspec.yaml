@@ -1,4 +1,4 @@
-name: pointer_flutter
+name: pointer
 description: "Pointer - Non-Dual Pointings App"
 publish_to: 'none'
 
@@ -24,6 +24,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.0
   flutter_animate: ^4.5.0
+  # Glass effects implemented via BackdropFilter in glass_card.dart
   # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
 
   # Haptics
@@ -75,3 +76,4 @@ flutter:
 
   assets:
     - assets/
+    - assets/audio/

@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer_flutter/screens/home_screen.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/widgets/animated_gradient.dart';
-import 'package:pointer_flutter/widgets/glass_card.dart';
+import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:pointer/widgets/glass_card.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

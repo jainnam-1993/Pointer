@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/models/mood.dart';
-import 'package:pointer_flutter/providers/providers.dart';
-import 'package:pointer_flutter/widgets/mood_selector.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
+import 'package:pointer/models/mood.dart';
+import 'package:pointer/providers/providers.dart';
+import 'package:pointer/widgets/mood_selector.dart';
+import 'package:pointer/theme/app_theme.dart';
 
 /// Helper to wrap widget with ProviderScope and MaterialApp
 Widget wrapWithProviders(

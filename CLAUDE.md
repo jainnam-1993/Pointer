@@ -122,6 +122,44 @@ roadmap_path: ${vault_path}/ROADMAP.md
 - Max 8 concurrent subagents per wave
 - Merge sequentially after wave completes
 
+### Git Worktrees for Parallel Execution
+Use git worktrees to parallelize tasks and subagents - each subagent operates in an isolated worktree to avoid file conflicts:
+```bash
+git worktree add ../Pointer-feature-{name} -b feature/{name}  # Create isolated worktree
+# Subagent works in worktree independently
+git worktree remove ../Pointer-feature-{name}                  # Cleanup after merge
+```
+
+## Execution Protocol
+
+### Git Discipline
+- **Commit after each task** - atomic commits for easy rollback
+- **Commit message format**: `fix/feat(scope): description`
+- **Before moving to next task**: verify `flutter test` passes
+
+### Vault Updates
+- **Mark checkboxes** as tasks complete: `- [ ]` → `- [x]`
+- **Update status** in ROADMAP.md after each wave
+- **Log blockers/discoveries** in playbook Implementation Notes
+
+### Reusable Patterns
+
+| Pattern | Location | Use For |
+|---------|----------|---------|
+| **AppColors** | `lib/theme/app_theme.dart` | All color values |
+| **GlassCard** | `lib/widgets/glass_card.dart` | Card components |
+| **AppTextStyles** | `lib/theme/app_theme.dart` | Typography |
+| **context.colors** | Extension in app_theme.dart | Theme-aware colors |
+| **Riverpod Providers** | `lib/providers/providers.dart` | State management |
+| **GoRouter** | `lib/router.dart` | Navigation |
+| **flutter_animate** | Already in pubspec | Animations |
+
+### Anti-Patterns
+- ❌ Don't create new files when existing ones can be extended
+- ❌ Don't hardcode colors - use `context.colors`
+- ❌ Don't skip tests
+- ❌ Don't commit without verifying build
+
 ## Reference Docs
 
 - `/DESIGN_SYSTEM.md` - Full design specifications

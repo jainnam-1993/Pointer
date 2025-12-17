@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:video_player/video_player.dart';
-import 'package:pointer_flutter/widgets/video_player_widget.dart';
-import 'package:pointer_flutter/theme/app_theme.dart';
-import 'package:pointer_flutter/providers/providers.dart';
+import 'package:pointer/widgets/video_player_widget.dart';
+import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/providers/providers.dart';
 
 // Mock classes
 class MockVideoPlayerController extends Mock implements VideoPlayerController {}

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import '../data/pointings.dart';
@@ -175,7 +176,7 @@ class _TraditionCard extends StatelessWidget {
   }
 }
 
-/// Bottom sheet showing tradition details
+/// Bottom sheet showing tradition details with glass effect
 class _TraditionDetailSheet extends StatelessWidget {
   final Tradition tradition;
   final TraditionInfo info;
@@ -194,80 +195,98 @@ class _TraditionDetailSheet extends StatelessWidget {
     final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
     final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: isDark ? AppGradients.background : AppGradients.backgroundLight,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: bottomPadding + 24,
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: bottomPadding + 24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    info.icon,
-                    style: const TextStyle(fontSize: 32),
+                  // Handle bar
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: textColorSecondary.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          info.name,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: textColor,
+                  Row(
+                    children: [
+                      Text(
+                        info.icon,
+                        style: const TextStyle(fontSize: 32),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              info.name,
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: textColor,
+                                  ),
+                            ),
+                            Text(
+                              '$pointingsCount pointings available',
+                              style: TextStyle(
+                                color: textColorSecondary,
+                                fontSize: 14,
                               ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '$pointingsCount pointings available',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    info.description,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: GlassCard(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Center(
+                        child: Text(
+                          'Close',
                           style: TextStyle(
-                            color: textColorSecondary,
-                            fontSize: 14,
+                            color: textColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                info.description,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 16,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: GlassCard(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Center(
-                    child: Text(
-                      'Close',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

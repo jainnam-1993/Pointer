@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointer_flutter/data/pointings.dart';
-import 'package:pointer_flutter/services/pointing_selector.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/services/pointing_selector.dart';
 
 void main() {
   group('TimeContext enum', () {
