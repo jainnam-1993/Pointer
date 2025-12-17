@@ -7,6 +7,7 @@
 //   flutter test --update-goldens test/golden/components_golden_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer_flutter/widgets/glass_card.dart';
 import 'package:pointer_flutter/widgets/tradition_badge.dart';
@@ -337,12 +338,14 @@ void main() {
     testWidgets('gradient background static', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: const SizedBox(
-            width: 400,
-            height: 800,
-            child: AnimatedGradient(),
+        ProviderScope(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: const SizedBox(
+              width: 400,
+              height: 800,
+              child: AnimatedGradient(),
+            ),
           ),
         ),
         size: const Size(400, 800),
