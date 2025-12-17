@@ -115,8 +115,9 @@ void main() {
 
     testWidgets('has glass background color', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: const Scaffold(
             body: GlassCard(
               child: Text('Test'),
             ),
@@ -137,8 +138,9 @@ void main() {
 
     testWidgets('has default glass border', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: const Scaffold(
             body: GlassCard(
               child: Text('Test'),
             ),
@@ -410,9 +412,10 @@ void main() {
     });
 
     testWidgets('uses different border for primary vs non-primary', (tester) async {
-      // Primary button
+      // Primary button (dark theme to match expected colors)
       await tester.pumpWidget(
         MaterialApp(
+          theme: ThemeData.dark(),
           home: Scaffold(
             body: GlassButton(
               label: 'Primary',
@@ -435,6 +438,7 @@ void main() {
       // Non-primary button
       await tester.pumpWidget(
         MaterialApp(
+          theme: ThemeData.dark(),
           home: Scaffold(
             body: GlassButton(
               label: 'Secondary',
