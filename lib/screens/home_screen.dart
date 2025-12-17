@@ -179,6 +179,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildZenModeView(Pointing pointing) {
     return GestureDetector(
       onTap: _toggleZenMode,
+      onVerticalDragEnd: (details) {
+        // Swipe up (negative velocity) -> next
+        if (details.primaryVelocity! < -200) {
+          _handleNext();
+        }
+        // Swipe down (positive velocity) -> previous
+        else if (details.primaryVelocity! > 200) {
+          _handlePrevious();
+        }
+      },
       behavior: HitTestBehavior.opaque,
       child: Center(
         key: const ValueKey('zen-mode'),
