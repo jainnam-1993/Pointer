@@ -52,15 +52,26 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ),
 };
 
-class LibraryScreen extends ConsumerWidget {
+/// Filter options for library content
+enum LibraryFilter { all, saved }
+
+class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LibraryScreen> createState() => _LibraryScreenState();
+}
+
+class _LibraryScreenState extends ConsumerState<LibraryScreen> {
+  LibraryFilter _currentFilter = LibraryFilter.all;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
     final subscription = ref.watch(subscriptionProvider);
+    final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
       body: Stack(
@@ -69,20 +80,80 @@ class LibraryScreen extends ConsumerWidget {
           SafeArea(
             child: CustomScrollView(
               slivers: [
-                // Header
+                // Header with filter
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Library',
-                          style: Theme.of(context).textTheme.displayLarge,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Library',
+                              style: Theme.of(context).textTheme.displayLarge,
+                            ),
+                            // Filter dropdown
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: colors.glassBackground,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: colors.glassBorder),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<LibraryFilter>(
+                                  value: _currentFilter,
+                                  isDense: true,
+                                  dropdownColor: colors.cardBackground,
+                                  borderRadius: BorderRadius.circular(12),
+                                  icon: Icon(Icons.arrow_drop_down, color: colors.textSecondary, size: 20),
+                                  style: TextStyle(color: colors.textPrimary, fontSize: 14),
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: LibraryFilter.all,
+                                      child: Text('All', style: TextStyle(color: colors.textPrimary)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: LibraryFilter.saved,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Saved', style: TextStyle(color: colors.textPrimary)),
+                                          if (favorites.isNotEmpty) ...[
+                                            const SizedBox(width: 4),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: colors.accent.withValues(alpha: 0.2),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: Text(
+                                                '${favorites.length}',
+                                                style: TextStyle(color: colors.accent, fontSize: 11),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      setState(() => _currentFilter = value);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Explore teachings and articles',
+                          _currentFilter == LibraryFilter.saved
+                              ? 'Your saved pointings'
+                              : 'Explore teachings and articles',
                           style: TextStyle(
                             color: colors.textSecondary,
                             fontSize: 16,
@@ -92,6 +163,74 @@ class LibraryScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+
+                // Show saved pointings if filtered
+                if (_currentFilter == LibraryFilter.saved) ...[
+                  if (favorites.isEmpty)
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No saved pointings yet',
+                                style: TextStyle(color: colors.textMuted, fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Long-press a pointing to save it',
+                                style: TextStyle(color: colors.textMuted, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    SliverPadding(
+                      padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final pointingId = favorites[index];
+                            final pointing = pointings.firstWhere(
+                              (p) => p.id == pointingId,
+                              orElse: () => pointings.first,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: GlassCard(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      pointing.content,
+                                      style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if (pointing.teacher != null) ...[
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '— ${pointing.teacher}',
+                                        style: TextStyle(color: colors.textMuted, fontSize: 13),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                          childCount: favorites.length,
+                        ),
+                      ),
+                    ),
+                ] else ...[
 
                 // Featured Section
                 SliverToBoxAdapter(
@@ -177,6 +316,7 @@ class LibraryScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                ], // end else
               ],
             ),
           ),

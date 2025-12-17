@@ -6,6 +6,7 @@ import 'package:vibration/vibration.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
+import '../services/notification_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
@@ -536,9 +537,7 @@ class _AppearanceSelector extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // OLED Black Mode toggle
-          _OledModeToggle(),
-          const SizedBox(height: 16),
+          // OLED Black Mode toggle removed (Phase 5.5) - caused light mode to turn black
           // Zen Mode toggle
           _ZenModeToggle(),
         ],
@@ -596,57 +595,8 @@ class _ZenModeToggle extends ConsumerWidget {
   }
 }
 
-class _OledModeToggle extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isOledMode = ref.watch(oledModeProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
-    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'OLED Black Mode',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                'Pure black background for OLED displays',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Switch(
-          value: isOledMode,
-          onChanged: (value) async {
-            final settings = ref.read(settingsProvider);
-            await ref.read(settingsProvider.notifier).update(
-              settings.copyWith(oledMode: value),
-            );
-          },
-          activeThumbColor: switchThumbColor,
-          activeTrackColor: switchActiveTrackColor,
-          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
-          inactiveTrackColor: switchInactiveTrackColor,
-        ),
-      ],
-    );
-  }
-}
+// _OledModeToggle removed (Phase 5.5) - caused light mode to turn black
+// Provider and storage keys retained for backwards compatibility
 
 class _ThemeOption extends StatelessWidget {
   final String label;
@@ -721,13 +671,51 @@ class _ThemeOption extends StatelessWidget {
   }
 }
 
-/// Bottom sheet for managing notification times
-class _NotificationTimesSheet extends ConsumerWidget {
+/// Bottom sheet for managing notification schedule (Phase 5.1)
+class _NotificationTimesSheet extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_NotificationTimesSheet> createState() => _NotificationTimesSheetState();
+}
+
+class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet> {
+  late NotificationSchedule _schedule;
+  static const _frequencyOptions = [1, 2, 3, 4, 6, 8, 12];
+
+  @override
+  void initState() {
+    super.initState();
+    _schedule = ref.read(notificationServiceProvider).getSchedule();
+  }
+
+  Future<void> _saveSchedule() async {
+    await ref.read(notificationServiceProvider).saveSchedule(_schedule);
+  }
+
+  Future<void> _pickTime(bool isStart) async {
+    final hour = isStart ? _schedule.startHour : _schedule.endHour;
+    final minute = isStart ? _schedule.startMinute : _schedule.endMinute;
+
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: hour, minute: minute),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _schedule = isStart
+            ? _schedule.copyWith(startHour: picked.hour, startMinute: picked.minute)
+            : _schedule.copyWith(endHour: picked.hour, endMinute: picked.minute);
+      });
+      await _saveSchedule();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final notificationSettings = ref.watch(notificationSettingsProvider);
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final mutedColor = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -751,54 +739,98 @@ class _NotificationTimesSheet extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Notification Times',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                        ),
+                    'Notification Schedule',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor),
                   ),
-                  const SizedBox(height: 16),
-                  if (notificationSettings.times.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32),
-                        child: Text(
-                          'No notification times configured.\nDefault times: 8am, 12pm, 9pm',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.6)
-                                : AppColorsLight.textSecondary,
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    ...notificationSettings.times.map((time) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
+                  const SizedBox(height: 8),
+                  Text(
+                    _schedule.summary,
+                    style: TextStyle(color: mutedColor, fontSize: 14),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Time Window
+                  Text('Time Window', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
                         child: GlassCard(
                           padding: const EdgeInsets.all(16),
-                          child: Row(
+                          onTap: () => _pickTime(true),
+                          child: Column(
                             children: [
-                              Icon(
-                                Icons.schedule,
-                                color: isDark ? Colors.white : AppColorsLight.primary,
-                              ),
-                              const SizedBox(width: 16),
+                              Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
+                              const SizedBox(height: 4),
                               Text(
-                                '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                                ),
+                                NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
+                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(16),
+                          onTap: () => _pickTime(false),
+                          child: Column(
+                            children: [
+                              Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
+                              const SizedBox(height: 4),
+                              Text(
+                                NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
+                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Frequency
+                  Text('Frequency', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _frequencyOptions.map((hours) {
+                      final isSelected = _schedule.frequencyHours == hours;
+                      return GestureDetector(
+                        onTap: () async {
+                          setState(() => _schedule = _schedule.copyWith(frequencyHours: hours));
+                          await _saveSchedule();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (isDark ? Colors.white.withValues(alpha: 0.3) : AppColorsLight.primary.withValues(alpha: 0.2))
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected
+                                  ? (isDark ? Colors.white : AppColorsLight.primary)
+                                  : (isDark ? Colors.white.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3)),
+                            ),
+                          ),
+                          child: Text(
+                            '${hours}h',
+                            style: TextStyle(
+                              color: isSelected ? textColor : mutedColor,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            ),
+                          ),
+                        ),
                       );
-                    }),
-                  const SizedBox(height: 16),
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Close button
                   SizedBox(
                     width: double.infinity,
                     child: GlassCard(
@@ -806,12 +838,8 @@ class _NotificationTimesSheet extends ConsumerWidget {
                       onTap: () => Navigator.of(context).pop(),
                       child: Center(
                         child: Text(
-                          'Close',
-                          style: TextStyle(
-                            color: isDark ? Colors.white : AppColorsLight.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          'Done',
+                          style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),

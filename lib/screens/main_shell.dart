@@ -107,7 +107,7 @@ class _MainShellState extends ConsumerState<MainShell> {
   }
 }
 
-class _BottomNavBar extends StatelessWidget {
+class _BottomNavBar extends StatefulWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
@@ -115,6 +115,13 @@ class _BottomNavBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
   });
+
+  @override
+  State<_BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<_BottomNavBar> {
+  static const int _itemCount = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -193,38 +200,67 @@ class _BottomNavBar extends StatelessWidget {
                 width: isDark ? 1.5 : 1,
               ),
             ),
-            child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavItem(
-                icon: Icons.spa_outlined,
-                activeIcon: Icons.spa,
-                label: 'Home',
-                isActive: currentIndex == 0,
-                onTap: () => onTap(0),
-              ),
-              _NavItem(
-                icon: Icons.self_improvement_outlined,
-                activeIcon: Icons.self_improvement,
-                label: 'Inquiry',
-                isActive: currentIndex == 1,
-                onTap: () => onTap(1),
-              ),
-              _NavItem(
-                icon: Icons.menu_book_outlined,
-                activeIcon: Icons.menu_book,
-                label: 'Library',
-                isActive: currentIndex == 2,
-                onTap: () => onTap(2),
-              ),
-              _NavItem(
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings,
-                label: 'Settings',
-                isActive: currentIndex == 3,
-                onTap: () => onTap(3),
-              ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = (constraints.maxWidth - 16) / _itemCount;
+                final indicatorWidth = 48.0;
+                final indicatorLeft = 8 + (widget.currentIndex * itemWidth) + (itemWidth - indicatorWidth) / 2;
+
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Animated sliding indicator
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOutCubic,
+                      left: indicatorLeft,
+                      bottom: 6,
+                      child: Container(
+                        width: indicatorWidth,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: colors.accent,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    // Nav items row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _NavItem(
+                          icon: Icons.spa_outlined,
+                          activeIcon: Icons.spa,
+                          label: 'Home',
+                          isActive: widget.currentIndex == 0,
+                          onTap: () => widget.onTap(0),
+                        ),
+                        _NavItem(
+                          icon: Icons.self_improvement_outlined,
+                          activeIcon: Icons.self_improvement,
+                          label: 'Inquiry',
+                          isActive: widget.currentIndex == 1,
+                          onTap: () => widget.onTap(1),
+                        ),
+                        _NavItem(
+                          icon: Icons.menu_book_outlined,
+                          activeIcon: Icons.menu_book,
+                          label: 'Library',
+                          isActive: widget.currentIndex == 2,
+                          onTap: () => widget.onTap(2),
+                        ),
+                        _NavItem(
+                          icon: Icons.settings_outlined,
+                          activeIcon: Icons.settings,
+                          label: 'Settings',
+                          isActive: widget.currentIndex == 3,
+                          onTap: () => widget.onTap(3),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

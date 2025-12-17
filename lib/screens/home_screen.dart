@@ -119,6 +119,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(newPointing);
     WidgetService.updateWidget(newPointing);
+
+    // Record in history
+    final storage = ref.read(storageServiceProvider);
+    await storage.markPointingAsViewed(newPointing.id);
   }
 
   Future<void> _handlePrevious() async {

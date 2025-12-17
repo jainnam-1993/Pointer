@@ -11,6 +11,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
+import 'screens/lineages_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -46,6 +47,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           final inquiryId = state.pathParameters['id'] ?? 'random';
           return InquiryPlayerScreen(inquiryId: inquiryId);
         },
+      ),
+
+      // Lineages route (outside shell - preferences screen)
+      GoRoute(
+        path: '/lineages',
+        builder: (context, state) => const LineagesScreen(),
       ),
 
       // Main app with bottom navigation
