@@ -17,6 +17,8 @@ class Pointing {
   final String? source;
   /// Extended commentary for premium users - provides deeper context
   final String? commentary;
+  /// Audio URL for guided reading/teaching (premium feature)
+  final String? audioUrl;
 
   const Pointing({
     required this.id,
@@ -27,6 +29,7 @@ class Pointing {
     this.teacher,
     this.source,
     this.commentary,
+    this.audioUrl,
   });
 }
 
@@ -79,6 +82,8 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     commentary: 'This is the fundamental inquiry of Advaita Vedanta. Rather than seeking an answer in thought, simply turn attention to the source of awareness itself. Notice that whatever you find—a thought, an image, a sensation—is being observed by something prior. Rest in that which is aware, before the mind formulates any response.',
+    // Sample audio for guided pointing (replace with actual CDN URL in production)
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
   ),
   Pointing(
     id: 'adv-2',

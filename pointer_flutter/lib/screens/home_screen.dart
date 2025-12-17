@@ -12,6 +12,7 @@ import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/save_confirmation.dart';
@@ -272,6 +273,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   CommentarySection(
                                     commentary: pointing.commentary,
                                     pointingId: pointing.id,
+                                  ),
+                                ],
+                                // Audio player (premium feature)
+                                if (pointing.audioUrl != null) ...[
+                                  const SizedBox(height: 16),
+                                  AudioPlayerWidget(
+                                    pointingId: pointing.id,
+                                    audioUrl: pointing.audioUrl,
+                                    isPremium: ref.watch(subscriptionProvider).isPremium,
                                   ),
                                 ],
                               ],
