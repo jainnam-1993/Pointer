@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 /// Glassmorphic card widget with enhanced glass effects
+///
+/// Supports Dynamic Type with flexible height and scrolling when content
+/// exceeds the maximum height constraint.
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -10,6 +13,17 @@ class GlassCard extends StatelessWidget {
   final double blur;
   final Color? borderColor;
   final VoidCallback? onTap;
+
+  /// Minimum height constraint for the card content (default: none)
+  final double? minHeight;
+
+  /// Maximum height constraint for the card content (default: none)
+  /// When set, enables scrolling if content exceeds this height
+  final double? maxHeight;
+
+  /// Whether to enable scrolling when content exceeds maxHeight
+  /// Only applies when maxHeight is set
+  final bool enableScrolling;
 
   const GlassCard({
     super.key,
@@ -19,6 +33,9 @@ class GlassCard extends StatelessWidget {
     this.blur = 20,
     this.borderColor,
     this.onTap,
+    this.minHeight,
+    this.maxHeight,
+    this.enableScrolling = true,
   });
 
   @override
@@ -67,6 +84,27 @@ class GlassCard extends StatelessWidget {
             end: Alignment.bottomRight,
           );
 
+    // Build the inner content, optionally wrapped in scroll view
+    Widget innerContent = child;
+    if (maxHeight != null && enableScrolling) {
+      innerContent = SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: child,
+      );
+    }
+
+    // Apply constraints if specified
+    Widget constrainedContent = innerContent;
+    if (minHeight != null || maxHeight != null) {
+      constrainedContent = ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: minHeight ?? 0,
+          maxHeight: maxHeight ?? double.infinity,
+        ),
+        child: innerContent,
+      );
+    }
+
     final card = Container(
       decoration: isDark
           ? null
@@ -95,7 +133,7 @@ class GlassCard extends StatelessWidget {
                 width: isDark ? 1.5 : 1,
               ),
             ),
-            child: child,
+            child: constrainedContent,
           ),
         ),
       ),

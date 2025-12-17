@@ -87,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Pointing card
+                  // Pointing card with Dynamic Type support
                   Flexible(
                     child: AnimatedOpacity(
                       opacity: _isAnimating ? 0 : 1,
@@ -97,25 +97,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: GlassCard(
                           padding: const EdgeInsets.all(32),
                           borderRadius: 32,
+                          // Enable scrolling for large text / accessibility
+                          maxHeight: MediaQuery.of(context).size.height * 0.55,
+                          enableScrolling: true,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 pointing.content,
-                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                      height: 1.4,
-                                    ),
+                                style: AppTextStyles.pointingText(context),
                                 textAlign: TextAlign.center,
                               ),
                               if (pointing.instruction != null) ...[
                                 const SizedBox(height: 24),
                                 Text(
                                   pointing.instruction!,
-                                  style: TextStyle(
-                                    color: colors.textSecondary,
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                                  style: AppTextStyles.instructionText(context),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -123,10 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   '- ${pointing.teacher}',
-                                  style: TextStyle(
-                                    color: colors.textMuted,
-                                    fontSize: 14,
-                                  ),
+                                  style: AppTextStyles.teacherText(context),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -181,10 +175,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // Footer
                   Text(
                     'Tap for another invitation to look',
-                    style: TextStyle(
-                      color: colors.textMuted,
-                      fontSize: 12,
-                    ),
+                    style: AppTextStyles.footerText(context),
                   ),
                 ],
               ),
