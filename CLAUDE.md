@@ -4,88 +4,107 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Pointer is a React Native mobile app (Expo) that delivers daily non-dual awareness "pointings" from various spiritual traditions. Anti-meditation positioning: direct pointing vs guided meditation. No progress tracking, no gamification.
+Pointer is a Flutter mobile app that delivers daily non-dual awareness "pointings" from various spiritual traditions. Anti-meditation positioning: direct pointing vs guided meditation. No progress tracking, no gamification.
 
 ## Commands
 
 ```bash
 # Development
-cd app
-npm start              # Expo dev server (Metro bundler)
-npm run ios            # Run on iOS
-npm run android        # Run on Android
+cd pointer_flutter
+flutter run                    # Run on connected device/emulator
+flutter run -d chrome          # Run on web (for quick testing)
 
 # Testing
-npm test               # Jest unit tests
-npm run test:watch     # Watch mode
-npm run test:coverage  # Coverage report
-npm run e2e            # All Maestro E2E tests
-npm run e2e:smoke      # Smoke tests only (critical path)
-npm run e2e:studio     # Interactive Maestro test builder
+flutter test                   # Unit tests
+flutter test --coverage        # With coverage report
+flutter test integration_test  # Integration tests
 
-# Single test file
-npx jest __tests__/notifications.test.ts
+# Build
+flutter build apk              # Android APK
+flutter build ios              # iOS build
+flutter build appbundle        # Android App Bundle (Play Store)
+
+# Utilities
+flutter analyze                # Static analysis
+flutter pub get                # Install dependencies
 ```
 
 ## Architecture
 
 ```
-app/                          # Expo Router file-based routing
-├── (tabs)/                   # Bottom tab navigator (home, inquiry, lineages, settings)
-├── onboarding/               # Multi-step onboarding flow
-├── paywall.tsx               # Premium subscription modal
-└── _layout.tsx               # Root stack with providers
-
-src/
-├── components/ui/            # Glass-morphism UI kit (GlassButton, GlassCard, Icons)
-├── components/               # AnimatedGradient (Skia GPU canvas), FloatingParticles
-├── contexts/                 # SubscriptionContext (premium tier tracking)
-├── data/pointings.ts         # 100+ curated pointings across 5 traditions
-├── services/                 # storage.ts, notifications.ts (async storage, push notifs)
-└── store/                    # Reserved for Zustand stores
+pointer_flutter/
+├── lib/
+│   ├── main.dart              # App entry point, ProviderScope setup
+│   ├── router.dart            # GoRouter configuration
+│   ├── theme/
+│   │   └── app_theme.dart     # AppColors, AppGradients, ThemeData
+│   ├── providers/
+│   │   └── providers.dart     # Riverpod providers (storage, navigation)
+│   ├── screens/
+│   │   ├── main_shell.dart    # Bottom navigation shell
+│   │   ├── home_screen.dart   # Daily pointing display
+│   │   ├── inquiry_screen.dart
+│   │   ├── lineages_screen.dart
+│   │   ├── settings_screen.dart
+│   │   ├── onboarding_screen.dart
+│   │   └── paywall_screen.dart
+│   ├── widgets/
+│   │   ├── animated_gradient.dart  # Background gradient animation
+│   │   ├── glass_card.dart         # Glass-morphism card component
+│   │   └── tradition_badge.dart    # Tradition indicator badge
+│   ├── services/
+│   │   ├── storage_service.dart      # SharedPreferences wrapper
+│   │   └── notification_service.dart # Local notifications
+│   └── data/
+│       └── pointings.dart     # Curated pointings across traditions
+├── test/                      # Unit tests
+├── integration_test/          # Integration tests
+└── pubspec.yaml               # Dependencies
 ```
-
-**Path alias**: `@/*` → `src/*`
 
 ## Tech Stack
 
-- **Framework**: React Native 0.81 + Expo 54 + TypeScript
-- **Routing**: Expo Router 6 (file-based)
-- **Styling**: NativeWind (Tailwind for RN)
-- **Animations**: React Native Reanimated + Skia (GPU canvas)
-- **State**: React Context (Zustand available but unused)
-- **Storage**: AsyncStorage
-- **Testing**: Jest + Testing Library RN (unit), Maestro (E2E)
+- **Framework**: Flutter 3.x + Dart 3.10
+- **Routing**: GoRouter 14.x (declarative routing)
+- **State Management**: Riverpod 2.5 (providers pattern)
+- **Storage**: SharedPreferences
+- **Animations**: flutter_animate + custom gradient animations
+- **UI Components**: glassmorphism_ui, Google Fonts
+- **Notifications**: flutter_local_notifications
+- **Testing**: flutter_test + mocktail (unit), patrol (integration)
 
 ## Design System
 
 "Ethereal Liquid Glass" theme defined in `/DESIGN_SYSTEM.md`:
-- Glass components: 8% opacity fill, 30px blur, 1px subtle borders
-- Colors: Deep purples (#0F0524, #240046), teals, white text
-- Animations: Smooth, subtle (60s gradient morphing cycles)
-- Icons: Minimalist white outline SVGs in `src/components/ui/Icons.tsx`
+- Glass components: 8% opacity fill (`0x0DFFFFFF`), blur, 1px subtle borders (`0x26FFFFFF`)
+- Colors: Deep purples (`#0F0524`, `#1A0A3A`), accent violet (`#8B5CF6`), teal (`#06B6D4`)
+- Typography: Inter font via Google Fonts
+- Animations: Smooth, subtle gradient morphing
 
 ## Key Patterns
 
-**AnimatedGradient** (`src/components/AnimatedGradient.tsx`): Skia-powered GPU canvas with 60s color morphing. Has static fallback for reduced motion.
+**AppTheme** (`lib/theme/app_theme.dart`): Centralized colors (`AppColors`), gradients (`AppGradients`), and Material 3 theme configuration.
 
-**GlassButton** (`src/components/ui/GlassButton.tsx`): BlurView + spring animations + haptic feedback. All buttons follow this pattern.
+**GlassCard** (`lib/widgets/glass_card.dart`): Glassmorphism container with blur effect and subtle borders.
 
-**Services layer**: Storage and notifications abstracted. Notification service handles Android channels, permission requests, daily scheduling at configurable times.
+**AnimatedGradient** (`lib/widgets/animated_gradient.dart`): Animated background gradient for immersive feel.
+
+**Riverpod Providers** (`lib/providers/providers.dart`): SharedPreferences instance, router, storage service providers.
 
 **Data model**: `Pointing` has id, content, instruction, tradition (Advaita/Zen/Direct Path/Contemporary/Original), context (morning/midday/evening/stress/general), teacher, source.
 
 ## Testing
 
-**Unit tests** (`__tests__/`): Cover services (storage, notifications, pointings). Use mocked Platform/AsyncStorage.
+**Unit tests** (`test/`): Cover services, widgets, providers. Use mocktail for mocking.
 
-**E2E tests** (`e2e/maestro/`): 14 Maestro flows. Use accessibility labels for element selection (robust against UI changes). Tags: smoke, visual, navigation, sessions, settings, premium, onboarding.
+**Integration tests** (`integration_test/`): E2E flows using patrol framework.
 
 ## TODOs in Codebase
 
-- RevenueCat integration (subscription payments) - currently mocked in SubscriptionContext
+- RevenueCat integration (subscription payments)
 - Premium tier gating for unlimited pointings
-- Backend API (Bun + SQLite planned per EXECUTION_PLAN.md)
+- Backend API (planned per EXECUTION_PLAN.md)
+- Light/Dark mode toggle
 
 ## Reference Docs
 
