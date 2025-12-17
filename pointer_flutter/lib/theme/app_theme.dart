@@ -227,6 +227,77 @@ class AppGradients {
       );
 }
 
+/// Scale-aware text styles for Dynamic Type / Accessibility support
+///
+/// These styles respect system text scale settings while clamping to
+/// reasonable bounds (0.8x - 1.5x) to prevent layout breakage.
+class AppTextStyles {
+  /// Get the clamped text scale factor from MediaQuery
+  static double _getClampedScale(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    // Scale a reference value of 1.0 to get the effective scale factor
+    final scale = textScaler.scale(1.0);
+    return scale.clamp(0.8, 1.5);
+  }
+
+  /// Main pointing text style - contemplative reading
+  /// Base: 20pt, scales 16-30pt
+  static TextStyle pointingText(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    return GoogleFonts.inter(
+      fontSize: 20 * scale,
+      height: 1.7,
+      letterSpacing: 0.3,
+      fontWeight: FontWeight.w400,
+      color: colors.textPrimary,
+    );
+  }
+
+  /// Instruction text style - subtle guidance
+  /// Base: 16pt, scales 12.8-24pt
+  static TextStyle instructionText(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    return GoogleFonts.inter(
+      fontSize: 16 * scale,
+      height: 1.6,
+      letterSpacing: 0.2,
+      fontWeight: FontWeight.w300,
+      fontStyle: FontStyle.italic,
+      color: colors.textSecondary,
+    );
+  }
+
+  /// Teacher attribution text style
+  /// Base: 14pt, scales 11.2-21pt
+  static TextStyle teacherText(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    return GoogleFonts.inter(
+      fontSize: 14 * scale,
+      height: 1.5,
+      letterSpacing: 0.5,
+      fontWeight: FontWeight.w500,
+      color: colors.textMuted,
+    );
+  }
+
+  /// Footer / hint text style
+  /// Base: 12pt, scales 9.6-18pt
+  static TextStyle footerText(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    return GoogleFonts.inter(
+      fontSize: 12 * scale,
+      height: 1.4,
+      letterSpacing: 0.3,
+      fontWeight: FontWeight.w400,
+      color: colors.textMuted,
+    );
+  }
+}
+
 /// App theme configuration
 class AppTheme {
   static ThemeData get dark {
