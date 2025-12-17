@@ -7,6 +7,7 @@ import '../services/usage_tracking_service.dart';
 import '../services/widget_service.dart';
 import '../services/revenue_cat_service.dart';
 import '../data/pointings.dart';
+import '../models/mood.dart';
 import '../theme/app_theme.dart';
 
 // ============================================================
@@ -15,6 +16,13 @@ import '../theme/app_theme.dart';
 
 /// Zen mode provider - hides all UI except pointing text
 final zenModeProvider = StateProvider<bool>((ref) => false);
+
+// ============================================================
+// Mood Matching - Personalized pointing selection
+// ============================================================
+
+/// Current mood provider for personalized pointing selection
+final currentMoodProvider = StateProvider<Mood?>((ref) => null);
 
 // ============================================================
 // Freemium - Daily Usage Tracking
