@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
 import '../data/pointings.dart';
+import '../theme/app_theme.dart';
 
 /// SharedPreferences provider
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
@@ -155,7 +157,24 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     await _storage.updateSettings(newSettings);
     state = newSettings;
   }
+
+  Future<void> setTheme(AppThemeMode mode) async {
+    final newSettings = state.copyWith(theme: mode.name);
+    await update(newSettings);
+  }
 }
+
+/// Theme mode provider - derives from settings
+final themeModeProvider = Provider<AppThemeMode>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return AppThemeMode.fromString(settings.theme);
+});
+
+/// Flutter ThemeMode provider for MaterialApp
+final flutterThemeModeProvider = Provider<ThemeMode>((ref) {
+  final appThemeMode = ref.watch(themeModeProvider);
+  return AppTheme.toThemeMode(appThemeMode);
+});
 
 /// Notification settings state
 class NotificationSettingsState {

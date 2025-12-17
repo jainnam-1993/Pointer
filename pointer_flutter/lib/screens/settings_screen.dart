@@ -94,6 +94,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
 
+                // Appearance section
+                const SizedBox(height: 24),
+                _SectionHeader(title: 'APPEARANCE'),
+                const SizedBox(height: 12),
+                const _AppearanceSelector(),
+
                 // Traditions section
                 const SizedBox(height: 24),
                 _SectionHeader(title: 'TRADITIONS'),
@@ -328,10 +334,137 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 1,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      color: Colors.white.withValues(alpha:0.1),
+      color: isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+    );
+  }
+}
+
+class _AppearanceSelector extends ConsumerWidget {
+  const _AppearanceSelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentMode = ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GlassCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Theme',
+            style: TextStyle(
+              fontSize: 16,
+              color: isDark ? Colors.white : AppColorsLight.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              _ThemeOption(
+                label: 'Light',
+                icon: Icons.light_mode_outlined,
+                isSelected: currentMode == AppThemeMode.light,
+                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.light),
+              ),
+              const SizedBox(width: 12),
+              _ThemeOption(
+                label: 'Dark',
+                icon: Icons.dark_mode_outlined,
+                isSelected: currentMode == AppThemeMode.dark,
+                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.dark),
+              ),
+              const SizedBox(width: 12),
+              _ThemeOption(
+                label: 'System',
+                icon: Icons.settings_brightness_outlined,
+                isSelected: currentMode == AppThemeMode.system,
+                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.system),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ThemeOption({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final selectedColor = isDark ? AppColors.primary : AppColorsLight.primary;
+    final borderColor = isSelected
+        ? selectedColor
+        : (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder);
+    final bgColor = isSelected
+        ? selectedColor.withValues(alpha: 0.2)
+        : Colors.transparent;
+
+    return Expanded(
+      child: Semantics(
+        button: true,
+        label: '$label theme${isSelected ? ', selected' : ''}',
+        child: GestureDetector(
+          onTap: () async {
+            final hasVibrator = await Vibration.hasVibrator();
+            if (hasVibrator == true) {
+              Vibration.vibrate(duration: 50, amplitude: 128);
+            }
+            onTap();
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: isSelected
+                      ? selectedColor
+                      : (isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    color: isSelected
+                        ? selectedColor
+                        : (isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

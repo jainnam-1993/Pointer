@@ -14,18 +14,26 @@ class AnimatedGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final gradient = isDark
+        ? const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1A0A3A),
+              Color(0xFF0F0524),
+              Color(0xFF150A2E),
+            ],
+          )
+        : AppGradients.backgroundLight;
+
+    final shimmerColor = isDark
+        ? AppColors.primary.withValues(alpha: 0.1)
+        : AppColorsLight.primary.withValues(alpha: 0.08);
+
     final container = Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1A0A3A),
-            Color(0xFF0F0524),
-            Color(0xFF150A2E),
-          ],
-        ),
-      ),
+      decoration: BoxDecoration(gradient: gradient),
     );
 
     // Skip animations in test mode to prevent timer issues
@@ -39,7 +47,7 @@ class AnimatedGradient extends StatelessWidget {
         )
         .shimmer(
           duration: 3000.ms,
-          color: AppColors.primary.withValues(alpha:0.1),
+          color: shimmerColor,
         );
   }
 
@@ -64,6 +72,9 @@ class FloatingParticles extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final particleColor = isDark ? Colors.white : Colors.black;
+
     return IgnorePointer(
       child: Stack(
         children: List.generate(6, (index) {
@@ -75,7 +86,7 @@ class FloatingParticles extends StatelessWidget {
               height: 4 + (index % 3) * 2.0,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha:0.1 + (index % 3) * 0.05),
+                color: particleColor.withValues(alpha: 0.1 + (index % 3) * 0.05),
               ),
             )
                 .animate(

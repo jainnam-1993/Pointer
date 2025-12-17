@@ -23,6 +23,10 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final glassBackground = isDark ? AppColors.glassBackground : AppColorsLight.glassBackground;
+    final glassBorder = isDark ? AppColors.glassBorder : AppColorsLight.glassBorder;
+
     final card = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
@@ -30,10 +34,10 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: AppColors.glassBackground,
+            color: glassBackground,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: borderColor ?? AppColors.glassBorder,
+              color: borderColor ?? glassBorder,
               width: 1,
             ),
           ),
@@ -71,6 +75,13 @@ class GlassButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final glassBackground = isDark ? AppColors.glassBackground : AppColorsLight.glassBackground;
+    final glassBorder = isDark ? AppColors.glassBorder : AppColorsLight.glassBorder;
+    final glassBorderActive = isDark ? AppColors.glassBorderActive : AppColorsLight.glassBorderActive;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final spinnerColor = isDark ? Colors.white : AppColorsLight.primary;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -84,13 +95,11 @@ class GlassButton extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               decoration: BoxDecoration(
                 color: isPrimary
-                    ? AppColors.glassBackground.withValues(alpha:0.2)
-                    : AppColors.glassBackground,
+                    ? glassBackground.withValues(alpha: 0.2)
+                    : glassBackground,
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(
-                  color: isPrimary
-                      ? AppColors.glassBorderActive
-                      : AppColors.glassBorder,
+                  color: isPrimary ? glassBorderActive : glassBorder,
                   width: 1,
                 ),
               ),
@@ -99,19 +108,19 @@ class GlassButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (isLoading)
-                    const SizedBox(
+                    SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: spinnerColor,
                       ),
                     )
                   else ...[
                     Text(
                       label,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: textColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
