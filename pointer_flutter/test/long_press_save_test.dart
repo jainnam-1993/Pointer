@@ -61,6 +61,8 @@ void main() {
     return ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
+        oledModeProvider.overrideWith((ref) => false),
+        reduceMotionOverrideProvider.overrideWith((ref) => null),
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final notifier = CurrentPointingNotifier();
@@ -337,6 +339,8 @@ void main() {
         ProviderScope(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(mockPrefs),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final notifier = CurrentPointingNotifier();
               notifier.setPointing(testPointing);

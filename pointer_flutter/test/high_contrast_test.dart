@@ -22,6 +22,8 @@ void main() {
         final container = ProviderContainer(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(prefs),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
         );
         addTearDown(container.dispose);
@@ -36,6 +38,8 @@ void main() {
         final container = ProviderContainer(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(prefs),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
         );
         addTearDown(container.dispose);
@@ -84,6 +88,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => true),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -108,6 +114,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -129,6 +137,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => true),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -159,6 +169,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -184,6 +196,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MediaQuery(
               data: const MediaQueryData(highContrast: true),
@@ -212,6 +226,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => true),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -237,6 +253,8 @@ void main() {
         ProviderScope(
           overrides: [
             highContrastProvider.overrideWith((ref) => true),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
@@ -259,6 +277,8 @@ void main() {
           overrides: [
             // Provider is false, but system setting is true
             highContrastProvider.overrideWith((ref) => false),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MediaQuery(
             data: const MediaQueryData(highContrast: true),
@@ -283,6 +303,8 @@ void main() {
         ProviderScope(
           overrides: [
             highContrastProvider.overrideWith((ref) => false),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
             theme: AppTheme.dark,

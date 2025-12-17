@@ -12,6 +12,7 @@
 //   screenshots don't match baselines.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,16 @@ class GoldenDevices {
 Future<void> setupGoldenTests() async {
   // Disable animations for consistent screenshots
   AnimatedGradient.disableAnimations = true;
+
+  // Mock home_widget plugin to prevent MissingPluginException
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+    const MethodChannel('home_widget'),
+    (MethodCall methodCall) async {
+      // Return null for all home_widget calls - they're no-ops in tests
+      return null;
+    },
+  );
 }
 
 /// Teardown for golden tests
@@ -126,6 +137,9 @@ Widget createGoldenTestApp({
           return SubscriptionNotifier(storage);
         }),
       highContrastProvider.overrideWith((ref) => false),
+      // Override dependent providers to avoid dependency chain issues
+      oledModeProvider.overrideWith((ref) => false),
+      reduceMotionOverrideProvider.overrideWith((ref) => null),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final notifier = CurrentPointingNotifier();

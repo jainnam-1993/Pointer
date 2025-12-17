@@ -12,6 +12,10 @@ void main() {
       // Arrange: Create a MediaQuery with disableAnimations = true
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: MediaQuery(
@@ -43,6 +47,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: MediaQuery(
@@ -68,6 +76,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => true),
           ],
           child: MaterialApp(
@@ -96,6 +105,10 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: MediaQuery(
@@ -129,6 +142,10 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             theme: AppTheme.light,
             home: MediaQuery(
@@ -164,6 +181,10 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: MediaQuery(
@@ -197,6 +218,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => true),
           ],
           child: MaterialApp(
@@ -221,7 +243,11 @@ void main() {
 
   group('Reduced Motion - Provider', () {
     test('reduceMotionOverrideProvider defaults to null', () {
-      final container = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          oledModeProvider.overrideWith((ref) => false),
+        ],
+      );
       addTearDown(container.dispose);
 
       final value = container.read(reduceMotionOverrideProvider);
@@ -231,6 +257,7 @@ void main() {
     test('reduceMotionOverrideProvider can be set to true', () {
       final container = ProviderContainer(
         overrides: [
+          oledModeProvider.overrideWith((ref) => false),
           reduceMotionOverrideProvider.overrideWith((ref) => true),
         ],
       );
@@ -243,6 +270,7 @@ void main() {
     test('reduceMotionOverrideProvider can be set to false', () {
       final container = ProviderContainer(
         overrides: [
+          oledModeProvider.overrideWith((ref) => false),
           reduceMotionOverrideProvider.overrideWith((ref) => false),
         ],
       );
@@ -259,6 +287,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             home: MediaQuery(
               data: const MediaQueryData(disableAnimations: true),
@@ -282,6 +314,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             home: MediaQuery(
               data: const MediaQueryData(disableAnimations: false),
@@ -305,6 +341,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             home: MediaQuery(
               data: const MediaQueryData(disableAnimations: false),
@@ -328,6 +368,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             home: MediaQuery(
               data: const MediaQueryData(disableAnimations: true),

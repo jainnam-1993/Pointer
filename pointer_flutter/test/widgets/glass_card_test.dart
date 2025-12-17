@@ -10,6 +10,8 @@ Widget wrapWithProviderScope(Widget child, {bool highContrast = false}) {
   return ProviderScope(
     overrides: [
       highContrastProvider.overrideWith((ref) => highContrast),
+      oledModeProvider.overrideWith((ref) => false),
+      reduceMotionOverrideProvider.overrideWith((ref) => null),
     ],
     child: child,
   );
@@ -22,6 +24,8 @@ void main() {
         ProviderScope(
           overrides: [
             highContrastProvider.overrideWith((ref) => false),
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: const MaterialApp(
             home: Scaffold(

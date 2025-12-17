@@ -36,6 +36,7 @@ Widget createTestApp({
         storageServiceProvider
             .overrideWith((ref) => StorageService(prefs)),
       highContrastProvider.overrideWith((ref) => false),
+      oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {

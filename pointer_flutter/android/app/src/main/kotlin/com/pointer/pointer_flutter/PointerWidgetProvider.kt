@@ -70,9 +70,13 @@ class PointerWidgetProvider : AppWidgetProvider() {
             }
 
             // Set click action to open app
-            val pendingIntent = HomeWidgetPlugin.getPendingIntent(
+            val launchIntent = android.content.Intent(context, MainActivity::class.java).apply {
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent = android.app.PendingIntent.getActivity(
                 context,
-                android.net.Uri.parse("pointerwidget://open"),
+                0,
+                launchIntent,
                 android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)

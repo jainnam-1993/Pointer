@@ -346,6 +346,11 @@ void main() {
       await pumpForGolden(
         tester,
         ProviderScope(
+          overrides: [
+            // Override providers that AnimatedGradient depends on
+            oledModeProvider.overrideWith((ref) => false),
+            reduceMotionOverrideProvider.overrideWith((ref) => null),
+          ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             home: const SizedBox(

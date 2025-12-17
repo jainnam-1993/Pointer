@@ -248,10 +248,14 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   }
 
   Future<void> _initialize() async {
+    if (!mounted) return;
     state = state.copyWith(isLoading: true);
     try {
       // Initialize RevenueCat SDK
       await _revenueCat.initialize();
+
+      // Check if still mounted after async operation
+      if (!mounted) return;
 
       // Check current subscription status
       final status = await _revenueCat.getSubscriptionStatus();
@@ -260,8 +264,14 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
       // Cache status locally for offline access
       await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
 
+      // Check if still mounted after async operations
+      if (!mounted) return;
+
       // Load available products
       final products = await _revenueCat.getProducts();
+
+      // Final mounted check before setting state
+      if (!mounted) return;
 
       state = state.copyWith(
         tier: tier,
@@ -270,7 +280,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
         expirationDate: status.expirationDate,
       );
     } catch (e) {
-      // Fallback to cached subscription status
+      // Fallback to cached subscription status (only if still mounted)
+      if (!mounted) return;
       final cachedTier = _storage.subscriptionTier == 'premium'
           ? SubscriptionTier.premium
           : SubscriptionTier.free;

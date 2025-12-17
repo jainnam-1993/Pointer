@@ -256,6 +256,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -288,6 +290,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
@@ -328,6 +332,8 @@ void main() {
           ProviderScope(
             overrides: [
               highContrastProvider.overrideWith((ref) => false),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
