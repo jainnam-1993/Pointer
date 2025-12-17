@@ -67,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Check freemium limit
     final subscription = ref.read(subscriptionProvider);
-    final isPremium = subscription == 'premium' || subscription == 'yearly';
+    final isPremium = subscription.isPremium;
     final dailyUsage = ref.read(dailyUsageProvider);
 
     if (!isPremium && dailyUsage.limitReached) {
