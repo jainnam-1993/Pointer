@@ -160,8 +160,8 @@ void main() {
     testWidgets('shows GlassCard for pointing content', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // One GlassCard for the pointing content
-      expect(find.byType(GlassCard), findsOneWidget);
+      // Two GlassCards: one for pointing content, one for mini-inquiry
+      expect(find.byType(GlassCard), findsNWidgets(2));
     });
 
     testWidgets('shows two GlassButtons (Share and Next)', (tester) async {
@@ -175,18 +175,6 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen());
 
       expect(find.byType(AnimatedGradient), findsOneWidget);
-    });
-
-    testWidgets('has floating particles', (tester) async {
-      await pumpHomeScreen(tester, createHomeScreen());
-
-      expect(find.byType(FloatingParticles), findsOneWidget);
-    });
-
-    testWidgets('shows footer text', (tester) async {
-      await pumpHomeScreen(tester, createHomeScreen());
-
-      expect(find.text('Tap for another invitation to look'), findsOneWidget);
     });
 
     testWidgets('has proper layout structure', (tester) async {
@@ -247,8 +235,8 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       expect(find.text('Simple pointing without instruction'), findsOneWidget);
-      // No instruction should be shown
-      expect(find.byType(GlassCard), findsOneWidget);
+      // Two GlassCards: pointing card + mini-inquiry card
+      expect(find.byType(GlassCard), findsNWidgets(2));
     });
 
     testWidgets('handles pointing without teacher', (tester) async {

@@ -562,10 +562,24 @@ void main() {
           );
 
           // All text should be findable and rendered
-          expect(find.textContaining('aware'), findsOneWidget,
-              reason: 'Content should be visible at ${scale}x scale');
-          expect(find.textContaining('notice'), findsOneWidget,
-              reason: 'Instruction should be visible at ${scale}x scale');
+          // Use descendant finder to target only text within the main pointing card (Flexible widget),
+          // not the MiniInquiryCard below it which may contain similar text
+          expect(
+            find.descendant(
+              of: find.byType(Flexible),
+              matching: find.textContaining('aware'),
+            ),
+            findsOneWidget,
+            reason: 'Content should be visible at ${scale}x scale',
+          );
+          expect(
+            find.descendant(
+              of: find.byType(Flexible),
+              matching: find.textContaining('notice'),
+            ),
+            findsOneWidget,
+            reason: 'Instruction should be visible at ${scale}x scale',
+          );
           expect(tester.takeException(), isNull,
               reason: 'No overflow at ${scale}x scale');
         }

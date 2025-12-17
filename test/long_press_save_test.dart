@@ -10,6 +10,7 @@ import 'package:pointer_flutter/providers/providers.dart';
 import 'package:pointer_flutter/data/pointings.dart';
 import 'package:pointer_flutter/services/storage_service.dart';
 import 'package:pointer_flutter/widgets/animated_gradient.dart';
+import 'package:pointer_flutter/widgets/glass_card.dart';
 import 'package:pointer_flutter/widgets/save_confirmation.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
@@ -106,12 +107,21 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
-      // Find the GlassCard
-      final glassCard = find.byType(GestureDetector).first;
-      expect(glassCard, findsOneWidget);
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
+      expect(pointingCardGesture, findsOneWidget);
 
       // Perform long press
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Verify favorite was saved
@@ -131,11 +141,20 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
-      // Find the GlassCard
-      final glassCard = find.byType(GestureDetector).first;
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
 
       // Perform long press
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pump();
 
       // Verify haptic feedback was triggered
@@ -157,11 +176,20 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
-      // Find the GlassCard
-      final glassCard = find.byType(GestureDetector).first;
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
 
       // Perform long press
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Verify save confirmation is shown
@@ -212,11 +240,20 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
-      // Find the GlassCard
-      final glassCard = find.byType(GestureDetector).first;
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
 
       // Perform long press
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Should not call setString since it's already a favorite
@@ -236,9 +273,20 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
+
       // Perform long press
-      final glassCard = find.byType(GestureDetector).first;
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Verify heart icon is shown
@@ -255,9 +303,20 @@ void main() {
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
+
       // Perform long press
-      final glassCard = find.byType(GestureDetector).first;
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Verify "Saved" text is shown
@@ -363,9 +422,20 @@ void main() {
       // Initially not a favorite
       expect(capturedRef.read(favoritesProvider).contains('provider-test'), isFalse);
 
+      // Find the GlassCard containing the pointing text
+      final glassCardFinder = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      ).first;
+
+      // Find the GestureDetector wrapping this specific card
+      final pointingCardGesture = find.ancestor(
+        of: glassCardFinder,
+        matching: find.byType(GestureDetector),
+      ).first;
+
       // Perform long press
-      final glassCard = find.byType(GestureDetector).first;
-      await tester.longPress(glassCard);
+      await tester.longPress(pointingCardGesture);
       await tester.pumpAndSettle();
 
       // Should now be a favorite

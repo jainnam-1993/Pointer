@@ -222,13 +222,9 @@ void main() {
 
       // Verify full UI elements are present
       expect(find.byType(TraditionBadge), findsOneWidget);
-      expect(find.byType(GlassCard), findsOneWidget);
+      expect(find.byType(GlassCard), findsNWidgets(2)); // Pointing card + mini-inquiry card
       expect(find.text('Share'), findsOneWidget);
       expect(find.text('Next'), findsOneWidget);
-      expect(
-        find.text('Tap for another invitation to look'),
-        findsOneWidget,
-      );
 
       // Verify content is visible
       expect(find.text(testPointing.content), findsOneWidget);
@@ -360,14 +356,17 @@ void main() {
       expect(capturedRef.read(zenModeProvider), isFalse);
       expect(find.byType(TraditionBadge), findsOneWidget);
 
-      // Find the GlassCard and double-tap it
-      final glassCard = find.byType(GlassCard);
-      expect(glassCard, findsOneWidget);
+      // Find the pointing card (the GlassCard with the pointing content) and double-tap it
+      final pointingCard = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      );
+      expect(pointingCard, findsOneWidget);
 
-      // Perform double-tap using the GlassCard finder
-      await tester.tap(glassCard);
+      // Perform double-tap using the pointing card finder
+      await tester.tap(pointingCard);
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.tap(glassCard);
+      await tester.tap(pointingCard);
       await tester.pumpAndSettle();
 
       // Verify zen mode is now on
@@ -430,13 +429,16 @@ void main() {
 
       hapticCalls.clear();
 
-      // Find the GlassCard and double-tap it
-      final glassCard = find.byType(GlassCard);
+      // Find the pointing card (the GlassCard with the pointing content)
+      final pointingCard = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      );
 
       // Double-tap to enter zen mode
-      await tester.tap(glassCard);
+      await tester.tap(pointingCard);
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.tap(glassCard);
+      await tester.tap(pointingCard);
       await tester.pumpAndSettle();
 
       // Verify haptic feedback was triggered
