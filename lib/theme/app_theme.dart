@@ -68,21 +68,21 @@ class PointerColors extends ThemeExtension<PointerColors> {
     cardBackground: Color(0xFF0A0A0A), // Near black for dark mode cards
   );
 
-  /// Light theme colors
+  /// Light theme colors - Subtle liquid glass aesthetic
   static const light = PointerColors(
-    textPrimary: Color(0xFF1F1F1F),
-    textSecondary: Color(0xFF6B7280),
-    textMuted: Color(0xFF9CA3AF),
-    glassBorder: Color(0x1A000000),
-    glassBackground: Color(0x0D000000),
-    glassBorderActive: Color(0x33000000),
-    gold: Color(0xFFD97706),
-    accent: Color(0xFF0891B2), // Teal accent for light theme
-    iconColor: Color(0xFF1F1F1F),
-    glassHighlight: Color(0x80FFFFFF), // White highlight
-    glassGlow: Color(0x0D7C3AED), // Subtle purple glow
-    shimmerColor: Color(0x147C3AED), // Purple shimmer
-    cardBackground: Color(0xFFFFFFFF), // White for light mode cards
+    textPrimary: Color(0xFF1C1C1E),   // Near black
+    textSecondary: Color(0xFF636366), // Medium gray
+    textMuted: Color(0xFF8E8E93),     // iOS gray
+    glassBorder: Color(0x15000000),   // Very subtle border
+    glassBackground: Color(0x08FFFFFF), // Frosted glass fill
+    glassBorderActive: Color(0x22000000),
+    gold: Color(0xFFB8860B),          // Darker gold
+    accent: Color(0xFF007AFF),        // iOS blue accent
+    iconColor: Color(0xFF3C3C43),     // Dark gray icons
+    glassHighlight: Color(0x60FFFFFF), // Soft white highlight
+    glassGlow: Color(0x08007AFF),     // Subtle blue glow
+    shimmerColor: Color(0x10007AFF),  // Blue shimmer
+    cardBackground: Color(0xFFFFFFFF), // Pure white cards
   );
 
   /// High contrast theme colors - AAA compliant (7:1+ contrast ratio)
@@ -195,24 +195,24 @@ class AppColors {
   static const gold = Color(0xFFFFD700);
 }
 
-/// Light theme color palette
+/// Light theme color palette - Subtle liquid glass aesthetic
 /// @deprecated Use PointerColors extension instead
 class AppColorsLight {
-  static const background = Color(0xFFF8F7FC);
+  static const background = Color(0xFFF5F5F7);  // Apple-style neutral gray
   static const surface = Color(0xFFFFFFFF);
-  static const primary = Color(0xFF7C3AED);
-  static const secondary = Color(0xFFDB2777);
-  static const accent = Color(0xFF0891B2);
+  static const primary = Color(0xFF5B5B5B);      // Neutral dark gray
+  static const secondary = Color(0xFF8E8E93);    // iOS gray
+  static const accent = Color(0xFF007AFF);       // iOS blue accent
 
-  static const textPrimary = Color(0xFF1F1F1F);
-  static const textSecondary = Color(0xFF6B7280);
-  static const textMuted = Color(0xFF9CA3AF);
+  static const textPrimary = Color(0xFF1C1C1E);  // Near black
+  static const textSecondary = Color(0xFF636366);
+  static const textMuted = Color(0xFF8E8E93);
 
-  static const glassBorder = Color(0x1A000000);
-  static const glassBackground = Color(0x0D000000);
-  static const glassBorderActive = Color(0x33000000);
+  static const glassBorder = Color(0x18000000);  // Subtle border
+  static const glassBackground = Color(0x0A000000);  // Very subtle fill
+  static const glassBorderActive = Color(0x28000000);
 
-  static const gold = Color(0xFFD97706);
+  static const gold = Color(0xFFB8860B);  // Darker gold for light bg
 }
 
 /// App gradients - Enhanced for consistent liquid glass morphism feel
@@ -230,14 +230,14 @@ class AppGradients {
     ],
   );
 
-  /// Light mode background gradient - Soft lavender
+  /// Light mode background gradient - Subtle liquid glass
   static const backgroundLight = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFFF3E8FF),
-      Color(0xFFF8F7FC),
-      Color(0xFFEDE9FE),
+      Color(0xFFFAFAFA),  // Near white
+      Color(0xFFF5F5F7),  // Apple gray
+      Color(0xFFEFEFF1),  // Slightly darker edge
     ],
   );
 
@@ -249,12 +249,12 @@ class AppGradients {
     Color(0xFF0A0A0A),
   ];
 
-  /// Light mode animated colors for shimmer effects
+  /// Light mode animated colors for shimmer effects - Subtle neutral
   static const animatedColorsLight = [
-    Color(0xFFF3E8FF),
-    Color(0xFFE9D5FF),
-    Color(0xFFF3E8FF),
-    Color(0xFFF8F7FC),
+    Color(0xFFFAFAFA),
+    Color(0xFFF0F0F2),
+    Color(0xFFF5F5F7),
+    Color(0xFFEDEDEF),
   ];
 
   /// Dark mode glass gradient for cards and overlays - Enhanced liquid glass
