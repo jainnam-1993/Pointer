@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 import '../data/pointings.dart';
+import '../data/teachers.dart';
+import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -225,10 +227,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ],
                                 if (pointing.teacher != null) ...[
                                   const SizedBox(height: 16),
-                                  Text(
-                                    '- ${pointing.teacher}',
-                                    style: AppTextStyles.teacherText(context),
-                                    textAlign: TextAlign.center,
+                                  GestureDetector(
+                                    onTap: () {
+                                      final teacher = getTeacher(pointing.teacher);
+                                      if (teacher != null) {
+                                        showTeacherSheet(context, teacher);
+                                      }
+                                    },
+                                    child: Text(
+                                      '- ${pointing.teacher}',
+                                      style: AppTextStyles.teacherText(context).copyWith(
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: AppTextStyles.teacherText(context).color?.withOpacity(0.5),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 ],
                               ],
