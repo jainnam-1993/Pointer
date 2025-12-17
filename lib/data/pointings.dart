@@ -1,27 +1,38 @@
-// Pointer - Core data models and enum definitions
-//
-// This file contains the Tradition enum used across the app for categorizing
-// spiritual teachings by their tradition/lineage.
+// Pointer - Curated Non-Dual Pointings
+// Data models and content
 
-/// Spiritual traditions/lineages for categorizing content
-enum Tradition {
-  /// Advaita Vedanta - The path of non-duality
-  advaita,
+import 'dart:math';
 
-  /// Zen Buddhism - Direct pointing, no words, no concepts
-  zen,
+enum Tradition { advaita, zen, direct, contemporary, original }
 
-  /// Direct Path - Contemporary clarity, awareness recognizing itself
-  direct,
+enum PointingContext { morning, midday, evening, stress, general }
 
-  /// Contemporary - Modern teachers, ancient truth in fresh words
-  contemporary,
+class Pointing {
+  final String id;
+  final String content;
+  final String? instruction;
+  final Tradition tradition;
+  final List<PointingContext> contexts;
+  final String? teacher;
+  final String? source;
+  final String? commentary;
+  final String? audioUrl;
+  final String? videoUrl;
 
-  /// Original - Written for now, this moment
-  original,
+  const Pointing({
+    required this.id,
+    required this.content,
+    this.instruction,
+    required this.tradition,
+    required this.contexts,
+    this.teacher,
+    this.source,
+    this.commentary,
+    this.audioUrl,
+    this.videoUrl,
+  });
 }
 
-/// Human-readable information about each tradition
 class TraditionInfo {
   final String name;
   final String icon;
@@ -34,31 +45,243 @@ class TraditionInfo {
   });
 }
 
-/// Tradition display information map
 const traditions = <Tradition, TraditionInfo>{
   Tradition.advaita: TraditionInfo(
     name: 'Advaita Vedanta',
-    icon: 'Om',
+    icon: 'ॐ',
     description: 'The path of non-duality. You are already what you seek.',
   ),
   Tradition.zen: TraditionInfo(
     name: 'Zen Buddhism',
-    icon: 'Enso',
+    icon: '◯',
     description: 'Direct pointing. No words, no concepts.',
   ),
   Tradition.direct: TraditionInfo(
     name: 'Direct Path',
-    icon: 'Diamond',
+    icon: '◇',
     description: 'Contemporary clarity. Awareness recognizing itself.',
   ),
   Tradition.contemporary: TraditionInfo(
     name: 'Contemporary',
-    icon: 'Star',
+    icon: '✦',
     description: 'Modern teachers. Ancient truth, fresh words.',
   ),
   Tradition.original: TraditionInfo(
     name: 'Original',
-    icon: 'Infinity',
+    icon: '∞',
     description: 'Written for now. This moment, this life.',
   ),
 };
+
+const pointings = <Pointing>[
+  // === ADVAITA ===
+  Pointing(
+    id: 'adv-1',
+    content: 'What is aware of this moment?',
+    instruction: "Just look. Don't answer.",
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general, PointingContext.morning],
+  ),
+  Pointing(
+    id: 'adv-2',
+    content: 'You are not the body. The body is not yours. You are not the doer. What are you?',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-3',
+    content: 'Ask yourself: "Who am I?" Don\'t answer with a thought. What remains when no answer comes?',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general, PointingContext.morning],
+    teacher: 'Ramana Maharshi',
+  ),
+  Pointing(
+    id: 'adv-4',
+    content: 'Bondage is believing you can be bound. Freedom is seeing you were never the one who could be.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-5',
+    content: 'You are not in the world. The world is in you.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Nisargadatta Maharaj',
+  ),
+  Pointing(
+    id: 'adv-6',
+    content: 'The question "Who am I?" is not meant to get an answer. It is meant to dissolve the questioner.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ramana Maharshi',
+  ),
+
+  // === ZEN ===
+  Pointing(
+    id: 'zen-1',
+    content: 'What was your face before your parents were born?',
+    instruction: "Don't think. Look.",
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general, PointingContext.morning],
+  ),
+  Pointing(
+    id: 'zen-2',
+    content: 'If you meet the Buddha on the road, who is walking?',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-3',
+    content: 'Before thinking, what are you?',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.morning, PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-4',
+    content: 'The finger pointing at the moon is not the moon. What is looking at the finger?',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-5',
+    content: 'Sitting quietly, doing nothing, spring comes, and the grass grows by itself.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.evening, PointingContext.stress],
+    teacher: 'Bashō',
+  ),
+
+  // === DIRECT PATH ===
+  Pointing(
+    id: 'dir-1',
+    content: "Notice: you are already aware. You didn't have to do anything to become aware.",
+    tradition: Tradition.direct,
+    contexts: [PointingContext.morning, PointingContext.general],
+  ),
+  Pointing(
+    id: 'dir-2',
+    content: 'Turn attention back to its source. What is looking?',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Rupert Spira',
+  ),
+  Pointing(
+    id: 'dir-3',
+    content: 'Awareness is not an experience. It is that which experiences.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+  ),
+  Pointing(
+    id: 'dir-4',
+    content: 'You are not the voice in your head. You are what hears it.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.stress, PointingContext.general],
+  ),
+  Pointing(
+    id: 'dir-5',
+    content: 'What you are looking for is what is looking.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general, PointingContext.morning],
+    teacher: 'Francis of Assisi / Advaita',
+  ),
+
+  // === CONTEMPORARY ===
+  Pointing(
+    id: 'con-1',
+    content: 'Life is not happening to you. Life is happening as you.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'con-2',
+    content: 'The present moment is all you ever have. There is never a time when your life is not "this moment."',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general, PointingContext.stress],
+    teacher: 'Eckhart Tolle',
+  ),
+  Pointing(
+    id: 'con-3',
+    content: 'You are the sky. Everything else is just the weather.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Pema Chödrön',
+  ),
+
+  // === ORIGINAL ===
+  Pointing(
+    id: 'org-1',
+    content: 'Before you check your phone: What is already awake?',
+    tradition: Tradition.original,
+    contexts: [PointingContext.morning],
+  ),
+  Pointing(
+    id: 'org-2',
+    content: "The deadline is real. The one who's stressed about it—can you find them?",
+    tradition: Tradition.original,
+    contexts: [PointingContext.stress],
+  ),
+  Pointing(
+    id: 'org-3',
+    content: "Notice: you didn't start being aware. Awareness was here before the first thought.",
+    tradition: Tradition.original,
+    contexts: [PointingContext.morning],
+  ),
+  Pointing(
+    id: 'org-4',
+    content: 'Thoughts about the problem are arising. What are they arising in?',
+    tradition: Tradition.original,
+    contexts: [PointingContext.stress],
+  ),
+  Pointing(
+    id: 'org-5',
+    content: 'The day happened. But did it happen TO you, or AS you?',
+    tradition: Tradition.original,
+    contexts: [PointingContext.evening],
+  ),
+  Pointing(
+    id: 'org-6',
+    content: "Rest doesn't come from stopping. Notice what has never been disturbed.",
+    tradition: Tradition.original,
+    contexts: [PointingContext.evening],
+  ),
+  Pointing(
+    id: 'org-7',
+    content: "Before reading this, notice: you're already aware.",
+    tradition: Tradition.original,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'org-8',
+    content: "You're scrolling for something. What if it's already here?",
+    tradition: Tradition.original,
+    contexts: [PointingContext.general, PointingContext.stress],
+  ),
+];
+
+// Helper functions
+
+final _random = Random();
+
+Pointing getRandomPointing({Tradition? tradition, PointingContext? context}) {
+  var filtered = pointings.toList();
+
+  if (tradition != null) {
+    filtered = filtered.where((p) => p.tradition == tradition).toList();
+  }
+  if (context != null) {
+    filtered = filtered.where((p) => p.contexts.contains(context)).toList();
+  }
+
+  if (filtered.isEmpty) return pointings.first;
+  return filtered[_random.nextInt(filtered.length)];
+}
+
+List<Pointing> getPointingsByTradition(Tradition tradition) {
+  return pointings.where((p) => p.tradition == tradition).toList();
+}
+
+List<Pointing> getPointingsByContext(PointingContext context) {
+  return pointings.where((p) => p.contexts.contains(context)).toList();
+}
