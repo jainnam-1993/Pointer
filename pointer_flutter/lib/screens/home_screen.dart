@@ -60,6 +60,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleNext() async {
     if (_isAnimating) return;
 
+    // Check freemium limit
+    final subscription = ref.read(subscriptionProvider);
+    final isPremium = subscription == 'premium' || subscription == 'yearly';
+    final dailyUsage = ref.read(dailyUsageProvider);
+
+    if (!isPremium && dailyUsage.limitReached) {
+      // Show paywall when limit reached
+      if (mounted) {
+        context.push('/paywall');
+      }
+      return;
+    }
+
     // Haptic feedback
     final hasVibrator = await Vibration.hasVibrator();
     if (hasVibrator == true) {
@@ -71,8 +84,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Wait for fade out
     await Future.delayed(150.ms);
 
-    // Get next pointing
+    // Get next pointing and track usage
     ref.read(currentPointingProvider.notifier).nextPointing();
+    if (!isPremium) {
+      ref.read(dailyUsageProvider.notifier).recordView();
+    }
 
     setState(() => _isAnimating = false);
 

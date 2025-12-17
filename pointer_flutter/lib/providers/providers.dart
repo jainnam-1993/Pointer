@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
+import '../services/usage_tracking_service.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
@@ -12,6 +13,46 @@ import '../theme/app_theme.dart';
 
 /// Zen mode provider - hides all UI except pointing text
 final zenModeProvider = StateProvider<bool>((ref) => false);
+
+// ============================================================
+// Freemium - Daily Usage Tracking
+// ============================================================
+
+/// Provider for usage tracking service
+final usageTrackingServiceProvider = Provider<UsageTrackingService>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return UsageTrackingService(prefs);
+});
+
+/// Daily usage state provider
+final dailyUsageProvider = StateNotifierProvider<DailyUsageNotifier, DailyUsage>((ref) {
+  final service = ref.watch(usageTrackingServiceProvider);
+  return DailyUsageNotifier(service);
+});
+
+/// Notifier for managing daily usage state
+class DailyUsageNotifier extends StateNotifier<DailyUsage> {
+  final UsageTrackingService _service;
+
+  DailyUsageNotifier(this._service) : super(_service.getUsage());
+
+  /// Check if user can view more pointings (premium always can)
+  bool canViewPointing(bool isPremium) {
+    if (isPremium) return true;
+    return !state.limitReached;
+  }
+
+  /// Record a pointing view
+  Future<void> recordView() async {
+    state = await _service.incrementViewCount();
+  }
+
+  /// Reset for testing
+  Future<void> reset() async {
+    await _service.resetUsage();
+    state = _service.getUsage();
+  }
+}
 
 // ============================================================
 // OLED Black Mode - True black for OLED displays
