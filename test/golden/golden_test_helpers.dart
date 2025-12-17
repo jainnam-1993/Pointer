@@ -140,6 +140,7 @@ Widget createGoldenTestApp({
       // Override dependent providers to avoid dependency chain issues
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
+      zenModeProvider.overrideWith((ref) => false),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final notifier = CurrentPointingNotifier();

@@ -350,6 +350,7 @@ void main() {
             // Override providers that AnimatedGradient depends on
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
