@@ -202,9 +202,11 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final itemWidth = (constraints.maxWidth - 16) / _itemCount;
+                // Each nav item takes equal width (Expanded ensures this)
+                final itemWidth = constraints.maxWidth / _itemCount;
                 final indicatorWidth = 48.0;
-                final indicatorLeft = 8 + (widget.currentIndex * itemWidth) + (itemWidth - indicatorWidth) / 2;
+                // Center indicator under each item
+                final indicatorLeft = (widget.currentIndex * itemWidth) + (itemWidth - indicatorWidth) / 2;
 
                 return Stack(
                   alignment: Alignment.center,
@@ -224,37 +226,44 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                         ),
                       ),
                     ),
-                    // Nav items row
+                    // Nav items row - use Expanded for equal-width columns
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _NavItem(
-                          icon: Icons.spa_outlined,
-                          activeIcon: Icons.spa,
-                          label: 'Home',
-                          isActive: widget.currentIndex == 0,
-                          onTap: () => widget.onTap(0),
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.spa_outlined,
+                            activeIcon: Icons.spa,
+                            label: 'Home',
+                            isActive: widget.currentIndex == 0,
+                            onTap: () => widget.onTap(0),
+                          ),
                         ),
-                        _NavItem(
-                          icon: Icons.self_improvement_outlined,
-                          activeIcon: Icons.self_improvement,
-                          label: 'Inquiry',
-                          isActive: widget.currentIndex == 1,
-                          onTap: () => widget.onTap(1),
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.self_improvement_outlined,
+                            activeIcon: Icons.self_improvement,
+                            label: 'Inquiry',
+                            isActive: widget.currentIndex == 1,
+                            onTap: () => widget.onTap(1),
+                          ),
                         ),
-                        _NavItem(
-                          icon: Icons.menu_book_outlined,
-                          activeIcon: Icons.menu_book,
-                          label: 'Library',
-                          isActive: widget.currentIndex == 2,
-                          onTap: () => widget.onTap(2),
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.menu_book_outlined,
+                            activeIcon: Icons.menu_book,
+                            label: 'Library',
+                            isActive: widget.currentIndex == 2,
+                            onTap: () => widget.onTap(2),
+                          ),
                         ),
-                        _NavItem(
-                          icon: Icons.settings_outlined,
-                          activeIcon: Icons.settings,
-                          label: 'Settings',
-                          isActive: widget.currentIndex == 3,
-                          onTap: () => widget.onTap(3),
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.settings_outlined,
+                            activeIcon: Icons.settings,
+                            label: 'Settings',
+                            isActive: widget.currentIndex == 3,
+                            onTap: () => widget.onTap(3),
+                          ),
                         ),
                       ],
                     ),
