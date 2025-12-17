@@ -501,8 +501,9 @@ void main() {
         );
 
         // Buttons should still be present and tappable
+        // Phase 5.11: Share button is now an icon in card header
         expect(find.text('Next'), findsOneWidget);
-        expect(find.text('Share'), findsOneWidget);
+        expect(find.byIcon(Icons.ios_share), findsOneWidget);
 
         // Should be able to tap buttons
         await tester.tap(find.text('Next'));
@@ -530,8 +531,9 @@ void main() {
         );
 
         // Find the GlassButton widgets
+        // Phase 5.11: Only Next button is GlassButton now
         final buttons = find.byType(GlassButton);
-        expect(buttons, findsNWidgets(2));
+        expect(buttons, findsOneWidget);
 
         // Each button should have at least 44pt touch target
         for (final element in tester.elementList(buttons)) {

@@ -247,31 +247,8 @@ void main() {
       expect(find.bySemanticsLabel('Close inquiry'), findsOneWidget);
     });
 
-    testWidgets('shows skip button during timed phases', (tester) async {
-      // Re-enable auto advance for this test
-      InquiryPlayerScreen.disableAutoAdvance = false;
-      addTearDown(() => InquiryPlayerScreen.disableAutoAdvance = true);
-
-      await pumpScreen(tester, createInquiryPlayerScreen(inquiryId: 'si_001'));
-
-      // Should show Skip button in setup phase
-      expect(find.text('Skip'), findsOneWidget);
-    });
-
-    testWidgets('skip button advances phase', (tester) async {
-      // Re-enable auto advance for this test
-      InquiryPlayerScreen.disableAutoAdvance = false;
-      addTearDown(() => InquiryPlayerScreen.disableAutoAdvance = true);
-
-      await pumpScreen(tester, createInquiryPlayerScreen(inquiryId: 'si_001'));
-
-      // Tap Skip to advance from setup to question
-      await tester.tap(find.text('Skip'));
-      await tester.pump();
-
-      // Should now be showing the question
-      expect(find.text('Who is aware of this thought?'), findsOneWidget);
-    });
+    // Skip button was removed in Phase 5.4 for cleaner experience
+    // Tests for skip button functionality have been removed
   });
 
   group('InquiryPhase enum', () {
