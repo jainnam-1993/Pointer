@@ -7,6 +7,13 @@ import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
 // ============================================================
+// Zen Mode - Distraction-free reading
+// ============================================================
+
+/// Zen mode provider - hides all UI except pointing text
+final zenModeProvider = StateProvider<bool>((ref) => false);
+
+// ============================================================
 // Accessibility - Reduced Motion
 // ============================================================
 

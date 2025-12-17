@@ -24,6 +24,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAnimating = false;
   bool _showSaveConfirmation = false;
 
+  void _toggleZenMode() {
+    final current = ref.read(zenModeProvider);
+    ref.read(zenModeProvider.notifier).state = !current;
+    if (!current) {
+      // Entering zen mode - haptic feedback
+      HapticFeedback.lightImpact();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -111,9 +120,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  Widget _buildZenModeView(Pointing pointing) {
+    return GestureDetector(
+      onTap: _toggleZenMode,
+      behavior: HitTestBehavior.opaque,
+      child: Center(
+        key: const ValueKey('zen-mode'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: SingleChildScrollView(
+            child: Text(
+              pointing.content,
+              style: AppTextStyles.pointingText(context),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pointing = ref.watch(currentPointingProvider);
+    final isZenMode = ref.watch(zenModeProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final colors = context.colors;
 
@@ -124,7 +154,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const Positioned.fill(child: AnimatedGradient()),
           const Positioned.fill(child: FloatingParticles()),
 
-          // Content
+          // Content - switches between zen mode and full view
+          if (isZenMode)
+            SafeArea(
+              child: AnimatedOpacity(
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 500),
+                child: _buildZenModeView(pointing),
+              ),
+            )
+          else
           SafeArea(
             child: Padding(
               padding: EdgeInsets.only(
@@ -146,10 +185,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Pointing card with Dynamic Type support and long press to save
+                  // Pointing card with Dynamic Type support, long press to save, double-tap for zen mode
                   Flexible(
                     child: GestureDetector(
                       onLongPress: _handleSave,
+                      onDoubleTap: _toggleZenMode,
                       child: AnimatedOpacity(
                         opacity: _isAnimating ? 0 : 1,
                         duration: 150.ms,

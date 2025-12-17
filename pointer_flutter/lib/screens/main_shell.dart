@@ -1,10 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/glass_card.dart';
 
-class MainShell extends StatelessWidget {
+class MainShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainShell({
@@ -13,7 +15,17 @@ class MainShell extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isZenMode = ref.watch(zenModeProvider);
+
+    // In zen mode, hide bottom nav bar
+    if (isZenMode) {
+      return Scaffold(
+        body: navigationShell,
+        extendBody: true,
+      );
+    }
+
     return Scaffold(
       body: navigationShell,
       extendBody: true,
