@@ -101,6 +101,7 @@ class NotificationService {
   );
 
   /// Android notification details using the low-importance channel.
+  /// Uses BigTextStyle for rich notifications with expandable text.
   static const androidNotificationDetails = AndroidNotificationDetails(
     'pointings',
     'Daily Pointings',
@@ -109,6 +110,21 @@ class NotificationService {
     priority: Priority.low,
     enableVibration: false,
     playSound: false,
+    styleInformation: BigTextStyleInformation(''),
+    actions: <AndroidNotificationAction>[
+      AndroidNotificationAction(
+        'save',
+        'Save',
+        showsUserInterface: false,
+        cancelNotification: false,
+      ),
+      AndroidNotificationAction(
+        'another',
+        'Another',
+        showsUserInterface: false,
+        cancelNotification: true,
+      ),
+    ],
   );
 
   /// Combined notification details for cross-platform use.
@@ -256,7 +272,7 @@ class NotificationService {
       "Today's Pointing",
       pointing.content,
       tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails,
+      _buildRichNotificationDetails(pointing),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -276,7 +292,7 @@ class NotificationService {
       "Today's Pointing",
       pointing.content,
       tz.TZDateTime.from(scheduledTime, tz.local),
-      notificationDetails,
+      _buildRichNotificationDetails(pointing),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -290,8 +306,58 @@ class NotificationService {
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       "Today's Pointing",
       pointing.content,
-      notificationDetails,
+      _buildRichNotificationDetails(pointing),
       payload: pointing.id,
+    );
+  }
+
+  /// Build rich notification details with full pointing content.
+  /// Android: Uses BigTextStyle for expandable text with tradition badge.
+  /// iOS: Uses subtitle for tradition/teacher attribution.
+  NotificationDetails _buildRichNotificationDetails(Pointing pointing) {
+    final traditionName = traditions[pointing.tradition]?.name ?? pointing.tradition.name;
+    final attribution = pointing.teacher != null ? '— ${pointing.teacher}' : '';
+    final subtitle = '$traditionName $attribution'.trim();
+
+    return NotificationDetails(
+      iOS: DarwinNotificationDetails(
+        interruptionLevel: InterruptionLevel.passive,
+        presentSound: false,
+        presentBanner: false,
+        presentList: true,
+        subtitle: subtitle,
+      ),
+      android: AndroidNotificationDetails(
+        'pointings',
+        'Daily Pointings',
+        channelDescription: 'Gentle reminders for your daily pointing',
+        importance: Importance.low,
+        priority: Priority.low,
+        enableVibration: false,
+        playSound: false,
+        styleInformation: BigTextStyleInformation(
+          pointing.content,
+          contentTitle: "Today's Pointing",
+          summaryText: subtitle,
+          htmlFormatBigText: false,
+          htmlFormatContentTitle: false,
+          htmlFormatSummaryText: false,
+        ),
+        actions: const <AndroidNotificationAction>[
+          AndroidNotificationAction(
+            'save',
+            'Save',
+            showsUserInterface: false,
+            cancelNotification: false,
+          ),
+          AndroidNotificationAction(
+            'another',
+            'Another',
+            showsUserInterface: false,
+            cancelNotification: true,
+          ),
+        ],
+      ),
     );
   }
 

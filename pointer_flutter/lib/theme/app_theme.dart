@@ -33,6 +33,8 @@ class PointerColors extends ThemeExtension<PointerColors> {
   final Color shimmerColor;
   // High contrast mode specific
   final Color cardBackground;
+  // Accent color for UI highlights
+  final Color accent;
 
   const PointerColors({
     required this.textPrimary,
@@ -47,6 +49,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     required this.glassGlow,
     required this.shimmerColor,
     this.cardBackground = const Color(0xFF1A1A1A),
+    this.accent = const Color(0xFF8B5CF6), // Purple accent
   });
 
   /// Dark theme colors - Enhanced liquid glass morphism for black background
@@ -129,6 +132,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     Color? glassGlow,
     Color? shimmerColor,
     Color? cardBackground,
+    Color? accent,
   }) {
     return PointerColors(
       textPrimary: textPrimary ?? this.textPrimary,
@@ -143,6 +147,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
       glassGlow: glassGlow ?? this.glassGlow,
       shimmerColor: shimmerColor ?? this.shimmerColor,
       cardBackground: cardBackground ?? this.cardBackground,
+      accent: accent ?? this.accent,
     );
   }
 
@@ -162,6 +167,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
       glassGlow: Color.lerp(glassGlow, other.glassGlow, t)!,
       shimmerColor: Color.lerp(shimmerColor, other.shimmerColor, t)!,
       cardBackground: Color.lerp(cardBackground, other.cardBackground, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
     );
   }
 }
@@ -381,6 +387,78 @@ class AppTextStyles {
       letterSpacing: 0.3,
       fontWeight: FontWeight.w400,
       color: colors.textMuted,
+    );
+  }
+
+  /// Heading text style - for sheet/dialog titles
+  /// Base: 24pt, scales 19.2-36pt
+  static TextStyle heading(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 24 * scale,
+        height: 1.3,
+        letterSpacing: -0.5,
+        fontWeight: FontWeight.w600,
+        color: colors.textPrimary,
+      );
+    }
+    return GoogleFonts.inter(
+      fontSize: 24 * scale,
+      height: 1.3,
+      letterSpacing: -0.5,
+      fontWeight: FontWeight.w600,
+      color: colors.textPrimary,
+    );
+  }
+
+  /// Body text style - for paragraphs and descriptions
+  /// Base: 15pt, scales 12-22.5pt
+  static TextStyle bodyText(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 15 * scale,
+        height: 1.6,
+        letterSpacing: 0.1,
+        fontWeight: FontWeight.w400,
+        color: colors.textSecondary,
+      );
+    }
+    return GoogleFonts.inter(
+      fontSize: 15 * scale,
+      height: 1.6,
+      letterSpacing: 0.1,
+      fontWeight: FontWeight.w400,
+      color: colors.textSecondary,
+    );
+  }
+
+  /// Section header text style - for section titles
+  /// Base: 16pt, scales 12.8-24pt
+  static TextStyle sectionHeader(BuildContext context) {
+    final scale = _getClampedScale(context);
+    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 16 * scale,
+        height: 1.4,
+        letterSpacing: 0.3,
+        fontWeight: FontWeight.w600,
+        color: colors.textPrimary,
+      );
+    }
+    return GoogleFonts.inter(
+      fontSize: 16 * scale,
+      height: 1.4,
+      letterSpacing: 0.3,
+      fontWeight: FontWeight.w600,
+      color: colors.textPrimary,
     );
   }
 }
