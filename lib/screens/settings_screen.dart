@@ -526,8 +526,60 @@ class _AppearanceSelector extends ConsumerWidget {
           const SizedBox(height: 16),
           // OLED Black Mode toggle
           _OledModeToggle(),
+          const SizedBox(height: 16),
+          // Zen Mode toggle
+          _ZenModeToggle(),
         ],
       ),
+    );
+  }
+}
+
+class _ZenModeToggle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isZenMode = ref.watch(zenModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
+    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Zen Mode',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Minimal UI, just the pointing',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: isZenMode,
+          onChanged: (value) {
+            ref.read(zenModeProvider.notifier).state = value;
+          },
+          activeThumbColor: switchThumbColor,
+          activeTrackColor: switchActiveTrackColor,
+          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
+          inactiveTrackColor: switchInactiveTrackColor,
+        ),
+      ],
     );
   }
 }
