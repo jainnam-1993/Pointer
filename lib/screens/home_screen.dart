@@ -287,29 +287,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             )
           else
-          SafeArea(
-            child: GestureDetector(
-              onVerticalDragEnd: (details) {
-                // Swipe up (negative velocity) -> next
-                if (details.primaryVelocity! < -200) {
-                  _handleNext();
-                }
-                // Swipe down (positive velocity) -> previous
-                else if (details.primaryVelocity! > 200) {
-                  _handlePrevious();
-                }
-              },
-              // Phase 5.6: Horizontal swipe gestures for pointing navigation
-              onHorizontalDragEnd: (details) {
-                // Swipe left (negative velocity) -> next
-                if (details.primaryVelocity! < -200) {
-                  _handleNext();
-                }
-                // Swipe right (positive velocity) -> previous
-                else if (details.primaryVelocity! > 200) {
-                  _handlePrevious();
-                }
-              },
+          // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
+          GestureDetector(
+            behavior: HitTestBehavior.opaque, // Capture gestures on empty space too
+            onVerticalDragEnd: (details) {
+              // Swipe up (negative velocity) -> next
+              if (details.primaryVelocity! < -200) {
+                _handleNext();
+              }
+              // Swipe down (positive velocity) -> previous
+              else if (details.primaryVelocity! > 200) {
+                _handlePrevious();
+              }
+            },
+            // Phase 5.6: Horizontal swipe gestures for pointing navigation
+            onHorizontalDragEnd: (details) {
+              // Swipe left (negative velocity) -> next
+              if (details.primaryVelocity! < -200) {
+                _handleNext();
+              }
+              // Swipe right (positive velocity) -> previous
+              else if (details.primaryVelocity! > 200) {
+                _handlePrevious();
+              }
+            },
+            child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.only(
                   left: 24,
