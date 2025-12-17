@@ -30,6 +30,12 @@ class AnimatedGradient extends ConsumerWidget {
   Widget _buildGradient(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Check OLED mode - pure black background, no gradient animation
+    final isOledMode = ref.watch(oledModeProvider);
+    if (isOledMode) {
+      return Container(color: Colors.black);
+    }
+
     // Check reduce motion preference
     final appOverride = ref.watch(reduceMotionOverrideProvider);
     final reduceMotion = shouldReduceMotion(context, appOverride);

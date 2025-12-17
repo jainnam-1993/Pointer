@@ -402,8 +402,63 @@ class _AppearanceSelector extends ConsumerWidget {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          // OLED Black Mode toggle
+          _OledModeToggle(),
         ],
       ),
+    );
+  }
+}
+
+class _OledModeToggle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOledMode = ref.watch(oledModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
+    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'OLED Black Mode',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Pure black background for OLED displays',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: isOledMode,
+          onChanged: (value) async {
+            final settings = ref.read(settingsProvider);
+            await ref.read(settingsProvider.notifier).update(
+              settings.copyWith(oledMode: value),
+            );
+          },
+          activeThumbColor: switchThumbColor,
+          activeTrackColor: switchActiveTrackColor,
+          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
+          inactiveTrackColor: switchInactiveTrackColor,
+        ),
+      ],
     );
   }
 }
