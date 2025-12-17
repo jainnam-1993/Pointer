@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background - Deep purple matching app theme -->
+  <rect width="1024" height="1024" fill="#1A0A3A"/>
+
+  <!-- Subtle gradient overlay -->
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#1A0A3A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <!-- Ensō - Zen circle drawn with brush stroke -->
+  <!-- Centered and scaled: original 100x100 -> 1024x1024, offset to center -->
+  <!-- Scale factor: 7, centered with padding -->
+  <g transform="translate(162, 162) scale(7)">
+    <path
+      d="M 10,50
+         C 10,25 25,10 50,10
+         C 75,10 90,25 90,50
+         C 90,75 75,90 50,90
+         C 30,90 15,75 12,55"
+      fill="none"
+      stroke="white"
+      stroke-width="6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      opacity="0.95"
+    />
+  </g>
+</svg>

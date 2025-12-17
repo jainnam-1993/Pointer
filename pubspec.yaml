@@ -71,9 +71,23 @@ dev_dependencies:
     sdk: flutter
   patrol: ^3.0.0
 
+  # App Icon Generator
+  flutter_launcher_icons: ^0.14.2
+
 flutter:
   uses-material-design: true
 
   assets:
     - assets/
     - assets/audio/
+    - assets/icons/
+
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/enso_icon.png"
+  adaptive_icon_background: "#1A0A3A"
+  adaptive_icon_foreground: "assets/icons/enso_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
