@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 import '../providers/providers.dart';
+import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
@@ -124,73 +125,63 @@ class PaywallScreen extends ConsumerWidget {
 
                   const Spacer(),
 
-                  // Price
-                  Text(
-                    '\$4.99 / month',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: goldColor,
-                        ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  Text(
-                    'Cancel anytime',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: textColorMuted,
+                  // Dynamic pricing from RevenueCat products
+                  if (subscription.products.isNotEmpty) ...[
+                    // Show monthly product
+                    _ProductButton(
+                      product: subscription.products.firstWhere(
+                        (p) => p.isMonthly,
+                        orElse: () => subscription.products.first,
+                      ),
+                      isLoading: subscription.isLoading,
+                      goldColor: goldColor,
+                      textColorMuted: textColorMuted,
+                      onPurchase: (product) async {
+                        final hasVibrator = await Vibration.hasVibrator();
+                        if (hasVibrator == true) {
+                          Vibration.vibrate(duration: 100, amplitude: 200);
+                        }
+                        final result = await ref
+                            .read(subscriptionProvider.notifier)
+                            .purchasePackage(product);
+                        if (result.success && context.mounted) {
+                          context.pop();
+                        }
+                      },
                     ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Purchase button
-                  Semantics(
-                    button: true,
-                    label: subscription.isLoading
-                        ? 'Processing subscription'
-                        : 'Subscribe now for 4.99 dollars per month',
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: GlassCard(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        borderColor: goldColor.withValues(alpha: 0.5),
-                        onTap: subscription.isLoading
-                            ? null
-                            : () async {
-                                final hasVibrator = await Vibration.hasVibrator();
-                                if (hasVibrator == true) {
-                                  Vibration.vibrate(duration: 100, amplitude: 200);
-                                }
-                                final success = await ref
-                                    .read(subscriptionProvider.notifier)
-                                    .purchasePremium();
-                                if (success && context.mounted) {
-                                  context.pop();
-                                }
-                              },
-                        child: Center(
-                          child: subscription.isLoading
-                              ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: goldColor,
-                                  ),
-                                )
-                              : Text(
-                                  'Subscribe Now',
-                                  style: TextStyle(
-                                    color: goldColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                        ),
+                    // Show yearly product if available
+                    if (subscription.products.any((p) => p.isYearly)) ...[
+                      const SizedBox(height: 12),
+                      _ProductButton(
+                        product: subscription.products.firstWhere((p) => p.isYearly),
+                        isLoading: subscription.isLoading,
+                        goldColor: goldColor,
+                        textColorMuted: textColorMuted,
+                        isSecondary: true,
+                        onPurchase: (product) async {
+                          final hasVibrator = await Vibration.hasVibrator();
+                          if (hasVibrator == true) {
+                            Vibration.vibrate(duration: 100, amplitude: 200);
+                          }
+                          final result = await ref
+                              .read(subscriptionProvider.notifier)
+                              .purchasePackage(product);
+                          if (result.success && context.mounted) {
+                            context.pop();
+                          }
+                        },
+                      ),
+                    ],
+                  ] else ...[
+                    // Fallback when products not loaded
+                    Text(
+                      'Loading subscription options...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: textColorMuted,
                       ),
                     ),
-                  ),
+                  ],
 
                   const SizedBox(height: 16),
 
@@ -277,6 +268,85 @@ class _FeatureRow extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Product purchase button with dynamic pricing
+class _ProductButton extends StatelessWidget {
+  final SubscriptionProduct product;
+  final bool isLoading;
+  final Color goldColor;
+  final Color textColorMuted;
+  final bool isSecondary;
+  final Future<void> Function(SubscriptionProduct) onPurchase;
+
+  const _ProductButton({
+    required this.product,
+    required this.isLoading,
+    required this.goldColor,
+    required this.textColorMuted,
+    required this.onPurchase,
+    this.isSecondary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final periodText = product.isYearly ? '/year' : '/month';
+    final savingsText = product.isYearly ? ' (Save 40%)' : '';
+
+    return Column(
+      children: [
+        Text(
+          '${product.price}$periodText$savingsText',
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: goldColor,
+                fontSize: isSecondary ? 18 : 24,
+              ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Cancel anytime',
+          style: TextStyle(
+            fontSize: 14,
+            color: textColorMuted,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Semantics(
+          button: true,
+          label: isLoading
+              ? 'Processing subscription'
+              : 'Subscribe now for ${product.price} per ${product.isYearly ? "year" : "month"}',
+          child: SizedBox(
+            width: double.infinity,
+            child: GlassCard(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              borderColor: goldColor.withValues(alpha: isSecondary ? 0.3 : 0.5),
+              onTap: isLoading ? null : () => onPurchase(product),
+              child: Center(
+                child: isLoading
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: goldColor,
+                        ),
+                      )
+                    : Text(
+                        isSecondary ? 'Subscribe Yearly' : 'Subscribe Now',
+                        style: TextStyle(
+                          color: goldColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
           ),
         ),
       ],

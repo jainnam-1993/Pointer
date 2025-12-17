@@ -42,6 +42,13 @@ dependencies:
   # Home Screen Widget
   home_widget: ^0.7.0
 
+  # In-App Purchases (RevenueCat)
+  purchases_flutter: ^8.0.0
+
+  # Audio Playback
+  just_audio: ^0.9.40
+  audio_service: ^0.18.15
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
