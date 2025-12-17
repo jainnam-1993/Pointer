@@ -40,6 +40,26 @@ bool shouldReduceMotion(BuildContext context, bool? appOverride) {
   return appOverride == true;
 }
 
+// ============================================================
+// Accessibility - High Contrast
+// ============================================================
+
+/// High contrast mode provider
+/// Initialized from stored settings, can be toggled manually or detected via system preference
+final highContrastProvider = StateProvider<bool>((ref) {
+  // Initialize from stored settings
+  final settings = ref.watch(settingsProvider);
+  return settings.highContrast;
+});
+
+/// Helper to check if high contrast is enabled (either via provider or system setting)
+/// Usage: isHighContrastEnabled(context, ref)
+bool isHighContrastEnabled(BuildContext context, WidgetRef ref) {
+  final providerEnabled = ref.watch(highContrastProvider);
+  final systemEnabled = MediaQuery.of(context).highContrast;
+  return providerEnabled || systemEnabled;
+}
+
 /// SharedPreferences provider
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Must be overridden in ProviderScope');
@@ -194,6 +214,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
   Future<void> setTheme(AppThemeMode mode) async {
     final newSettings = state.copyWith(theme: mode.name);
+    await update(newSettings);
+  }
+
+  /// Toggle high contrast mode
+  Future<void> setHighContrast(bool enabled) async {
+    final newSettings = state.copyWith(highContrast: enabled);
     await update(newSettings);
   }
 }

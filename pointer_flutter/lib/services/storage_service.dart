@@ -17,12 +17,14 @@ class AppSettings {
   final bool autoAdvance;
   final int autoAdvanceDelay;
   final String theme;
+  final bool highContrast;
 
   const AppSettings({
     this.hapticFeedback = true,
     this.autoAdvance = false,
     this.autoAdvanceDelay = 30,
     this.theme = 'dark',
+    this.highContrast = false,
   });
 
   AppSettings copyWith({
@@ -30,12 +32,14 @@ class AppSettings {
     bool? autoAdvance,
     int? autoAdvanceDelay,
     String? theme,
+    bool? highContrast,
   }) {
     return AppSettings(
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
       autoAdvance: autoAdvance ?? this.autoAdvance,
       autoAdvanceDelay: autoAdvanceDelay ?? this.autoAdvanceDelay,
       theme: theme ?? this.theme,
+      highContrast: highContrast ?? this.highContrast,
     );
   }
 
@@ -44,6 +48,7 @@ class AppSettings {
         'autoAdvance': autoAdvance,
         'autoAdvanceDelay': autoAdvanceDelay,
         'theme': theme,
+        'highContrast': highContrast,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -52,6 +57,7 @@ class AppSettings {
       autoAdvance: json['autoAdvance'] ?? false,
       autoAdvanceDelay: json['autoAdvanceDelay'] ?? 30,
       theme: json['theme'] ?? 'dark',
+      highContrast: json['highContrast'] ?? false,
     );
   }
 }

@@ -140,6 +140,7 @@ Future<void> pumpForGolden(
   WidgetTester tester,
   Widget widget, {
   Size size = GoldenDevices.iPhone14Pro,
+  bool highContrast = false,
 }) async {
   // Set surface size
   tester.view.physicalSize = size * 3.0; // Account for pixel ratio
@@ -150,7 +151,15 @@ Future<void> pumpForGolden(
     tester.view.resetDevicePixelRatio();
   });
 
-  await tester.pumpWidget(widget);
+  // Wrap with ProviderScope for high contrast support
+  final wrappedWidget = ProviderScope(
+    overrides: [
+      highContrastProvider.overrideWith((ref) => highContrast),
+    ],
+    child: widget,
+  );
+
+  await tester.pumpWidget(wrappedWidget);
   await tester.pumpAndSettle();
 
   // Extra pump to ensure all frames are rendered
