@@ -10,12 +10,11 @@ Pointer is a Flutter mobile app that delivers daily non-dual awareness "pointing
 
 ```bash
 # Development
-cd pointer_flutter
 flutter run                    # Run on connected device/emulator
 flutter run -d chrome          # Run on web (for quick testing)
 
 # Testing
-flutter test                   # Unit tests
+flutter test --concurrency=8   # Unit tests (8 parallel)
 flutter test --coverage        # With coverage report
 flutter test integration_test  # Integration tests
 
@@ -32,7 +31,7 @@ flutter pub get                # Install dependencies
 ## Architecture
 
 ```
-pointer_flutter/
+./
 ├── lib/
 │   ├── main.dart              # App entry point, ProviderScope setup
 │   ├── router.dart            # GoRouter configuration
@@ -106,8 +105,27 @@ pointer_flutter/
 - Backend API (planned per EXECUTION_PLAN.md)
 - Light/Dark mode toggle
 
+## Orchestration Settings
+
+```yaml
+# Parallel Implementation Configuration
+subagent_concurrency: 8          # Max parallel subagents for feature implementation
+worktree_strategy: true          # Use git worktrees for isolation
+vault_path: /Volumes/workplace/tools/Obsidian/Projects/Personal/Pointer/Active
+playbook_path: ${vault_path}/IMPLEMENTATION_PLAYBOOK.md
+roadmap_path: ${vault_path}/ROADMAP.md
+```
+
+### Wave Strategy
+- Analyze file conflicts before spawning
+- Group features by shared files to avoid merge conflicts
+- Max 8 concurrent subagents per wave
+- Merge sequentially after wave completes
+
 ## Reference Docs
 
 - `/DESIGN_SYSTEM.md` - Full design specifications
 - `/EXECUTION_PLAN.md` - Implementation roadmap and product decisions
 - `/PRFAQ.md` - Product vision and FAQ
+- `${vault_path}/ROADMAP.md` - Feature roadmap with priorities
+- `${vault_path}/IMPLEMENTATION_PLAYBOOK.md` - Orchestrator execution guide

@@ -157,12 +157,13 @@ void main() {
       await tester.tap(find.text('Peaceful'));
       await tester.pumpAndSettle();
 
-      // Verify haptic feedback was triggered
-      // Note: Haptic feedback may not be captured in unit tests on all platforms
-      // The important behavior (provider update) is tested in other tests
-      // This test verifies no crashes occur when haptic feedback is called
-      expect(find.text('Peaceful'), findsOneWidget);
-    }, skip: true); // Haptic feedback is difficult to test in unit tests
+      // Verify haptic feedback was triggered (HapticFeedback.selectionClick)
+      expect(
+        hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate'),
+        isNotEmpty,
+        reason: 'Expected HapticFeedback.selectionClick to be called',
+      );
+    });
 
 
     testWidgets('tapping different moods updates selection', (tester) async {
@@ -411,14 +412,17 @@ void main() {
 
       hapticCalls.clear();
 
-      // Tap a mood
+      // Tap a mood in the modal
       await tester.tap(find.text('Calm and centered'));
       await tester.pumpAndSettle();
 
-      // Verify no crashes occur when haptic feedback is called
-      // The important behavior (provider update) is tested in other tests
-      expect(find.text('Show Picker'), findsOneWidget);
-    }, skip: true); // Haptic feedback is difficult to test in unit tests
+      // Verify haptic feedback was triggered (HapticFeedback.mediumImpact)
+      expect(
+        hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate'),
+        isNotEmpty,
+        reason: 'Expected HapticFeedback.mediumImpact to be called',
+      );
+    });
 
     testWidgets('modal has draggable handle', (tester) async {
       final container = ProviderContainer(
