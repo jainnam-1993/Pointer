@@ -1,10 +1,12 @@
 // Library Screen - Browse articles and teachings from non-dual traditions
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
+import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -55,6 +57,42 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
 /// Filter options for library content
 enum LibraryFilter { all, saved }
 
+/// Browse mode for category navigation
+enum LibraryBrowseMode {
+  topics,
+  teachers,
+  lineages,
+  moods,
+}
+
+extension LibraryBrowseModeExt on LibraryBrowseMode {
+  String get label {
+    switch (this) {
+      case LibraryBrowseMode.topics:
+        return 'Topics';
+      case LibraryBrowseMode.teachers:
+        return 'Teachers';
+      case LibraryBrowseMode.lineages:
+        return 'Lineages';
+      case LibraryBrowseMode.moods:
+        return 'Moods';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case LibraryBrowseMode.topics:
+        return Icons.topic_outlined;
+      case LibraryBrowseMode.teachers:
+        return Icons.person_outline;
+      case LibraryBrowseMode.lineages:
+        return Icons.account_tree_outlined;
+      case LibraryBrowseMode.moods:
+        return Icons.mood_outlined;
+    }
+  }
+}
+
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
 
@@ -64,6 +102,7 @@ class LibraryScreen extends ConsumerStatefulWidget {
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   LibraryFilter _currentFilter = LibraryFilter.all;
+  LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
 
   @override
   Widget build(BuildContext context) {
@@ -270,52 +309,33 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   ),
                 ),
 
-                // Categories Section
+                // Browse Mode Section with Dropdown
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                    child: Text(
-                      'BROWSE BY TOPIC',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Category cards
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 120 + bottomPadding,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final category = ArticleCategory.values[index];
-                        final info = categoryInfoMap[category]!;
-                        final articleCount =
-                            getArticlesByCategory(category).length;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _CategoryCard(
-                            category: category,
-                            info: info,
-                            articleCount: articleCount,
-                            onTap: () => _openCategory(
-                                context, category, info, subscription.isPremium),
+                    child: Row(
+                      children: [
+                        Text(
+                          'BROWSE BY',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textMuted,
+                            letterSpacing: 1,
                           ),
-                        );
-                      },
-                      childCount: ArticleCategory.values.length,
+                        ),
+                        const SizedBox(width: 12),
+                        _BrowseModeDropdown(
+                          currentMode: _browseMode,
+                          onChanged: (mode) => setState(() => _browseMode = mode),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+
+                // Dynamic browse list based on mode
+                _buildBrowseList(colors, bottomPadding, subscription.isPremium),
                 ], // end else
               ],
             ),
@@ -343,6 +363,385 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           category: category,
           info: info,
           isPremium: isPremium,
+        ),
+      ),
+    );
+  }
+
+  /// Build dynamic browse list based on current mode
+  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium) {
+    switch (_browseMode) {
+      case LibraryBrowseMode.topics:
+        return _buildTopicsList(colors, bottomPadding, isPremium);
+      case LibraryBrowseMode.teachers:
+        return _buildTeachersList(colors, bottomPadding);
+      case LibraryBrowseMode.lineages:
+        return _buildLineagesList(colors, bottomPadding);
+      case LibraryBrowseMode.moods:
+        return _buildMoodsList(colors, bottomPadding);
+    }
+  }
+
+  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium) {
+    return SliverPadding(
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final category = ArticleCategory.values[index];
+            final info = categoryInfoMap[category]!;
+            final articleCount = getArticlesByCategory(category).length;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _CategoryCard(
+                category: category,
+                info: info,
+                articleCount: articleCount,
+                onTap: () => _openCategory(context, category, info, isPremium),
+              ),
+            );
+          },
+          childCount: ArticleCategory.values.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTeachersList(PointerColors colors, double bottomPadding) {
+    final teacherCounts = TeachingRepository.teacherCounts;
+    final sortedTeachers = teacherCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return SliverPadding(
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final entry = sortedTeachers[index];
+            final teacher = entry.key;
+            final count = entry.value;
+
+            // Get lineage for this teacher (from first teaching)
+            final teachingsSample = TeachingRepository.byTeacher(teacher);
+            final lineage = teachingsSample.isNotEmpty
+                ? traditions[teachingsSample.first.lineage]?.name ?? ''
+                : '';
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: '🙏',
+                name: teacher,
+                description: lineage,
+                count: count,
+                onTap: () => _openTeacher(context, teacher),
+              ),
+            );
+          },
+          childCount: sortedTeachers.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLineagesList(PointerColors colors, double bottomPadding) {
+    return SliverPadding(
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final tradition = Tradition.values[index];
+            final info = traditions[tradition]!;
+            final teachingCount = TeachingRepository.byLineage(tradition).length;
+            final articleCount = getArticlesByTradition(tradition).length;
+            final totalCount = teachingCount + articleCount;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: info.icon,
+                name: info.name,
+                description: info.description,
+                count: totalCount,
+                onTap: () => _openLineage(context, tradition, info),
+              ),
+            );
+          },
+          childCount: Tradition.values.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMoodsList(PointerColors colors, double bottomPadding) {
+    final moodCounts = TeachingRepository.moodCounts;
+    final sortedMoods = moodCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return SliverPadding(
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final entry = sortedMoods[index];
+            final mood = entry.key;
+            final count = entry.value;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: MoodTags.icon(mood),
+                name: MoodTags.displayName(mood),
+                description: 'Best for ${mood.toLowerCase()} moments',
+                count: count,
+                onTap: () => _openMood(context, mood),
+              ),
+            );
+          },
+          childCount: sortedMoods.length,
+        ),
+      ),
+    );
+  }
+
+  void _openTeacher(BuildContext context, String teacher) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TeacherTeachingsScreen(teacher: teacher),
+      ),
+    );
+  }
+
+  void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info),
+      ),
+    );
+  }
+
+  void _openMood(BuildContext context, String mood) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MoodTeachingsScreen(mood: mood),
+      ),
+    );
+  }
+}
+
+/// Dropdown for browse mode selection
+class _BrowseModeDropdown extends StatelessWidget {
+  final LibraryBrowseMode currentMode;
+  final ValueChanged<LibraryBrowseMode> onChanged;
+
+  const _BrowseModeDropdown({
+    required this.currentMode,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return GlassCard(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderRadius: 12,
+      onTap: () => _showModeSelector(context),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(currentMode.icon, size: 16, color: colors.textPrimary),
+          const SizedBox(width: 6),
+          Text(
+            currentMode.label,
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(Icons.keyboard_arrow_down, color: colors.textMuted, size: 20),
+        ],
+      ),
+    );
+  }
+
+  void _showModeSelector(BuildContext context) {
+    HapticFeedback.lightImpact();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _BrowseModeSheet(
+        currentMode: currentMode,
+        onSelected: (mode) {
+          onChanged(mode);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+}
+
+class _BrowseModeSheet extends StatelessWidget {
+  final LibraryBrowseMode currentMode;
+  final ValueChanged<LibraryBrowseMode> onSelected;
+
+  const _BrowseModeSheet({
+    required this.currentMode,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: colors.glassBackground,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Browse by',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 16),
+              ...LibraryBrowseMode.values.map((mode) {
+                final isSelected = mode == currentMode;
+                return ListTile(
+                  leading: Icon(
+                    mode.icon,
+                    color: isSelected ? colors.accent : colors.textMuted,
+                  ),
+                  title: Text(
+                    mode.label,
+                    style: TextStyle(
+                      color: isSelected ? colors.accent : colors.textPrimary,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                  trailing: isSelected
+                      ? Icon(Icons.check, color: colors.accent)
+                      : null,
+                  onTap: () => onSelected(mode),
+                );
+              }),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Generic browse card for teachers, lineages, moods
+class _BrowseCard extends StatelessWidget {
+  final String icon;
+  final String name;
+  final String description;
+  final int count;
+  final VoidCallback onTap;
+
+  const _BrowseCard({
+    required this.icon,
+    required this.name,
+    required this.description,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Semantics(
+      button: true,
+      label: '$name. $description. $count teachings.',
+      child: GlassCard(
+        padding: const EdgeInsets.all(16),
+        onTap: onTap,
+        child: Row(
+          children: [
+            // Icon
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: colors.accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Text(
+                  icon,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: colors.accent,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: colors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+
+            // Count and arrow
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textMuted,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
+                  color: colors.textMuted,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -972,6 +1371,399 @@ class _MarkdownContent extends StatelessWidget {
           fontStyle: FontStyle.italic,
           color: colors.textPrimary,
         ),
+      ),
+    );
+  }
+}
+
+// ============================================================
+// Teaching Detail Screens (Phase 6)
+// ============================================================
+
+/// Screen showing teachings by a specific teacher
+class TeacherTeachingsScreen extends StatelessWidget {
+  final String teacher;
+
+  const TeacherTeachingsScreen({super.key, required this.teacher});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final teachings = TeachingRepository.byTeacher(teacher);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AnimatedGradient()),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // App bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                teacher,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: colors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                '${teachings.length} teachings',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: colors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Teachings list
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    bottom: 32 + bottomPadding,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final teaching = teachings[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(teaching: teaching),
+                        );
+                      },
+                      childCount: teachings.length,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Screen showing teachings by lineage/tradition
+class LineageTeachingsScreen extends StatelessWidget {
+  final Tradition tradition;
+  final TraditionInfo info;
+
+  const LineageTeachingsScreen({
+    super.key,
+    required this.tradition,
+    required this.info,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final teachings = TeachingRepository.byLineage(tradition);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AnimatedGradient()),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // App bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(info.icon, style: const TextStyle(fontSize: 18)),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    info.name,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: colors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${teachings.length} teachings',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: colors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Description
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                    child: Text(
+                      info.description,
+                      style: TextStyle(
+                        color: colors.textSecondary,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Teachings list
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    bottom: 32 + bottomPadding,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final teaching = teachings[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(teaching: teaching),
+                        );
+                      },
+                      childCount: teachings.length,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Screen showing teachings by mood
+class MoodTeachingsScreen extends StatelessWidget {
+  final String mood;
+
+  const MoodTeachingsScreen({super.key, required this.mood});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final teachings = TeachingRepository.byMood(mood);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AnimatedGradient()),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // App bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    MoodTags.icon(mood),
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    MoodTags.displayName(mood),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: colors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${teachings.length} teachings',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: colors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Teachings list
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    bottom: 32 + bottomPadding,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final teaching = teachings[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(teaching: teaching),
+                        );
+                      },
+                      childCount: teachings.length,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Card for displaying a teaching
+class _TeachingCard extends StatelessWidget {
+  final Teaching teaching;
+
+  const _TeachingCard({required this.teaching});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final traditionInfo = traditions[teaching.lineage]!;
+
+    return GlassCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Content
+          Text(
+            teaching.content,
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontSize: 15,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Footer: Teacher and lineage
+          Row(
+            children: [
+              Text(
+                '— ${teaching.teacher}',
+                style: TextStyle(
+                  color: colors.textMuted,
+                  fontSize: 13,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colors.accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      traditionInfo.icon,
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      traditionInfo.name,
+                      style: TextStyle(
+                        color: colors.textMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // Topic tags
+          if (teaching.topicTags.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: teaching.topicTags.take(3).map((tag) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colors.glassBackground,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: colors.glassBorder),
+                  ),
+                  child: Text(
+                    TopicTags.displayName(tag),
+                    style: TextStyle(
+                      color: colors.textSecondary,
+                      fontSize: 11,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ],
       ),
     );
   }
