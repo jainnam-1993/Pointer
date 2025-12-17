@@ -43,34 +43,43 @@ class _BottomNavBar extends StatelessWidget {
     final colors = context.colors;
     final isDark = context.isDarkMode;
 
-    // Enhanced glass gradient for nav bar
+    // Enhanced liquid glass gradient for nav bar
     final glassGradient = isDark
         ? LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.12),
-              Colors.white.withValues(alpha: 0.06),
+              Colors.white.withValues(alpha: 0.18),
+              Colors.white.withValues(alpha: 0.08),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.8),
-              Colors.white.withValues(alpha: 0.5),
+              Colors.white.withValues(alpha: 0.95),
+              Colors.white.withValues(alpha: 0.75),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
 
-    // Gradient border for enhanced glass effect
-    final borderGradient = LinearGradient(
-      colors: [
-        colors.glassBorder,
-        colors.glassBorder.withValues(alpha: 0.3),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
+    // Liquid glass border gradient - visible border for glass effect
+    final borderGradient = isDark
+        ? LinearGradient(
+            colors: [
+              colors.glassBorder,
+              colors.glassBorder.withValues(alpha: 0.2),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : LinearGradient(
+            colors: [
+              Colors.black.withValues(alpha: 0.08),
+              Colors.black.withValues(alpha: 0.03),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
 
     return Container(
       margin: EdgeInsets.only(
@@ -78,10 +87,23 @@ class _BottomNavBar extends StatelessWidget {
         right: 24,
         bottom: bottomPadding + 16,
       ),
+      decoration: isDark
+          ? null
+          : BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
           child: Container(
             height: 64,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -90,7 +112,7 @@ class _BottomNavBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               border: GradientBoxBorder(
                 gradient: borderGradient,
-                width: 1,
+                width: isDark ? 1.5 : 1,
               ),
             ),
             child: Row(

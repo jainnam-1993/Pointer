@@ -26,20 +26,20 @@ class GlassCard extends StatelessWidget {
     final colors = context.colors;
     final isDark = context.isDarkMode;
 
-    // Enhanced glass gradient for better visual depth
+    // Enhanced liquid glass gradient - stronger opacity for dark mode
     final glassGradient = isDark
         ? LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.15),
-              Colors.white.withValues(alpha: 0.05),
+              Colors.white.withValues(alpha: 0.20),
+              Colors.white.withValues(alpha: 0.08),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.7),
-              Colors.white.withValues(alpha: 0.4),
+              Colors.white.withValues(alpha: 0.8),
+              Colors.white.withValues(alpha: 0.5),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -47,31 +47,56 @@ class GlassCard extends StatelessWidget {
 
     final effectiveBorderColor = borderColor ?? colors.glassBorder;
 
-    // Border gradient for enhanced glass effect
-    final borderGradient = LinearGradient(
-      colors: [
-        effectiveBorderColor,
-        effectiveBorderColor.withValues(alpha: 0.5),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
+    // Liquid glass border gradient - brighter at top-left, fading to bottom-right
+    // For light mode, use subtle dark border for visibility
+    final borderGradient = isDark
+        ? LinearGradient(
+            colors: [
+              effectiveBorderColor,
+              effectiveBorderColor.withValues(alpha: 0.3),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : LinearGradient(
+            colors: [
+              Colors.black.withValues(alpha: 0.06),
+              Colors.black.withValues(alpha: 0.02),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
 
-    final card = ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            gradient: glassGradient,
-            borderRadius: BorderRadius.circular(borderRadius),
-            border: GradientBoxBorder(
-              gradient: borderGradient,
-              width: 1,
+    final card = Container(
+      decoration: isDark
+          ? null
+          : BoxDecoration(
+              borderRadius: BorderRadius.circular(borderRadius),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 16,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              gradient: glassGradient,
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: GradientBoxBorder(
+                gradient: borderGradient,
+                width: isDark ? 1.5 : 1,
+              ),
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
@@ -109,17 +134,17 @@ class GlassButton extends StatelessWidget {
     final isDark = context.isDarkMode;
     final spinnerColor = isDark ? Colors.white : AppColorsLight.primary;
 
-    // Enhanced glass gradient for buttons
+    // Enhanced liquid glass gradient for buttons - more visible on black background
     final glassGradient = isDark
         ? LinearGradient(
             colors: isPrimary
                 ? [
-                    Colors.white.withValues(alpha: 0.25),
-                    Colors.white.withValues(alpha: 0.1),
+                    Colors.white.withValues(alpha: 0.28),
+                    Colors.white.withValues(alpha: 0.12),
                   ]
                 : [
-                    Colors.white.withValues(alpha: 0.15),
-                    Colors.white.withValues(alpha: 0.05),
+                    Colors.white.withValues(alpha: 0.20),
+                    Colors.white.withValues(alpha: 0.08),
                   ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -131,8 +156,8 @@ class GlassButton extends StatelessWidget {
                     Colors.white.withValues(alpha: 0.6),
                   ]
                 : [
-                    Colors.white.withValues(alpha: 0.7),
-                    Colors.white.withValues(alpha: 0.4),
+                    Colors.white.withValues(alpha: 0.8),
+                    Colors.white.withValues(alpha: 0.5),
                   ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -142,7 +167,7 @@ class GlassButton extends StatelessWidget {
     final borderGradient = LinearGradient(
       colors: [
         borderColor,
-        borderColor.withValues(alpha: 0.5),
+        borderColor.withValues(alpha: 0.3),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,

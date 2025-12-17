@@ -16,25 +16,24 @@ class AnimatedGradient extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Enhanced dark mode gradient with more color depth and variation
-    // Matches the visual richness of light mode
+    // Enhanced dark mode gradient - deep black for liquid glass effect
     final gradient = isDark
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.6, 1.0],
+            stops: [0.0, 0.3, 0.7, 1.0],
             colors: [
-              Color(0xFF2D1B4E), // Rich purple at top
-              Color(0xFF1A0A3A), // Deep violet
-              Color(0xFF0F0524), // Dark base
-              Color(0xFF1E1145), // Subtle purple glow at bottom
+              Color(0xFF0D0D0D), // Very dark gray at top
+              Color(0xFF050505), // Near black
+              Color(0xFF000000), // Pure black center
+              Color(0xFF0A0A0A), // Subtle lift at bottom
             ],
           )
         : AppGradients.backgroundLight;
 
-    // Enhanced shimmer for dark mode - more visible glow effect
+    // Enhanced shimmer for dark mode - subtle glow effect on black background
     final shimmerColor = isDark
-        ? AppColors.primary.withValues(alpha: 0.15)
+        ? Colors.white.withValues(alpha: 0.08)
         : AppColorsLight.primary.withValues(alpha: 0.08);
 
     final container = Container(

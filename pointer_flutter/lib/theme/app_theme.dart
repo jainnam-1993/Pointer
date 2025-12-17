@@ -46,19 +46,19 @@ class PointerColors extends ThemeExtension<PointerColors> {
     required this.shimmerColor,
   });
 
-  /// Dark theme colors - Enhanced glass morphism
+  /// Dark theme colors - Enhanced liquid glass morphism for black background
   static const dark = PointerColors(
     textPrimary: Colors.white,
     textSecondary: Color(0x99FFFFFF), // white with 0.6 alpha
     textMuted: Color(0x66FFFFFF), // white with 0.4 alpha
-    glassBorder: Color(0x33FFFFFF), // Increased from 0x26 for visibility
-    glassBackground: Color(0x15FFFFFF), // Increased from 0x0D for glass effect
-    glassBorderActive: Color(0x50FFFFFF), // Increased from 0x40
+    glassBorder: Color(0x4DFFFFFF), // 30% opacity for visible liquid glass border
+    glassBackground: Color(0x1AFFFFFF), // 10% opacity for glass fill
+    glassBorderActive: Color(0x66FFFFFF), // 40% opacity for active state
     gold: Color(0xFFFFD700),
     iconColor: Colors.white,
-    glassHighlight: Color(0x26FFFFFF), // Top-left highlight
-    glassGlow: Color(0x0D8B5CF6), // Subtle purple glow
-    shimmerColor: Color(0x268B5CF6), // Purple shimmer
+    glassHighlight: Color(0x33FFFFFF), // Stronger top-left highlight
+    glassGlow: Color(0x1A8B5CF6), // Subtle purple accent glow
+    shimmerColor: Color(0x338B5CF6), // Purple shimmer accent
   );
 
   /// Light theme colors
@@ -124,11 +124,11 @@ class PointerColors extends ThemeExtension<PointerColors> {
   }
 }
 
-/// App color palette - dark theme (deep purple/cosmic)
+/// App color palette - dark theme (deep black/cosmic)
 /// @deprecated Use PointerColors extension instead
 class AppColors {
-  static const background = Color(0xFF0F0524);
-  static const surface = Color(0xFF1A0A3A);
+  static const background = Color(0xFF000000);
+  static const surface = Color(0xFF0A0A0A);
   static const primary = Color(0xFF8B5CF6);
   static const secondary = Color(0xFFEC4899);
   static const accent = Color(0xFF06B6D4);
@@ -137,9 +137,9 @@ class AppColors {
   static const textSecondary = Color(0xFFB3B3B3);
   static const textMuted = Color(0xFF666666);
 
-  static const glassBorder = Color(0x26FFFFFF);
-  static const glassBackground = Color(0x0DFFFFFF);
-  static const glassBorderActive = Color(0x40FFFFFF);
+  static const glassBorder = Color(0x40FFFFFF);
+  static const glassBackground = Color(0x1AFFFFFF);
+  static const glassBorderActive = Color(0x60FFFFFF);
 
   static const gold = Color(0xFFFFD700);
 }
@@ -164,18 +164,18 @@ class AppColorsLight {
   static const gold = Color(0xFFD97706);
 }
 
-/// App gradients - Enhanced for consistent glass morphism feel
+/// App gradients - Enhanced for consistent liquid glass morphism feel
 class AppGradients {
-  /// Dark mode background gradient - Rich purple depths
+  /// Dark mode background gradient - Deep black with subtle color hints
   static const background = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    stops: [0.0, 0.3, 0.6, 1.0],
+    stops: [0.0, 0.3, 0.7, 1.0],
     colors: [
-      Color(0xFF2D1B4E), // Rich purple at top
-      Color(0xFF1A0A3A), // Deep violet
-      Color(0xFF0F0524), // Dark base
-      Color(0xFF1E1145), // Subtle purple glow at bottom
+      Color(0xFF0D0D0D), // Very dark gray at top
+      Color(0xFF050505), // Near black
+      Color(0xFF000000), // Pure black center
+      Color(0xFF0A0A0A), // Subtle lift at bottom
     ],
   );
 
@@ -192,10 +192,10 @@ class AppGradients {
 
   /// Dark mode animated colors for shimmer effects
   static const animatedColors = [
-    Color(0xFF2D1B4E),
-    Color(0xFF3D2B5E),
-    Color(0xFF1A0A3A),
-    Color(0xFF1E1145),
+    Color(0xFF0D0D0D),
+    Color(0xFF1A1A1A),
+    Color(0xFF050505),
+    Color(0xFF0A0A0A),
   ];
 
   /// Light mode animated colors for shimmer effects
@@ -206,11 +206,11 @@ class AppGradients {
     Color(0xFFF8F7FC),
   ];
 
-  /// Dark mode glass gradient for cards and overlays
+  /// Dark mode glass gradient for cards and overlays - Enhanced liquid glass
   static LinearGradient get glassDark => LinearGradient(
         colors: [
-          Colors.white.withValues(alpha: 0.15),
-          Colors.white.withValues(alpha: 0.05),
+          Colors.white.withValues(alpha: 0.18),
+          Colors.white.withValues(alpha: 0.08),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

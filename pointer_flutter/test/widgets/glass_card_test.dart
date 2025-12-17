@@ -31,14 +31,18 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
+      // Find the container with padding (the innermost one)
+      final containers = tester.widgetList<Container>(
         find.descendant(
           of: find.byType(GlassCard),
           matching: find.byType(Container),
         ),
       );
 
-      expect(container.padding, const EdgeInsets.all(24));
+      final containerWithPadding = containers.firstWhere(
+        (c) => c.padding != null,
+      );
+      expect(containerWithPadding.padding, const EdgeInsets.all(24));
     });
 
     testWidgets('applies custom padding', (tester) async {
@@ -53,14 +57,18 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
+      // Find the container with padding (the innermost one)
+      final containers = tester.widgetList<Container>(
         find.descendant(
           of: find.byType(GlassCard),
           matching: find.byType(Container),
         ),
       );
 
-      expect(container.padding, const EdgeInsets.all(16));
+      final containerWithPadding = containers.firstWhere(
+        (c) => c.padding != null,
+      );
+      expect(containerWithPadding.padding, const EdgeInsets.all(16));
     });
 
     testWidgets('uses ClipRRect with default borderRadius', (tester) async {
@@ -125,15 +133,18 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
+      // Find all containers within GlassCard and check if any has gradient
+      final containers = tester.widgetList<Container>(
         find.descendant(
           of: find.byType(GlassCard),
           matching: find.byType(Container),
         ),
       );
 
-      final decoration = container.decoration as BoxDecoration;
-      expect(decoration.gradient, isA<LinearGradient>());
+      final containerWithGradient = containers.firstWhere(
+        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
+      );
+      expect((containerWithGradient.decoration as BoxDecoration).gradient, isA<LinearGradient>());
     });
 
     testWidgets('has gradient border', (tester) async {
@@ -148,15 +159,19 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
+      // Find all containers within GlassCard and check if any has GradientBoxBorder
+      final containers = tester.widgetList<Container>(
         find.descendant(
           of: find.byType(GlassCard),
           matching: find.byType(Container),
         ),
       );
 
-      final decoration = container.decoration as BoxDecoration;
-      expect(decoration.border, isA<GradientBoxBorder>());
+      final containerWithBorder = containers.firstWhere(
+        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).border is GradientBoxBorder,
+      );
+      expect(containerWithBorder.decoration, isA<BoxDecoration>());
+      expect((containerWithBorder.decoration as BoxDecoration).border, isA<GradientBoxBorder>());
     });
 
     testWidgets('wraps in GestureDetector when onTap provided', (tester) async {
