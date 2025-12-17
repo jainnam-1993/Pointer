@@ -52,6 +52,12 @@ dependencies:
   # Video Playback
   video_player: ^2.9.0
 
+  # URL Launching (for privacy/terms links)
+  url_launcher: ^6.3.0
+
+  # SVG Support (for Ensō icon)
+  flutter_svg: ^2.0.10
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

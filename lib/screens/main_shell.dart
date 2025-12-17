@@ -1,0 +1,252 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../providers/providers.dart';
+import '../theme/app_theme.dart';
+import '../widgets/animated_gradient.dart';
+import '../widgets/glass_card.dart';
+
+class MainShell extends ConsumerWidget {
+  final StatefulNavigationShell navigationShell;
+
+  const MainShell({
+    super.key,
+    required this.navigationShell,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isZenMode = ref.watch(zenModeProvider);
+    final currentIndex = navigationShell.currentIndex;
+
+    // Wrap content with horizontal swipe gesture for tab navigation
+    final content = GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // Swipe left (negative velocity) -> next tab
+        if (details.primaryVelocity! < -200 && currentIndex < 3) {
+          navigationShell.goBranch(currentIndex + 1);
+        }
+        // Swipe right (positive velocity) -> previous tab
+        else if (details.primaryVelocity! > 200 && currentIndex > 0) {
+          navigationShell.goBranch(currentIndex - 1);
+        }
+      },
+      child: navigationShell,
+    );
+
+    // In zen mode, hide bottom nav bar
+    if (isZenMode) {
+      return Scaffold(
+        body: Stack(
+          children: [
+            content,
+            // Global particles effect
+            const Positioned.fill(child: FloatingParticles()),
+          ],
+        ),
+        extendBody: true,
+      );
+    }
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          content,
+          // Global particles effect
+          const Positioned.fill(child: FloatingParticles()),
+        ],
+      ),
+      extendBody: true,
+      bottomNavigationBar: _BottomNavBar(
+        currentIndex: currentIndex,
+        onTap: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == currentIndex,
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  const _BottomNavBar({
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+
+    // Enhanced liquid glass gradient for nav bar
+    final glassGradient = isDark
+        ? LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.18),
+              Colors.white.withValues(alpha: 0.08),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.95),
+              Colors.white.withValues(alpha: 0.75),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+
+    // Liquid glass border gradient - visible border for glass effect
+    final borderGradient = isDark
+        ? LinearGradient(
+            colors: [
+              colors.glassBorder,
+              colors.glassBorder.withValues(alpha: 0.2),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : LinearGradient(
+            colors: [
+              Colors.black.withValues(alpha: 0.08),
+              Colors.black.withValues(alpha: 0.03),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+
+    return Container(
+      margin: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        bottom: bottomPadding + 16,
+      ),
+      decoration: isDark
+          ? null
+          : BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+          child: Container(
+            height: 64,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              gradient: glassGradient,
+              borderRadius: BorderRadius.circular(24),
+              border: GradientBoxBorder(
+                gradient: borderGradient,
+                width: isDark ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _NavItem(
+                  icon: Icons.spa_outlined,
+                  activeIcon: Icons.spa,
+                  label: 'Home',
+                  isActive: currentIndex == 0,
+                  onTap: () => onTap(0),
+                ),
+                _NavItem(
+                  icon: Icons.self_improvement_outlined,
+                  activeIcon: Icons.self_improvement,
+                  label: 'Inquiry',
+                  isActive: currentIndex == 1,
+                  onTap: () => onTap(1),
+                ),
+                _NavItem(
+                  icon: Icons.auto_awesome_outlined,
+                  activeIcon: Icons.auto_awesome,
+                  label: 'Lineages',
+                  isActive: currentIndex == 2,
+                  onTap: () => onTap(2),
+                ),
+                _NavItem(
+                  icon: Icons.settings_outlined,
+                  activeIcon: Icons.settings,
+                  label: 'Settings',
+                  isActive: currentIndex == 3,
+                  onTap: () => onTap(3),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final activeColor = colors.textPrimary;
+    final inactiveColor = colors.textMuted;
+
+    return Semantics(
+      button: true,
+      selected: isActive,
+      label: '$label tab${isActive ? ', selected' : ''}',
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isActive ? activeIcon : icon,
+                color: isActive ? activeColor : inactiveColor,
+                size: 24,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                  color: isActive ? activeColor : inactiveColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
