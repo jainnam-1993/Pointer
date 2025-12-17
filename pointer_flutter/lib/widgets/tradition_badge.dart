@@ -4,6 +4,8 @@ import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
 /// Badge showing the tradition of a pointing
+///
+/// Includes semantic label for screen reader accessibility.
 class TraditionBadge extends StatelessWidget {
   final Tradition tradition;
 
@@ -20,7 +22,9 @@ class TraditionBadge extends StatelessWidget {
     final borderColor = isDark ? AppColors.glassBorder : AppColorsLight.glassBorder;
     final textColor = isDark ? Colors.white.withValues(alpha: 0.8) : AppColorsLight.textPrimary;
 
-    return ClipRRect(
+    return Semantics(
+      label: 'Tradition: ${info.name}',
+      child: ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -53,6 +57,7 @@ class TraditionBadge extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

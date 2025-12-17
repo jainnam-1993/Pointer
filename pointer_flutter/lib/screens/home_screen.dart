@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
+import '../data/pointings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -21,6 +23,28 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAnimating = false;
   bool _showSaveConfirmation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Schedule initial announcement after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _announcePointingContent(ref.read(currentPointingProvider));
+    });
+  }
+
+  /// Announces pointing content to screen readers
+  void _announcePointingContent(Pointing pointing) {
+    final traditionInfo = traditions[pointing.tradition]!;
+    final announcement = StringBuffer();
+    announcement.write('New pointing from ${traditionInfo.name}. ');
+    announcement.write(pointing.content);
+    if (pointing.teacher != null) {
+      announcement.write('. By ${pointing.teacher}');
+    }
+    // ignore: deprecated_member_use
+    SemanticsService.announce(announcement.toString(), TextDirection.ltr);
+  }
 
   Future<void> _handleNext() async {
     if (_isAnimating) return;
@@ -40,6 +64,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(currentPointingProvider.notifier).nextPointing();
 
     setState(() => _isAnimating = false);
+
+    // Announce new pointing to screen readers
+    final newPointing = ref.read(currentPointingProvider);
+    _announcePointingContent(newPointing);
   }
 
   Future<void> _handleShare() async {
@@ -108,10 +136,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Tradition badge
-                  TraditionBadge(tradition: pointing.tradition)
-                      .animate(target: _isAnimating ? 0 : 1)
-                      .fadeIn(duration: 300.ms),
+                  // Tradition badge - first in focus order
+                  Semantics(
+                    sortKey: const OrdinalSortKey(1.0),
+                    child: TraditionBadge(tradition: pointing.tradition)
+                        .animate(target: _isAnimating ? 0 : 1)
+                        .fadeIn(duration: 300.ms),
+                  ),
 
                   const SizedBox(height: 16),
 
@@ -123,7 +154,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         opacity: _isAnimating ? 0 : 1,
                         duration: 150.ms,
                         child: Semantics(
-                          label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}. Long press to save.',
+                          sortKey: const OrdinalSortKey(2.0),
+                          label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
+                          hint: 'Double tap to focus, swipe up or down for actions',
+                          customSemanticsActions: {
+                            CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
+                            CustomSemanticsAction(label: 'Share pointing'): _handleShare,
+                          },
                           child: GlassCard(
                             padding: const EdgeInsets.all(32),
                             borderRadius: 32,
@@ -170,6 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       // Share button
                       Semantics(
+                        sortKey: const OrdinalSortKey(3.0),
                         button: true,
                         label: 'Share this pointing',
                         child: GlassButton(
@@ -186,6 +224,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       const SizedBox(width: 16),
                       // Next button
                       Semantics(
+                        sortKey: const OrdinalSortKey(4.0),
                         button: true,
                         label: 'Show next pointing',
                         child: GlassButton(
@@ -203,10 +242,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Footer
-                  Text(
-                    'Tap for another invitation to look',
-                    style: AppTextStyles.footerText(context),
+                  // Footer - decorative hint text, excluded from focus order
+                  ExcludeSemantics(
+                    child: Text(
+                      'Tap for another invitation to look',
+                      style: AppTextStyles.footerText(context),
+                    ),
                   ),
                 ],
               ),

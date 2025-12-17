@@ -11,6 +11,7 @@ import '../theme/app_theme.dart';
 /// - System reduce motion (MediaQuery.disableAnimations)
 /// - App-level override (reduceMotionOverrideProvider)
 ///
+/// Excluded from accessibility tree as it's purely decorative.
 /// Set [disableAnimations] to true in tests to prevent timer issues.
 class AnimatedGradient extends ConsumerWidget {
   const AnimatedGradient({super.key});
@@ -20,6 +21,13 @@ class AnimatedGradient extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Exclude decorative background from accessibility tree
+    return ExcludeSemantics(
+      child: _buildGradient(context, ref),
+    );
+  }
+
+  Widget _buildGradient(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Check reduce motion preference
@@ -83,6 +91,8 @@ class AnimatedGradient extends ConsumerWidget {
 /// - System reduce motion (MediaQuery.disableAnimations)
 /// - App-level override (reduceMotionOverrideProvider)
 /// - [AnimatedGradient.disableAnimations] for test compatibility
+///
+/// Excluded from accessibility tree as it's purely decorative.
 class FloatingParticles extends ConsumerWidget {
   const FloatingParticles({super.key});
 
@@ -107,9 +117,11 @@ class FloatingParticles extends ConsumerWidget {
     final particleColor = isDark ? Colors.white : Colors.black;
     final baseAlpha = isDark ? 0.15 : 0.1;
 
-    return IgnorePointer(
-      child: Stack(
-        children: List.generate(6, (index) {
+    // Exclude decorative particles from accessibility tree
+    return ExcludeSemantics(
+      child: IgnorePointer(
+        child: Stack(
+          children: List.generate(6, (index) {
           return Positioned(
             left: (index * 60.0) + 20,
             top: (index * 80.0) + 50,
@@ -135,6 +147,7 @@ class FloatingParticles extends ConsumerWidget {
                 ),
           );
         }),
+        ),
       ),
     );
   }
