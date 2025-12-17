@@ -174,9 +174,9 @@ class _BottomNavBar extends StatelessWidget {
                   onTap: () => onTap(1),
                 ),
                 _NavItem(
-                  icon: Icons.auto_awesome_outlined,
-                  activeIcon: Icons.auto_awesome,
-                  label: 'Lineages',
+                  icon: Icons.menu_book_outlined,
+                  activeIcon: Icons.menu_book,
+                  label: 'Library',
                   isActive: currentIndex == 2,
                   onTap: () => onTap(2),
                 ),

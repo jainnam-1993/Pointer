@@ -16,6 +16,7 @@ import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
 import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/mini_inquiry_card.dart';
 import '../widgets/save_confirmation.dart';
 import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
@@ -341,7 +342,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
+
+                  // Mini-inquiry entry point
+                  const MiniInquiryCard(),
+
+                  const SizedBox(height: 24),
 
                   // Action buttons row
                   Row(
