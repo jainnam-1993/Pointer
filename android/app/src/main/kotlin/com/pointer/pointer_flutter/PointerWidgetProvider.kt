@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.RemoteViews
+import com.pointer.R
 import es.antonborri.home_widget.HomeWidgetPlugin
 
 /**
