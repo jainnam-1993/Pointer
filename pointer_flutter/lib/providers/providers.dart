@@ -5,6 +5,7 @@ import '../services/storage_service.dart';
 import '../services/notification_service.dart';
 import '../services/usage_tracking_service.dart';
 import '../services/widget_service.dart';
+import '../services/revenue_cat_service.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
@@ -181,64 +182,140 @@ final subscriptionProvider = StateNotifierProvider<SubscriptionNotifier, Subscri
 class SubscriptionState {
   final SubscriptionTier tier;
   final bool isLoading;
+  final List<SubscriptionProduct> products;
+  final String? error;
+  final DateTime? expirationDate;
 
   const SubscriptionState({
     this.tier = SubscriptionTier.free,
     this.isLoading = false,
+    this.products = const [],
+    this.error,
+    this.expirationDate,
   });
 
   bool get isPremium => tier == SubscriptionTier.premium;
 
-  SubscriptionState copyWith({SubscriptionTier? tier, bool? isLoading}) {
+  SubscriptionState copyWith({
+    SubscriptionTier? tier,
+    bool? isLoading,
+    List<SubscriptionProduct>? products,
+    String? error,
+    DateTime? expirationDate,
+  }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
       isLoading: isLoading ?? this.isLoading,
+      products: products ?? this.products,
+      error: error,
+      expirationDate: expirationDate ?? this.expirationDate,
     );
   }
 }
 
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   final StorageService _storage;
+  final RevenueCatService _revenueCat = RevenueCatService.instance;
 
   SubscriptionNotifier(this._storage) : super(const SubscriptionState()) {
-    _loadSubscription();
+    _initialize();
   }
 
-  void _loadSubscription() {
-    final tier = _storage.subscriptionTier == 'premium'
-        ? SubscriptionTier.premium
-        : SubscriptionTier.free;
-    state = state.copyWith(tier: tier);
-  }
-
-  Future<bool> purchasePremium() async {
+  Future<void> _initialize() async {
     state = state.copyWith(isLoading: true);
     try {
-      // TODO: Integrate with RevenueCat
-      await _storage.setSubscriptionTier('premium');
-      state = state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
-      return true;
+      // Initialize RevenueCat SDK
+      await _revenueCat.initialize();
+
+      // Check current subscription status
+      final status = await _revenueCat.getSubscriptionStatus();
+      final tier = status.isPremium ? SubscriptionTier.premium : SubscriptionTier.free;
+
+      // Cache status locally for offline access
+      await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
+
+      // Load available products
+      final products = await _revenueCat.getProducts();
+
+      state = state.copyWith(
+        tier: tier,
+        isLoading: false,
+        products: products,
+        expirationDate: status.expirationDate,
+      );
     } catch (e) {
-      state = state.copyWith(isLoading: false);
-      return false;
+      // Fallback to cached subscription status
+      final cachedTier = _storage.subscriptionTier == 'premium'
+          ? SubscriptionTier.premium
+          : SubscriptionTier.free;
+      state = state.copyWith(tier: cachedTier, isLoading: false);
     }
   }
 
-  Future<bool> restorePurchases() async {
-    state = state.copyWith(isLoading: true);
+  /// Purchase a subscription package
+  Future<PurchaseResult> purchasePackage(SubscriptionProduct product) async {
+    state = state.copyWith(isLoading: true, error: null);
     try {
-      // TODO: Integrate with RevenueCat
-      final tier = _storage.subscriptionTier;
-      if (tier == 'premium') {
-        state = state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
-        return true;
+      final result = await _revenueCat.purchasePackage(product.package);
+
+      if (result.success) {
+        await _storage.setSubscriptionTier('premium');
+        state = state.copyWith(
+          tier: SubscriptionTier.premium,
+          isLoading: false,
+        );
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          error: result.isCancelled ? null : result.error,
+        );
       }
-      state = state.copyWith(isLoading: false);
-      return false;
+
+      return result;
     } catch (e) {
-      state = state.copyWith(isLoading: false);
-      return false;
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return PurchaseResult(success: false, error: e.toString());
     }
+  }
+
+  /// Restore previous purchases
+  Future<RestoreResult> restorePurchases() async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final result = await _revenueCat.restorePurchases();
+
+      if (result.hasPremium) {
+        await _storage.setSubscriptionTier('premium');
+        state = state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
+      } else {
+        state = state.copyWith(isLoading: false);
+      }
+
+      return result;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return RestoreResult(success: false, hasPremium: false, error: e.toString());
+    }
+  }
+
+  /// Refresh subscription status from server
+  Future<void> refreshStatus() async {
+    try {
+      final status = await _revenueCat.getSubscriptionStatus();
+      final tier = status.isPremium ? SubscriptionTier.premium : SubscriptionTier.free;
+      await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
+      state = state.copyWith(
+        tier: tier,
+        expirationDate: status.expirationDate,
+      );
+    } catch (e) {
+      // Ignore errors during refresh
+    }
+  }
+
+  /// Clear any error state
+  void clearError() {
+    state = state.copyWith(error: null);
   }
 }
 

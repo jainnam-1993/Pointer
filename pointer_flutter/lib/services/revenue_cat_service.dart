@@ -1,0 +1,242 @@
+import 'dart:io';
+
+import 'package:purchases_flutter/purchases_flutter.dart';
+
+/// RevenueCat API keys (replace with actual keys before production)
+class _RevenueCatKeys {
+  static const iosApiKey = 'appl_YOUR_IOS_API_KEY';
+  static const androidApiKey = 'goog_YOUR_ANDROID_API_KEY';
+}
+
+/// Product identifiers configured in RevenueCat dashboard
+class RevenueCatProducts {
+  static const monthlyId = 'pointer_premium_monthly';
+  static const yearlyId = 'pointer_premium_yearly';
+}
+
+/// Entitlement identifiers
+class RevenueCatEntitlements {
+  static const premium = 'premium';
+}
+
+/// Service for managing in-app purchases via RevenueCat.
+///
+/// Handles:
+/// - SDK initialization
+/// - Fetching available products
+/// - Processing purchases
+/// - Checking subscription status
+/// - Restoring purchases
+class RevenueCatService {
+  static RevenueCatService? _instance;
+  bool _isInitialized = false;
+
+  RevenueCatService._();
+
+  static RevenueCatService get instance {
+    _instance ??= RevenueCatService._();
+    return _instance!;
+  }
+
+  /// Initialize RevenueCat SDK
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
+    final configuration = PurchasesConfiguration(
+      Platform.isIOS ? _RevenueCatKeys.iosApiKey : _RevenueCatKeys.androidApiKey,
+    );
+
+    await Purchases.configure(configuration);
+    _isInitialized = true;
+  }
+
+  /// Check if user has premium entitlement
+  Future<bool> isPremiumActive() async {
+    try {
+      final customerInfo = await Purchases.getCustomerInfo();
+      return customerInfo.entitlements.active.containsKey(RevenueCatEntitlements.premium);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Get subscription status details
+  Future<SubscriptionStatus> getSubscriptionStatus() async {
+    try {
+      final customerInfo = await Purchases.getCustomerInfo();
+      final entitlement = customerInfo.entitlements.active[RevenueCatEntitlements.premium];
+
+      if (entitlement != null) {
+        return SubscriptionStatus(
+          isPremium: true,
+          productId: entitlement.productIdentifier,
+          expirationDate: entitlement.expirationDate != null
+              ? DateTime.parse(entitlement.expirationDate!)
+              : null,
+          willRenew: entitlement.willRenew,
+        );
+      }
+
+      return const SubscriptionStatus(isPremium: false);
+    } catch (e) {
+      return const SubscriptionStatus(isPremium: false);
+    }
+  }
+
+  /// Get available products (offerings)
+  Future<List<SubscriptionProduct>> getProducts() async {
+    try {
+      final offerings = await Purchases.getOfferings();
+      final current = offerings.current;
+
+      if (current == null) return [];
+
+      final products = <SubscriptionProduct>[];
+
+      for (final package in current.availablePackages) {
+        products.add(SubscriptionProduct(
+          id: package.storeProduct.identifier,
+          title: package.storeProduct.title,
+          description: package.storeProduct.description,
+          price: package.storeProduct.priceString,
+          priceValue: package.storeProduct.price,
+          packageType: package.packageType,
+          package: package,
+        ));
+      }
+
+      return products;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Purchase a subscription package
+  Future<PurchaseResult> purchasePackage(Package package) async {
+    try {
+      final customerInfo = await Purchases.purchasePackage(package);
+      final isPremium = customerInfo.entitlements.active.containsKey(
+        RevenueCatEntitlements.premium,
+      );
+
+      return PurchaseResult(
+        success: isPremium,
+        error: isPremium ? null : 'Purchase completed but entitlement not found',
+      );
+    } on PurchasesErrorCode catch (e) {
+      return PurchaseResult(
+        success: false,
+        error: _getErrorMessage(e),
+        isCancelled: e == PurchasesErrorCode.purchaseCancelledError,
+      );
+    } catch (e) {
+      return PurchaseResult(success: false, error: e.toString());
+    }
+  }
+
+  /// Restore previous purchases
+  Future<RestoreResult> restorePurchases() async {
+    try {
+      final customerInfo = await Purchases.restorePurchases();
+      final isPremium = customerInfo.entitlements.active.containsKey(
+        RevenueCatEntitlements.premium,
+      );
+
+      return RestoreResult(
+        success: true,
+        hasPremium: isPremium,
+      );
+    } catch (e) {
+      return RestoreResult(
+        success: false,
+        hasPremium: false,
+        error: e.toString(),
+      );
+    }
+  }
+
+  /// Listen to customer info updates
+  void addCustomerInfoUpdateListener(void Function(CustomerInfo) listener) {
+    Purchases.addCustomerInfoUpdateListener(listener);
+  }
+
+  String _getErrorMessage(PurchasesErrorCode code) {
+    switch (code) {
+      case PurchasesErrorCode.purchaseCancelledError:
+        return 'Purchase was cancelled';
+      case PurchasesErrorCode.purchaseNotAllowedError:
+        return 'Purchases not allowed on this device';
+      case PurchasesErrorCode.paymentPendingError:
+        return 'Payment is pending';
+      case PurchasesErrorCode.productNotAvailableForPurchaseError:
+        return 'Product not available';
+      default:
+        return 'An error occurred during purchase';
+    }
+  }
+}
+
+/// Subscription product model
+class SubscriptionProduct {
+  final String id;
+  final String title;
+  final String description;
+  final String price;
+  final double priceValue;
+  final PackageType packageType;
+  final Package package;
+
+  const SubscriptionProduct({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.price,
+    required this.priceValue,
+    required this.packageType,
+    required this.package,
+  });
+
+  bool get isMonthly => packageType == PackageType.monthly;
+  bool get isYearly => packageType == PackageType.annual;
+}
+
+/// Current subscription status
+class SubscriptionStatus {
+  final bool isPremium;
+  final String? productId;
+  final DateTime? expirationDate;
+  final bool willRenew;
+
+  const SubscriptionStatus({
+    required this.isPremium,
+    this.productId,
+    this.expirationDate,
+    this.willRenew = false,
+  });
+}
+
+/// Purchase result
+class PurchaseResult {
+  final bool success;
+  final String? error;
+  final bool isCancelled;
+
+  const PurchaseResult({
+    required this.success,
+    this.error,
+    this.isCancelled = false,
+  });
+}
+
+/// Restore result
+class RestoreResult {
+  final bool success;
+  final bool hasPremium;
+  final String? error;
+
+  const RestoreResult({
+    required this.success,
+    required this.hasPremium,
+    this.error,
+  });
+}
