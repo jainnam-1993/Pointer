@@ -21,7 +21,8 @@ import '../widgets/mini_inquiry_card.dart';
 import '../widgets/save_confirmation.dart';
 // HIDDEN: MoodSelector import (UI hidden, logic in models/mood.dart)
 // import '../widgets/mood_selector.dart';
-import '../widgets/tradition_badge.dart';
+// Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
+// import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -195,6 +196,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// Inline tradition badge for card header (Phase 5.11)
+  Widget _buildInlineTraditionBadge(Tradition tradition, PointerColors colors) {
+    final traditionInfo = traditions[tradition]!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colors.accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
+          const SizedBox(width: 6),
+          Text(
+            traditionInfo.name,
+            style: TextStyle(
+              color: colors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildZenModeView(Pointing pointing) {
     return GestureDetector(
       onTap: _toggleZenMode,
@@ -204,6 +232,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           _handleNext();
         }
         // Swipe down (positive velocity) -> previous
+        else if (details.primaryVelocity! > 200) {
+          _handlePrevious();
+        }
+      },
+      // Phase 5.6: Horizontal swipe gestures
+      onHorizontalDragEnd: (details) {
+        // Swipe left (negative velocity) -> next
+        if (details.primaryVelocity! < -200) {
+          _handleNext();
+        }
+        // Swipe right (positive velocity) -> previous
         else if (details.primaryVelocity! > 200) {
           _handlePrevious();
         }
@@ -260,6 +299,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   _handlePrevious();
                 }
               },
+              // Phase 5.6: Horizontal swipe gestures for pointing navigation
+              onHorizontalDragEnd: (details) {
+                // Swipe left (negative velocity) -> next
+                if (details.primaryVelocity! < -200) {
+                  _handleNext();
+                }
+                // Swipe right (positive velocity) -> previous
+                else if (details.primaryVelocity! > 200) {
+                  _handlePrevious();
+                }
+              },
               child: Padding(
                 padding: EdgeInsets.only(
                   left: 24,
@@ -275,17 +325,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // const MoodSelector(),
                   // const SizedBox(height: 16),
 
-                  // Tradition badge - first in focus order
-                  Semantics(
-                    sortKey: const OrdinalSortKey(1.0),
-                    child: TraditionBadge(tradition: pointing.tradition)
-                        .animate(target: _isAnimating ? 0 : 1)
-                        .fadeIn(duration: 300.ms),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Pointing card with Dynamic Type support, long press to save, double-tap for zen mode
+                  // Phase 5.11: Consolidated pointing card with tradition badge & share inside
                   Flexible(
                     child: GestureDetector(
                       onLongPress: _handleSave,
@@ -294,7 +334,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         opacity: _isAnimating ? 0 : 1,
                         duration: 150.ms,
                         child: Semantics(
-                          sortKey: const OrdinalSortKey(2.0),
+                          sortKey: const OrdinalSortKey(1.0),
                           label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
                           hint: 'Double tap to focus, swipe up or down for actions',
                           customSemanticsActions: {
@@ -302,14 +342,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             CustomSemanticsAction(label: 'Share pointing'): _handleShare,
                           },
                           child: GlassCard(
-                            padding: const EdgeInsets.all(32),
+                            padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
                             borderRadius: 32,
                             // Enable scrolling for large text / accessibility
-                            maxHeight: MediaQuery.of(context).size.height * 0.55,
+                            maxHeight: MediaQuery.of(context).size.height * 0.65,
                             enableScrolling: true,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                // Header row: tradition badge + share icon (Phase 5.11)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Inline tradition badge
+                                      _buildInlineTraditionBadge(pointing.tradition, colors),
+                                      // Share icon
+                                      GestureDetector(
+                                        onTap: _handleShare,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: colors.accent.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Icon(
+                                            Icons.ios_share,
+                                            size: 18,
+                                            color: colors.textSecondary,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 Text(
                                   pointing.content,
                                   style: AppTextStyles.pointingText(context),
@@ -383,43 +450,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Action buttons row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Share button
-                      Semantics(
-                        sortKey: const OrdinalSortKey(3.0),
-                        button: true,
-                        label: 'Share this pointing',
-                        child: GlassButton(
-                          label: 'Share',
-                          onPressed: _handleShare,
-                          isPrimary: false,
-                          icon: Icon(
-                            Icons.share_outlined,
-                            color: colors.iconColor,
-                            size: 18,
-                          ),
-                        ),
+                  // Action button - Next only (Share moved to card header in Phase 5.11)
+                  Semantics(
+                    sortKey: const OrdinalSortKey(2.0),
+                    button: true,
+                    label: 'Show next pointing',
+                    child: GlassButton(
+                      label: 'Next',
+                      onPressed: _handleNext,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: colors.iconColor,
+                        size: 18,
                       ),
-                      const SizedBox(width: 16),
-                      // Next button
-                      Semantics(
-                        sortKey: const OrdinalSortKey(4.0),
-                        button: true,
-                        label: 'Show next pointing',
-                        child: GlassButton(
-                          label: 'Next',
-                          onPressed: _handleNext,
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: colors.iconColor,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
 
                   const SizedBox(height: 24),
