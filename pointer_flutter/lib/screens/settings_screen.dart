@@ -22,6 +22,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final subscription = ref.watch(subscriptionProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final isDark = context.isDarkMode;
+    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
+    final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
+    final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : AppColorsLight.textMuted;
+    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
+    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return Scaffold(
       body: Stack(
@@ -61,10 +69,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             }
                             setState(() => _notificationsEnabled = value);
                           },
-                          activeThumbColor: Colors.white,
-                          activeTrackColor: Colors.white.withValues(alpha:0.4),
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: Colors.white.withValues(alpha:0.2),
+                          activeThumbColor: switchThumbColor,
+                          activeTrackColor: switchActiveTrackColor,
+                          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
+                          inactiveTrackColor: switchInactiveTrackColor,
                         ),
                       ),
                       const _Divider(),
@@ -76,14 +84,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             Text(
                               '8am, 12pm, 9pm',
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha:0.5),
+                                color: textColorMuted,
                                 fontSize: 14,
                               ),
                             ),
                             const SizedBox(width: 8),
                             Icon(
                               Icons.chevron_right,
-                              color: Colors.white.withValues(alpha:0.4),
+                              color: textColorSubtle,
                               size: 20,
                             ),
                           ],
@@ -110,7 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     title: 'Manage Lineages',
                     trailing: Icon(
                       Icons.chevron_right,
-                      color: Colors.white.withValues(alpha:0.4),
+                      color: textColorSubtle,
                       size: 20,
                     ),
                     onTap: () {},
@@ -127,7 +135,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     title: 'Past Pointings',
                     trailing: Icon(
                       Icons.chevron_right,
-                      color: Colors.white.withValues(alpha:0.4),
+                      color: textColorSubtle,
                       size: 20,
                     ),
                     onTap: () {},
@@ -138,7 +146,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: Text(
                     'No streaks. Just recognition.',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha:0.4),
+                      color: textColorSubtle,
                       fontSize: 12,
                     ),
                   ),
@@ -151,29 +159,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 GlassCard(
                   padding: EdgeInsets.zero,
                   borderColor: subscription.isPremium
-                      ? AppColors.gold.withValues(alpha:0.3)
+                      ? goldColor.withValues(alpha: 0.3)
                       : null,
                   child: subscription.isPremium
                       ? _SettingsRow(
                           title: 'Premium Active',
                           subtitle: 'All features unlocked',
-                          trailing: const Icon(
+                          trailing: Icon(
                             Icons.auto_awesome,
-                            color: AppColors.gold,
+                            color: goldColor,
                             size: 24,
                           ),
                         )
                       : _SettingsRow(
                           title: 'Upgrade to Premium',
                           subtitle: 'Unlock all traditions & sessions',
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.auto_awesome,
-                            color: AppColors.gold,
+                            color: goldColor,
                             size: 18,
                           ),
                           trailing: Icon(
                             Icons.chevron_right,
-                            color: Colors.white.withValues(alpha:0.4),
+                            color: textColorSubtle,
                             size: 20,
                           ),
                           onTap: () => context.push('/paywall'),
@@ -192,7 +200,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'About Pointer',
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: Colors.white.withValues(alpha:0.4),
+                          color: textColorSubtle,
                           size: 20,
                         ),
                         onTap: () {},
@@ -202,7 +210,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'Privacy Policy',
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: Colors.white.withValues(alpha:0.4),
+                          color: textColorSubtle,
                           size: 20,
                         ),
                         onTap: () {},
@@ -212,7 +220,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'Terms of Service',
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: Colors.white.withValues(alpha:0.4),
+                          color: textColorSubtle,
                           size: 20,
                         ),
                         onTap: () {},
@@ -226,7 +234,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: Text(
                     'Pointer v1.0.0',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha:0.3),
+                      color: textColorVersion,
                       fontSize: 12,
                     ),
                   ),
@@ -273,6 +281,10 @@ class _SettingsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSubtitle = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
+
     final content = Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -287,9 +299,9 @@ class _SettingsRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -298,7 +310,7 @@ class _SettingsRow extends StatelessWidget {
                     subtitle!,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha:0.5),
+                      color: textColorSubtitle,
                     ),
                   ),
                 ],

@@ -96,29 +96,36 @@ class InquiryScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
 
                 // Intro card
-                GlassCard(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'These sessions guide you through the ancient practice of self-investigation.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          height: 1.5,
-                        ),
+                Builder(
+                  builder: (context) {
+                    final isDark = context.isDarkMode;
+                    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+                    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+                    return GlassCard(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'These sessions guide you through the ancient practice of self-investigation.',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 16,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Each session is 5-15 minutes. No experience required.',
+                            style: TextStyle(
+                              color: textColorSecondary,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Each session is 5-15 minutes. No experience required.',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha:0.6),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
 
@@ -179,12 +186,21 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
+    final circleColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
+    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+
     return Semantics(
       button: true,
       label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level${isLocked ? '. Locked, premium required' : ''}',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
-        borderColor: isLocked ? AppColors.glassBorder.withValues(alpha:0.5) : null,
+        borderColor: isLocked
+            ? (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder).withValues(alpha: 0.5)
+            : null,
         onTap: onTap,
         child: Opacity(
         opacity: isLocked ? 0.6 : 1,
@@ -196,21 +212,21 @@ class _SessionCard extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha:0.1),
+                color: circleColor,
               ),
               child: Center(
                 child: isLocked
                     ? Icon(
                         Icons.lock_outline,
                         size: 20,
-                        color: Colors.white.withValues(alpha:0.5),
+                        color: textColor.withValues(alpha: 0.5),
                       )
                     : Text(
                         '${index + 1}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: isDark ? Colors.white : AppColorsLight.primary,
                         ),
                       ),
               ),
@@ -229,7 +245,7 @@ class _SessionCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isLocked ? Colors.white.withValues(alpha:0.5) : Colors.white,
+                          color: isLocked ? textColor.withValues(alpha: 0.5) : textColor,
                         ),
                       ),
                       if (session.isPremium) ...[
@@ -238,8 +254,8 @@ class _SessionCard extends StatelessWidget {
                           Icons.auto_awesome,
                           size: 14,
                           color: isLocked
-                              ? AppColors.gold.withValues(alpha:0.5)
-                              : AppColors.gold,
+                              ? goldColor.withValues(alpha: 0.5)
+                              : goldColor,
                         ),
                       ],
                     ],
@@ -249,7 +265,7 @@ class _SessionCard extends StatelessWidget {
                     session.description,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha:isLocked ? 0.4 : 0.6),
+                      color: isLocked ? textColorMuted : textColorSecondary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -257,7 +273,7 @@ class _SessionCard extends StatelessWidget {
                     '${session.duration} • ${session.level}',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha:0.4),
+                      color: textColorMuted,
                     ),
                   ),
                 ],

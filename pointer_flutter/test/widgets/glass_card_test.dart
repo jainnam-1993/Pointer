@@ -113,10 +113,10 @@ void main() {
       expect(backdropFilter.filter, isNotNull);
     });
 
-    testWidgets('has glass background color', (tester) async {
+    testWidgets('has glass gradient in decoration', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.dark(),
+          theme: AppTheme.dark,
           home: const Scaffold(
             body: GlassCard(
               child: Text('Test'),
@@ -133,13 +133,13 @@ void main() {
       );
 
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.color, AppColors.glassBackground);
+      expect(decoration.gradient, isA<LinearGradient>());
     });
 
-    testWidgets('has default glass border', (tester) async {
+    testWidgets('has gradient border', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.dark(),
+          theme: AppTheme.dark,
           home: const Scaffold(
             body: GlassCard(
               child: Text('Test'),
@@ -156,31 +156,7 @@ void main() {
       );
 
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.border, isNotNull);
-      expect(decoration.border!.top.color, AppColors.glassBorder);
-    });
-
-    testWidgets('applies custom border color', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              borderColor: Colors.red,
-              child: Text('Test'),
-            ),
-          ),
-        ),
-      );
-
-      final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Container),
-        ),
-      );
-
-      final decoration = container.decoration as BoxDecoration;
-      expect(decoration.border!.top.color, Colors.red);
+      expect(decoration.border, isA<GradientBoxBorder>());
     });
 
     testWidgets('wraps in GestureDetector when onTap provided', (tester) async {
@@ -215,7 +191,6 @@ void main() {
       );
 
       // GlassCard itself is not a GestureDetector
-      final gestureDetectors = find.byType(GestureDetector);
       // Check there are no GestureDetectors that are ancestors of our content
       expect(
         find.descendant(
@@ -411,11 +386,10 @@ void main() {
       );
     });
 
-    testWidgets('uses different border for primary vs non-primary', (tester) async {
-      // Primary button (dark theme to match expected colors)
+    testWidgets('has gradient border for glass effect', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.dark(),
+          theme: AppTheme.dark,
           home: Scaffold(
             body: GlassButton(
               label: 'Primary',
@@ -426,37 +400,49 @@ void main() {
         ),
       );
 
-      var container = tester.widget<Container>(
+      final container = tester.widget<Container>(
         find.descendant(
           of: find.byType(GlassButton),
           matching: find.byType(Container),
         ),
       );
-      var decoration = container.decoration as BoxDecoration;
-      expect(decoration.border!.top.color, AppColors.glassBorderActive);
+      final decoration = container.decoration as BoxDecoration;
+      expect(decoration.border, isA<GradientBoxBorder>());
+    });
+  });
 
-      // Non-primary button
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Secondary',
-              onPressed: () {},
-              isPrimary: false,
-            ),
-          ),
-        ),
+  group('GradientBoxBorder', () {
+    test('creates border with gradient', () {
+      const border = GradientBoxBorder(
+        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
+        width: 2.0,
       );
+      expect(border.gradient, isA<LinearGradient>());
+      expect(border.width, 2.0);
+    });
 
-      container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(GlassButton),
-          matching: find.byType(Container),
-        ),
+    test('has correct dimensions', () {
+      const border = GradientBoxBorder(
+        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
+        width: 3.0,
       );
-      decoration = container.decoration as BoxDecoration;
-      expect(decoration.border!.top.color, AppColors.glassBorder);
+      expect(border.dimensions, const EdgeInsets.all(3.0));
+    });
+
+    test('is uniform', () {
+      const border = GradientBoxBorder(
+        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
+      );
+      expect(border.isUniform, true);
+    });
+
+    test('scales correctly', () {
+      const border = GradientBoxBorder(
+        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
+        width: 2.0,
+      );
+      final scaled = border.scale(0.5) as GradientBoxBorder;
+      expect(scaled.width, 1.0);
     });
   });
 }

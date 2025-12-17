@@ -136,21 +136,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
 
                 // Page indicators
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    onboardingPages.length,
-                    (index) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: _currentPage == index ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: Colors.white.withValues(alpha:_currentPage == index ? 1 : 0.3),
+                Builder(
+                  builder: (context) {
+                    final isDark = context.isDarkMode;
+                    final dotColor = isDark ? Colors.white : AppColorsLight.primary;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        onboardingPages.length,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: _currentPage == index ? 24 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: dotColor.withValues(alpha: _currentPage == index ? 1 : 0.3),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 32),
@@ -174,15 +180,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: _handleNext,
-                          child: Text(
-                            'Maybe Later',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha:0.5),
-                              fontSize: 16,
-                            ),
-                          ),
+                        Builder(
+                          builder: (context) {
+                            final isDark = context.isDarkMode;
+                            final textColor = isDark
+                                ? Colors.white.withValues(alpha: 0.5)
+                                : AppColorsLight.textMuted;
+                            return TextButton(
+                              onPressed: _handleNext,
+                              child: Text(
+                                'Maybe Later',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ] else
                         SizedBox(
@@ -212,6 +226,14 @@ class _OnboardingPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
+    final textColorBody = isDark ? Colors.white.withValues(alpha: 0.8) : AppColorsLight.textPrimary;
+    final iconBgColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
+    final iconBorderColor = isDark ? Colors.white.withValues(alpha: 0.2) : AppColorsLight.primary.withValues(alpha: 0.2);
+    final iconColor = isDark ? Colors.white : AppColorsLight.primary;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -223,16 +245,16 @@ class _OnboardingPageView extends StatelessWidget {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha:0.1),
+              color: iconBgColor,
               border: Border.all(
-                color: Colors.white.withValues(alpha:0.2),
+                color: iconBorderColor,
                 width: 1,
               ),
             ),
             child: Icon(
               page.icon,
               size: 48,
-              color: Colors.white,
+              color: iconColor,
             ),
           ),
           const SizedBox(height: 32),
@@ -240,7 +262,9 @@ class _OnboardingPageView extends StatelessWidget {
           // Title
           Text(
             page.title,
-            style: Theme.of(context).textTheme.displayLarge,
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              color: textColor,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
@@ -250,7 +274,7 @@ class _OnboardingPageView extends StatelessWidget {
             page.subtitle,
             style: TextStyle(
               fontSize: 18,
-              color: Colors.white.withValues(alpha:0.7),
+              color: textColorSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -263,7 +287,7 @@ class _OnboardingPageView extends StatelessWidget {
               page.description,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white.withValues(alpha:0.8),
+                color: textColorBody,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -288,15 +312,21 @@ class _OnboardingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final borderColor = isPrimary
+        ? (isDark ? AppColors.glassBorderActive : AppColorsLight.primary)
+        : null;
+
     return GlassCard(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      borderColor: isPrimary ? AppColors.glassBorderActive : null,
+      borderColor: borderColor,
       onTap: onPressed,
       child: Center(
         child: Text(
           label,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: textColor,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),

@@ -14,6 +14,11 @@ class PaywallScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final subscription = ref.watch(subscriptionProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
+    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
+    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
 
     return Scaffold(
       body: Stack(
@@ -36,7 +41,7 @@ class PaywallScreen extends ConsumerWidget {
                       button: true,
                       label: 'Close premium subscription screen',
                       child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
+                        icon: Icon(Icons.close, color: textColor),
                         onPressed: () => context.pop(),
                       ),
                     ),
@@ -52,19 +57,19 @@ class PaywallScreen extends ConsumerWidget {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.gold.withValues(alpha:0.3),
-                          AppColors.gold.withValues(alpha:0.1),
+                          goldColor.withValues(alpha: 0.3),
+                          goldColor.withValues(alpha: 0.1),
                         ],
                       ),
                       border: Border.all(
-                        color: AppColors.gold.withValues(alpha:0.5),
+                        color: goldColor.withValues(alpha: 0.5),
                         width: 2,
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.auto_awesome,
                       size: 40,
-                      color: AppColors.gold,
+                      color: goldColor,
                     ),
                   ),
 
@@ -72,7 +77,9 @@ class PaywallScreen extends ConsumerWidget {
 
                   Text(
                     'Unlock Everything',
-                    style: Theme.of(context).textTheme.displayLarge,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      color: textColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
 
@@ -82,7 +89,7 @@ class PaywallScreen extends ConsumerWidget {
                     'Access all traditions and guided sessions',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white.withValues(alpha:0.7),
+                      color: textColorSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -121,7 +128,7 @@ class PaywallScreen extends ConsumerWidget {
                   Text(
                     '\$4.99 / month',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppColors.gold,
+                          color: goldColor,
                         ),
                   ),
 
@@ -131,7 +138,7 @@ class PaywallScreen extends ConsumerWidget {
                     'Cancel anytime',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha:0.5),
+                      color: textColorMuted,
                     ),
                   ),
 
@@ -147,7 +154,7 @@ class PaywallScreen extends ConsumerWidget {
                       width: double.infinity,
                       child: GlassCard(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        borderColor: AppColors.gold.withValues(alpha:0.5),
+                        borderColor: goldColor.withValues(alpha: 0.5),
                         onTap: subscription.isLoading
                             ? null
                             : () async {
@@ -164,18 +171,18 @@ class PaywallScreen extends ConsumerWidget {
                               },
                         child: Center(
                           child: subscription.isLoading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: AppColors.gold,
+                                    color: goldColor,
                                   ),
                                 )
-                              : const Text(
+                              : Text(
                                   'Subscribe Now',
                                   style: TextStyle(
-                                    color: AppColors.gold,
+                                    color: goldColor,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -200,7 +207,7 @@ class PaywallScreen extends ConsumerWidget {
                       child: Text(
                         'Restore Purchases',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha:0.5),
+                          color: textColorMuted,
                           fontSize: 14,
                         ),
                       ),
@@ -229,6 +236,11 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+
     return Row(
       children: [
         Container(
@@ -236,11 +248,11 @@ class _FeatureRow extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.gold.withValues(alpha:0.1),
+            color: goldColor.withValues(alpha: 0.1),
           ),
           child: Icon(
             icon,
-            color: AppColors.gold,
+            color: goldColor,
             size: 22,
           ),
         ),
@@ -251,17 +263,17 @@ class _FeatureRow extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: textColor,
                 ),
               ),
               Text(
                 description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white.withValues(alpha:0.6),
+                  color: textColorSecondary,
                 ),
               ),
             ],

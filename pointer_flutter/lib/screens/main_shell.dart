@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_card.dart';
 
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -38,6 +40,37 @@ class _BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+
+    // Enhanced glass gradient for nav bar
+    final glassGradient = isDark
+        ? LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.12),
+              Colors.white.withValues(alpha: 0.06),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.8),
+              Colors.white.withValues(alpha: 0.5),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+
+    // Gradient border for enhanced glass effect
+    final borderGradient = LinearGradient(
+      colors: [
+        colors.glassBorder,
+        colors.glassBorder.withValues(alpha: 0.3),
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
 
     return Container(
       margin: EdgeInsets.only(
@@ -45,58 +78,54 @@ class _BottomNavBar extends StatelessWidget {
         right: 24,
         bottom: bottomPadding + 16,
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: AppColors.glassBackground,
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: Container(
-          height: 64,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavItem(
-                icon: Icons.spa_outlined,
-                activeIcon: Icons.spa,
-                label: 'Home',
-                isActive: currentIndex == 0,
-                onTap: () => onTap(0),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            height: 64,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              gradient: glassGradient,
+              borderRadius: BorderRadius.circular(24),
+              border: GradientBoxBorder(
+                gradient: borderGradient,
+                width: 1,
               ),
-              _NavItem(
-                icon: Icons.self_improvement_outlined,
-                activeIcon: Icons.self_improvement,
-                label: 'Inquiry',
-                isActive: currentIndex == 1,
-                onTap: () => onTap(1),
-              ),
-              _NavItem(
-                icon: Icons.auto_awesome_outlined,
-                activeIcon: Icons.auto_awesome,
-                label: 'Lineages',
-                isActive: currentIndex == 2,
-                onTap: () => onTap(2),
-              ),
-              _NavItem(
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings,
-                label: 'Settings',
-                isActive: currentIndex == 3,
-                onTap: () => onTap(3),
-              ),
-            ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _NavItem(
+                  icon: Icons.spa_outlined,
+                  activeIcon: Icons.spa,
+                  label: 'Home',
+                  isActive: currentIndex == 0,
+                  onTap: () => onTap(0),
+                ),
+                _NavItem(
+                  icon: Icons.self_improvement_outlined,
+                  activeIcon: Icons.self_improvement,
+                  label: 'Inquiry',
+                  isActive: currentIndex == 1,
+                  onTap: () => onTap(1),
+                ),
+                _NavItem(
+                  icon: Icons.auto_awesome_outlined,
+                  activeIcon: Icons.auto_awesome,
+                  label: 'Lineages',
+                  isActive: currentIndex == 2,
+                  onTap: () => onTap(2),
+                ),
+                _NavItem(
+                  icon: Icons.settings_outlined,
+                  activeIcon: Icons.settings,
+                  label: 'Settings',
+                  isActive: currentIndex == 3,
+                  onTap: () => onTap(3),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -121,6 +150,10 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final activeColor = colors.textPrimary;
+    final inactiveColor = colors.textMuted;
+
     return Semantics(
       button: true,
       selected: isActive,
@@ -135,7 +168,7 @@ class _NavItem extends StatelessWidget {
             children: [
               Icon(
                 isActive ? activeIcon : icon,
-                color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
+                color: isActive ? activeColor : inactiveColor,
                 size: 24,
               ),
               const SizedBox(height: 4),
@@ -144,7 +177,7 @@ class _NavItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                  color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
+                  color: isActive ? activeColor : inactiveColor,
                 ),
               ),
             ],

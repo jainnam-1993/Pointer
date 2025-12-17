@@ -16,20 +16,25 @@ class AnimatedGradient extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Enhanced dark mode gradient with more color depth and variation
+    // Matches the visual richness of light mode
     final gradient = isDark
         ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
+            stops: [0.0, 0.3, 0.6, 1.0],
             colors: [
-              Color(0xFF1A0A3A),
-              Color(0xFF0F0524),
-              Color(0xFF150A2E),
+              Color(0xFF2D1B4E), // Rich purple at top
+              Color(0xFF1A0A3A), // Deep violet
+              Color(0xFF0F0524), // Dark base
+              Color(0xFF1E1145), // Subtle purple glow at bottom
             ],
           )
         : AppGradients.backgroundLight;
 
+    // Enhanced shimmer for dark mode - more visible glow effect
     final shimmerColor = isDark
-        ? AppColors.primary.withValues(alpha: 0.1)
+        ? AppColors.primary.withValues(alpha: 0.15)
         : AppColorsLight.primary.withValues(alpha: 0.08);
 
     final container = Container(
@@ -46,7 +51,7 @@ class AnimatedGradient extends StatelessWidget {
           onPlay: (controller) => controller.repeat(reverse: true),
         )
         .shimmer(
-          duration: 3000.ms,
+          duration: 4000.ms, // Slightly slower for smoother feel
           color: shimmerColor,
         );
   }
@@ -73,7 +78,9 @@ class FloatingParticles extends StatelessWidget {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Enhanced particle visibility for dark mode
     final particleColor = isDark ? Colors.white : Colors.black;
+    final baseAlpha = isDark ? 0.15 : 0.1;
 
     return IgnorePointer(
       child: Stack(
@@ -86,7 +93,7 @@ class FloatingParticles extends StatelessWidget {
               height: 4 + (index % 3) * 2.0,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: particleColor.withValues(alpha: 0.1 + (index % 3) * 0.05),
+                color: particleColor.withValues(alpha: baseAlpha + (index % 3) * 0.05),
               ),
             )
                 .animate(

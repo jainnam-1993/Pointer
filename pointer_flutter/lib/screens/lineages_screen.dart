@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import '../data/pointings.dart';
+import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
@@ -11,6 +12,8 @@ class LineagesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionEntries = traditions.entries.toList();
+    final isDark = context.isDarkMode;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
 
     return Scaffold(
       body: Stack(
@@ -33,7 +36,7 @@ class LineagesScreen extends StatelessWidget {
                 Text(
                   'Choose a tradition that resonates with you',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha:0.6),
+                    color: textColorSecondary,
                     fontSize: 16,
                   ),
                 ),
@@ -85,6 +88,12 @@ class _TraditionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
+    final iconBgColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
+
     return Semantics(
       button: true,
       label: '${info.name} tradition. ${info.description}. $pointingsCount pointings available.',
@@ -99,7 +108,7 @@ class _TraditionCard extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Colors.white.withValues(alpha:0.1),
+              color: iconBgColor,
             ),
             child: Center(
               child: Text(
@@ -117,10 +126,10 @@ class _TraditionCard extends StatelessWidget {
               children: [
                 Text(
                   info.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -128,7 +137,7 @@ class _TraditionCard extends StatelessWidget {
                   info.description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha:0.6),
+                    color: textColorSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -136,7 +145,7 @@ class _TraditionCard extends StatelessWidget {
                   '$pointingsCount pointings',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha:0.4),
+                    color: textColorMuted,
                   ),
                 ),
               ],
@@ -145,7 +154,7 @@ class _TraditionCard extends StatelessWidget {
 
           Icon(
             Icons.chevron_right,
-            color: Colors.white.withValues(alpha:0.4),
+            color: textColorMuted,
             size: 24,
           ),
         ],

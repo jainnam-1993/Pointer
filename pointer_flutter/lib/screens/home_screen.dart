@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 import '../providers/providers.dart';
+import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/tradition_badge.dart';
@@ -58,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final pointing = ref.watch(currentPointingProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final colors = context.colors;
 
     return Scaffold(
       body: Stack(
@@ -110,7 +112,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Text(
                                   pointing.instruction!,
                                   style: TextStyle(
-                                    color: Colors.white.withValues(alpha:0.6),
+                                    color: colors.textSecondary,
                                     fontSize: 16,
                                     fontStyle: FontStyle.italic,
                                   ),
@@ -122,7 +124,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Text(
                                   '- ${pointing.teacher}',
                                   style: TextStyle(
-                                    color: Colors.white.withValues(alpha:0.4),
+                                    color: colors.textMuted,
                                     fontSize: 14,
                                   ),
                                   textAlign: TextAlign.center,
@@ -149,9 +151,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           label: 'Share',
                           onPressed: _handleShare,
                           isPrimary: false,
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.share_outlined,
-                            color: Colors.white,
+                            color: colors.iconColor,
                             size: 18,
                           ),
                         ),
@@ -164,9 +166,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: GlassButton(
                           label: 'Next',
                           onPressed: _handleNext,
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.keyboard_arrow_down,
-                            color: Colors.white,
+                            color: colors.iconColor,
                             size: 18,
                           ),
                         ),
@@ -180,7 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Text(
                     'Tap for another invitation to look',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha:0.3),
+                      color: colors.textMuted,
                       fontSize: 12,
                     ),
                   ),

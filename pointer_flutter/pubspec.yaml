@@ -24,7 +24,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.0
   flutter_animate: ^4.5.0
-  glassmorphism_ui: ^0.3.0
+  # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
 
   # Haptics
   vibration: ^2.0.0

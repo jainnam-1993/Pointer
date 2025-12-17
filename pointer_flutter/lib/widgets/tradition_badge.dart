@@ -15,6 +15,10 @@ class TraditionBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final info = traditions[tradition]!;
+    final isDark = context.isDarkMode;
+    final bgColor = isDark ? AppColors.glassBackground : AppColorsLight.glassBackground;
+    final borderColor = isDark ? AppColors.glassBorder : AppColorsLight.glassBorder;
+    final textColor = isDark ? Colors.white.withValues(alpha: 0.8) : AppColorsLight.textPrimary;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(999),
@@ -23,10 +27,10 @@ class TraditionBadge extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.glassBackground,
+            color: bgColor,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: AppColors.glassBorder,
+              color: borderColor,
               width: 1,
             ),
           ),
@@ -41,7 +45,7 @@ class TraditionBadge extends StatelessWidget {
               Text(
                 info.name,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha:0.8),
+                  color: textColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
