@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 import '../providers/providers.dart';
 import '../widgets/animated_gradient.dart';
@@ -35,6 +36,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(currentPointingProvider.notifier).nextPointing();
 
     setState(() => _isAnimating = false);
+  }
+
+  Future<void> _handleShare() async {
+    final pointing = ref.read(currentPointingProvider);
+    final hasVibrator = await Vibration.hasVibrator();
+    if (hasVibrator == true) {
+      Vibration.vibrate(duration: 50, amplitude: 128);
+    }
+
+    String shareText = '"${pointing.content}"';
+    if (pointing.teacher != null) {
+      shareText += '\n\n- ${pointing.teacher}';
+    }
+    shareText += '\n\nShared from Pointer';
+
+    await Share.share(shareText);
   }
 
   @override
@@ -73,43 +90,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: AnimatedOpacity(
                       opacity: _isAnimating ? 0 : 1,
                       duration: 150.ms,
-                      child: GlassCard(
-                        padding: const EdgeInsets.all(32),
-                        borderRadius: 32,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              pointing.content,
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                    height: 1.4,
+                      child: Semantics(
+                        label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(32),
+                          borderRadius: 32,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                pointing.content,
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                      height: 1.4,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                              if (pointing.instruction != null) ...[
+                                const SizedBox(height: 24),
+                                Text(
+                                  pointing.instruction!,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha:0.6),
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
                                   ),
-                              textAlign: TextAlign.center,
-                            ),
-                            if (pointing.instruction != null) ...[
-                              const SizedBox(height: 24),
-                              Text(
-                                pointing.instruction!,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha:0.6),
-                                  fontSize: 16,
-                                  fontStyle: FontStyle.italic,
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                            if (pointing.teacher != null) ...[
-                              const SizedBox(height: 16),
-                              Text(
-                                '— ${pointing.teacher}',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha:0.4),
-                                  fontSize: 14,
+                              ],
+                              if (pointing.teacher != null) ...[
+                                const SizedBox(height: 16),
+                                Text(
+                                  '- ${pointing.teacher}',
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha:0.4),
+                                    fontSize: 14,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -117,15 +137,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 40),
 
-                  // Next button
-                  GlassButton(
-                    label: 'Next Pointing',
-                    onPressed: _handleNext,
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Colors.white,
-                      size: 18,
-                    ),
+                  // Action buttons row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Share button
+                      Semantics(
+                        button: true,
+                        label: 'Share this pointing',
+                        child: GlassButton(
+                          label: 'Share',
+                          onPressed: _handleShare,
+                          isPrimary: false,
+                          icon: const Icon(
+                            Icons.share_outlined,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Next button
+                      Semantics(
+                        button: true,
+                        label: 'Show next pointing',
+                        child: GlassButton(
+                          label: 'Next',
+                          onPressed: _handleNext,
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 24),

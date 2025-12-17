@@ -32,9 +32,13 @@ class PaywallScreen extends ConsumerWidget {
                   // Close button
                   Align(
                     alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => context.pop(),
+                    child: Semantics(
+                      button: true,
+                      label: 'Close premium subscription screen',
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () => context.pop(),
+                      ),
                     ),
                   ),
 
@@ -134,43 +138,49 @@ class PaywallScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
 
                   // Purchase button
-                  SizedBox(
-                    width: double.infinity,
-                    child: GlassCard(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      borderColor: AppColors.gold.withValues(alpha:0.5),
-                      onTap: subscription.isLoading
-                          ? null
-                          : () async {
-                              final hasVibrator = await Vibration.hasVibrator();
-                              if (hasVibrator == true) {
-                                Vibration.vibrate(duration: 100, amplitude: 200);
-                              }
-                              final success = await ref
-                                  .read(subscriptionProvider.notifier)
-                                  .purchasePremium();
-                              if (success && context.mounted) {
-                                context.pop();
-                              }
-                            },
-                      child: Center(
-                        child: subscription.isLoading
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.gold,
+                  Semantics(
+                    button: true,
+                    label: subscription.isLoading
+                        ? 'Processing subscription'
+                        : 'Subscribe now for 4.99 dollars per month',
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: GlassCard(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        borderColor: AppColors.gold.withValues(alpha:0.5),
+                        onTap: subscription.isLoading
+                            ? null
+                            : () async {
+                                final hasVibrator = await Vibration.hasVibrator();
+                                if (hasVibrator == true) {
+                                  Vibration.vibrate(duration: 100, amplitude: 200);
+                                }
+                                final success = await ref
+                                    .read(subscriptionProvider.notifier)
+                                    .purchasePremium();
+                                if (success && context.mounted) {
+                                  context.pop();
+                                }
+                              },
+                        child: Center(
+                          child: subscription.isLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.gold,
+                                  ),
+                                )
+                              : const Text(
+                                  'Subscribe Now',
+                                  style: TextStyle(
+                                    color: AppColors.gold,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              )
-                            : const Text(
-                                'Subscribe Now',
-                                style: TextStyle(
-                                  color: AppColors.gold,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                        ),
                       ),
                     ),
                   ),
@@ -178,17 +188,21 @@ class PaywallScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
 
                   // Restore purchases
-                  TextButton(
-                    onPressed: () async {
-                      await ref
-                          .read(subscriptionProvider.notifier)
-                          .restorePurchases();
-                    },
-                    child: Text(
-                      'Restore Purchases',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha:0.5),
-                        fontSize: 14,
+                  Semantics(
+                    button: true,
+                    label: 'Restore previous purchases',
+                    child: TextButton(
+                      onPressed: () async {
+                        await ref
+                            .read(subscriptionProvider.notifier)
+                            .restorePurchases();
+                      },
+                      child: Text(
+                        'Restore Purchases',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha:0.5),
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),

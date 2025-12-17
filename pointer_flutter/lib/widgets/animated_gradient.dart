@@ -1,14 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 
 /// Animated gradient background using flutter_animate
+///
+/// Set [disableAnimations] to true in tests to prevent timer issues.
 class AnimatedGradient extends StatelessWidget {
   const AnimatedGradient({super.key});
 
+  /// Disable animations globally (for testing)
+  static bool disableAnimations = false;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final container = Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -20,7 +26,14 @@ class AnimatedGradient extends StatelessWidget {
           ],
         ),
       ),
-    )
+    );
+
+    // Skip animations in test mode to prevent timer issues
+    if (disableAnimations || kDebugMode && !kIsWeb && _isTestEnvironment()) {
+      return container;
+    }
+
+    return container
         .animate(
           onPlay: (controller) => controller.repeat(reverse: true),
         )
@@ -29,14 +42,28 @@ class AnimatedGradient extends StatelessWidget {
           color: AppColors.primary.withValues(alpha:0.1),
         );
   }
+
+  /// Check if running in test environment
+  static bool _isTestEnvironment() {
+    // AutomatedTestWidgetsFlutterBinding sets this
+    return WidgetsBinding.instance.runtimeType.toString().contains('Test');
+  }
 }
 
 /// Floating particles effect
+///
+/// Respects [AnimatedGradient.disableAnimations] for test compatibility.
 class FloatingParticles extends StatelessWidget {
   const FloatingParticles({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Skip animations in test mode
+    if (AnimatedGradient.disableAnimations ||
+        kDebugMode && !kIsWeb && AnimatedGradient._isTestEnvironment()) {
+      return const SizedBox.shrink();
+    }
+
     return IgnorePointer(
       child: Stack(
         children: List.generate(6, (index) {

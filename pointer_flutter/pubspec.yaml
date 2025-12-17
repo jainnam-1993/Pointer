@@ -29,13 +29,21 @@ dependencies:
   # Haptics
   vibration: ^2.0.0
 
+  # Sharing
+  share_plus: ^10.0.0
+
   # Utilities
   collection: ^1.18.0
+
+  # Notifications
+  flutter_local_notifications: ^18.0.0
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
 
   # Integration testing
   integration_test:

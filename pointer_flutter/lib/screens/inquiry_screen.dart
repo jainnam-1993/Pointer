@@ -179,11 +179,14 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: const EdgeInsets.all(16),
-      borderColor: isLocked ? AppColors.glassBorder.withValues(alpha:0.5) : null,
-      onTap: onTap,
-      child: Opacity(
+    return Semantics(
+      button: true,
+      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level${isLocked ? '. Locked, premium required' : ''}',
+      child: GlassCard(
+        padding: const EdgeInsets.all(16),
+        borderColor: isLocked ? AppColors.glassBorder.withValues(alpha:0.5) : null,
+        onTap: onTap,
+        child: Opacity(
         opacity: isLocked ? 0.6 : 1,
         child: Row(
           children: [
@@ -261,6 +264,7 @@ class _SessionCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

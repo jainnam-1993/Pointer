@@ -85,10 +85,13 @@ class _TraditionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      onTap: onTap,
-      child: Row(
+    return Semantics(
+      button: true,
+      label: '${info.name} tradition. ${info.description}. $pointingsCount pointings available.',
+      child: GlassCard(
+        padding: const EdgeInsets.all(20),
+        onTap: onTap,
+        child: Row(
         children: [
           // Icon container
           Container(
@@ -146,6 +149,7 @@ class _TraditionCard extends StatelessWidget {
             size: 24,
           ),
         ],
+        ),
       ),
     );
   }
