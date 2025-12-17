@@ -76,7 +76,7 @@ void main() {
       expect(find.text('FEATURED'), findsOneWidget);
     });
 
-    testWidgets('displays browse by topic section', (tester) async {
+    testWidgets('displays browse by section', (tester) async {
       tester.view.physicalSize = const Size(1920, 4000);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -94,7 +94,8 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.text('BROWSE BY TOPIC'), findsOneWidget);
+      // Updated from "BROWSE BY TOPIC" to "BROWSE BY" with dropdown
+      expect(find.text('BROWSE BY'), findsOneWidget);
     });
 
     testWidgets('displays some category names visible on screen', (tester) async {

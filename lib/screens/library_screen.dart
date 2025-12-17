@@ -290,7 +290,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 // Featured articles horizontal scroll
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 180,
+                    height: 185,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 20),

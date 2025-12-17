@@ -380,6 +380,8 @@ void main() {
     testWidgets('tap on zen mode view toggles zen mode off', (tester) async {
       late WidgetRef capturedRef;
 
+      // Don't override zenModeProvider - let it work with real settings
+      // Start with zen mode off, then enable it via double-tap, then test toggling off
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -392,7 +394,7 @@ void main() {
               notifier.setPointing(testPointing);
               return notifier;
             }),
-            zenModeProvider.overrideWith((ref) => true),
+            // Note: zenModeProvider NOT overridden to allow proper state changes
           ],
           child: MaterialApp(
             theme: ThemeData.dark(),
@@ -407,7 +409,21 @@ void main() {
       );
       await tester.pump();
 
-      // Initially zen mode is on
+      // Initially zen mode is off
+      expect(capturedRef.read(zenModeProvider), isFalse);
+      expect(find.byType(GlassCard), findsWidgets);
+
+      // Enable zen mode via double-tap on pointing card
+      final pointingCard = find.ancestor(
+        of: find.text(testPointing.content),
+        matching: find.byType(GlassCard),
+      );
+      await tester.tap(pointingCard);
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.tap(pointingCard);
+      await tester.pumpAndSettle();
+
+      // Verify zen mode is now on
       expect(capturedRef.read(zenModeProvider), isTrue);
       expect(find.byKey(const ValueKey('zen-mode')), findsOneWidget);
 
