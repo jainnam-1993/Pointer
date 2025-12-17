@@ -1,20 +1,30 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
 /// Animated gradient background using flutter_animate
 ///
+/// Respects accessibility settings:
+/// - System reduce motion (MediaQuery.disableAnimations)
+/// - App-level override (reduceMotionOverrideProvider)
+///
 /// Set [disableAnimations] to true in tests to prevent timer issues.
-class AnimatedGradient extends StatelessWidget {
+class AnimatedGradient extends ConsumerWidget {
   const AnimatedGradient({super.key});
 
   /// Disable animations globally (for testing)
   static bool disableAnimations = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Check reduce motion preference
+    final appOverride = ref.watch(reduceMotionOverrideProvider);
+    final reduceMotion = shouldReduceMotion(context, appOverride);
 
     // Enhanced dark mode gradient - deep black for liquid glass effect
     final gradient = isDark
@@ -40,8 +50,13 @@ class AnimatedGradient extends StatelessWidget {
       decoration: BoxDecoration(gradient: gradient),
     );
 
-    // Skip animations in test mode to prevent timer issues
-    if (disableAnimations || kDebugMode && !kIsWeb && _isTestEnvironment()) {
+    // Skip animations when:
+    // 1. Static flag is set (for testing)
+    // 2. In test environment
+    // 3. Reduce motion is enabled (accessibility)
+    if (disableAnimations ||
+        reduceMotion ||
+        kDebugMode && !kIsWeb && _isTestEnvironment()) {
       return container;
     }
 
@@ -64,14 +79,25 @@ class AnimatedGradient extends StatelessWidget {
 
 /// Floating particles effect
 ///
-/// Respects [AnimatedGradient.disableAnimations] for test compatibility.
-class FloatingParticles extends StatelessWidget {
+/// Respects accessibility settings:
+/// - System reduce motion (MediaQuery.disableAnimations)
+/// - App-level override (reduceMotionOverrideProvider)
+/// - [AnimatedGradient.disableAnimations] for test compatibility
+class FloatingParticles extends ConsumerWidget {
   const FloatingParticles({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Skip animations in test mode
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Check reduce motion preference
+    final appOverride = ref.watch(reduceMotionOverrideProvider);
+    final reduceMotion = shouldReduceMotion(context, appOverride);
+
+    // Skip animations when:
+    // 1. Static flag is set (for testing)
+    // 2. In test environment
+    // 3. Reduce motion is enabled (accessibility)
     if (AnimatedGradient.disableAnimations ||
+        reduceMotion ||
         kDebugMode && !kIsWeb && AnimatedGradient._isTestEnvironment()) {
       return const SizedBox.shrink();
     }

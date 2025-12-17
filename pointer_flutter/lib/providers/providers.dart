@@ -6,6 +6,40 @@ import '../services/notification_service.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
+// ============================================================
+// Accessibility - Reduced Motion
+// ============================================================
+
+/// Optional app-level override for reduce motion setting.
+///
+/// - `null`: Follow system setting (default)
+/// - `true`: Force reduce motion ON (app setting can enable)
+/// - `false`: Follow system setting (app cannot override system accessibility)
+///
+/// Note: When system disableAnimations is true, we always respect it.
+/// The app override can only enable reduce motion, not disable it when
+/// the system requires it for accessibility.
+final reduceMotionOverrideProvider = StateProvider<bool?>((ref) => null);
+
+/// Helper function to determine if motion should be reduced.
+///
+/// Returns true if:
+/// - System disableAnimations is enabled (MediaQuery.disableAnimations), OR
+/// - App override is set to true
+///
+/// The system setting always takes precedence when it requires reduced motion.
+bool shouldReduceMotion(BuildContext context, bool? appOverride) {
+  final systemReduceMotion = MediaQuery.of(context).disableAnimations;
+
+  // System accessibility setting always takes precedence
+  if (systemReduceMotion) {
+    return true;
+  }
+
+  // App override can enable reduce motion (but not disable system setting)
+  return appOverride == true;
+}
+
 /// SharedPreferences provider
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Must be overridden in ProviderScope');
