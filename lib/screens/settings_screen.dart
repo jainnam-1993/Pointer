@@ -710,6 +710,20 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
     }
   }
 
+  bool _matchesPreset(NotificationPreset preset) {
+    final presetSchedule = preset.schedule;
+    return _schedule.startHour == presetSchedule.startHour &&
+        _schedule.endHour == presetSchedule.endHour &&
+        _schedule.frequencyHours == presetSchedule.frequencyHours;
+  }
+
+  void _applyPreset(NotificationPreset preset) {
+    setState(() {
+      _schedule = preset.schedule;
+    });
+    _saveSchedule();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -746,6 +760,31 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                   Text(
                     _schedule.summary,
                     style: TextStyle(color: mutedColor, fontSize: 14),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Quick Presets (Phase 5.3)
+                  Text('Quick Presets', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: NotificationPreset.values.map((preset) {
+                      final isSelected = _matchesPreset(preset);
+                      return ChoiceChip(
+                        label: Text(preset.label),
+                        selected: isSelected,
+                        onSelected: (_) => _applyPreset(preset),
+                        selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                        labelStyle: TextStyle(
+                          color: isSelected ? context.colors.accent : textColor,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                        side: BorderSide(
+                          color: isSelected ? context.colors.accent : context.colors.glassBorder,
+                        ),
+                      );
+                    }).toList(),
                   ),
                   const SizedBox(height: 24),
 
