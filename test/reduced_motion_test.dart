@@ -14,6 +14,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -49,6 +50,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -77,6 +79,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => true),
           ],
           child: MaterialApp(
@@ -107,6 +110,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -144,6 +148,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.light),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -183,6 +188,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -219,6 +225,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => true),
           ],
           child: MaterialApp(
@@ -246,6 +253,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
         ],
       );
       addTearDown(container.dispose);
@@ -258,6 +266,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
           reduceMotionOverrideProvider.overrideWith((ref) => true),
         ],
       );
@@ -271,6 +280,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
           reduceMotionOverrideProvider.overrideWith((ref) => false),
         ],
       );
@@ -289,6 +299,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -316,6 +327,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -343,6 +355,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(
@@ -370,6 +383,7 @@ void main() {
         ProviderScope(
           overrides: [
             oledModeProvider.overrideWith((ref) => false),
+            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp(

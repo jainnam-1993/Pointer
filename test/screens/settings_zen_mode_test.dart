@@ -91,8 +91,8 @@ void main() {
 
       // Find the Switch associated with Zen Mode by looking for Switches
       final switches = tester.widgetList<Switch>(find.byType(Switch));
-      // There should be multiple switches, Zen Mode should be one of them
-      expect(switches.length, greaterThanOrEqualTo(2)); // At least OLED and Zen
+      // There should be at least the Zen Mode switch
+      expect(switches.length, greaterThanOrEqualTo(1)); // At least Zen
     });
 
     testWidgets('tapping Zen Mode toggle changes its state', (tester) async {
