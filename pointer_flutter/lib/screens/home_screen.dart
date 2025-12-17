@@ -12,9 +12,11 @@ import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/commentary_section.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/save_confirmation.dart';
 import '../widgets/tradition_badge.dart';
+import '../services/widget_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -39,9 +41,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Schedule initial announcement after first frame
+    // Schedule initial announcement and widget update after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _announcePointingContent(ref.read(currentPointingProvider));
+      final pointing = ref.read(currentPointingProvider);
+      _announcePointingContent(pointing);
+      WidgetService.updateWidget(pointing);
     });
   }
 
@@ -93,9 +97,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     setState(() => _isAnimating = false);
 
-    // Announce new pointing to screen readers
+    // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(newPointing);
+    WidgetService.updateWidget(newPointing);
   }
 
   Future<void> _handleShare() async {
@@ -255,10 +260,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       '- ${pointing.teacher}',
                                       style: AppTextStyles.teacherText(context).copyWith(
                                         decoration: TextDecoration.underline,
-                                        decorationColor: AppTextStyles.teacherText(context).color?.withOpacity(0.5),
+                                        decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
+                                  ),
+                                ],
+                                // Extended commentary (premium feature)
+                                if (pointing.commentary != null) ...[
+                                  const SizedBox(height: 16),
+                                  CommentarySection(
+                                    commentary: pointing.commentary,
+                                    pointingId: pointing.id,
                                   ),
                                 ],
                               ],

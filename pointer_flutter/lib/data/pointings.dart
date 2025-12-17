@@ -15,6 +15,8 @@ class Pointing {
   final List<PointingContext> contexts;
   final String? teacher;
   final String? source;
+  /// Extended commentary for premium users - provides deeper context
+  final String? commentary;
 
   const Pointing({
     required this.id,
@@ -24,6 +26,7 @@ class Pointing {
     required this.contexts,
     this.teacher,
     this.source,
+    this.commentary,
   });
 }
 
@@ -75,6 +78,7 @@ const pointings = <Pointing>[
     instruction: "Just look. Don't answer.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
+    commentary: 'This is the fundamental inquiry of Advaita Vedanta. Rather than seeking an answer in thought, simply turn attention to the source of awareness itself. Notice that whatever you find—a thought, an image, a sensation—is being observed by something prior. Rest in that which is aware, before the mind formulates any response.',
   ),
   Pointing(
     id: 'adv-2',
@@ -89,6 +93,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
+    commentary: 'Ramana Maharshi\'s self-inquiry is not about finding an answer, but about exhausting the mind\'s habit of identification. Each time a thought arises ("I am my name," "I am my body"), trace it back to its source. What precedes the thought? Who is aware of the arising? Stay with the question until the questioner dissolves into pure awareness.',
   ),
   Pointing(
     id: 'adv-4',
