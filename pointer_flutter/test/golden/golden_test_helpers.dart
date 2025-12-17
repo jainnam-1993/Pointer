@@ -11,13 +11,12 @@
 //   Golden tests run as part of `flutter test` and will fail if
 //   screenshots don't match baselines.
 
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer_flutter/providers/providers.dart';
+import 'package:pointer_flutter/services/storage_service.dart';
 import 'package:pointer_flutter/theme/app_theme.dart';
 import 'package:pointer_flutter/data/pointings.dart';
 import 'package:pointer_flutter/widgets/animated_gradient.dart';
@@ -109,6 +108,24 @@ Widget createGoldenTestApp({
   return ProviderScope(
     overrides: [
       if (prefs != null) sharedPreferencesProvider.overrideWithValue(prefs),
+      if (prefs != null)
+        storageServiceProvider.overrideWith((ref) => StorageService(prefs)),
+      if (prefs != null)
+        settingsProvider.overrideWith((ref) {
+          final storage = StorageService(prefs);
+          return SettingsNotifier(storage);
+        }),
+      if (prefs != null)
+        themeModeProvider.overrideWith((ref) {
+          final settings = ref.watch(settingsProvider);
+          return AppThemeMode.fromString(settings.theme);
+        }),
+      if (prefs != null)
+        subscriptionProvider.overrideWith((ref) {
+          final storage = StorageService(prefs);
+          return SubscriptionNotifier(storage);
+        }),
+      highContrastProvider.overrideWith((ref) => false),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final notifier = CurrentPointingNotifier();
@@ -136,6 +153,9 @@ Widget createGoldenTestApp({
 }
 
 /// Pumps a widget and prepares it for golden comparison
+///
+/// This function wraps the widget with ProviderScope to ensure all
+/// ConsumerWidgets (like GlassCard, GlassButton) have access to providers.
 Future<void> pumpForGolden(
   WidgetTester tester,
   Widget widget, {
@@ -151,13 +171,27 @@ Future<void> pumpForGolden(
     tester.view.resetDevicePixelRatio();
   });
 
-  // Wrap with ProviderScope for high contrast support
-  final wrappedWidget = ProviderScope(
-    overrides: [
-      highContrastProvider.overrideWith((ref) => highContrast),
-    ],
-    child: widget,
-  );
+  // Check if widget already has ProviderScope (e.g., from createGoldenTestApp)
+  // If it does, don't double-wrap; otherwise wrap with ProviderScope
+  Widget wrappedWidget;
+  if (widget is ProviderScope) {
+    // Widget already has ProviderScope - just add our overrides by wrapping again
+    // Note: nested ProviderScope is fine in Riverpod 2.x
+    wrappedWidget = ProviderScope(
+      overrides: [
+        highContrastProvider.overrideWith((ref) => highContrast),
+      ],
+      child: widget,
+    );
+  } else {
+    // Widget needs ProviderScope
+    wrappedWidget = ProviderScope(
+      overrides: [
+        highContrastProvider.overrideWith((ref) => highContrast),
+      ],
+      child: widget,
+    );
+  }
 
   await tester.pumpWidget(wrappedWidget);
   await tester.pumpAndSettle();

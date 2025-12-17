@@ -253,12 +253,17 @@ void main() {
     group('GlassCard Flexible Height', () {
       testWidgets('GlassCard has flexible constraints', (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(
-                child: GlassCard(
-                  child: Text('Test content'),
+          ProviderScope(
+            overrides: [
+              highContrastProvider.overrideWith((ref) => false),
+            ],
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: const Scaffold(
+                body: Center(
+                  child: GlassCard(
+                    child: Text('Test content'),
+                  ),
                 ),
               ),
             ),
@@ -280,20 +285,25 @@ void main() {
         });
 
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: Scaffold(
-              body: Center(
-                child: GlassCard(
-                  maxHeight: 300, // Set maxHeight to enable scrolling
-                  enableScrolling: true,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      20,
-                      (i) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Line $i of many lines of content'),
+          ProviderScope(
+            overrides: [
+              highContrastProvider.overrideWith((ref) => false),
+            ],
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: Scaffold(
+                body: Center(
+                  child: GlassCard(
+                    maxHeight: 300, // Set maxHeight to enable scrolling
+                    enableScrolling: true,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                        20,
+                        (i) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Line $i of many lines of content'),
+                        ),
                       ),
                     ),
                   ),
@@ -315,12 +325,17 @@ void main() {
 
       testWidgets('GlassCard has minimum height constraint', (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(
-                child: GlassCard(
-                  child: Text('Short'),
+          ProviderScope(
+            overrides: [
+              highContrastProvider.overrideWith((ref) => false),
+            ],
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: const Scaffold(
+                body: Center(
+                  child: GlassCard(
+                    child: Text('Short'),
+                  ),
                 ),
               ),
             ),

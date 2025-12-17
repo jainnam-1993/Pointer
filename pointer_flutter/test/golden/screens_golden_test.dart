@@ -14,7 +14,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer_flutter/screens/home_screen.dart';
 import 'package:pointer_flutter/screens/settings_screen.dart';
 import 'package:pointer_flutter/screens/lineages_screen.dart';
-import 'package:pointer_flutter/data/pointings.dart';
 
 import 'golden_test_helpers.dart';
 

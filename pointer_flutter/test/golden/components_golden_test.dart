@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer_flutter/providers/providers.dart';
 import 'package:pointer_flutter/widgets/glass_card.dart';
 import 'package:pointer_flutter/widgets/tradition_badge.dart';
 import 'package:pointer_flutter/widgets/animated_gradient.dart';
@@ -197,16 +198,22 @@ void main() {
       });
 
       await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: Center(
-              child: GlassButton(
-                label: 'Loading',
-                onPressed: () {},
-                isLoading: true,
+        ProviderScope(
+          overrides: [
+            // Override highContrastProvider directly to avoid provider chain issues
+            highContrastProvider.overrideWith((ref) => false),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: goldenTestTheme,
+            home: Scaffold(
+              backgroundColor: const Color(0xFF0F0524),
+              body: Center(
+                child: GlassButton(
+                  label: 'Loading',
+                  onPressed: () {},
+                  isLoading: true,
+                ),
               ),
             ),
           ),

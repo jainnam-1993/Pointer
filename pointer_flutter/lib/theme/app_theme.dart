@@ -257,6 +257,10 @@ class AppGradients {
 /// These styles respect system text scale settings while clamping to
 /// reasonable bounds (0.8x - 1.5x) to prevent layout breakage.
 class AppTextStyles {
+  /// Set to true in tests to use system fonts instead of Google Fonts.
+  /// This avoids network requests and font loading issues in test environment.
+  static bool useSystemFonts = false;
+
   /// Get the clamped text scale factor from MediaQuery
   static double _getClampedScale(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
@@ -270,6 +274,16 @@ class AppTextStyles {
   static TextStyle pointingText(BuildContext context) {
     final scale = _getClampedScale(context);
     final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 20 * scale,
+        height: 1.7,
+        letterSpacing: 0.3,
+        fontWeight: FontWeight.w400,
+        color: colors.textPrimary,
+      );
+    }
     return GoogleFonts.inter(
       fontSize: 20 * scale,
       height: 1.7,
@@ -284,6 +298,17 @@ class AppTextStyles {
   static TextStyle instructionText(BuildContext context) {
     final scale = _getClampedScale(context);
     final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 16 * scale,
+        height: 1.6,
+        letterSpacing: 0.2,
+        fontWeight: FontWeight.w300,
+        fontStyle: FontStyle.italic,
+        color: colors.textSecondary,
+      );
+    }
     return GoogleFonts.inter(
       fontSize: 16 * scale,
       height: 1.6,
@@ -299,6 +324,16 @@ class AppTextStyles {
   static TextStyle teacherText(BuildContext context) {
     final scale = _getClampedScale(context);
     final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 14 * scale,
+        height: 1.5,
+        letterSpacing: 0.5,
+        fontWeight: FontWeight.w500,
+        color: colors.textMuted,
+      );
+    }
     return GoogleFonts.inter(
       fontSize: 14 * scale,
       height: 1.5,
@@ -313,6 +348,16 @@ class AppTextStyles {
   static TextStyle footerText(BuildContext context) {
     final scale = _getClampedScale(context);
     final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
+    if (useSystemFonts) {
+      return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 12 * scale,
+        height: 1.4,
+        letterSpacing: 0.3,
+        fontWeight: FontWeight.w400,
+        color: colors.textMuted,
+      );
+    }
     return GoogleFonts.inter(
       fontSize: 12 * scale,
       height: 1.4,
