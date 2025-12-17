@@ -60,3 +60,12 @@ final shouldShowMiniInquiryProvider = Provider.family<bool, bool>((ref, isPremiu
   final triggerInterval = isPremium ? 5 : 3;
   return viewCount % triggerInterval == 0;
 });
+
+/// Provides a specific inquiry by ID
+/// Returns null if the inquiry is not found
+final inquiryByIdProvider = Provider.family<Inquiry?, String>((ref, id) {
+  return getInquiryById(id);
+});
+
+/// Current inquiry for the player, allows random selection
+final currentInquiryProvider = StateProvider<Inquiry?>((ref) => null);

@@ -311,3 +311,12 @@ List<Inquiry> getInquiriesByType(InquiryType type) {
 List<Inquiry> getInquiriesByTradition(Tradition tradition) {
   return inquiries.where((i) => i.tradition == tradition).toList();
 }
+
+/// Get a specific inquiry by ID, returns null if not found
+Inquiry? getInquiryById(String id) {
+  try {
+    return inquiries.firstWhere((i) => i.id == id);
+  } catch (_) {
+    return null;
+  }
+}
