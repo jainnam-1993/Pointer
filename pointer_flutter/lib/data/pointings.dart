@@ -19,6 +19,8 @@ class Pointing {
   final String? commentary;
   /// Audio URL for guided reading/teaching (premium feature)
   final String? audioUrl;
+  /// Video URL for video transmissions (premium feature)
+  final String? videoUrl;
 
   const Pointing({
     required this.id,
@@ -30,6 +32,7 @@ class Pointing {
     this.source,
     this.commentary,
     this.audioUrl,
+    this.videoUrl,
   });
 }
 

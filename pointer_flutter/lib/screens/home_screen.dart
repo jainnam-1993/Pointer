@@ -14,6 +14,7 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
+import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/save_confirmation.dart';
 import '../widgets/tradition_badge.dart';
@@ -281,6 +282,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   AudioPlayerWidget(
                                     pointingId: pointing.id,
                                     audioUrl: pointing.audioUrl,
+                                    isPremium: ref.watch(subscriptionProvider).isPremium,
+                                  ),
+                                ],
+                                // Video player (premium feature)
+                                if (pointing.videoUrl != null) ...[
+                                  const SizedBox(height: 16),
+                                  VideoPlayerWidget(
+                                    pointingId: pointing.id,
+                                    videoUrl: pointing.videoUrl,
                                     isPremium: ref.watch(subscriptionProvider).isPremium,
                                   ),
                                 ],

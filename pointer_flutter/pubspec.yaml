@@ -49,6 +49,9 @@ dependencies:
   just_audio: ^0.9.40
   audio_service: ^0.18.15
 
+  # Video Playback
+  video_player: ^2.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
