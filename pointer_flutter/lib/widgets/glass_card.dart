@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../providers/providers.dart';
 
 /// Glassmorphic card widget with enhanced glass effects
-class GlassCard extends StatelessWidget {
+/// In high contrast mode, renders as a solid card without blur effects
+class GlassCard extends ConsumerWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final double borderRadius;
@@ -22,10 +25,48 @@ class GlassCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final isDark = context.isDarkMode;
+    final isHighContrast = isHighContrastEnabled(context, ref);
 
+    // High contrast mode: solid card without blur effects
+    if (isHighContrast) {
+      return _buildHighContrastCard(context);
+    }
+
+    // Normal glass card with blur effects
+    return _buildGlassCard(context, colors, isDark);
+  }
+
+  /// Builds a solid, high-contrast card without blur or transparency
+  Widget _buildHighContrastCard(BuildContext context) {
+    final highContrastColors = PointerColors.highContrast;
+
+    final card = Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: highContrastColors.cardBackground,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: highContrastColors.glassBorder,
+          width: 2, // Strong visible border for clear boundaries
+        ),
+      ),
+      child: child,
+    );
+
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: card,
+      );
+    }
+    return card;
+  }
+
+  /// Builds the normal glass card with blur and transparency effects
+  Widget _buildGlassCard(BuildContext context, PointerColors colors, bool isDark) {
     // Enhanced liquid glass gradient - stronger opacity for dark mode
     final glassGradient = isDark
         ? LinearGradient(
@@ -112,7 +153,8 @@ class GlassCard extends StatelessWidget {
 }
 
 /// Glassmorphic button widget with enhanced glass effects
-class GlassButton extends StatelessWidget {
+/// In high contrast mode, renders as a solid button without blur effects
+class GlassButton extends ConsumerWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isPrimary;
@@ -129,9 +171,75 @@ class GlassButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final isDark = context.isDarkMode;
+    final isHighContrast = isHighContrastEnabled(context, ref);
+
+    // High contrast mode: solid button without blur effects
+    if (isHighContrast) {
+      return _buildHighContrastButton(context);
+    }
+
+    // Normal glass button with blur effects
+    return _buildGlassButton(context, colors, isDark);
+  }
+
+  /// Builds a solid, high-contrast button without blur or transparency
+  Widget _buildHighContrastButton(BuildContext context) {
+    final highContrastColors = PointerColors.highContrast;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isLoading ? null : onPressed,
+        borderRadius: BorderRadius.circular(32),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: BoxDecoration(
+            color: highContrastColors.cardBackground,
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(
+              color: highContrastColors.glassBorder,
+              width: 2,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isLoading)
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: highContrastColors.textPrimary,
+                  ),
+                )
+              else ...[
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: highContrastColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                if (icon != null) ...[
+                  const SizedBox(width: 8),
+                  icon!,
+                ],
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the normal glass button with blur and transparency effects
+  Widget _buildGlassButton(BuildContext context, PointerColors colors, bool isDark) {
     final spinnerColor = isDark ? Colors.white : AppColorsLight.primary;
 
     // Enhanced liquid glass gradient for buttons - more visible on black background

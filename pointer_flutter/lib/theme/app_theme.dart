@@ -31,6 +31,8 @@ class PointerColors extends ThemeExtension<PointerColors> {
   final Color glassHighlight;
   final Color glassGlow;
   final Color shimmerColor;
+  // High contrast mode specific
+  final Color cardBackground;
 
   const PointerColors({
     required this.textPrimary,
@@ -44,6 +46,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     required this.glassHighlight,
     required this.glassGlow,
     required this.shimmerColor,
+    this.cardBackground = const Color(0xFF1A1A1A),
   });
 
   /// Dark theme colors - Enhanced liquid glass morphism for black background
@@ -59,6 +62,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassHighlight: Color(0x33FFFFFF), // Stronger top-left highlight
     glassGlow: Color(0x1A8B5CF6), // Subtle purple accent glow
     shimmerColor: Color(0x338B5CF6), // Purple shimmer accent
+    cardBackground: Color(0xFF0A0A0A), // Near black for dark mode cards
   );
 
   /// Light theme colors
@@ -74,6 +78,24 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassHighlight: Color(0x80FFFFFF), // White highlight
     glassGlow: Color(0x0D7C3AED), // Subtle purple glow
     shimmerColor: Color(0x147C3AED), // Purple shimmer
+    cardBackground: Color(0xFFFFFFFF), // White for light mode cards
+  );
+
+  /// High contrast theme colors - AAA compliant (7:1+ contrast ratio)
+  /// Pure black background with pure white text for maximum readability
+  static const highContrast = PointerColors(
+    textPrimary: Colors.white,
+    textSecondary: Colors.white,
+    textMuted: Color(0xFFCCCCCC), // Light gray, still high contrast on black
+    glassBorder: Colors.white, // Strong white border for clear boundaries
+    glassBackground: Colors.black, // Solid black, no transparency
+    glassBorderActive: Colors.white,
+    gold: Color(0xFFFFD700),
+    iconColor: Colors.white,
+    glassHighlight: Colors.white,
+    glassGlow: Colors.transparent, // No glow effects in high contrast
+    shimmerColor: Colors.transparent, // No shimmer in high contrast
+    cardBackground: Color(0xFF1A1A1A), // Solid dark gray for cards
   );
 
   @override
@@ -89,6 +111,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     Color? glassHighlight,
     Color? glassGlow,
     Color? shimmerColor,
+    Color? cardBackground,
   }) {
     return PointerColors(
       textPrimary: textPrimary ?? this.textPrimary,
@@ -102,6 +125,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
       glassHighlight: glassHighlight ?? this.glassHighlight,
       glassGlow: glassGlow ?? this.glassGlow,
       shimmerColor: shimmerColor ?? this.shimmerColor,
+      cardBackground: cardBackground ?? this.cardBackground,
     );
   }
 
@@ -120,6 +144,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
       glassHighlight: Color.lerp(glassHighlight, other.glassHighlight, t)!,
       glassGlow: Color.lerp(glassGlow, other.glassGlow, t)!,
       shimmerColor: Color.lerp(shimmerColor, other.shimmerColor, t)!,
+      cardBackground: Color.lerp(cardBackground, other.cardBackground, t)!,
     );
   }
 }
