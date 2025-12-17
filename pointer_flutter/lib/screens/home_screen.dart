@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -7,6 +8,7 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/save_confirmation.dart';
 import '../widgets/tradition_badge.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -18,6 +20,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAnimating = false;
+  bool _showSaveConfirmation = false;
 
   Future<void> _handleNext() async {
     if (_isAnimating) return;
@@ -55,6 +58,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await Share.share(shareText);
   }
 
+  Future<void> _handleSave() async {
+    final pointing = ref.read(currentPointingProvider);
+    final favorites = ref.read(favoritesProvider);
+
+    // Don't save if already a favorite
+    if (favorites.contains(pointing.id)) {
+      return;
+    }
+
+    // Haptic feedback using HapticFeedback from flutter/services.dart
+    HapticFeedback.mediumImpact();
+
+    // Save to favorites
+    await ref.read(favoritesProvider.notifier).toggle(pointing.id);
+
+    // Show confirmation
+    setState(() => _showSaveConfirmation = true);
+  }
+
+  void _hideSaveConfirmation() {
+    if (mounted) {
+      setState(() => _showSaveConfirmation = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pointing = ref.watch(currentPointingProvider);
@@ -87,44 +115,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Pointing card with Dynamic Type support
+                  // Pointing card with Dynamic Type support and long press to save
                   Flexible(
-                    child: AnimatedOpacity(
-                      opacity: _isAnimating ? 0 : 1,
-                      duration: 150.ms,
-                      child: Semantics(
-                        label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(32),
-                          borderRadius: 32,
-                          // Enable scrolling for large text / accessibility
-                          maxHeight: MediaQuery.of(context).size.height * 0.55,
-                          enableScrolling: true,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                pointing.content,
-                                style: AppTextStyles.pointingText(context),
-                                textAlign: TextAlign.center,
-                              ),
-                              if (pointing.instruction != null) ...[
-                                const SizedBox(height: 24),
+                    child: GestureDetector(
+                      onLongPress: _handleSave,
+                      child: AnimatedOpacity(
+                        opacity: _isAnimating ? 0 : 1,
+                        duration: 150.ms,
+                        child: Semantics(
+                          label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}. Long press to save.',
+                          child: GlassCard(
+                            padding: const EdgeInsets.all(32),
+                            borderRadius: 32,
+                            // Enable scrolling for large text / accessibility
+                            maxHeight: MediaQuery.of(context).size.height * 0.55,
+                            enableScrolling: true,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
                                 Text(
-                                  pointing.instruction!,
-                                  style: AppTextStyles.instructionText(context),
+                                  pointing.content,
+                                  style: AppTextStyles.pointingText(context),
                                   textAlign: TextAlign.center,
                                 ),
+                                if (pointing.instruction != null) ...[
+                                  const SizedBox(height: 24),
+                                  Text(
+                                    pointing.instruction!,
+                                    style: AppTextStyles.instructionText(context),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                                if (pointing.teacher != null) ...[
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    '- ${pointing.teacher}',
+                                    style: AppTextStyles.teacherText(context),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ],
-                              if (pointing.teacher != null) ...[
-                                const SizedBox(height: 16),
-                                Text(
-                                  '- ${pointing.teacher}',
-                                  style: AppTextStyles.teacherText(context),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -181,6 +212,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
+
+          // Save confirmation overlay
+          if (_showSaveConfirmation)
+            Positioned.fill(
+              child: SaveConfirmation(
+                onDismiss: _hideSaveConfirmation,
+              ),
+            ),
         ],
       ),
     );
