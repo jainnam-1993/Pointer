@@ -98,6 +98,23 @@ class PointerColors extends ThemeExtension<PointerColors> {
     cardBackground: Color(0xFF1A1A1A), // Solid dark gray for cards
   );
 
+  /// OLED black mode - Pure black (#000000) for OLED displays
+  /// Battery savings + eye comfort while maintaining glass aesthetic
+  static const oled = PointerColors(
+    textPrimary: Colors.white,
+    textSecondary: Color(0xB3FFFFFF), // 70% white
+    textMuted: Color(0x80FFFFFF), // 50% white
+    glassBorder: Color(0x33FFFFFF), // 20% border for subtle glass effect
+    glassBackground: Color(0x0DFFFFFF), // 5% glass fill - very subtle on black
+    glassBorderActive: Color(0x4DFFFFFF), // 30% for active state
+    gold: Color(0xFFFFD700),
+    iconColor: Colors.white,
+    glassHighlight: Color(0x1AFFFFFF), // Very subtle highlight
+    glassGlow: Color(0x0D8B5CF6), // Minimal purple glow
+    shimmerColor: Color(0x1A8B5CF6), // Subtle shimmer
+    cardBackground: Colors.black, // Pure black for OLED
+  );
+
   @override
   PointerColors copyWith({
     Color? textPrimary,

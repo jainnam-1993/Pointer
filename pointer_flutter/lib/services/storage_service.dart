@@ -18,6 +18,7 @@ class AppSettings {
   final int autoAdvanceDelay;
   final String theme;
   final bool highContrast;
+  final bool oledMode;
 
   const AppSettings({
     this.hapticFeedback = true,
@@ -25,6 +26,7 @@ class AppSettings {
     this.autoAdvanceDelay = 30,
     this.theme = 'dark',
     this.highContrast = false,
+    this.oledMode = false,
   });
 
   AppSettings copyWith({
@@ -33,6 +35,7 @@ class AppSettings {
     int? autoAdvanceDelay,
     String? theme,
     bool? highContrast,
+    bool? oledMode,
   }) {
     return AppSettings(
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
@@ -40,6 +43,7 @@ class AppSettings {
       autoAdvanceDelay: autoAdvanceDelay ?? this.autoAdvanceDelay,
       theme: theme ?? this.theme,
       highContrast: highContrast ?? this.highContrast,
+      oledMode: oledMode ?? this.oledMode,
     );
   }
 
@@ -49,6 +53,7 @@ class AppSettings {
         'autoAdvanceDelay': autoAdvanceDelay,
         'theme': theme,
         'highContrast': highContrast,
+        'oledMode': oledMode,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -58,6 +63,7 @@ class AppSettings {
       autoAdvanceDelay: json['autoAdvanceDelay'] ?? 30,
       theme: json['theme'] ?? 'dark',
       highContrast: json['highContrast'] ?? false,
+      oledMode: json['oledMode'] ?? false,
     );
   }
 }

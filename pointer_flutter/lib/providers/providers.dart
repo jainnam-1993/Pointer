@@ -14,6 +14,16 @@ import '../theme/app_theme.dart';
 final zenModeProvider = StateProvider<bool>((ref) => false);
 
 // ============================================================
+// OLED Black Mode - True black for OLED displays
+// ============================================================
+
+/// OLED mode provider - pure black background for battery savings
+final oledModeProvider = StateProvider<bool>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.oledMode;
+});
+
+// ============================================================
 // Accessibility - Reduced Motion
 // ============================================================
 
