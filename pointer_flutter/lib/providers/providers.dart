@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
 import '../services/usage_tracking_service.dart';
+import '../services/widget_service.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
@@ -147,14 +148,25 @@ final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, P
 });
 
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
-  CurrentPointingNotifier() : super(getRandomPointing());
+  CurrentPointingNotifier() : super(getRandomPointing()) {
+    // Update widget with initial pointing
+    _updateWidget(state);
+  }
 
   void nextPointing({Tradition? tradition, PointingContext? context}) {
     state = getRandomPointing(tradition: tradition, context: context);
+    _updateWidget(state);
   }
 
   void setPointing(Pointing pointing) {
     state = pointing;
+    _updateWidget(state);
+  }
+
+  /// Update home screen widget with current pointing
+  void _updateWidget(Pointing pointing) {
+    // Import handled at file level
+    WidgetService.updateWidget(pointing);
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/notification_service.dart';
+import 'services/widget_service.dart';
 import 'theme/app_theme.dart';
 
 /// Global container reference for notification action handling
@@ -50,6 +51,9 @@ void main() async {
   // Initialize notifications with action handler
   final notificationService = NotificationService(sharedPreferences);
   await _initializeNotifications(notificationService);
+
+  // Initialize home screen widget
+  await WidgetService.initialize();
 
   runApp(
     UncontrolledProviderScope(
