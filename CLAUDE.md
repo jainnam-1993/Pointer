@@ -61,6 +61,10 @@ flutter pub get                # Install dependencies
 └── pubspec.yaml               # Dependencies
 ```
 
+## Development Principles
+
+- **Library Preference**: Strongly prefer pre-built Flutter packages over custom native code. "Think 100 times" before writing platform-specific native implementations.
+
 ## Tech Stack
 
 - **Framework**: Flutter 3.x + Dart 3.10
