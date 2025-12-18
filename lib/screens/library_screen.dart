@@ -11,6 +11,7 @@ import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
 /// Category metadata for display
@@ -297,11 +298,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       itemCount: featured.length,
                       itemBuilder: (context, index) {
                         final article = featured[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: _FeaturedArticleCard(
-                            article: article,
-                            onTap: () => _openArticle(context, article),
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: _FeaturedArticleCard(
+                              article: article,
+                              onTap: () => _openArticle(context, article),
+                            ),
                           ),
                         );
                       },
@@ -392,13 +396,16 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             final info = categoryInfoMap[category]!;
             final articleCount = getArticlesByCategory(category).length;
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _CategoryCard(
-                category: category,
-                info: info,
-                articleCount: articleCount,
-                onTap: () => _openCategory(context, category, info, isPremium),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _CategoryCard(
+                  category: category,
+                  info: info,
+                  articleCount: articleCount,
+                  onTap: () => _openCategory(context, category, info, isPremium),
+                ),
               ),
             );
           },
@@ -428,14 +435,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ? traditions[teachingsSample.first.lineage]?.name ?? ''
                 : '';
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: '🙏',
-                name: teacher,
-                description: lineage,
-                count: count,
-                onTap: () => _openTeacher(context, teacher),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _BrowseCard(
+                  icon: '🙏',
+                  name: teacher,
+                  description: lineage,
+                  count: count,
+                  onTap: () => _openTeacher(context, teacher),
+                ),
               ),
             );
           },
@@ -457,14 +467,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             final articleCount = getArticlesByTradition(tradition).length;
             final totalCount = teachingCount + articleCount;
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: info.icon,
-                name: info.name,
-                description: info.description,
-                count: totalCount,
-                onTap: () => _openLineage(context, tradition, info),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _BrowseCard(
+                  icon: info.icon,
+                  name: info.name,
+                  description: info.description,
+                  count: totalCount,
+                  onTap: () => _openLineage(context, tradition, info),
+                ),
               ),
             );
           },
@@ -488,14 +501,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             final mood = entry.key;
             final count = entry.value;
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: MoodTags.icon(mood),
-                name: MoodTags.displayName(mood),
-                description: 'Best for ${mood.toLowerCase()} moments',
-                count: count,
-                onTap: () => _openMood(context, mood),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _BrowseCard(
+                  icon: MoodTags.icon(mood),
+                  name: MoodTags.displayName(mood),
+                  description: 'Best for ${mood.toLowerCase()} moments',
+                  count: count,
+                  onTap: () => _openMood(context, mood),
+                ),
               ),
             );
           },
@@ -1014,32 +1030,35 @@ class CategoryArticlesScreen extends StatelessWidget {
                         final article = categoryArticles[index];
                         final isLocked = article.isPremium && !isPremium;
 
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _ArticleListItem(
-                            article: article,
-                            isLocked: isLocked,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              if (isLocked) {
-                                // Show paywall
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Premium article - unlock with subscription'),
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor: colors.glassBackground,
-                                  ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ArticleReaderScreen(article: article),
-                                  ),
-                                );
-                              }
-                            },
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ArticleListItem(
+                              article: article,
+                              isLocked: isLocked,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                if (isLocked) {
+                                  // Show paywall
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Premium article - unlock with subscription'),
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: colors.glassBackground,
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ArticleReaderScreen(article: article),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                           ),
                         );
                       },
@@ -1448,9 +1467,12 @@ class TeacherTeachingsScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _TeachingCard(teaching: teaching),
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _TeachingCard(teaching: teaching),
+                          ),
                         );
                       },
                       childCount: teachings.length,
@@ -1559,9 +1581,12 @@ class LineageTeachingsScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _TeachingCard(teaching: teaching),
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _TeachingCard(teaching: teaching),
+                          ),
                         );
                       },
                       childCount: teachings.length,
@@ -1654,9 +1679,12 @@ class MoodTeachingsScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _TeachingCard(teaching: teaching),
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _TeachingCard(teaching: teaching),
+                          ),
                         );
                       },
                       childCount: teachings.length,
