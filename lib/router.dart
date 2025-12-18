@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ import 'screens/paywall_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/lineages_screen.dart';
+import 'widgets/animated_transitions.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -22,37 +24,55 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: onboardingCompleted ? '/' : '/onboarding',
     routes: [
-      // Onboarding route (outside shell)
+      // Onboarding route (outside shell) - fade through for entry
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        pageBuilder: (context, state) => FadeThroughPage(
+          key: state.pageKey,
+          child: const OnboardingScreen(),
+        ),
       ),
 
-      // Paywall route (outside shell)
+      // Paywall route (outside shell) - vertical axis for modal feel
       GoRoute(
         path: '/paywall',
-        builder: (context, state) => const PaywallScreen(),
+        pageBuilder: (context, state) => SharedAxisPage(
+          key: state.pageKey,
+          transitionType: SharedAxisTransitionType.vertical,
+          child: const PaywallScreen(),
+        ),
       ),
 
-      // History route (outside shell)
+      // History route (outside shell) - horizontal for related content
       GoRoute(
         path: '/history',
-        builder: (context, state) => const HistoryScreen(),
+        pageBuilder: (context, state) => SharedAxisPage(
+          key: state.pageKey,
+          transitionType: SharedAxisTransitionType.horizontal,
+          child: const HistoryScreen(),
+        ),
       ),
 
       // Inquiry player route (outside shell - full screen experience)
       GoRoute(
         path: '/inquiry/:id',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final inquiryId = state.pathParameters['id'] ?? 'random';
-          return InquiryPlayerScreen(inquiryId: inquiryId);
+          return CalmPageTransition(
+            key: state.pageKey,
+            child: InquiryPlayerScreen(inquiryId: inquiryId),
+          );
         },
       ),
 
       // Lineages route (outside shell - preferences screen)
       GoRoute(
         path: '/lineages',
-        builder: (context, state) => const LineagesScreen(),
+        pageBuilder: (context, state) => SharedAxisPage(
+          key: state.pageKey,
+          transitionType: SharedAxisTransitionType.horizontal,
+          child: const LineagesScreen(),
+        ),
       ),
 
       // Main app with bottom navigation
