@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -695,20 +696,123 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
   Future<void> _pickTime(bool isStart) async {
     final hour = isStart ? _schedule.startHour : _schedule.endHour;
     final minute = isStart ? _schedule.startMinute : _schedule.endMinute;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final picked = await showTimePicker(
+    int selectedHour = hour;
+    int selectedMinute = minute;
+
+    await showModalBottomSheet(
       context: context,
-      initialTime: TimeOfDay(hour: hour, minute: minute),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+                child: Container(
+                  height: 320,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Column(
+                    children: [
+                      // Header
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Cancel', style: TextStyle(color: context.colors.textSecondary)),
+                            ),
+                            Text(
+                              isStart ? 'Start Time' : 'End Time',
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                setState(() {
+                                  _schedule = isStart
+                                      ? _schedule.copyWith(startHour: selectedHour, startMinute: selectedMinute)
+                                      : _schedule.copyWith(endHour: selectedHour, endMinute: selectedMinute);
+                                });
+                                await _saveSchedule();
+                              },
+                              child: Text('Done', style: TextStyle(color: context.colors.accent, fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Time picker wheels
+                      Expanded(
+                        child: Row(
+                          children: [
+                            // Hour wheel
+                            Expanded(
+                              child: CupertinoPicker(
+                                scrollController: FixedExtentScrollController(initialItem: selectedHour),
+                                itemExtent: 40,
+                                onSelectedItemChanged: (index) {
+                                  setSheetState(() => selectedHour = index);
+                                },
+                                children: List.generate(24, (index) {
+                                  final displayHour = index == 0 ? 12 : (index > 12 ? index - 12 : index);
+                                  final period = index < 12 ? 'AM' : 'PM';
+                                  return Center(
+                                    child: Text(
+                                      '$displayHour $period',
+                                      style: TextStyle(
+                                        color: isDark ? Colors.white : Colors.black,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                            // Minute wheel
+                            Expanded(
+                              child: CupertinoPicker(
+                                scrollController: FixedExtentScrollController(initialItem: selectedMinute),
+                                itemExtent: 40,
+                                onSelectedItemChanged: (index) {
+                                  setSheetState(() => selectedMinute = index);
+                                },
+                                children: List.generate(60, (index) {
+                                  return Center(
+                                    child: Text(
+                                      index.toString().padLeft(2, '0'),
+                                      style: TextStyle(
+                                        color: isDark ? Colors.white : Colors.black,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
-
-    if (picked != null) {
-      setState(() {
-        _schedule = isStart
-            ? _schedule.copyWith(startHour: picked.hour, startMinute: picked.minute)
-            : _schedule.copyWith(endHour: picked.hour, endMinute: picked.minute);
-      });
-      await _saveSchedule();
-    }
   }
 
   bool _matchesPreset(NotificationPreset preset) {
