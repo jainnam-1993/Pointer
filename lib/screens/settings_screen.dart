@@ -47,6 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (context) => _NotificationTimesSheet(),
     );
   }
@@ -731,27 +732,32 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
     final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
     final mutedColor = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
 
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 24,
-                bottom: bottomPadding + 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 24,
+                    bottom: bottomPadding + 24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   Text(
                     'Notification Schedule',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor),
@@ -883,7 +889,9 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                       ),
                     ),
                   ),
-                ],
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
