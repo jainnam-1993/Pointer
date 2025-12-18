@@ -60,7 +60,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassBackground: Color(0x1AFFFFFF), // 10% opacity for glass fill
     glassBorderActive: Color(0x66FFFFFF), // 40% opacity for active state
     gold: Color(0xFFFFD700),
-    accent: Color(0xFF06B6D4), // Teal accent
+    accent: Color(0xFF8B5CF6), // Violet accent
     iconColor: Colors.white,
     glassHighlight: Color(0x33FFFFFF), // Stronger top-left highlight
     glassGlow: Color(0x1A8B5CF6), // Subtle purple accent glow
@@ -77,11 +77,11 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassBackground: Color(0x08FFFFFF), // Frosted glass fill
     glassBorderActive: Color(0x22000000),
     gold: Color(0xFFB8860B),          // Darker gold
-    accent: Color(0xFF007AFF),        // iOS blue accent
+    accent: Color(0xFF8B5CF6),        // Violet accent
     iconColor: Color(0xFF3C3C43),     // Dark gray icons
     glassHighlight: Color(0x60FFFFFF), // Soft white highlight
-    glassGlow: Color(0x08007AFF),     // Subtle blue glow
-    shimmerColor: Color(0x10007AFF),  // Blue shimmer
+    glassGlow: Color(0x088B5CF6),     // Subtle violet glow
+    shimmerColor: Color(0x108B5CF6),  // Violet shimmer
     cardBackground: Color(0xFFFFFFFF), // Pure white cards
   );
 
@@ -95,7 +95,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassBackground: Colors.black, // Solid black, no transparency
     glassBorderActive: Colors.white,
     gold: Color(0xFFFFD700),
-    accent: Color(0xFF06B6D4), // Teal accent
+    accent: Color(0xFF8B5CF6), // Violet accent
     iconColor: Colors.white,
     glassHighlight: Colors.white,
     glassGlow: Colors.transparent, // No glow effects in high contrast
@@ -113,7 +113,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     glassBackground: Color(0x0DFFFFFF), // 5% glass fill - very subtle on black
     glassBorderActive: Color(0x4DFFFFFF), // 30% for active state
     gold: Color(0xFFFFD700),
-    accent: Color(0xFF06B6D4), // Teal accent
+    accent: Color(0xFF8B5CF6), // Violet accent
     iconColor: Colors.white,
     glassHighlight: Color(0x1AFFFFFF), // Very subtle highlight
     glassGlow: Color(0x0D8B5CF6), // Minimal purple glow
@@ -182,7 +182,7 @@ class AppColors {
   static const surface = Color(0xFF0A0A0A);
   static const primary = Color(0xFF8B5CF6);
   static const secondary = Color(0xFFEC4899);
-  static const accent = Color(0xFF06B6D4);
+  static const accent = Color(0xFF8B5CF6);
 
   static const textPrimary = Colors.white;
   static const textSecondary = Color(0xFFB3B3B3);
@@ -202,7 +202,7 @@ class AppColorsLight {
   static const surface = Color(0xFFFFFFFF);
   static const primary = Color(0xFF5B5B5B);      // Neutral dark gray
   static const secondary = Color(0xFF8E8E93);    // iOS gray
-  static const accent = Color(0xFF007AFF);       // iOS blue accent
+  static const accent = Color(0xFF8B5CF6);       // Violet accent
 
   static const textPrimary = Color(0xFF1C1C1E);  // Near black
   static const textSecondary = Color(0xFF636366);
