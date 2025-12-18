@@ -203,35 +203,59 @@ class FloatingParticles extends ConsumerWidget {
     final baseAlpha = isDark ? 0.15 : 0.1;
 
     // Exclude decorative particles from accessibility tree
+    // Position particles around edges only (corners and margins)
     return ExcludeSemantics(
       child: IgnorePointer(
-        child: Stack(
-          children: List.generate(6, (index) {
-          return Positioned(
-            left: (index * 60.0) + 20,
-            top: (index * 80.0) + 50,
-            child: Container(
-              width: 4 + (index % 3) * 2.0,
-              height: 4 + (index % 3) * 2.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: particleColor.withValues(alpha: baseAlpha + (index % 3) * 0.05),
-              ),
-            )
-                .animate(
-                  onPlay: (controller) => controller.repeat(reverse: true),
-                )
-                .moveY(
-                  begin: 0,
-                  end: -20 - index * 5.0,
-                  duration: (3000 + index * 500).ms,
-                  curve: Curves.easeInOut,
-                )
-                .fadeIn(
-                  duration: 1000.ms,
-                ),
-          );
-        }),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final height = constraints.maxHeight;
+
+            // Edge positions (corners and margins, avoiding center)
+            final positions = [
+              // Top corners
+              Offset(20, 40),
+              Offset(width - 30, 60),
+              // Bottom corners
+              Offset(30, height - 80),
+              Offset(width - 40, height - 100),
+              // Side margins (upper third and lower third only)
+              Offset(15, height * 0.15),
+              Offset(width - 20, height * 0.85),
+            ];
+
+            return Stack(
+              children: List.generate(positions.length, (index) {
+                final pos = positions[index];
+                return Positioned(
+                  left: pos.dx,
+                  top: pos.dy,
+                  child: Container(
+                    width: 3 + (index % 3) * 1.5,
+                    height: 3 + (index % 3) * 1.5,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: particleColor.withValues(alpha: baseAlpha + (index % 3) * 0.03),
+                    ),
+                  )
+                      .animate(
+                        onPlay: (controller) => controller.repeat(reverse: true),
+                      )
+                      .moveY(
+                        begin: 0,
+                        end: -15 - index * 3.0,
+                        duration: (4000 + index * 600).ms,
+                        curve: Curves.easeInOut,
+                      )
+                      .fade(
+                        begin: 0.0,
+                        end: 1.0,
+                        duration: 2000.ms,
+                      ),
+                );
+              }),
+            );
+          },
         ),
       ),
     );
