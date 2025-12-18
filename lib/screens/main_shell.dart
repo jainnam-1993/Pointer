@@ -78,9 +78,9 @@ class _MainShellState extends ConsumerState<MainShell> {
       return Scaffold(
         body: Stack(
           children: [
-            content,
-            // Global particles effect
+            // Global particles effect (behind content)
             const Positioned.fill(child: FloatingParticles()),
+            content,
           ],
         ),
         extendBody: true,
@@ -90,9 +90,9 @@ class _MainShellState extends ConsumerState<MainShell> {
     return Scaffold(
       body: Stack(
         children: [
-          content,
-          // Global particles effect
+          // Global particles effect (behind content)
           const Positioned.fill(child: FloatingParticles()),
+          content,
         ],
       ),
       extendBody: true,
