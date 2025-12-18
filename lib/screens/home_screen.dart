@@ -236,17 +236,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           _handlePrevious();
         }
       },
-      // Phase 5.6: Horizontal swipe gestures
-      onHorizontalDragEnd: (details) {
-        // Swipe left (negative velocity) -> next
-        if (details.primaryVelocity! < -200) {
-          _handleNext();
-        }
-        // Swipe right (positive velocity) -> previous
-        else if (details.primaryVelocity! > 200) {
-          _handlePrevious();
-        }
-      },
+      // B.5: Removed horizontal swipe to allow main_shell tab navigation
       behavior: HitTestBehavior.opaque,
       child: Center(
         key: const ValueKey('zen-mode'),
@@ -300,17 +290,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 _handlePrevious();
               }
             },
-            // Phase 5.6: Horizontal swipe gestures for pointing navigation
-            onHorizontalDragEnd: (details) {
-              // Swipe left (negative velocity) -> next
-              if (details.primaryVelocity! < -200) {
-                _handleNext();
-              }
-              // Swipe right (positive velocity) -> previous
-              else if (details.primaryVelocity! > 200) {
-                _handlePrevious();
-              }
-            },
+            // B.5: Removed horizontal swipe to allow main_shell tab navigation
             child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.only(
