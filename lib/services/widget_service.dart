@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
 
@@ -129,17 +132,67 @@ class WidgetPointing {
 }
 
 /// Background callback for widget interactions
+///
+/// Handles URIs in format: pointer://widget/{action}
+/// Supported actions:
+/// - /refresh: Load a new random pointing
+/// - /save: Save current pointing to favorites
 @pragma('vm:entry-point')
 Future<void> widgetBackgroundCallback(Uri? uri) async {
   if (uri == null) return;
 
-  final host = uri.host;
+  debugPrint('Widget callback received: $uri');
 
-  if (host == 'refresh') {
+  final path = uri.path;
+
+  if (path == '/refresh' || uri.host == 'refresh') {
     // User tapped refresh - update with new pointing
     await WidgetService.updateWithRandomPointing();
-  } else if (host == 'open') {
+  } else if (path == '/save' || uri.host == 'save') {
+    // User tapped save - save current pointing to favorites
+    await _saveCurrentWidgetPointing();
+  } else if (uri.host == 'open') {
     // User tapped to open app - handled by native code
     // The app will open automatically
+  }
+}
+
+/// Save the current widget pointing to favorites
+Future<void> _saveCurrentWidgetPointing() async {
+  try {
+    // Get current pointing content from widget storage
+    final content = await HomeWidget.getWidgetData<String>('pointing_content');
+    if (content == null || content.isEmpty) {
+      debugPrint('No pointing content to save');
+      return;
+    }
+
+    // Find matching pointing by content
+    final matching = pointings.where((p) => p.content == content).toList();
+
+    if (matching.isEmpty) {
+      debugPrint('Could not find pointing to save');
+      return;
+    }
+
+    final pointing = matching.first;
+
+    // Initialize SharedPreferences and save to favorites
+    final prefs = await SharedPreferences.getInstance();
+    final favoritesKey = 'favorite_pointings';
+    final stored = prefs.getString(favoritesKey);
+    final favorites = stored != null
+        ? List<String>.from(jsonDecode(stored))
+        : <String>[];
+
+    if (!favorites.contains(pointing.id)) {
+      favorites.add(pointing.id);
+      await prefs.setString(favoritesKey, jsonEncode(favorites));
+      debugPrint('Saved pointing ${pointing.id} to favorites');
+    } else {
+      debugPrint('Pointing ${pointing.id} already in favorites');
+    }
+  } catch (e) {
+    debugPrint('Error saving widget pointing: $e');
   }
 }

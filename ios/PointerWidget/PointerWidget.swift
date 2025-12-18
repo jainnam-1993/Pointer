@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import AppIntents
 
 // MARK: - Data Model
 
@@ -90,20 +91,37 @@ struct PointerWidgetEntryView: View {
 
     var body: some View {
         ZStack {
-            // Glass background
-            glassBackground
+            // Glass background (only for home screen widgets)
+            if !isAccessoryWidget {
+                glassBackground
+            }
 
             // Content based on widget size
             switch family {
             case .systemSmall:
-                smallWidget
+                smallWidgetWithActions
             case .systemMedium:
-                mediumWidget
+                mediumWidgetWithActions
             case .systemLarge:
-                largeWidget
+                largeWidgetWithActions
+            case .accessoryCircular:
+                accessoryCircularWidget
+            case .accessoryRectangular:
+                accessoryRectangularWidget
+            case .accessoryInline:
+                accessoryInlineWidget
             default:
-                mediumWidget
+                mediumWidgetWithActions
             }
+        }
+    }
+
+    private var isAccessoryWidget: Bool {
+        switch family {
+        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
+            return true
+        default:
+            return false
         }
     }
 
@@ -223,6 +241,200 @@ struct PointerWidgetEntryView: View {
         .padding(20)
     }
 
+    // MARK: - Widgets with Action Buttons (iOS 17+)
+
+    /// Small widget with action buttons
+    @ViewBuilder
+    private var smallWidgetWithActions: some View {
+        if #available(iOS 17.0, *) {
+            VStack(spacing: 4) {
+                smallWidgetContent
+                actionButtons(iconSize: 14, spacing: 16)
+            }
+            .padding(12)
+        } else {
+            smallWidget
+        }
+    }
+
+    /// Medium widget with action buttons
+    @ViewBuilder
+    private var mediumWidgetWithActions: some View {
+        if #available(iOS 17.0, *) {
+            VStack(spacing: 6) {
+                mediumWidgetContent
+                actionButtons(iconSize: 16, spacing: 20)
+            }
+            .padding(16)
+        } else {
+            mediumWidget
+        }
+    }
+
+    /// Large widget with action buttons
+    @ViewBuilder
+    private var largeWidgetWithActions: some View {
+        if #available(iOS 17.0, *) {
+            VStack(spacing: 8) {
+                largeWidgetContent
+                actionButtons(iconSize: 18, spacing: 24)
+            }
+            .padding(20)
+        } else {
+            largeWidget
+        }
+    }
+
+    /// Content for small widget (without padding)
+    private var smallWidgetContent: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(entry.data.tradition)
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(mutedTextColor)
+                .textCase(.uppercase)
+                .tracking(0.5)
+
+            Spacer()
+
+            Text(entry.data.content)
+                .font(.system(size: 11, weight: .light))
+                .lineLimit(3)
+                .foregroundColor(textColor)
+
+            Spacer()
+        }
+    }
+
+    /// Content for medium widget (without padding)
+    private var mediumWidgetContent: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(entry.data.tradition)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(mutedTextColor)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
+                Spacer()
+            }
+
+            Spacer()
+
+            Text(entry.data.content)
+                .font(.system(size: 13, weight: .light))
+                .lineLimit(2)
+                .foregroundColor(textColor)
+
+            if let teacher = entry.data.teacher {
+                Text("— \(teacher)")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(mutedTextColor)
+            }
+
+            Spacer()
+        }
+    }
+
+    /// Content for large widget (without padding)
+    private var largeWidgetContent: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(entry.data.tradition)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(mutedTextColor)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
+                Spacer()
+            }
+
+            Spacer()
+
+            Text(entry.data.content)
+                .font(.system(size: 16, weight: .light))
+                .foregroundColor(textColor)
+                .multilineTextAlignment(.leading)
+
+            if let teacher = entry.data.teacher {
+                Text("— \(teacher)")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(mutedTextColor)
+            }
+
+            Spacer()
+        }
+    }
+
+    /// Action buttons for interactive widgets
+    @ViewBuilder
+    private func actionButtons(iconSize: CGFloat, spacing: CGFloat) -> some View {
+        if #available(iOS 17.0, *) {
+            HStack(spacing: spacing) {
+                Button(intent: RefreshPointingIntent()) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: iconSize, weight: .medium))
+                        .foregroundColor(mutedTextColor)
+                }
+                .buttonStyle(.plain)
+
+                Button(intent: SavePointingIntent()) {
+                    Image(systemName: "bookmark")
+                        .font(.system(size: iconSize, weight: .medium))
+                        .foregroundColor(mutedTextColor)
+                }
+                .buttonStyle(.plain)
+            }
+        } else {
+            // No interactive buttons for iOS < 17
+            EmptyView()
+        }
+    }
+
+    // MARK: - Lock Screen Widgets
+
+    /// Circular Lock Screen widget - shows icon/symbol
+    private var accessoryCircularWidget: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            Image(systemName: "sparkles")
+                .font(.system(size: 24, weight: .light))
+        }
+    }
+
+    /// Rectangular Lock Screen widget - shows quote excerpt
+    private var accessoryRectangularWidget: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(truncatedQuote(maxLength: 60))
+                .font(.system(size: 12, weight: .regular))
+                .lineLimit(2)
+
+            if let teacher = entry.data.teacher {
+                Text("— \(teacher)")
+                    .font(.system(size: 10, weight: .medium))
+                    .opacity(0.7)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Inline Lock Screen widget - single line text
+    private var accessoryInlineWidget: some View {
+        Text(truncatedQuote(maxLength: 30))
+            .font(.system(size: 12))
+    }
+
+    /// Truncate quote to fit widget constraints
+    private func truncatedQuote(maxLength: Int) -> String {
+        let content = entry.data.content
+        if content.count <= maxLength {
+            return content
+        }
+        let truncated = String(content.prefix(maxLength - 3))
+        // Try to end at a word boundary
+        if let lastSpace = truncated.lastIndex(of: " ") {
+            return String(truncated[..<lastSpace]) + "..."
+        }
+        return truncated + "..."
+    }
+
     // MARK: - Colors
 
     private var textColor: Color {
@@ -254,7 +466,14 @@ struct PointerWidget: Widget {
         }
         .configurationDisplayName("Daily Pointing")
         .description("Wisdom from non-dual traditions")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([
+            .systemSmall,
+            .systemMedium,
+            .systemLarge,
+            .accessoryCircular,
+            .accessoryRectangular,
+            .accessoryInline
+        ])
     }
 }
 

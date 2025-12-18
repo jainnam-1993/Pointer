@@ -1,16 +1,20 @@
 package com.pointer
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import android.widget.RemoteViews
+import android.widget.Toast
 import com.pointer.R
 import es.antonborri.home_widget.HomeWidgetPlugin
+import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 
 /**
  * Home screen widget provider for Pointer app.
  * Displays the daily pointing with tradition and teacher attribution.
+ * Supports interactive actions: refresh and save.
  */
 class PointerWidgetProvider : AppWidgetProvider() {
 
@@ -24,6 +28,35 @@ class PointerWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+
+        when (intent.action) {
+            ACTION_REFRESH -> {
+                // Send background intent to Flutter for refresh
+                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+                    context,
+                    android.net.Uri.parse("pointer://widget/refresh")
+                )
+                backgroundIntent.send()
+
+                // Show brief feedback
+                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+            }
+            ACTION_SAVE -> {
+                // Send background intent to Flutter for save
+                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+                    context,
+                    android.net.Uri.parse("pointer://widget/save")
+                )
+                backgroundIntent.send()
+
+                // Show brief feedback
+                Toast.makeText(context, "Saved to favorites", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onEnabled(context: Context) {
         // Called when first widget is placed
     }
@@ -33,10 +66,12 @@ class PointerWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-        private const val PREFS_NAME = "PointerWidgetPrefs"
         private const val KEY_CONTENT = "pointing_content"
         private const val KEY_TEACHER = "pointing_teacher"
         private const val KEY_TRADITION = "pointing_tradition"
+
+        const val ACTION_REFRESH = "com.pointer.widget.ACTION_REFRESH"
+        const val ACTION_SAVE = "com.pointer.widget.ACTION_SAVE"
 
         fun updateAppWidget(
             context: Context,
@@ -81,17 +116,41 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 views.setViewVisibility(R.id.widget_tradition, android.view.View.GONE)
             }
 
-            // Set click action to open app
-            val launchIntent = android.content.Intent(context, MainActivity::class.java).apply {
-                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+            // Set click action to open app (entire widget)
+            val launchIntent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
-            val pendingIntent = android.app.PendingIntent.getActivity(
+            val launchPendingIntent = PendingIntent.getActivity(
                 context,
                 0,
                 launchIntent,
-                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_container, launchPendingIntent)
+
+            // Set refresh button action
+            val refreshIntent = Intent(context, PointerWidgetProvider::class.java).apply {
+                action = ACTION_REFRESH
+            }
+            val refreshPendingIntent = PendingIntent.getBroadcast(
+                context,
+                1,
+                refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_refresh, refreshPendingIntent)
+
+            // Set save button action
+            val saveIntent = Intent(context, PointerWidgetProvider::class.java).apply {
+                action = ACTION_SAVE
+            }
+            val savePendingIntent = PendingIntent.getBroadcast(
+                context,
+                2,
+                saveIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_save, savePendingIntent)
 
             // Update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)

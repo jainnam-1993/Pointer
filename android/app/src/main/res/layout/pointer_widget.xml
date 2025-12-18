@@ -28,7 +28,8 @@
     <TextView
         android:id="@+id/widget_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:textSize="16sp"
         android:textColor="#FFFFFF"
         android:textStyle="italic"
@@ -45,7 +46,43 @@
         android:layout_height="wrap_content"
         android:textSize="13sp"
         android:textColor="#A0A0A0"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:visibility="gone" />
+
+    <!-- Action buttons row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="12dp">
+
+        <!-- Refresh button -->
+        <ImageView
+            android:id="@+id/widget_refresh"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_refresh"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Get new pointing"
+            android:alpha="0.7" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="1dp" />
+
+        <!-- Save button -->
+        <ImageView
+            android:id="@+id/widget_save"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_bookmark"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Save pointing"
+            android:alpha="0.7" />
+
+    </LinearLayout>
 
 </LinearLayout>
