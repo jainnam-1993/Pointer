@@ -9,6 +9,7 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -149,9 +150,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 bottom: 120 + bottomPadding,
               ),
               children: [
-                Text(
-                  'Settings',
-                  style: Theme.of(context).textTheme.displayLarge,
+                StaggeredFadeIn(
+                  index: 0,
+                  child: Text(
+                    'Settings',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
                 ),
                 const SizedBox(height: 24),
 
