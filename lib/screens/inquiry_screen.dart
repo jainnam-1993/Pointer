@@ -5,6 +5,7 @@ import 'package:vibration/vibration.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
 class InquirySession {
@@ -95,37 +96,40 @@ class InquiryScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Intro card
-                Builder(
-                  builder: (context) {
-                    final isDark = context.isDarkMode;
-                    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-                    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
-                    return GlassCard(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'These sessions guide you through the ancient practice of self-investigation.',
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 16,
-                              height: 1.5,
+                // Intro card with fade-in
+                StaggeredFadeIn(
+                  index: 0,
+                  child: Builder(
+                    builder: (context) {
+                      final isDark = context.isDarkMode;
+                      final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+                      final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+                      return GlassCard(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'These sessions guide you through the ancient practice of self-investigation.',
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 16,
+                                height: 1.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Each session is 5-15 minutes. No experience required.',
-                            style: TextStyle(
-                              color: textColorSecondary,
-                              fontSize: 14,
+                            const SizedBox(height: 8),
+                            Text(
+                              'Each session is 5-15 minutes. No experience required.',
+                              style: TextStyle(
+                                color: textColorSecondary,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 24),
 
@@ -136,32 +140,35 @@ class InquiryScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Sessions list
+                // Sessions list with staggered animation
                 ...inquirySessions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final session = entry.value;
                   final isLocked = session.isPremium && !subscription.isPremium;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _SessionCard(
-                      session: session,
-                      index: index,
-                      isLocked: isLocked,
-                      onTap: () async {
-                        final hasVibrator = await Vibration.hasVibrator();
-                        if (hasVibrator == true) {
-                          Vibration.vibrate(duration: 50, amplitude: 128);
-                        }
-                        if (isLocked) {
-                          if (context.mounted) context.push('/paywall');
-                        } else {
-                          // Navigate to inquiry session
-                          if (context.mounted) {
-                            context.push('/inquiry/${session.id}');
+                  return StaggeredFadeIn(
+                    index: index + 1, // Offset by 1 for intro card
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _SessionCard(
+                        session: session,
+                        index: index,
+                        isLocked: isLocked,
+                        onTap: () async {
+                          final hasVibrator = await Vibration.hasVibrator();
+                          if (hasVibrator == true) {
+                            Vibration.vibrate(duration: 50, amplitude: 128);
                           }
-                        }
-                      },
+                          if (isLocked) {
+                            if (context.mounted) context.push('/paywall');
+                          } else {
+                            // Navigate to inquiry session
+                            if (context.mounted) {
+                              context.push('/inquiry/${session.id}');
+                            }
+                          }
+                        },
+                      ),
                     ),
                   );
                 }),

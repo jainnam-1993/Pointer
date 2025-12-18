@@ -5,6 +5,7 @@ import 'package:vibration/vibration.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
 class OnboardingPage {
@@ -238,60 +239,73 @@ class _OnboardingPageView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
+        key: ValueKey(page.id), // Key ensures fresh animations per page
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon container
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: iconBgColor,
-              border: Border.all(
-                color: iconBorderColor,
-                width: 1,
+          // Icon container with staggered animation
+          StaggeredFadeIn(
+            index: 0,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: iconBgColor,
+                border: Border.all(
+                  color: iconBorderColor,
+                  width: 1,
+                ),
               ),
-            ),
-            child: Icon(
-              page.icon,
-              size: 48,
-              color: iconColor,
+              child: Icon(
+                page.icon,
+                size: 48,
+                color: iconColor,
+              ),
             ),
           ),
           const SizedBox(height: 32),
 
-          // Title
-          Text(
-            page.title,
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: textColor,
+          // Title with staggered animation
+          StaggeredFadeIn(
+            index: 1,
+            child: Text(
+              page.title,
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
 
-          // Subtitle
-          Text(
-            page.subtitle,
-            style: TextStyle(
-              fontSize: 18,
-              color: textColorSecondary,
+          // Subtitle with staggered animation
+          StaggeredFadeIn(
+            index: 2,
+            child: Text(
+              page.subtitle,
+              style: TextStyle(
+                fontSize: 18,
+                color: textColorSecondary,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
 
-          // Description card
-          GlassCard(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              page.description,
-              style: TextStyle(
-                fontSize: 16,
-                color: textColorBody,
-                height: 1.5,
+          // Description card with staggered animation
+          StaggeredFadeIn(
+            index: 3,
+            child: GlassCard(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                page.description,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: textColorBody,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         ],
