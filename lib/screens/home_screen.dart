@@ -94,9 +94,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     setState(() => _isAnimating = true);
 
-    // Wait for fade out
-    await Future.delayed(150.ms);
-
     // Get next pointing based on mood (if set) and track usage
     PointingContext? moodContext;
     final mood = ref.read(currentMoodProvider);
@@ -113,6 +110,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (!isPremium) {
       ref.read(dailyUsageProvider.notifier).recordView();
     }
+
+    // Wait for transition animation to complete
+    await Future.delayed(300.ms);
 
     setState(() => _isAnimating = false);
 
@@ -137,11 +137,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     setState(() => _isAnimating = true);
 
-    // Wait for fade out
-    await Future.delayed(150.ms);
-
     // Get previous pointing
     ref.read(currentPointingProvider.notifier).previousPointing();
+
+    // Wait for transition animation to complete
+    await Future.delayed(300.ms);
 
     setState(() => _isAnimating = false);
 
@@ -197,9 +197,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   /// Inline tradition badge for card header (Phase 5.11)
-  Widget _buildInlineTraditionBadge(Tradition tradition, PointerColors colors) {
+  Widget _buildInlineTraditionBadge(Tradition tradition, PointerColors colors, {Key? key}) {
     final traditionInfo = traditions[tradition]!;
     return Container(
+      key: key,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: colors.accent.withValues(alpha: 0.12),
@@ -332,10 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: GestureDetector(
                       onLongPress: _handleSave,
                       onDoubleTap: _toggleZenMode,
-                      child: AnimatedOpacity(
-                        opacity: _isAnimating ? 0 : 1,
-                        duration: 150.ms,
-                        child: Semantics(
+                      child: Semantics(
                           sortKey: const OrdinalSortKey(1.0),
                           label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
                           hint: 'Double tap to focus, swipe up or down for actions',
@@ -358,8 +356,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // Inline tradition badge
-                                      _buildInlineTraditionBadge(pointing.tradition, colors),
+                                      // Inline tradition badge with animation
+                                      AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 200),
+                                        switchInCurve: Curves.easeInOutCubic,
+                                        switchOutCurve: Curves.easeInOutCubic,
+                                        transitionBuilder: (child, animation) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: ScaleTransition(
+                                              scale: animation,
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                        child: _buildInlineTraditionBadge(
+                                          pointing.tradition,
+                                          colors,
+                                          key: ValueKey('${pointing.id}-badge'),
+                                        ),
+                                      ),
                                       // Share icon
                                       GestureDetector(
                                         onTap: _handleShare,
@@ -379,10 +395,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ],
                                   ),
                                 ),
-                                Text(
-                                  pointing.content,
-                                  style: AppTextStyles.pointingText(context),
-                                  textAlign: TextAlign.center,
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  switchInCurve: Curves.easeInOutCubic,
+                                  switchOutCurve: Curves.easeInOutCubic,
+                                  transitionBuilder: (child, animation) {
+                                    final slideAnimation = Tween<Offset>(
+                                      begin: const Offset(0, 0.1),
+                                      end: Offset.zero,
+                                    ).animate(animation);
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: SlideTransition(
+                                        position: slideAnimation,
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    pointing.content,
+                                    key: ValueKey(pointing.id),
+                                    style: AppTextStyles.pointingText(context),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                                 if (pointing.instruction != null) ...[
                                   const SizedBox(height: 24),
@@ -394,20 +429,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ],
                                 if (pointing.teacher != null) ...[
                                   const SizedBox(height: 16),
-                                  GestureDetector(
-                                    onTap: () {
-                                      final teacher = getTeacher(pointing.teacher);
-                                      if (teacher != null) {
-                                        showTeacherSheet(context, teacher);
-                                      }
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 250),
+                                    switchInCurve: Curves.easeInOutCubic,
+                                    switchOutCurve: Curves.easeInOutCubic,
+                                    transitionBuilder: (child, animation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
                                     },
-                                    child: Text(
-                                      '- ${pointing.teacher}',
-                                      style: AppTextStyles.teacherText(context).copyWith(
-                                        decoration: TextDecoration.underline,
-                                        decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
+                                    child: GestureDetector(
+                                      key: ValueKey('${pointing.id}-teacher'),
+                                      onTap: () {
+                                        final teacher = getTeacher(pointing.teacher);
+                                        if (teacher != null) {
+                                          showTeacherSheet(context, teacher);
+                                        }
+                                      },
+                                      child: Text(
+                                        '- ${pointing.teacher}',
+                                        style: AppTextStyles.teacherText(context).copyWith(
+                                          decoration: TextDecoration.underline,
+                                          decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ],
@@ -443,7 +490,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                     ),
-                  ),
 
                   const SizedBox(height: 20),
 
