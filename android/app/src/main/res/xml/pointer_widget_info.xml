@@ -6,6 +6,7 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="3600000"
     android:initialLayout="@layout/pointer_widget"
+    android:configure="com.pointer.WidgetConfigActivity"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:previewImage="@mipmap/ic_launcher"

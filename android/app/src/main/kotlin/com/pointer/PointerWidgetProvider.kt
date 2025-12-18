@@ -50,12 +50,23 @@ class PointerWidgetProvider : AppWidgetProvider() {
             val teacher = widgetData.getString(KEY_TEACHER, "")
             val tradition = widgetData.getString(KEY_TRADITION, "")
 
+            // Get user preferences from config
+            val theme = WidgetConfigActivity.getTheme(context, appWidgetId)
+            val showTeacher = WidgetConfigActivity.shouldShowTeacher(context, appWidgetId)
+
+            // Choose layout based on theme
+            val layoutId = if (theme == WidgetConfigActivity.THEME_LIGHT) {
+                R.layout.pointer_widget_light
+            } else {
+                R.layout.pointer_widget
+            }
+
             // Build the widget layout
-            val views = RemoteViews(context.packageName, R.layout.pointer_widget)
+            val views = RemoteViews(context.packageName, layoutId)
             views.setTextViewText(R.id.widget_content, content)
 
-            // Show teacher if available
-            if (!teacher.isNullOrEmpty()) {
+            // Show teacher if available AND user wants to see it
+            if (!teacher.isNullOrEmpty() && showTeacher) {
                 views.setTextViewText(R.id.widget_teacher, "— $teacher")
                 views.setViewVisibility(R.id.widget_teacher, android.view.View.VISIBLE)
             } else {
