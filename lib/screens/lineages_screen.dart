@@ -4,6 +4,7 @@ import 'package:vibration/vibration.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
 class LineagesScreen extends StatelessWidget {
@@ -43,36 +44,40 @@ class LineagesScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // Traditions list
-                ...traditionEntries.map((entry) {
-                  final tradition = entry.key;
-                  final info = entry.value;
+                // Traditions list with staggered animation
+                ...traditionEntries.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final tradition = entry.value.key;
+                  final info = entry.value.value;
                   final count = getPointingsByTradition(tradition).length;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _TraditionCard(
-                      tradition: tradition,
-                      info: info,
-                      pointingsCount: count,
-                      onTap: () async {
-                        final hasVibrator = await Vibration.hasVibrator();
-                        if (hasVibrator == true) {
-                          Vibration.vibrate(duration: 50, amplitude: 128);
-                        }
-                        // Show tradition detail sheet with information
-                        if (context.mounted) {
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => _TraditionDetailSheet(
-                              tradition: tradition,
-                              info: info,
-                              pointingsCount: count,
-                            ),
-                          );
-                        }
-                      },
+                  return StaggeredFadeIn(
+                    index: index,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _TraditionCard(
+                        tradition: tradition,
+                        info: info,
+                        pointingsCount: count,
+                        onTap: () async {
+                          final hasVibrator = await Vibration.hasVibrator();
+                          if (hasVibrator == true) {
+                            Vibration.vibrate(duration: 50, amplitude: 128);
+                          }
+                          // Show tradition detail sheet with information
+                          if (context.mounted) {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => _TraditionDetailSheet(
+                                tradition: tradition,
+                                info: info,
+                                pointingsCount: count,
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   );
                 }),
