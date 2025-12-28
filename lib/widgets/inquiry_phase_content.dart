@@ -119,13 +119,15 @@ class InquiryPhaseContent extends StatelessWidget {
 
           // Main question in glass card
           GlassCard(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32,
+              vertical: 40,
+            ),
             child: Column(
               children: [
                 Text(
                   inquiry.question,
                   style: AppTextStyles.pointingText(context).copyWith(
-                    fontSize: 22,
                     height: 1.6,
                   ),
                   textAlign: TextAlign.center,

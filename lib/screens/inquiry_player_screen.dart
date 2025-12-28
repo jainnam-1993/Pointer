@@ -270,8 +270,9 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> {
   }
 
   Widget _buildPhaseIndicator(BuildContext context, PointerColors colors) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 32),
+      padding: EdgeInsets.only(bottom: bottomPadding + 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
