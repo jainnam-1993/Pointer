@@ -18,40 +18,41 @@
         android:textColor="#666666"
         android:letterSpacing="0.15"
         android:textAllCaps="true"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="4dp"
-        android:layout_marginBottom="12dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/tradition_badge_background_light"
         android:visibility="gone" />
 
-    <!-- Pointing content -->
+    <!-- Pointing content - simplified, no weight -->
     <TextView
         android:id="@+id/widget_content"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:textColor="#1A1A1A"
         android:textStyle="italic"
         android:gravity="center"
-        android:lineSpacingMultiplier="1.4"
-        android:maxLines="6"
+        android:lineSpacingMultiplier="1.3"
+        android:maxLines="5"
         android:ellipsize="end"
-        android:text="Tap to receive today's pointing" />
+        android:text="Tap to open Pointer" />
 
     <!-- Teacher attribution -->
     <TextView
         android:id="@+id/widget_teacher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:textColor="#505050"
         android:layout_marginTop="8dp"
         android:visibility="gone" />
 
     <!-- Action buttons row -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
@@ -60,28 +61,24 @@
         <!-- Refresh button -->
         <ImageView
             android:id="@+id/widget_refresh"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="6dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
             android:src="@drawable/ic_refresh_dark"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Get new pointing"
-            android:alpha="0.7" />
+            android:contentDescription="Get new pointing" />
 
         <View
-            android:layout_width="32dp"
+            android:layout_width="24dp"
             android:layout_height="1dp" />
 
         <!-- Save button -->
         <ImageView
             android:id="@+id/widget_save"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="6dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
             android:src="@drawable/ic_bookmark_dark"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Save pointing"
-            android:alpha="0.7" />
+            android:contentDescription="Save pointing" />
 
     </LinearLayout>
 

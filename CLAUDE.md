@@ -84,6 +84,8 @@ flutter pub get                # Install dependencies
 │       └── pointings.dart     # Curated pointings across traditions
 ├── android/
 │   └── app/src/main/
+│       ├── kotlin/com/pointer/
+│       │   └── PointerWidgetProvider.kt        # Home widget provider (refresh/save actions, logging, error handling)
 │       └── res/
 │           ├── drawable/
 │           │   ├── widget_background_modern.xml    # Modern widget white background (28dp radius)
@@ -91,10 +93,15 @@ flutter pub get                # Install dependencies
 │           │   ├── widget_rainbow_stripes.xml      # Simple rainbow gradient (purple-cyan-pink)
 │           │   └── widget_stripes_gradient.xml     # Layered rainbow gradient
 │           ├── layout/
-│           │   └── pointer_widget_modern.xml       # Modern widget layout (70/30 split, rainbow decoration)
+│           │   ├── pointer_widget.xml       # Widget layout dark theme (white text on dark background, refresh/save actions)
+│           │   └── pointer_widget_light.xml # Widget layout light theme (dark text on white background, refresh/save actions)
 │           └── raw/
 │               └── bell_chime.ogg                  # Custom notification sound (OGG, 14KB)
 ├── test/                      # Unit tests
+│   ├── providers/
+│   │   └── content_providers_test.dart  # Content providers tests (CurrentPointingNotifier, FavoritesNotifier, TeachingFilterState)
+│   ├── services/
+│   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel)
 │   ├── screens/
 │   │   └── onboarding_screen_test.dart  # Onboarding widget tests
 │   └── golden/
@@ -128,7 +135,7 @@ flutter pub get                # Install dependencies
 - **In-App Purchases**: purchases_flutter (RevenueCat)
 - **URL Launching**: url_launcher (for privacy/terms links)
 - **Markdown**: flutter_markdown (for content rendering)
-- **Utilities**: collection, path_provider, share_plus
+- **Utilities**: path_provider, share_plus
 - **Haptics**: flutter/services HapticFeedback (lightImpact/mediumImpact/heavyImpact)
 - **Testing**: flutter_test + mocktail (unit), patrol (integration)
 
@@ -150,6 +157,8 @@ flutter pub get                # Install dependencies
 **AnimatedGradient** (`lib/widgets/animated_gradient.dart`): Animated background gradient for immersive feel.
 
 **HapticFeedback**: Use `flutter/services` HapticFeedback for tactile feedback. `lightImpact()` for navigation/selection, `mediumImpact()` for actions/dialogs, `heavyImpact()` for significant events (developer unlock, subscription). Used extensively across home, library, settings, lineages, history, inquiry, paywall, onboarding screens.
+
+**PointerWidgetProvider** (`android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt`): Android home widget provider with robust error handling. HomeWidgetPlugin.getData() wrapped in try-catch with null safety (elvis operators for fallbacks). Logging pattern: TAG "PointerWidget" with Log.d/Log.e. updateAllWidgets() companion method refreshes all widget instances. Interactive actions: ACTION_REFRESH (immediate widget update + background intent for instant feedback), ACTION_SAVE (add to favorites).
 
 **Riverpod Providers** (`lib/providers/providers.dart`): SharedPreferences instance, router, storage service providers, TTS providers, usage tracking providers.
 
@@ -394,6 +403,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
 | **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson) |
 | **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
+| **PointerWidgetProvider** | `android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt` | Android home widget with error handling (try-catch, null safety), logging (TAG "PointerWidget"), updateAllWidgets() for refresh |
 | **Screenshot Test Setup** | `integration_test/screenshot_test.dart` | UncontrolledProviderScope + mocked SharedPreferences + settle() helper |
 | **Golden Test Helpers** | `test/golden/golden_test_helpers.dart` | setupGoldenTests(), goldenTestTheme, createGoldenTestApp(), pumpForGolden(), GoldenDevices |
 

@@ -235,14 +235,13 @@ class NotificationService {
   /// - Heads-up notification appears
   /// - Appears in notification shade
   static const androidChannel = AndroidNotificationChannel(
-    'pointings_v4',
+    'pointings_v6',
     'Daily Pointings',
     description: 'Gentle reminders for your daily pointing',
-    importance: Importance.high,
-    enableVibration: false,
+    importance: Importance.max,  // Try MAX importance
+    enableVibration: true,  // Enable vibration to trigger audio
     playSound: true,
     sound: RawResourceAndroidNotificationSound('bell_chime'),
-    audioAttributesUsage: AudioAttributesUsage.notificationRingtone,
   );
 
   /// iOS notification details with passive interruption level.
@@ -262,15 +261,14 @@ class NotificationService {
   /// Android notification details with custom bell chime.
   /// Uses BigTextStyle for rich notifications with expandable text.
   static const androidNotificationDetails = AndroidNotificationDetails(
-    'pointings_v4',
+    'pointings_v6',
     'Daily Pointings',
     channelDescription: 'Gentle reminders for your daily pointing',
-    importance: Importance.high,
-    priority: Priority.high,
-    enableVibration: false,
+    importance: Importance.max,
+    priority: Priority.max,
+    enableVibration: true,
     playSound: true,
     sound: RawResourceAndroidNotificationSound('bell_chime'),
-    audioAttributesUsage: AudioAttributesUsage.notificationRingtone,
     styleInformation: BigTextStyleInformation(''),
     actions: <AndroidNotificationAction>[
       AndroidNotificationAction(
@@ -579,15 +577,14 @@ class NotificationService {
         subtitle: subtitle,
       ),
       android: AndroidNotificationDetails(
-        'pointings_v4',
+        'pointings_v6',
         'Daily Pointings',
         channelDescription: 'Gentle reminders for your daily pointing',
-        importance: Importance.high,
-        priority: Priority.high,
-        enableVibration: false,
+        importance: Importance.max,
+        priority: Priority.max,
+        enableVibration: true,
         playSound: true,
         sound: const RawResourceAndroidNotificationSound('bell_chime'),
-        audioAttributesUsage: AudioAttributesUsage.notificationRingtone,
         styleInformation: BigTextStyleInformation(
           pointing.content,
           contentTitle: "Today's Pointing",
