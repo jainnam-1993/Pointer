@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Multi-color rainbow effect using layered gradients -->
+    <!-- Base: Purple to Blue -->
+    <item android:left="0dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:startColor="#9333EA"
+                android:endColor="#7C3AED"
+                android:angle="90" />
+        </shape>
+    </item>
+
+    <!-- This creates a simplified rainbow gradient from left to right -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="0"
+                android:startColor="#8B5CF6"
+                android:centerColor="#22D3EE"
+                android:endColor="#F472B6" />
+        </shape>
+    </item>
+</layer-list>

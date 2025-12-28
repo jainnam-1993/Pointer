@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background_modern"
+    android:clipToOutline="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!-- Left side: Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- App icon -->
+            <ImageView
+                android:id="@+id/widget_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="Pointer"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Pointing content -->
+            <TextView
+                android:id="@+id/widget_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:textColor="#1A1A2E"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="start|center_vertical"
+                android:lineSpacingMultiplier="1.3"
+                android:maxLines="4"
+                android:ellipsize="end"
+                tools:text="The day you plant the seed is not the day you eat the fruit" />
+
+            <!-- Teacher attribution -->
+            <TextView
+                android:id="@+id/widget_teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#6B7280"
+                android:fontFamily="sans-serif"
+                android:layout_marginTop="8dp"
+                tools:text="— Unknown" />
+
+        </LinearLayout>
+
+        <!-- Right side: Rainbow stripes decoration -->
+        <View
+            android:id="@+id/widget_stripes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/widget_stripes_gradient" />
+
+    </LinearLayout>
+
+    <!-- Subtle navigation dot (optional) -->
+    <View
+        android:id="@+id/widget_nav_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_nav_dot"
+        android:visibility="gone" />
+
+</FrameLayout>
