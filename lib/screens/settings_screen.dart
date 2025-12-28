@@ -1021,7 +1021,7 @@ class _NotificationTimesSheet extends ConsumerStatefulWidget {
 
 class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet> {
   late NotificationSchedule _schedule;
-  static const _frequencyOptions = [1, 2, 3, 4, 6, 8, 12];
+  static const _frequencyOptions = [30, 60, 120, 180, 240, 360, 480, 720];
 
   @override
   void initState() {
@@ -1159,7 +1159,7 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
     final presetSchedule = preset.schedule;
     return _schedule.startHour == presetSchedule.startHour &&
         _schedule.endHour == presetSchedule.endHour &&
-        _schedule.frequencyHours == presetSchedule.frequencyHours;
+        _schedule.frequencyMinutes == presetSchedule.frequencyMinutes;
   }
 
   void _applyPreset(NotificationPreset preset) {
@@ -1287,11 +1287,11 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _frequencyOptions.map((hours) {
-                      final isSelected = _schedule.frequencyHours == hours;
+                    children: _frequencyOptions.map((minutes) {
+                      final isSelected = _schedule.frequencyMinutes == minutes;
                       return GestureDetector(
                         onTap: () async {
-                          setState(() => _schedule = _schedule.copyWith(frequencyHours: hours));
+                          setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
                           await _saveSchedule();
                         },
                         child: Container(
@@ -1308,7 +1308,7 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                             ),
                           ),
                           child: Text(
-                            '${hours}h',
+                            minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
                             style: TextStyle(
                               color: isSelected ? textColor : mutedColor,
                               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,

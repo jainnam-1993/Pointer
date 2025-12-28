@@ -87,13 +87,13 @@ enum NotificationPreset {
   NotificationSchedule get schedule {
     switch (this) {
       case NotificationPreset.morningOnly:
-        return const NotificationSchedule(startHour: 6, endHour: 10, frequencyHours: 2);
+        return const NotificationSchedule(startHour: 6, endHour: 10, frequencyMinutes: 120);
       case NotificationPreset.throughoutDay:
-        return const NotificationSchedule(startHour: 8, endHour: 21, frequencyHours: 3);
+        return const NotificationSchedule(startHour: 8, endHour: 21, frequencyMinutes: 180);
       case NotificationPreset.eveningFocus:
-        return const NotificationSchedule(startHour: 17, endHour: 22, frequencyHours: 2);
+        return const NotificationSchedule(startHour: 17, endHour: 22, frequencyMinutes: 120);
       case NotificationPreset.minimal:
-        return const NotificationSchedule(startHour: 8, endHour: 20, frequencyHours: 6);
+        return const NotificationSchedule(startHour: 8, endHour: 20, frequencyMinutes: 360);
     }
   }
 }
@@ -104,7 +104,7 @@ class NotificationSchedule {
   final int startMinute;
   final int endHour;
   final int endMinute;
-  final int frequencyHours;
+  final int frequencyMinutes;
   final int quietStartHour;
   final int quietEndHour;
   final bool isEnabled;
@@ -114,7 +114,7 @@ class NotificationSchedule {
     this.startMinute = 0,
     this.endHour = 21,
     this.endMinute = 0,
-    this.frequencyHours = 3,
+    this.frequencyMinutes = 180, // 3 hours default
     this.quietStartHour = 22,
     this.quietEndHour = 7,
     this.isEnabled = true,
@@ -125,7 +125,7 @@ class NotificationSchedule {
     int? startMinute,
     int? endHour,
     int? endMinute,
-    int? frequencyHours,
+    int? frequencyMinutes,
     int? quietStartHour,
     int? quietEndHour,
     bool? isEnabled,
@@ -135,7 +135,7 @@ class NotificationSchedule {
       startMinute: startMinute ?? this.startMinute,
       endHour: endHour ?? this.endHour,
       endMinute: endMinute ?? this.endMinute,
-      frequencyHours: frequencyHours ?? this.frequencyHours,
+      frequencyMinutes: frequencyMinutes ?? this.frequencyMinutes,
       quietStartHour: quietStartHour ?? this.quietStartHour,
       quietEndHour: quietEndHour ?? this.quietEndHour,
       isEnabled: isEnabled ?? this.isEnabled,
@@ -152,7 +152,7 @@ class NotificationSchedule {
       if (!_isInQuietHours(current)) {
         times.add(current);
       }
-      current = current.add(Duration(hours: frequencyHours));
+      current = current.add(Duration(minutes: frequencyMinutes));
     }
     return times;
   }
@@ -173,19 +173,23 @@ class NotificationSchedule {
     'startMinute': startMinute,
     'endHour': endHour,
     'endMinute': endMinute,
-    'frequencyHours': frequencyHours,
+    'frequencyMinutes': frequencyMinutes,
     'quietStartHour': quietStartHour,
     'quietEndHour': quietEndHour,
     'isEnabled': isEnabled,
   };
 
   factory NotificationSchedule.fromJson(Map<String, dynamic> json) {
+    // Backward compatibility: convert old frequencyHours to minutes
+    final frequencyMinutes = json['frequencyMinutes'] ??
+        ((json['frequencyHours'] as int? ?? 3) * 60);
+
     return NotificationSchedule(
       startHour: json['startHour'] ?? 8,
       startMinute: json['startMinute'] ?? 0,
       endHour: json['endHour'] ?? 21,
       endMinute: json['endMinute'] ?? 0,
-      frequencyHours: json['frequencyHours'] ?? 3,
+      frequencyMinutes: frequencyMinutes,
       quietStartHour: json['quietStartHour'] ?? 22,
       quietEndHour: json['quietEndHour'] ?? 7,
       isEnabled: json['isEnabled'] ?? true,
@@ -203,7 +207,10 @@ class NotificationSchedule {
   String get summary {
     final start = formatTime(startHour, startMinute);
     final end = formatTime(endHour, endMinute);
-    return 'Every $frequencyHours hour${frequencyHours > 1 ? 's' : ''}, $start - $end';
+    final freqLabel = frequencyMinutes < 60
+        ? 'Every $frequencyMinutes min'
+        : 'Every ${frequencyMinutes ~/ 60} hour${frequencyMinutes >= 120 ? 's' : ''}';
+    return '$freqLabel, $start - $end';
   }
 }
 
