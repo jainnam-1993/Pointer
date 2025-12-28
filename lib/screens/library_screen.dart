@@ -780,9 +780,11 @@ class _FeaturedArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final traditionInfo = traditions[article.tradition]!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = (screenWidth * 0.75).clamp(0.0, 260.0);
 
     return SizedBox(
-      width: 260,
+      width: cardWidth,
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderRadius: 20,
