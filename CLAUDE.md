@@ -66,7 +66,6 @@ flutter pub get                # Install dependencies
 │   │   ├── animated_gradient.dart      # Background gradient animation
 │   │   ├── animated_transitions.dart   # Staggered fade-in, text switcher animations
 │   │   ├── glass_card.dart             # GlassCard/GlassButton components (intensity levels, high contrast)
-│   │   ├── permission_banner.dart      # Notification permission banner
 │   │   ├── tradition_badge.dart        # Tradition indicator badge
 │   │   ├── article_tts_player.dart     # TTS playback controls
 │   │   └── audio_player_widget.dart    # Audio pointing player (guided readings)
@@ -79,6 +78,7 @@ flutter pub get                # Install dependencies
 │   │   ├── aws_credential_service.dart     # AWS TOTP authentication
 │   │   ├── tts_service.dart                # Text-to-speech via AWS Polly
 │   │   ├── affinity_service.dart           # Tradition preference tracking
+│   │   ├── pointing_selector.dart          # Time-of-day aware pointing selection
 │   │   └── audio_pointing_service.dart     # Audio pointing playback
 │   └── data/
 │       └── pointings.dart     # Curated pointings across traditions
@@ -95,6 +95,8 @@ flutter pub get                # Install dependencies
 │           └── raw/
 │               └── bell_chime.ogg                  # Custom notification sound (OGG, 14KB)
 ├── test/                      # Unit tests
+│   ├── screens/
+│   │   └── onboarding_screen_test.dart  # Onboarding widget tests
 │   └── golden/
 │       ├── components_golden_test.dart   # Component visual regression tests
 │       └── golden_test_helpers.dart      # Golden test infrastructure
@@ -145,8 +147,6 @@ flutter pub get                # Install dependencies
 
 **GlassCard** (`lib/widgets/glass_card.dart`): iOS Control Center-style glassmorphism with `GlassIntensity` levels (light/standard/heavy). Auto-adapts blur and opacity for dark/light modes. High contrast mode uses solid backgrounds with 2px borders (AAA compliance). Supports scrolling, height constraints, tap handlers. Includes `GlassButton` for primary/secondary actions with loading states.
 
-**PermissionBanner** (`lib/widgets/permission_banner.dart`): Dismissible banner for denied notification permissions. Uses GlassCard with amber accent border.
-
 **AnimatedGradient** (`lib/widgets/animated_gradient.dart`): Animated background gradient for immersive feel.
 
 **HapticFeedback**: Use `flutter/services` HapticFeedback for tactile feedback. `lightImpact()` for navigation/selection, `mediumImpact()` for actions/dialogs, `heavyImpact()` for significant events (developer unlock, subscription). Used extensively across home, library, settings, lineages, history, inquiry, paywall, onboarding screens.
@@ -173,6 +173,8 @@ flutter pub get                # Install dependencies
 - **NotificationSchedule**: Time window + frequency model (start/end times, frequency in hours, quiet hours support)
 - **Schedule calculation**: `getNotificationTimes()` generates notification times within time window
 - **Quiet hours**: Supports overnight quiet periods (e.g., 22:00-07:00)
+- **Channel**: Uses `pointings_v6` notification channel (Android)
+- **Sound**: Custom bell_chime.ogg configured with MAX importance/priority + vibration (debugging Android audio playback)
 - **Legacy support**: `NotificationTime` class kept for migration from older fixed-time model
 
 **TTS Integration** (`lib/services/tts_service.dart` + `lib/services/aws_credential_service.dart`):
@@ -221,7 +223,7 @@ flutter pub get                # Install dependencies
 
 - **Framework**: Standard Flutter golden tests (pixel-perfect comparison)
 - **Test files**:
-  - `components_golden_test.dart` - Component snapshots (GlassCard, GlassButton, TraditionBadge, PermissionBanner)
+  - `components_golden_test.dart` - Component snapshots (GlassCard, GlassButton, TraditionBadge)
   - `golden_test_helpers.dart` - Test infrastructure and helpers
 - **Helpers** (`golden_test_helpers.dart`):
   - `setupGoldenTests()` - Disables animations, mocks home_widget plugin (prevents MissingPluginException)
@@ -377,7 +379,6 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **GlassCard** | `lib/widgets/glass_card.dart` | iOS-style glassmorphism cards with intensity levels (light/standard/heavy), high contrast support |
 | **GlassButton** | `lib/widgets/glass_card.dart` | Glass buttons (primary/secondary variants, loading states) |
 | **GlassIntensity** | `lib/widgets/glass_card.dart` | Enum for glass blur intensity (light/standard/heavy) |
-| **PermissionBanner** | `lib/widgets/permission_banner.dart` | Notification permission denied banner (dismissible, amber accent) |
 | **AppTextStyles** | `lib/theme/app_theme.dart` | Typography |
 | **Riverpod Providers** | `lib/providers/providers.dart` | State management |
 | **Settings Providers** | `lib/providers/settings_providers.dart` | User preferences (zen mode, OLED, accessibility, theme) |
@@ -389,6 +390,10 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **ArticleTTSPlayer** | `lib/widgets/article_tts_player.dart` | Playback controls for article audio |
 | **AudioPlayerWidget** | `lib/widgets/audio_player_widget.dart` | Audio pointing player (guided readings, premium-gated) |
 | **Usage Tracking** | `lib/providers/providers.dart` | `usageTrackingServiceProvider`, `dailyUsageProvider` for freemium limits |
+| **PointingSelector** | `lib/services/pointing_selector.dart` | Time-of-day aware pointing selection (TimeContext enum, respects viewed-today tracking, 30% preference for time-specific pointings) |
+| **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
+| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson) |
+| **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
 | **Screenshot Test Setup** | `integration_test/screenshot_test.dart` | UncontrolledProviderScope + mocked SharedPreferences + settle() helper |
 | **Golden Test Helpers** | `test/golden/golden_test_helpers.dart` | setupGoldenTests(), goldenTestTheme, createGoldenTestApp(), pumpForGolden(), GoldenDevices |
 

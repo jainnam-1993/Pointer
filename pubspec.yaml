@@ -30,9 +30,6 @@ dependencies:
   # Sharing
   share_plus: ^10.0.0
 
-  # Utilities
-  collection: ^1.18.0
-
   # Notifications
   flutter_local_notifications: ^18.0.0
   timezone: ^0.10.0
