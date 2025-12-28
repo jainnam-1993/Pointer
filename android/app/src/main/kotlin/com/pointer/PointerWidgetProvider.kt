@@ -289,19 +289,6 @@ class PointerWidgetProvider : AppWidgetProvider() {
             // Set empty view for when no data
             views.setEmptyView(R.id.widget_flipper, R.id.widget_empty_state)
 
-            // Set up pending intent template for item clicks (open app)
-            val itemClickIntent = Intent(context, PointerWidgetProvider::class.java).apply {
-                action = ACTION_ITEM_CLICK
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val itemClickPendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId * 10,
-                itemClickIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-            views.setPendingIntentTemplate(R.id.widget_flipper, itemClickPendingIntent)
-
             // Set up Previous button
             val prevIntent = Intent(context, PointerWidgetProvider::class.java).apply {
                 action = ACTION_PREV

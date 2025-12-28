@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/widget_card_dark"
-    android:padding="12dp">
+    android:background="@drawable/widget_card_dark">
 
-    <!-- Content area with tap zones overlay -->
+    <!-- Content area - tap to open app -->
     <FrameLayout
+        android:id="@+id/widget_content_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp">
 
         <!-- AdapterViewFlipper - shows ONE item at a time -->
         <AdapterViewFlipper
@@ -59,7 +62,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingTop="8dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp">
 
         <TextView
             android:id="@+id/widget_refresh"
