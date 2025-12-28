@@ -32,6 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAnimating = false;
   bool _showSaveConfirmation = false;
+  bool _isFirstSave = false;
 
   void _toggleZenMode() {
     final current = ref.read(zenModeProvider);
@@ -154,25 +155,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleSave() async {
     final pointing = ref.read(currentPointingProvider);
     final favorites = ref.read(favoritesProvider);
+    final storage = ref.read(storageServiceProvider);
 
     // Don't save if already a favorite
     if (favorites.contains(pointing.id)) {
       return;
     }
 
-    // Haptic feedback using HapticFeedback from flutter/services.dart
-    HapticFeedback.mediumImpact();
+    // Check if this is the user's first-ever save (before toggling)
+    final isFirstSave = !storage.hasEverSaved;
+
+    // Haptic feedback - stronger for first save celebration
+    if (isFirstSave) {
+      HapticFeedback.heavyImpact();
+    } else {
+      HapticFeedback.mediumImpact();
+    }
 
     // Save to favorites
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
 
-    // Show confirmation
-    setState(() => _showSaveConfirmation = true);
+    // Mark first save milestone completed (if applicable)
+    if (isFirstSave) {
+      await storage.markFirstSaveCompleted();
+    }
+
+    // Show confirmation with celebration state
+    setState(() {
+      _isFirstSave = isFirstSave;
+      _showSaveConfirmation = true;
+    });
   }
 
   void _hideSaveConfirmation() {
     if (mounted) {
-      setState(() => _showSaveConfirmation = false);
+      setState(() {
+        _showSaveConfirmation = false;
+        _isFirstSave = false;
+      });
     }
   }
 
@@ -484,11 +504,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
 
-          // Save confirmation overlay
+          // Save confirmation overlay with first-save celebration
           if (_showSaveConfirmation)
             Positioned.fill(
               child: SaveConfirmation(
                 onDismiss: _hideSaveConfirmation,
+                isFirstSave: _isFirstSave,
               ),
             ),
         ],

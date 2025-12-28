@@ -24,6 +24,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.0
   flutter_animate: ^4.5.0
+  confetti: ^0.8.0  # First-save celebration effect
   # Glass effects implemented via BackdropFilter in glass_card.dart
   # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
 

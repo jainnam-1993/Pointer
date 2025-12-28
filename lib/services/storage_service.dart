@@ -9,6 +9,7 @@ class StorageKeys {
   static const preferredTraditions = 'pointer_preferred_traditions';
   static const settings = 'pointer_settings';
   static const subscriptionTier = 'pointer_subscription';
+  static const hasEverSaved = 'pointer_has_ever_saved';
 }
 
 /// App settings model
@@ -87,6 +88,13 @@ class StorageService {
   Future<void> setOnboardingCompleted(bool completed) =>
       _prefs.setBool(StorageKeys.onboardingCompleted, completed);
 
+  // First save milestone tracking
+  bool get hasEverSaved =>
+      _prefs.getBool(StorageKeys.hasEverSaved) ?? false;
+
+  Future<void> markFirstSaveCompleted() =>
+      _prefs.setBool(StorageKeys.hasEverSaved, true);
+
   // Favorites
   List<String> get favorites {
     final stored = _prefs.getString(StorageKeys.favoritePointings);
@@ -162,5 +170,6 @@ class StorageService {
     await _prefs.remove(StorageKeys.preferredTraditions);
     await _prefs.remove(StorageKeys.settings);
     await _prefs.remove(StorageKeys.subscriptionTier);
+    await _prefs.remove(StorageKeys.hasEverSaved);
   }
 }
