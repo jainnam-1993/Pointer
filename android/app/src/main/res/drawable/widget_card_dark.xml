@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#1A1A2E" />
-    <corners android:radius="24dp" />
-</shape>
+<!-- Dark glassmorphism card matching app's PointerColors.dark -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base: Pure black background -->
+    <item>
+        <shape>
+            <solid android:color="#000000" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+
+    <!-- Glass fill: 10% white overlay (glassBackground) -->
+    <item>
+        <shape>
+            <solid android:color="#1AFFFFFF" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+
+    <!-- Subtle purple glow accent (glassGlow) -->
+    <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+        <shape>
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#0D8B5CF6"
+                android:centerColor="#00000000"
+                android:endColor="#0DEC4899" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+
+    <!-- Glass border: 30% white (glassBorder) -->
+    <item>
+        <shape>
+            <stroke android:width="1dp" android:color="#4DFFFFFF" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+</layer-list>

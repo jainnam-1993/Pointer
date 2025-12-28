@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Light theme item - clean single card design -->
+<!-- Light theme item - transparent to show glass card background -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/stack_item_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@android:color/transparent"
     android:padding="4dp">
 
     <!-- Header: Icon + Tradition + Position -->
@@ -61,7 +61,7 @@
         android:maxLines="6"
         android:ellipsize="end"
         android:textSize="15sp"
-        android:textColor="#1A1A1A"
+        android:textColor="#1C1C1E"
         android:lineSpacingMultiplier="1.4"
         android:gravity="top" />
 
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="#666666"
+        android:textColor="#636366"
         android:textStyle="italic"
         android:layout_marginTop="8dp"
         android:visibility="gone" />
