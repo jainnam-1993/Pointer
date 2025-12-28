@@ -27,9 +27,6 @@ dependencies:
   # Glass effects implemented via BackdropFilter in glass_card.dart
   # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
 
-  # Haptics
-  vibration: ^2.0.0
-
   # Sharing
   share_plus: ^10.0.0
 
@@ -55,6 +52,13 @@ dependencies:
 
   # URL Launching (for privacy/terms links)
   url_launcher: ^6.3.0
+
+  # AWS Polly TTS
+  otp: ^3.1.4                           # TOTP code generation
+  flutter_secure_storage: ^9.2.2        # Secure TOTP secret storage
+  http: ^1.2.0                          # HTTP client for AWS API
+  crypto: ^3.0.3                        # AWS SigV4 signing
+  path_provider: ^2.1.0                 # Temp file for audio
 
   # SVG Support (for Ensō icon)
   flutter_svg: ^2.0.10
