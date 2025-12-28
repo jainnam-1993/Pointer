@@ -21,7 +21,7 @@ void main() {
       expect(settings.hapticFeedback, true);
       expect(settings.autoAdvance, false);
       expect(settings.autoAdvanceDelay, 30);
-      expect(settings.theme, 'dark');
+      expect(settings.theme, 'system');
     });
 
     test('copyWith creates new instance with updated values', () {
@@ -93,7 +93,7 @@ void main() {
       expect(settings.hapticFeedback, true);
       expect(settings.autoAdvance, false);
       expect(settings.autoAdvanceDelay, 30);
-      expect(settings.theme, 'dark');
+      expect(settings.theme, 'system');
     });
   });
 
@@ -306,7 +306,7 @@ void main() {
       expect(settings.hapticFeedback, true);
       expect(settings.autoAdvance, false);
       expect(settings.autoAdvanceDelay, 30);
-      expect(settings.theme, 'dark');
+      expect(settings.theme, 'system');
     });
 
     test('settings returns stored settings', () {
