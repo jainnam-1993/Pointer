@@ -119,59 +119,62 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
 
               const SizedBox(height: 4),
 
-              // Playback controls
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Close button
-                  IconButton(
-                    icon: Icon(Icons.close, color: colors.textMuted, size: 20),
-                    onPressed: () {
-                      _ttsService.stop();
-                      widget.onClose?.call();
-                    },
-                    tooltip: 'Close',
-                  ),
+              // Playback controls - wrapped in FittedBox to prevent overflow on small screens
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Close button
+                    IconButton(
+                      icon: Icon(Icons.close, color: colors.textMuted, size: 20),
+                      onPressed: () {
+                        _ttsService.stop();
+                        widget.onClose?.call();
+                      },
+                      tooltip: 'Close',
+                    ),
 
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
-                  // Seek backward
-                  IconButton(
-                    icon: Icon(Icons.replay_10,
-                        color: colors.textPrimary, size: 28),
-                    onPressed: () => _ttsService.seekBackward(seconds: 10),
-                    tooltip: 'Back 10s',
-                  ),
+                    // Seek backward
+                    IconButton(
+                      icon: Icon(Icons.replay_10,
+                          color: colors.textPrimary, size: 28),
+                      onPressed: () => _ttsService.seekBackward(seconds: 10),
+                      tooltip: 'Back 10s',
+                    ),
 
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
-                  // Play/Pause button
-                  _PlayPauseButton(
-                    state: state,
-                    onPlay: () => _ttsService.resume(),
-                    onPause: () => _ttsService.pause(),
-                  ),
+                    // Play/Pause button
+                    _PlayPauseButton(
+                      state: state,
+                      onPlay: () => _ttsService.resume(),
+                      onPause: () => _ttsService.pause(),
+                    ),
 
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
-                  // Seek forward
-                  IconButton(
-                    icon: Icon(Icons.forward_10,
-                        color: colors.textPrimary, size: 28),
-                    onPressed: () => _ttsService.seekForward(seconds: 10),
-                    tooltip: 'Forward 10s',
-                  ),
+                    // Seek forward
+                    IconButton(
+                      icon: Icon(Icons.forward_10,
+                          color: colors.textPrimary, size: 28),
+                      onPressed: () => _ttsService.seekForward(seconds: 10),
+                      tooltip: 'Forward 10s',
+                    ),
 
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
-                  // Voice selection (placeholder)
-                  IconButton(
-                    icon: Icon(Icons.record_voice_over,
-                        color: colors.textMuted, size: 20),
-                    onPressed: () => _showVoiceSelector(context),
-                    tooltip: 'Voice',
-                  ),
-                ],
+                    // Voice selection (placeholder)
+                    IconButton(
+                      icon: Icon(Icons.record_voice_over,
+                          color: colors.textMuted, size: 20),
+                      onPressed: () => _showVoiceSelector(context),
+                      tooltip: 'Voice',
+                    ),
+                  ],
+                ),
               ),
 
               // Error message

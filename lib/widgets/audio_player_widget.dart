@@ -167,57 +167,60 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Controls row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Lock icon for non-premium
-              if (!widget.isPremium)
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Icon(Icons.lock_outline, color: colors.gold, size: 18),
-                ),
-
-              // Skip backward
-              IconButton(
-                icon: Icon(Icons.replay_10, color: colors.iconColor, size: 24),
-                onPressed:
-                    widget.isPremium ? () => _audioService.seekBackward() : null,
-              ),
-
-              // Play/Pause button
-              GestureDetector(
-                onTap: _togglePlayback,
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: widget.isPremium ? colors.accent : colors.gold,
+          // Controls row - wrapped in FittedBox to prevent overflow on small screens
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Lock icon for non-premium
+                if (!widget.isPremium)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Icon(Icons.lock_outline, color: colors.gold, size: 18),
                   ),
-                  child: isLoading
-                      ? const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Icon(
-                          isPlaying ? Icons.pause : Icons.play_arrow,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                ),
-              ),
 
-              // Skip forward
-              IconButton(
-                icon: Icon(Icons.forward_10, color: colors.iconColor, size: 24),
-                onPressed:
-                    widget.isPremium ? () => _audioService.seekForward() : null,
-              ),
-            ],
+                // Skip backward
+                IconButton(
+                  icon: Icon(Icons.replay_10, color: colors.iconColor, size: 24),
+                  onPressed:
+                      widget.isPremium ? () => _audioService.seekBackward() : null,
+                ),
+
+                // Play/Pause button
+                GestureDetector(
+                  onTap: _togglePlayback,
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.isPremium ? colors.accent : colors.gold,
+                    ),
+                    child: isLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Icon(
+                            isPlaying ? Icons.pause : Icons.play_arrow,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                  ),
+                ),
+
+                // Skip forward
+                IconButton(
+                  icon: Icon(Icons.forward_10, color: colors.iconColor, size: 24),
+                  onPressed:
+                      widget.isPremium ? () => _audioService.seekForward() : null,
+                ),
+              ],
+            ),
           ),
 
           // Progress slider (only for premium)
