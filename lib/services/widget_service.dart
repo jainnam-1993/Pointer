@@ -13,6 +13,8 @@ class _WidgetKeys {
   static const tradition = 'pointing_tradition';
   static const lastUpdated = 'pointing_last_updated';
   static const updateIntervalHours = 'update_interval_hours';
+  // Multi-pointing widget cache (JSON array)
+  static const pointingsCache = 'pointings_cache';
 }
 
 /// Service for managing home screen widget updates.
@@ -35,6 +37,43 @@ class WidgetService {
     await HomeWidget.setAppGroupId(iosAppGroup);
     // Register the callback for widget taps
     HomeWidget.registerInteractivityCallback(widgetBackgroundCallback);
+    // Populate widget cache with pointings
+    await populatePointingsCache();
+  }
+
+  /// Populate the pointings cache for the multi-pointing widget.
+  /// Stores all pointings as a JSON array for the Android StackView widget.
+  static Future<void> populatePointingsCache() async {
+    try {
+      // Convert all pointings to JSON format expected by widget
+      final pointingsJson = pointings.map((p) {
+        final traditionInfo = traditions[p.tradition];
+        return {
+          'id': p.id,
+          'content': p.content,
+          'tradition': traditionInfo?.name ?? p.tradition.name,
+          'teacher': p.teacher ?? '',
+        };
+      }).toList();
+
+      // Save as JSON string
+      final jsonString = jsonEncode(pointingsJson);
+      await HomeWidget.saveWidgetData<String>(
+        _WidgetKeys.pointingsCache,
+        jsonString,
+      );
+
+      debugPrint('Widget cache populated with ${pointings.length} pointings');
+
+      // Trigger widget update
+      await HomeWidget.updateWidget(
+        iOSName: 'PointerWidget',
+        androidName: androidWidgetName,
+        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+      );
+    } catch (e) {
+      debugPrint('Failed to populate widget cache: $e');
+    }
   }
 
   /// Update widget with the given pointing data
@@ -146,8 +185,11 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   final path = uri.path;
 
   if (path == '/refresh' || uri.host == 'refresh') {
-    // User tapped refresh - update with new pointing
-    await WidgetService.updateWithRandomPointing();
+    // User tapped refresh - repopulate cache and update widget
+    await WidgetService.populatePointingsCache();
+  } else if (path == '/prefetch' || uri.host == 'prefetch') {
+    // Widget requesting more data - repopulate cache
+    await WidgetService.populatePointingsCache();
   } else if (path == '/save' || uri.host == 'save') {
     // User tapped save - save current pointing to favorites
     await _saveCurrentWidgetPointing();
