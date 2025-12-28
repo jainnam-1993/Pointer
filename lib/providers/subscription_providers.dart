@@ -16,8 +16,7 @@ import 'core_providers.dart';
 // ============================================================
 
 /// Set to true to force premium tier during testing
-/// TODO: Set to false before production release
-const bool kForcePremiumForTesting = true;
+const bool kForcePremiumForTesting = false;
 
 // ============================================================
 // Freemium - Daily Usage Tracking

@@ -6,60 +6,16 @@ import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
-import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/onboarding_animations.dart';
 
-class OnboardingPage {
-  final String id;
-  final String title;
-  final String subtitle;
-  final String description;
-  final IconData icon;
-
-  const OnboardingPage({
-    required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.description,
-    required this.icon,
-  });
-}
-
-const onboardingPages = [
-  OnboardingPage(
-    id: 'welcome',
-    title: 'Welcome to Pointer',
-    subtitle: 'Direct invitations to recognize what you already are',
-    description:
-        'Each pointing is a finger pointing at the moon—not the moon itself. Use these pointers to look, not to think about.',
-    icon: Icons.auto_awesome,
-  ),
-  OnboardingPage(
-    id: 'traditions',
-    title: 'Multiple Traditions',
-    subtitle: 'One truth, many expressions',
-    description:
-        'Explore pointings from Advaita, Zen, Direct Path, Contemporary, and Original traditions. All point to the same recognition.',
-    icon: Icons.self_improvement,
-  ),
-  OnboardingPage(
-    id: 'practice',
-    title: 'Daily Pointings',
-    subtitle: 'Gentle reminders throughout your day',
-    description:
-        'Receive notifications that invite you to pause and look. Each pointing is a fresh opportunity to recognize your true nature.',
-    icon: Icons.all_inclusive,
-  ),
-  OnboardingPage(
-    id: 'notifications',
-    title: 'Stay Connected',
-    subtitle: 'Would you like daily reminders?',
-    description:
-        'Enable notifications to receive gentle pointing reminders throughout your day. You can customize timing later.',
-    icon: Icons.notifications_active,
-  ),
-];
-
+/// Contemplative onboarding experience for Pointer app.
+///
+/// Four screens that immerse the user in the app's philosophy:
+/// 1. The Interruption - immediate pointing question
+/// 2. The Contrast - meditation apps vs. direct inquiry
+/// 3. The Simplicity - letting go of progress/streaks/becoming
+/// 4. Notifications - the entire practice distilled
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -77,23 +33,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
-  Future<void> _handleNext() async {
-    HapticFeedback.mediumImpact();
+  void _advanceToPage(int page) {
+    if (!mounted || page > 3) return;
+    HapticFeedback.lightImpact();
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+    );
+  }
 
-    if (_currentPage < onboardingPages.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+  Future<void> _handleContinue() async {
+    HapticFeedback.lightImpact();
+    if (_currentPage < 3) {
+      _advanceToPage(_currentPage + 1);
     } else {
       await _finishOnboarding(false);
     }
   }
 
   Future<void> _handleEnableNotifications() async {
-    HapticFeedback.heavyImpact();
-    // Request notification permissions
-    final granted = await ref.read(notificationServiceProvider).requestPermissions();
+    HapticFeedback.mediumImpact();
+    final granted =
+        await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
   }
 
@@ -109,7 +71,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final isLastPage = _currentPage == onboardingPages.length - 1;
+    final isLastPage = _currentPage == 3;
 
     return Scaffold(
       body: Stack(
@@ -118,41 +80,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           SafeArea(
             child: Column(
               children: [
-                // Page view
+                // Page view - allows swiping
                 Expanded(
-                  child: PageView.builder(
+                  child: PageView(
                     controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onPageChanged: (page) => setState(() => _currentPage = page),
-                    itemCount: onboardingPages.length,
-                    itemBuilder: (context, index) {
-                      final page = onboardingPages[index];
-                      return _OnboardingPageView(page: page);
+                    onPageChanged: (page) {
+                      HapticFeedback.lightImpact();
+                      setState(() => _currentPage = page);
                     },
+                    children: const [
+                      _InterruptionPage(),
+                      _ContrastPage(),
+                      _SimplicityPage(),
+                      _NotificationsPage(),
+                    ],
                   ),
                 ),
 
                 // Page indicators
-                Builder(
-                  builder: (context) {
-                    final dotColor = context.colors.primary;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        onboardingPages.length,
-                        (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: _currentPage == index ? 24 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: dotColor.withValues(alpha: _currentPage == index ? 1 : 0.3),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                _PageIndicators(
+                  currentPage: _currentPage,
+                  pageCount: 4,
                 ),
 
                 const SizedBox(height: 32),
@@ -180,7 +128,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           builder: (context) {
                             final textColor = context.colors.textMuted;
                             return TextButton(
-                              onPressed: _handleNext,
+                              onPressed: () => _finishOnboarding(false),
                               child: Text(
                                 'Maybe Later',
                                 style: TextStyle(
@@ -196,7 +144,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           width: double.infinity,
                           child: _OnboardingButton(
                             label: 'Continue',
-                            onPressed: _handleNext,
+                            onPressed: _handleContinue,
                             isPrimary: true,
                           ),
                         ),
@@ -212,94 +160,409 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-class _OnboardingPageView extends StatelessWidget {
-  final OnboardingPage page;
+// =============================================================================
+// Screen 1: The Interruption
+// =============================================================================
 
-  const _OnboardingPageView({required this.page});
+/// Screen starts empty, then reveals question word-by-word.
+/// "What is looking through your eyes right now?"
+/// Followed by "Don't answer. Just look."
+class _InterruptionPage extends StatefulWidget {
+  const _InterruptionPage();
+
+  @override
+  State<_InterruptionPage> createState() => _InterruptionPageState();
+}
+
+class _InterruptionPageState extends State<_InterruptionPage> {
+  bool _showSubtext = false;
+  bool _showIcon = false;
+
+  void _onMainTextComplete() {
+    if (!mounted) return;
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _showSubtext = true);
+    });
+  }
+
+  void _onSubtextComplete() {
+    if (!mounted) return;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() => _showIcon = true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final textColor = colors.textPrimary;
-    final textColorSecondary = colors.textSecondary;
-    final textColorBody = colors.textPrimary;
-    final iconBgColor = colors.primary.withValues(alpha: 0.1);
-    final iconBorderColor = colors.primary.withValues(alpha: 0.2);
-    final iconColor = colors.primary;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
-        key: ValueKey(page.id), // Key ensures fresh animations per page
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon container with staggered animation
-          StaggeredFadeIn(
-            index: 0,
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: iconBgColor,
-                border: Border.all(
-                  color: iconBorderColor,
-                  width: 1,
-                ),
-              ),
-              child: Icon(
-                page.icon,
-                size: 48,
-                color: iconColor,
-              ),
+          // Main question - word by word reveal
+          TypewriterText(
+            text: 'What is looking through your eyes right now?',
+            style: TextStyle(
+              fontSize: 28,
+              height: 1.5,
+              fontWeight: FontWeight.w300,
+              color: colors.textPrimary,
+              letterSpacing: -0.5,
             ),
+            wordDelay: const Duration(milliseconds: 250),
+            startDelay: const Duration(milliseconds: 1500),
+            onComplete: reduceMotion ? null : _onMainTextComplete,
           ),
-          const SizedBox(height: 32),
 
-          // Title with staggered animation
-          StaggeredFadeIn(
-            index: 1,
-            child: Text(
-              page.title,
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: textColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 40),
 
-          // Subtitle with staggered animation
-          StaggeredFadeIn(
-            index: 2,
-            child: Text(
-              page.subtitle,
+          // Subtext - appears after main question
+          AnimatedOpacity(
+            opacity: reduceMotion || _showSubtext ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOut,
+            child: TypewriterText(
+              key: ValueKey('subtext_$_showSubtext'),
+              text: "Don't answer. Just look.",
               style: TextStyle(
                 fontSize: 18,
-                color: textColorSecondary,
+                height: 1.6,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
+                color: colors.textSecondary,
               ),
-              textAlign: TextAlign.center,
+              wordDelay: const Duration(milliseconds: 200),
+              startDelay: Duration.zero,
+              onComplete: reduceMotion ? null : _onSubtextComplete,
             ),
           ),
-          const SizedBox(height: 32),
 
-          // Description card with staggered animation
-          StaggeredFadeIn(
-            index: 3,
-            child: GlassCard(
-              padding: const EdgeInsets.all(24),
+          const SizedBox(height: 60),
+
+          // Subtle eye icon - fades in last
+          AnimatedOpacity(
+            opacity: reduceMotion || _showIcon ? 0.4 : 0.0,
+            duration: const Duration(milliseconds: 1200),
+            curve: Curves.easeOut,
+            child: BreathingGlow(
+              glowColor: colors.accent,
+              maxBlur: 15,
+              maxSpread: 3,
+              child: Icon(
+                Icons.visibility_outlined,
+                size: 32,
+                color: colors.textMuted,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Screen 2: The Contrast
+// =============================================================================
+
+/// Shows meditation app concept, dissolves it away, reveals the question.
+class _ContrastPage extends StatelessWidget {
+  const _ContrastPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          DissolveTransition(
+            holdDuration: const Duration(seconds: 3),
+            dissolveDuration: const Duration(milliseconds: 1200),
+            firstChild: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.self_improvement_outlined,
+                  size: 48,
+                  color: colors.textMuted,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Meditation apps teach you to become a better meditator.',
+                  style: TextStyle(
+                    fontSize: 22,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    color: colors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            secondChild: GlassCard(
+              padding: const EdgeInsets.all(32),
+              intensity: GlassIntensity.light,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Pointer asks:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: colors.textMuted,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Who is meditating?',
+                    style: TextStyle(
+                      fontSize: 28,
+                      height: 1.4,
+                      fontWeight: FontWeight.w300,
+                      color: colors.textPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Screen 3: The Simplicity
+// =============================================================================
+
+/// Strike-through animation for concepts being let go.
+class _SimplicityPage extends StatefulWidget {
+  const _SimplicityPage();
+
+  @override
+  State<_SimplicityPage> createState() => _SimplicityPageState();
+}
+
+class _SimplicityPageState extends State<_SimplicityPage> {
+  bool _showRemains = false;
+
+  void _onStrikeComplete() {
+    if (!mounted) return;
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _showRemains = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Strike-through sequence
+          if (!_showRemains)
+            StrikeThroughReveal(
+              items: const ['Progress', 'Streaks', 'Becoming'],
+              itemDelay: const Duration(milliseconds: 400),
+              strikeDelay: const Duration(milliseconds: 600),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w400,
+                color: colors.textSecondary,
+                height: 1.4,
+              ),
+              onComplete: reduceMotion
+                  ? () => setState(() => _showRemains = true)
+                  : _onStrikeComplete,
+            ),
+
+          // What remains
+          AnimatedOpacity(
+            opacity: _showRemains ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOut,
+            child: AnimatedSlide(
+              offset: _showRemains ? Offset.zero : const Offset(0, 0.1),
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeOut,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Just recognition.',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w300,
+                      color: colors.textPrimary,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Invitations to see what you already are.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                      color: colors.textSecondary,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Screen 4: Notifications
+// =============================================================================
+
+/// Simulates a notification banner, then explains the practice.
+class _NotificationsPage extends StatefulWidget {
+  const _NotificationsPage();
+
+  @override
+  State<_NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<_NotificationsPage> {
+  bool _showExplanation = false;
+  bool _showConclusion = false;
+
+  void _onNotificationComplete() {
+    if (!mounted) return;
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() => _showExplanation = true);
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted) setState(() => _showConclusion = true);
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Simulated notification
+          NotificationSimulation(
+            message: 'Notice: You are not the voice in your head.',
+            delay: const Duration(seconds: 1),
+            onComplete: reduceMotion ? null : _onNotificationComplete,
+          ),
+
+          const SizedBox(height: 48),
+
+          // Explanation text
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: AnimatedOpacity(
+              opacity: reduceMotion || _showExplanation ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeOut,
               child: Text(
-                page.description,
+                'A notification arrives.\nYou pause. You look.',
                 style: TextStyle(
-                  fontSize: 16,
-                  color: textColorBody,
-                  height: 1.5,
+                  fontSize: 20,
+                  height: 1.6,
+                  fontWeight: FontWeight.w400,
+                  color: colors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
           ),
+
+          const SizedBox(height: 32),
+
+          // Conclusion
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: AnimatedOpacity(
+              opacity: reduceMotion || _showConclusion ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeOut,
+              child: GlassCard(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                intensity: GlassIntensity.light,
+                child: Text(
+                  "That's the entire practice.",
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                    color: colors.textPrimary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Shared Components
+// =============================================================================
+
+class _PageIndicators extends StatelessWidget {
+  final int currentPage;
+  final int pageCount;
+
+  const _PageIndicators({
+    required this.currentPage,
+    required this.pageCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dotColor = context.colors.primary;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        pageCount,
+        (index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: currentPage == index ? 24 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: dotColor.withValues(alpha: currentPage == index ? 1 : 0.3),
+          ),
+        ),
       ),
     );
   }
@@ -319,9 +582,7 @@ class _OnboardingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = context.colors.textPrimary;
-    final borderColor = isPrimary
-        ? context.colors.glassBorderActive
-        : null;
+    final borderColor = isPrimary ? context.colors.glassBorderActive : null;
 
     return GlassCard(
       padding: const EdgeInsets.symmetric(vertical: 16),

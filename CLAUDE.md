@@ -49,10 +49,11 @@ flutter pub get                # Install dependencies
 │   ├── theme/
 │   │   └── app_theme.dart     # PointerColors (ThemeExtension), AppThemeMode, theme variants (dark/light/highContrast/oled)
 │   ├── providers/
-│   │   ├── core_providers.dart      # Foundation providers (SharedPreferences, storage, notifications, onboarding)
-│   │   ├── settings_providers.dart  # User preferences (zen mode, OLED, accessibility, theme, notifications)
-│   │   ├── content_providers.dart   # Content state (pointings, favorites, affinity, teaching filters)
-│   │   └── providers.dart           # Riverpod providers (storage, navigation, TTS)
+│   │   ├── core_providers.dart          # Foundation providers (SharedPreferences, storage, notifications, onboarding)
+│   │   ├── settings_providers.dart      # User preferences (zen mode, OLED, accessibility, theme, notifications)
+│   │   ├── content_providers.dart       # Content state (pointings, favorites, affinity, teaching filters)
+│   │   ├── subscription_providers.dart  # Subscription state (RevenueCat integration, freemium daily limits)
+│   │   └── providers.dart               # Riverpod providers (storage, navigation, TTS)
 │   ├── screens/
 │   │   ├── main_shell.dart    # Bottom navigation shell
 │   │   ├── home_screen.dart   # Daily pointing display
@@ -61,7 +62,7 @@ flutter pub get                # Install dependencies
 │   │   ├── library_screen.dart    # Browse articles, teachings, TTS reader
 │   │   ├── settings_screen.dart   # Settings with TTS config
 │   │   ├── onboarding_screen.dart
-│   │   └── paywall_screen.dart
+│   │   └── paywall_screen.dart    # Premium paywall (restore purchases, privacy/terms links)
 │   ├── widgets/
 │   │   ├── animated_gradient.dart      # Background gradient animation
 │   │   ├── animated_transitions.dart   # Staggered fade-in, text switcher animations
@@ -74,7 +75,7 @@ flutter pub get                # Install dependencies
 │   │   ├── notification_service.dart       # Notification scheduling (presets, time windows, quiet hours)
 │   │   ├── usage_tracking_service.dart     # Daily pointing limit (freemium)
 │   │   ├── widget_service.dart             # Home widget data updates
-│   │   ├── revenue_cat_service.dart        # RevenueCat subscription integration
+│   │   ├── revenue_cat_service.dart        # RevenueCat integration (lifetime purchase)
 │   │   ├── aws_credential_service.dart     # AWS TOTP authentication
 │   │   ├── tts_service.dart                # Text-to-speech via AWS Polly
 │   │   ├── affinity_service.dart           # Tradition preference tracking
@@ -175,6 +176,14 @@ flutter pub get                # Install dependencies
 - **Favorites**: favoritesProvider (StateNotifier) with toggle()/isFavorite(), persisted via StorageService
 - **Teaching filters**: TeachingFilterNotifier with multi-dimensional filters (lineage, topics Set, moods Set, teacher, type), apply() returns filtered teachings
 
+**Subscription Providers** (`lib/providers/subscription_providers.dart`): Subscription state and freemium enforcement:
+- **SubscriptionNotifier**: Manages subscription tier (free/premium) via RevenueCat SDK, offline-first with SharedPreferences caching, mounted checks after async operations
+- **DailyUsageNotifier**: Enforces 2 pointings/day limit for free users, auto-resets at midnight, premium bypasses all checks
+- **State models**: SubscriptionState (tier, loading, products, error, expirationDate), SubscriptionTier enum (free/premium)
+- **Premium features**: Unlimited pointings, TTS audio, audio pointing playback
+- **Testing flag**: `kForcePremiumForTesting` constant for development (set to false in production)
+- **Integration**: RevenueCatService singleton for purchases, UsageTrackingService for daily limits, StorageService for offline caching
+
 **Data model**: `Pointing` has id, content, instruction, tradition (Advaita/Zen/Direct Path/Contemporary/Original), context (morning/midday/evening/stress/general), teacher, source.
 
 **Notification Scheduling** (`lib/services/notification_service.dart`):
@@ -249,7 +258,7 @@ flutter pub get                # Install dependencies
 - TTS Discoverability: Add visible "Audio & TTS" section in Settings (currently hidden in developer menu)
 
 **Completed:**
-- ✓ RevenueCat integration (subscription payments) - Implemented in `lib/services/revenue_cat_service.dart`
+- ✓ RevenueCat integration (one-time purchase) - Implemented in `lib/services/revenue_cat_service.dart`
 - ✓ Premium tier gating for unlimited pointings - Implemented via `UsageTrackingService` (2 daily limit for free users)
 - ✓ Text-to-speech (TTS) - AWS Polly integration for article audio playback
 
@@ -320,24 +329,29 @@ Pre-recorded guided readings and teachings (distinct from TTS synthesis).
 
 ## Freemium Model - Daily Usage Limits
 
-Daily pointing view limit for free users (2 per day), enforced via `UsageTrackingService`.
+Daily pointing view limit for free users (2 per day), enforced via subscription and usage tracking system.
 
 **Architecture:**
+- **Subscription management**: `subscription_providers.dart` manages RevenueCat integration and tier state (free/premium)
+- **Usage enforcement**: `UsageTrackingService` tracks daily pointing views for free users
 - **Limit**: Free users: 2 pointings/day, Premium: unlimited
 - **Reset**: Automatic daily reset at midnight (based on device date)
 - **Storage**: SharedPreferences (query-string encoded: `viewCount=X&lastResetDate=YYYY-MM-DD`)
-- **State**: Managed via `dailyUsageProvider` (Riverpod StateNotifier)
-- **Gating**: Home screen checks `canViewPointing()` before showing next pointing
+- **State**: Managed via `subscriptionProvider` (SubscriptionNotifier) and `dailyUsageProvider` (DailyUsageNotifier)
+- **Gating**: Home screen checks `canViewPointing(isPremium)` before showing next pointing
+- **Offline-first**: Subscription tier cached locally, RevenueCat syncs when online
 
 **User Flow:**
-1. Free user taps "Next" → checks `dailyUsageProvider.canViewPointing()`
+1. Free user taps "Next" → checks `dailyUsageProvider.canViewPointing(isPremium)`
 2. If under limit: Show pointing, increment counter
 3. If limit reached: Show paywall with "Upgrade to Premium"
 4. Premium users: Bypass all checks (always return true)
 
 **Files:**
+- `lib/providers/subscription_providers.dart` - SubscriptionNotifier, DailyUsageNotifier, SubscriptionState models
+- `lib/services/revenue_cat_service.dart` - RevenueCat SDK integration, lifetime purchase flow (product: `pointer_premium_lifetime`, test API keys configured)
 - `lib/services/usage_tracking_service.dart` - Counter logic, daily reset
-- `lib/providers/providers.dart` - `usageTrackingServiceProvider`, `dailyUsageProvider`, `DailyUsageNotifier`
+- `lib/providers/providers.dart` - Legacy `usageTrackingServiceProvider` (deprecated, use subscription_providers.dart)
 
 **Testing:**
 - `test/services/usage_tracking_service_test.dart` - Counter increment, daily reset, limit checks
@@ -392,6 +406,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Riverpod Providers** | `lib/providers/providers.dart` | State management |
 | **Settings Providers** | `lib/providers/settings_providers.dart` | User preferences (zen mode, OLED, accessibility, theme) |
 | **Content Providers** | `lib/providers/content_providers.dart` | Content state (pointings, favorites, affinity, teaching filters) |
+| **Subscription Providers** | `lib/providers/subscription_providers.dart` | Subscription state (RevenueCat, freemium limits, testing flag kForcePremiumForTesting) |
 | **GoRouter** | `lib/router.dart` | Navigation |
 | **flutter_animate** | Already in pubspec | Animations |
 | **AnimatedTransitions** | `lib/widgets/animated_transitions.dart` | StaggeredFadeIn (list items), AnimatedTextSwitcher (text changes), consistent animation durations/curves |
@@ -401,7 +416,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Usage Tracking** | `lib/providers/providers.dart` | `usageTrackingServiceProvider`, `dailyUsageProvider` for freemium limits |
 | **PointingSelector** | `lib/services/pointing_selector.dart` | Time-of-day aware pointing selection (TimeContext enum, respects viewed-today tracking, 30% preference for time-specific pointings) |
 | **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
-| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson) |
+| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, defaults: theme='system', hapticFeedback=true, autoAdvance=false) |
 | **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
 | **PointerWidgetProvider** | `android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt` | Android home widget with error handling (try-catch, null safety), logging (TAG "PointerWidget"), updateAllWidgets() for refresh |
 | **Screenshot Test Setup** | `integration_test/screenshot_test.dart` | UncontrolledProviderScope + mocked SharedPreferences + settle() helper |

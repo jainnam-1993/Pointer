@@ -2,16 +2,15 @@ import 'dart:io';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-/// RevenueCat API keys (replace with actual keys before production)
+/// RevenueCat API keys
 class _RevenueCatKeys {
-  static const iosApiKey = 'appl_YOUR_IOS_API_KEY';
-  static const androidApiKey = 'goog_YOUR_ANDROID_API_KEY';
+  static const iosApiKey = 'test_wXZuGwQRPBNGSUglyDrlTGAxLEV';
+  static const androidApiKey = 'test_wXZuGwQRPBNGSUglyDrlTGAxLEV';
 }
 
 /// Product identifiers configured in RevenueCat dashboard
 class RevenueCatProducts {
-  static const monthlyId = 'pointer_premium_monthly';
-  static const yearlyId = 'pointer_premium_yearly';
+  static const lifetimeId = 'pointer_premium_lifetime';
 }
 
 /// Entitlement identifiers
@@ -196,8 +195,7 @@ class SubscriptionProduct {
     required this.package,
   });
 
-  bool get isMonthly => packageType == PackageType.monthly;
-  bool get isYearly => packageType == PackageType.annual;
+  bool get isLifetime => packageType == PackageType.lifetime;
 }
 
 /// Current subscription status

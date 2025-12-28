@@ -1,3 +1,6 @@
+# Override global gitignore - Flutter needs lib/ tracked
+!lib/
+
 # Miscellaneous
 *.class
 *.log
