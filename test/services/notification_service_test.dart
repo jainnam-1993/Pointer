@@ -107,16 +107,16 @@ void main() {
     });
 
     group('Android Channel Configuration', () {
-      test('channel has high importance with custom sound', () {
+      test('channel has max importance with custom sound', () {
         final channel = NotificationService.androidChannel;
 
-        expect(channel.importance, Importance.high);
+        expect(channel.importance, Importance.max);
       });
 
-      test('channel has vibration disabled', () {
+      test('channel has vibration enabled', () {
         final channel = NotificationService.androidChannel;
 
-        expect(channel.enableVibration, false);
+        expect(channel.enableVibration, true);
       });
 
       test('channel has custom bell chime sound enabled', () {
@@ -128,7 +128,7 @@ void main() {
       test('channel has correct id and name', () {
         final channel = NotificationService.androidChannel;
 
-        expect(channel.id, 'pointings_v3');
+        expect(channel.id, 'pointings_v6');
         expect(channel.name, 'Daily Pointings');
       });
 
@@ -167,28 +167,28 @@ void main() {
     });
 
     group('Android Notification Details', () {
-      test('uses high importance for heads-up display', () {
+      test('uses max importance for heads-up display', () {
         final details = NotificationService.androidNotificationDetails;
 
-        expect(details.importance, Importance.high);
+        expect(details.importance, Importance.max);
       });
 
-      test('uses high priority for immediate delivery', () {
+      test('uses max priority for immediate delivery', () {
         final details = NotificationService.androidNotificationDetails;
 
-        expect(details.priority, Priority.high);
+        expect(details.priority, Priority.max);
       });
 
       test('uses correct channel', () {
         final details = NotificationService.androidNotificationDetails;
 
-        expect(details.channelId, 'pointings_v3');
+        expect(details.channelId, 'pointings_v6');
       });
 
-      test('has vibration disabled', () {
+      test('has vibration enabled', () {
         final details = NotificationService.androidNotificationDetails;
 
-        expect(details.enableVibration, false);
+        expect(details.enableVibration, true);
       });
 
       test('has custom bell chime sound enabled', () {
@@ -212,9 +212,9 @@ void main() {
         expect(notificationDetails.iOS!.presentBanner, false);
         expect(notificationDetails.iOS!.presentList, true);
 
-        // Android: high importance with custom sound, no vibration
-        expect(notificationDetails.android!.importance, Importance.high);
-        expect(notificationDetails.android!.priority, Priority.high);
+        // Android: max importance with custom sound and vibration
+        expect(notificationDetails.android!.importance, Importance.max);
+        expect(notificationDetails.android!.priority, Priority.max);
       });
     });
 
