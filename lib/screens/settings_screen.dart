@@ -22,7 +22,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen>
+    with WidgetsBindingObserver {
   bool _notificationsEnabled = true;
   bool _permissionGranted = true;
   final int _frequency = 3;
@@ -34,7 +35,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkPermissions();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Re-check permissions when app resumes (user returns from system settings)
+    if (state == AppLifecycleState.resumed) {
+      _checkPermissions();
+    }
   }
 
   Future<void> _checkPermissions() async {
