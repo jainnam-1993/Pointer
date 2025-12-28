@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light theme item - clean single card design -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stack_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="4dp">
+
+    <!-- Header: Icon + Tradition + Position -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/stack_item_app_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/widget_icon_circle"
+            android:text="P"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/stack_item_tradition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08"
+            android:layout_marginStart="8dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/stack_item_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="#888888" />
+    </LinearLayout>
+
+    <!-- Content - main quote -->
+    <TextView
+        android:id="@+id/stack_item_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:maxLines="6"
+        android:ellipsize="end"
+        android:textSize="15sp"
+        android:textColor="#1A1A1A"
+        android:lineSpacingMultiplier="1.4"
+        android:gravity="top" />
+
+    <!-- Teacher attribution -->
+    <TextView
+        android:id="@+id/stack_item_teacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:textStyle="italic"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
+    <!-- Hidden accent stripe for code compatibility -->
+    <TextView
+        android:id="@+id/stack_item_accent_stripe"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+</LinearLayout>
