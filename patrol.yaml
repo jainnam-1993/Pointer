@@ -1,0 +1,22 @@
+# Patrol configuration for screenshot testing
+# Run tests: patrol test -t integration_test/screenshot_test.dart
+
+app_name: Pointer
+package_name: com.pointer
+bundle_id: com.pointer
+
+# Test targets
+targets:
+  - integration_test/screenshot_test.dart
+
+# Screenshot output directory
+output_dir: screenshots
+
+# Test configuration
+android:
+  app_server_port: 8081
+  test_server_port: 8082
+
+ios:
+  app_server_port: 8081
+  test_server_port: 8082
