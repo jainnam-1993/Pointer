@@ -1,0 +1,282 @@
+/// Content providers - Pointings, favorites, affinity, and teaching filters
+///
+/// Manages spiritual content: daily pointings with history navigation,
+/// user favorites, tradition affinity learning, and teaching library filters.
+library;
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../data/pointings.dart';
+import '../data/teaching.dart';
+import '../services/affinity_service.dart';
+import '../services/storage_service.dart';
+import '../services/widget_service.dart';
+import 'core_providers.dart';
+
+// ============================================================
+// Tradition Affinity Learning
+// ============================================================
+
+/// Affinity service provider for tracking tradition preferences
+final affinityServiceProvider = Provider<AffinityService>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return AffinityService(prefs);
+});
+
+// ============================================================
+// Current Pointing with History Navigation
+// ============================================================
+
+/// Current pointing state
+final currentPointingProvider =
+    StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
+  return CurrentPointingNotifier();
+});
+
+class CurrentPointingNotifier extends StateNotifier<Pointing> {
+  final List<Pointing> _history = [];
+  int _historyIndex = -1;
+
+  CurrentPointingNotifier() : super(getRandomPointing()) {
+    // Add initial pointing to history
+    _history.add(state);
+    _historyIndex = 0;
+    // Update widget with initial pointing
+    _updateWidget(state);
+  }
+
+  void nextPointing({Tradition? tradition, PointingContext? context}) {
+    // If we're in the middle of history, clear forward history
+    if (_historyIndex < _history.length - 1) {
+      _history.removeRange(_historyIndex + 1, _history.length);
+    }
+
+    // Get new pointing and add to history
+    state = getRandomPointing(tradition: tradition, context: context);
+    _history.add(state);
+    _historyIndex = _history.length - 1;
+
+    // Limit history to last 50 pointings
+    if (_history.length > 50) {
+      _history.removeAt(0);
+      _historyIndex--;
+    }
+
+    _updateWidget(state);
+  }
+
+  void previousPointing() {
+    // Can't go back if we're at the beginning
+    if (_historyIndex <= 0) {
+      return;
+    }
+
+    // Navigate back in history
+    _historyIndex--;
+    state = _history[_historyIndex];
+    _updateWidget(state);
+  }
+
+  void setPointing(Pointing pointing) {
+    // When manually setting, add to history like nextPointing
+    if (_historyIndex < _history.length - 1) {
+      _history.removeRange(_historyIndex + 1, _history.length);
+    }
+
+    state = pointing;
+    _history.add(state);
+    _historyIndex = _history.length - 1;
+
+    if (_history.length > 50) {
+      _history.removeAt(0);
+      _historyIndex--;
+    }
+
+    _updateWidget(state);
+  }
+
+  /// Update home screen widget with current pointing
+  void _updateWidget(Pointing pointing) {
+    WidgetService.updateWidget(pointing);
+  }
+}
+
+// ============================================================
+// Favorites
+// ============================================================
+
+/// Favorites provider
+final favoritesProvider =
+    StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
+  final storage = ref.watch(storageServiceProvider);
+  return FavoritesNotifier(storage);
+});
+
+class FavoritesNotifier extends StateNotifier<List<String>> {
+  final StorageService _storage;
+
+  FavoritesNotifier(this._storage) : super(_storage.favorites);
+
+  Future<void> toggle(String pointingId) async {
+    if (state.contains(pointingId)) {
+      await _storage.removeFavorite(pointingId);
+      state = [...state]..remove(pointingId);
+    } else {
+      await _storage.addFavorite(pointingId);
+      state = [...state, pointingId];
+    }
+  }
+
+  bool isFavorite(String pointingId) => state.contains(pointingId);
+}
+
+// ============================================================
+// Teaching Filter - Tag-based filtering for Library
+// ============================================================
+
+/// State for teaching filters
+class TeachingFilterState {
+  final Tradition? lineage;
+  final Set<String> topics;
+  final Set<String> moods;
+  final String? teacher;
+  final TeachingType? type;
+
+  const TeachingFilterState({
+    this.lineage,
+    this.topics = const {},
+    this.moods = const {},
+    this.teacher,
+    this.type,
+  });
+
+  TeachingFilterState copyWith({
+    Tradition? lineage,
+    Set<String>? topics,
+    Set<String>? moods,
+    String? teacher,
+    TeachingType? type,
+    bool clearLineage = false,
+    bool clearTeacher = false,
+    bool clearType = false,
+  }) {
+    return TeachingFilterState(
+      lineage: clearLineage ? null : (lineage ?? this.lineage),
+      topics: topics ?? this.topics,
+      moods: moods ?? this.moods,
+      teacher: clearTeacher ? null : (teacher ?? this.teacher),
+      type: clearType ? null : (type ?? this.type),
+    );
+  }
+
+  /// Apply filters to get matching teachings
+  List<Teaching> apply() {
+    return TeachingRepository.filter(
+      lineage: lineage,
+      topics: topics.isEmpty ? null : topics,
+      moods: moods.isEmpty ? null : moods,
+      teacher: teacher,
+      type: type,
+    );
+  }
+
+  /// Check if any filters are active
+  bool get hasActiveFilters =>
+      lineage != null ||
+      topics.isNotEmpty ||
+      moods.isNotEmpty ||
+      teacher != null ||
+      type != null;
+}
+
+/// Teaching filter notifier
+class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
+  TeachingFilterNotifier() : super(const TeachingFilterState());
+
+  /// Set lineage filter
+  void setLineage(Tradition? lineage) {
+    state = state.copyWith(lineage: lineage, clearLineage: lineage == null);
+  }
+
+  /// Toggle a topic tag
+  void toggleTopic(String topic) {
+    final topics = Set<String>.from(state.topics);
+    if (topics.contains(topic)) {
+      topics.remove(topic);
+    } else {
+      topics.add(topic);
+    }
+    state = state.copyWith(topics: topics);
+  }
+
+  /// Set topics (replace all)
+  void setTopics(Set<String> topics) {
+    state = state.copyWith(topics: topics);
+  }
+
+  /// Toggle a mood tag
+  void toggleMood(String mood) {
+    final moods = Set<String>.from(state.moods);
+    if (moods.contains(mood)) {
+      moods.remove(mood);
+    } else {
+      moods.add(mood);
+    }
+    state = state.copyWith(moods: moods);
+  }
+
+  /// Set moods (replace all)
+  void setMoods(Set<String> moods) {
+    state = state.copyWith(moods: moods);
+  }
+
+  /// Set teacher filter
+  void setTeacher(String? teacher) {
+    state = state.copyWith(teacher: teacher, clearTeacher: teacher == null);
+  }
+
+  /// Set teaching type filter
+  void setType(TeachingType? type) {
+    state = state.copyWith(type: type, clearType: type == null);
+  }
+
+  /// Clear all filters
+  void reset() {
+    state = const TeachingFilterState();
+  }
+}
+
+/// Provider for teaching filter state
+final teachingFilterProvider =
+    StateNotifierProvider<TeachingFilterNotifier, TeachingFilterState>((ref) {
+  return TeachingFilterNotifier();
+});
+
+/// Derived provider for filtered teachings
+final filteredTeachingsProvider = Provider<List<Teaching>>((ref) {
+  final filterState = ref.watch(teachingFilterProvider);
+  return filterState.apply();
+});
+
+/// Provider for unique teachers with teaching counts
+final teacherListProvider = Provider<List<MapEntry<String, int>>>((ref) {
+  final counts = TeachingRepository.teacherCounts;
+  final entries = counts.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+  return entries;
+});
+
+/// Provider for topic tag counts
+final topicCountsProvider = Provider<Map<String, int>>((ref) {
+  return TeachingRepository.topicCounts;
+});
+
+/// Provider for mood tag counts
+final moodCountsProvider = Provider<Map<String, int>>((ref) {
+  return TeachingRepository.moodCounts;
+});
+
+/// Provider for lineage counts
+final lineageCountsProvider = Provider<Map<Tradition, int>>((ref) {
+  return TeachingRepository.lineageCounts;
+});
