@@ -133,7 +133,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 'Maybe Later',
                                 style: TextStyle(
                                   color: textColor,
-                                  fontSize: 16,
+                                  fontSize: MediaQuery.textScalerOf(context).scale(16),
                                 ),
                               ),
                             );
@@ -206,7 +206,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
           TypewriterText(
             text: 'What is looking through your eyes right now?',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: MediaQuery.textScalerOf(context).scale(28),
               height: 1.5,
               fontWeight: FontWeight.w300,
               color: colors.textPrimary,
@@ -228,7 +228,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               key: ValueKey('subtext_$_showSubtext'),
               text: "Don't answer. Just look.",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: MediaQuery.textScalerOf(context).scale(18),
                 height: 1.6,
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.italic,
@@ -296,7 +296,7 @@ class _ContrastPage extends StatelessWidget {
                 Text(
                   'Meditation apps teach you to become a better meditator.',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: MediaQuery.textScalerOf(context).scale(22),
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     color: colors.textSecondary,
@@ -314,7 +314,7 @@ class _ContrastPage extends StatelessWidget {
                   Text(
                     'Pointer asks:',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: MediaQuery.textScalerOf(context).scale(16),
                       fontWeight: FontWeight.w500,
                       color: colors.textMuted,
                       letterSpacing: 1,
@@ -324,7 +324,7 @@ class _ContrastPage extends StatelessWidget {
                   Text(
                     'Who is meditating?',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: MediaQuery.textScalerOf(context).scale(28),
                       height: 1.4,
                       fontWeight: FontWeight.w300,
                       color: colors.textPrimary,
@@ -380,7 +380,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
               itemDelay: const Duration(milliseconds: 400),
               strikeDelay: const Duration(milliseconds: 600),
               style: TextStyle(
-                fontSize: 32,
+                fontSize: MediaQuery.textScalerOf(context).scale(32),
                 fontWeight: FontWeight.w400,
                 color: colors.textSecondary,
                 height: 1.4,
@@ -405,7 +405,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                   Text(
                     'Just recognition.',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: MediaQuery.textScalerOf(context).scale(32),
                       fontWeight: FontWeight.w300,
                       color: colors.textPrimary,
                       height: 1.4,
@@ -416,7 +416,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                   Text(
                     'Invitations to see what you already are.',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: MediaQuery.textScalerOf(context).scale(16),
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.italic,
                       color: colors.textSecondary,
@@ -491,7 +491,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               child: Text(
                 'A notification arrives.\nYou pause. You look.',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: MediaQuery.textScalerOf(context).scale(20),
                   height: 1.6,
                   fontWeight: FontWeight.w400,
                   color: colors.textSecondary,
@@ -516,7 +516,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
                 child: Text(
                   "That's the entire practice.",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: MediaQuery.textScalerOf(context).scale(18),
                     height: 1.5,
                     fontWeight: FontWeight.w500,
                     color: colors.textPrimary,
@@ -593,7 +593,7 @@ class _OnboardingButton extends StatelessWidget {
           label,
           style: TextStyle(
             color: textColor,
-            fontSize: 16,
+            fontSize: MediaQuery.textScalerOf(context).scale(16),
             fontWeight: FontWeight.w600,
           ),
         ),
