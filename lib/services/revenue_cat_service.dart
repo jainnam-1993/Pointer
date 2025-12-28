@@ -41,12 +41,16 @@ class RevenueCatService {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
+    // Enable debug logs in debug mode
+    await Purchases.setLogLevel(LogLevel.debug);
+
     final configuration = PurchasesConfiguration(
       Platform.isIOS ? _RevenueCatKeys.iosApiKey : _RevenueCatKeys.androidApiKey,
     );
 
     await Purchases.configure(configuration);
     _isInitialized = true;
+    print('[RevenueCat] Initialized with ${Platform.isIOS ? "iOS" : "Android"} key');
   }
 
   /// Check if user has premium entitlement
@@ -86,13 +90,20 @@ class RevenueCatService {
   Future<List<SubscriptionProduct>> getProducts() async {
     try {
       final offerings = await Purchases.getOfferings();
+      print('[RevenueCat] Offerings fetched: ${offerings.all.keys.toList()}');
       final current = offerings.current;
 
-      if (current == null) return [];
+      if (current == null) {
+        print('[RevenueCat] No current offering set');
+        return [];
+      }
+
+      print('[RevenueCat] Current offering: ${current.identifier}, packages: ${current.availablePackages.length}');
 
       final products = <SubscriptionProduct>[];
 
       for (final package in current.availablePackages) {
+        print('[RevenueCat] Package: ${package.packageType}, product: ${package.storeProduct.identifier}, price: ${package.storeProduct.priceString}');
         products.add(SubscriptionProduct(
           id: package.storeProduct.identifier,
           title: package.storeProduct.title,
@@ -106,6 +117,7 @@ class RevenueCatService {
 
       return products;
     } catch (e) {
+      print('[RevenueCat] Error fetching products: $e');
       return [];
     }
   }
