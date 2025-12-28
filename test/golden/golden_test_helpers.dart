@@ -58,47 +58,49 @@ void teardownGoldenTests() {
 /// Test-friendly theme that uses system fonts instead of Google Fonts
 /// This avoids network requests and ensures consistent cross-platform rendering
 ThemeData get goldenTestTheme {
+  const colors = PointerColors.dark;
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.background,
+    scaffoldBackgroundColor: colors.background,
     fontFamily: 'Roboto', // Flutter's default font, always available
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.surface,
-      error: Color(0xFFEF4444),
+    colorScheme: ColorScheme.dark(
+      primary: colors.primary,
+      secondary: colors.secondary,
+      surface: colors.surface,
+      error: const Color(0xFFEF4444),
     ),
-    textTheme: const TextTheme(
+    extensions: const [PointerColors.dark],
+    textTheme: TextTheme(
       displayLarge: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary,
+        color: colors.textPrimary,
         letterSpacing: -0.5,
       ),
       headlineMedium: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary,
+        color: colors.textPrimary,
         letterSpacing: -0.5,
       ),
       titleLarge: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
+        color: colors.textPrimary,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
-        color: AppColors.textPrimary,
+        color: colors.textPrimary,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: AppColors.textSecondary,
+        color: colors.textSecondary,
       ),
       labelSmall: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: AppColors.textMuted,
+        color: colors.textMuted,
         letterSpacing: 1,
       ),
     ),

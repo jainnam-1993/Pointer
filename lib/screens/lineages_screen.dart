@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
+import 'package:flutter/services.dart';
+
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -14,8 +15,7 @@ class LineagesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionEntries = traditions.entries.toList();
-    final isDark = context.isDarkMode;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+    final textColorSecondary = context.colors.textSecondary;
 
     return Scaffold(
       body: Stack(
@@ -60,10 +60,7 @@ class LineagesScreen extends StatelessWidget {
                         info: info,
                         pointingsCount: count,
                         onTap: () async {
-                          final hasVibrator = await Vibration.hasVibrator();
-                          if (hasVibrator == true) {
-                            Vibration.vibrate(duration: 50, amplitude: 128);
-                          }
+                          HapticFeedback.mediumImpact();
                           // Show tradition detail sheet with information
                           if (context.mounted) {
                             showModalBottomSheet(
@@ -105,11 +102,11 @@ class _TraditionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
-    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
-    final iconBgColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final textColorSecondary = colors.textSecondary;
+    final textColorMuted = colors.textMuted;
+    final iconBgColor = colors.primary.withValues(alpha: 0.1);
 
     return Semantics(
       button: true,
@@ -197,8 +194,8 @@ class _TraditionDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
+    final textColor = context.colors.textPrimary;
+    final textColorSecondary = context.colors.textSecondary;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),

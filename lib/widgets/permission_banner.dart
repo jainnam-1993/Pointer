@@ -15,15 +15,14 @@ class PermissionBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
+    final textColor = context.colors.textPrimary;
+    final textColorSecondary = context.colors.textSecondary;
 
     return Container(
       margin: const EdgeInsets.all(16),
       child: GlassCard(
         padding: const EdgeInsets.all(16),
-        borderColor: isDark ? Colors.amber.withValues(alpha: 0.3) : Colors.amber,
+        borderColor: context.isDarkMode ? Colors.amber.withValues(alpha: 0.3) : Colors.amber,
         child: Row(
           children: [
             Icon(

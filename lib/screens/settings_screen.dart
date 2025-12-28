@@ -1,13 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vibration/vibration.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
+import '../services/aws_credential_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
@@ -24,6 +26,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _permissionGranted = true;
   final int _frequency = 3;
 
+  // Developer options (hidden by default)
+  int _versionTapCount = 0;
+  bool _showDeveloperOptions = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,18 +37,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _checkPermissions() async {
-    // Check if notification permissions are granted
-    // This is a simplified check - in production you'd use platform channels
-    setState(() {
-      _permissionGranted = true; // Default to true, will be false if denied
-    });
+    try {
+      // Check if notification permissions are currently granted
+      final notificationService = ref.read(notificationServiceProvider);
+      final granted = await notificationService.checkPermissions();
+      if (mounted) {
+        setState(() {
+          _permissionGranted = granted;
+        });
+      }
+    } catch (_) {
+      // In test environment, assume granted
+      if (mounted) {
+        setState(() {
+          _permissionGranted = true;
+        });
+      }
+    }
   }
 
   Future<void> _showNotificationTimesSheet() async {
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     if (!mounted) return;
 
@@ -55,10 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _showAboutDialog() async {
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     if (!mounted) return;
 
@@ -87,14 +99,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _launchUrl(String urlString) async {
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     final uri = Uri.parse(urlString);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Could not open link'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -124,17 +142,190 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  void _onVersionTap() {
+    setState(() {
+      _versionTapCount++;
+      if (_versionTapCount >= 7 && !_showDeveloperOptions) {
+        _showDeveloperOptions = true;
+        HapticFeedback.heavyImpact();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Developer options enabled'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<void> _showTTSConfigDialog() async {
+    HapticFeedback.mediumImpact();
+
+    if (!mounted) return;
+
+    final otpController = TextEditingController();
+    bool isConfigured = await AWSCredentialService.instance.isConfigured();
+    bool isLoading = false;
+    String? errorMessage;
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => GlassDialog(
+          title: 'TTS Configuration',
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isConfigured) ...[
+                Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      'TTS Access Configured',
+                      style: TextStyle(
+                        color: context.colors.textPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Article audio is enabled. Enter a new OTP to reconfigure.',
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: 13,
+                  ),
+                ),
+              ] else ...[
+                Text(
+                  'Enter the one-time password to enable article audio.',
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 16),
+              TextField(
+                controller: otpController,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                decoration: InputDecoration(
+                  labelText: 'One-Time Password',
+                  hintText: '123456',
+                  counterText: '',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  errorText: errorMessage,
+                ),
+                style: TextStyle(
+                  color: context.colors.textPrimary,
+                  fontSize: 18,
+                  letterSpacing: 4,
+                ),
+              ),
+              if (isLoading) ...[
+                const SizedBox(height: 12),
+                const Center(child: CircularProgressIndicator()),
+              ],
+            ],
+          ),
+          actions: [
+            if (isConfigured)
+              TextButton(
+                onPressed: () async {
+                  await AWSCredentialService.instance.clearConfiguration();
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop();
+                    ScaffoldMessenger.of(this.context).showSnackBar(
+                      const SnackBar(
+                        content: Text('TTS configuration cleared'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  'Clear',
+                  style: TextStyle(color: context.colors.textSecondary),
+                ),
+              ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: context.colors.textSecondary),
+              ),
+            ),
+            TextButton(
+              onPressed: isLoading
+                  ? null
+                  : () async {
+                      final otp = otpController.text.trim();
+                      if (otp.length != 6) {
+                        setDialogState(() {
+                          errorMessage = 'Enter 6-digit code';
+                        });
+                        return;
+                      }
+
+                      setDialogState(() {
+                        isLoading = true;
+                        errorMessage = null;
+                      });
+
+                      try {
+                        await AWSCredentialService.instance.setupWithOTP(otp);
+                        if (dialogContext.mounted) {
+                          Navigator.of(dialogContext).pop();
+                          ScaffoldMessenger.of(this.context).showSnackBar(
+                            const SnackBar(
+                              content: Text('TTS configured successfully!'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      } on AWSCredentialException catch (e) {
+                        setDialogState(() {
+                          isLoading = false;
+                          errorMessage = e.message;
+                        });
+                      } catch (e) {
+                        setDialogState(() {
+                          isLoading = false;
+                          errorMessage = 'Failed to configure';
+                        });
+                      }
+                    },
+              child: Text(
+                'Configure',
+                style: TextStyle(color: context.colors.accent),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final subscription = ref.watch(subscriptionProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final isDark = context.isDarkMode;
-    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
-    final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
-    final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : AppColorsLight.textMuted;
-    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
-    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
+    final colors = context.colors;
+    final textColorMuted = colors.textMuted;
+    final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : colors.textMuted;
+    final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : colors.textMuted;
+    final goldColor = colors.gold;
+    final switchThumbColor = isDark ? Colors.white : colors.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
     final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return Scaffold(
@@ -174,10 +365,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: Switch(
                           value: _notificationsEnabled && _permissionGranted,
                           onChanged: (value) async {
-                            final hasVibrator = await Vibration.hasVibrator();
-                            if (hasVibrator == true) {
-                              Vibration.vibrate(duration: 50, amplitude: 128);
-                            }
+                            HapticFeedback.mediumImpact();
 
                             if (value && !_permissionGranted) {
                               final notificationService = ref.read(notificationServiceProvider);
@@ -245,10 +433,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       size: 20,
                     ),
                     onTap: () async {
-                      final hasVibrator = await Vibration.hasVibrator();
-                      if (hasVibrator == true) {
-                        Vibration.vibrate(duration: 50, amplitude: 128);
-                      }
+                      HapticFeedback.mediumImpact();
                       // Navigate to lineages tab
                       if (context.mounted) {
                         context.go('/lineages');
@@ -271,10 +456,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       size: 20,
                     ),
                     onTap: () async {
-                      final hasVibrator = await Vibration.hasVibrator();
-                      if (hasVibrator == true) {
-                        Vibration.vibrate(duration: 50, amplitude: 128);
-                      }
+                      HapticFeedback.mediumImpact();
                       if (context.mounted) {
                         context.push('/history');
                       }
@@ -369,13 +551,81 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
 
+                // Developer section (hidden until 7 taps on version)
+                if (_showDeveloperOptions) ...[
+                  const SizedBox(height: 24),
+                  _SectionHeader(title: 'DEVELOPER'),
+                  const SizedBox(height: 12),
+                  GlassCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        _SettingsRow(
+                          title: 'Test Notification',
+                          subtitle: 'Send a test pointing notification',
+                          trailing: Icon(
+                            Icons.notifications_active,
+                            color: textColorSubtle,
+                            size: 20,
+                          ),
+                          onTap: () async {
+                            final notificationService = ref.read(notificationServiceProvider);
+                            await notificationService.sendTestNotification();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Test notification sent'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const _Divider(),
+                        _SettingsRow(
+                          title: 'TTS Configuration',
+                          subtitle: 'Article audio access',
+                          trailing: FutureBuilder<bool>(
+                            future: AWSCredentialService.instance.isConfigured(),
+                            builder: (context, snapshot) {
+                              if (snapshot.data == true) {
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check_circle, color: Colors.green, size: 16),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: textColorSubtle,
+                                      size: 20,
+                                    ),
+                                  ],
+                                );
+                              }
+                              return Icon(
+                                Icons.chevron_right,
+                                color: textColorSubtle,
+                                size: 20,
+                              );
+                            },
+                          ),
+                          onTap: _showTTSConfigDialog,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 32),
-                Center(
-                  child: Text(
-                    'Pointer v1.0.0',
-                    style: TextStyle(
-                      color: textColorVersion,
-                      fontSize: 12,
+                GestureDetector(
+                  onTap: _onVersionTap,
+                  child: Center(
+                    child: Text(
+                      'Pointer v1.0.0',
+                      style: TextStyle(
+                        color: textColorVersion,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -421,9 +671,9 @@ class _SettingsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSubtitle = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final textColorSubtitle = colors.textMuted;
 
     final content = Padding(
       padding: const EdgeInsets.all(16),
@@ -514,7 +764,7 @@ class _AppearanceSelector extends ConsumerWidget {
             'Theme',
             style: TextStyle(
               fontSize: 16,
-              color: isDark ? Colors.white : AppColorsLight.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -557,8 +807,9 @@ class _ZenModeToggle extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isZenMode = ref.watch(zenModeProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final switchThumbColor = isDark ? Colors.white : AppColorsLight.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.primary.withValues(alpha: 0.3);
+    final colors = context.colors;
+    final switchThumbColor = isDark ? Colors.white : colors.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
     final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return Row(
@@ -572,7 +823,7 @@ class _ZenModeToggle extends ConsumerWidget {
                 'Zen Mode',
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDark ? Colors.white : AppColorsLight.textPrimary,
+                  color: colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
@@ -580,7 +831,7 @@ class _ZenModeToggle extends ConsumerWidget {
                 'Minimal UI, just the pointing',
                 style: TextStyle(
                   fontSize: 12,
-                  color: isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted,
+                  color: colors.textMuted,
                 ),
               ),
             ],
@@ -619,11 +870,12 @@ class _ThemeOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final selectedColor = isDark ? AppColors.primary : AppColorsLight.primary;
+    final colors = context.colors;
+    final selectedColor = colors.primary;
+    final unselectedColor = colors.textSecondary;
     final borderColor = isSelected
         ? selectedColor
-        : (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder);
+        : colors.glassBorder;
     final bgColor = isSelected
         ? selectedColor.withValues(alpha: 0.2)
         : Colors.transparent;
@@ -634,10 +886,7 @@ class _ThemeOption extends StatelessWidget {
         label: '$label theme${isSelected ? ', selected' : ''}',
         child: GestureDetector(
           onTap: () async {
-            final hasVibrator = await Vibration.hasVibrator();
-            if (hasVibrator == true) {
-              Vibration.vibrate(duration: 50, amplitude: 128);
-            }
+            HapticFeedback.mediumImpact();
             onTap();
           },
           child: AnimatedContainer(
@@ -653,9 +902,7 @@ class _ThemeOption extends StatelessWidget {
                 Icon(
                   icon,
                   size: 24,
-                  color: isSelected
-                      ? selectedColor
-                      : (isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary),
+                  color: isSelected ? selectedColor : unselectedColor,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -663,9 +910,7 @@ class _ThemeOption extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected
-                        ? selectedColor
-                        : (isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary),
+                    color: isSelected ? selectedColor : unselectedColor,
                   ),
                 ),
               ],
@@ -837,8 +1082,9 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final mutedColor = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final mutedColor = colors.textSecondary;
 
     return Container(
       constraints: BoxConstraints(
@@ -961,13 +1207,13 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? (isDark ? Colors.white.withValues(alpha: 0.3) : AppColorsLight.primary.withValues(alpha: 0.2))
+                                ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected
-                                  ? (isDark ? Colors.white : AppColorsLight.primary)
-                                  : (isDark ? Colors.white.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3)),
+                                  ? colors.primary
+                                  : colors.glassBorder,
                             ),
                           ),
                           child: Text(

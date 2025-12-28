@@ -19,12 +19,20 @@ enum AppThemeMode {
 /// Access via: Theme.of(context).extension<PointerColors>()!
 @immutable
 class PointerColors extends ThemeExtension<PointerColors> {
+  // Core theme colors
+  final Color background;
+  final Color surface;
+  final Color primary;
+  final Color secondary;
+  // Text colors
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
+  // Glass morphism
   final Color glassBorder;
   final Color glassBackground;
   final Color glassBorderActive;
+  // Accent colors
   final Color gold;
   final Color accent;
   final Color iconColor;
@@ -36,6 +44,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
   final Color cardBackground;
 
   const PointerColors({
+    required this.background,
+    required this.surface,
+    required this.primary,
+    required this.secondary,
     required this.textPrimary,
     required this.textSecondary,
     required this.textMuted,
@@ -53,6 +65,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
 
   /// Dark theme colors - Enhanced liquid glass morphism for black background
   static const dark = PointerColors(
+    background: Color(0xFF000000),
+    surface: Color(0xFF0A0A0A),
+    primary: Color(0xFF8B5CF6),
+    secondary: Color(0xFFEC4899),
     textPrimary: Colors.white,
     textSecondary: Color(0x99FFFFFF), // white with 0.6 alpha
     textMuted: Color(0x66FFFFFF), // white with 0.4 alpha
@@ -70,6 +86,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
 
   /// Light theme colors - Subtle liquid glass aesthetic
   static const light = PointerColors(
+    background: Color(0xFFF5F5F7),    // Apple-style neutral gray
+    surface: Color(0xFFFFFFFF),
+    primary: Color(0xFF5B5B5B),       // Neutral dark gray
+    secondary: Color(0xFF8E8E93),     // iOS gray
     textPrimary: Color(0xFF1C1C1E),   // Near black
     textSecondary: Color(0xFF636366), // Medium gray
     textMuted: Color(0xFF8E8E93),     // iOS gray
@@ -88,6 +108,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
   /// High contrast theme colors - AAA compliant (7:1+ contrast ratio)
   /// Pure black background with pure white text for maximum readability
   static const highContrast = PointerColors(
+    background: Colors.black,
+    surface: Color(0xFF1A1A1A),
+    primary: Colors.white,
+    secondary: Colors.white,
     textPrimary: Colors.white,
     textSecondary: Colors.white,
     textMuted: Color(0xFFCCCCCC), // Light gray, still high contrast on black
@@ -106,6 +130,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
   /// OLED black mode - Pure black (#000000) for OLED displays
   /// Battery savings + eye comfort while maintaining glass aesthetic
   static const oled = PointerColors(
+    background: Colors.black,
+    surface: Colors.black,
+    primary: Color(0xFF8B5CF6),
+    secondary: Color(0xFFEC4899),
     textPrimary: Colors.white,
     textSecondary: Color(0xB3FFFFFF), // 70% white
     textMuted: Color(0x80FFFFFF), // 50% white
@@ -123,6 +151,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
 
   @override
   PointerColors copyWith({
+    Color? background,
+    Color? surface,
+    Color? primary,
+    Color? secondary,
     Color? textPrimary,
     Color? textSecondary,
     Color? textMuted,
@@ -138,6 +170,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
     Color? cardBackground,
   }) {
     return PointerColors(
+      background: background ?? this.background,
+      surface: surface ?? this.surface,
+      primary: primary ?? this.primary,
+      secondary: secondary ?? this.secondary,
       textPrimary: textPrimary ?? this.textPrimary,
       textSecondary: textSecondary ?? this.textSecondary,
       textMuted: textMuted ?? this.textMuted,
@@ -158,6 +194,10 @@ class PointerColors extends ThemeExtension<PointerColors> {
   PointerColors lerp(ThemeExtension<PointerColors>? other, double t) {
     if (other is! PointerColors) return this;
     return PointerColors(
+      background: Color.lerp(background, other.background, t)!,
+      surface: Color.lerp(surface, other.surface, t)!,
+      primary: Color.lerp(primary, other.primary, t)!,
+      secondary: Color.lerp(secondary, other.secondary, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
       textMuted: Color.lerp(textMuted, other.textMuted, t)!,
@@ -173,46 +213,6 @@ class PointerColors extends ThemeExtension<PointerColors> {
       cardBackground: Color.lerp(cardBackground, other.cardBackground, t)!,
     );
   }
-}
-
-/// App color palette - dark theme (deep black/cosmic)
-/// @deprecated Use PointerColors extension instead
-class AppColors {
-  static const background = Color(0xFF000000);
-  static const surface = Color(0xFF0A0A0A);
-  static const primary = Color(0xFF8B5CF6);
-  static const secondary = Color(0xFFEC4899);
-  static const accent = Color(0xFF8B5CF6);
-
-  static const textPrimary = Colors.white;
-  static const textSecondary = Color(0xFFB3B3B3);
-  static const textMuted = Color(0xFF666666);
-
-  static const glassBorder = Color(0x40FFFFFF);
-  static const glassBackground = Color(0x1AFFFFFF);
-  static const glassBorderActive = Color(0x60FFFFFF);
-
-  static const gold = Color(0xFFFFD700);
-}
-
-/// Light theme color palette - Subtle liquid glass aesthetic
-/// @deprecated Use PointerColors extension instead
-class AppColorsLight {
-  static const background = Color(0xFFF5F5F7);  // Apple-style neutral gray
-  static const surface = Color(0xFFFFFFFF);
-  static const primary = Color(0xFF5B5B5B);      // Neutral dark gray
-  static const secondary = Color(0xFF8E8E93);    // iOS gray
-  static const accent = Color(0xFF8B5CF6);       // Violet accent
-
-  static const textPrimary = Color(0xFF1C1C1E);  // Near black
-  static const textSecondary = Color(0xFF636366);
-  static const textMuted = Color(0xFF8E8E93);
-
-  static const glassBorder = Color(0x18000000);  // Subtle border
-  static const glassBackground = Color(0x0A000000);  // Very subtle fill
-  static const glassBorderActive = Color(0x28000000);
-
-  static const gold = Color(0xFFB8860B);  // Darker gold for light bg
 }
 
 /// App gradients - Enhanced for consistent liquid glass morphism feel
@@ -469,15 +469,16 @@ class AppTextStyles {
 /// App theme configuration
 class AppTheme {
   static ThemeData get dark {
+    const colors = PointerColors.dark;
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.background,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primary,
-        secondary: AppColors.secondary,
-        surface: AppColors.surface,
-        error: Color(0xFFEF4444),
+      scaffoldBackgroundColor: colors.background,
+      colorScheme: ColorScheme.dark(
+        primary: colors.primary,
+        secondary: colors.secondary,
+        surface: colors.surface,
+        error: const Color(0xFFEF4444),
       ),
       extensions: const [PointerColors.dark],
       textTheme: GoogleFonts.interTextTheme(
@@ -486,32 +487,32 @@ class AppTheme {
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
           fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
+          color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
         headlineMedium: GoogleFonts.inter(
           fontSize: 28,
           fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
+          color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
         titleLarge: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
+          color: colors.textPrimary,
         ),
         bodyLarge: GoogleFonts.inter(
           fontSize: 16,
-          color: AppColors.textPrimary,
+          color: colors.textPrimary,
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
-          color: AppColors.textSecondary,
+          color: colors.textSecondary,
         ),
         labelSmall: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: AppColors.textMuted,
+          color: colors.textMuted,
           letterSpacing: 1,
         ),
       ),
@@ -532,15 +533,16 @@ class AppTheme {
   }
 
   static ThemeData get light {
+    const colors = PointerColors.light;
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColorsLight.background,
-      colorScheme: const ColorScheme.light(
-        primary: AppColorsLight.primary,
-        secondary: AppColorsLight.secondary,
-        surface: AppColorsLight.surface,
-        error: Color(0xFFDC2626),
+      scaffoldBackgroundColor: colors.background,
+      colorScheme: ColorScheme.light(
+        primary: colors.primary,
+        secondary: colors.secondary,
+        surface: colors.surface,
+        error: const Color(0xFFDC2626),
       ),
       extensions: const [PointerColors.light],
       textTheme: GoogleFonts.interTextTheme(
@@ -549,32 +551,32 @@ class AppTheme {
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
           fontWeight: FontWeight.w700,
-          color: AppColorsLight.textPrimary,
+          color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
         headlineMedium: GoogleFonts.inter(
           fontSize: 28,
           fontWeight: FontWeight.w700,
-          color: AppColorsLight.textPrimary,
+          color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
         titleLarge: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: AppColorsLight.textPrimary,
+          color: colors.textPrimary,
         ),
         bodyLarge: GoogleFonts.inter(
           fontSize: 16,
-          color: AppColorsLight.textPrimary,
+          color: colors.textPrimary,
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
-          color: AppColorsLight.textSecondary,
+          color: colors.textSecondary,
         ),
         labelSmall: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: AppColorsLight.textMuted,
+          color: colors.textMuted,
           letterSpacing: 1,
         ),
       ),
@@ -583,12 +585,12 @@ class AppTheme {
         elevation: 0,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.all(AppColorsLight.primary),
+        thumbColor: WidgetStateProperty.all(colors.primary),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColorsLight.primary.withValues(alpha: 0.4);
+            return colors.primary.withValues(alpha: 0.4);
           }
-          return AppColorsLight.textMuted.withValues(alpha: 0.3);
+          return colors.textMuted.withValues(alpha: 0.3);
         }),
       ),
     );

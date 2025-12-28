@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vibration/vibration.dart';
+
 import '../providers/providers.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
@@ -16,11 +17,11 @@ class PaywallScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final subscription = ref.watch(subscriptionProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
-    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.5) : AppColorsLight.textMuted;
-    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final textColorSecondary = colors.textSecondary;
+    final textColorMuted = colors.textMuted;
+    final goldColor = colors.gold;
 
     return Scaffold(
       body: Stack(
@@ -147,15 +148,21 @@ class PaywallScreen extends ConsumerWidget {
                       goldColor: goldColor,
                       textColorMuted: textColorMuted,
                       onPurchase: (product) async {
-                        final hasVibrator = await Vibration.hasVibrator();
-                        if (hasVibrator == true) {
-                          Vibration.vibrate(duration: 100, amplitude: 200);
-                        }
+                        HapticFeedback.heavyImpact();
                         final result = await ref
                             .read(subscriptionProvider.notifier)
                             .purchasePackage(product);
-                        if (result.success && context.mounted) {
+                        if (!context.mounted) return;
+                        if (result.success) {
                           context.pop();
+                        } else if (result.error != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result.error!),
+                              backgroundColor: Colors.red.shade700,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
                         }
                       },
                     ),
@@ -169,15 +176,21 @@ class PaywallScreen extends ConsumerWidget {
                         textColorMuted: textColorMuted,
                         isSecondary: true,
                         onPurchase: (product) async {
-                          final hasVibrator = await Vibration.hasVibrator();
-                          if (hasVibrator == true) {
-                            Vibration.vibrate(duration: 100, amplitude: 200);
-                          }
+                          HapticFeedback.heavyImpact();
                           final result = await ref
                               .read(subscriptionProvider.notifier)
                               .purchasePackage(product);
-                          if (result.success && context.mounted) {
+                          if (!context.mounted) return;
+                          if (result.success) {
                             context.pop();
+                          } else if (result.error != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result.error!),
+                                backgroundColor: Colors.red.shade700,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
                           }
                         },
                       ),
@@ -237,10 +250,10 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
-    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final textColorSecondary = colors.textSecondary;
+    final goldColor = colors.gold;
 
     return Row(
       children: [

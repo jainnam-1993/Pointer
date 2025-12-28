@@ -71,7 +71,7 @@ void main() {
                 padding: const EdgeInsets.all(24),
                 child: GlassCard(
                   padding: const EdgeInsets.all(24),
-                  borderColor: AppColors.gold.withOpacity(0.5),
+                  borderColor: PointerColors.dark.gold.withOpacity(0.5),
                   child: const Text(
                     'Gold Border Card',
                     style: TextStyle(color: Colors.white),

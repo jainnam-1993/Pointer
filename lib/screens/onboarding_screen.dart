@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vibration/vibration.dart';
+
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -77,10 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _handleNext() async {
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     if (_currentPage < onboardingPages.length - 1) {
       _pageController.nextPage(
@@ -93,10 +91,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _handleEnableNotifications() async {
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 100, amplitude: 200);
-    }
+    HapticFeedback.heavyImpact();
     // Request notification permissions
     final granted = await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
@@ -140,8 +135,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 // Page indicators
                 Builder(
                   builder: (context) {
-                    final isDark = context.isDarkMode;
-                    final dotColor = isDark ? Colors.white : AppColorsLight.primary;
+                    final dotColor = context.colors.primary;
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -184,10 +178,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         const SizedBox(height: 16),
                         Builder(
                           builder: (context) {
-                            final isDark = context.isDarkMode;
-                            final textColor = isDark
-                                ? Colors.white.withValues(alpha: 0.5)
-                                : AppColorsLight.textMuted;
+                            final textColor = context.colors.textMuted;
                             return TextButton(
                               onPressed: _handleNext,
                               child: Text(
@@ -228,13 +219,13 @@ class _OnboardingPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.7) : AppColorsLight.textSecondary;
-    final textColorBody = isDark ? Colors.white.withValues(alpha: 0.8) : AppColorsLight.textPrimary;
-    final iconBgColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
-    final iconBorderColor = isDark ? Colors.white.withValues(alpha: 0.2) : AppColorsLight.primary.withValues(alpha: 0.2);
-    final iconColor = isDark ? Colors.white : AppColorsLight.primary;
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final textColorSecondary = colors.textSecondary;
+    final textColorBody = colors.textPrimary;
+    final iconBgColor = colors.primary.withValues(alpha: 0.1);
+    final iconBorderColor = colors.primary.withValues(alpha: 0.2);
+    final iconColor = colors.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -327,10 +318,9 @@ class _OnboardingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
+    final textColor = context.colors.textPrimary;
     final borderColor = isPrimary
-        ? (isDark ? AppColors.glassBorderActive : AppColorsLight.primary)
+        ? context.colors.glassBorderActive
         : null;
 
     return GlassCard(

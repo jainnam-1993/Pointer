@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vibration/vibration.dart';
+
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -101,9 +102,9 @@ class InquiryScreen extends ConsumerWidget {
                   index: 0,
                   child: Builder(
                     builder: (context) {
-                      final isDark = context.isDarkMode;
-                      final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-                      final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
+                      final colors = context.colors;
+                      final textColor = colors.textPrimary;
+                      final textColorSecondary = colors.textSecondary;
                       return GlassCard(
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -155,10 +156,7 @@ class InquiryScreen extends ConsumerWidget {
                         index: index,
                         isLocked: isLocked,
                         onTap: () async {
-                          final hasVibrator = await Vibration.hasVibrator();
-                          if (hasVibrator == true) {
-                            Vibration.vibrate(duration: 50, amplitude: 128);
-                          }
+                          HapticFeedback.mediumImpact();
                           if (isLocked) {
                             if (context.mounted) context.push('/paywall');
                           } else {
@@ -196,12 +194,13 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isDark = context.isDarkMode;
-    final textColor = isDark ? Colors.white : AppColorsLight.textPrimary;
-    final textColorSecondary = isDark ? Colors.white.withValues(alpha: 0.6) : AppColorsLight.textSecondary;
-    final textColorMuted = isDark ? Colors.white.withValues(alpha: 0.4) : AppColorsLight.textMuted;
-    final circleColor = isDark ? Colors.white.withValues(alpha: 0.1) : AppColorsLight.primary.withValues(alpha: 0.1);
-    final goldColor = isDark ? AppColors.gold : AppColorsLight.gold;
+    final textColor = colors.textPrimary;
+    final textColorSecondary = colors.textSecondary;
+    final textColorMuted = colors.textMuted;
+    final circleColor = colors.primary.withValues(alpha: 0.1);
+    final goldColor = colors.gold;
 
     return Semantics(
       button: true,
@@ -209,7 +208,7 @@ class _SessionCard extends StatelessWidget {
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderColor: isLocked
-            ? (isDark ? AppColors.glassBorder : AppColorsLight.glassBorder).withValues(alpha: 0.5)
+            ? context.colors.glassBorder.withValues(alpha: 0.5)
             : null,
         onTap: onTap,
         child: Opacity(
@@ -236,7 +235,7 @@ class _SessionCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : AppColorsLight.primary,
+                          color: colors.primary,
                         ),
                       ),
               ),
