@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
@@ -135,7 +136,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK', style: TextStyle(color: context.colors.accent)),
+            child: Text('Cancel', style: TextStyle(color: context.colors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              AppSettings.openAppSettings(type: AppSettingsType.notification);
+            },
+            child: Text('Open Settings', style: TextStyle(color: context.colors.accent)),
           ),
         ],
       ),
@@ -353,6 +361,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 // Notifications section
                 _SectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
+                // Add permission banner when disabled
+                if (!_permissionGranted)
+                  _NotificationPermissionBanner(
+                    onOpenSettings: () => AppSettings.openAppSettings(type: AppSettingsType.notification),
+                  ),
                 GlassCard(
                   padding: EdgeInsets.zero,
                   child: Column(
@@ -743,6 +756,68 @@ class _Divider extends StatelessWidget {
       color: isDark
           ? Colors.white.withValues(alpha: 0.1)
           : Colors.black.withValues(alpha: 0.1),
+    );
+}
+}
+
+class _NotificationPermissionBanner extends StatelessWidget {
+  final VoidCallback onOpenSettings;
+
+  const _NotificationPermissionBanner({required this.onOpenSettings});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.notifications_off, color: Colors.orange, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Notifications Disabled',
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Enable in system settings to receive daily pointings',
+                  style: TextStyle(
+                    color: colors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: onOpenSettings,
+            child: Text(
+              'Open Settings',
+              style: TextStyle(
+                color: colors.accent,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
