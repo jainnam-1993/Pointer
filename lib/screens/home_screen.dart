@@ -5,10 +5,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:vibration/vibration.dart';
+
 import '../data/pointings.dart';
 import '../data/teachers.dart';
-import '../models/mood.dart';
 import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -19,8 +18,6 @@ import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
 import '../widgets/save_confirmation.dart';
-// HIDDEN: MoodSelector import (UI hidden, logic in models/mood.dart)
-// import '../widgets/mood_selector.dart';
 // Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
 // import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
@@ -52,13 +49,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Schedule initial announcement and widget update after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointing = ref.read(currentPointingProvider);
-      _announcePointingContent(pointing);
+      _announcePointingContent(context, pointing);
       WidgetService.updateWidget(pointing);
     });
   }
 
   /// Announces pointing content to screen readers
-  void _announcePointingContent(Pointing pointing) {
+  void _announcePointingContent(BuildContext context, Pointing pointing) {
     final traditionInfo = traditions[pointing.tradition]!;
     final announcement = StringBuffer();
     announcement.write('New pointing from ${traditionInfo.name}. ');
@@ -66,8 +63,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (pointing.teacher != null) {
       announcement.write('. By ${pointing.teacher}');
     }
-    // ignore: deprecated_member_use
-    SemanticsService.announce(announcement.toString(), TextDirection.ltr);
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      announcement.toString(),
+      TextDirection.ltr,
+    );
   }
 
   Future<void> _handleNext() async {
@@ -87,26 +87,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     // Haptic feedback
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     setState(() => _isAnimating = true);
 
-    // Get next pointing based on mood (if set) and track usage
-    PointingContext? moodContext;
-    final mood = ref.read(currentMoodProvider);
-    if (mood != null) {
-      final info = moodInfo[mood]!;
-      // Pick the first matching context as the primary filter
-      final contextStr = info.matchingContexts.first;
-      moodContext = PointingContext.values.firstWhere(
-        (c) => c.name == contextStr,
-        orElse: () => PointingContext.general,
-      );
-    }
-    ref.read(currentPointingProvider.notifier).nextPointing(context: moodContext);
+    // Get next pointing
+    ref.read(currentPointingProvider.notifier).nextPointing();
     if (!isPremium) {
       ref.read(dailyUsageProvider.notifier).recordView();
     }
@@ -118,7 +104,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
-    _announcePointingContent(newPointing);
+    _announcePointingContent(context, newPointing);
     WidgetService.updateWidget(newPointing);
 
     // Record in history
@@ -130,10 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (_isAnimating) return;
 
     // Haptic feedback
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     setState(() => _isAnimating = true);
 
@@ -147,16 +130,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
-    _announcePointingContent(newPointing);
+    _announcePointingContent(context, newPointing);
     WidgetService.updateWidget(newPointing);
   }
 
   Future<void> _handleShare() async {
     final pointing = ref.read(currentPointingProvider);
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(duration: 50, amplitude: 128);
-    }
+    HapticFeedback.mediumImpact();
 
     final shareText = StringBuffer();
     shareText.writeln('"${pointing.content}"');
@@ -303,11 +283,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  // HIDDEN: Mood selector UI (logic preserved in providers)
-                  // TODO: Re-enable when mood feature is ready
-                  // const MoodSelector(),
-                  // const SizedBox(height: 16),
-
                   // Phase 5.11: Consolidated pointing card with tradition badge & share inside
                   Flexible(
                     child: GestureDetector(

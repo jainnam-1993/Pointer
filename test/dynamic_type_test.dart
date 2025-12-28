@@ -507,7 +507,8 @@ void main() {
 
         // Should be able to tap buttons
         await tester.tap(find.text('Next'));
-        await tester.pump(const Duration(milliseconds: 200));
+        // Clear all animation timers (300ms animation + buffer)
+        await tester.pumpAndSettle(const Duration(milliseconds: 500));
         expect(tester.takeException(), isNull);
       });
     });

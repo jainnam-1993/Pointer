@@ -282,9 +282,9 @@ void main() {
       final button = find.text('Next');
       expect(button, findsOneWidget);
 
-      // Tapping should not throw - pump 200ms to clear the 150ms animation delay
+      // Tapping should not throw - pumpAndSettle to clear all animation timers
       await tester.tap(button);
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
     });
 
     testWidgets('Share icon is tappable', (tester) async {
@@ -302,15 +302,15 @@ void main() {
     testWidgets('tapping Next button triggers animation', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Tap next - pump enough to see animation but also clear 150ms timer
+      // Should have AnimatedSwitcher for quote change animation
+      // Note: AnimatedOpacity is only shown in zen mode
+      expect(find.byType(AnimatedSwitcher), findsWidgets);
+
+      // Tap next - this triggers animations
       await tester.tap(find.text('Next'));
-      await tester.pump(const Duration(milliseconds: 50));
 
-      // Should have AnimatedOpacity for fade effect
-      expect(find.byType(AnimatedOpacity), findsOneWidget);
-
-      // Clear the remaining timer
-      await tester.pump(const Duration(milliseconds: 200));
+      // Clear all animation timers (300ms + buffer)
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
     });
   });
 

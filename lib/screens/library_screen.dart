@@ -9,9 +9,12 @@ import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
+import '../services/aws_credential_service.dart';
+import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/article_tts_player.dart';
 import '../widgets/glass_card.dart';
 
 /// Category metadata for display
@@ -1183,8 +1186,8 @@ class _ArticleListItem extends StatelessWidget {
   }
 }
 
-/// Full article reader screen
-class ArticleReaderScreen extends StatelessWidget {
+/// Full article reader screen with TTS support
+class ArticleReaderScreen extends ConsumerStatefulWidget {
   final Article article;
 
   const ArticleReaderScreen({
@@ -1193,10 +1196,82 @@ class ArticleReaderScreen extends StatelessWidget {
   });
 
   @override
+  ConsumerState<ArticleReaderScreen> createState() => _ArticleReaderScreenState();
+}
+
+class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
+  bool _showTTSPlayer = false;
+  bool _ttsConfigured = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTTSConfig();
+  }
+
+  Future<void> _checkTTSConfig() async {
+    final configured = await AWSCredentialService.instance.isConfigured();
+    if (mounted) {
+      setState(() => _ttsConfigured = configured);
+    }
+  }
+
+  Future<void> _startTTS() async {
+    final isPremium = ref.read(subscriptionProvider).isPremium;
+
+    if (!isPremium) {
+      // Show premium required message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Premium required for article audio'),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Upgrade',
+            onPressed: () {
+              // Navigate to paywall would go here
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (!_ttsConfigured) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('TTS not configured. Enable in Settings → Developer.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _showTTSPlayer = true);
+
+    try {
+      await TTSService.instance.synthesizeAndPlay(
+        widget.article.id,
+        widget.article.content,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('TTS error: $e'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red.shade700,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final traditionInfo = traditions[article.tradition]!;
+    final traditionInfo = traditions[widget.article.tradition]!;
+    final isPremium = ref.watch(subscriptionProvider).isPremium;
 
     return Scaffold(
       body: Stack(
@@ -1213,9 +1288,32 @@ class ArticleReaderScreen extends StatelessWidget {
                       children: [
                         IconButton(
                           icon: Icon(Icons.close, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            // Stop TTS when leaving
+                            if (_showTTSPlayer) {
+                              TTSService.instance.stop();
+                            }
+                            Navigator.pop(context);
+                          },
                         ),
                         const Spacer(),
+                        // TTS button (only show if premium or configured)
+                        if (isPremium || _ttsConfigured)
+                          IconButton(
+                            icon: Icon(
+                              _showTTSPlayer
+                                  ? Icons.headphones
+                                  : Icons.headphones_outlined,
+                              color: _showTTSPlayer
+                                  ? colors.accent
+                                  : colors.textPrimary,
+                            ),
+                            onPressed: _showTTSPlayer
+                                ? () => setState(() => _showTTSPlayer = false)
+                                : _startTTS,
+                            tooltip: 'Listen to article',
+                          ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
@@ -1237,6 +1335,18 @@ class ArticleReaderScreen extends StatelessWidget {
                   ),
                 ),
 
+                // TTS Player (when active)
+                if (_showTTSPlayer)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: ArticleTTSPlayer(
+                        articleId: widget.article.id,
+                        onClose: () => setState(() => _showTTSPlayer = false),
+                      ),
+                    ),
+                  ),
+
                 // Article header
                 SliverToBoxAdapter(
                   child: Padding(
@@ -1244,8 +1354,9 @@ class ArticleReaderScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (_showTTSPlayer) const SizedBox(height: 16),
                         Text(
-                          article.title,
+                          widget.article.title,
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w700,
@@ -1253,10 +1364,10 @@ class ArticleReaderScreen extends StatelessWidget {
                             height: 1.2,
                           ),
                         ),
-                        if (article.subtitle != null) ...[
+                        if (widget.article.subtitle != null) ...[
                           const SizedBox(height: 8),
                           Text(
-                            article.subtitle!,
+                            widget.article.subtitle!,
                             style: TextStyle(
                               fontSize: 16,
                               color: colors.textSecondary,
@@ -1273,13 +1384,13 @@ class ArticleReaderScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '${article.readingTimeMinutes} min read',
+                              '${widget.article.readingTimeMinutes} min read',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: colors.textMuted,
                               ),
                             ),
-                            if (article.teacher != null) ...[
+                            if (widget.article.teacher != null) ...[
                               const SizedBox(width: 16),
                               Icon(
                                 Icons.person_outline,
@@ -1288,7 +1399,7 @@ class ArticleReaderScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                article.teacher!,
+                                widget.article.teacher!,
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: colors.textMuted,
@@ -1314,7 +1425,7 @@ class ArticleReaderScreen extends StatelessWidget {
                       bottom: 32 + bottomPadding,
                     ),
                     child: _MarkdownContent(
-                      content: article.content,
+                      content: widget.article.content,
                       colors: colors,
                     ),
                   ),
