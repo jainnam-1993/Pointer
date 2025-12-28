@@ -207,6 +207,7 @@ class GlassButton extends ConsumerWidget {
         onTap: isLoading ? null : onPressed,
         borderRadius: BorderRadius.circular(32),
         child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
             color: highContrastColors.cardBackground,
@@ -286,6 +287,7 @@ class GlassButton extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
             child: Container(
+              constraints: const BoxConstraints(minHeight: 48),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               decoration: BoxDecoration(
                 gradient: glassGradient,
