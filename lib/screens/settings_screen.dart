@@ -26,7 +26,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with WidgetsBindingObserver {
   bool _notificationsEnabled = true;
   bool _permissionGranted = true;
-  final int _frequency = 3;
 
   // Developer options (hidden by default)
   int _versionTapCount = 0;
@@ -181,6 +180,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         );
       }
     });
+  }
+
+  /// Get notification count summary based on current schedule
+  String _getNotificationCountSummary() {
+    final schedule = ref.read(notificationServiceProvider).getSchedule();
+    final count = schedule.getNotificationTimes(DateTime.now()).length;
+    if (count == 0) return 'Disabled';
+    return '$count per day';
+  }
+
+  /// Get schedule summary (e.g., "Every 3h, 8am - 9pm")
+  String _getScheduleTimeSummary() {
+    final schedule = ref.read(notificationServiceProvider).getSchedule();
+    final freq = schedule.frequencyMinutes < 60
+        ? '${schedule.frequencyMinutes}m'
+        : '${schedule.frequencyMinutes ~/ 60}h';
+    return 'Every $freq, ${_formatHourShort(schedule.startHour)} - ${_formatHourShort(schedule.endHour)}';
+  }
+
+  /// Format hour to short form (e.g., 8 -> "8am", 21 -> "9pm")
+  String _formatHourShort(int hour) {
+    final period = hour >= 12 ? 'pm' : 'am';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    return '$displayHour$period';
   }
 
   Future<void> _showTTSConfigDialog() async {
@@ -389,7 +412,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       _SettingsRow(
                         title: 'Daily Pointings',
                         subtitle: _permissionGranted
-                            ? '$_frequency per day'
+                            ? _getNotificationCountSummary()
                             : 'Permission required',
                         trailing: Switch(
                           value: _notificationsEnabled && _permissionGranted,
@@ -422,7 +445,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '8am, 12pm, 9pm',
+                              _getScheduleTimeSummary(),
                               style: TextStyle(
                                 color: textColorMuted,
                                 fontSize: 14,
