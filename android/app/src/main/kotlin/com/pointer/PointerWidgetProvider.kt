@@ -91,6 +91,10 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 Log.d(TAG, "Next action - showing next item")
                 showNextItem(context)
             }
+            Intent.ACTION_CONFIGURATION_CHANGED -> {
+                Log.d(TAG, "Configuration changed - updating widgets for theme change")
+                updateAllWidgets(context)
+            }
         }
     }
 
