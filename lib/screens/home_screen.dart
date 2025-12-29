@@ -260,7 +260,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final pointing = ref.watch(currentPointingProvider);
     final isZenMode = ref.watch(zenModeProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     final colors = context.colors;
+
+    // Detect foldable/tablet with square-ish aspect ratio (< 1.3)
+    final aspectRatio = screenHeight / screenWidth;
+    final isSquareAspect = aspectRatio < 1.3;
+
+    // Responsive bottom padding: accounts for nav bar (~72px) + margin
+    // For square-aspect foldables, reduce padding since content has more vertical room
+    final navBarSpace = isSquareAspect
+        ? 80.0  // Minimal space for foldables
+        : (screenHeight * 0.08).clamp(80.0, 120.0);
 
     return Scaffold(
       body: Stack(
@@ -298,13 +310,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   left: 24,
                   right: 24,
                   top: 20,
-                  bottom: 100 + bottomPadding,
+                  bottom: navBarSpace + bottomPadding,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                   // Phase 5.11: Consolidated pointing card with tradition badge & share inside
-                  Flexible(
+                  // Use Expanded to fill available vertical space on larger screens
+                  Expanded(
                     child: GestureDetector(
                       onLongPress: _handleSave,
                       onDoubleTap: _toggleZenMode,
@@ -320,7 +333,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
                             borderRadius: 32,
                             // Enable scrolling for large text / accessibility
-                            maxHeight: MediaQuery.of(context).size.height * 0.65,
+                            // On foldables (square aspect), enforce minimum height to use more space
+                            minHeight: isSquareAspect ? screenHeight * 0.25 : null,
+                            maxHeight: isSquareAspect
+                                ? screenHeight * 0.40
+                                : screenHeight * 0.65,
                             enableScrolling: true,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
