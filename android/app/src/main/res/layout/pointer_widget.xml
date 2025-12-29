@@ -74,7 +74,8 @@
             android:text="↻"
             android:textSize="16sp"
             android:textColor="#8B5CF6"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:contentDescription="Refresh pointings" />
 
         <TextView
             android:layout_width="0dp"
@@ -89,7 +90,8 @@
             android:text="◀"
             android:textSize="18sp"
             android:textColor="#8B5CF6"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:contentDescription="Previous pointing" />
 
         <TextView
             android:id="@+id/widget_next"
@@ -98,7 +100,8 @@
             android:text="▶"
             android:textSize="18sp"
             android:textColor="#8B5CF6"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:contentDescription="Next pointing" />
 
         <TextView
             android:layout_width="0dp"
@@ -112,6 +115,7 @@
             android:text="♡"
             android:textSize="16sp"
             android:textColor="#8B5CF6"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:contentDescription="Save to favorites" />
     </LinearLayout>
 </LinearLayout>

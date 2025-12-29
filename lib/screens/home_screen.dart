@@ -311,7 +311,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Semantics(
                           sortKey: const OrdinalSortKey(1.0),
                           label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
-                          hint: 'Double tap to focus, swipe up or down for actions',
+                          hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
                           customSemanticsActions: {
                             CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
                             CustomSemanticsAction(label: 'Share pointing'): _handleShare,
@@ -351,19 +351,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           key: ValueKey('${pointing.id}-badge'),
                                         ),
                                       ),
-                                      // Share icon
-                                      GestureDetector(
-                                        onTap: _handleShare,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: colors.accent.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Icon(
-                                            Icons.ios_share,
-                                            size: 18,
-                                            color: colors.textSecondary,
+                                      // Share icon - separate focusable element
+                                      Semantics(
+                                        button: true,
+                                        label: 'Share this pointing',
+                                        focusable: true,
+                                        child: GestureDetector(
+                                          onTap: _handleShare,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: colors.accent.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: Icon(
+                                              Icons.ios_share,
+                                              size: 18,
+                                              color: colors.textSecondary,
+                                            ),
                                           ),
                                         ),
                                       ),

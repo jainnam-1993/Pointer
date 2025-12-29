@@ -783,13 +783,16 @@ class _FeaturedArticleCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth = (screenWidth * 0.75).clamp(0.0, 260.0);
 
-    return SizedBox(
-      width: cardWidth,
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        borderRadius: 20,
-        onTap: onTap,
-        child: Column(
+    return Semantics(
+      button: true,
+      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
+      child: SizedBox(
+        width: cardWidth,
+        child: GlassCard(
+          padding: const EdgeInsets.all(16),
+          borderRadius: 20,
+          onTap: onTap,
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Tradition + reading time row
@@ -856,6 +859,7 @@ class _FeaturedArticleCard extends StatelessWidget {
                 ),
               ),
           ],
+        ),
         ),
       ),
     );
@@ -1824,7 +1828,9 @@ class _TeachingCard extends StatelessWidget {
     final colors = context.colors;
     final traditionInfo = traditions[teaching.lineage]!;
 
-    return GlassCard(
+    return Semantics(
+      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.',
+      child: GlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1905,6 +1911,7 @@ class _TeachingCard extends StatelessWidget {
             ),
           ],
         ],
+      ),
       ),
     );
   }
