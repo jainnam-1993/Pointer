@@ -37,15 +37,16 @@ swipe_percent() {
 get_bounds() {
     local desc="$1"
     adb shell uiautomator dump /sdcard/ui.xml 2>/dev/null
-    bounds=$(adb shell cat /sdcard/ui.xml | grep -o "content-desc=\"$desc[^\"]*\"[^>]*bounds=\"\[[0-9,]*\]\[[0-9,]*\]\"" | grep -o 'bounds="[^"]*"' | head -1)
+    # Use sed to break XML into lines for easier parsing
+    bounds=$(adb shell cat /sdcard/ui.xml | sed 's/>/>\n/g' | grep "content-desc=\"$desc" | grep -o 'bounds="\[[0-9,]*\]\[[0-9,]*\]"' | head -1)
     if [ -n "$bounds" ]; then
         echo "$bounds"
-        # Extract center coordinates
-        coords=$(echo $bounds | grep -o '\[.*\]' | tr -d '[]' | tr ',' ' ')
-        x1=$(echo $coords | awk '{print $1}')
-        y1=$(echo $coords | awk '{print $2}')
-        x2=$(echo $coords | awk '{print $3}')
-        y2=$(echo $coords | awk '{print $4}')
+        # Extract coordinates: replace ][ with space, clean up
+        coords=$(echo "$bounds" | sed 's/\]\[/ /g' | tr -d 'bounds="[]' | tr ',' ' ')
+        x1=$(echo "$coords" | awk '{print $1}')
+        y1=$(echo "$coords" | awk '{print $2}')
+        x2=$(echo "$coords" | awk '{print $3}')
+        y2=$(echo "$coords" | awk '{print $4}')
         center_x=$(( (x1 + x2) / 2 ))
         center_y=$(( (y1 + y2) / 2 ))
         echo "Center: ${center_x},${center_y}"
@@ -61,13 +62,15 @@ get_bounds() {
 tap_element() {
     local desc="$1"
     adb shell uiautomator dump /sdcard/ui.xml 2>/dev/null
-    bounds=$(adb shell cat /sdcard/ui.xml | grep -o "content-desc=\"$desc[^\"]*\"[^>]*bounds=\"\[[0-9,]*\]\[[0-9,]*\]\"" | grep -o 'bounds="[^"]*"' | head -1)
+    # Use sed to break XML into lines for easier parsing
+    bounds=$(adb shell cat /sdcard/ui.xml | sed 's/>/>\n/g' | grep "content-desc=\"$desc" | grep -o 'bounds="\[[0-9,]*\]\[[0-9,]*\]"' | head -1)
     if [ -n "$bounds" ]; then
-        coords=$(echo $bounds | grep -o '\[.*\]' | tr -d '[]' | tr ',' ' ')
-        x1=$(echo $coords | awk '{print $1}')
-        y1=$(echo $coords | awk '{print $2}')
-        x2=$(echo $coords | awk '{print $3}')
-        y2=$(echo $coords | awk '{print $4}')
+        # Extract coordinates: replace ][ with space, clean up
+        coords=$(echo "$bounds" | sed 's/\]\[/ /g' | tr -d 'bounds="[]' | tr ',' ' ')
+        x1=$(echo "$coords" | awk '{print $1}')
+        y1=$(echo "$coords" | awk '{print $2}')
+        x2=$(echo "$coords" | awk '{print $3}')
+        y2=$(echo "$coords" | awk '{print $4}')
         center_x=$(( (x1 + x2) / 2 ))
         center_y=$(( (y1 + y2) / 2 ))
         echo "Tapping '$desc' at ${center_x},${center_y}"
@@ -92,18 +95,31 @@ analyze_layout() {
     echo "=== Layout Analysis ==="
     echo "Screen: ${SCREEN_WIDTH}x${SCREEN_HEIGHT}"
 
-    # Find the navigation bar position
-    nav_bounds=$(adb shell cat /sdcard/ui.xml | grep 'Home tab' | grep -o 'bounds="[^"]*"' | head -1)
+    # Find the navigation bar position (extract bounds for Home tab)
+    # XML is single-line, use sed to extract bounds after Home tab
+    nav_bounds=$(adb shell cat /sdcard/ui.xml | sed 's/>/>\n/g' | grep 'Home tab' | grep -o 'bounds="\[[0-9,]*\]\[[0-9,]*\]"' | head -1)
     if [ -n "$nav_bounds" ]; then
-        y_start=$(echo $nav_bounds | grep -o '\[.*\]' | tr -d '[]' | tr ',' ' ' | awk '{print $2}')
-        y_end=$(echo $nav_bounds | grep -o '\[.*\]' | tr -d '[]' | tr ',' ' ' | awk '{print $4}')
-        echo "Nav bar Y position: ${y_start}-${y_end}"
+        # Extract coordinates: bounds="[x1,y1][x2,y2]"
+        # Replace ][ with space to separate coordinate pairs, then clean brackets and commas
+        coords=$(echo "$nav_bounds" | sed 's/\]\[/ /g' | tr -d 'bounds="[]' | tr ',' ' ')
+        x1=$(echo "$coords" | awk '{print $1}')
+        y1=$(echo "$coords" | awk '{print $2}')
+        x2=$(echo "$coords" | awk '{print $3}')
+        y2=$(echo "$coords" | awk '{print $4}')
+        echo "Nav bar bounds: x=${x1}-${x2}, y=${y1}-${y2}"
+        echo "Nav bar Y position: ${y1}-${y2}"
 
-        # Calculate usage
-        used_height=$y_end
-        unused_height=$((SCREEN_HEIGHT - y_end))
-        usage_pct=$((used_height * 100 / SCREEN_HEIGHT))
-        echo "Screen usage: ${usage_pct}% (${used_height}px used, ${unused_height}px unused)"
+        # Calculate usage (content ends at nav bar top)
+        content_height=$y1
+        nav_height=$((y2 - y1))
+        unused_height=$((SCREEN_HEIGHT - y2))
+        usage_pct=$((y2 * 100 / SCREEN_HEIGHT))
+        echo "Content area: 0-${y1} (${content_height}px)"
+        echo "Nav bar: ${y1}-${y2} (${nav_height}px)"
+        echo "Unused below nav: ${unused_height}px"
+        echo "Screen usage: ${usage_pct}% (${y2}px used)"
+    else
+        echo "Navigation bar not found in UI hierarchy"
     fi
 }
 

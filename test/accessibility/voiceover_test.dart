@@ -348,12 +348,13 @@ void main() {
           initialPointing: testPointing,
         ),
       );
-      await tester.pumpAndSettle();
+      // Use pump with duration for continuous animations (AnimatedGradient)
+      await tester.pump(const Duration(seconds: 2));
 
-      // Find Semantics with hint
+      // Find Semantics with hint (case-insensitive: 'Swipe' in implementation)
       final semanticsWithHint = find.byWidgetPredicate((widget) {
         if (widget is Semantics) {
-          final hint = widget.properties.hint ?? '';
+          final hint = widget.properties.hint?.toLowerCase() ?? '';
           return hint.contains('swipe') || hint.contains('actions');
         }
         return false;
