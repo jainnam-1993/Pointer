@@ -89,6 +89,17 @@ list_elements() {
     adb shell cat /sdcard/ui.xml | grep -o 'content-desc="[^"]*"' | grep -v 'content-desc=""' | sort -u
 }
 
+# Function: Take screenshot (reliable two-step method)
+# Usage: screenshot [filename]
+screenshot() {
+    local output="${1:-screenshot_$(date +%Y%m%d_%H%M%S).png}"
+    echo "Capturing screenshot..."
+    adb shell screencap /sdcard/screenshot.png
+    adb pull /sdcard/screenshot.png "$output"
+    adb shell rm /sdcard/screenshot.png
+    echo "Screenshot saved: $output"
+}
+
 # Function: Analyze layout usage
 analyze_layout() {
     adb shell uiautomator dump /sdcard/ui.xml 2>/dev/null
@@ -143,6 +154,9 @@ case "$1" in
     "analyze")
         analyze_layout
         ;;
+    "screenshot")
+        screenshot "$2"
+        ;;
     "home")
         tap_element "Home tab"
         ;;
@@ -168,6 +182,7 @@ case "$1" in
         echo "  click 'content-desc'     - Tap element by content-desc"
         echo "  list                     - List all accessible elements"
         echo "  analyze                  - Analyze screen layout usage"
+        echo "  screenshot [file]        - Capture screenshot (two-step method)"
         echo "  home|library|settings|inquiry|next - Navigate to tab"
         ;;
 esac

@@ -37,7 +37,20 @@ flutter pub get                # Install dependencies
 ./scripts/adb_test_helper.sh click "content-desc"     # Tap element by accessibility label
 ./scripts/adb_test_helper.sh list                     # List all accessible elements
 ./scripts/adb_test_helper.sh analyze                  # Analyze screen layout usage
+./scripts/adb_test_helper.sh screenshot [file]        # Capture device screenshot (reliable two-step method)
 ./scripts/adb_test_helper.sh home|library|settings    # Navigate to specific tab
+# Screenshot note: Uses device-side capture + pull (avoids binary stdout corruption)
+
+# iOS Testing (iOS Simulator Helper)
+./scripts/ios_test_helper.sh tap X_PCT Y_PCT           # Tap at percentage coordinates
+./scripts/ios_test_helper.sh swipe X1 Y1 X2 Y2 [MS]   # Swipe gesture
+./scripts/ios_test_helper.sh click "label"            # Tap element by accessibility label
+./scripts/ios_test_helper.sh find "label"             # Find element by accessibility label
+./scripts/ios_test_helper.sh list                     # List all accessible elements
+./scripts/ios_test_helper.sh analyze                  # Analyze screen layout usage
+./scripts/ios_test_helper.sh screenshot [file]        # Capture simulator screenshot
+./scripts/ios_test_helper.sh launch [bundle]          # Launch app by bundle ID
+# Requires: brew install idb-companion (Facebook's iOS Device Bridge)
 
 # Android Build Notes
 # - Kotlin 2.3.0, Android Gradle Plugin 8.13.2
@@ -139,6 +152,7 @@ flutter pub get                # Install dependencies
 │   └── screenshot_helpers.dart     # Screenshot capture + UX issue tracking
 ├── scripts/
 │   ├── adb_test_helper.sh           # ADB utility for screen-size independent Android testing (percentage-based coordinates, UIAutomator element finding)
+│   ├── ios_test_helper.sh           # iOS Simulator utility for screen-size independent testing (percentage-based coordinates, idb accessibility element finding)
 │   └── screenshot_test.sh           # Automated screenshot test runner
 ├── docs/
 │   ├── PLAY_STORE_RELEASE.md   # Play Store release checklist
@@ -504,6 +518,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Golden Test Helpers** | `test/golden/golden_test_helpers.dart` | setupGoldenTests(), goldenTestTheme, createGoldenTestApp(), pumpForGolden(), GoldenDevices |
 | **Unit Test Animation Handling** | `test/screens/onboarding_screen_test.dart` | pump(Duration) for continuous animations instead of pumpAndSettle(), AnimatedGradient.disableAnimations flag, ProviderScope overrides, screen size helpers (iPhone 14 Pro Max: 1290x2796, 3.0 DPR to avoid overflow) |
 | **Accessibility Testing** | `test/accessibility/voiceover_test.dart` + `accessibility_test.dart` + `scripts/adb_test_helper.sh` | VoiceOver tests: 6 test groups (semantic labels, decorative exclusion, custom actions, focus order, button semantics, screen reader hints), createTestApp() helper with ProviderScope overrides, pump(Duration) for continuous animations. Unit tests verify Semantics widget configuration (SemanticsFlag.isButton, labels, hints). ADB helper provides device-agnostic manual testing via percentage-based coordinates (tap_percent(), swipe_percent(), tap_element("content-desc"), list_elements(), analyze_layout()). UIAutomator integration finds elements by content-desc for reliable interaction. |
+| **iOS Simulator Testing** | `scripts/ios_test_helper.sh` | Cross-platform testing parity for iOS: percentage-based coordinates (tap/swipe), accessibility element finding via idb (Facebook's iOS Device Bridge), auto-detects booted simulator UDID, supports common device sizes (iPhone 15/14/SE, iPad Pro variants). Commands: tap_percent(), swipe_percent(), tap_element("label"), find_element("label"), list_elements(), screenshot(), launch_app(), analyze_layout(). Python3 JSON parsing for simctl output and accessibility tree. Requires `brew install idb-companion` for UI interaction. |
 | **Responsive Layout (Foldables)** | `lib/screens/home_screen.dart` | Aspect ratio detection for foldables/tablets: `aspectRatio = screenHeight / screenWidth`, `isSquareAspect = aspectRatio < 1.3`. Dynamic spacing: nav bar space 80px for foldables vs 8% of screen height (80-120px) for phones. Card constraints: foldables use 25-40% screen height vs 65% for phones. Use `Expanded` for better vertical space on large screens. Pattern generalizable to other screens requiring responsive layout. |
 
 ### Anti-Patterns
