@@ -153,6 +153,21 @@ class WidgetService {
       return false;
     }
   }
+
+  /// Refresh widget to pick up theme changes.
+  /// Call this when app resumes or user changes theme.
+  static Future<void> refreshWidget() async {
+    try {
+      await HomeWidget.updateWidget(
+        iOSName: 'PointerWidget',
+        androidName: androidWidgetName,
+        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+      );
+      debugPrint('Widget refreshed for theme update');
+    } catch (e) {
+      debugPrint('Failed to refresh widget: $e');
+    }
+  }
 }
 
 /// Simplified pointing data for widget display

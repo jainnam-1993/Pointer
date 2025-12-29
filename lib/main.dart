@@ -99,11 +99,42 @@ Future<void> _initializeNotifications(NotificationService service) async {
   );
 }
 
-class PointerApp extends ConsumerWidget {
+class PointerApp extends ConsumerStatefulWidget {
   const PointerApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PointerApp> createState() => _PointerAppState();
+}
+
+class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Refresh widget when app comes to foreground (picks up theme changes)
+      WidgetService.refreshWidget();
+    }
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    // System theme changed while app is in foreground
+    WidgetService.refreshWidget();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(flutterThemeModeProvider);
 

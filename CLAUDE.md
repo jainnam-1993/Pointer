@@ -31,12 +31,23 @@ flutter build appbundle        # Android App Bundle (Play Store)
 flutter analyze                # Static analysis
 flutter pub get                # Install dependencies
 
+# Android Testing (ADB Helper)
+./scripts/adb_test_helper.sh tap X_PCT Y_PCT           # Tap at percentage coordinates
+./scripts/adb_test_helper.sh swipe X1 Y1 X2 Y2 [MS]   # Swipe gesture
+./scripts/adb_test_helper.sh click "content-desc"     # Tap element by accessibility label
+./scripts/adb_test_helper.sh list                     # List all accessible elements
+./scripts/adb_test_helper.sh analyze                  # Analyze screen layout usage
+./scripts/adb_test_helper.sh home|library|settings    # Navigate to specific tab
+
 # Android Build Notes
 # - Kotlin 2.3.0, Android Gradle Plugin 8.13.2
 # - Kotlin configuration: kotlin.compilerOptions.jvmTarget (Gradle Plugin 2.x style)
 # - android/build.gradle.kts forces compileSdk = 36 for all plugin subprojects
 # - Gradle performance: caching + parallel builds enabled
 # - Core library desugaring: 2.1.5 (Java 17 compatibility)
+# - Release signing: Loads from android/key.properties (falls back to debug if missing)
+# - ProGuard: Minification + resource shrinking enabled for release builds
+# - ProGuard rules: android/app/proguard-rules.pro (preserves Flutter, RevenueCat, Home Widget)
 ```
 
 ## Architecture
@@ -44,7 +55,7 @@ flutter pub get                # Install dependencies
 ```
 ./
 ├── lib/
-│   ├── main.dart              # App entry point, ProviderScope setup
+│   ├── main.dart              # App entry point, ProviderScope setup, WidgetsBindingObserver for widget theme sync
 │   ├── router.dart            # GoRouter configuration
 │   ├── theme/
 │   │   └── app_theme.dart     # PointerColors (ThemeExtension), AppThemeMode, theme variants (dark/light/highContrast/oled)
@@ -58,6 +69,7 @@ flutter pub get                # Install dependencies
 │   │   ├── main_shell.dart    # Bottom navigation shell
 │   │   ├── home_screen.dart   # Daily pointing display
 │   │   ├── inquiry_screen.dart
+│   │   ├── inquiry_player_screen.dart    # Guided inquiry session with timed phase transitions
 │   │   ├── lineages_screen.dart
 │   │   ├── library_screen.dart    # Browse articles, teachings, TTS reader
 │   │   ├── settings_screen.dart   # Settings with TTS config
@@ -68,34 +80,45 @@ flutter pub get                # Install dependencies
 │   │   ├── animated_transitions.dart   # Staggered fade-in, text switcher animations
 │   │   ├── glass_card.dart             # GlassCard/GlassButton components (intensity levels, high contrast)
 │   │   ├── tradition_badge.dart        # Tradition indicator badge
+│   │   ├── teacher_sheet.dart          # Modal sheet with teacher bio and pointings
 │   │   ├── article_tts_player.dart     # TTS playback controls
 │   │   └── audio_player_widget.dart    # Audio pointing player (guided readings)
 │   ├── services/
 │   │   ├── storage_service.dart            # SharedPreferences wrapper
 │   │   ├── notification_service.dart       # Notification scheduling (presets, time windows, quiet hours)
 │   │   ├── usage_tracking_service.dart     # Daily pointing limit (freemium)
-│   │   ├── widget_service.dart             # Home widget data updates
+│   │   ├── widget_service.dart             # Home widget data updates, theme sync via refreshWidget()
 │   │   ├── revenue_cat_service.dart        # RevenueCat integration (lifetime purchase)
 │   │   ├── aws_credential_service.dart     # AWS TOTP authentication
 │   │   ├── tts_service.dart                # Text-to-speech via AWS Polly
 │   │   ├── affinity_service.dart           # Tradition preference tracking
 │   │   ├── pointing_selector.dart          # Time-of-day aware pointing selection
 │   │   └── audio_pointing_service.dart     # Audio pointing playback
+│   ├── models/
+│   │   └── teacher.dart       # Teacher model (name, bio, dates, tradition, tags)
 │   └── data/
-│       └── pointings.dart     # Curated pointings across traditions
+│       ├── pointings.dart     # Curated pointings across traditions
+│       └── teachers.dart      # Teacher database (9 teachers, helper functions)
 ├── android/
-│   └── app/src/main/
-│       ├── kotlin/com/pointer/
-│       │   └── PointerWidgetProvider.kt        # Home widget provider (refresh/save actions, logging, error handling)
-│       └── res/
+│   └── app/
+│       ├── proguard-rules.pro                   # ProGuard rules (preserves Flutter, RevenueCat, Home Widget)
+│       └── src/main/
+│           ├── kotlin/com/pointer/
+│           │   ├── MainActivity.kt                  # Theme change listener (BroadcastReceiver for ACTION_CONFIGURATION_CHANGED, triggers widget updates on system theme changes)
+│           │   ├── PointerWidgetProvider.kt        # Home widget provider (AdapterViewFlipper navigation, prev/next actions, SharedPreferences position tracking)
+│           │   └── PointerWidgetService.kt         # RemoteViewsService factory for widget data (pointings cache, dark/light theme, prefetch logic)
+│           └── res/
 │           ├── drawable/
-│           │   ├── widget_background_modern.xml    # Modern widget white background (28dp radius)
-│           │   ├── widget_nav_dot.xml              # Navigation indicator (8dp gray oval)
+│           │   ├── widget_card_dark.xml            # Enhanced glassmorphism dark card (black #0A0A12 base, diagonal shimmer gradient, radial purple glow #158B5CF6, top edge highlight, 1.5dp border - matches PointerColors.dark)
+│           │   ├── widget_card_light.xml           # Enhanced glassmorphism light card (#F8F8FA base, frosted gradient layers, warmth/depth radial, top reflection, 1dp border - matches PointerColors.light)
+│           │   ├── widget_icon_circle.xml          # App icon circle (gradient purple background)
 │           │   ├── widget_rainbow_stripes.xml      # Simple rainbow gradient (purple-cyan-pink)
 │           │   └── widget_stripes_gradient.xml     # Layered rainbow gradient
 │           ├── layout/
-│           │   ├── pointer_widget.xml       # Widget layout dark theme (white text on dark background, refresh/save actions)
-│           │   └── pointer_widget_light.xml # Widget layout light theme (dark text on white background, refresh/save actions)
+│           │   ├── pointer_widget.xml              # Widget container dark theme (AdapterViewFlipper, prev/next buttons with contentDescription, refresh/save actions)
+│           │   ├── pointer_widget_light.xml        # Widget container light theme (AdapterViewFlipper, prev/next buttons with contentDescription, refresh/save actions)
+│           │   ├── widget_stack_item_dark.xml      # Individual pointing card dark (transparent background, 6-line content, position indicator, tradition badge, teacher attribution)
+│           │   └── widget_stack_item_light.xml     # Individual pointing card light (transparent background, 6-line content, position indicator, tradition badge, teacher attribution)
 │           └── raw/
 │               └── bell_chime.ogg                  # Custom notification sound (OGG, 14KB)
 ├── test/                      # Unit tests
@@ -105,6 +128,9 @@ flutter pub get                # Install dependencies
 │   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel)
 │   ├── screens/
 │   │   └── onboarding_screen_test.dart  # Onboarding widget tests
+│   ├── accessibility/
+│   │   ├── accessibility_test.dart      # Semantics widget configuration tests (screen reader labels, hints, button flags)
+│   │   └── voiceover_test.dart          # VoiceOver accessibility tests (semantic labels, focus order, custom actions, decorative exclusion)
 │   └── golden/
 │       ├── components_golden_test.dart   # Component visual regression tests
 │       └── golden_test_helpers.dart      # Golden test infrastructure
@@ -112,7 +138,11 @@ flutter pub get                # Install dependencies
 │   ├── screenshot_test.dart        # IntegrationTest screenshot tests (8 testWidgets)
 │   └── screenshot_helpers.dart     # Screenshot capture + UX issue tracking
 ├── scripts/
-│   └── screenshot_test.sh          # Automated screenshot test runner
+│   ├── adb_test_helper.sh           # ADB utility for screen-size independent Android testing (percentage-based coordinates, UIAutomator element finding)
+│   └── screenshot_test.sh           # Automated screenshot test runner
+├── docs/
+│   ├── PLAY_STORE_RELEASE.md   # Play Store release checklist
+│   └── store_assets/            # Store listing graphics
 ├── patrol.yaml                # Patrol CLI configuration
 └── pubspec.yaml               # Dependencies
 ```
@@ -120,6 +150,8 @@ flutter pub get                # Install dependencies
 ## Development Principles
 
 - **Library Preference**: Strongly prefer pre-built Flutter packages over custom native code. "Think 100 times" before writing platform-specific native implementations.
+- **Git Configuration**: The repository overrides global gitignore with `!lib/` to ensure Flutter's lib/ directory is tracked (Flutter projects require source tracking despite common global gitignore patterns).
+- **Security**: Never commit app signing files - `.gitignore` excludes `android/key.properties`, `*.keystore`, `*.jks`, and `android/app/upload-keystore.jks`.
 
 ## Tech Stack
 
@@ -135,7 +167,7 @@ flutter pub get                # Install dependencies
 - **Home Widget**: home_widget
 - **In-App Purchases**: purchases_flutter (RevenueCat)
 - **URL Launching**: url_launcher (for privacy/terms links)
-- **Markdown**: flutter_markdown (for content rendering)
+- **Markdown**: flutter_markdown_plus (for content rendering)
 - **Utilities**: path_provider, share_plus
 - **Haptics**: flutter/services HapticFeedback (lightImpact/mediumImpact/heavyImpact)
 - **Testing**: flutter_test + mocktail (unit), patrol (integration)
@@ -159,7 +191,11 @@ flutter pub get                # Install dependencies
 
 **HapticFeedback**: Use `flutter/services` HapticFeedback for tactile feedback. `lightImpact()` for navigation/selection, `mediumImpact()` for actions/dialogs, `heavyImpact()` for significant events (developer unlock, subscription). Used extensively across home, library, settings, lineages, history, inquiry, paywall, onboarding screens.
 
-**PointerWidgetProvider** (`android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt`): Android home widget provider with robust error handling. HomeWidgetPlugin.getData() wrapped in try-catch with null safety (elvis operators for fallbacks). Logging pattern: TAG "PointerWidget" with Log.d/Log.e. updateAllWidgets() companion method refreshes all widget instances. Interactive actions: ACTION_REFRESH (immediate widget update + background intent for instant feedback), ACTION_SAVE (add to favorites).
+**PointerWidgetProvider** (`android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt`): Zero-configuration Android home widget with AdapterViewFlipper architecture for manual navigation. No WidgetConfigActivity required - widget works immediately after placement. Displays ONE pointing at a time with prev/next button controls. Actions: ACTION_PREV/ACTION_NEXT (navigate through pointings with circular wrapping), ACTION_REFRESH (reload data via Flutter background intent), ACTION_SAVE (add to favorites). Content area click directly opens app via PendingIntent.getActivity(). SharedPreferences tracks flipper_position across updates. Auto-rotation every 30 minutes via advanceStackPosition(). Dark/light mode auto-switching via isSystemInDarkMode() with Configuration change listener (ACTION_CONFIGURATION_CHANGED) that triggers updateAllWidgets(). Retrieves total count from pointings_cache JSON. Uses partiallyUpdateAppWidget for efficient position updates. Logging: TAG "PointerWidget" with Log.d/Log.e. Error handling: try-catch with null safety, elvis operators for fallbacks.
+
+**PointerWidgetService** (`android/app/src/main/kotlin/com/pointer/PointerWidgetService.kt`): RemoteViewsService providing PointerRemoteViewsFactory for AdapterViewFlipper. Factory loads pointings from HomeWidgetPlugin.getData() (pointings_cache JSON array), creates RemoteViews for each item with tradition badges (accent colors), teacher attribution, position indicators (e.g., "3 / 40"). Dark/light theme support with separate layout files (widget_stack_item_dark/light.xml). Prefetch logic triggers at PREFETCH_THRESHOLD to request more data from Flutter. Error handling: try-catch with fallback to empty list, null-safe JSON parsing.
+
+**Widget Glassmorphism** (`android/app/src/main/res/drawable/` + `layout/`): Widget cards match app PointerColors themes with enhanced multi-layer glassmorphism. Dark theme (widget_card_dark.xml): black #0A0A12 base with 4 gradient layers - diagonal shimmer (#20FFFFFF→#08FFFFFF→#15FFFFFF at 135°), radial purple glow (#158B5CF6 from 30%/20% center), top edge highlight (#00FFFFFF→#25FFFFFF), and 1.5dp border (#40FFFFFF). Light theme (widget_card_light.xml): #F8F8FA base with 4 gradient layers - frosted gradient (#F0FFFFFF→#D8FFFFFF→#E8FFFFFF at 135°), warmth/depth radial (#08000000 from 70%/80% center), top reflection (#00FFFFFF→#60FFFFFF), and 1dp border (#20000000). Stack item layouts (widget_stack_item_dark.xml / widget_stack_item_light.xml) use transparent 4dp padding with: header (24dp "P" icon + hidden tradition badge + position indicator e.g., "3 / 40"), 6-line ellipsized content (dark: #FFFFFF 15sp, light: #1C1C1E 15sp, 1.4 line spacing), italic teacher attribution (dark: #AAAAAA 12sp, light: #636366 12sp, hidden by default), and hidden accent stripe for code compatibility. Matches iOS Control Center glassmorphism style from app's GlassCard widget.
 
 **Riverpod Providers** (`lib/providers/providers.dart`): SharedPreferences instance, router, storage service providers, TTS providers, usage tracking providers.
 
@@ -169,6 +205,12 @@ flutter pub get                # Install dependencies
 - **Notification settings**: NotificationSettingsNotifier managing enabled state and notification times
 - **Accessibility helpers**: shouldReduceMotion(context, appOverride), isHighContrastEnabled(context, ref)
 - **Theme conversion**: AppThemeMode ↔ Flutter ThemeMode
+
+**Settings Screen** (`lib/screens/settings_screen.dart`): Settings UI with dynamic notification schedule display:
+- **Dynamic schedule summary**: `_getNotificationCountSummary()` retrieves count from NotificationService schedule (e.g., "3 per day", "Disabled")
+- **Time window display**: `_getScheduleTimeSummary()` formats schedule as "Every Xh/Xm, 8am - 9pm" based on frequencyMinutes and start/end hours
+- **Time formatting**: `_formatHourShort()` helper converts 24h to 12h format with am/pm (8→"8am", 21→"9pm")
+- **Developer options**: Version tap counter (7 taps) unlocks TTS configuration and developer settings
 
 **Content Providers** (`lib/providers/content_providers.dart`): Content state management with affinity learning and filtering:
 - **Pointing navigation**: currentPointingProvider (StateNotifier) with 50-item history buffer, nextPointing()/previousPointing()/setPointing(), auto-updates home widget
@@ -186,14 +228,22 @@ flutter pub get                # Install dependencies
 
 **Data model**: `Pointing` has id, content, instruction, tradition (Advaita/Zen/Direct Path/Contemporary/Original), context (morning/midday/evening/stress/general), teacher, source.
 
+**Teacher Model & Database** (`lib/models/teacher.dart` + `lib/data/teachers.dart`): Teacher information system for expandable teacher bios. Teacher model includes name, bio, dates, tradition, and tags. Database contains 9 teachers across traditions (Advaita, Direct Path, Contemporary, Zen, Original). Helper functions: `getTeacher(name)` returns Teacher?, `getPointingsByTeacher(name)` returns List<Pointing>. Used by TeacherSheet widget for displaying teacher context.
+
+**TeacherSheet** (`lib/widgets/teacher_sheet.dart`): Modal bottom sheet showing teacher biography, tradition badge, tags, and other pointings by the same teacher. Glassmorphism styling with BackdropFilter blur. Invoked via `showTeacherSheet(context, teacher)`. DraggableScrollableSheet with 0.3-0.9 size range.
+
+**Inquiry Player** (`lib/screens/inquiry_player_screen.dart`): Guided inquiry session with timed phase transitions. Flow: Setup (3s) → Question (inquiry.pauseDuration) → FollowUp → Complete. Haptic feedback at phase transitions. `disableAutoAdvance` flag for testing. Respects accessibility settings for reduced motion.
+
 **Notification Scheduling** (`lib/services/notification_service.dart`):
 - **NotificationPreset**: Quick presets (Morning, All day, Evening, Minimal) for one-tap configuration
-- **NotificationSchedule**: Time window + frequency model (start/end times, frequency in hours, quiet hours support)
-- **Schedule calculation**: `getNotificationTimes()` generates notification times within time window
+- **NotificationSchedule**: Time window + frequency model (start/end times, `frequencyMinutes` field, quiet hours support)
+- **Frequency options**: `[30, 60, 120, 180, 240, 360, 480, 720]` minutes (30-minute minimum interval, up to 12 hours)
+- **Schedule calculation**: `getNotificationTimes()` generates notification times within time window using `Duration(minutes: frequencyMinutes)`
 - **Quiet hours**: Supports overnight quiet periods (e.g., 22:00-07:00)
 - **Channel**: Uses `pointings_v6` notification channel (Android)
 - **Sound**: Custom bell_chime.ogg configured with MAX importance/priority + vibration (debugging Android audio playback)
 - **Legacy support**: `NotificationTime` class kept for migration from older fixed-time model
+- **Backward compatibility**: `fromJson()` automatically converts old `frequencyHours` to `frequencyMinutes` (hours * 60)
 
 **TTS Integration** (`lib/services/tts_service.dart` + `lib/services/aws_credential_service.dart`):
 - **Setup flow**: User enters OTP → API returns TOTP secret → stored securely in keychain
@@ -206,6 +256,10 @@ flutter pub get                # Install dependencies
 ## Testing
 
 **Unit tests** (`test/`): Cover services, widgets, providers. Use mocktail for mocking.
+
+- **Animation handling**: For widgets with continuous animations (AnimatedGradient), use `pump(Duration(seconds: 2))` instead of `pumpAndSettle()` which times out on continuous animations. Disable animations in `setUpAll()` via `AnimatedGradient.disableAnimations = true`.
+- **Riverpod test setup**: Create `ProviderScope` with overrides for mocked dependencies (SharedPreferences, services, state providers). Mock SharedPreferences before provider initialization.
+- **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`.
 
 **Integration tests** (`integration_test/`): E2E flows using patrol framework.
 
@@ -250,6 +304,25 @@ flutter pub get                # Install dependencies
   - `pumpForGolden()` - Prepares widgets with ProviderScope and size constraints
   - `GoldenDevices` - Standard sizes (iPhone 14 Pro, iPhone SE, Pixel 7, iPad Mini)
 - **Usage**: `flutter test --update-goldens` to generate baselines, `flutter test test/golden/` to verify
+
+**Accessibility tests** (`test/accessibility/`): Semantics widget configuration verification for screen readers.
+
+- **Framework**: Standard flutter_test with Semantics node inspection
+- **Test files**:
+  - `accessibility_test.dart` - Semantics widget configuration (share button, navigation tabs, cards)
+  - `voiceover_test.dart` - VoiceOver accessibility requirements (semantic labels, focus order, custom actions)
+- **VoiceOver test coverage** (`voiceover_test.dart`):
+  - Semantic Labels: TraditionBadge, GlassButton, all traditions
+  - Decorative Elements Excluded: AnimatedGradient, FloatingParticles use ExcludeSemantics
+  - Custom Actions: HomeScreen pointing card gesture actions
+  - Focus Order: Logical top-to-bottom semantic traversal
+  - Button Semantics: GlassButton tap/disabled states
+  - Screen Reader Hints: Directional action hints (e.g., "Swipe up for next pointing")
+- **Test helper**: `createTestApp()` function with ProviderScope overrides for consistent test setup
+- **Animation handling**: Uses `pump(Duration(seconds: 2))` for continuous animations instead of `pumpAndSettle()`
+- **Verification**: Tests validate SemanticsFlag properties (isButton, isSelected), accessibility labels, and directional hints
+- **Theme testing**: Validates color contrast in dark/light PointerColors themes
+- **Manual testing**: Use `scripts/adb_test_helper.sh` for device-agnostic Android testing via percentage-based coordinates and UIAutomator element finding
 
 ## TODOs in Codebase
 
@@ -349,7 +422,7 @@ Daily pointing view limit for free users (2 per day), enforced via subscription 
 
 **Files:**
 - `lib/providers/subscription_providers.dart` - SubscriptionNotifier, DailyUsageNotifier, SubscriptionState models
-- `lib/services/revenue_cat_service.dart` - RevenueCat SDK integration, lifetime purchase flow (product: `pointer_premium_lifetime`, test API keys configured)
+- `lib/services/revenue_cat_service.dart` - RevenueCat SDK integration with lifetime purchase model (product: `pointer_premium_lifetime`), test API keys configured, debug logging enabled for development/testing
 - `lib/services/usage_tracking_service.dart` - Counter logic, daily reset
 - `lib/providers/providers.dart` - Legacy `usageTrackingServiceProvider` (deprecated, use subscription_providers.dart)
 
@@ -418,9 +491,20 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
 | **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, defaults: theme='system', hapticFeedback=true, autoAdvance=false) |
 | **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
-| **PointerWidgetProvider** | `android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt` | Android home widget with error handling (try-catch, null safety), logging (TAG "PointerWidget"), updateAllWidgets() for refresh |
+| **Accessibility Labels** | Android layouts + Flutter widgets | Android: All interactive widgets require `android:contentDescription` attributes (e.g., "Refresh pointings", "Previous pointing", "Next pointing", "Save to favorites"). Flutter: Semantics widgets should have clear directional hints (e.g., "Swipe up for next pointing, down for previous" not vague "swipe up or down for actions"). Ensures screen reader users understand widget purpose and gesture directions. |
+| **Teacher Model & Database** | `lib/models/teacher.dart` + `lib/data/teachers.dart` | Teacher info system (name, bio, dates, tradition, tags), 9 teachers database, getTeacher(name), getPointingsByTeacher(name) |
+| **TeacherSheet** | `lib/widgets/teacher_sheet.dart` | Modal bottom sheet for teacher bio (showTeacherSheet(context, teacher), glassmorphism, DraggableScrollableSheet) |
+| **InquiryPlayer** | `lib/screens/inquiry_player_screen.dart` | Timed inquiry phases (Setup → Question → FollowUp → Complete), haptic feedback, disableAutoAdvance flag for testing |
+| **PointerWidgetProvider** | `android/app/src/main/kotlin/com/pointer/PointerWidgetProvider.kt` | Zero-config AdapterViewFlipper widget with prev/next navigation, 30-min auto-rotation, SharedPreferences position tracking, dark/light mode switching via isSystemInDarkMode() and ACTION_CONFIGURATION_CHANGED |
+| **PointerWidgetService** | `android/app/src/main/kotlin/com/pointer/PointerWidgetService.kt` | RemoteViewsFactory for widget data (pointings cache, tradition badges, position indicators, prefetch logic) |
+| **Widget Glassmorphism** | `android/app/src/main/res/drawable/widget_card_*.xml` + `layout/widget_stack_item_*.xml` | Enhanced multi-layer glassmorphism cards matching app PointerColors themes (dark: 4 gradient layers with diagonal shimmer + purple glow + edge highlight, light: 4 gradient layers with frosted + warmth radial + reflection), stack item layouts with header/content/teacher attribution |
+| **Widget Theme Sync** | `lib/main.dart` + `lib/services/widget_service.dart` + `android/app/src/main/kotlin/com/pointer/MainActivity.kt` | Multi-layer theme sync: (1) Flutter-side: PointerApp implements WidgetsBindingObserver to detect app lifecycle (didChangeAppLifecycleState) and system theme changes (didChangePlatformBrightness), calls WidgetService.refreshWidget() on changes. (2) Native-side: MainActivity registers BroadcastReceiver for ACTION_CONFIGURATION_CHANGED, tracks currentNightMode (UI_MODE_NIGHT_MASK), calls PointerWidgetProvider.updateAllWidgets() when system theme changes. Ensures widget theme updates even when app is in background. |
+| **Settings Screen Helpers** | `lib/screens/settings_screen.dart` | `_getNotificationCountSummary()`, `_getScheduleTimeSummary()`, `_formatHourShort()` for dynamic notification schedule display |
 | **Screenshot Test Setup** | `integration_test/screenshot_test.dart` | UncontrolledProviderScope + mocked SharedPreferences + settle() helper |
 | **Golden Test Helpers** | `test/golden/golden_test_helpers.dart` | setupGoldenTests(), goldenTestTheme, createGoldenTestApp(), pumpForGolden(), GoldenDevices |
+| **Unit Test Animation Handling** | `test/screens/onboarding_screen_test.dart` | pump(Duration) for continuous animations instead of pumpAndSettle(), AnimatedGradient.disableAnimations flag, ProviderScope overrides, screen size helpers (iPhone 14 Pro Max: 1290x2796, 3.0 DPR to avoid overflow) |
+| **Accessibility Testing** | `test/accessibility/voiceover_test.dart` + `accessibility_test.dart` + `scripts/adb_test_helper.sh` | VoiceOver tests: 6 test groups (semantic labels, decorative exclusion, custom actions, focus order, button semantics, screen reader hints), createTestApp() helper with ProviderScope overrides, pump(Duration) for continuous animations. Unit tests verify Semantics widget configuration (SemanticsFlag.isButton, labels, hints). ADB helper provides device-agnostic manual testing via percentage-based coordinates (tap_percent(), swipe_percent(), tap_element("content-desc"), list_elements(), analyze_layout()). UIAutomator integration finds elements by content-desc for reliable interaction. |
+| **Responsive Layout (Foldables)** | `lib/screens/home_screen.dart` | Aspect ratio detection for foldables/tablets: `aspectRatio = screenHeight / screenWidth`, `isSquareAspect = aspectRatio < 1.3`. Dynamic spacing: nav bar space 80px for foldables vs 8% of screen height (80-120px) for phones. Card constraints: foldables use 25-40% screen height vs 65% for phones. Use `Expanded` for better vertical space on large screens. Pattern generalizable to other screens requiring responsive layout. |
 
 ### Anti-Patterns
 - ❌ Don't create new files when existing ones can be extended
@@ -433,5 +517,6 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 - `/DESIGN_SYSTEM.md` - Full design specifications
 - `/EXECUTION_PLAN.md` - Implementation roadmap and product decisions
 - `/PRFAQ.md` - Product vision and FAQ
+- `/docs/PLAY_STORE_RELEASE.md` - Play Store release checklist (signing, legal docs, store assets, Play Console setup)
 - `${vault_path}/ROADMAP.md` - Feature roadmap with priorities
 - `${vault_path}/IMPLEMENTATION_PLAYBOOK.md` - Orchestrator execution guide

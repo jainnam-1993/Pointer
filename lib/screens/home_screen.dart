@@ -305,16 +305,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             },
             // B.5: Removed horizontal swipe to allow main_shell tab navigation
             child: SafeArea(
+              // SafeArea already handles system UI padding (taskbar, etc.)
+              // We only need to add space for our custom nav bar
               child: Padding(
                 padding: EdgeInsets.only(
                   left: 24,
                   right: 24,
                   top: 20,
-                  bottom: navBarSpace + bottomPadding,
+                  bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // On foldables, start from top to avoid floating content
+                  // On phones, center for balanced aesthetic
+                  mainAxisAlignment: isSquareAspect
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
                   children: [
+                  // Add top spacing on foldables to balance the layout
+                  if (isSquareAspect) SizedBox(height: screenHeight * 0.05),
                   // Phase 5.11: Consolidated pointing card with tradition badge & share inside
                   // Use Expanded to fill available vertical space on larger screens
                   Expanded(

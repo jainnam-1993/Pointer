@@ -48,3 +48,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 worktrees/
+
+# App signing (NEVER commit these)
+android/key.properties
+android/app/upload-keystore.jks
+*.keystore
+*.jks
