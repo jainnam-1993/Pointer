@@ -36,7 +36,12 @@ void main() {
 
     // Setup default mock returns
     when(() => mockPrefs.getString(any())).thenReturn(null);
-    when(() => mockPrefs.getBool(any())).thenReturn(null);
+    // Return true for hasEverSaved so tests don't trigger first-save celebration
+    when(() => mockPrefs.getBool(any())).thenAnswer((invocation) {
+      final key = invocation.positionalArguments.first as String;
+      if (key == 'pointer_has_ever_saved') return true;
+      return null;
+    });
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
 
@@ -122,7 +127,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Verify favorite was saved
       verify(() => mockPrefs.setString(
@@ -190,7 +196,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Verify save confirmation is shown
       expect(find.byType(SaveConfirmation), findsOneWidget);
@@ -218,7 +225,8 @@ void main() {
 
       // Wait for auto-dismiss
       await tester.pump(const Duration(milliseconds: 200));
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       expect(wasDismissed, isTrue);
 
@@ -254,7 +262,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Should not call setString since it's already a favorite
       verifyNever(() => mockPrefs.setString(
@@ -287,7 +296,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Verify heart icon is shown
       expect(find.byIcon(Icons.favorite), findsOneWidget);
@@ -317,7 +327,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Verify "Saved" text is shown
       expect(find.text('Saved'), findsOneWidget);
@@ -374,7 +385,8 @@ void main() {
 
       // Wait for auto-dismiss
       await tester.pump(const Duration(milliseconds: 200));
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       expect(wasDismissed, isTrue);
 
@@ -436,7 +448,8 @@ void main() {
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
-      await tester.pumpAndSettle();
+      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
+      await tester.pump(const Duration(seconds: 2));
 
       // Should now be a favorite
       expect(capturedRef.read(favoritesProvider).contains('provider-test'), isTrue);
