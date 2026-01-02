@@ -27,22 +27,38 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 // Current Pointing with History Navigation
 // ============================================================
 
-/// Current pointing state
+/// Current pointing state - persists across app restarts
 final currentPointingProvider =
     StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
-  return CurrentPointingNotifier();
+  final storage = ref.watch(storageServiceProvider);
+  return CurrentPointingNotifier(storage);
 });
 
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
+  final StorageService _storage;
   final List<Pointing> _history = [];
   int _historyIndex = -1;
 
-  CurrentPointingNotifier() : super(getRandomPointing()) {
+  CurrentPointingNotifier(this._storage) : super(_loadInitialPointing(_storage)) {
     // Add initial pointing to history
     _history.add(state);
     _historyIndex = 0;
     // Update widget with initial pointing
     _updateWidget(state);
+  }
+
+  /// Load persisted pointing or get a random one if not found
+  static Pointing _loadInitialPointing(StorageService storage) {
+    final savedId = storage.currentPointingId;
+    if (savedId != null) {
+      // Try to find the saved pointing by ID
+      final saved = getPointingById(savedId);
+      if (saved != null) {
+        return saved;
+      }
+    }
+    // Fall back to random pointing if not found
+    return getRandomPointing();
   }
 
   void nextPointing({Tradition? tradition, PointingContext? context}) {
@@ -62,7 +78,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
       _historyIndex--;
     }
 
-    _updateWidget(state);
+    _persistAndUpdateWidget(state);
   }
 
   void previousPointing() {
@@ -74,7 +90,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     // Navigate back in history
     _historyIndex--;
     state = _history[_historyIndex];
-    _updateWidget(state);
+    _persistAndUpdateWidget(state);
   }
 
   void setPointing(Pointing pointing) {
@@ -92,7 +108,13 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
       _historyIndex--;
     }
 
-    _updateWidget(state);
+    _persistAndUpdateWidget(state);
+  }
+
+  /// Persist current pointing ID and update widget
+  void _persistAndUpdateWidget(Pointing pointing) {
+    _storage.setCurrentPointingId(pointing.id);
+    _updateWidget(pointing);
   }
 
   /// Update home screen widget with current pointing

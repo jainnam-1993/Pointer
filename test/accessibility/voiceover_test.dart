@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/data/pointings.dart';
+import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
@@ -41,7 +42,8 @@ Widget createTestApp({
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
-          final notifier = CurrentPointingNotifier();
+          final storage = ref.watch(storageServiceProvider);
+          final notifier = CurrentPointingNotifier(storage);
           notifier.setPointing(initialPointing);
           return notifier;
         }),

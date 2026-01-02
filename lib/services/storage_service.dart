@@ -10,6 +10,7 @@ class StorageKeys {
   static const settings = 'pointer_settings';
   static const subscriptionTier = 'pointer_subscription';
   static const hasEverSaved = 'pointer_has_ever_saved';
+  static const currentPointingId = 'pointer_current_pointing_id';
 }
 
 /// App settings model
@@ -162,6 +163,18 @@ class StorageService {
   Future<void> setSubscriptionTier(String tier) =>
       _prefs.setString(StorageKeys.subscriptionTier, tier);
 
+  // Current pointing persistence (for restoring state after app restart)
+  String? get currentPointingId =>
+      _prefs.getString(StorageKeys.currentPointingId);
+
+  Future<void> setCurrentPointingId(String? id) async {
+    if (id == null) {
+      await _prefs.remove(StorageKeys.currentPointingId);
+    } else {
+      await _prefs.setString(StorageKeys.currentPointingId, id);
+    }
+  }
+
   // Clear all
   Future<void> clearAll() async {
     await _prefs.remove(StorageKeys.onboardingCompleted);
@@ -171,5 +184,6 @@ class StorageService {
     await _prefs.remove(StorageKeys.settings);
     await _prefs.remove(StorageKeys.subscriptionTier);
     await _prefs.remove(StorageKeys.hasEverSaved);
+    await _prefs.remove(StorageKeys.currentPointingId);
   }
 }

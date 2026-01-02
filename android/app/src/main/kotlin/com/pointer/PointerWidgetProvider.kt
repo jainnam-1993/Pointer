@@ -277,7 +277,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
         /**
          * Advance the stack position on auto-update (every 30 minutes).
-         * This creates the auto-rotation effect.
+         * This creates the auto-rotation effect by incrementing flipper_position.
          */
         private fun advanceStackPosition(
             context: Context,
@@ -299,9 +299,33 @@ class PointerWidgetProvider : AppWidgetProvider() {
                     return
                 }
 
-                // Notify data changed to potentially show different item
+                // Get total count from cache
+                val totalCount = try {
+                    org.json.JSONArray(cacheJson).length()
+                } catch (e: Exception) { 1 }
+
+                if (totalCount <= 1) {
+                    Log.d(TAG, "advanceStackPosition: Only $totalCount items, skipping advance")
+                    return
+                }
+
+                // Get current position and advance it
+                val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                var currentPosition = prefs.getInt("flipper_position", 0)
+                currentPosition = (currentPosition + 1) % totalCount
+                prefs.edit().putInt("flipper_position", currentPosition).apply()
+
+                Log.d(TAG, "advanceStackPosition: Advanced to position $currentPosition of $totalCount")
+
+                // Determine theme for correct layout
+                val isDarkMode = isSystemInDarkMode(context)
+                val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
+
+                // Update all widgets to show the new position
                 for (appWidgetId in appWidgetIds) {
-                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
+                    val views = RemoteViews(context.packageName, layoutId)
+                    views.setDisplayedChild(R.id.widget_flipper, currentPosition)
+                    appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error advancing stack: ${e.message}", e)
