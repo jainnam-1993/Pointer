@@ -330,8 +330,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // Add top spacing on foldables to balance the layout
                   if (isSquareAspect) SizedBox(height: screenHeight * 0.05),
                   // Phase 5.11: Consolidated pointing card with tradition badge & share inside
-                  // Use Expanded to fill available vertical space on larger screens
-                  Expanded(
+                  // Use Flexible with loose fit - shrinks for short content, expands for long
+                  Flexible(
+                    fit: FlexFit.loose,
                     child: GestureDetector(
                       onLongPress: _handleSave,
                       onDoubleTap: _toggleZenMode,
@@ -348,10 +349,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             borderRadius: 32,
                             // Enable scrolling for large text / accessibility
                             // On foldables (square aspect), enforce minimum height to use more space
-                            minHeight: isSquareAspect ? screenHeight * 0.25 : null,
+                            // Otherwise, let card size dynamically based on content
+                            minHeight: isSquareAspect ? screenHeight * 0.25 : screenHeight * 0.15,
                             maxHeight: isSquareAspect
                                 ? screenHeight * 0.40
-                                : screenHeight * 0.65,
+                                : screenHeight * 0.55,
                             enableScrolling: true,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

@@ -103,6 +103,7 @@ class WidgetService {
 
   /// Populate the pointings cache for the multi-pointing widget.
   /// Stores all pointings as a JSON array for the Android StackView widget.
+  /// Randomizes order and prioritizes favorites for better discovery.
   /// Also syncs favorites list for save button state.
   /// Only works for premium users.
   static Future<void> populatePointingsCache() async {
@@ -114,8 +115,53 @@ class WidgetService {
         return;
       }
 
-      // Convert all pointings to JSON format expected by widget
-      final pointingsJson = pointings.map((p) {
+      // Load favorites list first
+      final prefs = await SharedPreferences.getInstance();
+      final stored = prefs.getString('favorite_pointings');
+      final favoriteIds = stored != null
+          ? Set<String>.from(jsonDecode(stored))
+          : <String>{};
+
+      // Separate favorites from non-favorites
+      final favoritePointings = <Pointing>[];
+      final otherPointings = <Pointing>[];
+
+      for (final p in pointings) {
+        if (favoriteIds.contains(p.id)) {
+          favoritePointings.add(p);
+        } else {
+          otherPointings.add(p);
+        }
+      }
+
+      // Shuffle both lists for variety
+      favoritePointings.shuffle();
+      otherPointings.shuffle();
+
+      // Interleave favorites throughout the list for better distribution
+      // Pattern: favorite, other, other, other, favorite, other, other, other...
+      // This ensures favorites appear regularly without clustering at start
+      final interleavedList = <Pointing>[];
+      int favIndex = 0;
+      int otherIndex = 0;
+      int othersBetweenFavorites = 3; // Show 3 others between each favorite
+
+      while (otherIndex < otherPointings.length || favIndex < favoritePointings.length) {
+        // Add a favorite if available
+        if (favIndex < favoritePointings.length) {
+          interleavedList.add(favoritePointings[favIndex]);
+          favIndex++;
+        }
+
+        // Add several others
+        for (int i = 0; i < othersBetweenFavorites && otherIndex < otherPointings.length; i++) {
+          interleavedList.add(otherPointings[otherIndex]);
+          otherIndex++;
+        }
+      }
+
+      // Convert to JSON format expected by widget
+      final pointingsJson = interleavedList.map((p) {
         final traditionInfo = traditions[p.tradition];
         return {
           'id': p.id,
@@ -132,7 +178,8 @@ class WidgetService {
         jsonString,
       );
 
-      debugPrint('Widget cache populated with ${pointings.length} pointings');
+      debugPrint('Widget cache populated: ${favoritePointings.length} favorites, '
+          '${otherPointings.length} others, ${interleavedList.length} total');
 
       // Also sync favorites from SharedPreferences
       await _syncFavoritesFromStorage();

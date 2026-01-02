@@ -53,18 +53,21 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Content - main quote -->
+    <!-- Content - main quote with auto-sizing for longer quotes -->
     <TextView
         android:id="@+id/stack_item_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:maxLines="6"
+        android:maxLines="12"
         android:ellipsize="end"
-        android:textSize="15sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="10sp"
+        android:autoSizeMaxTextSize="15sp"
+        android:autoSizeStepGranularity="1sp"
         android:textColor="#1C1C1E"
-        android:lineSpacingMultiplier="1.4"
-        android:gravity="top" />
+        android:lineSpacingMultiplier="1.35"
+        android:gravity="top|center_horizontal" />
 
     <!-- Teacher attribution -->
     <TextView
