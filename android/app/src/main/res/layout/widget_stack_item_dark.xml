@@ -45,12 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+        <!-- Hidden position indicator for code compatibility -->
         <TextView
             android:id="@+id/stack_item_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:textColor="#888888" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <!-- Content - main quote -->
