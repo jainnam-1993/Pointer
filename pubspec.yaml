@@ -30,6 +30,8 @@ dependencies:
 
   # Sharing
   share_plus: ^10.0.0
+  screenshot: ^3.0.0                    # Widget to image capture for share cards
+  intl: ^0.19.0                         # Date formatting for journal export
 
   # Notifications
   flutter_local_notifications: ^18.0.0

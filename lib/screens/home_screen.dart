@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../data/pointings.dart';
+import 'share_preview_screen.dart';
 import '../data/teachers.dart';
 import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
@@ -139,17 +139,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final pointing = ref.read(currentPointingProvider);
     HapticFeedback.mediumImpact();
 
-    final shareText = StringBuffer();
-    shareText.writeln('"${pointing.content}"');
-    if (pointing.teacher != null) {
-      shareText.writeln('\n— ${pointing.teacher}');
-    }
-    shareText.writeln('\n━━━━━━━━━━━━━━━━━━━━');
-    shareText.writeln('Pointer - Daily Awareness Pointings');
-    shareText.writeln('Download: https://pointer.app/download');
-    shareText.writeln('━━━━━━━━━━━━━━━━━━━━');
-
-    await Share.share(shareText.toString());
+    // Show share preview screen with template/format options
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: SharePreviewScreen(pointing: pointing),
+        ),
+      ),
+    );
   }
 
   Future<void> _handleSave() async {
