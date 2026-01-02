@@ -23,6 +23,9 @@ struct PointingData: Codable {
 struct Provider: TimelineProvider {
     private let appGroupId = "group.com.pointer.widget"
 
+    /// How often to show a new quote (in minutes)
+    private let rotationIntervalMinutes = 30
+
     private var sharedDefaults: UserDefaults? {
         UserDefaults(suiteName: appGroupId)
     }
@@ -32,43 +35,85 @@ struct Provider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PointingEntry) -> Void) {
-        let entry = loadCurrentEntry()
+        let entry = loadRandomEntry()
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<PointingEntry>) -> Void) {
-        let entry = loadCurrentEntry()
+        // Load all pointings from cache
+        let allPointings = loadAllPointings()
 
-        // Refresh every 3 hours
-        let nextUpdate = Calendar.current.date(
-            byAdding: .hour,
-            value: 3,
-            to: Date()
-        ) ?? Date().addingTimeInterval(3600 * 3)
+        guard !allPointings.isEmpty else {
+            // No cache - use single entry and request refresh
+            let entry = PointingEntry(date: Date(), data: .placeholder)
+            let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date().addingTimeInterval(900)
+            let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+            completion(timeline)
+            return
+        }
 
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+        // Create timeline entries that rotate through quotes
+        var entries: [PointingEntry] = []
+        let currentDate = Date()
+
+        // Generate 12 entries (6 hours worth at 30-min intervals)
+        // WidgetKit will show each entry at its scheduled time
+        for i in 0..<12 {
+            let entryDate = Calendar.current.date(
+                byAdding: .minute,
+                value: i * rotationIntervalMinutes,
+                to: currentDate
+            ) ?? currentDate.addingTimeInterval(Double(i * rotationIntervalMinutes * 60))
+
+            // Pick a pointing for this time slot (pseudo-random but deterministic for same time)
+            let index = (i + Int(currentDate.timeIntervalSince1970 / 3600)) % allPointings.count
+            let pointing = allPointings[index]
+
+            let data = PointingData(
+                content: pointing["content"] as? String ?? "",
+                teacher: pointing["teacher"] as? String,
+                tradition: pointing["tradition"] as? String ?? "Unknown",
+                lastUpdated: nil
+            )
+
+            entries.append(PointingEntry(date: entryDate, data: data))
+        }
+
+        // Request refresh after all entries are shown
+        let lastEntryDate = entries.last?.date ?? currentDate
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: rotationIntervalMinutes, to: lastEntryDate) ?? lastEntryDate.addingTimeInterval(1800)
+
+        let timeline = Timeline(entries: entries, policy: .after(nextUpdate))
         completion(timeline)
     }
 
-    private func loadCurrentEntry() -> PointingEntry {
-        guard let defaults = sharedDefaults else {
+    /// Load all pointings from the JSON cache
+    private func loadAllPointings() -> [[String: Any]] {
+        guard let defaults = sharedDefaults,
+              let cacheJson = defaults.string(forKey: "pointings_cache"),
+              let data = cacheJson.data(using: .utf8),
+              let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return []
+        }
+        return array
+    }
+
+    /// Load a random entry for snapshots
+    private func loadRandomEntry() -> PointingEntry {
+        let allPointings = loadAllPointings()
+
+        guard !allPointings.isEmpty else {
             return PointingEntry(date: Date(), data: .placeholder)
         }
 
-        let content = defaults.string(forKey: "pointing_content")
-        let teacher = defaults.string(forKey: "pointing_teacher")
-        let tradition = defaults.string(forKey: "pointing_tradition")
-        let lastUpdated = defaults.string(forKey: "pointing_last_updated")
-
-        guard let content = content, !content.isEmpty else {
-            return PointingEntry(date: Date(), data: .placeholder)
-        }
+        let randomIndex = Int.random(in: 0..<allPointings.count)
+        let pointing = allPointings[randomIndex]
 
         let data = PointingData(
-            content: content,
-            teacher: teacher?.isEmpty == true ? nil : teacher,
-            tradition: tradition ?? "Unknown",
-            lastUpdated: lastUpdated
+            content: pointing["content"] as? String ?? "",
+            teacher: pointing["teacher"] as? String,
+            tradition: pointing["tradition"] as? String ?? "Unknown",
+            lastUpdated: nil
         )
 
         return PointingEntry(date: Date(), data: data)
