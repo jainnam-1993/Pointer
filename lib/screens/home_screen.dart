@@ -183,6 +183,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       await storage.markFirstSaveCompleted();
     }
 
+    // Update widget with new favorites data
+    await WidgetService.updateFavorites({...favorites, pointing.id});
+
     // Show confirmation with celebration state
     setState(() {
       _isFirstSave = isFirstSave;

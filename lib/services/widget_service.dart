@@ -18,6 +18,8 @@ class _WidgetKeys {
   static const pointingsCache = 'pointings_cache';
   // Premium status for widget gating
   static const isPremium = 'widget_is_premium';
+  // Favorites list (JSON array of pointing IDs)
+  static const favorites = 'widget_favorites';
 }
 
 /// Service for managing home screen widget updates.
@@ -101,6 +103,7 @@ class WidgetService {
 
   /// Populate the pointings cache for the multi-pointing widget.
   /// Stores all pointings as a JSON array for the Android StackView widget.
+  /// Also syncs favorites list for save button state.
   /// Only works for premium users.
   static Future<void> populatePointingsCache() async {
     try {
@@ -131,6 +134,9 @@ class WidgetService {
 
       debugPrint('Widget cache populated with ${pointings.length} pointings');
 
+      // Also sync favorites from SharedPreferences
+      await _syncFavoritesFromStorage();
+
       // Trigger widget update
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
@@ -139,6 +145,26 @@ class WidgetService {
       );
     } catch (e) {
       debugPrint('Failed to populate widget cache: $e');
+    }
+  }
+
+  /// Internal helper to sync favorites from SharedPreferences to widget.
+  static Future<void> _syncFavoritesFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final stored = prefs.getString('favorite_pointings');
+      final favorites = stored != null
+          ? List<String>.from(jsonDecode(stored))
+          : <String>[];
+
+      await HomeWidget.saveWidgetData<String>(
+        _WidgetKeys.favorites,
+        jsonEncode(favorites),
+      );
+
+      debugPrint('Widget favorites synced: ${favorites.length} items');
+    } catch (e) {
+      debugPrint('Failed to sync favorites to widget: $e');
     }
   }
 
@@ -244,6 +270,37 @@ class WidgetService {
       debugPrint('Widget refreshed for theme update');
     } catch (e) {
       debugPrint('Failed to refresh widget: $e');
+    }
+  }
+
+  /// Update favorites list for widget display.
+  /// Widget shows filled heart for favorited pointings.
+  static Future<void> updateFavorites(Set<String> favoriteIds) async {
+    try {
+      // Check premium status first
+      final isPremium = await isPremiumEnabled();
+      if (!isPremium) {
+        debugPrint('Widget favorites not updated - not premium');
+        return;
+      }
+
+      // Save favorites as JSON array
+      final jsonString = jsonEncode(favoriteIds.toList());
+      await HomeWidget.saveWidgetData<String>(
+        _WidgetKeys.favorites,
+        jsonString,
+      );
+
+      debugPrint('Widget favorites updated: ${favoriteIds.length} items');
+
+      // Trigger widget update to reflect favorite state
+      await HomeWidget.updateWidget(
+        iOSName: 'PointerWidget',
+        androidName: androidWidgetName,
+        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+      );
+    } catch (e) {
+      debugPrint('Failed to update widget favorites: $e');
     }
   }
 }

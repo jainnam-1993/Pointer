@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text="♡"
             android:textSize="20sp"
-            android:textColor="#6D28D9"
+            android:textColor="#8B5CF6"
             android:padding="12dp"
             android:contentDescription="Save to favorites" />
 

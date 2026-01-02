@@ -136,6 +136,8 @@ class PointerWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, layoutId)
             views.setDisplayedChild(R.id.widget_flipper, currentPosition)
+            // Update save button to reflect favorite status of new position
+            updateSaveButton(context, views)
             appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
         }
     }
@@ -175,6 +177,8 @@ class PointerWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, layoutId)
             views.setDisplayedChild(R.id.widget_flipper, currentPosition)
+            // Update save button to reflect favorite status of new position
+            updateSaveButton(context, views)
             appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
         }
     }
@@ -197,6 +201,12 @@ class PointerWidgetProvider : AppWidgetProvider() {
         private const val TAG = "PointerWidget"
         private const val PREFS_NAME = "widget_prefs"
         private const val KEY_LAST_DARK_MODE = "last_dark_mode"
+        private const val KEY_FAVORITES = "widget_favorites"
+        private const val KEY_POINTINGS_CACHE = "pointings_cache"
+
+        // Heart icons for favorite/non-favorite states
+        private const val HEART_EMPTY = "♡"
+        private const val HEART_FILLED = "♥"
 
         const val ACTION_REFRESH = "com.pointer.widget.ACTION_REFRESH"
         const val ACTION_SAVE = "com.pointer.widget.ACTION_SAVE"
@@ -212,6 +222,62 @@ class PointerWidgetProvider : AppWidgetProvider() {
         fun isSystemInDarkMode(context: Context): Boolean {
             val nightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
             return nightMode == Configuration.UI_MODE_NIGHT_YES
+        }
+
+        /**
+         * Get the pointing ID at the current flipper position
+         */
+        private fun getCurrentPointingId(context: Context): String? {
+            try {
+                val widgetData = HomeWidgetPlugin.getData(context)
+                val cacheJson = widgetData?.getString(KEY_POINTINGS_CACHE, null) ?: return null
+
+                val jsonArray = org.json.JSONArray(cacheJson)
+                if (jsonArray.length() == 0) return null
+
+                val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                val position = prefs.getInt("flipper_position", 0)
+
+                val safePosition = if (position >= 0 && position < jsonArray.length()) position else 0
+                return jsonArray.getJSONObject(safePosition).optString("id", null)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting current pointing ID: ${e.message}")
+                return null
+            }
+        }
+
+        /**
+         * Check if a pointing ID is in the favorites list
+         */
+        private fun isPointingFavorite(context: Context, pointingId: String?): Boolean {
+            if (pointingId == null) return false
+            try {
+                val widgetData = HomeWidgetPlugin.getData(context)
+                val favoritesJson = widgetData?.getString(KEY_FAVORITES, null) ?: return false
+
+                val jsonArray = org.json.JSONArray(favoritesJson)
+                for (i in 0 until jsonArray.length()) {
+                    if (jsonArray.getString(i) == pointingId) return true
+                }
+                return false
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking favorite status: ${e.message}")
+                return false
+            }
+        }
+
+        /**
+         * Update the save button to show filled or empty heart based on favorite status
+         */
+        fun updateSaveButton(context: Context, views: RemoteViews) {
+            val currentId = getCurrentPointingId(context)
+            val isFavorite = isPointingFavorite(context, currentId)
+            val heartIcon = if (isFavorite) HEART_FILLED else HEART_EMPTY
+            val contentDesc = if (isFavorite) "Already saved to favorites" else "Save to favorites"
+
+            views.setTextViewText(R.id.widget_save, heartIcon)
+            views.setContentDescription(R.id.widget_save, contentDesc)
+            Log.d(TAG, "Save button updated: $heartIcon (favorite=$isFavorite, id=$currentId)")
         }
 
         /**
@@ -414,6 +480,9 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_save, savePendingIntent)
+
+            // Update save button to show filled/empty heart based on favorite status
+            updateSaveButton(context, views)
 
             // Update the widget
             Log.d(TAG, "Calling appWidgetManager.updateAppWidget for $appWidgetId")

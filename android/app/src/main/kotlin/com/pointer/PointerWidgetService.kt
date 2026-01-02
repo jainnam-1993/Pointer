@@ -35,6 +35,7 @@ class PointerRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private var pointings: List<PointingData> = emptyList()
+    private var favorites: Set<String> = emptySet()
     private var isDarkMode: Boolean = true
 
     override fun onCreate() {
@@ -166,11 +167,31 @@ class PointerRemoteViewsFactory(
             pointings = loadedPointings
             Log.d(TAG, "Loaded ${pointings.size} pointings from cache")
 
+            // Load favorites list
+            val favoritesJson = widgetData?.getString(KEY_FAVORITES, null)
+            favorites = if (!favoritesJson.isNullOrEmpty()) {
+                try {
+                    val favArray = JSONArray(favoritesJson)
+                    (0 until favArray.length()).map { favArray.getString(it) }.toSet()
+                } catch (e: Exception) {
+                    emptySet()
+                }
+            } else {
+                emptySet()
+            }
+            Log.d(TAG, "Loaded ${favorites.size} favorites")
+
         } catch (e: Exception) {
             Log.e(TAG, "Error loading pointings: ${e.message}", e)
             pointings = emptyList()
+            favorites = emptySet()
         }
     }
+
+    /**
+     * Check if a pointing ID is in the favorites set.
+     */
+    fun isFavorite(pointingId: String): Boolean = favorites.contains(pointingId)
 
     private fun isSystemInDarkMode(): Boolean {
         val nightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -201,6 +222,7 @@ class PointerRemoteViewsFactory(
     companion object {
         private const val TAG = "PointerWidgetFactory"
         private const val KEY_POINTINGS_CACHE = "pointings_cache"
+        private const val KEY_FAVORITES = "widget_favorites"
 
         const val EXTRA_POINTING_ID = "pointing_id"
         const val EXTRA_POINTING_POSITION = "pointing_position"
