@@ -513,9 +513,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     ),
                     onTap: () async {
                       HapticFeedback.mediumImpact();
-                      // Navigate to lineages tab
+                      // Navigate to lineages management screen
                       if (context.mounted) {
-                        context.go('/lineages');
+                        context.push('/lineages');
                       }
                     },
                   ),

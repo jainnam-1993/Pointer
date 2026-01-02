@@ -280,3 +280,63 @@ final moodCountsProvider = Provider<Map<String, int>>((ref) {
 final lineageCountsProvider = Provider<Map<Tradition, int>>((ref) {
   return TeachingRepository.lineageCounts;
 });
+
+// ============================================================
+// Preferred Traditions Selection
+// ============================================================
+
+/// Provider for user's preferred/enabled traditions
+/// By default, all traditions are enabled
+final preferredTraditionsProvider =
+    StateNotifierProvider<PreferredTraditionsNotifier, Set<Tradition>>((ref) {
+  final storage = ref.watch(storageServiceProvider);
+  return PreferredTraditionsNotifier(storage);
+});
+
+/// Notifier for managing preferred traditions
+class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
+  final StorageService _storage;
+
+  PreferredTraditionsNotifier(this._storage)
+      : super(_loadFromStorage(_storage));
+
+  static Set<Tradition> _loadFromStorage(StorageService storage) {
+    final stored = storage.preferredTraditions;
+    if (stored.isEmpty) {
+      // Default: all traditions enabled
+      return Tradition.values.toSet();
+    }
+    return stored
+        .map((name) => Tradition.values.firstWhere(
+              (t) => t.name == name,
+              orElse: () => Tradition.advaita,
+            ))
+        .toSet();
+  }
+
+  /// Toggle a tradition's enabled state
+  void toggle(Tradition tradition) {
+    if (state.contains(tradition)) {
+      // Don't allow disabling all traditions - keep at least one
+      if (state.length > 1) {
+        state = {...state}..remove(tradition);
+      }
+    } else {
+      state = {...state, tradition};
+    }
+    _persist();
+  }
+
+  /// Check if a tradition is enabled
+  bool isEnabled(Tradition tradition) => state.contains(tradition);
+
+  /// Enable all traditions
+  void enableAll() {
+    state = Tradition.values.toSet();
+    _persist();
+  }
+
+  void _persist() {
+    _storage.setPreferredTraditions(state.map((t) => t.name).toList());
+  }
+}

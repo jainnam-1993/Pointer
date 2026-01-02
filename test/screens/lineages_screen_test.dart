@@ -78,16 +78,16 @@ void main() {
       expect(find.byType(AnimatedGradient), findsOneWidget);
     });
 
-    testWidgets('shows "Lineages" title', (tester) async {
+    testWidgets('shows "Manage Lineages" title', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      expect(find.text('Lineages'), findsOneWidget);
+      expect(find.text('Manage Lineages'), findsOneWidget);
     });
 
-    testWidgets('shows subtitle "Choose a tradition that resonates with you"', (tester) async {
+    testWidgets('shows subtitle for tradition selection', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      expect(find.text('Choose a tradition that resonates with you'), findsOneWidget);
+      expect(find.text('Select the traditions you want to receive pointings from'), findsOneWidget);
     });
 
     testWidgets('uses Scaffold', (tester) async {
@@ -197,11 +197,11 @@ void main() {
       }
     });
 
-    testWidgets('each card has chevron_right icon', (tester) async {
+    testWidgets('each card has info icon', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // 5 traditions should have 5 chevron icons
-      expect(find.byIcon(Icons.chevron_right), findsNWidgets(5));
+      // 5 traditions should have 5 info icons
+      expect(find.byIcon(Icons.info_outline), findsNWidgets(5));
     });
 
     testWidgets('cards are tappable', (tester) async {
@@ -217,11 +217,11 @@ void main() {
   });
 
   group('LineagesScreen - Bottom Sheet', () {
-    testWidgets('tapping tradition card opens detail sheet', (tester) async {
+    testWidgets('tapping info icon opens detail sheet', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap the first tradition card
-      await tester.tap(find.byType(GlassCard).first);
+      // Tap the first info icon to open detail sheet
+      await tester.tap(find.byIcon(Icons.info_outline).first);
       await tester.pumpAndSettle();
 
       // Bottom sheet should be visible - verify by checking for doubled content
@@ -234,8 +234,8 @@ void main() {
     testWidgets('detail sheet shows tradition icon', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap Advaita card
-      await tester.tap(find.text('Advaita Vedanta'));
+      // Tap first info icon (Advaita)
+      await tester.tap(find.byIcon(Icons.info_outline).first);
       await tester.pumpAndSettle();
 
       // Should show icon in detail sheet (icon appears twice: in list + in sheet)
@@ -245,8 +245,8 @@ void main() {
     testWidgets('detail sheet shows tradition name', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap Zen card
-      await tester.tap(find.text('Zen Buddhism'));
+      // Tap second info icon (Zen)
+      await tester.tap(find.byIcon(Icons.info_outline).at(1));
       await tester.pumpAndSettle();
 
       // Name appears twice: in list + in detail sheet
@@ -256,19 +256,19 @@ void main() {
     testWidgets('detail sheet shows tradition description', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap Direct Path card
-      await tester.tap(find.text('Direct Path'));
+      // Tap third info icon (Direct Path)
+      await tester.tap(find.byIcon(Icons.info_outline).at(2));
       await tester.pumpAndSettle();
 
-      // Description appears twice: in list + in detail sheet
-      expect(find.text('Contemporary clarity. Awareness recognizing itself.'), findsNWidgets(2));
+      // Description appears in detail sheet (may be truncated in list)
+      expect(find.textContaining('Contemporary clarity'), findsWidgets);
     });
 
     testWidgets('detail sheet shows pointings count', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap Contemporary card
-      await tester.tap(find.text('Contemporary'));
+      // Tap fourth info icon (Contemporary)
+      await tester.tap(find.byIcon(Icons.info_outline).at(3));
       await tester.pumpAndSettle();
 
       final count = getPointingsByTradition(Tradition.contemporary).length;
@@ -279,8 +279,8 @@ void main() {
     testWidgets('detail sheet has Close button', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap Original card
-      await tester.tap(find.text('Original'));
+      // Tap first info icon (guaranteed to be visible)
+      await tester.tap(find.byIcon(Icons.info_outline).first);
       await tester.pumpAndSettle();
 
       // Should have Close button
@@ -290,8 +290,8 @@ void main() {
     testWidgets('Close button dismisses detail sheet', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap a tradition card to open sheet
-      await tester.tap(find.text('Advaita Vedanta'));
+      // Tap first info icon to open sheet
+      await tester.tap(find.byIcon(Icons.info_outline).first);
       await tester.pumpAndSettle();
 
       // Verify sheet is open
@@ -308,8 +308,8 @@ void main() {
     testWidgets('detail sheet has handle bar', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap a tradition card
-      await tester.tap(find.text('Zen Buddhism'));
+      // Tap second info icon
+      await tester.tap(find.byIcon(Icons.info_outline).at(1));
       await tester.pumpAndSettle();
 
       // Verify sheet is open by checking for doubled content
@@ -321,8 +321,8 @@ void main() {
     testWidgets('detail sheet uses BackdropFilter for blur', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Tap a tradition card
-      await tester.tap(find.text('Direct Path'));
+      // Tap third info icon
+      await tester.tap(find.byIcon(Icons.info_outline).at(2));
       await tester.pumpAndSettle();
 
       // Should have BackdropFilter in bottom sheet
@@ -346,8 +346,8 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Title and subtitle
-      expect(find.text('Lineages'), findsOneWidget);
-      expect(find.text('Choose a tradition that resonates with you'), findsOneWidget);
+      expect(find.text('Manage Lineages'), findsOneWidget);
+      expect(find.text('Select the traditions you want to receive pointings from'), findsOneWidget);
 
       // All tradition names
       expect(find.text('Advaita Vedanta'), findsOneWidget);

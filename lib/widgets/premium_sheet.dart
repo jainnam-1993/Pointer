@@ -15,6 +15,7 @@ void showPremiumSheet(BuildContext context) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    useRootNavigator: true, // Ensures modal covers bottom nav bar
     builder: (context) => const PremiumSheet(),
   );
 }
@@ -51,14 +52,35 @@ class PremiumSheet extends ConsumerWidget {
       maxChildSize: 0.75,
       expand: false,
       builder: (context, scrollController) {
+        // iOS Control Center-style glass gradient (matches GlassCard heavy intensity)
+        final glassGradient = LinearGradient(
+          colors: isDark
+              ? [
+                  Colors.white.withValues(alpha: 0.38),
+                  Colors.white.withValues(alpha: 0.20),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.95),
+                  Colors.white.withValues(alpha: 0.75),
+                ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+                gradient: glassGradient,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                border: Border(
+                  top: BorderSide(
+                    color: isDark ? colors.glassBorder : Colors.black.withValues(alpha: 0.08),
+                    width: isDark ? 1.5 : 1,
+                  ),
+                ),
               ),
               child: ListView(
                 controller: scrollController,
