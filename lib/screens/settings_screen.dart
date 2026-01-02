@@ -390,7 +390,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 left: 24,
                 right: 24,
                 top: 20,
-                bottom: 0,
+                bottom: 8,
               ),
               children: [
                 StaggeredFadeIn(
