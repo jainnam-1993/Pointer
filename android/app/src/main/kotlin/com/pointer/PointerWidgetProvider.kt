@@ -272,12 +272,12 @@ class PointerWidgetProvider : AppWidgetProvider() {
         fun updateSaveButton(context: Context, views: RemoteViews) {
             val currentId = getCurrentPointingId(context)
             val isFavorite = isPointingFavorite(context, currentId)
-            val heartIcon = if (isFavorite) HEART_FILLED else HEART_EMPTY
+            val heartDrawable = if (isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
             val contentDesc = if (isFavorite) "Already saved to favorites" else "Save to favorites"
 
-            views.setTextViewText(R.id.widget_save, heartIcon)
+            views.setImageViewResource(R.id.widget_save, heartDrawable)
             views.setContentDescription(R.id.widget_save, contentDesc)
-            Log.d(TAG, "Save button updated: $heartIcon (favorite=$isFavorite, id=$currentId)")
+            Log.d(TAG, "Save button updated: drawable=$heartDrawable (favorite=$isFavorite, id=$currentId)")
         }
 
         /**
