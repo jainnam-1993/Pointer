@@ -628,6 +628,7 @@ class _BrowseModeSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final isDark = context.isDarkMode;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -636,7 +637,8 @@ class _BrowseModeSheet extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: colors.glassBackground,
+            // Use solid background for better contrast - consistent with settings sheets
+            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -645,7 +647,9 @@ class _BrowseModeSheet extends StatelessWidget {
             children: [
               Text(
                 'Browse by',
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colors.textPrimary,
+                ),
               ),
               const SizedBox(height: 16),
               ...LibraryBrowseMode.values.map((mode) {

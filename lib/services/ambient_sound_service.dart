@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,19 +59,49 @@ class AmbientSoundService {
 
   /// Play the opening sound (only on cold start, not resume)
   Future<void> playOpeningSound(AmbientSound sound) async {
+    debugPrint('AmbientSound: playOpeningSound called with ${sound.name}');
+
     // Skip if already played this session or no sound selected
-    if (_hasPlayedThisSession || sound == AmbientSound.none) {
+    if (_hasPlayedThisSession) {
+      debugPrint('AmbientSound: Already played this session, skipping');
+      return;
+    }
+
+    if (sound == AmbientSound.none) {
+      debugPrint('AmbientSound: Sound is none, skipping');
       return;
     }
 
     _hasPlayedThisSession = true;
 
     try {
-      _player ??= AudioPlayer();
-      await _player!.setAsset(sound.assetPath!);
+      debugPrint('AmbientSound: Playing ${sound.assetPath}');
+
+      // Create fresh player for each play to avoid state issues
+      _player?.dispose();
+      _player = AudioPlayer();
+
+      // Load the asset - this returns the duration if successful
+      final duration = await _player!.setAsset(sound.assetPath!);
+      debugPrint('AmbientSound: Asset loaded, duration: $duration');
+
+      // Play the sound
       await _player!.play();
-    } catch (e) {
-      // Silently fail - ambient sound is not critical
+      debugPrint('AmbientSound: Play started successfully');
+
+      // Wait for playback to complete, then dispose
+      _player!.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed) {
+          debugPrint('AmbientSound: Playback completed');
+          _player?.dispose();
+          _player = null;
+        }
+      });
+    } catch (e, stack) {
+      debugPrint('AmbientSound: Error playing sound: $e');
+      debugPrint('AmbientSound: Stack trace: $stack');
+      // Reset flag so user can retry on next launch if error occurred
+      _hasPlayedThisSession = false;
     }
   }
 
