@@ -28,6 +28,9 @@ class PointerWidgetProvider : AppWidgetProvider() {
     ) {
         Log.d(TAG, "onUpdate called for ${appWidgetIds.size} widgets")
 
+        // Check for theme change first - ensures widget shows correct theme
+        checkAndHandleThemeChange(context)
+
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
@@ -102,6 +105,11 @@ class PointerWidgetProvider : AppWidgetProvider() {
      * Show previous item in all widget flippers
      */
     private fun showPreviousItem(context: Context) {
+        // Check for theme change first - if changed, full update was triggered
+        if (checkAndHandleThemeChange(context)) {
+            Log.d(TAG, "showPrevious: Theme changed, full update triggered")
+        }
+
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val componentName = ComponentName(context, PointerWidgetProvider::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
@@ -136,6 +144,11 @@ class PointerWidgetProvider : AppWidgetProvider() {
      * Show next item in all widget flippers
      */
     private fun showNextItem(context: Context) {
+        // Check for theme change first - if changed, full update was triggered
+        if (checkAndHandleThemeChange(context)) {
+            Log.d(TAG, "showNext: Theme changed, full update triggered")
+        }
+
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val componentName = ComponentName(context, PointerWidgetProvider::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
@@ -182,6 +195,8 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
     companion object {
         private const val TAG = "PointerWidget"
+        private const val PREFS_NAME = "widget_prefs"
+        private const val KEY_LAST_DARK_MODE = "last_dark_mode"
 
         const val ACTION_REFRESH = "com.pointer.widget.ACTION_REFRESH"
         const val ACTION_SAVE = "com.pointer.widget.ACTION_SAVE"
@@ -200,15 +215,50 @@ class PointerWidgetProvider : AppWidgetProvider() {
         }
 
         /**
-         * Update all widget instances
+         * Check if theme changed since last widget update and handle accordingly.
+         * Returns true if theme changed and widgets were updated.
+         */
+        fun checkAndHandleThemeChange(context: Context): Boolean {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val lastDarkMode = prefs.getBoolean(KEY_LAST_DARK_MODE, true)
+            val currentDarkMode = isSystemInDarkMode(context)
+
+            if (lastDarkMode != currentDarkMode) {
+                Log.d(TAG, "Theme changed: ${if (lastDarkMode) "dark" else "light"} -> ${if (currentDarkMode) "dark" else "light"}")
+                prefs.edit().putBoolean(KEY_LAST_DARK_MODE, currentDarkMode).apply()
+
+                // Theme changed - force full widget update with data reload
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                val componentName = ComponentName(context, PointerWidgetProvider::class.java)
+                val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+
+                // Update all widgets with new theme layout
+                for (appWidgetId in appWidgetIds) {
+                    updateAppWidget(context, appWidgetManager, appWidgetId)
+                    // Force factory to reload data with new theme
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
+                }
+                return true
+            }
+            return false
+        }
+
+        /**
+         * Update all widget instances.
+         * Also reloads data to ensure theme-specific layouts are used.
          */
         fun updateAllWidgets(context: Context) {
+            // Check and handle theme change first
+            checkAndHandleThemeChange(context)
+
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val componentName = ComponentName(context, PointerWidgetProvider::class.java)
             val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
             Log.d(TAG, "updateAllWidgets: Found ${appWidgetIds.size} widgets")
             for (appWidgetId in appWidgetIds) {
                 updateAppWidget(context, appWidgetManager, appWidgetId)
+                // Force factory to reload data with current theme
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
             }
         }
 

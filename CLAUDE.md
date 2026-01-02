@@ -79,7 +79,7 @@ flutter pub get                # Install dependencies
 │   │   ├── subscription_providers.dart  # Subscription state (RevenueCat integration, freemium daily limits)
 │   │   └── providers.dart               # Riverpod providers (storage, navigation, TTS)
 │   ├── screens/
-│   │   ├── main_shell.dart    # Bottom navigation shell
+│   │   ├── main_shell.dart    # Bottom navigation shell with swipe gestures, AnimatedSwitcher transitions, zen mode
 │   │   ├── home_screen.dart   # Daily pointing display
 │   │   ├── inquiry_screen.dart
 │   │   ├── inquiry_player_screen.dart    # Guided inquiry session with timed phase transitions

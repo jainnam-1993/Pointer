@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Dark glassmorphism card - enhanced glass effect -->
+<!-- Dark glassmorphism card - clean glass effect without visible borders -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base: Deep dark background -->
     <item>
@@ -15,45 +15,37 @@
             <gradient
                 android:type="linear"
                 android:angle="135"
-                android:startColor="#20FFFFFF"
-                android:centerColor="#08FFFFFF"
-                android:endColor="#15FFFFFF" />
+                android:startColor="#10FFFFFF"
+                android:centerColor="#05FFFFFF"
+                android:endColor="#08FFFFFF" />
             <corners android:radius="24dp" />
         </shape>
     </item>
 
-    <!-- Subtle purple/pink accent glow -->
-    <item android:top="4dp" android:left="4dp" android:right="4dp" android:bottom="4dp">
+    <!-- Subtle purple/pink accent glow - no insets -->
+    <item>
         <shape>
             <gradient
                 android:type="radial"
                 android:gradientRadius="300dp"
                 android:centerX="30%"
                 android:centerY="20%"
-                android:startColor="#158B5CF6"
+                android:startColor="#108B5CF6"
                 android:endColor="#00000000" />
-            <corners android:radius="20dp" />
+            <corners android:radius="24dp" />
         </shape>
     </item>
 
-    <!-- Inner highlight - top edge glow -->
-    <item android:top="1dp" android:left="16dp" android:right="16dp">
+    <!-- Inner highlight - top edge glow - subtle -->
+    <item>
         <shape>
             <gradient
                 android:type="linear"
                 android:angle="90"
                 android:startColor="#00FFFFFF"
-                android:endColor="#25FFFFFF" />
-            <corners android:topLeftRadius="24dp" android:topRightRadius="24dp" />
-            <size android:height="3dp" />
-        </shape>
-    </item>
-
-    <!-- Glass border - visible glass edge -->
-    <item>
-        <shape>
-            <stroke android:width="1.5dp" android:color="#40FFFFFF" />
+                android:endColor="#0AFFFFFF" />
             <corners android:radius="24dp" />
+            <size android:height="80dp" />
         </shape>
     </item>
 </layer-list>

@@ -17,12 +17,13 @@
         android:paddingEnd="12dp"
         android:paddingTop="12dp">
 
-        <!-- AdapterViewFlipper - shows ONE item at a time -->
+        <!-- AdapterViewFlipper - shows ONE item at a time, auto-rotates every 30 min -->
         <AdapterViewFlipper
             android:id="@+id/widget_flipper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:autoStart="false" />
+            android:autoStart="true"
+            android:flipInterval="1800000" />
 
         <!-- Empty state -->
         <LinearLayout

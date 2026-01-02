@@ -2,6 +2,10 @@
 ///
 /// Manages subscription state via RevenueCat and enforces daily pointing limits
 /// for free users.
+///
+/// Freemium Model v2:
+/// - FREE: Unlimited quotes/pointings
+/// - PREMIUM: Full library, audio (TTS), notifications, widget
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/revenue_cat_service.dart';
 import '../services/storage_service.dart';
 import '../services/usage_tracking_service.dart';
+import '../services/widget_service.dart';
 import 'core_providers.dart';
 
 // ============================================================
@@ -16,7 +21,7 @@ import 'core_providers.dart';
 // ============================================================
 
 /// Set to true to force premium tier during testing
-const bool kForcePremiumForTesting = false;
+const bool kForcePremiumForTesting = true;
 
 // ============================================================
 // Freemium - Daily Usage Tracking
@@ -36,15 +41,21 @@ final dailyUsageProvider =
 });
 
 /// Notifier for managing daily usage state
+///
+/// NOTE: Daily limits are now disabled - quotes/pointings are FREE for all users.
+/// Premium features are: Full Library, Audio (TTS), Notifications, Widget.
 class DailyUsageNotifier extends StateNotifier<DailyUsage> {
   final UsageTrackingService _service;
 
   DailyUsageNotifier(this._service) : super(_service.getUsage());
 
-  /// Check if user can view more pointings (premium always can)
+  /// Check if user can view more pointings
+  ///
+  /// Always returns true - quotes/pointings are free for all users.
+  /// Premium gating is now only for: full library, audio, notifications, widget.
   bool canViewPointing(bool isPremium) {
-    if (isPremium) return true;
-    return !state.limitReached;
+    // Quotes are FREE for all users (freemium model v2)
+    return true;
   }
 
   /// Record a pointing view
@@ -125,6 +136,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
         tier: SubscriptionTier.premium,
         isLoading: false,
       );
+      // Sync widget with premium status
+      await WidgetService.setPremiumStatus(true);
       return;
     }
 
@@ -143,6 +156,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
       // Cache status locally for offline access
       await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
+
+      // Sync widget with premium status (widget is premium-only feature)
+      await WidgetService.setPremiumStatus(status.isPremium);
 
       // Check if still mounted after async operations
       if (!mounted) return;
@@ -166,6 +182,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           ? SubscriptionTier.premium
           : SubscriptionTier.free;
       state = state.copyWith(tier: cachedTier, isLoading: false);
+
+      // Sync widget with cached status
+      await WidgetService.setPremiumStatus(cachedTier == SubscriptionTier.premium);
     }
   }
 
@@ -177,6 +196,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
       if (result.success) {
         await _storage.setSubscriptionTier('premium');
+        // Sync widget - now premium features (widget, notifications) are unlocked
+        await WidgetService.setPremiumStatus(true);
         state = state.copyWith(
           tier: SubscriptionTier.premium,
           isLoading: false,
@@ -203,6 +224,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
       if (result.hasPremium) {
         await _storage.setSubscriptionTier('premium');
+        // Sync widget - premium features restored
+        await WidgetService.setPremiumStatus(true);
         state =
             state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
       } else {
