@@ -88,8 +88,12 @@ void main() async {
   );
 }
 
-/// Initialize notification plugin with action callbacks
+/// Initialize notification plugin with action callbacks and create Android channel
 Future<void> _initializeNotifications(NotificationService service) async {
+  // Initialize the service (creates Android notification channel)
+  await service.initialize();
+
+  // Re-initialize with action callbacks (required for notification actions)
   final plugin = FlutterLocalNotificationsPlugin();
 
   const initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');

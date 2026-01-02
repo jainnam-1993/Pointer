@@ -26,7 +26,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with WidgetsBindingObserver {
-  bool _notificationsEnabled = true;
+  bool _notificationsEnabled = false;  // Match service default, loaded in _checkPermissions
   bool _permissionGranted = true;
 
   // Developer options (hidden by default)
@@ -59,9 +59,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       // Check if notification permissions are currently granted
       final notificationService = ref.read(notificationServiceProvider);
       final granted = await notificationService.checkPermissions();
+      // Load the actual notification enabled state from service
+      final enabled = notificationService.isNotificationsEnabled;
       if (mounted) {
         setState(() {
           _permissionGranted = granted;
+          _notificationsEnabled = enabled;
         });
       }
     } catch (_) {
