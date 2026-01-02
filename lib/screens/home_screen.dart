@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +35,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAnimating = false;
   bool _showSaveConfirmation = false;
   bool _isFirstSave = false;
+
+  // Swipe-up blur animation state
+  double _swipeOffset = 0.0;
+  bool _isSwipeInProgress = false;
 
   void _toggleZenMode() {
     final current = ref.read(zenModeProvider);
@@ -299,13 +305,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
           GestureDetector(
             behavior: HitTestBehavior.opaque, // Capture gestures on empty space too
+            onVerticalDragStart: (_) {
+              setState(() {
+                _isSwipeInProgress = true;
+                _swipeOffset = 0.0;
+              });
+            },
+            onVerticalDragUpdate: (details) {
+              setState(() {
+                // Accumulate the delta, negative = swipe up, positive = swipe down
+                _swipeOffset += details.delta.dy;
+              });
+            },
             onVerticalDragEnd: (details) {
+              final wasSwipingUp = _swipeOffset < -50;
+              final wasSwipingDown = _swipeOffset > 50;
+
+              // Reset swipe state with animation
+              setState(() {
+                _isSwipeInProgress = false;
+                _swipeOffset = 0.0;
+              });
+
               // Swipe up (negative velocity) -> next
-              if (details.primaryVelocity! < -200) {
+              if (details.primaryVelocity! < -200 || wasSwipingUp) {
                 _handleNext();
               }
               // Swipe down (positive velocity) -> previous
-              else if (details.primaryVelocity! > 200) {
+              else if (details.primaryVelocity! > 200 || wasSwipingDown) {
                 _handlePrevious();
               }
             },
@@ -321,19 +348,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
                 ),
                 child: Column(
-                  // On foldables, start from top to avoid floating content
-                  // On phones, center for balanced aesthetic
-                  mainAxisAlignment: isSquareAspect
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
+                  // Fixed layout: card area expands, bottom buttons stay anchored
                   children: [
-                  // Add top spacing on foldables to balance the layout
-                  if (isSquareAspect) SizedBox(height: screenHeight * 0.05),
-                  // Phase 5.11: Consolidated pointing card with tradition badge & share inside
-                  // Use Flexible with loose fit - shrinks for short content, expands for long
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: GestureDetector(
+                  // Expanded card area - card centered within, bottom stays fixed
+                  Expanded(
+                    child: Center(
+                      // Swipe blur effect: blur entire card during vertical drag
+                      child: ImageFiltered(
+                          imageFilter: ImageFilter.blur(
+                            sigmaX: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
+                            sigmaY: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
+                          ),
+                          child: AnimatedOpacity(
+                            duration: _isSwipeInProgress
+                                ? Duration.zero
+                                : const Duration(milliseconds: 200),
+                            opacity: 1.0 - (_swipeOffset.abs() / 200).clamp(0.0, 0.4),
+                            child: GestureDetector(
                       onLongPress: _handleSave,
                       onDoubleTap: _toggleZenMode,
                       child: Semantics(
@@ -498,8 +529,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      ),  // Close GestureDetector
+                    ),  // Close AnimatedOpacity
+                  ),  // Close ImageFiltered
+                ),  // Close Center
+              ),  // Close Expanded
 
                   const SizedBox(height: 20),
 
