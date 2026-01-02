@@ -10,6 +10,7 @@ import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
+import '../services/ambient_sound_service.dart';
 import '../services/aws_credential_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
@@ -551,6 +552,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     ),
                   ),
                 ),
+
+                // Experience section (ambient sounds)
+                const SizedBox(height: 24),
+                _SectionHeader(title: 'EXPERIENCE'),
+                const SizedBox(height: 12),
+                _AmbientSoundPicker(),
 
                 // Account section
                 const SizedBox(height: 24),
@@ -1467,6 +1474,84 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Sound picker for ambient opening sound
+class _AmbientSoundPicker extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+    final currentSound = ref.watch(ambientSoundProvider);
+
+    return GlassCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.music_note,
+                color: colors.textSecondary,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Opening Sound',
+                style: TextStyle(
+                  color: colors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Play a contemplative sound when app opens',
+            style: TextStyle(
+              color: colors.textMuted,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: AmbientSound.values.map((sound) {
+              final isSelected = currentSound == sound;
+              return GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  ref.read(ambientSoundProvider.notifier).setSound(sound);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected ? colors.primary : colors.glassBorder,
+                    ),
+                  ),
+                  child: Text(
+                    sound.displayName,
+                    style: TextStyle(
+                      color: isSelected ? colors.textPrimary : colors.textMuted,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

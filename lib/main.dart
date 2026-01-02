@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/providers.dart';
 import 'router.dart';
+import 'services/ambient_sound_service.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'theme/app_theme.dart';
@@ -111,10 +112,22 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Play ambient sound on cold start (configurable in Settings)
+    _playAmbientSound();
+  }
+
+  void _playAmbientSound() {
+    // Delay slightly to ensure providers are ready
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      final sound = ref.read(ambientSoundProvider);
+      ref.read(ambientSoundServiceProvider).playOpeningSound(sound);
+    });
   }
 
   @override
   void dispose() {
+    ref.read(ambientSoundServiceProvider).dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

@@ -401,20 +401,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                 ),
                                 AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  switchInCurve: Curves.easeInOutCubic,
-                                  switchOutCurve: Curves.easeInOutCubic,
+                                  duration: const Duration(milliseconds: 400),
+                                  switchInCurve: Curves.easeOut,
+                                  switchOutCurve: Curves.easeIn,
                                   transitionBuilder: (child, animation) {
-                                    final slideAnimation = Tween<Offset>(
-                                      begin: const Offset(0, 0.1),
-                                      end: Offset.zero,
-                                    ).animate(animation);
+                                    // Pure fade - calm and unhurried
                                     return FadeTransition(
-                                      opacity: animation,
-                                      child: SlideTransition(
-                                        position: slideAnimation,
-                                        child: child,
+                                      opacity: CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeOut,
                                       ),
+                                      child: child,
                                     );
                                   },
                                   child: Text(

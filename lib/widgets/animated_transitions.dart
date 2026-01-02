@@ -162,6 +162,7 @@ class ScaleFadeTransition extends StatelessWidget {
 }
 
 /// Calm-style page transition for GoRouter
+/// Uses pure fade - no slides for a contemplative, peaceful experience
 class CalmPageTransition extends CustomTransitionPage<void> {
   CalmPageTransition({
     required super.child,
@@ -173,36 +174,24 @@ class CalmPageTransition extends CustomTransitionPage<void> {
           transitionDuration: AnimationDurations.slow,
           reverseTransitionDuration: AnimationDurations.normal,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final fadeIn = Tween<double>(begin: 0, end: 1).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-              ),
+            // Pure fade - calm and unhurried
+            final fadeIn = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
             );
 
             final fadeOut = Tween<double>(begin: 1, end: 0).animate(
               CurvedAnimation(
                 parent: secondaryAnimation,
-                curve: const Interval(0.5, 1.0, curve: Curves.easeIn),
+                curve: Curves.easeIn,
               ),
             );
-
-            final slideIn = Tween<Offset>(
-              begin: const Offset(0.05, 0),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(
-              parent: animation,
-              curve: AnimationCurves.emphasized,
-            ));
 
             return FadeTransition(
               opacity: fadeIn,
               child: FadeTransition(
                 opacity: fadeOut,
-                child: SlideTransition(
-                  position: slideIn,
-                  child: child,
-                ),
+                child: child,
               ),
             );
           },

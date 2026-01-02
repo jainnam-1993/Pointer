@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -90,30 +91,73 @@ LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
 /// Animated gradient background using flutter_animate
 ///
 /// Features:
-/// - 24h gradient cycle - colors shift based on time of day
+/// - 24h gradient cycle - colors shift based on time of day with auto-refresh
+/// - Smooth 5-minute polling to detect time period changes
 /// - Respects accessibility settings (reduce motion)
 /// - OLED mode support (pure black)
 ///
 /// Excluded from accessibility tree as it's purely decorative.
 /// Set [disableAnimations] to true in tests to prevent timer issues.
-class AnimatedGradient extends ConsumerWidget {
+class AnimatedGradient extends ConsumerStatefulWidget {
   const AnimatedGradient({super.key});
 
   /// Disable animations globally (for testing)
   static bool disableAnimations = false;
 
+  /// Check if running in test environment
+  static bool isTestEnvironment() {
+    // AutomatedTestWidgetsFlutterBinding sets this
+    return WidgetsBinding.instance.runtimeType.toString().contains('Test');
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AnimatedGradient> createState() => _AnimatedGradientState();
+}
+
+class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
+  Timer? _timeCheckTimer;
+  TimeOfDayPeriod _currentPeriod = _getCurrentTimePeriod();
+
+  @override
+  void initState() {
+    super.initState();
+    // Check time period every 5 minutes for 24h gradient cycle
+    // Skip timer in test environment to avoid timer issues
+    if (!AnimatedGradient.disableAnimations &&
+        !AnimatedGradient.isTestEnvironment()) {
+      _timeCheckTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+        _checkTimePeriodChange();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timeCheckTimer?.cancel();
+    super.dispose();
+  }
+
+  void _checkTimePeriodChange() {
+    final newPeriod = _getCurrentTimePeriod();
+    if (newPeriod != _currentPeriod) {
+      setState(() {
+        _currentPeriod = newPeriod;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Watch theme mode provider to force rebuild on theme change
     final themeMode = ref.watch(themeModeProvider);
 
     // Exclude decorative background from accessibility tree
     return ExcludeSemantics(
-      child: _buildGradient(context, ref, themeMode),
+      child: _buildGradient(context, themeMode),
     );
   }
 
-  Widget _buildGradient(BuildContext context, WidgetRef ref, AppThemeMode themeMode) {
+  Widget _buildGradient(BuildContext context, AppThemeMode themeMode) {
     // Derive isDark from provider value (not Theme.of) for proper rebuild
     final isDark = themeMode == AppThemeMode.dark ||
         (themeMode == AppThemeMode.system &&
@@ -131,7 +175,7 @@ class AnimatedGradient extends ConsumerWidget {
 
     // Time-based gradient for 24h cycle (dark mode) or light theme gradient
     final gradient = isDark
-        ? _getTimeBasedGradient(_getCurrentTimePeriod())
+        ? _getTimeBasedGradient(_currentPeriod)
         : AppGradients.backgroundLight;
 
     // Enhanced shimmer with visible tints for both themes
@@ -147,9 +191,9 @@ class AnimatedGradient extends ConsumerWidget {
     // 1. Static flag is set (for testing)
     // 2. In test environment
     // 3. Reduce motion is enabled (accessibility)
-    if (disableAnimations ||
+    if (AnimatedGradient.disableAnimations ||
         reduceMotion ||
-        kDebugMode && !kIsWeb && _isTestEnvironment()) {
+        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return container;
     }
 
@@ -161,12 +205,6 @@ class AnimatedGradient extends ConsumerWidget {
           duration: 4000.ms, // Slightly slower for smoother feel
           color: shimmerColor,
         );
-  }
-
-  /// Check if running in test environment
-  static bool _isTestEnvironment() {
-    // AutomatedTestWidgetsFlutterBinding sets this
-    return WidgetsBinding.instance.runtimeType.toString().contains('Test');
   }
 }
 
@@ -193,7 +231,7 @@ class FloatingParticles extends ConsumerWidget {
     // 3. Reduce motion is enabled (accessibility)
     if (AnimatedGradient.disableAnimations ||
         reduceMotion ||
-        kDebugMode && !kIsWeb && AnimatedGradient._isTestEnvironment()) {
+        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return const SizedBox.shrink();
     }
 

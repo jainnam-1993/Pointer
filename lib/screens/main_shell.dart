@@ -20,20 +20,13 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
-  int _previousIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     final isZenMode = ref.watch(zenModeProvider);
     final currentIndex = widget.navigationShell.currentIndex;
 
-    // Track direction for slide animation
-    final slideFromRight = currentIndex > _previousIndex;
-    if (currentIndex != _previousIndex) {
-      _previousIndex = currentIndex;
-    }
-
-    // Wrap content with horizontal swipe gesture and slide transition
+    // Wrap content with horizontal swipe gesture and pure fade transition
+    // Pure fade creates contemplative, peaceful experience (no slides)
     final content = GestureDetector(
       onHorizontalDragEnd: (details) {
         // Swipe left (negative velocity) -> next tab
@@ -46,24 +39,17 @@ class _MainShellState extends ConsumerState<MainShell> {
         }
       },
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 400),
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
         transitionBuilder: (child, animation) {
-          // Slide from right when going forward, from left when going back
-          final offsetBegin = slideFromRight
-              ? const Offset(0.1, 0.0)
-              : const Offset(-0.1, 0.0);
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: offsetBegin,
-              end: Offset.zero,
-            ).animate(CurvedAnimation(
+          // Pure fade transition - calm and unhurried
+          return FadeTransition(
+            opacity: CurvedAnimation(
               parent: animation,
-              curve: Curves.easeOutCubic,
-            )),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
+              curve: Curves.easeOut,
             ),
+            child: child,
           );
         },
         child: KeyedSubtree(
