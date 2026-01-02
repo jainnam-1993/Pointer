@@ -428,6 +428,9 @@ Future<void> _saveCurrentWidgetPointing() async {
       favorites.add(pointing.id);
       await prefs.setString(favoritesKey, jsonEncode(favorites));
       debugPrint('Saved pointing ${pointing.id} to favorites');
+
+      // Sync favorites to widget data so heart icon updates immediately
+      await WidgetService.updateFavorites(favorites.toSet());
     } else {
       debugPrint('Pointing ${pointing.id} already in favorites');
     }
