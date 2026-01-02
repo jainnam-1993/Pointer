@@ -390,7 +390,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 left: 24,
                 right: 24,
                 top: 20,
-                bottom: 24 + bottomPadding,
+                bottom: 8 + bottomPadding,
               ),
               children: [
                 StaggeredFadeIn(
@@ -713,7 +713,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   ),
                 ],
 
-                const SizedBox(height: 8),
                 GestureDetector(
                   onTap: _onVersionTap,
                   child: Center(
