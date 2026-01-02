@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../providers/core_providers.dart';
 
 /// Available ambient sounds for app opening
 enum AmbientSound {
@@ -16,20 +18,20 @@ enum AmbientSound {
 
 /// Provider for ambient sound selection (persisted)
 final ambientSoundProvider = StateNotifierProvider<AmbientSoundNotifier, AmbientSound>((ref) {
-  final storage = ref.watch(storageServiceProvider);
-  return AmbientSoundNotifier(storage);
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return AmbientSoundNotifier(prefs);
 });
 
 class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
-  final StorageService _storage;
+  final SharedPreferences _prefs;
   static const _storageKey = 'ambient_sound';
 
-  AmbientSoundNotifier(this._storage) : super(AmbientSound.none) {
+  AmbientSoundNotifier(this._prefs) : super(AmbientSound.none) {
     _loadFromStorage();
   }
 
   void _loadFromStorage() {
-    final saved = _storage.prefs.getString(_storageKey);
+    final saved = _prefs.getString(_storageKey);
     if (saved != null) {
       state = AmbientSound.values.firstWhere(
         (s) => s.name == saved,
@@ -40,7 +42,7 @@ class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
 
   void setSound(AmbientSound sound) {
     state = sound;
-    _storage.prefs.setString(_storageKey, sound.name);
+    _prefs.setString(_storageKey, sound.name);
   }
 }
 
