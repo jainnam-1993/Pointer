@@ -31,8 +31,11 @@ class InquiryPlayerScreen extends ConsumerStatefulWidget {
   /// ID of the inquiry to play, or 'random' for a random inquiry
   final String inquiryId;
 
-  /// Duration of the setup phase
-  static const setupDuration = Duration(seconds: 3);
+  /// Duration of the setup phase (8 seconds for proper preparation)
+  static const setupDuration = Duration(seconds: 8);
+
+  /// Duration of the question phase (20 seconds for deep contemplation)
+  static const questionDuration = Duration(seconds: 20);
 
   /// Disable auto-advance for testing
   static bool disableAutoAdvance = false;
@@ -41,22 +44,40 @@ class InquiryPlayerScreen extends ConsumerStatefulWidget {
   ConsumerState<InquiryPlayerScreen> createState() => _InquiryPlayerScreenState();
 }
 
-class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> {
+class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
+    with SingleTickerProviderStateMixin {
   Inquiry? _currentInquiry;
   InquiryPhase _phase = InquiryPhase.setup;
   Timer? _phaseTimer;
   bool _isPlaying = false;
 
+  // Timer animation state
+  AnimationController? _timerController;
+
   @override
   void initState() {
     super.initState();
+    _timerController = AnimationController(vsync: this);
     _loadInquiry();
   }
 
   @override
   void dispose() {
     _phaseTimer?.cancel();
+    _timerController?.dispose();
     super.dispose();
+  }
+
+  /// Start the visual timer animation for a phase
+  void _startVisualTimer(Duration duration) {
+    _timerController?.duration = duration;
+    _timerController?.forward(from: 0.0);
+  }
+
+  /// Stop the visual timer
+  void _stopVisualTimer() {
+    _timerController?.stop();
+    _timerController?.reset();
   }
 
   void _loadInquiry() {
@@ -89,8 +110,9 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> {
       return;
     }
 
-    // Setup phase - if inquiry has setup text, show it for 3 seconds
+    // Setup phase - if inquiry has setup text, show it with visual timer
     if (_currentInquiry!.setup != null) {
+      _startVisualTimer(InquiryPlayerScreen.setupDuration);
       await _waitForDuration(InquiryPlayerScreen.setupDuration);
       if (!mounted) return;
     }
@@ -101,9 +123,15 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> {
     // Haptic feedback at question start
     _triggerHaptic();
 
-    // Wait for the inquiry's pause duration
-    await _waitForDuration(_currentInquiry!.pauseDuration);
+    // Start visual timer for question phase (20 seconds for deep contemplation)
+    _startVisualTimer(InquiryPlayerScreen.questionDuration);
+
+    // Wait for the question duration
+    await _waitForDuration(InquiryPlayerScreen.questionDuration);
     if (!mounted) return;
+
+    // Stop visual timer
+    _stopVisualTimer();
 
     // Haptic feedback at phase transition
     _triggerHaptic();
@@ -271,27 +299,47 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> {
 
   Widget _buildPhaseIndicator(BuildContext context, PointerColors colors) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final showTimer = _phase == InquiryPhase.setup || _phase == InquiryPhase.question;
+
     return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding + 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          _PhaseIndicatorDot(
-            isActive: _phase == InquiryPhase.setup,
-            isPast: _phase.index > InquiryPhase.setup.index,
-            colors: colors,
-          ),
-          const SizedBox(width: 8),
-          _PhaseIndicatorDot(
-            isActive: _phase == InquiryPhase.question,
-            isPast: _phase.index > InquiryPhase.question.index,
-            colors: colors,
-          ),
-          const SizedBox(width: 8),
-          _PhaseIndicatorDot(
-            isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete,
-            isPast: false,
-            colors: colors,
+          // Breathing progress indicator (only during timed phases)
+          if (showTimer && _timerController != null)
+            AnimatedBuilder(
+              animation: _timerController!,
+              builder: (context, child) {
+                return _BreathingProgressRing(
+                  progress: _timerController!.value,
+                  colors: colors,
+                );
+              },
+            ),
+          if (showTimer) const SizedBox(height: 16),
+          // Phase dots
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _PhaseIndicatorDot(
+                isActive: _phase == InquiryPhase.setup,
+                isPast: _phase.index > InquiryPhase.setup.index,
+                colors: colors,
+              ),
+              const SizedBox(width: 8),
+              _PhaseIndicatorDot(
+                isActive: _phase == InquiryPhase.question,
+                isPast: _phase.index > InquiryPhase.question.index,
+                colors: colors,
+              ),
+              const SizedBox(width: 8),
+              _PhaseIndicatorDot(
+                isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete,
+                isPast: false,
+                colors: colors,
+              ),
+            ],
           ),
         ],
       ),
@@ -339,5 +387,104 @@ class _PhaseIndicatorDot extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
     );
+  }
+}
+
+/// Subtle breathing progress ring that fills as time passes
+/// Creates a gentle visual cue without being distracting
+/// Matches the liquid glass design system
+class _BreathingProgressRing extends StatelessWidget {
+  const _BreathingProgressRing({
+    required this.progress,
+    required this.colors,
+  });
+
+  /// Progress from 0.0 to 1.0
+  final double progress;
+  final PointerColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Subtle breathing effect - gentle scale pulse synced with progress
+    final breathingScale = 1.0 + (0.015 * (1 - (progress * 2 - 1).abs()));
+
+    // Theme-consistent colors matching liquid glass style
+    final ringColor = isDark
+        ? colors.accent.withValues(alpha: 0.5)
+        : colors.primary.withValues(alpha: 0.4);
+    final bgColor = isDark
+        ? colors.glassBorder.withValues(alpha: 0.3)
+        : Colors.black.withValues(alpha: 0.06);
+
+    return Transform.scale(
+      scale: breathingScale,
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: CustomPaint(
+          painter: _ProgressRingPainter(
+            progress: progress,
+            color: ringColor,
+            backgroundColor: bgColor,
+            strokeWidth: isDark ? 2.5 : 2.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Custom painter for the progress ring
+class _ProgressRingPainter extends CustomPainter {
+  _ProgressRingPainter({
+    required this.progress,
+    required this.color,
+    required this.backgroundColor,
+    this.strokeWidth = 2.5,
+  });
+
+  final double progress;
+  final Color color;
+  final Color backgroundColor;
+  final double strokeWidth;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - strokeWidth) / 2;
+
+    // Background ring
+    final bgPaint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawCircle(center, radius, bgPaint);
+
+    // Progress arc
+    final progressPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    const pi = 3.14159265359;
+    final sweepAngle = 2 * pi * progress;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2, // Start from top
+      sweepAngle,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ProgressRingPainter oldDelegate) {
+    return progress != oldDelegate.progress ||
+        color != oldDelegate.color ||
+        backgroundColor != oldDelegate.backgroundColor;
   }
 }
