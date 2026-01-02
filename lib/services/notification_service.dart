@@ -498,7 +498,7 @@ class NotificationService {
       pointing.content,
       tz.TZDateTime.from(scheduledTime, tz.local),
       _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: pointing.id,
@@ -529,7 +529,7 @@ class NotificationService {
       pointing.content,
       tz.TZDateTime.from(scheduledDate, tz.local),
       _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
@@ -549,7 +549,7 @@ class NotificationService {
       pointing.content,
       tz.TZDateTime.from(scheduledTime, tz.local),
       _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: pointing.id,

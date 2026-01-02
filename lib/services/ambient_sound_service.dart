@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -61,6 +63,7 @@ class AmbientSoundService {
   // Static player and guard to survive widget rebuilds
   static AudioPlayer? _staticPlayer;
   static bool _isPlayingSound = false;
+  static StreamSubscription<PlayerState>? _playerStateSubscription;
 
   /// Play the opening sound (only on cold start)
   Future<void> playOpeningSound(AmbientSound sound) async {
@@ -78,6 +81,10 @@ class AmbientSoundService {
 
     try {
       debugPrint('AmbientSound: Playing ${sound.assetPath}');
+
+      // Dispose previous player/subscription if exists (cleanup)
+      await _cleanup();
+
       _staticPlayer = AudioPlayer();
 
       // Load the asset
@@ -88,25 +95,31 @@ class AmbientSoundService {
       await _staticPlayer!.play();
       debugPrint('AmbientSound: Play started successfully');
 
-      // Wait for playback to complete
-      _staticPlayer!.playerStateStream.listen((state) {
+      // Wait for playback to complete (store subscription for cleanup)
+      _playerStateSubscription = _staticPlayer!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           debugPrint('AmbientSound: Playback completed');
-          _staticPlayer?.dispose();
-          _staticPlayer = null;
-          _isPlayingSound = false;
+          _cleanup();
         }
       });
     } catch (e, stack) {
       debugPrint('AmbientSound: Error playing sound: $e');
       debugPrint('AmbientSound: Stack trace: $stack');
-      _isPlayingSound = false;
+      await _cleanup();
     }
+  }
+
+  /// Clean up resources and reset state
+  static Future<void> _cleanup() async {
+    await _playerStateSubscription?.cancel();
+    _playerStateSubscription = null;
+    await _staticPlayer?.dispose();
+    _staticPlayer = null;
+    _isPlayingSound = false;
   }
 
   /// Dispose resources
   void dispose() {
-    _staticPlayer?.dispose();
-    _staticPlayer = null;
+    _cleanup();
   }
 }
