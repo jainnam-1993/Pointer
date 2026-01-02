@@ -47,67 +47,66 @@ class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
   }
 }
 
-/// Provider for ambient sound service
+/// Provider for ambient sound service (singleton)
 final ambientSoundServiceProvider = Provider<AmbientSoundService>((ref) {
-  return AmbientSoundService();
+  return AmbientSoundService.instance;
 });
 
-/// Service for playing ambient sounds on app open
+/// Service for playing ambient sounds on app cold start (singleton)
 class AmbientSoundService {
-  AudioPlayer? _player;
-  bool _hasPlayedThisSession = false;
+  // Static singleton instance
+  static final AmbientSoundService instance = AmbientSoundService._();
+  AmbientSoundService._();
 
-  /// Play the opening sound (only on cold start, not resume)
+  // Static player and guard to survive widget rebuilds
+  static AudioPlayer? _staticPlayer;
+  static bool _isPlayingSound = false;
+
+  /// Play the opening sound (only on cold start)
   Future<void> playOpeningSound(AmbientSound sound) async {
-    debugPrint('AmbientSound: playOpeningSound called with ${sound.name}');
-
-    // Skip if already played this session or no sound selected
-    if (_hasPlayedThisSession) {
-      debugPrint('AmbientSound: Already played this session, skipping');
-      return;
-    }
-
     if (sound == AmbientSound.none) {
       debugPrint('AmbientSound: Sound is none, skipping');
       return;
     }
 
-    _hasPlayedThisSession = true;
+    // Guard against double-plays using static flag
+    if (_isPlayingSound) {
+      debugPrint('AmbientSound: Already playing, skipping duplicate call');
+      return;
+    }
+    _isPlayingSound = true;
 
     try {
       debugPrint('AmbientSound: Playing ${sound.assetPath}');
+      _staticPlayer = AudioPlayer();
 
-      // Create fresh player for each play to avoid state issues
-      _player?.dispose();
-      _player = AudioPlayer();
-
-      // Load the asset - this returns the duration if successful
-      final duration = await _player!.setAsset(sound.assetPath!);
+      // Load the asset
+      final duration = await _staticPlayer!.setAsset(sound.assetPath!);
       debugPrint('AmbientSound: Asset loaded, duration: $duration');
 
       // Play the sound
-      await _player!.play();
+      await _staticPlayer!.play();
       debugPrint('AmbientSound: Play started successfully');
 
-      // Wait for playback to complete, then dispose
-      _player!.playerStateStream.listen((state) {
+      // Wait for playback to complete
+      _staticPlayer!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           debugPrint('AmbientSound: Playback completed');
-          _player?.dispose();
-          _player = null;
+          _staticPlayer?.dispose();
+          _staticPlayer = null;
+          _isPlayingSound = false;
         }
       });
     } catch (e, stack) {
       debugPrint('AmbientSound: Error playing sound: $e');
       debugPrint('AmbientSound: Stack trace: $stack');
-      // Reset flag so user can retry on next launch if error occurred
-      _hasPlayedThisSession = false;
+      _isPlayingSound = false;
     }
   }
 
   /// Dispose resources
   void dispose() {
-    _player?.dispose();
-    _player = null;
+    _staticPlayer?.dispose();
+    _staticPlayer = null;
   }
 }

@@ -20,6 +20,9 @@ import 'data/teachings/adyashanti.dart';
 /// Global container reference for notification action handling
 ProviderContainer? _globalContainer;
 
+/// Global guard for ambient sound (prevents double-play during startup)
+bool _globalAmbientSoundPlayed = false;
+
 /// Handle notification action responses (Save, Another buttons)
 @pragma('vm:entry-point')
 void notificationActionCallback(NotificationResponse response) {
@@ -125,6 +128,15 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   }
 
   void _playAmbientSound() {
+    // Guard against duplicate plays (can happen during debug mode rebuilds)
+    debugPrint('AmbientSound: _playAmbientSound called, global guard=$_globalAmbientSoundPlayed');
+    if (_globalAmbientSoundPlayed) {
+      debugPrint('AmbientSound: Skipping duplicate call (already played this launch)');
+      return;
+    }
+    _globalAmbientSoundPlayed = true;
+    debugPrint('AmbientSound: Global guard set to true');
+
     // Delay slightly to ensure providers are ready
     Future.delayed(const Duration(milliseconds: 500), () {
       if (!mounted) return;
