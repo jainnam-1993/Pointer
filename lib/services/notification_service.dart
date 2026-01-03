@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -56,7 +57,8 @@ enum NotificationPreset {
   morningOnly,
   throughoutDay,
   eveningFocus,
-  minimal;
+  minimal,
+  testEveryMinute; // Debug preset for testing
 
   String get label {
     switch (this) {
@@ -68,6 +70,8 @@ enum NotificationPreset {
         return 'Evening';
       case NotificationPreset.minimal:
         return 'Minimal';
+      case NotificationPreset.testEveryMinute:
+        return '🧪 Test';
     }
   }
 
@@ -81,6 +85,8 @@ enum NotificationPreset {
         return '5pm - 10pm, every 2 hours';
       case NotificationPreset.minimal:
         return '8am - 8pm, every 6 hours';
+      case NotificationPreset.testEveryMinute:
+        return 'Every 1 minute (testing only)';
     }
   }
 
@@ -94,6 +100,8 @@ enum NotificationPreset {
         return const NotificationSchedule(startHour: 17, endHour: 22, frequencyMinutes: 120);
       case NotificationPreset.minimal:
         return const NotificationSchedule(startHour: 8, endHour: 20, frequencyMinutes: 360);
+      case NotificationPreset.testEveryMinute:
+        return const NotificationSchedule(startHour: 0, endHour: 23, endMinute: 59, frequencyMinutes: 1, quietStartHour: 24, quietEndHour: 24);
     }
   }
 }
@@ -357,8 +365,9 @@ class NotificationService {
   /// Sets up platform-specific configurations and creates the Android
   /// notification channel.
   Future<void> initialize() async {
+    // Use dedicated notification icon (white-only for Android status bar)
     const initSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_notification',
     );
 
     const initSettingsIOS = DarwinInitializationSettings(
@@ -407,7 +416,33 @@ class NotificationService {
 
     final androidGranted = await androidPlugin?.requestNotificationsPermission();
 
+    // Android 12+ exact alarm permission (required for scheduled notifications)
+    await requestExactAlarmPermission();
+
     return (iosGranted ?? true) && (androidGranted ?? true);
+  }
+
+  /// Request exact alarm permission on Android 12+.
+  /// This opens system settings where user must grant the permission.
+  Future<bool> requestExactAlarmPermission() async {
+    final androidPlugin = _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidPlugin == null) return true; // iOS or other platform
+
+    // Check if we can schedule exact alarms
+    final canSchedule = await androidPlugin.canScheduleExactNotifications() ?? false;
+    print('[NotificationService] Can schedule exact alarms: $canSchedule');
+
+    if (!canSchedule) {
+      print('[NotificationService] Requesting exact alarm permission...');
+      // This opens system settings for the user to grant permission
+      await androidPlugin.requestExactAlarmsPermission();
+      return false; // User needs to grant permission
+    }
+
+    return true;
   }
 
   /// Check if notification permissions are currently granted without requesting.
@@ -464,7 +499,8 @@ class NotificationService {
   }
 
   /// Schedule notifications using the new time window model.
-  Future<void> _scheduleFromSchedule(NotificationSchedule schedule) async {
+  /// Limits to maxNotifications to avoid hitting Android's alarm limit (~500).
+  Future<void> _scheduleFromSchedule(NotificationSchedule schedule, {int maxNotifications = 50}) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = today.add(const Duration(days: 1));
@@ -473,19 +509,28 @@ class NotificationService {
     final todayTimes = schedule.getNotificationTimes(today);
     final tomorrowTimes = schedule.getNotificationTimes(tomorrow);
 
+    print('[NotificationService] Scheduling notifications...');
+    print('[NotificationService] Now: $now');
+    print('[NotificationService] Schedule: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:${schedule.startMinute}-${schedule.endHour}:${schedule.endMinute}');
+    print('[NotificationService] Today times count: ${todayTimes.length}, Tomorrow: ${tomorrowTimes.length}');
+
     int notificationId = 0;
 
     // Schedule today's remaining notifications
     for (final time in todayTimes) {
-      if (time.isAfter(now)) {
+      if (time.isAfter(now) && notificationId < maxNotifications) {
+        print('[NotificationService] Scheduling #$notificationId for $time');
         await _scheduleAtTime(notificationId++, time);
       }
     }
 
-    // Schedule tomorrow's notifications
+    // Schedule tomorrow's notifications (if we have room)
     for (final time in tomorrowTimes) {
+      if (notificationId >= maxNotifications) break;
       await _scheduleAtTime(notificationId++, time);
     }
+
+    print('[NotificationService] Scheduled $notificationId notifications total');
   }
 
   /// Schedule a notification at a specific DateTime.
@@ -622,6 +667,28 @@ class NotificationService {
   Future<void> sendTestNotification() async {
     final pointing = getRandomPointing();
     await showImmediateNotification(pointing);
+  }
+
+  /// Timer for foreground test notifications.
+  Timer? _testTimer;
+
+  /// Start sending test notifications every minute (foreground only).
+  void startTestNotifications() {
+    stopTestNotifications();
+    print('[NotificationService] Starting test notifications every 1 minute');
+    _testTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+      print('[NotificationService] Timer fired - sending notification #${timer.tick}');
+      await sendTestNotification();
+    });
+    // Send first one immediately
+    sendTestNotification();
+  }
+
+  /// Stop test notifications.
+  void stopTestNotifications() {
+    _testTimer?.cancel();
+    _testTimer = null;
+    print('[NotificationService] Stopped test notifications');
   }
 
   /// Cancel a scheduled notification.

@@ -28,7 +28,7 @@ class _WidgetKeys {
 /// widgets through shared storage via the home_widget package.
 class WidgetService {
   /// iOS App Group identifier for shared storage
-  static const iosAppGroup = 'group.com.pointer.widget';
+  static const iosAppGroup = 'group.com.dailypointer.widget';
 
   /// Android widget provider name
   static const androidWidgetName = 'PointerWidgetProvider';
@@ -93,7 +93,7 @@ class WidgetService {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
         androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
       debugPrint('Widget data cleared (free user)');
     } catch (e) {
@@ -188,7 +188,7 @@ class WidgetService {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
         androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
     } catch (e) {
       debugPrint('Failed to populate widget cache: $e');
@@ -239,7 +239,7 @@ class WidgetService {
     await HomeWidget.updateWidget(
       iOSName: 'PointerWidget',
       androidName: androidWidgetName,
-      qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+      qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
     );
   }
 
@@ -285,7 +285,7 @@ class WidgetService {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
         androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
 
       debugPrint('Widget schedule synced: $intervalHours hours');
@@ -312,7 +312,7 @@ class WidgetService {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
         androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
       debugPrint('Widget refreshed for theme update');
     } catch (e) {
@@ -344,7 +344,7 @@ class WidgetService {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
         androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.pointer.$androidWidgetName',
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
     } catch (e) {
       debugPrint('Failed to update widget favorites: $e');
