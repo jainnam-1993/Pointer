@@ -1,8 +1,10 @@
 # Home Screen Interactions - Core pointing experience
 # Run: maestro test maestro/flows/04_home_interactions.yaml
 #
-# Tests: Next/Previous buttons, swipe gestures, save to favorites
-# Replaces: adb_test_helper.sh tap/swipe/click commands
+# Tests: Next/Previous, swipe gestures, save to favorites, share button
+# Note: Zen mode and first-save celebration tested in dedicated flows
+#
+# Complements: integration_test/app_test.dart group 3 (state-controlled)
 
 appId: com.dailypointer
 ---
@@ -27,34 +29,72 @@ appId: com.dailypointer
     text: ".*Home.*"
 
 # === INITIAL STATE ===
+- assertVisible:
+    text: "Next Pointing"
 - takeScreenshot: "home_01_initial"
 
 # === NEXT BUTTON ===
 - tapOn:
-    text: ".*next pointing.*"
-    optional: true
+    text: "Next Pointing"
+- assertVisible:
+    text: ".*invitation.*"
 - takeScreenshot: "home_02_after_next"
 
 # === SWIPE UP (Next pointing) ===
 - swipe:
     direction: UP
     duration: 500
+- assertVisible:
+    text: ".*invitation.*"
 - takeScreenshot: "home_03_after_swipe_up"
 
 # === SWIPE DOWN (Previous pointing) ===
 - swipe:
     direction: DOWN
     duration: 500
+- assertVisible:
+    text: ".*invitation.*"
 - takeScreenshot: "home_04_after_swipe_down"
 
+# === LONG PRESS TO SAVE (favorite toggle) ===
+# Long press on the pointing card area to save
+- longPressOn:
+    point: "50%,40%"
+- takeScreenshot: "home_05_after_save"
+
 # === SHARE BUTTON ===
+# Tap share icon to open share preview modal
 - tapOn:
-    text: ".*Share.*"
+    id: "share_button"
     optional: true
-- takeScreenshot: "home_05_share"
+- tapOn:
+    text: ".*share.*"
+    optional: true
+- takeScreenshot: "home_06_share_modal"
+
+# Close share modal if opened (tap outside or close button)
+- tapOn:
+    text: ".*close.*"
+    optional: true
+- tapOn:
+    id: "close_button"
+    optional: true
 
 # === TEACHER INFO (tap on teacher name) ===
+# Teacher attribution shows at bottom of pointing card
 - tapOn:
-    text: ".*-.*"
+    text: ".*—.*"
     optional: true
-- takeScreenshot: "home_06_teacher"
+- takeScreenshot: "home_07_teacher_sheet"
+
+# Close teacher sheet
+- tapOn:
+    point: "50%,20%"
+    optional: true
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "home_08_final"

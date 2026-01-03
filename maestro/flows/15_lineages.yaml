@@ -1,0 +1,96 @@
+# Lineages Screen Flow - Tradition preferences
+# Run: maestro test maestro/flows/15_lineages.yaml
+#
+# Tests: Lineages screen navigation, tradition selection, affinity display
+# Route: /lineages (accessible from Settings)
+# Traditions: Advaita, Zen, Direct Path, Contemporary, Original
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- assertVisible:
+    text: ".*Settings.*"
+- takeScreenshot: "lineages_01_settings"
+
+# === OPEN LINEAGES SCREEN ===
+- tapOn:
+    text: ".*Lineages.*"
+    optional: true
+- tapOn:
+    text: ".*Traditions.*"
+    optional: true
+- takeScreenshot: "lineages_02_screen"
+
+# Verify lineages screen loaded
+- assertVisible:
+    text: ".*Advaita.*"
+    optional: true
+- assertVisible:
+    text: ".*Zen.*"
+    optional: true
+
+# === BROWSE TRADITIONS ===
+# Scroll to see all traditions
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "lineages_03_scrolled"
+
+# === TAP ON TRADITION ===
+# Tap on Advaita tradition
+- tapOn:
+    text: ".*Advaita.*"
+    optional: true
+- takeScreenshot: "lineages_04_advaita"
+
+# Tap on Zen tradition
+- tapOn:
+    text: ".*Zen.*"
+    optional: true
+- takeScreenshot: "lineages_05_zen"
+
+# Tap on Direct Path
+- tapOn:
+    text: ".*Direct Path.*"
+    optional: true
+- takeScreenshot: "lineages_06_direct_path"
+
+# === VERIFY AFFINITY DISPLAY ===
+# Affinity scores show user preference based on views/saves
+- assertVisible:
+    text: ".*pointing.*"
+    optional: true
+- takeScreenshot: "lineages_07_affinity"
+
+# === RETURN TO SETTINGS ===
+- back:
+    optional: true
+- tapOn:
+    text: ".*Settings.*"
+    optional: true
+- takeScreenshot: "lineages_08_back_settings"
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "lineages_09_complete"

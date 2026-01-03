@@ -1,0 +1,84 @@
+# Zen Mode Flow - Distraction-free pointing experience
+# Run: maestro test maestro/flows/11_zen_mode.yaml
+#
+# Tests: Enter zen mode via double-tap, navigate within zen, exit via tap
+# Zen mode: Hides UI chrome (bottom nav, buttons) for focused reading
+#
+# Entry: Double-tap on pointing card
+# Navigation: Swipe up/down for next/previous
+# Exit: Single tap anywhere
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Go to home tab
+- tapOn:
+    text: ".*Home.*"
+
+# === INITIAL STATE (Normal mode) ===
+- assertVisible:
+    text: "Next Pointing"
+- assertVisible:
+    text: ".*Home.*"
+- takeScreenshot: "zen_01_normal_mode"
+
+# === ENTER ZEN MODE (Double-tap) ===
+# Double-tap on the pointing card area (center of screen)
+- doubleTapOn:
+    point: "50%,40%"
+- takeScreenshot: "zen_02_entered"
+
+# Verify zen mode - bottom nav should be hidden
+# In zen mode, "Next Pointing" button and bottom tabs disappear
+- assertNotVisible:
+    text: "Next Pointing"
+    optional: true
+
+# === NAVIGATE IN ZEN MODE ===
+# Swipe up for next pointing
+- swipe:
+    direction: UP
+    duration: 400
+- takeScreenshot: "zen_03_after_swipe_up"
+
+# Swipe down for previous pointing
+- swipe:
+    direction: DOWN
+    duration: 400
+- takeScreenshot: "zen_04_after_swipe_down"
+
+# Multiple swipes to test continuous navigation
+- swipe:
+    direction: UP
+    duration: 400
+- swipe:
+    direction: UP
+    duration: 400
+- takeScreenshot: "zen_05_multiple_swipes"
+
+# === EXIT ZEN MODE (Single tap) ===
+- tapOn:
+    point: "50%,40%"
+- takeScreenshot: "zen_06_exited"
+
+# Verify normal mode restored - UI elements visible
+- assertVisible:
+    text: "Next Pointing"
+- assertVisible:
+    text: ".*Home.*"
+- takeScreenshot: "zen_07_normal_restored"

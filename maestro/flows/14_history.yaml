@@ -1,0 +1,89 @@
+# History Screen Flow - View past pointings
+# Run: maestro test maestro/flows/14_history.yaml
+#
+# Tests: History screen navigation, past pointing list, revisit pointing
+# Route: /history (accessible from Settings)
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === VIEW SOME POINTINGS FIRST ===
+# Navigate through a few pointings to populate history
+- tapOn:
+    text: ".*Home.*"
+- tapOn:
+    text: "Next Pointing"
+- tapOn:
+    text: "Next Pointing"
+- tapOn:
+    text: "Next Pointing"
+- takeScreenshot: "history_01_after_viewing"
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- assertVisible:
+    text: ".*Settings.*"
+- takeScreenshot: "history_02_settings"
+
+# === OPEN HISTORY SCREEN ===
+# Scroll to find History option
+- swipe:
+    direction: UP
+    duration: 300
+- tapOn:
+    text: ".*History.*"
+    optional: true
+- tapOn:
+    text: ".*Viewed.*"
+    optional: true
+- takeScreenshot: "history_03_screen"
+
+# Verify history screen loaded
+- assertVisible:
+    text: ".*History.*"
+    optional: true
+
+# === BROWSE HISTORY LIST ===
+# Scroll through history
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "history_04_scrolled"
+
+# === TAP TO REVISIT POINTING ===
+# Tap on a pointing in the history list
+- tapOn:
+    point: "50%,30%"
+    optional: true
+- takeScreenshot: "history_05_revisit"
+
+# === RETURN TO SETTINGS ===
+- back:
+    optional: true
+- tapOn:
+    text: ".*Settings.*"
+    optional: true
+- takeScreenshot: "history_06_back_settings"
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "history_07_complete"

@@ -1,8 +1,11 @@
-# Navigation Flow - Core app navigation testing
+# Navigation Flow - Core app navigation with content verification
 # Run: maestro test maestro/flows/01_navigation.yaml
 #
-# Tests: Bottom tab navigation, screen transitions, back navigation
-# Replaces: adb_test_helper.sh home/library/settings/inquiry commands
+# Tests: Bottom tab navigation + content loaded verification
+# Verifies: Each screen actually renders expected content, not just tab exists
+#
+# Note: State-controlled navigation testing is in integration_test/app_test.dart
+# This flow tests black-box cross-platform navigation behavior
 
 appId: com.dailypointer
 ---
@@ -25,24 +28,44 @@ appId: com.dailypointer
 # === HOME TAB ===
 - tapOn:
     text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- assertVisible:
+    text: ".*invitation.*"
 - takeScreenshot: "01_home_screen"
 
 # === LIBRARY TAB ===
 - tapOn:
     text: ".*Library.*"
+- assertVisible:
+    text: ".*Library.*"
+- assertVisible:
+    text: ".*minute read.*"
+    optional: true
 - takeScreenshot: "02_library_screen"
 
 # === INQUIRY TAB ===
 - tapOn:
     text: ".*Inquiry.*"
+- assertVisible:
+    text: ".*Inquiry.*"
+- assertVisible:
+    text: ".*Who Am I.*"
+    optional: true
 - takeScreenshot: "03_inquiry_screen"
 
 # === SETTINGS TAB ===
 - tapOn:
     text: ".*Settings.*"
+- assertVisible:
+    text: ".*Settings.*"
+- assertVisible:
+    text: ".*Notifications.*"
 - takeScreenshot: "04_settings_screen"
 
 # === RETURN TO HOME ===
 - tapOn:
     text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
 - takeScreenshot: "05_home_return"

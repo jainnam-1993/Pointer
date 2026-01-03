@@ -1,0 +1,124 @@
+# Theme Switching Flow - Dark/Light/High Contrast/OLED themes
+# Run: maestro test maestro/flows/17_theme_switching.yaml
+#
+# Tests: Theme toggle in settings, visual theme changes
+# Themes: Dark, Light, High Contrast, OLED
+# Note: System theme follows device settings
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- assertVisible:
+    text: ".*Settings.*"
+- takeScreenshot: "theme_01_settings"
+
+# === FIND THEME OPTION ===
+# Scroll to find theme/appearance settings
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "theme_02_scrolled"
+
+# === THEME: SYSTEM (Default) ===
+- tapOn:
+    text: ".*Theme.*"
+    optional: true
+- tapOn:
+    text: ".*Appearance.*"
+    optional: true
+- takeScreenshot: "theme_03_options"
+
+# Tap System theme
+- tapOn:
+    text: ".*System.*"
+    optional: true
+- takeScreenshot: "theme_04_system"
+
+# === THEME: DARK ===
+- tapOn:
+    text: ".*Dark.*"
+    optional: true
+- takeScreenshot: "theme_05_dark"
+
+# Verify dark theme applied (navigate to home to see)
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "theme_06_dark_home"
+
+# Return to settings
+- tapOn:
+    text: ".*Settings.*"
+
+# === THEME: LIGHT ===
+- tapOn:
+    text: ".*Theme.*"
+    optional: true
+- tapOn:
+    text: ".*Light.*"
+    optional: true
+- takeScreenshot: "theme_07_light"
+
+# Verify light theme applied
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "theme_08_light_home"
+
+# Return to settings
+- tapOn:
+    text: ".*Settings.*"
+
+# === THEME: HIGH CONTRAST ===
+- tapOn:
+    text: ".*High Contrast.*"
+    optional: true
+- tapOn:
+    text: ".*Contrast.*"
+    optional: true
+- takeScreenshot: "theme_09_high_contrast"
+
+# === THEME: OLED ===
+- tapOn:
+    text: ".*OLED.*"
+    optional: true
+- takeScreenshot: "theme_10_oled"
+
+# Verify OLED theme (true black backgrounds)
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "theme_11_oled_home"
+
+# === RESTORE DEFAULT ===
+- tapOn:
+    text: ".*Settings.*"
+- tapOn:
+    text: ".*System.*"
+    optional: true
+- tapOn:
+    text: ".*Dark.*"
+    optional: true
+- takeScreenshot: "theme_12_restored"
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "theme_13_complete"
