@@ -23,6 +23,7 @@ appId: com.dailypointer
 # Launch app fresh to ensure widget data is written
 - launchApp:
     clearState: false  # Keep existing data, let app refresh widget
+- waitForAnimationToEnd
 
 # Skip onboarding if shown
 - tapOn:
@@ -38,20 +39,10 @@ appId: com.dailypointer
     text: "Maybe Later"
     optional: true
 
-# Wait for app to fully initialize
-- extendedWaitUntil:
-    visible: ".*Home.*"
-    timeout: 10000
-
 # Navigate to home screen tab to ensure pointing data loads
 - tapOn:
     text: ".*Home.*"
-
-# Wait for content to be visible - this triggers widget cache population
-- extendedWaitUntil:
-    visible:
-      text: ".*"
-    timeout: 5000
+- waitForAnimationToEnd
 
 # Interact to ensure widget sync happens
 - swipe:
@@ -60,10 +51,7 @@ appId: com.dailypointer
 - swipe:
     direction: DOWN
     duration: 500
-
-# Brief pause for SharedPreferences to flush widget data
-- extendedWaitUntil:
-    timeout: 2000
+- waitForAnimationToEnd
 
 # ============================================
 # PHASE 2: Navigate to home screen and test widget
@@ -71,10 +59,7 @@ appId: com.dailypointer
 
 # Go to Android home screen
 - pressKey: Home
-
-# Wait for launcher animation
-- extendedWaitUntil:
-    timeout: 2000
+- waitForAnimationToEnd
 
 # Take screenshot BEFORE assertion for debugging failures
 - takeScreenshot: widget_before_check
