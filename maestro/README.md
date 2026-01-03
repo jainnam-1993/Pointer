@@ -27,7 +27,7 @@ maestro test maestro/flows/01_navigation.yaml
 | `05_settings.yaml` | Settings & developer menu unlock | ~45s |
 | `06_screenshots_all.yaml` | Store screenshot capture | ~90s |
 | `09_library_content.yaml` | Library browsing & premium gating | ~60s |
-| `10_widget_test.yaml` | Home screen widget verification | ~60s |
+| `10_widget_test.yaml` | Home screen widget creation & verification | ~90s |
 
 ### Feature Flows (8)
 
@@ -70,20 +70,29 @@ These flows were deleted as they duplicated Flutter test coverage:
 - `07_accessibility_audit.yaml` - Flutter `voiceover_test.dart` does real verification
 - `08_inquiry_session.yaml` - Flutter `inquiry_player_test.dart` handles timing
 
-## Widget Test Setup
+## Widget Test Setup (Fully Automated)
 
-The `10_widget_test.yaml` and `16_widget_interactions.yaml` flows require the Pointer widget on home screen:
+The `10_widget_test.yaml` flow **automatically creates and tests** the Pointer widget - no manual setup required!
 
-1. Long-press on home screen
-2. Select "Widgets"
-3. Find and add the Pointer widget
-4. Run: `maestro test maestro/flows/10_widget_test.yaml`
+**What it does:**
+1. Launches app to populate widget cache
+2. Opens widget picker via long-press on home screen
+3. Scrolls to find Pointer widget in alphabetical list
+4. Drags widget preview to home screen to place it
+5. Verifies widget displays content (not error state)
+6. Tests widget navigation buttons
+
+The `16_widget_interactions.yaml` flow tests widget prev/next/save buttons (requires widget on home screen)
 
 **What it catches:**
 - Widget showing "Tap to load" empty state (data loading failure)
 - Widget cache not being populated by the app
 - RemoteViewsService/Factory errors
 - Button navigation failures (prev/next/save)
+- Widget picker integration issues
+- Widget placement failures
+
+**Note:** Works on Android with Pixel Launcher or similar. The test uses coordinate-based drag gestures optimized for tablet/foldable form factors.
 
 ## Running on Devices
 
