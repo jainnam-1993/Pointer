@@ -6,12 +6,9 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app"
 - launchApp
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -26,51 +23,38 @@ appId: com.dailypointer
     optional: true
 
 # Go to home tab
-- log: "→ Home tab"
 - tapOn:
     text: ".*Home.*"
 
 # === INITIAL STATE ===
-- log: "→ Capturing initial state"
 - takeScreenshot: "home_01_initial"
 
 # === NEXT BUTTON ===
-- log: "→ Testing next pointing button"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
-- log: "  ✓ Next button tapped"
 - takeScreenshot: "home_02_after_next"
 
 # === SWIPE UP (Next pointing) ===
-- log: "→ Testing swipe up gesture"
 - swipe:
     direction: UP
     duration: 500
-- log: "  ✓ Swipe up complete"
 - takeScreenshot: "home_03_after_swipe_up"
 
 # === SWIPE DOWN (Previous pointing) ===
-- log: "→ Testing swipe down gesture"
 - swipe:
     direction: DOWN
     duration: 500
-- log: "  ✓ Swipe down complete"
 - takeScreenshot: "home_04_after_swipe_down"
 
 # === SHARE BUTTON ===
-- log: "→ Testing share button"
 - tapOn:
     text: ".*Share.*"
     optional: true
-- log: "  ✓ Share tapped (if present)"
 - takeScreenshot: "home_05_share"
 
 # === TEACHER INFO (tap on teacher name) ===
-- log: "→ Testing teacher info"
 - tapOn:
     text: ".*-.*"
     optional: true
-- log: "  ✓ Teacher info checked"
 - takeScreenshot: "home_06_teacher"
-- log: "  ✓ Home interactions complete"

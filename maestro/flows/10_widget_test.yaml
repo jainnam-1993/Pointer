@@ -20,18 +20,13 @@ appId: com.dailypointer
 # PHASE 1: Ensure app populates widget cache
 # ============================================
 
-- log: "═══ PHASE 1: Populate widget cache ═══"
 
 # Launch app fresh to ensure widget data is written
-- log: "→ Launching app"
 - launchApp:
     clearState: false  # Keep existing data, let app refresh widget
-- log: "  ⏳ Waiting for animations"
 - waitForAnimationToEnd
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -46,84 +41,61 @@ appId: com.dailypointer
     optional: true
 
 # Navigate to home screen tab to ensure pointing data loads
-- log: "→ Home tab (loading pointing data)"
 - tapOn:
     text: ".*Home.*"
-- log: "  ⏳ Waiting for animations"
 - waitForAnimationToEnd
-- log: "  ✓ Home loaded"
 
 # Interact to ensure widget sync happens
-- log: "→ Triggering widget sync"
 - swipe:
     direction: UP
     duration: 500
 - swipe:
     direction: DOWN
     duration: 500
-- log: "  ⏳ Waiting for sync"
 - waitForAnimationToEnd
-- log: "  ✓ Widget sync triggered"
 
 # ============================================
 # PHASE 2: Navigate to home screen and test widget
 # ============================================
 
-- log: "═══ PHASE 2: Navigate to Android home ═══"
 
 # Go to Android home screen
-- log: "→ Pressing Home key"
 - pressKey: Home
-- log: "  ⏳ Waiting for home screen"
 - waitForAnimationToEnd
-- log: "  ✓ Android home screen"
 
 # Take screenshot BEFORE assertion for debugging failures
-- log: "→ Capturing widget state"
 - takeScreenshot: widget_before_check
 
 # ============================================
 # PHASE 3: CRITICAL ASSERTIONS
 # ============================================
 
-- log: "═══ PHASE 3: Widget assertions ═══"
 
 # MAIN TEST: Widget should NOT show "Tap to load" empty state
 # This assertion WILL FAIL if the widget is broken
 # The widget_empty_text TextView shows "Tap to load" when pointings_cache is empty
-- log: "→ Asserting: No 'Tap to load' empty state"
 - assertNotVisible:
     text: "Tap to load"
-- log: "  ✓ Widget has content (not empty)"
 
 # If we can see widget buttons, even better confirmation
 # These use contentDescription from pointer_widget.xml
-- log: "→ Checking widget controls (optional)"
 - assertVisible:
     text: "Previous pointing"
     optional: true
-- log: "  ✓ Previous button found (if present)"
 
 - assertVisible:
     text: "Next pointing"
     optional: true
-- log: "  ✓ Next button found (if present)"
 
 - assertVisible:
     text: "Save to favorites"
     optional: true
-- log: "  ✓ Save button found (if present)"
 
 # Take final screenshot for documentation
-- log: "→ Capturing final state"
 - takeScreenshot: widget_test_passed
-- log: "  ✓ Widget assertions passed"
 
 # ============================================
 # PHASE 4: Cleanup - return to app
 # ============================================
 
-- log: "═══ PHASE 4: Cleanup ═══"
-- log: "→ Returning to app"
 - launchApp
-- log: "  ✓ Widget test complete"

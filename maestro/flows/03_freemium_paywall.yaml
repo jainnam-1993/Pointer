@@ -6,13 +6,10 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app (fresh state)"
 - launchApp:
     clearState: true
-- log: "  ✓ App launched"
 
 # Skip onboarding
-- log: "→ Skipping onboarding"
 - tapOn:
     text: "Continue"
     optional: true
@@ -27,33 +24,26 @@ appId: com.dailypointer
     optional: true
 
 # === FREE USER: VIEW MULTIPLE POINTINGS ===
-- log: "→ Testing free user: First pointing"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "freemium_01_first_pointing"
 
-- log: "→ Testing free user: Second pointing"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
 - takeScreenshot: "freemium_02_second_pointing"
 
-- log: "→ Testing free user: Third pointing"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
 - takeScreenshot: "freemium_03_third_pointing"
-- log: "  ✓ Free pointings verified (unlimited)"
 
 # === PREMIUM FEATURE: LIBRARY ACCESS ===
-- log: "→ Testing premium feature: Library"
 - tapOn:
     text: ".*Library.*"
 - takeScreenshot: "freemium_04_library"
-- log: "  ✓ Library accessed"
 
 # === PAYWALL (tap Upgrade if visible) ===
-- log: "→ Checking for paywall"
 - tapOn:
     text: ".*Upgrade.*"
     optional: true
@@ -61,11 +51,8 @@ appId: com.dailypointer
     text: ".*Unlock.*"
     optional: true
 - takeScreenshot: "freemium_05_paywall"
-- log: "  ✓ Paywall checked"
 
 # === BACK TO HOME ===
-- log: "→ Returning to Home"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "freemium_06_back_home"
-- log: "  ✓ Freemium flow complete"

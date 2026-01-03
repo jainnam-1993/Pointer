@@ -7,17 +7,13 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app (fresh state)"
 - launchApp:
     clearState: true
-- log: "  ✓ App launched"
 
 # === ONBOARDING SCREENSHOTS ===
-- log: "→ Capturing onboarding"
 - takeScreenshot: "store_01_onboarding"
 
 # Complete onboarding
-- log: "→ Completing onboarding"
 - tapOn:
     text: "Continue"
     optional: true
@@ -30,48 +26,39 @@ appId: com.dailypointer
 - tapOn:
     text: "Maybe Later"
     optional: true
-- log: "  ✓ Onboarding complete"
 
 # === HOME SCREEN SCREENSHOTS ===
-- log: "→ Capturing Home screen"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "store_02_home"
 
 # Show pointer content
-- log: "→ Capturing Home with pointing"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
 - takeScreenshot: "store_03_home_pointing"
 
 # === INQUIRY SCREEN ===
-- log: "→ Capturing Inquiry screen"
 - tapOn:
     text: ".*Inquiry.*"
 - takeScreenshot: "store_04_inquiry"
 
 # === LIBRARY SCREEN ===
-- log: "→ Capturing Library screen"
 - tapOn:
     text: ".*Library.*"
 - takeScreenshot: "store_05_library"
 
 # === SETTINGS SCREEN ===
-- log: "→ Capturing Settings screen"
 - tapOn:
     text: ".*Settings.*"
 - takeScreenshot: "store_06_settings"
 
 # Scroll for more settings
-- log: "→ Capturing Settings (scrolled)"
 - swipe:
     direction: DOWN
 - takeScreenshot: "store_07_settings_more"
 
 # === BACK TO HOME - FINAL STATE ===
-- log: "→ Capturing final Home state"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "store_08_final"
-- log: "  ✓ All store screenshots captured"

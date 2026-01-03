@@ -6,41 +6,32 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app (fresh state)"
 - launchApp:
     clearState: true
-- log: "  ✓ App launched with cleared state"
 
 # === PAGE 1: The Interruption ===
-- log: "→ Page 1: The Interruption"
 - takeScreenshot: "onboarding_01_interruption"
 
 # Advance through pages
 - tapOn:
     text: "Continue"
     optional: true
-- log: "  ✓ Page 1 complete"
 
 # === PAGE 2: The Contrast ===
-- log: "→ Page 2: The Contrast"
 - takeScreenshot: "onboarding_02_contrast"
 
 - tapOn:
     text: "Continue"
     optional: true
-- log: "  ✓ Page 2 complete"
 
 # === PAGE 3: The Simplicity ===
-- log: "→ Page 3: The Simplicity"
 - takeScreenshot: "onboarding_03_simplicity"
 
 - tapOn:
     text: "Continue"
     optional: true
-- log: "  ✓ Page 3 complete"
 
 # === PAGE 4: Notifications ===
-- log: "→ Page 4: Notifications"
 - takeScreenshot: "onboarding_04_notifications"
 
 # Complete onboarding (skip notifications for test)
@@ -50,9 +41,6 @@ appId: com.dailypointer
 - tapOn:
     text: "Enable Notifications"
     optional: true
-- log: "  ✓ Page 4 complete"
 
 # Verify we reached home screen
-- log: "→ Verifying home screen reached"
 - takeScreenshot: "onboarding_05_complete"
-- log: "  ✓ Onboarding flow complete"

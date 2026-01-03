@@ -5,14 +5,10 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app"
 - launchApp
-- log: "  ⏳ Waiting for animations"
 - waitForAnimationToEnd
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -27,30 +23,23 @@ appId: com.dailypointer
     optional: true
 
 # Navigate to Inquiry tab
-- log: "→ Inquiry tab"
 - tapOn:
     text: ".*Inquiry.*"
-- log: "  ✓ Inquiry list loaded"
 - takeScreenshot: "inquiry_01_list"
 
 # Tap on first inquiry session (Who Am I? - free for all users)
-- log: "→ Starting 'Who Am I?' session"
 - tapOn:
     text: ".*Who Am I.*"
-- log: "  ✓ Session started"
 - takeScreenshot: "inquiry_02_session_start"
 
 # Wait for session to progress (Setup phase is 3 seconds)
 # TODO: User decision - how long should we wait to capture the question phase?
-- log: "→ Interacting with session"
 - swipe:
     direction: UP
     duration: 100
-- log: "  ✓ Session interaction complete"
 - takeScreenshot: "inquiry_03_in_progress"
 
 # Exit session (back or tap)
-- log: "→ Exiting session"
 - tapOn:
     text: ".*back.*"
     optional: true
@@ -60,7 +49,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Inquiry.*"
     optional: true
-- log: "  ✓ Session exited"
 
 - takeScreenshot: "inquiry_04_complete"
-- log: "  ✓ Inquiry flow complete"

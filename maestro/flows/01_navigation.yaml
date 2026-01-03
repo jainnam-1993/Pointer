@@ -6,12 +6,9 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app"
 - launchApp
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -26,36 +23,26 @@ appId: com.dailypointer
     optional: true
 
 # === HOME TAB ===
-- log: "→ Home tab"
 - tapOn:
     text: ".*Home.*"
-- log: "  ✓ Home screen loaded"
 - takeScreenshot: "01_home_screen"
 
 # === LIBRARY TAB ===
-- log: "→ Library tab"
 - tapOn:
     text: ".*Library.*"
-- log: "  ✓ Library screen loaded"
 - takeScreenshot: "02_library_screen"
 
 # === INQUIRY TAB ===
-- log: "→ Inquiry tab"
 - tapOn:
     text: ".*Inquiry.*"
-- log: "  ✓ Inquiry screen loaded"
 - takeScreenshot: "03_inquiry_screen"
 
 # === SETTINGS TAB ===
-- log: "→ Settings tab"
 - tapOn:
     text: ".*Settings.*"
-- log: "  ✓ Settings screen loaded"
 - takeScreenshot: "04_settings_screen"
 
 # === RETURN TO HOME ===
-- log: "→ Returning to Home"
 - tapOn:
     text: ".*Home.*"
-- log: "  ✓ Navigation flow complete"
 - takeScreenshot: "05_home_return"

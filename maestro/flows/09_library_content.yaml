@@ -5,14 +5,10 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app"
 - launchApp
-- log: "  ⏳ Waiting for animations"
 - waitForAnimationToEnd
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -27,38 +23,29 @@ appId: com.dailypointer
     optional: true
 
 # Navigate to Library tab
-- log: "→ Library tab"
 - tapOn:
     text: ".*Library.*"
-- log: "  ✓ Library loaded"
 - takeScreenshot: "library_01_browse"
 
 # Scroll to see more content
-- log: "→ Scrolling library content"
 - swipe:
     direction: UP
     duration: 300
-- log: "  ✓ Library scrolled"
 - takeScreenshot: "library_02_scrolled"
 
 # Tap on first available article (matches "minute read" pattern)
-- log: "→ Opening article"
 - tapOn:
     text: ".*minute read.*"
     optional: true
-- log: "  ✓ Article opened (if found)"
 - takeScreenshot: "library_03_article_open"
 
 # Scroll within article
-- log: "→ Scrolling article content"
 - swipe:
     direction: UP
     duration: 300
-- log: "  ✓ Article scrolled"
 - takeScreenshot: "library_04_article_content"
 
 # Go back to library
-- log: "→ Returning to Library"
 - tapOn:
     text: ".*Library.*"
     optional: true
@@ -67,24 +54,18 @@ appId: com.dailypointer
     optional: true
 
 # Try teachings section if visible
-- log: "→ Checking Teachings section"
 - tapOn:
     text: ".*Teachings.*"
     optional: true
-- log: "  ✓ Teachings checked"
 - takeScreenshot: "library_05_teachings"
 
 # Tap on a teaching
-- log: "→ Opening teaching detail"
 - tapOn:
     text: ".*tradition.*"
     optional: true
-- log: "  ✓ Teaching opened (if found)"
 - takeScreenshot: "library_06_teaching_detail"
 
 # Return to home
-- log: "→ Returning to Home"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "library_07_complete"
-- log: "  ✓ Library flow complete"

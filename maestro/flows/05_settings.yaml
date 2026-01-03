@@ -6,12 +6,9 @@
 
 appId: com.dailypointer
 ---
-- log: "→ Launching app"
 - launchApp
-- log: "  ✓ App launched"
 
 # Skip onboarding if shown
-- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -26,37 +23,29 @@ appId: com.dailypointer
     optional: true
 
 # Navigate to settings
-- log: "→ Settings tab"
 - tapOn:
     text: ".*Settings.*"
-- log: "  ✓ Settings opened"
 
 # === INITIAL SETTINGS VIEW ===
-- log: "→ Capturing initial settings"
 - takeScreenshot: "settings_01_initial"
 
 # === SCROLL DOWN TO REVEAL MORE OPTIONS ===
-- log: "→ Scrolling settings"
 - swipe:
     direction: DOWN
 - takeScreenshot: "settings_02_scrolled"
 
 # === NOTIFICATION SETTINGS ===
-- log: "→ Testing notification settings"
 - tapOn:
     text: ".*Notification.*"
     optional: true
-- log: "  ✓ Notification settings checked"
 - takeScreenshot: "settings_03_notifications"
 
 # === SCROLL MORE FOR ABOUT SECTION ===
-- log: "→ Scrolling to About section"
 - swipe:
     direction: DOWN
 - takeScreenshot: "settings_04_about"
 
 # === DEVELOPER MENU UNLOCK (7-tap easter egg) ===
-- log: "→ Unlocking developer menu (7 taps)"
 - tapOn:
     text: ".*Pointer v.*"
     optional: true
@@ -78,12 +67,9 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Pointer v.*"
     optional: true
-- log: "  ✓ Developer menu unlocked"
 - takeScreenshot: "settings_05_developer_unlocked"
 
 # === BACK TO HOME ===
-- log: "→ Returning to Home"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "settings_06_back_home"
-- log: "  ✓ Settings flow complete"
