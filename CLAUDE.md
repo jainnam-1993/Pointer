@@ -39,7 +39,8 @@ maestro test maestro/flows/                         # Run all flows (~5 min)
 # Location: scripts/hooks/pre-commit
 # Runs Maestro smoke test before commits (requires Maestro installed + device/emulator)
 # Currently opt-in: device detection stubbed (check_device() returns 1)
-# Install: Copy scripts/hooks/pre-commit to .git/hooks/pre-commit
+# Install: ./scripts/setup-hooks.sh (auto-detects worktrees, creates symlinks)
+# Manual: Copy scripts/hooks/pre-commit to .git/hooks/pre-commit
 # Blocks commit if smoke test fails (60s timeout)
 
 # Build
@@ -179,6 +180,7 @@ bundle exec fastlane android validate         # Validate service account credent
 ├── scripts/                      # Development scripts
 │   ├── hooks/
 │   │   └── pre-commit            # Git pre-commit hook (Maestro smoke test, opt-in)
+│   ├── setup-hooks.sh            # Install git hooks (worktree-aware, symlink-based)
 │   ├── adb_test_helper.sh        # (deprecated) Android device testing
 │   ├── ios_test_helper.sh        # (deprecated) iOS simulator testing
 │   └── screenshot_test.sh        # (deprecated) Screenshot runner
