@@ -1,0 +1,64 @@
+# Screenshot Capture Flow - App Store & Documentation
+# Run: maestro test maestro/flows/06_screenshots_all.yaml
+#
+# Purpose: Generate consistent screenshots for both platforms
+# Output: maestro/screenshots/ directory
+# Replaces: scripts/screenshot_test.sh, integration_test/screenshot_test.dart (for this use case)
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# === ONBOARDING SCREENSHOTS ===
+- takeScreenshot: "store_01_onboarding"
+
+# Complete onboarding
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === HOME SCREEN SCREENSHOTS ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "store_02_home"
+
+# Show pointer content
+- tapOn:
+    text: ".*next pointing.*"
+    optional: true
+- takeScreenshot: "store_03_home_pointing"
+
+# === INQUIRY SCREEN ===
+- tapOn:
+    text: ".*Inquiry.*"
+- takeScreenshot: "store_04_inquiry"
+
+# === LIBRARY SCREEN ===
+- tapOn:
+    text: ".*Library.*"
+- takeScreenshot: "store_05_library"
+
+# === SETTINGS SCREEN ===
+- tapOn:
+    text: ".*Settings.*"
+- takeScreenshot: "store_06_settings"
+
+# Scroll for more settings
+- swipe:
+    direction: DOWN
+- takeScreenshot: "store_07_settings_more"
+
+# === BACK TO HOME - FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "store_08_final"

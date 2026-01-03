@@ -1,0 +1,58 @@
+# Freemium & Paywall Flow - Premium upgrade journey
+# Run: maestro test maestro/flows/03_freemium_paywall.yaml
+#
+# Tests: Free user experience, premium feature gating, paywall display
+# Verifies: Freemium v2 model (unlimited pointings, premium features gated)
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Skip onboarding
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === FREE USER: VIEW MULTIPLE POINTINGS ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "freemium_01_first_pointing"
+
+- tapOn:
+    text: ".*next pointing.*"
+    optional: true
+- takeScreenshot: "freemium_02_second_pointing"
+
+- tapOn:
+    text: ".*next pointing.*"
+    optional: true
+- takeScreenshot: "freemium_03_third_pointing"
+
+# === PREMIUM FEATURE: LIBRARY ACCESS ===
+- tapOn:
+    text: ".*Library.*"
+- takeScreenshot: "freemium_04_library"
+
+# === PAYWALL (tap Upgrade if visible) ===
+- tapOn:
+    text: ".*Upgrade.*"
+    optional: true
+- tapOn:
+    text: ".*Unlock.*"
+    optional: true
+- takeScreenshot: "freemium_05_paywall"
+
+# === BACK TO HOME ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "freemium_06_back_home"

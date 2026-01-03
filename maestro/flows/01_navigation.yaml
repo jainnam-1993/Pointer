@@ -1,0 +1,48 @@
+# Navigation Flow - Core app navigation testing
+# Run: maestro test maestro/flows/01_navigation.yaml
+#
+# Tests: Bottom tab navigation, screen transitions, back navigation
+# Replaces: adb_test_helper.sh home/library/settings/inquiry commands
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === HOME TAB ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "01_home_screen"
+
+# === LIBRARY TAB ===
+- tapOn:
+    text: ".*Library.*"
+- takeScreenshot: "02_library_screen"
+
+# === INQUIRY TAB ===
+- tapOn:
+    text: ".*Inquiry.*"
+- takeScreenshot: "03_inquiry_screen"
+
+# === SETTINGS TAB ===
+- tapOn:
+    text: ".*Settings.*"
+- takeScreenshot: "04_settings_screen"
+
+# === RETURN TO HOME ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "05_home_return"

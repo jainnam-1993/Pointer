@@ -2,8 +2,8 @@
 # Run tests: patrol test -t integration_test/screenshot_test.dart
 
 app_name: Pointer
-package_name: com.pointer
-bundle_id: com.pointer
+package_name: com.dailypointer
+bundle_id: com.dailypointer
 
 # Test targets
 targets:

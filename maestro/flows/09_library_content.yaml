@@ -1,0 +1,71 @@
+# Library Content Flow - Browse and open articles/teachings
+# Run: maestro test maestro/flows/09_library_content.yaml
+#
+# Tests: Library navigation, article opening, content display
+
+appId: com.dailypointer
+---
+- launchApp
+- waitForAnimationToEnd
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Navigate to Library tab
+- tapOn:
+    text: ".*Library.*"
+- takeScreenshot: "library_01_browse"
+
+# Scroll to see more content
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "library_02_scrolled"
+
+# Tap on first available article (matches "minute read" pattern)
+- tapOn:
+    text: ".*minute read.*"
+    optional: true
+- takeScreenshot: "library_03_article_open"
+
+# Scroll within article
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "library_04_article_content"
+
+# Go back to library
+- tapOn:
+    text: ".*Library.*"
+    optional: true
+- tapOn:
+    text: ".*back.*"
+    optional: true
+
+# Try teachings section if visible
+- tapOn:
+    text: ".*Teachings.*"
+    optional: true
+- takeScreenshot: "library_05_teachings"
+
+# Tap on a teaching
+- tapOn:
+    text: ".*tradition.*"
+    optional: true
+- takeScreenshot: "library_06_teaching_detail"
+
+# Return to home
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "library_07_complete"

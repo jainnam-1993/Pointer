@@ -1,0 +1,16 @@
+# Maestro Configuration for Pointer App
+# Replaces: adb_test_helper.sh, ios_test_helper.sh
+# Cross-platform E2E testing for iOS and Android
+
+appId: com.dailypointer
+
+# Flow execution settings
+flows:
+  - flows/
+
+# Screenshot output
+outputDir: screenshots
+
+# Default wait times (ms)
+initFlow:
+  appId: com.dailypointer

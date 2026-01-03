@@ -1,0 +1,76 @@
+# Settings Screen Flow - User preferences and notifications
+# Run: maestro test maestro/flows/05_settings.yaml
+#
+# Tests: Settings navigation, notification toggle, theme options
+# Documents: TTS discoverability UX gap (7-tap easter egg)
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Navigate to settings
+- tapOn:
+    text: ".*Settings.*"
+
+# === INITIAL SETTINGS VIEW ===
+- takeScreenshot: "settings_01_initial"
+
+# === SCROLL DOWN TO REVEAL MORE OPTIONS ===
+- swipe:
+    direction: DOWN
+- takeScreenshot: "settings_02_scrolled"
+
+# === NOTIFICATION SETTINGS ===
+- tapOn:
+    text: ".*Notification.*"
+    optional: true
+- takeScreenshot: "settings_03_notifications"
+
+# === SCROLL MORE FOR ABOUT SECTION ===
+- swipe:
+    direction: DOWN
+- takeScreenshot: "settings_04_about"
+
+# === DEVELOPER MENU UNLOCK (7-tap easter egg) ===
+# Tap version 7 times to unlock developer menu
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- tapOn:
+    text: ".*Pointer v.*"
+    optional: true
+- takeScreenshot: "settings_05_developer_unlocked"
+
+# === BACK TO HOME ===
+- tapOn:
+    text: ".*Home.*"
+- takeScreenshot: "settings_06_back_home"

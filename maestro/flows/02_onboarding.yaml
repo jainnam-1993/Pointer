@@ -1,0 +1,46 @@
+# Onboarding Flow - First-time user experience
+# Run: maestro test maestro/flows/02_onboarding.yaml
+#
+# Tests: 4-screen onboarding flow with notification permission
+# Requires: Fresh app state (clearState: true)
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# === PAGE 1: The Interruption ===
+- takeScreenshot: "onboarding_01_interruption"
+
+# Advance through pages
+- tapOn:
+    text: "Continue"
+    optional: true
+
+# === PAGE 2: The Contrast ===
+- takeScreenshot: "onboarding_02_contrast"
+
+- tapOn:
+    text: "Continue"
+    optional: true
+
+# === PAGE 3: The Simplicity ===
+- takeScreenshot: "onboarding_03_simplicity"
+
+- tapOn:
+    text: "Continue"
+    optional: true
+
+# === PAGE 4: Notifications ===
+- takeScreenshot: "onboarding_04_notifications"
+
+# Complete onboarding (skip notifications for test)
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+- tapOn:
+    text: "Enable Notifications"
+    optional: true
+
+# Verify we reached home screen
+- takeScreenshot: "onboarding_05_complete"

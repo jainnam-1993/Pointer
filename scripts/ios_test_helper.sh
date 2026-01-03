@@ -1,5 +1,23 @@
 #!/bin/bash
-# iOS Simulator Test Helper - Screen-size independent testing
+# =============================================================================
+# DEPRECATED - Use Maestro instead
+# =============================================================================
+# This script has been replaced by Maestro for cross-platform E2E testing.
+#
+# Migration guide:
+#   Old: ./scripts/ios_test_helper.sh tap 50 50
+#   New: maestro test maestro/flows/04_home_interactions.yaml
+#
+#   Old: ./scripts/ios_test_helper.sh click "Home"
+#   New: In YAML: - tapOn: "Home"
+#
+#   Old: ./scripts/ios_test_helper.sh screenshot output.png
+#   New: In YAML: - takeScreenshot: "output"
+#
+# Run Maestro tests: maestro test maestro/flows/
+# =============================================================================
+#
+# iOS Simulator Test Helper - Screen-size independent testing (LEGACY)
 # Uses percentages to calculate tap coordinates via simctl/idb
 # Mirrors adb_test_helper.sh functionality for cross-platform testing
 
@@ -169,7 +187,7 @@ screenshot() {
 
 # Launch app
 launch_app() {
-    local bundle="${1:-com.pointer}"
+    local bundle="${1:-com.dailypointer}"
     if [ -n "$SIMULATOR_UDID" ]; then
         xcrun simctl launch "$SIMULATOR_UDID" "$bundle"
         echo "Launched: $bundle"
@@ -217,7 +235,7 @@ case "$1" in
         echo "  list                     - List all accessible elements"
         echo "  analyze                  - Analyze screen layout"
         echo "  screenshot [file]        - Take screenshot"
-        echo "  launch [bundle_id]       - Launch app (default: com.pointer)"
+        echo "  launch [bundle_id]       - Launch app (default: com.dailypointer)"
         echo "  home|library|settings|inquiry|next - Navigate tabs"
         echo ""
         echo "Dependencies: Xcode, optional: idb (brew install idb-companion)"

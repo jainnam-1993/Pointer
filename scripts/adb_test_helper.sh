@@ -1,5 +1,23 @@
 #!/bin/bash
-# ADB Test Helper - Screen-size independent testing
+# =============================================================================
+# DEPRECATED - Use Maestro instead
+# =============================================================================
+# This script has been replaced by Maestro for cross-platform E2E testing.
+#
+# Migration guide:
+#   Old: ./scripts/adb_test_helper.sh tap 50 50
+#   New: maestro test maestro/flows/04_home_interactions.yaml
+#
+#   Old: ./scripts/adb_test_helper.sh click "Home tab"
+#   New: In YAML: - tapOn: "Home"
+#
+#   Old: ./scripts/adb_test_helper.sh screenshot output.png
+#   New: In YAML: - takeScreenshot: "output"
+#
+# Run Maestro tests: maestro test maestro/flows/
+# =============================================================================
+#
+# ADB Test Helper - Screen-size independent testing (LEGACY)
 # Uses percentages to calculate tap coordinates
 
 # Get screen dimensions
