@@ -548,26 +548,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             }
                           },
                         ),
-                        const _Divider(),
-                        _SettingsRow(
-                          title: 'Start 1-Min Timer',
-                          subtitle: 'Send notification every minute (foreground)',
-                          trailing: Icon(
-                            Icons.timer,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
-                          onTap: () {
-                            final notificationService = ref.read(notificationServiceProvider);
-                            notificationService.startTestNotifications();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Timer started - notifications every 1 min'),
-                                duration: Duration(seconds: 3),
-                              ),
-                            );
-                          },
-                        ),
                         // TTS Configuration disabled - feature temporarily removed
                         // const _Divider(),
                         // _SettingsRow(

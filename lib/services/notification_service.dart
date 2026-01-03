@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -667,28 +666,6 @@ class NotificationService {
   Future<void> sendTestNotification() async {
     final pointing = getRandomPointing();
     await showImmediateNotification(pointing);
-  }
-
-  /// Timer for foreground test notifications.
-  Timer? _testTimer;
-
-  /// Start sending test notifications every minute (foreground only).
-  void startTestNotifications() {
-    stopTestNotifications();
-    print('[NotificationService] Starting test notifications every 1 minute');
-    _testTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
-      print('[NotificationService] Timer fired - sending notification #${timer.tick}');
-      await sendTestNotification();
-    });
-    // Send first one immediately
-    sendTestNotification();
-  }
-
-  /// Stop test notifications.
-  void stopTestNotifications() {
-    _testTimer?.cancel();
-    _testTimer = null;
-    print('[NotificationService] Stopped test notifications');
   }
 
   /// Cancel a scheduled notification.
