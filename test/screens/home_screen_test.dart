@@ -393,16 +393,20 @@ void main() {
     testWidgets('content is centered', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Find the main content Column (first descendant of SafeArea)
-      final columnFinder = find.descendant(
+      // HomeScreen uses Expanded with Center to center the card content
+      final expandedFinder = find.descendant(
         of: find.byType(SafeArea),
-        matching: find.byType(Column),
+        matching: find.byType(Expanded),
       );
-      expect(columnFinder, findsWidgets);
+      expect(expandedFinder, findsOneWidget);
 
-      // First Column should have mainAxisAlignment.center
-      final column = tester.widget<Column>(columnFinder.first);
-      expect(column.mainAxisAlignment, MainAxisAlignment.center);
+      // Center widget inside Expanded provides centering
+      final centerFinder = find.descendant(
+        of: expandedFinder,
+        matching: find.byType(Center),
+      );
+      // Multiple Center widgets may exist, verify at least one is present
+      expect(centerFinder, findsWidgets);
     });
 
     testWidgets('has proper spacing between elements', (tester) async {

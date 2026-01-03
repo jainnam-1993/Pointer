@@ -567,11 +567,11 @@ void main() {
           );
 
           // All text should be findable and rendered
-          // Use descendant finder to target only text within the main pointing card (Flexible widget),
+          // Use descendant finder to target only text within the main pointing card (Expanded > Center > GlassCard),
           // not the MiniInquiryCard below it which may contain similar text
           expect(
             find.descendant(
-              of: find.byType(Flexible),
+              of: find.byType(GlassCard).first,
               matching: find.textContaining('aware'),
             ),
             findsOneWidget,
@@ -579,7 +579,7 @@ void main() {
           );
           expect(
             find.descendant(
-              of: find.byType(Flexible),
+              of: find.byType(GlassCard).first,
               matching: find.textContaining('notice'),
             ),
             findsOneWidget,

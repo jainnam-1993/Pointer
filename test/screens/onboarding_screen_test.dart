@@ -40,7 +40,19 @@ void main() {
     when(() => mockStorageService.settings).thenReturn(const AppSettings());
   });
 
-  Widget createOnboardingScreen() {
+  Widget createOnboardingScreen({bool disableAnimations = false}) {
+    Widget app = const MaterialApp(
+      home: OnboardingScreen(),
+    );
+
+    // Wrap with MediaQuery to disable animations if requested
+    if (disableAnimations) {
+      app = MediaQuery(
+        data: const MediaQueryData(disableAnimations: true),
+        child: app,
+      );
+    }
+
     return ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
@@ -50,9 +62,7 @@ void main() {
         reduceMotionOverrideProvider.overrideWith((ref) => null),
         highContrastProvider.overrideWith((ref) => false),
       ],
-      child: const MaterialApp(
-        home: OnboardingScreen(),
-      ),
+      child: app,
     );
   }
 
@@ -134,14 +144,17 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await pumpOnboardingScreen(tester, createOnboardingScreen());
+      // Use disableAnimations to skip Future.delayed callbacks in onboarding pages
+      await tester.pumpWidget(createOnboardingScreen(disableAnimations: true));
+      await tester.pump(const Duration(milliseconds: 100));
 
-      // Navigate to last page
+      // Navigate through all pages to reach the last page (page 3)
       for (var i = 0; i < 3; i++) {
-        await tester.runAsync(() async {
-          await tester.tap(find.text('Continue'));
-        });
-        await tester.pump(const Duration(milliseconds: 600));
+        final continueButton = find.text('Continue');
+        expect(continueButton, findsOneWidget, reason: 'Continue button should exist on page $i');
+        await tester.tap(continueButton);
+        // Wait for page animation - pumpAndSettle works since disableAnimations=true
+        await tester.pumpAndSettle(const Duration(seconds: 1));
       }
 
       // Verify last page buttons
