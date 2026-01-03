@@ -151,12 +151,14 @@ bundle exec fastlane android validate         # Validate service account credent
 │           └── raw/
 │               └── bell_chime.ogg                  # Custom notification sound (OGG, 14KB)
 ├── test/                      # Unit tests
+│   ├── dynamic_type_test.dart       # Dynamic Type accessibility tests (text scaling, font size clamping 0.8x-1.5x)
 │   ├── providers/
 │   │   └── content_providers_test.dart  # Content providers tests (CurrentPointingNotifier, FavoritesNotifier, TeachingFilterState)
 │   ├── services/
 │   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel)
 │   ├── screens/
-│   │   └── onboarding_screen_test.dart  # Onboarding widget tests
+│   │   ├── home_screen_test.dart        # HomeScreen widget tests (layout, content, interactions)
+│   │   └── onboarding_screen_test.dart  # Onboarding widget tests (navigation, Dynamic Type)
 │   ├── accessibility/
 │   │   ├── accessibility_test.dart      # Semantics widget configuration tests (screen reader labels, hints, button flags)
 │   │   └── voiceover_test.dart          # VoiceOver accessibility tests (semantic labels, focus order, custom actions, decorative exclusion)
@@ -328,9 +330,10 @@ bundle exec fastlane android validate         # Validate service account credent
 
 **Unit tests** (`test/`): Cover services, widgets, providers. Use mocktail for mocking.
 
-- **Animation handling**: For widgets with continuous animations (AnimatedGradient), use `pump(Duration(seconds: 2))` instead of `pumpAndSettle()` which times out on continuous animations. Disable animations in `setUpAll()` via `AnimatedGradient.disableAnimations = true`.
+- **Animation handling**: For widgets with continuous animations (AnimatedGradient), use `pump(Duration(seconds: 2))` instead of `pumpAndSettle()` which times out on continuous animations. Disable animations in `setUpAll()` via `AnimatedGradient.disableAnimations = true`. Alternatively, pass `MediaQuery(data: MediaQueryData(disableAnimations: true))` wrapper to test helpers for fine-grained control.
 - **Riverpod test setup**: Create `ProviderScope` with overrides for mocked dependencies (SharedPreferences, services, state providers). Mock SharedPreferences before provider initialization.
-- **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`.
+- **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`. Common sizes: iPhone 14 Pro Max (1290x2796, 3.0 DPR), standard phone (1080x1920, 2.0 DPR).
+- **Dynamic Type testing**: Test text scaling with `MediaQuery.copyWith(textScaler: TextScaler.linear(scale))`. AppTextStyles automatically clamp scale factors (0.8x-1.5x range) to maintain readability.
 
 **Integration tests** (`integration_test/`): State-controlled E2E flows using Flutter IntegrationTest (for Riverpod state injection).
 

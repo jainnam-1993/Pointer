@@ -6,12 +6,12 @@
 
 appId: com.dailypointer
 ---
-- print: "→ Launching app"
+- log: "→ Launching app"
 - launchApp
-- print: "  ✓ App launched"
+- log: "  ✓ App launched"
 
 # Skip onboarding if shown (actual button labels from onboarding_screen.dart)
-- print: "→ Skipping onboarding (if shown)"
+- log: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -30,33 +30,33 @@ appId: com.dailypointer
     optional: true
 
 # Navigate through all tabs (accessibility labels include newlines, use regex)
-- print: "→ Library tab"
+- log: "→ Library tab"
 - tapOn:
     text: ".*Library.*"
-- print: "  ✓ Library loaded"
+- log: "  ✓ Library loaded"
 
-- print: "→ Inquiry tab"
+- log: "→ Inquiry tab"
 - tapOn:
     text: ".*Inquiry.*"
-- print: "  ✓ Inquiry loaded"
+- log: "  ✓ Inquiry loaded"
 
-- print: "→ Settings tab"
+- log: "→ Settings tab"
 - tapOn:
     text: ".*Settings.*"
-- print: "  ✓ Settings loaded"
+- log: "  ✓ Settings loaded"
 
-- print: "→ Home tab"
+- log: "→ Home tab"
 - tapOn:
     text: ".*Home.*"
-- print: "  ✓ Home loaded"
+- log: "  ✓ Home loaded"
 
 # Verify we can interact with home screen
-- print: "→ Testing next pointing button"
+- log: "→ Testing next pointing button"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
-- print: "  ✓ Interaction complete"
+- log: "  ✓ Interaction complete"
 
-- print: "→ Capturing final screenshot"
+- log: "→ Capturing final screenshot"
 - takeScreenshot: smoke_test_complete
-- print: "  ✓ Smoke test complete"
+- log: "  ✓ Smoke test complete"

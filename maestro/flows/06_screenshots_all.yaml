@@ -7,17 +7,17 @@
 
 appId: com.dailypointer
 ---
-- print: "→ Launching app (fresh state)"
+- log: "→ Launching app (fresh state)"
 - launchApp:
     clearState: true
-- print: "  ✓ App launched"
+- log: "  ✓ App launched"
 
 # === ONBOARDING SCREENSHOTS ===
-- print: "→ Capturing onboarding"
+- log: "→ Capturing onboarding"
 - takeScreenshot: "store_01_onboarding"
 
 # Complete onboarding
-- print: "→ Completing onboarding"
+- log: "→ Completing onboarding"
 - tapOn:
     text: "Continue"
     optional: true
@@ -30,48 +30,48 @@ appId: com.dailypointer
 - tapOn:
     text: "Maybe Later"
     optional: true
-- print: "  ✓ Onboarding complete"
+- log: "  ✓ Onboarding complete"
 
 # === HOME SCREEN SCREENSHOTS ===
-- print: "→ Capturing Home screen"
+- log: "→ Capturing Home screen"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "store_02_home"
 
 # Show pointer content
-- print: "→ Capturing Home with pointing"
+- log: "→ Capturing Home with pointing"
 - tapOn:
     text: ".*next pointing.*"
     optional: true
 - takeScreenshot: "store_03_home_pointing"
 
 # === INQUIRY SCREEN ===
-- print: "→ Capturing Inquiry screen"
+- log: "→ Capturing Inquiry screen"
 - tapOn:
     text: ".*Inquiry.*"
 - takeScreenshot: "store_04_inquiry"
 
 # === LIBRARY SCREEN ===
-- print: "→ Capturing Library screen"
+- log: "→ Capturing Library screen"
 - tapOn:
     text: ".*Library.*"
 - takeScreenshot: "store_05_library"
 
 # === SETTINGS SCREEN ===
-- print: "→ Capturing Settings screen"
+- log: "→ Capturing Settings screen"
 - tapOn:
     text: ".*Settings.*"
 - takeScreenshot: "store_06_settings"
 
 # Scroll for more settings
-- print: "→ Capturing Settings (scrolled)"
+- log: "→ Capturing Settings (scrolled)"
 - swipe:
     direction: DOWN
 - takeScreenshot: "store_07_settings_more"
 
 # === BACK TO HOME - FINAL STATE ===
-- print: "→ Capturing final Home state"
+- log: "→ Capturing final Home state"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "store_08_final"
-- print: "  ✓ All store screenshots captured"
+- log: "  ✓ All store screenshots captured"
