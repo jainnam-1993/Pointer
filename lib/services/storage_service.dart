@@ -136,6 +136,18 @@ class StorageService {
     await _prefs.setString(StorageKeys.viewedPointings, jsonEncode(trimmed));
   }
 
+  /// Get IDs of pointings viewed today (since midnight local time)
+  Set<String> get viewedTodayIds {
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayStartMs = todayStart.millisecondsSinceEpoch;
+
+    return viewedPointings
+        .where((v) => (v['viewedAt'] as int?) != null && v['viewedAt'] >= todayStartMs)
+        .map((v) => v['id'] as String)
+        .toSet();
+  }
+
   // Preferred traditions
   List<String> get preferredTraditions {
     final stored = _prefs.getString(StorageKeys.preferredTraditions);

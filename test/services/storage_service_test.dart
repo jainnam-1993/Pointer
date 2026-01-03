@@ -384,4 +384,103 @@ void main() {
       verify(() => mockPrefs.remove(StorageKeys.subscriptionTier)).called(1);
     });
   });
+
+  group('StorageService - viewedTodayIds', () {
+    // Helper to create timestamp for a specific DateTime
+    int timestampFor(DateTime dt) => dt.millisecondsSinceEpoch;
+
+    test('returns empty set when no viewed pointings', () {
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(null);
+
+      expect(storageService.viewedTodayIds, isEmpty);
+    });
+
+    test('returns empty set when all pointings viewed yesterday', () {
+      final yesterday = DateTime.now().subtract(const Duration(days: 1));
+      final stored = jsonEncode([
+        {'id': 'adv-1', 'viewedAt': timestampFor(yesterday)},
+        {'id': 'zen-1', 'viewedAt': timestampFor(yesterday.subtract(const Duration(hours: 2)))},
+      ]);
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(stored);
+
+      expect(storageService.viewedTodayIds, isEmpty);
+    });
+
+    test('returns only pointings viewed today', () {
+      final now = DateTime.now();
+      final todayEarly = DateTime(now.year, now.month, now.day, 1, 30); // 1:30 AM today
+      final yesterday = now.subtract(const Duration(days: 1));
+
+      final stored = jsonEncode([
+        {'id': 'today-1', 'viewedAt': timestampFor(now)},
+        {'id': 'today-2', 'viewedAt': timestampFor(todayEarly)},
+        {'id': 'yesterday-1', 'viewedAt': timestampFor(yesterday)},
+      ]);
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(stored);
+
+      final result = storageService.viewedTodayIds;
+
+      expect(result, contains('today-1'));
+      expect(result, contains('today-2'));
+      expect(result, isNot(contains('yesterday-1')));
+      expect(result.length, 2);
+    });
+
+    test('handles midnight boundary correctly', () {
+      // This tests the edge case: 11:59 PM yesterday vs 12:01 AM today
+      final now = DateTime.now();
+      final todayMidnight = DateTime(now.year, now.month, now.day, 0, 0, 1); // 12:00:01 AM today
+      final yesterdayLate = DateTime(now.year, now.month, now.day, 0, 0, 0)
+          .subtract(const Duration(seconds: 1)); // 11:59:59 PM yesterday
+
+      final stored = jsonEncode([
+        {'id': 'just-after-midnight', 'viewedAt': timestampFor(todayMidnight)},
+        {'id': 'just-before-midnight', 'viewedAt': timestampFor(yesterdayLate)},
+      ]);
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(stored);
+
+      final result = storageService.viewedTodayIds;
+
+      expect(result, contains('just-after-midnight'));
+      expect(result, isNot(contains('just-before-midnight')));
+    });
+
+    test('handles null viewedAt gracefully', () {
+      final now = DateTime.now();
+      final stored = jsonEncode([
+        {'id': 'valid', 'viewedAt': timestampFor(now)},
+        {'id': 'null-timestamp', 'viewedAt': null},
+        {'id': 'missing-timestamp'}, // No viewedAt key at all
+      ]);
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(stored);
+
+      // Should not throw, should only return the valid one
+      final result = storageService.viewedTodayIds;
+
+      expect(result, contains('valid'));
+      expect(result, isNot(contains('null-timestamp')));
+      expect(result, isNot(contains('missing-timestamp')));
+      expect(result.length, 1);
+    });
+
+    test('returns Set type for O(1) lookups', () {
+      final now = DateTime.now();
+      final stored = jsonEncode([
+        {'id': 'adv-1', 'viewedAt': timestampFor(now)},
+        {'id': 'zen-1', 'viewedAt': timestampFor(now)},
+      ]);
+      when(() => mockPrefs.getString(StorageKeys.viewedPointings))
+          .thenReturn(stored);
+
+      final result = storageService.viewedTodayIds;
+
+      // Verify it's a Set (important for performance in PointingSelector)
+      expect(result, isA<Set<String>>());
+    });
+  });
 }

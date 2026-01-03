@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../services/affinity_service.dart';
+import '../services/pointing_selector.dart';
 import '../services/storage_service.dart';
 import '../services/widget_service.dart';
 import 'core_providers.dart';
@@ -36,10 +37,13 @@ final currentPointingProvider =
 
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
+  final PointingSelector _selector;
   final List<Pointing> _history = [];
   int _historyIndex = -1;
 
-  CurrentPointingNotifier(this._storage) : super(_loadInitialPointing(_storage)) {
+  CurrentPointingNotifier(this._storage, {PointingSelector? selector})
+      : _selector = selector ?? PointingSelector(),
+        super(_loadInitialPointing(_storage)) {
     // Add initial pointing to history
     _history.add(state);
     _historyIndex = 0;
@@ -57,7 +61,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
         return saved;
       }
     }
-    // Fall back to random pointing if not found
+    // Fall back to random pointing (no viewed filter on cold start)
     return getRandomPointing();
   }
 
@@ -67,8 +71,13 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
       _history.removeRange(_historyIndex + 1, _history.length);
     }
 
-    // Get new pointing and add to history
-    state = getRandomPointing(tradition: tradition, context: context);
+    // Get new pointing using selector (filters out viewed today, respects time context)
+    final viewedToday = _storage.viewedTodayIds;
+    state = _selector.selectPointing(
+      all: pointings,
+      viewedToday: viewedToday,
+      respectTimeContext: true,
+    );
     _history.add(state);
     _historyIndex = _history.length - 1;
 
