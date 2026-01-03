@@ -9,9 +9,12 @@
 
 appId: com.dailypointer
 ---
+- print: "→ Launching app"
 - launchApp
+- print: "  ✓ App launched"
 
 # Skip onboarding if shown
+- print: "→ Skipping onboarding (if shown)"
 - tapOn:
     text: "Continue"
     optional: true
@@ -26,31 +29,43 @@ appId: com.dailypointer
     optional: true
 
 # === HOME SCREEN ACCESSIBILITY ===
+- print: "→ Auditing Home screen accessibility"
 - tapOn:
     text: ".*Home.*"
+- print: "  ✓ Home elements captured"
 - takeScreenshot: "a11y_01_home_elements"
 
 # === LIBRARY ACCESSIBILITY ===
+- print: "→ Auditing Library accessibility"
 - tapOn:
     text: ".*Library.*"
+- print: "  ✓ Library elements captured"
 - takeScreenshot: "a11y_02_library_elements"
 
 # === INQUIRY ACCESSIBILITY ===
+- print: "→ Auditing Inquiry accessibility"
 - tapOn:
     text: ".*Inquiry.*"
+- print: "  ✓ Inquiry elements captured"
 - takeScreenshot: "a11y_03_inquiry_elements"
 
 # === SETTINGS ACCESSIBILITY ===
+- print: "→ Auditing Settings accessibility"
 - tapOn:
     text: ".*Settings.*"
+- print: "  ✓ Settings elements captured"
 - takeScreenshot: "a11y_04_settings_elements"
 
 # Scroll through settings
+- print: "→ Scrolling Settings"
 - swipe:
     direction: DOWN
+- print: "  ✓ Settings scrolled elements captured"
 - takeScreenshot: "a11y_05_settings_scrolled"
 
 # Back to home
+- print: "→ Returning to Home"
 - tapOn:
     text: ".*Home.*"
 - takeScreenshot: "a11y_06_home_final"
+- print: "  ✓ Accessibility audit complete"
