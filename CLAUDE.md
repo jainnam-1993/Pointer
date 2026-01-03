@@ -32,6 +32,7 @@ maestro test maestro/flows/06_screenshots_all.yaml  # Store screenshot capture
 maestro test maestro/flows/07_accessibility_audit.yaml # Element accessibility check
 maestro test maestro/flows/08_inquiry_session.yaml  # Guided inquiry session
 maestro test maestro/flows/09_library_content.yaml  # Library articles & teachings
+maestro test maestro/flows/10_widget_test.yaml      # Home screen widget test (requires widget on home screen)
 maestro test maestro/flows/                         # Run all flows (~5 min)
 # Screenshots output to: maestro/screenshots/
 
@@ -166,6 +167,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   ├── screenshot_test.dart        # IntegrationTest screenshot tests (8 testWidgets)
 │   └── screenshot_helpers.dart     # Screenshot capture + UX issue tracking
 ├── maestro/                      # E2E testing (Maestro) - cross-platform
+│   ├── README.md                 # Maestro documentation and usage guide
 │   ├── config.yaml               # Maestro configuration
 │   ├── flows/                    # Test flows (YAML)
 │   │   ├── 00_smoke_test.yaml    # Quick health check
@@ -175,7 +177,10 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── 04_home_interactions.yaml # Swipes, taps, saves
 │   │   ├── 05_settings.yaml      # Settings & notifications
 │   │   ├── 06_screenshots_all.yaml # Store screenshots
-│   │   └── 07_accessibility_audit.yaml # Element checks
+│   │   ├── 07_accessibility_audit.yaml # Element checks
+│   │   ├── 08_inquiry_session.yaml  # Guided inquiry session
+│   │   ├── 09_library_content.yaml  # Library articles & teachings
+│   │   └── 10_widget_test.yaml      # Widget loading verification (requires manual widget setup on home screen)
 │   └── screenshots/              # Test output
 ├── scripts/                      # Development scripts
 │   ├── hooks/
@@ -332,11 +337,13 @@ bundle exec fastlane android validate         # Validate service account credent
 **E2E tests** (`maestro/`): Cross-platform UI automation using Maestro (replaced platform-specific scripts).
 
 - **Framework**: Maestro CLI with YAML flows
-- **Coverage**: 8 flows covering smoke test, navigation, onboarding, freemium, interactions, settings, screenshots, accessibility
+- **Coverage**: 10 flows covering smoke test, navigation, onboarding, freemium, interactions, settings, screenshots, accessibility, inquiry, library, widget
 - **Cross-platform**: Same flows run on iOS and Android
 - **CI/CD**: `.github/workflows/maestro.yml` for automated testing
 - **Screenshots**: Output to `maestro/screenshots/` directory
 - **Usage**: `maestro test maestro/flows/` to run all flows
+- **Widget test setup**: Flow `10_widget_test.yaml` requires manual widget placement on home screen before running. Catches "Tap to load" empty state, cache population failures, RemoteViewsService errors.
+- **Documentation**: See `maestro/README.md` for detailed flow descriptions and setup instructions
 - **When to use**: Black-box E2E testing, store screenshot generation, cross-platform parity verification
 - **When NOT to use**: State-controlled testing (use Flutter IntegrationTest), WCAG compliance (use Flutter accessibility tests)
 
