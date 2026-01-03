@@ -11,7 +11,8 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
 import '../services/ambient_sound_service.dart';
-import '../services/aws_credential_service.dart';
+// TTS disabled - feature temporarily removed
+// import '../services/aws_credential_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
@@ -211,160 +212,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     return '$displayHour$period';
   }
 
-  Future<void> _showTTSConfigDialog() async {
-    HapticFeedback.mediumImpact();
-
-    if (!mounted) return;
-
-    final otpController = TextEditingController();
-    bool isConfigured = await AWSCredentialService.instance.isConfigured();
-    bool isLoading = false;
-    String? errorMessage;
-
-    await showDialog(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => GlassDialog(
-          title: 'TTS Configuration',
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (isConfigured) ...[
-                Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      'TTS Access Configured',
-                      style: TextStyle(
-                        color: context.colors.textPrimary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Article audio is enabled. Enter a new OTP to reconfigure.',
-                  style: TextStyle(
-                    color: context.colors.textSecondary,
-                    fontSize: 13,
-                  ),
-                ),
-              ] else ...[
-                Text(
-                  'Enter the one-time password to enable article audio.',
-                  style: TextStyle(
-                    color: context.colors.textSecondary,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 16),
-              TextField(
-                controller: otpController,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                decoration: InputDecoration(
-                  labelText: 'One-Time Password',
-                  hintText: '123456',
-                  counterText: '',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  errorText: errorMessage,
-                ),
-                style: TextStyle(
-                  color: context.colors.textPrimary,
-                  fontSize: 18,
-                  letterSpacing: 4,
-                ),
-              ),
-              if (isLoading) ...[
-                const SizedBox(height: 12),
-                const Center(child: CircularProgressIndicator()),
-              ],
-            ],
-          ),
-          actions: [
-            if (isConfigured)
-              TextButton(
-                onPressed: () async {
-                  await AWSCredentialService.instance.clearConfiguration();
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                    ScaffoldMessenger.of(this.context).showSnackBar(
-                      const SnackBar(
-                        content: Text('TTS configuration cleared'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  'Clear',
-                  style: TextStyle(color: context.colors.textSecondary),
-                ),
-              ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: context.colors.textSecondary),
-              ),
-            ),
-            TextButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      final otp = otpController.text.trim();
-                      if (otp.length != 6) {
-                        setDialogState(() {
-                          errorMessage = 'Enter 6-digit code';
-                        });
-                        return;
-                      }
-
-                      setDialogState(() {
-                        isLoading = true;
-                        errorMessage = null;
-                      });
-
-                      try {
-                        await AWSCredentialService.instance.setupWithOTP(otp);
-                        if (dialogContext.mounted) {
-                          Navigator.of(dialogContext).pop();
-                          ScaffoldMessenger.of(this.context).showSnackBar(
-                            const SnackBar(
-                              content: Text('TTS configured successfully!'),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
-                      } on AWSCredentialException catch (e) {
-                        setDialogState(() {
-                          isLoading = false;
-                          errorMessage = e.message;
-                        });
-                      } catch (e) {
-                        setDialogState(() {
-                          isLoading = false;
-                          errorMessage = 'Failed to configure';
-                        });
-                      }
-                    },
-              child: Text(
-                'Configure',
-                style: TextStyle(color: context.colors.accent),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // TTS Configuration dialog disabled - feature temporarily removed
+  // Future<void> _showTTSConfigDialog() async { ... }
 
   @override
   Widget build(BuildContext context) {

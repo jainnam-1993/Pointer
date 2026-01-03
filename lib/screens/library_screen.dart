@@ -9,12 +9,13 @@ import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
-import '../services/aws_credential_service.dart';
-import '../services/tts_service.dart';
+// TTS imports disabled - feature temporarily removed
+// import '../services/aws_credential_service.dart';
+// import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
-import '../widgets/article_tts_player.dart';
+// import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 
 /// Category metadata for display
@@ -1223,78 +1224,18 @@ class ArticleReaderScreen extends ConsumerStatefulWidget {
 }
 
 class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
-  bool _showTTSPlayer = false;
-  bool _ttsConfigured = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkTTSConfig();
-  }
-
-  Future<void> _checkTTSConfig() async {
-    final configured = await AWSCredentialService.instance.isConfigured();
-    if (mounted) {
-      setState(() => _ttsConfigured = configured);
-    }
-  }
-
-  Future<void> _startTTS() async {
-    final isPremium = ref.read(subscriptionProvider).isPremium;
-
-    if (!isPremium) {
-      // Show premium required message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Premium required for article audio'),
-          behavior: SnackBarBehavior.floating,
-          action: SnackBarAction(
-            label: 'Upgrade',
-            onPressed: () {
-              // Navigate to paywall would go here
-            },
-          ),
-        ),
-      );
-      return;
-    }
-
-    if (!_ttsConfigured) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('TTS not configured. Enable in Settings → Developer.'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    setState(() => _showTTSPlayer = true);
-
-    try {
-      await TTSService.instance.synthesizeAndPlay(
-        widget.article.id,
-        widget.article.content,
-      );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('TTS error: $e'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.red.shade700,
-          ),
-        );
-      }
-    }
-  }
+  // TTS feature disabled - keeping state vars for future re-enablement
+  // ignore: unused_field
+  final bool _showTTSPlayer = false;
+  // ignore: unused_field
+  final bool _ttsConfigured = false;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionInfo = traditions[widget.article.tradition]!;
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
+    // TTS disabled - isPremium check no longer needed here
 
     return Scaffold(
       body: Stack(
@@ -1312,30 +1253,12 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         IconButton(
                           icon: Icon(Icons.close, color: colors.textPrimary),
                           onPressed: () {
-                            // Stop TTS when leaving
-                            if (_showTTSPlayer) {
-                              TTSService.instance.stop();
-                            }
                             Navigator.pop(context);
                           },
                         ),
                         const Spacer(),
-                        // TTS button (only show if premium or configured)
-                        if (isPremium || _ttsConfigured)
-                          IconButton(
-                            icon: Icon(
-                              _showTTSPlayer
-                                  ? Icons.headphones
-                                  : Icons.headphones_outlined,
-                              color: _showTTSPlayer
-                                  ? colors.accent
-                                  : colors.textPrimary,
-                            ),
-                            onPressed: _showTTSPlayer
-                                ? () => setState(() => _showTTSPlayer = false)
-                                : _startTTS,
-                            tooltip: 'Listen to article',
-                          ),
+                        // TTS button disabled - feature temporarily removed
+                        // TODO: Re-enable when TTS feature is ready
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -1358,17 +1281,8 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                   ),
                 ),
 
-                // TTS Player (when active)
-                if (_showTTSPlayer)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: ArticleTTSPlayer(
-                        articleId: widget.article.id,
-                        onClose: () => setState(() => _showTTSPlayer = false),
-                      ),
-                    ),
-                  ),
+                // TTS Player disabled - feature temporarily removed
+                // TODO: Re-enable when TTS feature is ready
 
                 // Article header
                 SliverToBoxAdapter(
@@ -2004,8 +1918,6 @@ class _LibraryPremiumUpgrade extends StatelessWidget {
               child: Column(
                 children: [
                   _FeatureRow(icon: Icons.library_books, text: 'Full article library'),
-                  const SizedBox(height: 12),
-                  _FeatureRow(icon: Icons.headphones, text: 'Article audio (TTS)'),
                   const SizedBox(height: 12),
                   _FeatureRow(icon: Icons.notifications_active, text: 'Daily notifications'),
                   const SizedBox(height: 12),
