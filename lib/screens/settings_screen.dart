@@ -719,36 +719,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             );
                           },
                         ),
-                        const _Divider(),
-                        _SettingsRow(
-                          title: 'TTS Configuration',
-                          subtitle: 'Article audio access',
-                          trailing: FutureBuilder<bool>(
-                            future: AWSCredentialService.instance.isConfigured(),
-                            builder: (context, snapshot) {
-                              if (snapshot.data == true) {
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.check_circle, color: Colors.green, size: 16),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.chevron_right,
-                                      color: textColorSubtle,
-                                      size: 20,
-                                    ),
-                                  ],
-                                );
-                              }
-                              return Icon(
-                                Icons.chevron_right,
-                                color: textColorSubtle,
-                                size: 20,
-                              );
-                            },
-                          ),
-                          onTap: _showTTSConfigDialog,
-                        ),
+                        // TTS Configuration disabled - feature temporarily removed
+                        // const _Divider(),
+                        // _SettingsRow(
+                        //   title: 'TTS Configuration',
+                        //   subtitle: 'Article audio access',
+                        //   ...
+                        // ),
                       ],
                     ),
                   ),
@@ -1229,9 +1206,17 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            // Responsive height: use 40% of screen height, bounded between 250-350px
-            final screenHeight = MediaQuery.of(context).size.height;
-            final pickerHeight = (screenHeight * 0.40).clamp(250.0, 350.0);
+            // Responsive height based on available space (accounts for safe areas/orientation)
+            final mediaQuery = MediaQuery.of(context);
+            final availableHeight = mediaQuery.size.height -
+                mediaQuery.viewPadding.top -
+                mediaQuery.viewPadding.bottom;
+            final isLandscape = mediaQuery.orientation == Orientation.landscape;
+            // In landscape: use 55% of available height, portrait: 40%
+            // Clamp to reasonable bounds for each orientation
+            final pickerHeight = isLandscape
+                ? (availableHeight * 0.55).clamp(180.0, 280.0)
+                : (availableHeight * 0.40).clamp(250.0, 350.0);
 
             return ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
