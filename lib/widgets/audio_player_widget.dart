@@ -167,12 +167,17 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Controls row - wrapped in FittedBox to prevent overflow on small screens
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+          // Controls row - wrapped in LayoutBuilder + FittedBox for reliable scaling on small screens
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return FittedBox(
+                fit: BoxFit.scaleDown,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                 // Lock icon for non-premium
                 if (!widget.isPremium)
                   Padding(
@@ -219,8 +224,11 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                   onPressed:
                       widget.isPremium ? () => _audioService.seekForward() : null,
                 ),
-              ],
-            ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
 
           // Progress slider (only for premium)

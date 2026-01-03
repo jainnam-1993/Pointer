@@ -16,6 +16,17 @@ import '../widgets/onboarding_animations.dart';
 /// 2. The Contrast - meditation apps vs. direct inquiry
 /// 3. The Simplicity - letting go of progress/streaks/becoming
 /// 4. Notifications - the entire practice distilled
+
+/// Responsive font size that scales with screen width and respects text scaling.
+/// Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
+double _responsiveFontSize(BuildContext context, double baseSize) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  final textScaler = MediaQuery.textScalerOf(context);
+  // Scale factor: 1.0 at 375px+, scales down linearly to 0.8 at 320px
+  final widthFactor = ((screenWidth - 320) / 55).clamp(0.8, 1.0);
+  return textScaler.scale(baseSize * widthFactor);
+}
+
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -72,6 +83,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final isLastPage = _currentPage == 3;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Detect landscape/foldable mode
+    final isLandscape = screenWidth > screenHeight;
 
     return Scaffold(
       body: Stack(
@@ -103,14 +118,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   pageCount: 4,
                 ),
 
-                const SizedBox(height: 32),
+                SizedBox(height: isLandscape ? 16 : 32),
 
                 // Buttons
                 Padding(
                   padding: EdgeInsets.only(
                     left: 32,
                     right: 32,
-                    bottom: bottomPadding + 20,
+                    bottom: bottomPadding + (isLandscape ? 8 : 20),
                   ),
                   child: Column(
                     children: [
@@ -133,7 +148,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 'Maybe Later',
                                 style: TextStyle(
                                   color: textColor,
-                                  fontSize: MediaQuery.textScalerOf(context).scale(16),
+                                  fontSize: _responsiveFontSize(context, 16),
                                 ),
                               ),
                             );
@@ -206,7 +221,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
           TypewriterText(
             text: 'What is looking through your eyes right now?',
             style: TextStyle(
-              fontSize: MediaQuery.textScalerOf(context).scale(28),
+              fontSize: _responsiveFontSize(context, 28),
               height: 1.5,
               fontWeight: FontWeight.w300,
               color: colors.textPrimary,
@@ -228,7 +243,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               key: ValueKey('subtext_$_showSubtext'),
               text: "Don't answer. Just look.",
               style: TextStyle(
-                fontSize: MediaQuery.textScalerOf(context).scale(18),
+                fontSize: _responsiveFontSize(context, 18),
                 height: 1.6,
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.italic,
@@ -296,7 +311,7 @@ class _ContrastPage extends StatelessWidget {
                 Text(
                   'Meditation apps teach you to become a better meditator.',
                   style: TextStyle(
-                    fontSize: MediaQuery.textScalerOf(context).scale(22),
+                    fontSize: _responsiveFontSize(context, 22),
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     color: colors.textSecondary,
@@ -314,7 +329,7 @@ class _ContrastPage extends StatelessWidget {
                   Text(
                     'Pointer asks:',
                     style: TextStyle(
-                      fontSize: MediaQuery.textScalerOf(context).scale(16),
+                      fontSize: _responsiveFontSize(context, 16),
                       fontWeight: FontWeight.w500,
                       color: colors.textMuted,
                       letterSpacing: 1,
@@ -324,7 +339,7 @@ class _ContrastPage extends StatelessWidget {
                   Text(
                     'Who is meditating?',
                     style: TextStyle(
-                      fontSize: MediaQuery.textScalerOf(context).scale(28),
+                      fontSize: _responsiveFontSize(context, 28),
                       height: 1.4,
                       fontWeight: FontWeight.w300,
                       color: colors.textPrimary,
@@ -380,7 +395,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
               itemDelay: const Duration(milliseconds: 400),
               strikeDelay: const Duration(milliseconds: 600),
               style: TextStyle(
-                fontSize: MediaQuery.textScalerOf(context).scale(32),
+                fontSize: _responsiveFontSize(context, 32),
                 fontWeight: FontWeight.w400,
                 color: colors.textSecondary,
                 height: 1.4,
@@ -405,7 +420,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                   Text(
                     'Just recognition.',
                     style: TextStyle(
-                      fontSize: MediaQuery.textScalerOf(context).scale(32),
+                      fontSize: _responsiveFontSize(context, 32),
                       fontWeight: FontWeight.w300,
                       color: colors.textPrimary,
                       height: 1.4,
@@ -416,7 +431,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                   Text(
                     'Invitations to see what you already are.',
                     style: TextStyle(
-                      fontSize: MediaQuery.textScalerOf(context).scale(16),
+                      fontSize: _responsiveFontSize(context, 16),
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.italic,
                       color: colors.textSecondary,
@@ -491,7 +506,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               child: Text(
                 'A notification arrives.\nYou pause. You look.',
                 style: TextStyle(
-                  fontSize: MediaQuery.textScalerOf(context).scale(20),
+                  fontSize: _responsiveFontSize(context, 20),
                   height: 1.6,
                   fontWeight: FontWeight.w400,
                   color: colors.textSecondary,
@@ -516,7 +531,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
                 child: Text(
                   "That's the entire practice.",
                   style: TextStyle(
-                    fontSize: MediaQuery.textScalerOf(context).scale(18),
+                    fontSize: _responsiveFontSize(context, 18),
                     height: 1.5,
                     fontWeight: FontWeight.w500,
                     color: colors.textPrimary,
@@ -593,7 +608,7 @@ class _OnboardingButton extends StatelessWidget {
           label,
           style: TextStyle(
             color: textColor,
-            fontSize: MediaQuery.textScalerOf(context).scale(16),
+            fontSize: _responsiveFontSize(context, 16),
             fontWeight: FontWeight.w600,
           ),
         ),

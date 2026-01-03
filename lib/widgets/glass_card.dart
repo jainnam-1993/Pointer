@@ -201,50 +201,53 @@ class GlassButton extends ConsumerWidget {
   Widget _buildHighContrastButton(BuildContext context) {
     final highContrastColors = PointerColors.highContrast;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isLoading ? null : onPressed,
-        borderRadius: BorderRadius.circular(32),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 48),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          decoration: BoxDecoration(
-            color: highContrastColors.cardBackground,
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(
-              color: highContrastColors.glassBorder,
-              width: 2,
+    // Wrap with ConstrainedBox to ensure 48px touch target (WCAG 2.5.8)
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isLoading ? null : onPressed,
+          borderRadius: BorderRadius.circular(32),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            decoration: BoxDecoration(
+              color: highContrastColors.cardBackground,
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(
+                color: highContrastColors.glassBorder,
+                width: 2,
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isLoading)
-                SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: highContrastColors.textPrimary,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (isLoading)
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: highContrastColors.textPrimary,
+                    ),
+                  )
+                else ...[
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: highContrastColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
                   ),
-                )
-              else ...[
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: highContrastColors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                if (icon != null) ...[
-                  const SizedBox(width: 8),
-                  icon!,
+                  if (icon != null) ...[
+                    const SizedBox(width: 8),
+                    icon!,
+                  ],
                 ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -277,18 +280,20 @@ class GlassButton extends ConsumerWidget {
       end: Alignment.bottomRight,
     );
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isLoading ? null : onPressed,
-        borderRadius: BorderRadius.circular(32),
-        child: ClipRRect(
+    // Wrap with ConstrainedBox to ensure 48px touch target (WCAG 2.5.8)
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isLoading ? null : onPressed,
           borderRadius: BorderRadius.circular(32),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 48),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(32),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               decoration: BoxDecoration(
                 gradient: glassGradient,
                 borderRadius: BorderRadius.circular(32),
@@ -320,6 +325,7 @@ class GlassButton extends ConsumerWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

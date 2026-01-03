@@ -152,16 +152,24 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             end: Alignment.bottomRight,
           );
 
+    // Responsive sizing for tablet support
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth >= 600;
+    final navHeight = isTablet ? 72.0 : 64.0;
+    final horizontalMargin = isTablet ? 48.0 : 24.0;
+    final horizontalPadding = isTablet ? 16.0 : 8.0;
+    final borderRadius = isTablet ? 28.0 : 24.0;
+
     return Container(
       margin: EdgeInsets.only(
-        left: 24,
-        right: 24,
+        left: horizontalMargin,
+        right: horizontalMargin,
         bottom: bottomPadding + 16,
       ),
       decoration: isDark
           ? null
           : BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(borderRadius),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.08),
@@ -172,15 +180,15 @@ class _BottomNavBarState extends State<_BottomNavBar> {
               ],
             ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
           child: Container(
-            height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            height: navHeight,
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             decoration: BoxDecoration(
               gradient: glassGradient,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(borderRadius),
               border: GradientBoxBorder(
                 gradient: borderGradient,
                 width: isDark ? 1.5 : 1,
@@ -285,6 +293,13 @@ class _NavItem extends StatelessWidget {
     final activeColor = colors.textPrimary;
     final inactiveColor = colors.textMuted;
 
+    // Responsive sizing for tablet support
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth >= 600;
+    final iconSize = isTablet ? 28.0 : 24.0;
+    final fontSize = isTablet ? 12.0 : 10.0;
+    final verticalPadding = isTablet ? 10.0 : 8.0;
+
     return Semantics(
       button: true,
       selected: isActive,
@@ -293,20 +308,20 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: verticalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 isActive ? activeIcon : icon,
                 color: isActive ? activeColor : inactiveColor,
-                size: 24,
+                size: iconSize,
               ),
               const SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: fontSize,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                   color: isActive ? activeColor : inactiveColor,
                 ),

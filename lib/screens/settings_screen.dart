@@ -86,7 +86,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => _NotificationTimesSheet(),
+      builder: (context) => _NotificationTimesSheet(showTestPreset: _showDeveloperOptions),
     );
   }
 
@@ -369,7 +369,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     final subscription = ref.watch(subscriptionProvider);
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final isDark = context.isDarkMode;
     final colors = context.colors;
     final textColorMuted = colors.textMuted;
@@ -632,7 +631,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           color: textColorSubtle,
                           size: 20,
                         ),
-                        onTap: () => _launchUrl('https://pointer.app/privacy'),
+                        onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
                       ),
                       const _Divider(),
                       _SettingsRow(
@@ -642,7 +641,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           color: textColorSubtle,
                           size: 20,
                         ),
-                        onTap: () => _launchUrl('https://pointer.app/terms'),
+                        onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
                       ),
                     ],
                   ),
@@ -676,6 +675,48 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                 ),
                               );
                             }
+                          },
+                        ),
+                        const _Divider(),
+                        _SettingsRow(
+                          title: 'Grant Alarm Permission',
+                          subtitle: 'Required for scheduled notifications (Android 12+)',
+                          trailing: Icon(
+                            Icons.alarm,
+                            color: textColorSubtle,
+                            size: 20,
+                          ),
+                          onTap: () async {
+                            final notificationService = ref.read(notificationServiceProvider);
+                            final granted = await notificationService.requestExactAlarmPermission();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(granted ? 'Permission granted!' : 'Please enable in Settings'),
+                                  duration: const Duration(seconds: 3),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const _Divider(),
+                        _SettingsRow(
+                          title: 'Start 1-Min Timer',
+                          subtitle: 'Send notification every minute (foreground)',
+                          trailing: Icon(
+                            Icons.timer,
+                            color: textColorSubtle,
+                            size: 20,
+                          ),
+                          onTap: () {
+                            final notificationService = ref.read(notificationServiceProvider);
+                            notificationService.startTestNotifications();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Timer started - notifications every 1 min'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
                           },
                         ),
                         const _Divider(),
@@ -1151,6 +1192,10 @@ class _ThemeOption extends StatelessWidget {
 
 /// Bottom sheet for managing notification schedule (Phase 5.1)
 class _NotificationTimesSheet extends ConsumerStatefulWidget {
+  final bool showTestPreset;
+
+  const _NotificationTimesSheet({this.showTestPreset = false});
+
   @override
   ConsumerState<_NotificationTimesSheet> createState() => _NotificationTimesSheetState();
 }
@@ -1184,12 +1229,16 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
+            // Responsive height: use 40% of screen height, bounded between 250-350px
+            final screenHeight = MediaQuery.of(context).size.height;
+            final pickerHeight = (screenHeight * 0.40).clamp(250.0, 350.0);
+
             return ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
                 child: Container(
-                  height: 320,
+                  height: pickerHeight,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -1356,7 +1405,9 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: NotificationPreset.values.map((preset) {
+                    children: NotificationPreset.values
+                        .where((preset) => widget.showTestPreset || preset != NotificationPreset.testEveryMinute)
+                        .map((preset) {
                       final isSelected = _matchesPreset(preset);
                       return ChoiceChip(
                         label: Text(preset.label),

@@ -796,7 +796,9 @@ class _FeaturedArticleCard extends StatelessWidget {
     final colors = context.colors;
     final traditionInfo = traditions[article.tradition]!;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = (screenWidth * 0.75).clamp(0.0, 260.0);
+    // Responsive card width: 70% of screen with sensible bounds
+    // Min 180px ensures content fits on iPhone SE (320px), max 280px for larger screens
+    final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
 
     return Semantics(
       button: true,
