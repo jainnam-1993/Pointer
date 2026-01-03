@@ -548,6 +548,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             }
                           },
                         ),
+                        const _Divider(),
+                        _SettingsRow(
+                          title: 'Debug Pending Notifications',
+                          subtitle: 'Check scheduled alarms',
+                          trailing: Icon(
+                            Icons.bug_report,
+                            color: textColorSubtle,
+                            size: 20,
+                          ),
+                          onTap: () async {
+                            final notificationService = ref.read(notificationServiceProvider);
+                            await notificationService.debugPrintPendingNotifications();
+                            final pending = await notificationService.getPendingNotifications();
+                            final canSchedule = await notificationService.canScheduleExactNotifications();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Pending: ${pending.length} | Exact alarms: ${canSchedule ? "YES" : "NO"}',
+                                  ),
+                                  duration: const Duration(seconds: 4),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                         // TTS Configuration disabled - feature temporarily removed
                         // const _Divider(),
                         // _SettingsRow(

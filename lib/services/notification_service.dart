@@ -504,29 +504,59 @@ class NotificationService {
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = today.add(const Duration(days: 1));
 
-    // Get times for today and tomorrow
-    final todayTimes = schedule.getNotificationTimes(today);
-    final tomorrowTimes = schedule.getNotificationTimes(tomorrow);
-
     print('[NotificationService] Scheduling notifications...');
     print('[NotificationService] Now: $now');
     print('[NotificationService] Schedule: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:${schedule.startMinute}-${schedule.endHour}:${schedule.endMinute}');
-    print('[NotificationService] Today times count: ${todayTimes.length}, Tomorrow: ${tomorrowTimes.length}');
 
     int notificationId = 0;
 
-    // Schedule today's remaining notifications
-    for (final time in todayTimes) {
-      if (time.isAfter(now) && notificationId < maxNotifications) {
-        print('[NotificationService] Scheduling #$notificationId for $time');
+    // For high-frequency schedules (< 60 min), generate times starting from next minute
+    // This avoids generating hundreds of past times that get filtered out
+    if (schedule.frequencyMinutes < 60) {
+      // Start from the next minute
+      final nextMinute = now.add(const Duration(minutes: 1));
+      var current = DateTime(nextMinute.year, nextMinute.month, nextMinute.day, nextMinute.hour, nextMinute.minute);
+      final todayEnd = DateTime(now.year, now.month, now.day, schedule.endHour, schedule.endMinute);
+
+      print('[NotificationService] High-frequency mode: starting from $current until $todayEnd');
+
+      // Schedule from now until end of today's window
+      while ((current.isBefore(todayEnd) || current.isAtSameMomentAs(todayEnd)) && notificationId < maxNotifications) {
+        if (!schedule._isInQuietHours(current)) {
+          print('[NotificationService] Scheduling #$notificationId for $current');
+          await _scheduleAtTime(notificationId++, current);
+        }
+        current = current.add(Duration(minutes: schedule.frequencyMinutes));
+      }
+
+      // Also schedule some for tomorrow if we have room
+      if (notificationId < maxNotifications) {
+        final tomorrowTimes = schedule.getNotificationTimes(tomorrow);
+        for (final time in tomorrowTimes) {
+          if (notificationId >= maxNotifications) break;
+          await _scheduleAtTime(notificationId++, time);
+        }
+      }
+    } else {
+      // Standard scheduling for normal frequencies (hourly+)
+      final todayTimes = schedule.getNotificationTimes(today);
+      final tomorrowTimes = schedule.getNotificationTimes(tomorrow);
+
+      print('[NotificationService] Standard mode: Today times count: ${todayTimes.length}, Tomorrow: ${tomorrowTimes.length}');
+
+      // Schedule today's remaining notifications
+      for (final time in todayTimes) {
+        if (time.isAfter(now) && notificationId < maxNotifications) {
+          print('[NotificationService] Scheduling #$notificationId for $time');
+          await _scheduleAtTime(notificationId++, time);
+        }
+      }
+
+      // Schedule tomorrow's notifications (if we have room)
+      for (final time in tomorrowTimes) {
+        if (notificationId >= maxNotifications) break;
         await _scheduleAtTime(notificationId++, time);
       }
-    }
-
-    // Schedule tomorrow's notifications (if we have room)
-    for (final time in tomorrowTimes) {
-      if (notificationId >= maxNotifications) break;
-      await _scheduleAtTime(notificationId++, time);
     }
 
     print('[NotificationService] Scheduled $notificationId notifications total');
@@ -535,12 +565,15 @@ class NotificationService {
   /// Schedule a notification at a specific DateTime.
   Future<void> _scheduleAtTime(int id, DateTime scheduledTime) async {
     final pointing = getRandomPointing();
+    final tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+
+    print('[NotificationService] _scheduleAtTime: id=$id, local=$scheduledTime, tz=$tzScheduledTime');
 
     await _localNotifications.zonedSchedule(
       id,
       "Today's Pointing",
       pointing.content,
-      tz.TZDateTime.from(scheduledTime, tz.local),
+      tzScheduledTime,
       _buildRichNotificationDetails(pointing),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
@@ -676,5 +709,33 @@ class NotificationService {
   /// Cancel all scheduled notifications.
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
+  }
+
+  /// Get list of pending notifications for debugging.
+  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    return await _localNotifications.pendingNotificationRequests();
+  }
+
+  /// Debug: Print all pending notifications to console.
+  Future<void> debugPrintPendingNotifications() async {
+    final pending = await getPendingNotifications();
+    print('[NotificationService] ===== PENDING NOTIFICATIONS =====');
+    print('[NotificationService] Total pending: ${pending.length}');
+    for (final notification in pending) {
+      print('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
+      print('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
+      print('[NotificationService]   Payload: ${notification.payload}');
+    }
+    print('[NotificationService] ================================');
+  }
+
+  /// Check if exact alarms can be scheduled (Android 12+).
+  Future<bool> canScheduleExactNotifications() async {
+    final androidPlugin = _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidPlugin == null) return true; // iOS or other platform
+    return await androidPlugin.canScheduleExactNotifications() ?? false;
   }
 }
