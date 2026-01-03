@@ -1,4 +1,4 @@
-package com.pointer
+package com.dailypointer
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

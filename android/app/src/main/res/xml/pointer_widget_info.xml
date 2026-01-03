@@ -9,6 +9,7 @@
 
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
+    android:previewLayout="@layout/pointer_widget_preview"
     android:previewImage="@mipmap/ic_launcher"
     android:description="@string/widget_description">
 </appwidget-provider>

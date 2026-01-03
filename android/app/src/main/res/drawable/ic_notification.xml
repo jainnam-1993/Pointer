@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Notification icon for Pointer app.
+  Must be white (#FFFFFF) on transparent - Android tints with accent color.
+  Based on Ensō (Zen brush circle) design from app icon.
+
+  Ensō is an incomplete circle with brush-stroke character.
+  Opening at top-right represents the imperfect/incomplete nature of enlightenment.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Ensō circle - incomplete brush stroke with opening at top-right (1 o'clock position) -->
+    <!-- Stroke width varies to simulate brush pressure (thicker at bottom, thinner at opening) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16.5,4.2
+            C14.2,2.8 11.5,2.3 8.9,3
+            C4.5,4.2 1.5,8.3 2,12.8
+            C2.5,17.5 6.5,21.2 11.2,21.5
+            C16.2,21.8 20.5,18.2 21.3,13.3
+            C21.7,10.8 21.2,8.2 19.8,6.2
+            L17.8,8
+            C18.8,9.5 19.2,11.3 19,13.1
+            C18.4,16.8 15.2,19.5 11.4,19.3
+            C7.7,19.1 4.7,16.1 4.3,12.4
+            C3.9,8.5 6.5,5 10.3,4.3
+            C12.2,3.9 14.2,4.3 15.8,5.3
+            Z"/>
+</vector>

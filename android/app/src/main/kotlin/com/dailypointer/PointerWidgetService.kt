@@ -1,4 +1,4 @@
-package com.pointer
+package com.dailypointer
 
 import android.content.Context
 import android.content.Intent
