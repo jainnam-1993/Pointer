@@ -36,7 +36,7 @@ class PremiumSheet extends ConsumerWidget {
     if (Platform.isIOS) {
       return 'itms-apps://apps.apple.com/app/pointer/id6714086922';
     } else {
-      return 'https://play.google.com/store/apps/details?id=com.pointer.pointer';
+      return 'https://play.google.com/store/apps/details?id=com.dailypointer';
     }
   }
 
@@ -178,7 +178,7 @@ class PremiumSheet extends ConsumerWidget {
       ),
       _FeatureItem(
         icon: Icons.headphones,
-        title: 'Audio & TTS',
+        title: 'Audio Pointings',
         description: 'Guided readings',
       ),
       _FeatureItem(

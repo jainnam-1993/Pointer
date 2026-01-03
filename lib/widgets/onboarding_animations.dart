@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../theme/app_theme.dart';
+import 'notification_preview.dart';
 
 /// Animation durations for onboarding - deliberately slower for contemplative feel
 class OnboardingDurations {
@@ -587,14 +588,23 @@ class _StrikeThroughPainter extends CustomPainter {
 
 /// Simulates a notification banner sliding down from the top.
 ///
-/// Creates an iOS/Android-style notification appearance with glass styling
-/// consistent with the app's "Ethereal Liquid Glass" design.
+/// Creates an iOS/Android-style notification appearance matching the actual
+/// Pointer notification UI with Ensō icon, title, tradition badge, and actions.
 class NotificationSimulation extends StatefulWidget {
   /// App name shown in the notification header.
   final String appName;
 
-  /// The notification message body.
+  /// The notification message body (the pointing content).
   final String message;
+
+  /// Title shown above the message (defaults to "Today's Pointing").
+  final String title;
+
+  /// Tradition and teacher attribution (e.g., "Advaita Vedanta — Nisargadatta").
+  final String? attribution;
+
+  /// Whether to show action buttons (Save, Another).
+  final bool showActions;
 
   /// Delay before the notification appears.
   final Duration delay;
@@ -606,6 +616,9 @@ class NotificationSimulation extends StatefulWidget {
     super.key,
     this.appName = 'Pointer',
     required this.message,
+    this.title = "Today's Pointing",
+    this.attribution,
+    this.showActions = true,
     this.delay = const Duration(seconds: 1),
     this.onComplete,
   });
@@ -691,110 +704,19 @@ class _NotificationSimulationState extends State<NotificationSimulation>
       return const SizedBox.shrink();
     }
 
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-
+    // Delegate to the reusable NotificationPreview widget
+    // This ensures consistency with any other notification preview in the app
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
         opacity: _opacityAnimation,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: isDark
-                ? colors.surface.withValues(alpha: 0.85)
-                : colors.surface.withValues(alpha: 0.95),
-            border: Border.all(
-              color: colors.glassBorder,
-              width: 0.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    // App icon placeholder
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
-                          colors: [
-                            colors.accent,
-                            colors.secondary,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          widget.appName[0],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                widget.appName,
-                                style: TextStyle(
-                                  color: colors.textPrimary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                'now',
-                                style: TextStyle(
-                                  color: colors.textMuted,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.message,
-                            style: TextStyle(
-                              color: colors.textSecondary,
-                              fontSize: 14,
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: NotificationPreview(
+            title: widget.title,
+            body: widget.message,
+            attribution: widget.attribution,
+            showActions: widget.showActions,
           ),
         ),
       ),

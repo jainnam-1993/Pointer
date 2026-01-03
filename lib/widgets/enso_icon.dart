@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 ///
 /// The ensō is a sacred symbol in Zen Buddhism, drawn in one or two brushstrokes
 /// to express the moment when the mind is free to let the body create.
+///
+/// Uses SVG for crisp rendering at any size with color tinting support.
 class EnsoIcon extends StatelessWidget {
   final double size;
   final Color? color;
