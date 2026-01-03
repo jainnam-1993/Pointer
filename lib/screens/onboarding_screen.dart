@@ -481,22 +481,27 @@ class _NotificationsPageState extends State<_NotificationsPage> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Simulated notification
+          // Push notification toward upper portion of screen
+          SizedBox(height: screenHeight * 0.05),
+
+          // Simulated notification (matches actual notification UI)
           NotificationSimulation(
             message: 'Notice: You are not the voice in your head.',
+            attribution: 'Direct Path',
             delay: const Duration(seconds: 1),
             onComplete: reduceMotion ? null : _onNotificationComplete,
           ),
 
-          const SizedBox(height: 48),
+          // Flexible space between notification and centered content
+          const Spacer(),
 
-          // Explanation text
+          // Centered explanation and conclusion
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: AnimatedOpacity(
@@ -516,7 +521,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
             ),
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 28),
 
           // Conclusion
           Padding(
@@ -541,6 +546,9 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               ),
             ),
           ),
+
+          // Equal spacer below to center the text content
+          const Spacer(),
         ],
       ),
     );

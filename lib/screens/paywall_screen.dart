@@ -38,54 +38,74 @@ class PaywallScreen extends ConsumerWidget {
                 top: 12,
                 bottom: bottomPadding + 20,
               ),
-              child: Column(
-                children: [
-                  // Header: Back + Icon + Restore
-                  _buildHeader(context, ref, colors),
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        MediaQuery.of(context).padding.bottom - 32,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Top content (scrollable)
+                      Column(
+                        children: [
+                          // Header: Back + Icon + Restore
+                          _buildHeader(context, ref, colors),
 
-                  const SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
-                  // Title
-                  StaggeredFadeIn(
-                    index: 0,
-                    child: Text(
-                      'Unlock Pointer',
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            color: colors.textPrimary,
+                          // Title
+                          StaggeredFadeIn(
+                            index: 0,
+                            child: Text(
+                              'Unlock Pointer',
+                              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                    color: colors.textPrimary,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
 
-                  const SizedBox(height: 8),
+                          const SizedBox(height: 8),
 
-                  StaggeredFadeIn(
-                    index: 1,
-                    child: Text(
-                      'One-time purchase, yours forever',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: colors.textSecondary,
+                          StaggeredFadeIn(
+                            index: 1,
+                            child: Text(
+                              'One-time purchase, yours forever',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colors.textSecondary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Features list
+                          _buildFeaturesList(colors),
+                        ],
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+
+                      // Bottom content (purchase + legal)
+                      Column(
+                        children: [
+                          const SizedBox(height: 24),
+
+                          // Price and CTA
+                          _buildPurchaseSection(context, ref, subscription, colors),
+
+                          const SizedBox(height: 16),
+
+                          // Legal links
+                          _buildLegalLinks(colors),
+                        ],
+                      ),
+                    ],
                   ),
-
-                  const SizedBox(height: 32),
-
-                  // Features list
-                  _buildFeaturesList(colors),
-
-                  const Spacer(),
-
-                  // Price and CTA
-                  _buildPurchaseSection(context, ref, subscription, colors),
-
-                  const SizedBox(height: 16),
-
-                  // Legal links
-                  _buildLegalLinks(colors),
-                ],
+                ),
               ),
             ),
           ),
@@ -182,7 +202,7 @@ class PaywallScreen extends ConsumerWidget {
       ),
       _FeatureItem(
         icon: Icons.headphones,
-        title: 'Audio & TTS',
+        title: 'Audio Pointings',
         description: 'Listen to guided readings',
       ),
       _FeatureItem(
@@ -365,7 +385,7 @@ class PaywallScreen extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextButton(
-          onPressed: () => _launchUrl('https://pointer.app/privacy'),
+          onPressed: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
           child: Text(
             'Privacy policy',
             style: TextStyle(
@@ -379,7 +399,7 @@ class PaywallScreen extends ConsumerWidget {
           style: TextStyle(color: colors.textMuted),
         ),
         TextButton(
-          onPressed: () => _launchUrl('https://pointer.app/terms'),
+          onPressed: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
           child: Text(
             'Terms of service',
             style: TextStyle(

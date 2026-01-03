@@ -68,6 +68,7 @@ void main() async {
   final notificationService = NotificationService(sharedPreferences);
   await _initializeNotifications(notificationService);
 
+
   // Initialize home screen widget
   await WidgetService.initialize();
 
@@ -96,7 +97,8 @@ Future<void> _initializeNotifications(NotificationService service) async {
   // Re-initialize with action callbacks (required for notification actions)
   final plugin = FlutterLocalNotificationsPlugin();
 
-  const initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+  // Use dedicated notification icon (white-only for Android status bar)
+  const initSettingsAndroid = AndroidInitializationSettings('@drawable/ic_notification');
   const initSettingsIOS = DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,

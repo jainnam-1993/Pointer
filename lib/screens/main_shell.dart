@@ -154,11 +154,21 @@ class _BottomNavBarState extends State<_BottomNavBar> {
 
     // Responsive sizing for tablet support
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Three-tier breakpoints: phone (<600), tablet (600-900), large tablet (>900)
+    final isLargeTablet = screenWidth >= 900;
     final isTablet = screenWidth >= 600;
-    final navHeight = isTablet ? 72.0 : 64.0;
-    final horizontalMargin = isTablet ? 48.0 : 24.0;
-    final horizontalPadding = isTablet ? 16.0 : 8.0;
-    final borderRadius = isTablet ? 28.0 : 24.0;
+
+    // Scale navigation dimensions based on device class
+    final navHeight = isLargeTablet ? 80.0 : (isTablet ? 72.0 : 64.0);
+    final horizontalPadding = isLargeTablet ? 24.0 : (isTablet ? 16.0 : 8.0);
+    final borderRadius = isLargeTablet ? 32.0 : (isTablet ? 28.0 : 24.0);
+
+    // Constrain max width on large screens to prevent over-stretching
+    final maxNavWidth = isLargeTablet ? 560.0 : (isTablet ? 480.0 : double.infinity);
+    final horizontalMargin = isLargeTablet
+        ? (screenWidth - maxNavWidth) / 2  // Center with calculated margins
+        : (isTablet ? 48.0 : 24.0);
 
     return Container(
       margin: EdgeInsets.only(
@@ -198,7 +208,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
               builder: (context, constraints) {
                 // Each nav item takes equal width (Expanded ensures this)
                 final itemWidth = constraints.maxWidth / _itemCount;
-                final indicatorWidth = 48.0;
+                // Responsive indicator width scales with nav bar size
+                final indicatorWidth = isLargeTablet ? 56.0 : (isTablet ? 52.0 : 48.0);
                 // Center indicator under each item
                 final indicatorLeft = (widget.currentIndex * itemWidth) + (itemWidth - indicatorWidth) / 2;
 
@@ -293,12 +304,15 @@ class _NavItem extends StatelessWidget {
     final activeColor = colors.textPrimary;
     final inactiveColor = colors.textMuted;
 
-    // Responsive sizing for tablet support
+    // Responsive sizing for tablet support (three-tier: phone, tablet, large tablet)
     final screenWidth = MediaQuery.of(context).size.width;
+    final isLargeTablet = screenWidth >= 900;
     final isTablet = screenWidth >= 600;
-    final iconSize = isTablet ? 28.0 : 24.0;
-    final fontSize = isTablet ? 12.0 : 10.0;
-    final verticalPadding = isTablet ? 10.0 : 8.0;
+
+    final iconSize = isLargeTablet ? 30.0 : (isTablet ? 28.0 : 24.0);
+    final fontSize = isLargeTablet ? 13.0 : (isTablet ? 12.0 : 10.0);
+    final verticalPadding = isLargeTablet ? 12.0 : (isTablet ? 10.0 : 8.0);
+    final horizontalPadding = isLargeTablet ? 24.0 : (isTablet ? 20.0 : 16.0);
 
     return Semantics(
       button: true,
@@ -308,7 +322,7 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: verticalPadding),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

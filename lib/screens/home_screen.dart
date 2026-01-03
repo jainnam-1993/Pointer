@@ -271,7 +271,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final pointing = ref.watch(currentPointingProvider);
     final isZenMode = ref.watch(zenModeProvider);
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final colors = context.colors;
@@ -535,12 +534,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),  // Close Center
               ),  // Close Expanded
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: isSquareAspect ? 12 : 20),
 
-                  // Mini-inquiry entry point
-                  const MiniInquiryCard(),
-
-                  const SizedBox(height: 24),
+                  // Mini-inquiry entry point (hide in landscape to save space)
+                  if (!isSquareAspect) ...[
+                    const MiniInquiryCard(),
+                    const SizedBox(height: 24),
+                  ],
 
                   // Action button - Next only (Share moved to card header in Phase 5.11)
                   Semantics(
@@ -558,15 +558,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
-
-                  // Footer - decorative hint text, excluded from focus order
-                  ExcludeSemantics(
-                    child: Text(
-                      'Swipe for another invitation to look',
-                      style: AppTextStyles.footerText(context),
+                  // Footer - decorative hint text (hide in landscape)
+                  if (!isSquareAspect) ...[
+                    const SizedBox(height: 24),
+                    ExcludeSemantics(
+                      child: Text(
+                        'Swipe for another invitation to look',
+                        style: AppTextStyles.footerText(context),
+                      ),
                     ),
-                  ),
+                  ],
                 ],
                 ),
               ),
