@@ -101,7 +101,10 @@ Final thoughts.
   });
 
   group('ArticleReaderScreen - TTS Button Visibility', () {
+    // TTS feature is temporarily disabled (see task: "Turn off TTS feature")
+    // Skip this test until TTS is re-enabled
     testWidgets('TTS button is visible for premium users', (tester) async {
+      // TTS feature is disabled - button should NOT be visible
       await tester.pumpWidget(createTestWidget(
         article: testArticle,
         forcePremium: true,
@@ -112,12 +115,11 @@ Final thoughts.
       final headphonesOutlined = find.byIcon(Icons.headphones_outlined);
       final headphones = find.byIcon(Icons.headphones);
 
-      // At least one should be present
+      // With TTS disabled, neither should be present
       expect(
-        headphonesOutlined.evaluate().isNotEmpty ||
-            headphones.evaluate().isNotEmpty,
+        headphonesOutlined.evaluate().isEmpty && headphones.evaluate().isEmpty,
         isTrue,
-        reason: 'TTS button should be visible for premium users',
+        reason: 'TTS button should be hidden when TTS feature is disabled',
       );
     });
 

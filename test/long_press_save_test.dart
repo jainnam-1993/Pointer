@@ -415,7 +415,8 @@ void main() {
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
-              final notifier = CurrentPointingNotifier();
+              final storage = ref.watch(storageServiceProvider);
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),

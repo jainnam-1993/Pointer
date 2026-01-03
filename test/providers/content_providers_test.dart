@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/data/teaching.dart';
 import 'package:pointer/providers/content_providers.dart';
+import 'package:pointer/providers/core_providers.dart';
 import 'package:pointer/services/storage_service.dart';
 
 // Mocks
@@ -21,8 +22,17 @@ void main() {
   });
 
   group('CurrentPointingNotifier', () {
+    late MockStorageService mockStorage;
+
+    setUp(() {
+      mockStorage = MockStorageService();
+      // Default mock behaviors for CurrentPointingNotifier
+      when(() => mockStorage.currentPointingId).thenReturn(null);
+      when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
+    });
+
     test('initializes with a random pointing', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
 
       // Should have a valid pointing
       expect(notifier.state, isA<Pointing>());
@@ -31,7 +41,7 @@ void main() {
     });
 
     test('nextPointing() changes the pointing', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
       final initialPointing = notifier.state;
 
       notifier.nextPointing();
@@ -44,7 +54,7 @@ void main() {
     });
 
     test('previousPointing() returns to previous', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
       final firstPointing = notifier.state;
 
       notifier.nextPointing();
@@ -58,7 +68,7 @@ void main() {
     });
 
     test('previousPointing() does nothing at start', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
       final initialPointing = notifier.state;
 
       notifier.previousPointing();
@@ -69,7 +79,7 @@ void main() {
     });
 
     test('setPointing() sets specific pointing', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
       final targetPointing = pointings.first;
 
       notifier.setPointing(targetPointing);
@@ -79,7 +89,7 @@ void main() {
     });
 
     test('history limited to 50 items', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
 
       // Add 60 pointings to exceed limit
       for (int i = 0; i < 60; i++) {
@@ -109,7 +119,7 @@ void main() {
     });
 
     test('navigating back and then forward clears forward history', () {
-      final notifier = CurrentPointingNotifier();
+      final notifier = CurrentPointingNotifier(mockStorage);
       final first = notifier.state;
 
       notifier.nextPointing();
@@ -422,8 +432,20 @@ void main() {
   });
 
   group('Riverpod Providers', () {
+    late MockStorageService mockStorage;
+
+    setUp(() {
+      mockStorage = MockStorageService();
+      when(() => mockStorage.currentPointingId).thenReturn(null);
+      when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
+    });
+
     test('currentPointingProvider creates notifier', () {
-      final container = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          storageServiceProvider.overrideWithValue(mockStorage),
+        ],
+      );
       addTearDown(container.dispose);
 
       final pointing = container.read(currentPointingProvider);

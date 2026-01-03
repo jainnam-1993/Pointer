@@ -18,9 +18,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:mocktail/mocktail.dart';
+
+/// Mock NotificationService for testing
+class MockNotificationService extends Mock implements NotificationService {}
+
+/// Mock notification service instance - created once during setup
+late MockNotificationService _mockNotificationService;
 
 /// Standard device sizes for golden tests
 class GoldenDevices {
@@ -39,6 +47,14 @@ Future<void> setupGoldenTests() async {
   // Disable animations for consistent screenshots
   AnimatedGradient.disableAnimations = true;
 
+  // Create and configure mock notification service
+  _mockNotificationService = MockNotificationService();
+  when(() => _mockNotificationService.checkPermissions())
+      .thenAnswer((_) async => true);
+  when(() => _mockNotificationService.isNotificationsEnabled).thenReturn(false);
+  when(() => _mockNotificationService.getSchedule())
+      .thenReturn(const NotificationSchedule());
+
   // Mock home_widget plugin to prevent MissingPluginException
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -46,6 +62,28 @@ Future<void> setupGoldenTests() async {
     (MethodCall methodCall) async {
       // Return null for all home_widget calls - they're no-ops in tests
       return null;
+    },
+  );
+
+  // Mock flutter_local_notifications plugin
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+    const MethodChannel('dexterous.com/flutter/local_notifications'),
+    (MethodCall methodCall) async {
+      // Return appropriate values for notification plugin calls
+      switch (methodCall.method) {
+        case 'initialize':
+          return true;
+        case 'getNotificationAppLaunchDetails':
+          return null;
+        case 'requestNotificationsPermission':
+        case 'requestPermissions':
+          return true;
+        case 'checkPermissions':
+          return {'isEnabled': true};
+        default:
+          return null;
+      }
     },
   );
 }
@@ -117,6 +155,7 @@ Widget createGoldenTestApp({
   Size size = GoldenDevices.iPhone14Pro,
   SharedPreferences? prefs,
   Pointing? initialPointing,
+  bool highContrast = false,
 }) {
   return ProviderScope(
     overrides: [
@@ -138,14 +177,17 @@ Widget createGoldenTestApp({
           final storage = StorageService(prefs);
           return SubscriptionNotifier(storage);
         }),
-      highContrastProvider.overrideWith((ref) => false),
+      // Mock notification service to avoid platform plugin issues
+      notificationServiceProvider.overrideWithValue(_mockNotificationService),
+      highContrastProvider.overrideWith((ref) => highContrast),
       // Override dependent providers to avoid dependency chain issues
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       zenModeProvider.overrideWith((ref) => false),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
-          final notifier = CurrentPointingNotifier();
+          final storage = ref.watch(storageServiceProvider);
+          final notifier = CurrentPointingNotifier(storage);
           notifier.setPointing(initialPointing);
           return notifier;
         }),
@@ -171,13 +213,13 @@ Widget createGoldenTestApp({
 
 /// Pumps a widget and prepares it for golden comparison
 ///
-/// This function wraps the widget with ProviderScope to ensure all
-/// ConsumerWidgets (like GlassCard, GlassButton) have access to providers.
+/// This function sets up the test environment and pumps the widget.
+/// When using createGoldenTestApp(), the widget already has ProviderScope,
+/// so we don't add another one.
 Future<void> pumpForGolden(
   WidgetTester tester,
   Widget widget, {
   Size size = GoldenDevices.iPhone14Pro,
-  bool highContrast = false,
 }) async {
   // Set surface size
   tester.view.physicalSize = size * 3.0; // Account for pixel ratio
@@ -188,33 +230,12 @@ Future<void> pumpForGolden(
     tester.view.resetDevicePixelRatio();
   });
 
-  // Check if widget already has ProviderScope (e.g., from createGoldenTestApp)
-  // If it does, don't double-wrap; otherwise wrap with ProviderScope
-  Widget wrappedWidget;
-  if (widget is ProviderScope) {
-    // Widget already has ProviderScope - just add our overrides by wrapping again
-    // Note: nested ProviderScope is fine in Riverpod 2.x
-    wrappedWidget = ProviderScope(
-      overrides: [
-        highContrastProvider.overrideWith((ref) => highContrast),
-      ],
-      child: widget,
-    );
-  } else {
-    // Widget needs ProviderScope
-    wrappedWidget = ProviderScope(
-      overrides: [
-        highContrastProvider.overrideWith((ref) => highContrast),
-      ],
-      child: widget,
-    );
-  }
+  // Widget from createGoldenTestApp already has ProviderScope - use directly
+  await tester.pumpWidget(widget);
 
-  await tester.pumpWidget(wrappedWidget);
-  await tester.pumpAndSettle();
-
-  // Extra pump to ensure all frames are rendered
-  await tester.pump(const Duration(milliseconds: 100));
+  // Use pump with duration instead of pumpAndSettle for continuous animations
+  // pumpAndSettle times out on AnimatedGradient's continuous animation
+  await tester.pump(const Duration(seconds: 2));
 }
 
 /// Compares widget against golden file
@@ -289,6 +310,31 @@ Future<SharedPreferences> createMockPrefs({
 
   SharedPreferences.setMockInitialValues(values);
   return SharedPreferences.getInstance();
+}
+
+/// Creates a simple widget wrapper for component-level golden tests
+/// that don't need full screen setup but need ProviderScope
+Widget createComponentTestWrapper({
+  required Widget child,
+  Size size = const Size(400, 200),
+  Color backgroundColor = const Color(0xFF0F0524),
+}) {
+  return ProviderScope(
+    overrides: [
+      highContrastProvider.overrideWith((ref) => false),
+      oledModeProvider.overrideWith((ref) => false),
+      reduceMotionOverrideProvider.overrideWith((ref) => null),
+      themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
+    ],
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: goldenTestTheme,
+      home: Scaffold(
+        backgroundColor: backgroundColor,
+        body: Center(child: child),
+      ),
+    ),
+  );
 }
 
 /// Standard test pointing for consistent golden tests

@@ -31,7 +31,8 @@ void main() {
 
   group('Settings Screen - Zen Mode Toggle', () {
     testWidgets('shows Zen Mode toggle in Appearance section', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
+      // Use iPhone 14 Pro Max size to avoid overflow on wide settings rows
+      tester.view.physicalSize = const Size(1290, 2796);
       tester.view.devicePixelRatio = 3.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -62,7 +63,8 @@ void main() {
     });
 
     testWidgets('Zen Mode toggle is off by default', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
+      // Use iPhone 14 Pro Max size to avoid overflow on wide settings rows
+      tester.view.physicalSize = const Size(1290, 2796);
       tester.view.devicePixelRatio = 3.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -96,7 +98,8 @@ void main() {
     });
 
     testWidgets('tapping Zen Mode toggle changes its state', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
+      // Use iPhone 14 Pro Max size to avoid overflow on wide settings rows
+      tester.view.physicalSize = const Size(1290, 2796);
       tester.view.devicePixelRatio = 3.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);

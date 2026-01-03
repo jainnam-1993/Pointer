@@ -87,7 +87,8 @@ void main() {
         themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
-            final notifier = CurrentPointingNotifier();
+            final storage = ref.watch(storageServiceProvider);
+            final notifier = CurrentPointingNotifier(storage);
             notifier.setPointing(initialPointing);
             return notifier;
           }),
@@ -336,7 +337,8 @@ void main() {
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
-              final notifier = CurrentPointingNotifier();
+              final storage = ref.watch(storageServiceProvider);
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -390,7 +392,8 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             currentPointingProvider.overrideWith((ref) {
-              final notifier = CurrentPointingNotifier();
+              final storage = ref.watch(storageServiceProvider);
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -568,7 +571,8 @@ void main() {
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
-              final notifier = CurrentPointingNotifier();
+              final storage = ref.watch(storageServiceProvider);
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -612,7 +616,8 @@ void main() {
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
-              final notifier = CurrentPointingNotifier();
+              final storage = ref.watch(storageServiceProvider);
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),

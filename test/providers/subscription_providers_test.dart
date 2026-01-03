@@ -111,16 +111,18 @@ void main() {
       expect(notifier.state.limitReached, false);
     });
 
-    test('canViewPointing returns false when limit reached', () {
+    test('canViewPointing always returns true (freemium v2 model)', () {
+      // Under freemium v2 model, all pointings are free regardless of view count
       final usage = DailyUsage(
-        viewCount: 2, // At limit
+        viewCount: 2, // At limit, but still returns true
         lastResetDate: _todayString(),
       );
       when(() => mockService.getUsage()).thenReturn(usage);
 
       notifier = DailyUsageNotifier(mockService);
-      expect(notifier.canViewPointing(false), false);
-      expect(notifier.state.limitReached, true);
+      // Quotes are free for all users now
+      expect(notifier.canViewPointing(false), true);
+      expect(notifier.state.limitReached, true); // State still tracks limit
     });
 
     test('recordView increments count', () async {

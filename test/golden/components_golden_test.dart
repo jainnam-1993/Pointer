@@ -33,21 +33,14 @@ void main() {
     testWidgets('glass card default', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: GlassCard(
-                  padding: EdgeInsets.all(24),
-                  child: Text(
-                    'Glass Card Content',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+        createComponentTestWrapper(
+          child: const Padding(
+            padding: EdgeInsets.all(24),
+            child: GlassCard(
+              padding: EdgeInsets.all(24),
+              child: Text(
+                'Glass Card Content',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),
@@ -61,22 +54,15 @@ void main() {
     testWidgets('glass card with custom border', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: GlassCard(
-                  padding: const EdgeInsets.all(24),
-                  borderColor: PointerColors.dark.gold.withOpacity(0.5),
-                  child: const Text(
-                    'Gold Border Card',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+        createComponentTestWrapper(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: GlassCard(
+              padding: const EdgeInsets.all(24),
+              borderColor: PointerColors.dark.gold.withOpacity(0.5),
+              child: const Text(
+                'Gold Border Card',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),
@@ -90,41 +76,34 @@ void main() {
     testWidgets('glass card large content', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: GlassCard(
-                  padding: EdgeInsets.all(32),
-                  borderRadius: 32,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'What is aware of this moment?',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Simply notice.',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
+        createComponentTestWrapper(
+          child: const Padding(
+            padding: EdgeInsets.all(24),
+            child: GlassCard(
+              padding: EdgeInsets.all(32),
+              borderRadius: 32,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'What is aware of this moment?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Simply notice.',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -143,18 +122,11 @@ void main() {
     testWidgets('glass button primary', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: Center(
-              child: GlassButton(
-                label: 'Next',
-                onPressed: () {},
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-              ),
-            ),
+        createComponentTestWrapper(
+          child: GlassButton(
+            label: 'Next',
+            onPressed: () {},
+            icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
           ),
         ),
         size: const Size(300, 150),
@@ -166,19 +138,12 @@ void main() {
     testWidgets('glass button secondary', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: Center(
-              child: GlassButton(
-                label: 'Share',
-                onPressed: () {},
-                isPrimary: false,
-                icon: const Icon(Icons.share_outlined, color: Colors.white),
-              ),
-            ),
+        createComponentTestWrapper(
+          child: GlassButton(
+            label: 'Share',
+            onPressed: () {},
+            isPrimary: false,
+            icon: const Icon(Icons.share_outlined, color: Colors.white),
           ),
         ),
         size: const Size(300, 150),
@@ -188,41 +153,17 @@ void main() {
     });
 
     testWidgets('glass button loading', (tester) async {
-      // Loading button has a spinner animation - use pump instead of pumpAndSettle
-      tester.view.physicalSize = const Size(300, 150) * 3.0;
-      tester.view.devicePixelRatio = 3.0;
-
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            // Override highContrastProvider directly to avoid provider chain issues
-            highContrastProvider.overrideWith((ref) => false),
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: goldenTestTheme,
-            home: Scaffold(
-              backgroundColor: const Color(0xFF0F0524),
-              body: Center(
-                child: GlassButton(
-                  label: 'Loading',
-                  onPressed: () {},
-                  isLoading: true,
-                ),
-              ),
-            ),
+      await pumpForGolden(
+        tester,
+        createComponentTestWrapper(
+          child: GlassButton(
+            label: 'Loading',
+            onPressed: () {},
+            isLoading: true,
           ),
         ),
+        size: const Size(300, 150),
       );
-
-      // Pump a few frames to let the widget stabilize, but not settle (spinner never stops)
-      await tester.pump(const Duration(milliseconds: 100));
-      await tester.pump(const Duration(milliseconds: 100));
 
       await expectGoldenMatches(tester, 'glass_button_loading');
     });
@@ -230,30 +171,23 @@ void main() {
     testWidgets('button row layout', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GlassButton(
-                    label: 'Share',
-                    onPressed: () {},
-                    isPrimary: false,
-                    icon: const Icon(Icons.share_outlined, color: Colors.white, size: 18),
-                  ),
-                  const SizedBox(width: 16),
-                  GlassButton(
-                    label: 'Next',
-                    onPressed: () {},
-                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 18),
-                  ),
-                ],
+        createComponentTestWrapper(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GlassButton(
+                label: 'Share',
+                onPressed: () {},
+                isPrimary: false,
+                icon: const Icon(Icons.share_outlined, color: Colors.white, size: 18),
               ),
-            ),
+              const SizedBox(width: 16),
+              GlassButton(
+                label: 'Next',
+                onPressed: () {},
+                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 18),
+              ),
+            ],
           ),
         ),
         size: const Size(400, 150),
@@ -270,27 +204,20 @@ void main() {
     testWidgets('all tradition badges', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: Scaffold(
-            backgroundColor: const Color(0xFF0F0524),
-            body: const Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TraditionBadge(tradition: Tradition.advaita),
-                  SizedBox(height: 12),
-                  TraditionBadge(tradition: Tradition.zen),
-                  SizedBox(height: 12),
-                  TraditionBadge(tradition: Tradition.direct),
-                  SizedBox(height: 12),
-                  TraditionBadge(tradition: Tradition.contemporary),
-                  SizedBox(height: 12),
-                  TraditionBadge(tradition: Tradition.original),
-                ],
-              ),
-            ),
+        createComponentTestWrapper(
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TraditionBadge(tradition: Tradition.advaita),
+              SizedBox(height: 12),
+              TraditionBadge(tradition: Tradition.zen),
+              SizedBox(height: 12),
+              TraditionBadge(tradition: Tradition.direct),
+              SizedBox(height: 12),
+              TraditionBadge(tradition: Tradition.contemporary),
+              SizedBox(height: 12),
+              TraditionBadge(tradition: Tradition.original),
+            ],
           ),
         ),
         size: const Size(300, 400),
@@ -302,15 +229,8 @@ void main() {
     testWidgets('advaita badge', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: const Scaffold(
-            backgroundColor: Color(0xFF0F0524),
-            body: Center(
-              child: TraditionBadge(tradition: Tradition.advaita),
-            ),
-          ),
+        createComponentTestWrapper(
+          child: const TraditionBadge(tradition: Tradition.advaita),
         ),
         size: const Size(300, 100),
       );
@@ -321,15 +241,8 @@ void main() {
     testWidgets('zen badge', (tester) async {
       await pumpForGolden(
         tester,
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: goldenTestTheme,
-          home: const Scaffold(
-            backgroundColor: Color(0xFF0F0524),
-            body: Center(
-              child: TraditionBadge(tradition: Tradition.zen),
-            ),
-          ),
+        createComponentTestWrapper(
+          child: const TraditionBadge(tradition: Tradition.zen),
         ),
         size: const Size(300, 100),
       );
@@ -345,20 +258,12 @@ void main() {
     testWidgets('gradient background static', (tester) async {
       await pumpForGolden(
         tester,
-        ProviderScope(
-          overrides: [
-            // Override providers that AnimatedGradient depends on
-            oledModeProvider.overrideWith((ref) => false),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: const SizedBox(
-              width: 400,
-              height: 800,
-              child: AnimatedGradient(),
-            ),
+        createComponentTestWrapper(
+          backgroundColor: Colors.black,
+          child: const SizedBox(
+            width: 400,
+            height: 800,
+            child: AnimatedGradient(),
           ),
         ),
         size: const Size(400, 800),

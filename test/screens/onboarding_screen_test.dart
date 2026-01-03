@@ -67,13 +67,20 @@ void main() {
     tester.view.resetDevicePixelRatio();
   }
 
+  // Helper to pump onboarding screen with runAsync to handle TypewriterText timers
+  Future<void> pumpOnboardingScreen(WidgetTester tester, Widget widget) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(widget);
+    });
+    await tester.pump();
+  }
+
   group('OnboardingScreen basic rendering', () {
     testWidgets('screen renders without errors', (tester) async {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
     });
@@ -82,8 +89,7 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       expect(find.byType(AnimatedGradient), findsOneWidget);
     });
@@ -92,8 +98,7 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       expect(find.byType(PageView), findsOneWidget);
     });
@@ -102,8 +107,7 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       expect(find.text('Continue'), findsOneWidget);
     });
@@ -114,11 +118,12 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       // Tap Continue
-      await tester.tap(find.text('Continue'));
+      await tester.runAsync(() async {
+        await tester.tap(find.text('Continue'));
+      });
       await tester.pump(const Duration(milliseconds: 600));
 
       // Verify we can still find Continue (for page 2)
@@ -129,12 +134,13 @@ void main() {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       // Navigate to last page
       for (var i = 0; i < 3; i++) {
-        await tester.tap(find.text('Continue'));
+        await tester.runAsync(() async {
+          await tester.tap(find.text('Continue'));
+        });
         await tester.pump(const Duration(milliseconds: 600));
       }
 
@@ -151,8 +157,7 @@ void main() {
 
       // The onboarding_screen.dart now uses MediaQuery.textScalerOf(context).scale()
       // for all font sizes, which is the fix we validated
-      await tester.pumpWidget(createOnboardingScreen());
-      await tester.pump(const Duration(milliseconds: 100));
+      await pumpOnboardingScreen(tester, createOnboardingScreen());
 
       // Verify screen renders - the Dynamic Type fix is in the source code
       // using MediaQuery.textScalerOf(context).scale(X) pattern
