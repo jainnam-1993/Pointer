@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -483,6 +485,398 @@ void main() {
 
       expect(teachings, isNotEmpty);
       expect(teachings.every((t) => t.lineage == Tradition.zen), true);
+    });
+  });
+
+  group('PreferredTraditionsNotifier', () {
+    late MockStorageService mockStorage;
+
+    setUp(() {
+      mockStorage = MockStorageService();
+    });
+
+    test('initializes with all traditions when storage is empty', () {
+      when(() => mockStorage.preferredTraditions).thenReturn([]);
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+
+      expect(notifier.state, Tradition.values.toSet());
+      expect(notifier.state.length, 5);
+    });
+
+    test('initializes from stored traditions', () {
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['advaita', 'zen']);
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+
+      expect(notifier.state.length, 2);
+      expect(notifier.state, contains(Tradition.advaita));
+      expect(notifier.state, contains(Tradition.zen));
+      expect(notifier.state, isNot(contains(Tradition.direct)));
+    });
+
+    test('toggle() disables an enabled tradition', () {
+      when(() => mockStorage.preferredTraditions).thenReturn([]);
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+      expect(notifier.state, contains(Tradition.advaita));
+
+      notifier.toggle(Tradition.advaita);
+
+      expect(notifier.state, isNot(contains(Tradition.advaita)));
+      verify(() => mockStorage.setPreferredTraditions(any())).called(1);
+    });
+
+    test('toggle() enables a disabled tradition', () {
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['zen']); // Only zen enabled
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+      expect(notifier.state, isNot(contains(Tradition.advaita)));
+
+      notifier.toggle(Tradition.advaita);
+
+      expect(notifier.state, contains(Tradition.advaita));
+      expect(notifier.state, contains(Tradition.zen));
+    });
+
+    test('toggle() keeps at least one tradition enabled', () {
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['advaita']); // Only one enabled
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+      expect(notifier.state.length, 1);
+
+      notifier.toggle(Tradition.advaita); // Try to disable the only one
+
+      // Should still have one tradition (not allowed to disable all)
+      expect(notifier.state.length, 1);
+      expect(notifier.state, contains(Tradition.advaita));
+    });
+
+    test('isEnabled() returns correct status', () {
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['advaita', 'zen']);
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+
+      expect(notifier.isEnabled(Tradition.advaita), true);
+      expect(notifier.isEnabled(Tradition.zen), true);
+      expect(notifier.isEnabled(Tradition.direct), false);
+      expect(notifier.isEnabled(Tradition.contemporary), false);
+      expect(notifier.isEnabled(Tradition.original), false);
+    });
+
+    test('enableAll() enables all traditions', () {
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['advaita']); // Start with just one
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+      expect(notifier.state.length, 1);
+
+      notifier.enableAll();
+
+      expect(notifier.state.length, 5);
+      expect(notifier.state, Tradition.values.toSet());
+      verify(() => mockStorage.setPreferredTraditions(any())).called(1);
+    });
+
+    test('persists changes to storage', () {
+      when(() => mockStorage.preferredTraditions).thenReturn([]);
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+
+      notifier.toggle(Tradition.advaita);
+
+      final captured = verify(
+        () => mockStorage.setPreferredTraditions(captureAny()),
+      ).captured.single as List<String>;
+
+      expect(captured, isNot(contains('advaita')));
+      expect(captured.length, 4); // 5 - 1 disabled
+    });
+
+    test('handles invalid stored tradition names gracefully', () {
+      // Simulates corrupted or outdated storage data
+      when(() => mockStorage.preferredTraditions)
+          .thenReturn(['advaita', 'invalid_tradition', 'zen']);
+
+      final notifier = PreferredTraditionsNotifier(mockStorage);
+
+      // Should have valid traditions, invalid falls back to advaita
+      expect(notifier.state, contains(Tradition.advaita));
+      expect(notifier.state, contains(Tradition.zen));
+    });
+  });
+
+  group('PreferredTraditionsNotifier - Riverpod Integration', () {
+    late MockStorageService mockStorage;
+
+    setUp(() {
+      mockStorage = MockStorageService();
+      when(() => mockStorage.preferredTraditions).thenReturn([]);
+      when(() => mockStorage.setPreferredTraditions(any()))
+          .thenAnswer((_) async {});
+    });
+
+    test('preferredTraditionsProvider creates notifier with storage', () {
+      final container = ProviderContainer(
+        overrides: [
+          storageServiceProvider.overrideWithValue(mockStorage),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final traditions = container.read(preferredTraditionsProvider);
+
+      expect(traditions, isA<Set<Tradition>>());
+      expect(traditions.length, 5); // All traditions by default
+    });
+
+    test('provider state updates propagate correctly', () {
+      when(() => mockStorage.preferredTraditions).thenReturn([]);
+
+      final container = ProviderContainer(
+        overrides: [
+          storageServiceProvider.overrideWithValue(mockStorage),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Initial state
+      expect(container.read(preferredTraditionsProvider).length, 5);
+
+      // Toggle off one tradition
+      container
+          .read(preferredTraditionsProvider.notifier)
+          .toggle(Tradition.zen);
+
+      // Verify state updated
+      final updatedState = container.read(preferredTraditionsProvider);
+      expect(updatedState.length, 4);
+      expect(updatedState, isNot(contains(Tradition.zen)));
+    });
+  });
+
+  group('Lineage Filtering - Pointing Selection', () {
+    // These tests document expected behavior for filtering pointings
+    // by user's preferred traditions (managed lineages)
+
+    test('getPointingsByTradition returns only matching tradition', () {
+      // Verify the helper function works correctly
+      final advaitaPointings = getPointingsByTradition(Tradition.advaita);
+      final zenPointings = getPointingsByTradition(Tradition.zen);
+
+      expect(advaitaPointings, isNotEmpty);
+      expect(zenPointings, isNotEmpty);
+      expect(advaitaPointings.every((p) => p.tradition == Tradition.advaita), true);
+      expect(zenPointings.every((p) => p.tradition == Tradition.zen), true);
+    });
+
+    test('getRandomPointing with tradition filter returns correct tradition', () {
+      // Run multiple times to verify consistency
+      for (int i = 0; i < 20; i++) {
+        final pointing = getRandomPointing(tradition: Tradition.zen);
+        expect(pointing.tradition, Tradition.zen,
+            reason: 'Iteration $i should return zen tradition');
+      }
+    });
+
+    test('can filter pointings by multiple preferred traditions', () {
+      // Given a set of preferred traditions
+      final preferredTraditions = {Tradition.advaita, Tradition.zen};
+
+      // Filter all pointings to only those in preferred traditions
+      final filteredPointings = pointings
+          .where((p) => preferredTraditions.contains(p.tradition))
+          .toList();
+
+      expect(filteredPointings, isNotEmpty);
+      expect(
+        filteredPointings.every((p) =>
+            p.tradition == Tradition.advaita || p.tradition == Tradition.zen),
+        true,
+      );
+
+      // Verify no pointings from other traditions
+      expect(
+        filteredPointings.any((p) => p.tradition == Tradition.direct),
+        false,
+      );
+      expect(
+        filteredPointings.any((p) => p.tradition == Tradition.contemporary),
+        false,
+      );
+    });
+
+    test('single tradition selection returns only that tradition pointings', () {
+      final preferredTraditions = {Tradition.direct};
+
+      final filteredPointings = pointings
+          .where((p) => preferredTraditions.contains(p.tradition))
+          .toList();
+
+      expect(filteredPointings, isNotEmpty);
+      expect(
+        filteredPointings.every((p) => p.tradition == Tradition.direct),
+        true,
+      );
+    });
+
+    test('all traditions selected returns all pointings', () {
+      final preferredTraditions = Tradition.values.toSet();
+
+      final filteredPointings = pointings
+          .where((p) => preferredTraditions.contains(p.tradition))
+          .toList();
+
+      expect(filteredPointings.length, pointings.length);
+    });
+
+    test('each tradition has sufficient pointings for standalone use', () {
+      // Ensure users can use any single tradition as their only selection
+      for (final tradition in Tradition.values) {
+        final count = getPointingsByTradition(tradition).length;
+        expect(count, greaterThanOrEqualTo(5),
+            reason: '${tradition.name} should have at least 5 pointings '
+                'to provide variety when selected alone');
+      }
+    });
+  });
+
+  group('Lineage Filtering - Widget Cache', () {
+    // Tests documenting expected widget cache filtering behavior
+    // Widget should only show pointings from user's preferred traditions
+
+    test('can serialize preferred traditions to JSON for storage', () {
+      final preferredTraditions = {Tradition.advaita, Tradition.zen};
+      final serialized = preferredTraditions.map((t) => t.name).toList();
+      final json = jsonEncode(serialized);
+
+      expect(json, contains('advaita'));
+      expect(json, contains('zen'));
+      expect(json, isNot(contains('direct')));
+    });
+
+    test('can deserialize preferred traditions from JSON', () {
+      const json = '["advaita", "zen", "direct"]';
+      final decoded = List<String>.from(jsonDecode(json));
+      final traditions = decoded
+          .map((name) => Tradition.values.firstWhere((t) => t.name == name))
+          .toSet();
+
+      expect(traditions.length, 3);
+      expect(traditions, contains(Tradition.advaita));
+      expect(traditions, contains(Tradition.zen));
+      expect(traditions, contains(Tradition.direct));
+    });
+
+    test('widget cache structure supports tradition field', () {
+      // Verify pointing can be serialized with tradition info
+      final pointing = pointings.first;
+      final traditionInfo = traditions[pointing.tradition];
+
+      final cacheEntry = {
+        'id': pointing.id,
+        'content': pointing.content,
+        'tradition': traditionInfo?.name ?? pointing.tradition.name,
+        'teacher': pointing.teacher ?? '',
+      };
+
+      expect(cacheEntry['tradition'], isNotEmpty);
+      expect(cacheEntry['id'], isNotEmpty);
+    });
+
+    test('filtering pointings for widget cache by traditions', () {
+      // Simulate widget cache population with filtered traditions
+      final preferredTraditions = {Tradition.advaita, Tradition.contemporary};
+
+      final filteredForCache = pointings
+          .where((p) => preferredTraditions.contains(p.tradition))
+          .map((p) {
+        final traditionInfo = traditions[p.tradition];
+        return {
+          'id': p.id,
+          'content': p.content,
+          'tradition': traditionInfo?.name ?? p.tradition.name,
+          'teacher': p.teacher ?? '',
+        };
+      }).toList();
+
+      expect(filteredForCache, isNotEmpty);
+
+      // Verify all entries are from preferred traditions
+      for (final entry in filteredForCache) {
+        final tradName = entry['tradition'] as String;
+        expect(
+          tradName == 'Advaita Vedanta' || tradName == 'Contemporary',
+          true,
+          reason: 'Entry tradition should be Advaita or Contemporary, got: $tradName',
+        );
+      }
+    });
+  });
+
+  group('Lineage Filtering - Edge Cases', () {
+    test('empty preferred traditions defaults to all', () {
+      // When storage returns empty, should default to all traditions
+      final stored = <String>[];
+      Set<Tradition> traditions;
+
+      if (stored.isEmpty) {
+        traditions = Tradition.values.toSet();
+      } else {
+        traditions = stored
+            .map((name) => Tradition.values.firstWhere((t) => t.name == name))
+            .toSet();
+      }
+
+      expect(traditions.length, 5);
+    });
+
+    test('invalid tradition name in storage falls back gracefully', () {
+      final stored = ['advaita', 'not_a_tradition', 'zen'];
+      final traditions = <Tradition>{};
+
+      for (final name in stored) {
+        try {
+          traditions.add(Tradition.values.firstWhere((t) => t.name == name));
+        } catch (e) {
+          // Invalid name - skip or use fallback
+          traditions.add(Tradition.advaita);
+        }
+      }
+
+      expect(traditions, contains(Tradition.advaita));
+      expect(traditions, contains(Tradition.zen));
+    });
+
+    test('can verify pointing belongs to preferred traditions', () {
+      final preferredTraditions = {Tradition.zen, Tradition.direct};
+      final zenPointing = getPointingsByTradition(Tradition.zen).first;
+      final advaitaPointing = getPointingsByTradition(Tradition.advaita).first;
+
+      expect(
+        preferredTraditions.contains(zenPointing.tradition),
+        true,
+        reason: 'Zen pointing should pass filter',
+      );
+      expect(
+        preferredTraditions.contains(advaitaPointing.tradition),
+        false,
+        reason: 'Advaita pointing should not pass filter',
+      );
     });
   });
 }
