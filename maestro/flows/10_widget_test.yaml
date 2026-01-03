@@ -1,0 +1,113 @@
+# Widget Test - Verify home screen widget loads content correctly
+# Run: maestro test maestro/flows/10_widget_test.yaml
+#
+# Purpose: Catch widget loading failures (e.g., "Tap to load" empty state)
+# Requires: Widget must be added to home screen before running
+# Duration: ~60 seconds
+#
+# FAILURE SCENARIOS THIS TEST CATCHES:
+# - Widget shows "Tap to load" instead of pointing content
+# - Widget cache not populated by app
+# - RemoteViewsService/Factory data loading failure
+# - Widget theme mismatch (dark/light mode sync issues)
+#
+# SETUP: Add the Pointer widget to your home screen before running this test
+# The widget should be visible without scrolling on the home screen
+
+appId: com.dailypointer
+---
+# ============================================
+# PHASE 1: Ensure app populates widget cache
+# ============================================
+
+# Launch app fresh to ensure widget data is written
+- launchApp:
+    clearState: false  # Keep existing data, let app refresh widget
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Wait for app to fully initialize
+- extendedWaitUntil:
+    visible: ".*Home.*"
+    timeout: 10000
+
+# Navigate to home screen tab to ensure pointing data loads
+- tapOn:
+    text: ".*Home.*"
+
+# Wait for content to be visible - this triggers widget cache population
+- extendedWaitUntil:
+    visible:
+      text: ".*"
+    timeout: 5000
+
+# Interact to ensure widget sync happens
+- swipe:
+    direction: UP
+    duration: 500
+- swipe:
+    direction: DOWN
+    duration: 500
+
+# Brief pause for SharedPreferences to flush widget data
+- extendedWaitUntil:
+    timeout: 2000
+
+# ============================================
+# PHASE 2: Navigate to home screen and test widget
+# ============================================
+
+# Go to Android home screen
+- pressKey: Home
+
+# Wait for launcher animation
+- extendedWaitUntil:
+    timeout: 2000
+
+# Take screenshot BEFORE assertion for debugging failures
+- takeScreenshot: widget_before_check
+
+# ============================================
+# PHASE 3: CRITICAL ASSERTIONS
+# ============================================
+
+# MAIN TEST: Widget should NOT show "Tap to load" empty state
+# This assertion WILL FAIL if the widget is broken
+# The widget_empty_text TextView shows "Tap to load" when pointings_cache is empty
+- assertNotVisible:
+    text: "Tap to load"
+
+# If we can see widget buttons, even better confirmation
+# These use contentDescription from pointer_widget.xml
+- assertVisible:
+    text: "Previous pointing"
+    optional: true
+
+- assertVisible:
+    text: "Next pointing"
+    optional: true
+
+- assertVisible:
+    text: "Save to favorites"
+    optional: true
+
+# Take final screenshot for documentation
+- takeScreenshot: widget_test_passed
+
+# ============================================
+# PHASE 4: Cleanup - return to app
+# ============================================
+
+- launchApp

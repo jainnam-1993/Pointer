@@ -32,6 +32,7 @@ maestro test maestro/flows/06_screenshots_all.yaml  # Store screenshot capture
 maestro test maestro/flows/07_accessibility_audit.yaml # Element accessibility check
 maestro test maestro/flows/08_inquiry_session.yaml  # Guided inquiry session
 maestro test maestro/flows/09_library_content.yaml  # Library articles & teachings
+maestro test maestro/flows/10_widget_test.yaml      # Home screen widget test (requires widget on home screen)
 maestro test maestro/flows/                         # Run all flows (~5 min)
 # Screenshots output to: maestro/screenshots/
 

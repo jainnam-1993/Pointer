@@ -27,6 +27,21 @@ maestro test maestro/flows/00_smoke_test.yaml
 | `05_settings.yaml` | Settings & notifications | ~45s |
 | `06_screenshots_all.yaml` | Store screenshot capture | ~90s |
 | `07_accessibility_audit.yaml` | Element accessibility check | ~45s |
+| `10_widget_test.yaml` | Home screen widget verification | ~60s |
+
+### Widget Test Setup
+
+The `10_widget_test.yaml` flow requires the Pointer widget to be added to the home screen before running:
+
+1. Long-press on home screen
+2. Select "Widgets"
+3. Find and add the Pointer widget
+4. Run the test: `maestro test maestro/flows/10_widget_test.yaml`
+
+**What it catches:**
+- Widget showing "Tap to load" empty state (data loading failure)
+- Widget cache not being populated by the app
+- RemoteViewsService/Factory errors
 
 ## Running on Devices
 
