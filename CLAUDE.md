@@ -35,6 +35,14 @@ maestro test maestro/flows/09_library_content.yaml  # Library articles & teachin
 maestro test maestro/flows/                         # Run all flows (~5 min)
 # Screenshots output to: maestro/screenshots/
 
+# Git Hooks - Pre-commit Quality Gates
+# Location: scripts/hooks/pre-commit
+# Runs Maestro smoke test before commits (requires Maestro installed + device/emulator)
+# Currently opt-in: device detection stubbed (check_device() returns 1)
+# Install: ./scripts/setup-hooks.sh (auto-detects worktrees, creates symlinks)
+# Manual: Copy scripts/hooks/pre-commit to .git/hooks/pre-commit
+# Blocks commit if smoke test fails (60s timeout)
+
 # Build
 flutter build apk              # Android APK
 flutter build ios              # iOS build
@@ -169,7 +177,10 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── 06_screenshots_all.yaml # Store screenshots
 │   │   └── 07_accessibility_audit.yaml # Element checks
 │   └── screenshots/              # Test output
-├── scripts/                      # DEPRECATED - use Maestro
+├── scripts/                      # Development scripts
+│   ├── hooks/
+│   │   └── pre-commit            # Git pre-commit hook (Maestro smoke test, opt-in)
+│   ├── setup-hooks.sh            # Install git hooks (worktree-aware, symlink-based)
 │   ├── adb_test_helper.sh        # (deprecated) Android device testing
 │   ├── ios_test_helper.sh        # (deprecated) iOS simulator testing
 │   └── screenshot_test.sh        # (deprecated) Screenshot runner
