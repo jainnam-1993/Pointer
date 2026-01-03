@@ -17,6 +17,9 @@ fi
 
 HOOKS_TARGET="$GIT_DIR/hooks"
 
+# Create hooks directory if it doesn't exist (worktrees may not have it)
+mkdir -p "$HOOKS_TARGET"
+
 echo "Installing git hooks..."
 echo "  Source: $HOOKS_SOURCE"
 echo "  Target: $HOOKS_TARGET"
