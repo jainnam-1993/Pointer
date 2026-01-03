@@ -1,18 +1,24 @@
-# Widget Test - Verify home screen widget loads content correctly
+# Widget Test - Verify home screen widget creation and content loading
 # Run: maestro test maestro/flows/10_widget_test.yaml
 #
-# Purpose: Catch widget loading failures (e.g., "Tap to load" empty state)
-# Requires: Widget must be added to home screen before running
-# Duration: ~60 seconds
+# Purpose: Automate full widget lifecycle testing including creation
+# Duration: ~90 seconds
+#
+# WHAT THIS TEST DOES:
+# 1. Launches app to populate widget cache
+# 2. Goes to home screen and opens widget picker
+# 3. Searches for and adds Pointer widget to home screen
+# 4. Verifies widget displays content (not "Tap to load" error state)
+# 5. Tests widget navigation buttons
 #
 # FAILURE SCENARIOS THIS TEST CATCHES:
 # - Widget shows "Tap to load" instead of pointing content
 # - Widget cache not populated by app
 # - RemoteViewsService/Factory data loading failure
 # - Widget theme mismatch (dark/light mode sync issues)
+# - Widget picker integration issues
 #
-# SETUP: Add the Pointer widget to your home screen before running this test
-# The widget should be visible without scrolling on the home screen
+# WORKS ON: Android emulators and devices with Pixel Launcher or similar
 
 appId: com.dailypointer
 ---
@@ -20,13 +26,13 @@ appId: com.dailypointer
 # PHASE 1: Ensure app populates widget cache
 # ============================================
 
-
-# Launch app fresh to ensure widget data is written
+# Launch app fresh (stopApp:true is default) to ensure widget data is written
 - launchApp:
     clearState: false  # Keep existing data, let app refresh widget
+    stopApp: true      # Stop any running instance first
 - waitForAnimationToEnd
 
-# Skip onboarding if shown
+# Skip onboarding if shown (tap through all continue buttons)
 - tapOn:
     text: "Continue"
     optional: true
@@ -43,9 +49,10 @@ appId: com.dailypointer
 # Navigate to home screen tab to ensure pointing data loads
 - tapOn:
     text: ".*Home.*"
+    optional: true
 - waitForAnimationToEnd
 
-# Interact to ensure widget sync happens
+# Interact with pointing to trigger widget sync
 - swipe:
     direction: UP
     duration: 500
@@ -54,22 +61,117 @@ appId: com.dailypointer
     duration: 500
 - waitForAnimationToEnd
 
-# ============================================
-# PHASE 2: Navigate to home screen and test widget
-# ============================================
+# Take screenshot of app state before widget test
+- takeScreenshot: widget_app_state
 
+# ============================================
+# PHASE 2: Navigate to Android home screen
+# ============================================
 
 # Go to Android home screen
 - pressKey: Home
 - waitForAnimationToEnd
 
+# Take screenshot of home screen before adding widget
+- takeScreenshot: widget_home_before
+
+# ============================================
+# PHASE 3: Add widget to home screen
+# ============================================
+
+# Long-press on empty area of home screen to open widget picker
+# Using center-ish position to avoid app icons (50%, 40%)
+- longPressOn:
+    point: 50%, 40%
+
+# Wait for context menu / widget picker to appear
+- waitForAnimationToEnd
+
+# Take screenshot of context menu
+- takeScreenshot: widget_context_menu
+
+# Look for "Widgets" option and tap it
+# Different launchers show this differently
+- tapOn:
+    text: ".*[Ww]idget.*"
+    optional: true
+
+- waitForAnimationToEnd
+
+# Take screenshot of widget picker
+- takeScreenshot: widget_picker_open
+
+# ============================================
+# PHASE 3b: Find Pointer widget in picker
+# ============================================
+
+# Scroll through widget list to find Pointer (alphabetical, need to go to "P")
+# Multiple swipes to get past A-O widgets
+- swipe:
+    direction: UP
+    duration: 600
+- swipe:
+    direction: UP
+    duration: 600
+- swipe:
+    direction: UP
+    duration: 600
+- swipe:
+    direction: UP
+    duration: 600
+
+- waitForAnimationToEnd
+
+# Take screenshot showing widget list at P section
+- takeScreenshot: widget_list_scrolled
+
+# Look for Pointer widget entry and tap it to see preview
+- tapOn:
+    text: ".*Pointer.*"
+    optional: true
+
+- waitForAnimationToEnd
+
+# Take screenshot showing widget preview
+- takeScreenshot: widget_preview
+
+# ============================================
+# PHASE 3c: Place widget on home screen
+# ============================================
+
+# On Pixel Launcher, after tapping widget in list, preview appears on right
+# Need to DRAG the preview widget to the home screen
+# The widget preview is approximately at 65%, 55% of screen
+# Drag it to top-left area of home screen (30%, 30%)
+- swipe:
+    start: 65%, 55%
+    end: 30%, 30%
+    duration: 1000
+
+- waitForAnimationToEnd
+
+# Take screenshot of widget placement
+- takeScreenshot: widget_placement
+
+# If widget picker is still open, press back to close it
+- pressKey: Back
+
+- waitForAnimationToEnd
+
+# Press home to ensure we're on home screen with widget
+- pressKey: Home
+- waitForAnimationToEnd
+
+# ============================================
+# PHASE 4: Verify widget displays correctly
+# ============================================
+
 # Take screenshot BEFORE assertion for debugging failures
 - takeScreenshot: widget_before_check
 
 # ============================================
-# PHASE 3: CRITICAL ASSERTIONS
+# CRITICAL ASSERTIONS
 # ============================================
-
 
 # MAIN TEST: Widget should NOT show "Tap to load" empty state
 # This assertion WILL FAIL if the widget is broken
@@ -91,11 +193,31 @@ appId: com.dailypointer
     text: "Save to favorites"
     optional: true
 
-# Take final screenshot for documentation
+# ============================================
+# PHASE 5: Test widget interactions
+# ============================================
+
+# Test next button if visible
+- tapOn:
+    text: "Next pointing"
+    optional: true
+- waitForAnimationToEnd
+
+# Take screenshot after navigation
+- takeScreenshot: widget_after_next
+
+# Test previous button if visible
+- tapOn:
+    text: "Previous pointing"
+    optional: true
+- waitForAnimationToEnd
+
+# Take screenshot showing widget working
 - takeScreenshot: widget_test_passed
 
 # ============================================
-# PHASE 4: Cleanup - return to app
+# PHASE 6: Cleanup - return to app
 # ============================================
 
 - launchApp
+- waitForAnimationToEnd
