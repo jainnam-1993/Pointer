@@ -1,15 +1,16 @@
 /// Content providers - Pointings, favorites, affinity, and teaching filters
 ///
-/// Manages spiritual content: daily pointings with history navigation,
+/// Manages spiritual content: daily pointings with round-robin navigation,
 /// user favorites, tradition affinity learning, and teaching library filters.
 library;
+
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../services/affinity_service.dart';
-import '../services/pointing_selector.dart';
 import '../services/storage_service.dart';
 import '../services/widget_service.dart';
 import 'core_providers.dart';
@@ -25,104 +26,140 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 });
 
 // ============================================================
-// Current Pointing with History Navigation
+// Current Pointing with Round-Robin Navigation
 // ============================================================
 
-/// Current pointing state - persists across app restarts
+/// Current pointing state - persists across app restarts with round-robin order
 final currentPointingProvider =
     StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return CurrentPointingNotifier(storage);
 });
 
+/// Round-robin pointing navigation
+///
+/// Shuffles all pointings once on first launch, persists the order.
+/// Guarantees seeing all pointings before any repeats.
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
-  final PointingSelector _selector;
-  final List<Pointing> _history = [];
-  int _historyIndex = -1;
+  late List<String> _order;  // Shuffled pointing IDs
+  late int _index;           // Current position in order
 
-  CurrentPointingNotifier(this._storage, {PointingSelector? selector})
-      : _selector = selector ?? PointingSelector(),
-        super(_loadInitialPointing(_storage)) {
-    // Add initial pointing to history
-    _history.add(state);
-    _historyIndex = 0;
-    // Update widget with initial pointing
+  CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
+    _initializeOrder();
     _updateWidget(state);
   }
 
-  /// Load persisted pointing or get a random one if not found
-  static Pointing _loadInitialPointing(StorageService storage) {
+  /// Initialize or load persisted pointing order
+  void _initializeOrder() {
+    final savedOrder = _storage.pointingOrder;
+
+    if (savedOrder != null && savedOrder.isNotEmpty) {
+      // Validate saved order against current pointings (in case content changed)
+      final validIds = pointings.map((p) => p.id).toSet();
+      final validOrder = savedOrder.where((id) => validIds.contains(id)).toList();
+
+      // Add any new pointings not in saved order
+      final newIds = validIds.difference(validOrder.toSet());
+      if (newIds.isNotEmpty) {
+        validOrder.addAll(newIds.toList()..shuffle(Random()));
+      }
+
+      _order = validOrder;
+      _index = _storage.pointingIndex;
+
+      // Clamp index if order changed
+      if (_index >= _order.length) {
+        _index = 0;
+      }
+    } else {
+      // First launch: create shuffled order
+      _order = pointings.map((p) => p.id).toList()..shuffle(Random());
+      _index = 0;
+      _storage.setPointingOrder(_order);
+      _storage.setPointingIndex(_index);
+    }
+
+    // Sync index to current pointing ID
+    final currentId = state.id;
+    final currentIdx = _order.indexOf(currentId);
+    if (currentIdx >= 0) {
+      _index = currentIdx;
+      _storage.setPointingIndex(_index);
+    }
+  }
+
+  /// Load persisted pointing or get first from order
+  static Pointing _initializePointing(StorageService storage) {
+    // Try to restore from saved pointing ID
     final savedId = storage.currentPointingId;
     if (savedId != null) {
-      // Try to find the saved pointing by ID
       final saved = getPointingById(savedId);
-      if (saved != null) {
-        return saved;
+      if (saved != null) return saved;
+    }
+
+    // Try to restore from saved order + index
+    final savedOrder = storage.pointingOrder;
+    if (savedOrder != null && savedOrder.isNotEmpty) {
+      final idx = storage.pointingIndex;
+      if (idx < savedOrder.length) {
+        final pointing = getPointingById(savedOrder[idx]);
+        if (pointing != null) return pointing;
       }
     }
-    // Fall back to random pointing (no viewed filter on cold start)
-    return getRandomPointing();
+
+    // Fallback to first pointing (will be shuffled in _initializeOrder)
+    return pointings.first;
   }
 
+  /// Move to next pointing in round-robin order
   void nextPointing({Tradition? tradition, PointingContext? context}) {
-    // If we're in the middle of history, clear forward history
-    if (_historyIndex < _history.length - 1) {
-      _history.removeRange(_historyIndex + 1, _history.length);
+    _index = (_index + 1) % _order.length;
+
+    // Reshuffle when completing a full cycle
+    if (_index == 0) {
+      _reshuffleOrder();
     }
 
-    // Get new pointing using selector (filters out viewed today, respects time context)
-    final viewedToday = _storage.viewedTodayIds;
-    state = _selector.selectPointing(
-      all: pointings,
-      viewedToday: viewedToday,
-      respectTimeContext: true,
-    );
-    _history.add(state);
-    _historyIndex = _history.length - 1;
-
-    // Limit history to last 50 pointings
-    if (_history.length > 50) {
-      _history.removeAt(0);
-      _historyIndex--;
-    }
-
+    state = getPointingById(_order[_index]) ?? pointings.first;
     _persistAndUpdateWidget(state);
   }
 
+  /// Move to previous pointing in round-robin order
   void previousPointing() {
-    // Can't go back if we're at the beginning
-    if (_historyIndex <= 0) {
-      return;
-    }
-
-    // Navigate back in history
-    _historyIndex--;
-    state = _history[_historyIndex];
+    _index = (_index - 1 + _order.length) % _order.length;
+    state = getPointingById(_order[_index]) ?? pointings.first;
     _persistAndUpdateWidget(state);
   }
 
+  /// Jump to a specific pointing (e.g., from favorites or teacher sheet)
   void setPointing(Pointing pointing) {
-    // When manually setting, add to history like nextPointing
-    if (_historyIndex < _history.length - 1) {
-      _history.removeRange(_historyIndex + 1, _history.length);
+    // Find in order or add to current position
+    final idx = _order.indexOf(pointing.id);
+    if (idx >= 0) {
+      _index = idx;
     }
+    // If not in order (shouldn't happen), just update state without changing index
 
     state = pointing;
-    _history.add(state);
-    _historyIndex = _history.length - 1;
-
-    if (_history.length > 50) {
-      _history.removeAt(0);
-      _historyIndex--;
-    }
-
     _persistAndUpdateWidget(state);
   }
 
-  /// Persist current pointing ID and update widget
+  /// Reshuffle order for next cycle (keeps current pointing at index 0)
+  void _reshuffleOrder() {
+    final current = _order[_index];
+    _order.shuffle(Random());
+    // Move current to front so it's not immediately repeated
+    _order.remove(current);
+    _order.insert(0, current);
+    _index = 0;
+    _storage.setPointingOrder(_order);
+  }
+
+  /// Persist current state and update widget
   void _persistAndUpdateWidget(Pointing pointing) {
     _storage.setCurrentPointingId(pointing.id);
+    _storage.setPointingIndex(_index);
     _updateWidget(pointing);
   }
 
@@ -130,6 +167,10 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
   void _updateWidget(Pointing pointing) {
     WidgetService.updateWidget(pointing);
   }
+
+  /// Get current position info (for UI display if needed)
+  int get currentIndex => _index;
+  int get totalPointings => _order.length;
 }
 
 // ============================================================

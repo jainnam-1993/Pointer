@@ -90,7 +90,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   ├── providers/
 │   │   ├── core_providers.dart          # Foundation providers (SharedPreferences, storage, notifications, onboarding)
 │   │   ├── settings_providers.dart      # User preferences (zen mode, OLED, accessibility, theme, notifications)
-│   │   ├── content_providers.dart       # Content state (pointings with persistence, favorites, affinity, teaching filters)
+│   │   ├── content_providers.dart       # Content state (pointings, favorites, affinity, teaching filters)
 │   │   ├── subscription_providers.dart  # Subscription state (RevenueCat integration, freemium daily limits)
 │   │   └── providers.dart               # Riverpod providers (storage, navigation, TTS)
 │   ├── screens/
@@ -112,7 +112,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── article_tts_player.dart     # TTS playback controls
 │   │   └── audio_player_widget.dart    # Audio pointing player (guided readings)
 │   ├── services/
-│   │   ├── storage_service.dart            # SharedPreferences wrapper (currentPointingId persistence, viewedTodayIds, hasEverSaved milestone)
+│   │   ├── storage_service.dart            # SharedPreferences wrapper
 │   │   ├── notification_service.dart       # Notification scheduling (presets, time windows, quiet hours, DEBUG test notification)
 │   │   ├── usage_tracking_service.dart     # Daily pointing limit (freemium)
 │   │   ├── widget_service.dart             # Home widget data updates, theme sync via refreshWidget()
@@ -279,11 +279,8 @@ bundle exec fastlane android validate         # Validate service account credent
 - **Developer testing tools**: "Grant Alarm Permission" (Android 12+ exact alarm requirement), "Start 1-Min Timer" (foreground notification testing every 1 minute)
 - **Layout**: 8px bottom padding on settings ListView for proper spacing
 
-**Content Providers** (`lib/providers/content_providers.dart`): Content state management with affinity learning and filtering:
-- **Pointing navigation**: currentPointingProvider (StateNotifier) with 50-item history buffer, nextPointing()/previousPointing()/setPointing(), persists across app restarts via StorageService.currentPointingId, auto-updates home widget via _updateWidget()
-- **Pointing persistence**: _loadInitialPointing() restores last viewed pointing on cold start, falls back to random if not found
-- **Viewed filtering**: nextPointing() filters out viewedTodayIds via PointingSelector to avoid showing same pointing twice in one day
-- **Widget sync**: _persistAndUpdateWidget() saves state to SharedPreferences and calls WidgetService.updateWidget() on every navigation
+**Content Providers** (`lib/providers/content_providers.dart`): Content state management with round-robin navigation and filtering:
+- **Pointing navigation**: currentPointingProvider (StateNotifier) with round-robin order (shuffled once on first launch, persisted across restarts). nextPointing()/previousPointing() traverse the fixed order, setPointing() jumps to specific pointing. Guarantees seeing all pointings before any repeats. Auto-reshuffles at cycle end, persists `pointingOrder` (shuffled IDs) and `pointingIndex` via StorageService. Exposes currentIndex/totalPointings for UI.
 - **Tradition affinity**: affinityServiceProvider tracks user preferences via view/save counts with weighted scoring (saves = 3x views)
 - **Favorites**: favoritesProvider (StateNotifier) with toggle()/isFavorite(), persisted via StorageService
 - **Teaching filters**: TeachingFilterNotifier with multi-dimensional filters (lineage, topics Set, moods Set, teacher, type), apply() returns filtered teachings
@@ -569,7 +566,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **AppTextStyles** | `lib/theme/app_theme.dart` | Typography |
 | **Riverpod Providers** | `lib/providers/providers.dart` | State management |
 | **Settings Providers** | `lib/providers/settings_providers.dart` | User preferences (zen mode, OLED, accessibility, theme) |
-| **Content Providers** | `lib/providers/content_providers.dart` | Content state (pointings, favorites, affinity, teaching filters) |
+| **Content Providers** | `lib/providers/content_providers.dart` | Content state (round-robin pointings with persisted order/index, favorites, affinity, teaching filters) |
 | **Subscription Providers** | `lib/providers/subscription_providers.dart` | Subscription state (RevenueCat, freemium v2 model with unlimited quotes, testing flag kForcePremiumForTesting, widget premium gating) |
 | **WidgetService** | `lib/services/widget_service.dart` | Widget premium gating (setPremiumStatus, isPremiumEnabled with kForcePremiumForTesting support, populatePointingsCache with favorite interleaving, clearWidgetData for free users, syncs favorites from SharedPreferences) |
 | **GoRouter** | `lib/router.dart` | Navigation |
@@ -579,9 +576,10 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **ArticleTTSPlayer** | `lib/widgets/article_tts_player.dart` | Playback controls for article audio |
 | **AudioPlayerWidget** | `lib/widgets/audio_player_widget.dart` | Audio pointing player (guided readings, premium-gated) |
 | **Usage Tracking** | `lib/providers/providers.dart` | `usageTrackingServiceProvider`, `dailyUsageProvider` for freemium limits |
-| **PointingSelector** | `lib/services/pointing_selector.dart` | Time-of-day aware pointing selection (TimeContext enum, respects viewed-today tracking, 30% preference for time-specific pointings) |
+| **Round-Robin Navigation** | `lib/providers/content_providers.dart` | CurrentPointingNotifier with persisted shuffled order. First launch shuffles all pointing IDs, persists `pointingOrder` + `pointingIndex`. next/previous traverse fixed order with wrap-around. Reshuffles at cycle end (keeps current at index 0 to avoid back-to-back repeat). Guarantees all pointings seen before any repeats. StorageKeys: `pointer_pointing_order`, `pointer_pointing_index`. |
+| **PointingSelector** | `lib/services/pointing_selector.dart` | Time-of-day aware pointing selection (TimeContext enum, respects viewed-today tracking, 30% preference for time-specific pointings) - NOTE: Currently unused, replaced by round-robin |
 | **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
-| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, defaults: theme='system', hapticFeedback=true, autoAdvance=false, currentPointingId persistence, viewedTodayIds filtering via midnight-based date check, hasEverSaved milestone tracking) |
+| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, pointingOrder/pointingIndex for round-robin, defaults: theme='system', hapticFeedback=true, autoAdvance=false) |
 | **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
 | **Accessibility Labels** | Android layouts + Flutter widgets | Android: All interactive widgets require `android:contentDescription` attributes (e.g., "Refresh pointings", "Previous pointing", "Next pointing", "Save to favorites"). Flutter: Semantics widgets should have clear directional hints (e.g., "Swipe up for next pointing, down for previous" not vague "swipe up or down for actions"). Ensures screen reader users understand widget purpose and gesture directions. |
 | **Teacher Model & Database** | `lib/models/teacher.dart` + `lib/data/teachers.dart` | Teacher info system (name, bio, dates, tradition, tags), 9 teachers database, getTeacher(name), getPointingsByTeacher(name) |

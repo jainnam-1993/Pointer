@@ -11,6 +11,9 @@ class StorageKeys {
   static const subscriptionTier = 'pointer_subscription';
   static const hasEverSaved = 'pointer_has_ever_saved';
   static const currentPointingId = 'pointer_current_pointing_id';
+  // Round-robin pointing order (shuffled once, persists across restarts)
+  static const pointingOrder = 'pointer_pointing_order';
+  static const pointingIndex = 'pointer_pointing_index';
 }
 
 /// App settings model
@@ -187,6 +190,22 @@ class StorageService {
     }
   }
 
+  // Round-robin pointing order (shuffled list of IDs, persists across restarts)
+  List<String>? get pointingOrder {
+    final stored = _prefs.getString(StorageKeys.pointingOrder);
+    if (stored == null) return null;
+    return List<String>.from(jsonDecode(stored));
+  }
+
+  Future<void> setPointingOrder(List<String> order) =>
+      _prefs.setString(StorageKeys.pointingOrder, jsonEncode(order));
+
+  // Current index in the pointing order
+  int get pointingIndex => _prefs.getInt(StorageKeys.pointingIndex) ?? 0;
+
+  Future<void> setPointingIndex(int index) =>
+      _prefs.setInt(StorageKeys.pointingIndex, index);
+
   // Clear all
   Future<void> clearAll() async {
     await _prefs.remove(StorageKeys.onboardingCompleted);
@@ -197,5 +216,7 @@ class StorageService {
     await _prefs.remove(StorageKeys.subscriptionTier);
     await _prefs.remove(StorageKeys.hasEverSaved);
     await _prefs.remove(StorageKeys.currentPointingId);
+    await _prefs.remove(StorageKeys.pointingOrder);
+    await _prefs.remove(StorageKeys.pointingIndex);
   }
 }

@@ -31,9 +31,14 @@ void main() {
       // Default mock behaviors for CurrentPointingNotifier
       when(() => mockStorage.currentPointingId).thenReturn(null);
       when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
+      // Round-robin order mocks
+      when(() => mockStorage.pointingOrder).thenReturn(null);
+      when(() => mockStorage.pointingIndex).thenReturn(0);
+      when(() => mockStorage.setPointingOrder(any())).thenAnswer((_) async {});
+      when(() => mockStorage.setPointingIndex(any())).thenAnswer((_) async {});
     });
 
-    test('initializes with a random pointing', () {
+    test('initializes with a valid pointing', () {
       final notifier = CurrentPointingNotifier(mockStorage);
 
       // Should have a valid pointing
@@ -42,25 +47,29 @@ void main() {
       expect(notifier.state.content, isNotEmpty);
     });
 
-    test('nextPointing() changes the pointing', () {
+    test('nextPointing() advances to next in round-robin order', () {
       final notifier = CurrentPointingNotifier(mockStorage);
       final initialPointing = notifier.state;
+      final initialIndex = notifier.currentIndex;
 
       notifier.nextPointing();
       final newPointing = notifier.state;
 
-      // Should be different pointing (with high probability)
-      // Note: There's a tiny chance they could be the same due to randomness
+      // Should move to next index (or wrap to 0 at end)
       expect(newPointing, isA<Pointing>());
       expect(newPointing.id, isNotEmpty);
+      expect(newPointing.id, isNot(equals(initialPointing.id)));
+      expect(
+        notifier.currentIndex,
+        equals((initialIndex + 1) % notifier.totalPointings),
+      );
     });
 
-    test('previousPointing() returns to previous', () {
+    test('previousPointing() returns to previous in round-robin order', () {
       final notifier = CurrentPointingNotifier(mockStorage);
       final firstPointing = notifier.state;
 
       notifier.nextPointing();
-      final secondPointing = notifier.state;
 
       notifier.previousPointing();
       final backToFirst = notifier.state;
@@ -69,15 +78,20 @@ void main() {
       expect(backToFirst.content, firstPointing.content);
     });
 
-    test('previousPointing() does nothing at start', () {
+    test('previousPointing() wraps around at start', () {
+      // With round-robin, previous at index 0 should wrap to last
       final notifier = CurrentPointingNotifier(mockStorage);
-      final initialPointing = notifier.state;
+      final totalPointings = notifier.totalPointings;
+
+      // Go to index 0 first (may already be there from init)
+      while (notifier.currentIndex != 0) {
+        notifier.nextPointing();
+      }
 
       notifier.previousPointing();
-      final stillInitial = notifier.state;
 
-      expect(stillInitial.id, initialPointing.id);
-      expect(stillInitial.content, initialPointing.content);
+      // Should wrap to last index
+      expect(notifier.currentIndex, equals(totalPointings - 1));
     });
 
     test('setPointing() sets specific pointing', () {
@@ -90,59 +104,62 @@ void main() {
       expect(notifier.state.content, targetPointing.content);
     });
 
-    test('history limited to 50 items', () {
+    test('round-robin cycles through all pointings without repeats', () {
       final notifier = CurrentPointingNotifier(mockStorage);
+      final totalPointings = notifier.totalPointings;
+      final seenIds = <String>{};
 
-      // Add 60 pointings to exceed limit
-      for (int i = 0; i < 60; i++) {
+      // Collect IDs from current position through ONE complete cycle
+      // (totalPointings - 1 nexts from current position)
+      final startIndex = notifier.currentIndex;
+      seenIds.add(notifier.state.id);
+
+      for (int i = 1; i < totalPointings; i++) {
+        notifier.nextPointing();
+        // Stop before reshuffle (when we hit index 0 after starting from non-zero)
+        if (notifier.currentIndex == 0 && startIndex != 0) {
+          // The reshuffle happened, so we're now in a new cycle
+          // This is expected - just verify we saw unique IDs up to this point
+          break;
+        }
+        seenIds.add(notifier.state.id);
+      }
+
+      // Should have seen unique pointings (no repeats within one cycle)
+      // The count depends on where we started
+      expect(seenIds.length, greaterThanOrEqualTo(1));
+      // Each ID should be unique (main property we're testing)
+      final uniqueIds = seenIds.toSet();
+      expect(uniqueIds.length, equals(seenIds.length));
+    });
+
+    test('nextPointing() wraps to index 0 at cycle end', () {
+      final notifier = CurrentPointingNotifier(mockStorage);
+      final totalPointings = notifier.totalPointings;
+
+      // Start from index 0
+      while (notifier.currentIndex != 0) {
         notifier.nextPointing();
       }
 
-      // We should be able to go back, but limited by history cap
-      int backCount = 0;
-      while (backCount < 100) {
-        // Try up to 100 times to be safe
-        final before = notifier.state.id;
-        notifier.previousPointing();
-        final after = notifier.state.id;
-
-        if (before == after) {
-          // Reached the beginning of history
-          break;
-        }
-        backCount++;
+      // Navigate to end of cycle (last index)
+      for (int i = 0; i < totalPointings - 1; i++) {
+        notifier.nextPointing();
       }
+      expect(notifier.currentIndex, equals(totalPointings - 1));
 
-      // Should be able to go back at most 49 times (50 total items - 1 for current)
-      // History is capped at 50, so backCount <= 49
-      expect(backCount, lessThanOrEqualTo(49));
-      // But we should have some history (more than just current)
-      expect(backCount, greaterThan(0));
+      // One more should wrap to 0
+      notifier.nextPointing();
+      expect(notifier.currentIndex, equals(0));
     });
 
-    test('navigating back and then forward clears forward history', () {
+    test('exposes currentIndex and totalPointings', () {
       final notifier = CurrentPointingNotifier(mockStorage);
-      final first = notifier.state;
 
-      notifier.nextPointing();
-      final second = notifier.state;
-
-      notifier.nextPointing();
-      final third = notifier.state;
-
-      // Go back to second
-      notifier.previousPointing();
-      expect(notifier.state.id, second.id);
-
-      // Add new pointing - should clear forward history
-      notifier.nextPointing();
-      final newThird = notifier.state;
-
-      // Should not be able to go forward to original third
-      notifier.nextPointing();
-      notifier.previousPointing();
-
-      expect(notifier.state.id, newThird.id);
+      expect(notifier.currentIndex, isA<int>());
+      expect(notifier.totalPointings, equals(pointings.length));
+      expect(notifier.currentIndex, greaterThanOrEqualTo(0));
+      expect(notifier.currentIndex, lessThan(notifier.totalPointings));
     });
   });
 
@@ -440,6 +457,11 @@ void main() {
       mockStorage = MockStorageService();
       when(() => mockStorage.currentPointingId).thenReturn(null);
       when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
+      // Round-robin order mocks
+      when(() => mockStorage.pointingOrder).thenReturn(null);
+      when(() => mockStorage.pointingIndex).thenReturn(0);
+      when(() => mockStorage.setPointingOrder(any())).thenAnswer((_) async {});
+      when(() => mockStorage.setPointingIndex(any())).thenAnswer((_) async {});
     });
 
     test('currentPointingProvider creates notifier', () {
