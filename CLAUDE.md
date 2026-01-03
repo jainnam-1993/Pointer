@@ -18,9 +18,22 @@ flutter test --concurrency=8   # Unit tests (8 parallel)
 flutter test --coverage        # With coverage report
 flutter test integration_test  # Integration tests
 flutter test integration_test/screenshot_test.dart  # Screenshot tests (basic IntegrationTest)
-./scripts/screenshot_test.sh   # Automated screenshot test runner (optional wrapper)
 flutter test --update-goldens  # Generate/update golden test baselines
 flutter test test/golden/      # Run golden tests (visual regression)
+
+# E2E Testing (Maestro) - Cross-platform UI automation
+maestro test maestro/flows/00_smoke_test.yaml       # Quick health check (~30s)
+maestro test maestro/flows/01_navigation.yaml       # Tab navigation flow
+maestro test maestro/flows/02_onboarding.yaml       # First-time user flow
+maestro test maestro/flows/03_freemium_paywall.yaml # Premium upgrade journey
+maestro test maestro/flows/04_home_interactions.yaml # Swipes, taps, saves
+maestro test maestro/flows/05_settings.yaml         # Settings & notifications
+maestro test maestro/flows/06_screenshots_all.yaml  # Store screenshot capture
+maestro test maestro/flows/07_accessibility_audit.yaml # Element accessibility check
+maestro test maestro/flows/08_inquiry_session.yaml  # Guided inquiry session
+maestro test maestro/flows/09_library_content.yaml  # Library articles & teachings
+maestro test maestro/flows/                         # Run all flows (~5 min)
+# Screenshots output to: maestro/screenshots/
 
 # Build
 flutter build apk              # Android APK
@@ -31,26 +44,9 @@ flutter build appbundle        # Android App Bundle (Play Store)
 flutter analyze                # Static analysis
 flutter pub get                # Install dependencies
 
-# Android Testing (ADB Helper)
-./scripts/adb_test_helper.sh tap X_PCT Y_PCT           # Tap at percentage coordinates
-./scripts/adb_test_helper.sh swipe X1 Y1 X2 Y2 [MS]   # Swipe gesture
-./scripts/adb_test_helper.sh click "content-desc"     # Tap element by accessibility label
-./scripts/adb_test_helper.sh list                     # List all accessible elements
-./scripts/adb_test_helper.sh analyze                  # Analyze screen layout usage
-./scripts/adb_test_helper.sh screenshot [file]        # Capture device screenshot (reliable two-step method)
-./scripts/adb_test_helper.sh home|library|settings    # Navigate to specific tab
-# Screenshot note: Uses device-side capture + pull (avoids binary stdout corruption)
-
-# iOS Testing (iOS Simulator Helper)
-./scripts/ios_test_helper.sh tap X_PCT Y_PCT           # Tap at percentage coordinates
-./scripts/ios_test_helper.sh swipe X1 Y1 X2 Y2 [MS]   # Swipe gesture
-./scripts/ios_test_helper.sh click "label"            # Tap element by accessibility label
-./scripts/ios_test_helper.sh find "label"             # Find element by accessibility label
-./scripts/ios_test_helper.sh list                     # List all accessible elements
-./scripts/ios_test_helper.sh analyze                  # Analyze screen layout usage
-./scripts/ios_test_helper.sh screenshot [file]        # Capture simulator screenshot
-./scripts/ios_test_helper.sh launch [bundle]          # Launch app by bundle ID
-# Requires: brew install idb-companion (Facebook's iOS Device Bridge)
+# Legacy Device Testing (DEPRECATED - use Maestro instead)
+# scripts/adb_test_helper.sh - Android device testing (replaced by Maestro)
+# scripts/ios_test_helper.sh - iOS simulator testing (replaced by Maestro)
 
 # Android Build Notes
 # - Kotlin 2.3.0, Android Gradle Plugin 8.13.2
@@ -161,10 +157,22 @@ bundle exec fastlane android validate         # Validate service account credent
 ├── integration_test/
 │   ├── screenshot_test.dart        # IntegrationTest screenshot tests (8 testWidgets)
 │   └── screenshot_helpers.dart     # Screenshot capture + UX issue tracking
-├── scripts/
-│   ├── adb_test_helper.sh           # ADB utility for screen-size independent Android testing (percentage-based coordinates, UIAutomator element finding)
-│   ├── ios_test_helper.sh           # iOS Simulator utility for screen-size independent testing (percentage-based coordinates, idb accessibility element finding)
-│   └── screenshot_test.sh           # Automated screenshot test runner
+├── maestro/                      # E2E testing (Maestro) - cross-platform
+│   ├── config.yaml               # Maestro configuration
+│   ├── flows/                    # Test flows (YAML)
+│   │   ├── 00_smoke_test.yaml    # Quick health check
+│   │   ├── 01_navigation.yaml    # Tab navigation
+│   │   ├── 02_onboarding.yaml    # First-time user flow
+│   │   ├── 03_freemium_paywall.yaml # Premium upgrade
+│   │   ├── 04_home_interactions.yaml # Swipes, taps, saves
+│   │   ├── 05_settings.yaml      # Settings & notifications
+│   │   ├── 06_screenshots_all.yaml # Store screenshots
+│   │   └── 07_accessibility_audit.yaml # Element checks
+│   └── screenshots/              # Test output
+├── scripts/                      # DEPRECATED - use Maestro
+│   ├── adb_test_helper.sh        # (deprecated) Android device testing
+│   ├── ios_test_helper.sh        # (deprecated) iOS simulator testing
+│   └── screenshot_test.sh        # (deprecated) Screenshot runner
 ├── docs/
 │   ├── PLAY_STORE_RELEASE.md   # Play Store release checklist
 │   ├── PRIVACY_POLICY.md        # Privacy policy (markdown, effective Jan 2 2025)
@@ -308,9 +316,20 @@ bundle exec fastlane android validate         # Validate service account credent
 - **Riverpod test setup**: Create `ProviderScope` with overrides for mocked dependencies (SharedPreferences, services, state providers). Mock SharedPreferences before provider initialization.
 - **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`.
 
-**Integration tests** (`integration_test/`): E2E flows using patrol framework.
+**Integration tests** (`integration_test/`): State-controlled E2E flows using Flutter IntegrationTest (for Riverpod state injection).
 
-**Screenshot tests** (`integration_test/screenshot_test.dart`): Visual regression using Flutter IntegrationTest framework.
+**E2E tests** (`maestro/`): Cross-platform UI automation using Maestro (replaced platform-specific scripts).
+
+- **Framework**: Maestro CLI with YAML flows
+- **Coverage**: 8 flows covering smoke test, navigation, onboarding, freemium, interactions, settings, screenshots, accessibility
+- **Cross-platform**: Same flows run on iOS and Android
+- **CI/CD**: `.github/workflows/maestro.yml` for automated testing
+- **Screenshots**: Output to `maestro/screenshots/` directory
+- **Usage**: `maestro test maestro/flows/` to run all flows
+- **When to use**: Black-box E2E testing, store screenshot generation, cross-platform parity verification
+- **When NOT to use**: State-controlled testing (use Flutter IntegrationTest), WCAG compliance (use Flutter accessibility tests)
+
+**Screenshot tests** (`integration_test/screenshot_test.dart`): State-controlled visual regression using Flutter IntegrationTest framework.
 
 - **Framework**: IntegrationTestWidgetsFlutterBinding (NOT Patrol - uses standard Flutter integration testing)
 - **Coverage**: 8 testWidgets across 3 test groups

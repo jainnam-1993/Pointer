@@ -10,10 +10,10 @@ Step-by-step guide to publish Pointer on Google Play Store.
 | Version | ✅ | 1.0.0+1 |
 | App Icons | ✅ | flutter_launcher_icons configured |
 | Adaptive Icons | ✅ | White background + enso foreground |
-| Release Signing | ❌ | Using debug keys |
-| Privacy Policy | ❌ | Placeholder URL `pointer.app/privacy` |
-| Terms of Service | ❌ | Placeholder URL `pointer.app/terms` |
-| Store Assets | ❌ | Need feature graphic, screenshots |
+| Release Signing | ✅ | `upload-keystore.jks` configured |
+| Privacy Policy | ✅ | `jainnam-1993.github.io/Pointer/legal/privacy.html` |
+| Terms of Service | ✅ | `jainnam-1993.github.io/Pointer/legal/terms.html` |
+| Store Assets | ✅ | Feature graphic + 12 screenshots (dark/light) |
 
 ---
 
