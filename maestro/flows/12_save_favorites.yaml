@@ -1,0 +1,74 @@
+# Save Favorites Flow - Long-press to save pointing
+# Run: maestro test maestro/flows/12_save_favorites.yaml
+#
+# Tests: Long-press save gesture, first-save celebration, save confirmation
+# Note: Favorites sync to home widget tested in 16_widget_interactions.yaml
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Go to home tab
+- tapOn:
+    text: ".*Home.*"
+
+# === INITIAL STATE ===
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "favorites_01_initial"
+
+# === FIRST SAVE (triggers first-save celebration) ===
+# Long-press on the pointing card to save
+- longPressOn:
+    point: "50%,40%"
+- takeScreenshot: "favorites_02_first_save"
+
+# Check for first-save celebration (confetti animation)
+# Note: Visual celebration may be brief, screenshot captures the moment
+
+# === SAVE CONFIRMATION ===
+# Save confirmation overlay should appear
+- assertVisible:
+    text: ".*saved.*"
+    optional: true
+- assertVisible:
+    text: ".*favorite.*"
+    optional: true
+- takeScreenshot: "favorites_03_confirmation"
+
+# === NAVIGATE TO NEW POINTING ===
+- tapOn:
+    text: "Next Pointing"
+- takeScreenshot: "favorites_04_new_pointing"
+
+# === SAVE SECOND POINTING ===
+- longPressOn:
+    point: "50%,40%"
+- takeScreenshot: "favorites_05_second_save"
+
+# === UNSAVE (toggle off) ===
+# Long-press again on same pointing should unsave it
+- longPressOn:
+    point: "50%,40%"
+- takeScreenshot: "favorites_06_unsaved"
+
+# === VERIFY FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "favorites_07_complete"

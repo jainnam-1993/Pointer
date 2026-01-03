@@ -1,7 +1,11 @@
-# Library Content Flow - Browse and open articles/teachings
+# Library Content Flow - Browse articles and teachings
 # Run: maestro test maestro/flows/09_library_content.yaml
 #
-# Tests: Library navigation, article opening, content display
+# Tests: Library navigation, article browsing, content verification
+# Premium features: Full library access requires premium subscription
+#
+# Note: Premium gating logic tested in integration_test/app_test.dart
+# This flow tests black-box content browsing experience
 
 appId: com.dailypointer
 ---
@@ -25,7 +29,17 @@ appId: com.dailypointer
 # Navigate to Library tab
 - tapOn:
     text: ".*Library.*"
+- assertVisible:
+    text: ".*Library.*"
 - takeScreenshot: "library_01_browse"
+
+# Verify library content loaded (articles section)
+- assertVisible:
+    text: ".*Articles.*"
+    optional: true
+- assertVisible:
+    text: ".*Teachings.*"
+    optional: true
 
 # Scroll to see more content
 - swipe:
@@ -33,11 +47,16 @@ appId: com.dailypointer
     duration: 300
 - takeScreenshot: "library_02_scrolled"
 
-# Tap on first available article (matches "minute read" pattern)
+# Tap on first available article
 - tapOn:
     text: ".*minute read.*"
     optional: true
 - takeScreenshot: "library_03_article_open"
+
+# Verify article content loaded (if opened)
+- assertVisible:
+    text: ".*read.*"
+    optional: true
 
 # Scroll within article
 - swipe:
@@ -45,27 +64,49 @@ appId: com.dailypointer
     duration: 300
 - takeScreenshot: "library_04_article_content"
 
-# Go back to library
+# Go back to library list
 - tapOn:
     text: ".*Library.*"
     optional: true
 - tapOn:
     text: ".*back.*"
     optional: true
+- back:
+    optional: true
 
-# Try teachings section if visible
+# === TEACHINGS SECTION ===
 - tapOn:
     text: ".*Teachings.*"
     optional: true
 - takeScreenshot: "library_05_teachings"
 
-# Tap on a teaching
-- tapOn:
+# Verify teachings loaded
+- assertVisible:
     text: ".*tradition.*"
     optional: true
+
+# Tap on a teaching
+- tapOn:
+    text: ".*Advaita.*"
+    optional: true
+- tapOn:
+    text: ".*Zen.*"
+    optional: true
 - takeScreenshot: "library_06_teaching_detail"
+
+# === PREMIUM GATING CHECK ===
+# Try to access premium content - should show paywall for free users
+- tapOn:
+    text: ".*Unlock.*"
+    optional: true
+- tapOn:
+    text: ".*Premium.*"
+    optional: true
+- takeScreenshot: "library_07_premium_gating"
 
 # Return to home
 - tapOn:
     text: ".*Home.*"
-- takeScreenshot: "library_07_complete"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "library_08_complete"

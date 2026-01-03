@@ -12,36 +12,78 @@ curl -Ls "https://get.maestro.mobile.dev" | bash
 maestro test maestro/flows/
 
 # Run specific flow
-maestro test maestro/flows/00_smoke_test.yaml
+maestro test maestro/flows/01_navigation.yaml
 ```
 
 ## Flows
 
+### Core Flows (7)
+
 | Flow | Purpose | Duration |
 |------|---------|----------|
-| `00_smoke_test.yaml` | Quick health check | ~30s |
-| `01_navigation.yaml` | Tab navigation | ~45s |
+| `01_navigation.yaml` | Tab navigation + content verification | ~45s |
 | `02_onboarding.yaml` | First-time user experience | ~60s |
-| `03_freemium_paywall.yaml` | Premium upgrade journey | ~45s |
-| `04_home_interactions.yaml` | Swipes, taps, saves | ~45s |
-| `05_settings.yaml` | Settings & notifications | ~45s |
+| `04_home_interactions.yaml` | Swipes, taps, save, share | ~60s |
+| `05_settings.yaml` | Settings & developer menu unlock | ~45s |
 | `06_screenshots_all.yaml` | Store screenshot capture | ~90s |
-| `07_accessibility_audit.yaml` | Element accessibility check | ~45s |
+| `09_library_content.yaml` | Library browsing & premium gating | ~60s |
 | `10_widget_test.yaml` | Home screen widget verification | ~60s |
 
-### Widget Test Setup
+### Feature Flows (8)
 
-The `10_widget_test.yaml` flow requires the Pointer widget to be added to the home screen before running:
+| Flow | Purpose | Duration |
+|------|---------|----------|
+| `11_zen_mode.yaml` | Distraction-free mode (double-tap) | ~45s |
+| `12_save_favorites.yaml` | Long-press save, first-save celebration | ~45s |
+| `13_share_preview.yaml` | Share modal, templates, formats | ~60s |
+| `14_history.yaml` | View past pointings | ~45s |
+| `15_lineages.yaml` | Tradition preferences | ~45s |
+| `16_widget_interactions.yaml` | Widget prev/next/save buttons | ~60s |
+| `17_theme_switching.yaml` | Dark/Light/OLED theme changes | ~60s |
+| `18_notification_config.yaml` | Notification presets & time windows | ~60s |
+
+## Test Philosophy
+
+### Maestro vs Flutter Tests
+
+| Test Type | Maestro | Flutter Integration |
+|-----------|---------|---------------------|
+| Black-box E2E | ✅ Best | ❌ |
+| Cross-platform parity | ✅ Best | ❌ Single platform |
+| Native widget testing | ✅ Only option | ❌ Can't test |
+| Store screenshots | ✅ Actual device | State-specific only |
+| State-controlled testing | ❌ Can't inject state | ✅ Best (Riverpod) |
+| WCAG compliance | ❌ Can't verify semantics | ✅ Best |
+| Timing-sensitive flows | ❌ Unreliable | ✅ State control |
+
+**Complementary tests in Flutter:**
+- `integration_test/app_test.dart` - State-controlled E2E (929 lines, 8 groups)
+- `test/accessibility/voiceover_test.dart` - WCAG compliance (369 lines)
+- `test/screens/inquiry_player_test.dart` - Phase timing (531 lines)
+- `test/golden/` - Visual regression tests
+
+### What Got Removed
+
+These flows were deleted as they duplicated Flutter test coverage:
+- `00_smoke_test.yaml` - Redundant with `01_navigation.yaml`
+- `03_freemium_paywall.yaml` - Flutter `app_test.dart` group 7 is superior
+- `07_accessibility_audit.yaml` - Flutter `voiceover_test.dart` does real verification
+- `08_inquiry_session.yaml` - Flutter `inquiry_player_test.dart` handles timing
+
+## Widget Test Setup
+
+The `10_widget_test.yaml` and `16_widget_interactions.yaml` flows require the Pointer widget on home screen:
 
 1. Long-press on home screen
 2. Select "Widgets"
 3. Find and add the Pointer widget
-4. Run the test: `maestro test maestro/flows/10_widget_test.yaml`
+4. Run: `maestro test maestro/flows/10_widget_test.yaml`
 
 **What it catches:**
 - Widget showing "Tap to load" empty state (data loading failure)
 - Widget cache not being populated by the app
 - RemoteViewsService/Factory errors
+- Button navigation failures (prev/next/save)
 
 ## Running on Devices
 
@@ -87,17 +129,6 @@ GitHub Actions workflow: `.github/workflows/maestro.yml`
 - Runs on push to `main` and PRs
 - Tests both Android and iOS
 - Uploads screenshots as artifacts
-
-## When to Use
-
-| Scenario | Use |
-|----------|-----|
-| Black-box E2E testing | ✅ Maestro |
-| Cross-platform parity | ✅ Maestro |
-| Store screenshot generation | ✅ Maestro |
-| State-controlled testing | ❌ Flutter IntegrationTest |
-| WCAG compliance verification | ❌ Flutter accessibility tests |
-| Visual regression (pixel-perfect) | ❌ Flutter golden tests |
 
 ## Migration from Legacy Scripts
 

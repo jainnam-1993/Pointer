@@ -1,0 +1,119 @@
+# Share Preview Flow - Share modal with templates and formats
+# Run: maestro test maestro/flows/13_share_preview.yaml
+#
+# Tests: Share modal, template selection, format selection, export options
+# Templates: Minimal, Classic, Gradient, Tradition
+# Formats: Square, Story
+# Export: Clipboard, Text, Day One
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Go to home tab
+- tapOn:
+    text: ".*Home.*"
+
+# === INITIAL STATE ===
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "share_01_initial"
+
+# === OPEN SHARE MODAL ===
+# Tap share icon in the header
+- tapOn:
+    id: "share_button"
+    optional: true
+- tapOn:
+    text: ".*share.*"
+    optional: true
+- takeScreenshot: "share_02_modal_open"
+
+# Verify share modal opened
+- assertVisible:
+    text: "Share"
+    optional: true
+
+# === TEMPLATE SELECTION ===
+# Try different templates
+- tapOn:
+    text: ".*Minimal.*"
+    optional: true
+- takeScreenshot: "share_03_template_minimal"
+
+- tapOn:
+    text: ".*Classic.*"
+    optional: true
+- takeScreenshot: "share_04_template_classic"
+
+- tapOn:
+    text: ".*Gradient.*"
+    optional: true
+- takeScreenshot: "share_05_template_gradient"
+
+- tapOn:
+    text: ".*Tradition.*"
+    optional: true
+- takeScreenshot: "share_06_template_tradition"
+
+# === FORMAT SELECTION ===
+# Toggle between Square and Story formats
+- tapOn:
+    text: ".*Square.*"
+    optional: true
+- takeScreenshot: "share_07_format_square"
+
+- tapOn:
+    text: ".*Story.*"
+    optional: true
+- takeScreenshot: "share_08_format_story"
+
+# === EXPORT OPTIONS ===
+# Open export menu (three dots / more options)
+- tapOn:
+    text: ".*more.*"
+    optional: true
+- tapOn:
+    id: "export_menu"
+    optional: true
+- takeScreenshot: "share_09_export_menu"
+
+# Copy to clipboard option
+- tapOn:
+    text: ".*Copy.*"
+    optional: true
+- tapOn:
+    text: ".*clipboard.*"
+    optional: true
+- takeScreenshot: "share_10_copied"
+
+# === CLOSE MODAL ===
+- tapOn:
+    text: ".*close.*"
+    optional: true
+- tapOn:
+    id: "close_button"
+    optional: true
+- back:
+    optional: true
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "share_11_complete"

@@ -1,0 +1,149 @@
+# Notification Configuration Flow - Presets, time windows, frequency
+# Run: maestro test maestro/flows/18_notification_config.yaml
+#
+# Tests: Notification settings, presets, time windows, test notification
+# Presets: Morning, All day, Evening, Minimal, Test (developer)
+# Config: Start/end time, frequency (30min - 12hrs), quiet hours
+#
+# Note: Android 12+ requires exact alarm permission for notifications
+
+appId: com.dailypointer
+---
+- launchApp
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- assertVisible:
+    text: ".*Settings.*"
+- takeScreenshot: "notif_01_settings"
+
+# === OPEN NOTIFICATION SETTINGS ===
+- tapOn:
+    text: ".*Notification.*"
+- takeScreenshot: "notif_02_notification_settings"
+
+# Verify notification settings opened
+- assertVisible:
+    text: ".*Notification.*"
+    optional: true
+
+# === NOTIFICATION TOGGLE ===
+# Toggle notifications on/off
+- tapOn:
+    text: ".*Enable.*"
+    optional: true
+- tapOn:
+    id: "notification_toggle"
+    optional: true
+- takeScreenshot: "notif_03_toggled"
+
+# === PRESET: MORNING ===
+- tapOn:
+    text: ".*Morning.*"
+    optional: true
+- takeScreenshot: "notif_04_morning_preset"
+
+# === PRESET: ALL DAY ===
+- tapOn:
+    text: ".*All.*day.*"
+    optional: true
+- takeScreenshot: "notif_05_all_day_preset"
+
+# === PRESET: EVENING ===
+- tapOn:
+    text: ".*Evening.*"
+    optional: true
+- takeScreenshot: "notif_06_evening_preset"
+
+# === PRESET: MINIMAL ===
+- tapOn:
+    text: ".*Minimal.*"
+    optional: true
+- takeScreenshot: "notif_07_minimal_preset"
+
+# === CUSTOM CONFIGURATION ===
+# Scroll to see more options
+- swipe:
+    direction: UP
+    duration: 300
+- takeScreenshot: "notif_08_more_options"
+
+# === TIME WINDOW ===
+# Tap to configure start time
+- tapOn:
+    text: ".*Start.*"
+    optional: true
+- tapOn:
+    text: ".*from.*"
+    optional: true
+- takeScreenshot: "notif_09_start_time"
+
+# Close time picker
+- tapOn:
+    text: ".*OK.*"
+    optional: true
+- tapOn:
+    text: ".*Done.*"
+    optional: true
+
+# Tap to configure end time
+- tapOn:
+    text: ".*End.*"
+    optional: true
+- tapOn:
+    text: ".*to.*"
+    optional: true
+- takeScreenshot: "notif_10_end_time"
+
+# Close time picker
+- tapOn:
+    text: ".*OK.*"
+    optional: true
+- tapOn:
+    text: ".*Done.*"
+    optional: true
+
+# === FREQUENCY ===
+- tapOn:
+    text: ".*Frequency.*"
+    optional: true
+- tapOn:
+    text: ".*hour.*"
+    optional: true
+- takeScreenshot: "notif_11_frequency"
+
+# === QUIET HOURS ===
+- tapOn:
+    text: ".*Quiet.*"
+    optional: true
+- takeScreenshot: "notif_12_quiet_hours"
+
+# === BACK TO SETTINGS ===
+- back:
+    optional: true
+- tapOn:
+    text: ".*Settings.*"
+    optional: true
+- takeScreenshot: "notif_13_back_settings"
+
+# === FINAL STATE ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: "Next Pointing"
+- takeScreenshot: "notif_14_complete"
