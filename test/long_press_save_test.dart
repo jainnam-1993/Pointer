@@ -24,11 +24,13 @@ void main() {
     // Disable animations to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
     SaveConfirmation.disableAutoDismiss = true;
+    HomeScreen.disableAutoAdvanceForTesting = true;
   });
 
   tearDownAll(() {
     AnimatedGradient.disableAnimations = false;
     SaveConfirmation.disableAutoDismiss = false;
+    HomeScreen.disableAutoAdvanceForTesting = false;
   });
 
   setUp(() {
@@ -43,8 +45,10 @@ void main() {
       if (key == 'pointer_has_ever_saved') return true;
       return null;
     });
+    when(() => mockPrefs.getInt(any())).thenReturn(null);
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
+    when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger

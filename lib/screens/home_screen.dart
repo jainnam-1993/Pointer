@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ import '../services/widget_service.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
+  /// Static flag to disable auto-advance in tests
+  /// Set to true in test setUp to prevent timer issues
+  static bool disableAutoAdvanceForTesting = false;
+
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -39,6 +44,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // Swipe-up blur animation state
   double _swipeOffset = 0.0;
   bool _isSwipeInProgress = false;
+
+  // Auto-advance timer
+  Timer? _autoAdvanceTimer;
 
   void _toggleZenMode() {
     final current = ref.read(zenModeProvider);
@@ -53,12 +61,83 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Schedule initial announcement and widget update after first frame
+    // Schedule initial announcement, widget update, and auto-advance timer after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointing = ref.read(currentPointingProvider);
       _announcePointingContent(context, pointing);
       WidgetService.updateWidget(pointing);
+      _startAutoAdvanceTimer();
     });
+  }
+
+  @override
+  void dispose() {
+    _autoAdvanceTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Starts or restarts the auto-advance timer based on settings
+  void _startAutoAdvanceTimer() {
+    _autoAdvanceTimer?.cancel();
+
+    // Skip in tests to prevent timer issues
+    if (HomeScreen.disableAutoAdvanceForTesting) return;
+
+    final isEnabled = ref.read(autoAdvanceProvider);
+    if (!isEnabled) return;
+
+    final delaySeconds = ref.read(autoAdvanceDelayProvider);
+    _autoAdvanceTimer = Timer.periodic(
+      Duration(seconds: delaySeconds),
+      (_) => _handleAutoAdvance(),
+    );
+  }
+
+  /// Handles automatic advancement to next pointing
+  Future<void> _handleAutoAdvance() async {
+    // Skip if currently animating or swiping
+    if (_isAnimating || _isSwipeInProgress) return;
+
+    // Skip if save confirmation is showing
+    if (_showSaveConfirmation) return;
+
+    // Check if auto-advance is still enabled (user might have toggled it)
+    final isEnabled = ref.read(autoAdvanceProvider);
+    if (!isEnabled) {
+      _autoAdvanceTimer?.cancel();
+      return;
+    }
+
+    // Use the existing _handleNext logic but without haptic feedback
+    // to distinguish from manual interaction
+    final subscription = ref.read(subscriptionProvider);
+    final isPremium = subscription.isPremium;
+    final dailyUsage = ref.read(dailyUsageProvider);
+
+    // Don't auto-advance if limit reached (let user see paywall on manual tap)
+    if (!isPremium && dailyUsage.limitReached) return;
+
+    setState(() => _isAnimating = true);
+
+    ref.read(currentPointingProvider.notifier).nextPointing();
+    if (!isPremium) {
+      ref.read(dailyUsageProvider.notifier).recordView();
+    }
+
+    await Future.delayed(300.ms);
+
+    if (!mounted) return;
+    setState(() => _isAnimating = false);
+
+    final newPointing = ref.read(currentPointingProvider);
+    _announcePointingContent(context, newPointing);
+    WidgetService.updateWidget(newPointing);
+
+    final storage = ref.read(storageServiceProvider);
+    await storage.markPointingAsViewed(newPointing.id);
+
+    // Restart timer for the new pointing (gives full 60s with new content)
+    _startAutoAdvanceTimer();
   }
 
   /// Announces pointing content to screen readers
@@ -117,6 +196,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Record in history
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
+
+    // Restart timer for the new pointing (gives full 60s with new content)
+    _startAutoAdvanceTimer();
   }
 
   Future<void> _handlePrevious() async {
@@ -139,6 +221,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(context, newPointing);
     WidgetService.updateWidget(newPointing);
+
+    // Restart timer for the new pointing (gives full 60s with new content)
+    _startAutoAdvanceTimer();
   }
 
   Future<void> _handleShare() async {

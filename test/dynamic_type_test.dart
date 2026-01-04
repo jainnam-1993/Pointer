@@ -20,20 +20,24 @@ void main() {
   setUpAll(() {
     // Disable animations to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
+    HomeScreen.disableAutoAdvanceForTesting = true;
     // Allow pending fonts in tests to prevent network errors
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
   tearDownAll(() {
     AnimatedGradient.disableAnimations = false;
+    HomeScreen.disableAutoAdvanceForTesting = false;
   });
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
     when(() => mockPrefs.getString(any())).thenReturn(null);
     when(() => mockPrefs.getBool(any())).thenReturn(null);
+    when(() => mockPrefs.getInt(any())).thenReturn(null);
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
+    when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
   });
 
   /// Creates a widget with custom text scale factor
