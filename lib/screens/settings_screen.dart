@@ -10,6 +10,7 @@ import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
+import '../services/workmanager_service.dart';
 import '../services/ambient_sound_service.dart';
 // TTS disabled - feature temporarily removed
 // import '../services/aws_credential_service.dart';
@@ -523,6 +524,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                 const SnackBar(
                                   content: Text('Test notification sent'),
                                   duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const _Divider(),
+                        _SettingsRow(
+                          title: 'Test Background Notification',
+                          subtitle: 'Schedule via WorkManager (1 min delay)',
+                          trailing: Icon(
+                            Icons.schedule_send,
+                            color: textColorSubtle,
+                            size: 20,
+                          ),
+                          onTap: () async {
+                            await WorkManagerService.scheduleOneTimeNotification(
+                              delay: const Duration(minutes: 1),
+                              uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
+                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Background notification scheduled in 1 minute. You can close the app.'),
+                                  duration: Duration(seconds: 4),
                                 ),
                               );
                             }
