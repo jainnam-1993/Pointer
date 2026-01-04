@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 import '../data/pointings.dart';
+import 'workmanager_service.dart';
 
 /// Notification time configuration (legacy - kept for migration).
 class NotificationTime {
@@ -415,33 +415,10 @@ class NotificationService {
 
     final androidGranted = await androidPlugin?.requestNotificationsPermission();
 
-    // Android 12+ exact alarm permission (required for scheduled notifications)
-    await requestExactAlarmPermission();
+    // Note: We use inexact alarms which don't require SCHEDULE_EXACT_ALARM permission.
+    // This is better for battery life and sufficient for a meditation app.
 
     return (iosGranted ?? true) && (androidGranted ?? true);
-  }
-
-  /// Request exact alarm permission on Android 12+.
-  /// This opens system settings where user must grant the permission.
-  Future<bool> requestExactAlarmPermission() async {
-    final androidPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-
-    if (androidPlugin == null) return true; // iOS or other platform
-
-    // Check if we can schedule exact alarms
-    final canSchedule = await androidPlugin.canScheduleExactNotifications() ?? false;
-    print('[NotificationService] Can schedule exact alarms: $canSchedule');
-
-    if (!canSchedule) {
-      print('[NotificationService] Requesting exact alarm permission...');
-      // This opens system settings for the user to grant permission
-      await androidPlugin.requestExactAlarmsPermission();
-      return false; // User needs to grant permission
-    }
-
-    return true;
   }
 
   /// Check if notification permissions are currently granted without requesting.
@@ -470,134 +447,30 @@ class NotificationService {
   }
 
   // ============================================================
-  // Scheduling
+  // Scheduling (via WorkManager)
   // ============================================================
 
-  /// Schedule all configured notifications.
-  /// Uses new schedule model (Phase 5.1) if available, falls back to legacy times.
+  /// Schedule all configured notifications using WorkManager.
+  /// WorkManager survives app kills and is more reliable than AlarmManager.
   Future<void> scheduleAllNotifications() async {
-    await cancelAllNotifications();
+    // Cancel any existing WorkManager tasks
+    await WorkManagerService.cancelAll();
 
     if (!isNotificationsEnabled) return;
 
-    // Try new schedule model first
     final schedule = getSchedule();
-    if (schedule.isEnabled) {
-      await _scheduleFromSchedule(schedule);
-      return;
-    }
+    if (!schedule.isEnabled) return;
 
-    // Fallback to legacy notification times
-    final times = getNotificationTimes();
-    for (int i = 0; i < times.length; i++) {
-      final time = times[i];
-      if (time.isEnabled) {
-        await _scheduleDaily(i, time);
-      }
-    }
-  }
+    print('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
 
-  /// Schedule notifications using the new time window model.
-  /// Limits to maxNotifications to avoid hitting Android's alarm limit (~500).
-  Future<void> _scheduleFromSchedule(NotificationSchedule schedule, {int maxNotifications = 50}) async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-
-    // Get times for today and tomorrow
-    final todayTimes = schedule.getNotificationTimes(today);
-    final tomorrowTimes = schedule.getNotificationTimes(tomorrow);
-
-    print('[NotificationService] Scheduling notifications...');
-    print('[NotificationService] Now: $now');
-    print('[NotificationService] Schedule: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:${schedule.startMinute}-${schedule.endHour}:${schedule.endMinute}');
-    print('[NotificationService] Today times count: ${todayTimes.length}, Tomorrow: ${tomorrowTimes.length}');
-
-    int notificationId = 0;
-
-    // Schedule today's remaining notifications
-    for (final time in todayTimes) {
-      if (time.isAfter(now) && notificationId < maxNotifications) {
-        print('[NotificationService] Scheduling #$notificationId for $time');
-        await _scheduleAtTime(notificationId++, time);
-      }
-    }
-
-    // Schedule tomorrow's notifications (if we have room)
-    for (final time in tomorrowTimes) {
-      if (notificationId >= maxNotifications) break;
-      await _scheduleAtTime(notificationId++, time);
-    }
-
-    print('[NotificationService] Scheduled $notificationId notifications total');
-  }
-
-  /// Schedule a notification at a specific DateTime.
-  Future<void> _scheduleAtTime(int id, DateTime scheduledTime) async {
-    final pointing = getRandomPointing();
-
-    await _localNotifications.zonedSchedule(
-      id,
-      "Today's Pointing",
-      pointing.content,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: pointing.id,
-    );
-  }
-
-  /// Schedule a daily notification at the specified time.
-  Future<void> _scheduleDaily(int id, NotificationTime time) async {
-    final now = DateTime.now();
-    var scheduledDate = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      time.hour,
-      time.minute,
+    // Use WorkManager for periodic notifications
+    await WorkManagerService.schedulePeriodicNotifications(
+      frequencyMinutes: schedule.frequencyMinutes,
+      startHour: schedule.startHour,
+      endHour: schedule.endHour,
     );
 
-    // If the time has passed today, schedule for tomorrow
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
-    final pointing = getRandomPointing();
-
-    await _localNotifications.zonedSchedule(
-      id,
-      "Today's Pointing",
-      pointing.content,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload: pointing.id,
-    );
-  }
-
-  /// Schedule a pointing notification at the specified time.
-  Future<void> schedulePointing({
-    required int id,
-    required Pointing pointing,
-    required DateTime scheduledTime,
-  }) async {
-    await _localNotifications.zonedSchedule(
-      id,
-      "Today's Pointing",
-      pointing.content,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      _buildRichNotificationDetails(pointing),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: pointing.id,
-    );
+    print('[NotificationService] WorkManager scheduled successfully');
   }
 
   /// Show an immediate notification for a pointing.
@@ -673,8 +546,28 @@ class NotificationService {
     await _localNotifications.cancel(id);
   }
 
-  /// Cancel all scheduled notifications.
+  /// Cancel all scheduled notifications (both local and WorkManager).
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
+    await WorkManagerService.cancelAll();
+  }
+
+  /// Get list of pending notifications for debugging.
+  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    return await _localNotifications.pendingNotificationRequests();
+  }
+
+  /// Debug: Print all pending notifications to console.
+  Future<void> debugPrintPendingNotifications() async {
+    final pending = await getPendingNotifications();
+    print('[NotificationService] ===== PENDING NOTIFICATIONS =====');
+    print('[NotificationService] Total pending: ${pending.length}');
+    print('[NotificationService] Mode: inexactAllowWhileIdle (no exact alarm permission needed)');
+    for (final notification in pending) {
+      print('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
+      print('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
+      print('[NotificationService]   Payload: ${notification.payload}');
+    }
+    print('[NotificationService] ================================');
   }
 }

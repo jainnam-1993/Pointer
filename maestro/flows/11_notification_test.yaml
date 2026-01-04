@@ -67,9 +67,9 @@ appId: com.dailypointer
     text: ".*Notification.*"
 - takeScreenshot: "notif_03_notification_sheet"
 
-# === SELECT TEST PRESET (🧪 Test - every 1 minute) ===
+# === SELECT TEST PRESET (every 1 minute) ===
 - tapOn:
-    text: "🧪 Test"
+    text: ".*Test.*"
     optional: true
 - takeScreenshot: "notif_04_test_preset_selected"
 
@@ -90,19 +90,21 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Test Notification.*"
     optional: true
+- tapOn:
+    text: ".*Send Test.*"
+    optional: true
 - takeScreenshot: "notif_06_test_sent"
 
-# === FINAL STATE ===
-- assertVisible: ".*Settings.*"
-- takeScreenshot: "notif_07_complete"
+# === BACKGROUND THE APP ===
+- pressKey: Home
+- takeScreenshot: "notif_07_backgrounded"
 
 # === INSTRUCTIONS FOR MANUAL VERIFICATION ===
 #
 # After this flow completes:
-# 1. Background or close the app
-# 2. Wait 1-2 minutes
-# 3. Check if notifications arrive in the notification shade
-# 4. If notifications DON'T arrive:
+# 1. Wait 1-2 minutes
+# 2. Check if notifications arrive in the notification shade
+# 3. If notifications DON'T arrive:
 #    - Check "Alarms & reminders" permission in Android Settings
 #    - Check notification channel is enabled
 #    - Check Android battery optimization isn't killing the app
