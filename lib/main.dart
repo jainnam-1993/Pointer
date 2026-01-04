@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/data/latest_all.dart' as tz_data;
-import 'package:timezone/timezone.dart' as tz;
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
+import 'services/workmanager_service.dart';
 import 'theme/app_theme.dart';
 import 'data/pointings.dart';
 import 'data/teaching.dart';
@@ -45,11 +43,6 @@ void notificationActionCallback(NotificationResponse response) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize timezone database for scheduled notifications
-  tz_data.initializeTimeZones();
-  final deviceTimeZone = await FlutterTimezone.getLocalTimezone();
-  tz.setLocalLocation(tz.getLocation(deviceTimeZone));
-
   // Enable edge-to-edge
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -68,6 +61,8 @@ void main() async {
   final notificationService = NotificationService(sharedPreferences);
   await _initializeNotifications(notificationService);
 
+  // Initialize WorkManager for background notifications
+  await WorkManagerService.initialize();
 
   // Initialize home screen widget
   await WidgetService.initialize();

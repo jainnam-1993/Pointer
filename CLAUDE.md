@@ -276,7 +276,8 @@ bundle exec fastlane android validate         # Validate service account credent
 - **Time window display**: `_getScheduleTimeSummary()` formats schedule as "Every Xh/Xm, 8am - 9pm" based on frequencyMinutes and start/end hours
 - **Time formatting**: `_formatHourShort()` helper converts 24h to 12h format with am/pm (8→"8am", 21→"9pm")
 - **Developer options**: Version tap counter (7 taps) unlocks TTS configuration and developer settings
-- **Developer testing tools**: "Grant Alarm Permission" (Android 12+ exact alarm requirement), "Start 1-Min Timer" (foreground notification testing every 1 minute)
+- **Developer testing tools**: "Grant Alarm Permission" (Android 12+ exact alarm requirement), test notification preset (1-minute intervals)
+- **Test preset visibility**: _showNotificationTimesSheet() passes showTestPreset flag to notification modal when developer options enabled
 - **Layout**: 8px bottom padding on settings ListView for proper spacing
 
 **Content Providers** (`lib/providers/content_providers.dart`): Content state management with round-robin navigation and filtering:

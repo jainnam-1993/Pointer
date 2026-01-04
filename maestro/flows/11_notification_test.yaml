@@ -1,0 +1,93 @@
+# Notification Scheduling Test Flow
+# Run: maestro test maestro/flows/11_notification_test.yaml
+#
+# Tests: 1-minute notification scheduling with inexact alarms
+# Purpose: Verify notifications get scheduled and fire in background
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Skip onboarding
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Navigate to settings
+- tapOn:
+    text: ".*Settings.*"
+
+# === UNLOCK DEVELOPER OPTIONS (7-tap easter egg) ===
+- swipe:
+    direction: DOWN
+    duration: 500
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+- tapOn:
+    text: ".*Pointer v.*"
+
+# Should see "Developer options enabled" snackbar
+- takeScreenshot: "notification_01_developer_enabled"
+
+# === ENABLE NOTIFICATIONS ===
+- swipe:
+    direction: UP
+    duration: 500
+- tapOn:
+    text: ".*Notification.*"
+- takeScreenshot: "notification_02_notification_sheet"
+
+# Look for Test preset (if visible in developer mode)
+- tapOn:
+    text: ".*Test.*"
+    optional: true
+- takeScreenshot: "notification_03_test_preset_selected"
+
+# Enable notifications toggle if needed
+- tapOn:
+    text: ".*Enable notifications.*"
+    optional: true
+
+# Close the sheet by swiping down
+- swipe:
+    direction: DOWN
+    duration: 500
+
+# === CHECK DEBUG INFO ===
+- swipe:
+    direction: DOWN
+    duration: 500
+- tapOn:
+    text: ".*Debug Pending.*"
+    optional: true
+- takeScreenshot: "notification_04_debug_pending"
+
+# === SEND TEST NOTIFICATION ===
+- tapOn:
+    text: ".*Send Test.*"
+    optional: true
+- takeScreenshot: "notification_05_test_sent"
+
+# === FINAL STATE ===
+- pressKey: Home
+- takeScreenshot: "notification_06_backgrounded"

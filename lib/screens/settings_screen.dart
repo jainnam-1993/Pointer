@@ -528,30 +528,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         ),
                         const _Divider(),
                         _SettingsRow(
-                          title: 'Grant Alarm Permission',
-                          subtitle: 'Required for scheduled notifications (Android 12+)',
-                          trailing: Icon(
-                            Icons.alarm,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
-                          onTap: () async {
-                            final notificationService = ref.read(notificationServiceProvider);
-                            final granted = await notificationService.requestExactAlarmPermission();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(granted ? 'Permission granted!' : 'Please enable in Settings'),
-                                  duration: const Duration(seconds: 3),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        const _Divider(),
-                        _SettingsRow(
                           title: 'Debug Pending Notifications',
-                          subtitle: 'Check scheduled alarms',
+                          subtitle: 'Check scheduled notifications (inexact mode)',
                           trailing: Icon(
                             Icons.bug_report,
                             color: textColorSubtle,
@@ -561,12 +539,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             final notificationService = ref.read(notificationServiceProvider);
                             await notificationService.debugPrintPendingNotifications();
                             final pending = await notificationService.getPendingNotifications();
-                            final canSchedule = await notificationService.canScheduleExactNotifications();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Pending: ${pending.length} | Exact alarms: ${canSchedule ? "YES" : "NO"}',
+                                    'Pending notifications: ${pending.length}',
                                   ),
                                   duration: const Duration(seconds: 4),
                                 ),
