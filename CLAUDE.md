@@ -40,6 +40,8 @@ maestro test maestro/flows/16_widget_interactions.yaml # Widget prev/next/save b
 maestro test maestro/flows/17_theme_switching.yaml  # Dark/Light/OLED theme changes (~60s)
 maestro test maestro/flows/18_notification_config.yaml # Notification presets & time windows (~60s)
 maestro test maestro/flows/                         # Run all flows
+# Debug/Testing flows
+maestro test maestro/flows/11_notification_test.yaml # Enable 1-min notification test preset (requires manual verification after flow)
 # Screenshots output to: maestro/screenshots/
 
 # Git Hooks - Pre-commit Quality Gates
@@ -161,7 +163,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   ├── providers/
 │   │   └── content_providers_test.dart  # Content providers tests (CurrentPointingNotifier, FavoritesNotifier, TeachingFilterState)
 │   ├── services/
-│   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel)
+│   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel, NotificationSchedule time generation, testEveryMinute preset, quiet hours)
 │   ├── screens/
 │   │   ├── home_screen_test.dart        # HomeScreen widget tests (layout, content, interactions)
 │   │   ├── home_screen_auto_advance_test.dart  # Auto-advance timer tests (AppSettings defaults, provider behavior, widget rendering, timer limitations with fakeAsync)
@@ -186,6 +188,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── 06_screenshots_all.yaml # Store screenshot capture
 │   │   ├── 09_library_content.yaml  # Library browsing & premium gating
 │   │   ├── 10_widget_test.yaml      # Widget creation & verification (fully automated)
+│   │   ├── 11_notification_test.yaml # Debug: 1-min notification test preset (manual verification required)
 │   │   ├── 11_zen_mode.yaml         # Distraction-free mode (double-tap)
 │   │   ├── 12_save_favorites.yaml   # Long-press save, first-save celebration
 │   │   ├── 13_share_preview.yaml    # Share modal, templates, formats
