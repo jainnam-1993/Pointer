@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/data/pointings.dart';
+import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
@@ -176,7 +176,7 @@ void main() {
   });
 
   group('Settings Toggle Integration', () {
-    testWidgets('SettingsNotifier.setAutoAdvance updates state', (tester) async {
+    test('SettingsNotifier.setAutoAdvance updates state', () async {
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(null);
 
       final container = ProviderContainer(
@@ -199,7 +199,7 @@ void main() {
       )).called(1);
     });
 
-    testWidgets('SettingsNotifier.setAutoAdvanceDelay updates state', (tester) async {
+    test('SettingsNotifier.setAutoAdvanceDelay updates state', () async {
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(null);
 
       final container = ProviderContainer(

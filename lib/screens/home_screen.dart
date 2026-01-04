@@ -28,6 +28,10 @@ import '../services/widget_service.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
+  /// Static flag to disable auto-advance in tests
+  /// Set to true in test setUp to prevent timer issues
+  static bool disableAutoAdvanceForTesting = false;
+
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -75,6 +79,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Starts or restarts the auto-advance timer based on settings
   void _startAutoAdvanceTimer() {
     _autoAdvanceTimer?.cancel();
+
+    // Skip in tests to prevent timer issues
+    if (HomeScreen.disableAutoAdvanceForTesting) return;
 
     final isEnabled = ref.read(autoAdvanceProvider);
     if (!isEnabled) return;

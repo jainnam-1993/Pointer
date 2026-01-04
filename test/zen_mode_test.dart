@@ -20,14 +20,16 @@ void main() {
   late List<MethodCall> hapticCalls;
 
   setUpAll(() {
-    // Disable animations to prevent timer issues in tests
+    // Disable animations and auto-advance to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
     SaveConfirmation.disableAutoDismiss = true;
+    HomeScreen.disableAutoAdvanceForTesting = true;
   });
 
   tearDownAll(() {
     AnimatedGradient.disableAnimations = false;
     SaveConfirmation.disableAutoDismiss = false;
+    HomeScreen.disableAutoAdvanceForTesting = false;
   });
 
   setUp(() {
@@ -37,8 +39,10 @@ void main() {
     // Setup default mock returns
     when(() => mockPrefs.getString(any())).thenReturn(null);
     when(() => mockPrefs.getBool(any())).thenReturn(null);
+    when(() => mockPrefs.getInt(any())).thenReturn(null);
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
+    when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
