@@ -28,8 +28,8 @@ class AppSettings {
 
   const AppSettings({
     this.hapticFeedback = true,
-    this.autoAdvance = false,
-    this.autoAdvanceDelay = 30,
+    this.autoAdvance = true,  // Default ON (opt-out)
+    this.autoAdvanceDelay = 60, // 1 minute default
     this.theme = 'system',
     this.highContrast = false,
     this.oledMode = false,
@@ -69,8 +69,8 @@ class AppSettings {
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       hapticFeedback: json['hapticFeedback'] ?? true,
-      autoAdvance: json['autoAdvance'] ?? false,
-      autoAdvanceDelay: json['autoAdvanceDelay'] ?? 30,
+      autoAdvance: json['autoAdvance'] ?? true,  // Default ON
+      autoAdvanceDelay: json['autoAdvanceDelay'] ?? 60, // 1 minute
       theme: json['theme'] ?? 'system',
       highContrast: json['highContrast'] ?? false,
       oledMode: json['oledMode'] ?? false,

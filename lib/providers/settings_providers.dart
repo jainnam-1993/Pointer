@@ -13,6 +13,23 @@ import '../theme/app_theme.dart';
 import 'core_providers.dart';
 
 // ============================================================
+// Auto-Advance - Automatic pointing rotation
+// ============================================================
+
+/// Auto-advance enabled provider - pointings advance automatically
+/// Default: ON (opt-out model for dynamic experience)
+final autoAdvanceProvider = Provider<bool>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.autoAdvance;
+});
+
+/// Auto-advance delay in seconds (default: 60)
+final autoAdvanceDelayProvider = Provider<int>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.autoAdvanceDelay;
+});
+
+// ============================================================
 // Zen Mode - Distraction-free reading
 // ============================================================
 
@@ -129,6 +146,18 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Toggle zen mode
   Future<void> setZenMode(bool enabled) async {
     final newSettings = state.copyWith(zenMode: enabled);
+    await update(newSettings);
+  }
+
+  /// Toggle auto-advance
+  Future<void> setAutoAdvance(bool enabled) async {
+    final newSettings = state.copyWith(autoAdvance: enabled);
+    await update(newSettings);
+  }
+
+  /// Set auto-advance delay (in seconds)
+  Future<void> setAutoAdvanceDelay(int seconds) async {
+    final newSettings = state.copyWith(autoAdvanceDelay: seconds);
     await update(newSettings);
   }
 }

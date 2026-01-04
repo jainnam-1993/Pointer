@@ -404,11 +404,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   ),
                 ),
 
-                // Experience section (ambient sounds)
+                // Experience section (ambient sounds, auto-advance)
                 const SizedBox(height: 24),
                 _SectionHeader(title: 'EXPERIENCE'),
                 const SizedBox(height: 12),
                 _AmbientSoundPicker(),
+                const SizedBox(height: 12),
+                _AutoAdvanceToggle(),
 
                 // Account section
                 const SizedBox(height: 24),
@@ -1342,6 +1344,72 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Auto-advance toggle for automatic pointing rotation
+class _AutoAdvanceToggle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+    final isEnabled = ref.watch(autoAdvanceProvider);
+    final switchThumbColor = isDark ? Colors.white : colors.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
+    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
+
+    return GlassCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.auto_mode,
+                color: colors.textSecondary,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Auto-Advance',
+                      style: TextStyle(
+                        color: colors.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'New pointing every minute',
+                      style: TextStyle(
+                        color: colors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch(
+                value: isEnabled,
+                onChanged: (value) {
+                  HapticFeedback.lightImpact();
+                  ref.read(settingsProvider.notifier).setAutoAdvance(value);
+                },
+                activeThumbColor: switchThumbColor,
+                activeTrackColor: switchActiveTrackColor,
+                inactiveThumbColor: isDark ? Colors.white : Colors.grey,
+                inactiveTrackColor: switchInactiveTrackColor,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
