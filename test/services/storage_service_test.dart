@@ -19,8 +19,8 @@ void main() {
     test('default values are correct', () {
       const settings = AppSettings();
       expect(settings.hapticFeedback, true);
-      expect(settings.autoAdvance, false);
-      expect(settings.autoAdvanceDelay, 30);
+      expect(settings.autoAdvance, true);  // Default ON (opt-out)
+      expect(settings.autoAdvanceDelay, 60);  // 1 minute
       expect(settings.theme, 'system');
     });
 
@@ -91,8 +91,8 @@ void main() {
       final settings = AppSettings.fromJson(json);
 
       expect(settings.hapticFeedback, true);
-      expect(settings.autoAdvance, false);
-      expect(settings.autoAdvanceDelay, 30);
+      expect(settings.autoAdvance, true);  // Default ON (opt-out)
+      expect(settings.autoAdvanceDelay, 60);  // 1 minute
       expect(settings.theme, 'system');
     });
   });
@@ -304,8 +304,8 @@ void main() {
 
       final settings = storageService.settings;
       expect(settings.hapticFeedback, true);
-      expect(settings.autoAdvance, false);
-      expect(settings.autoAdvanceDelay, 30);
+      expect(settings.autoAdvance, true);  // Default ON (opt-out)
+      expect(settings.autoAdvanceDelay, 60);  // 1 minute
       expect(settings.theme, 'system');
     });
 

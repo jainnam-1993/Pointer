@@ -89,13 +89,13 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   └── app_theme.dart     # PointerColors (ThemeExtension), AppThemeMode, theme variants (dark/light/highContrast/oled)
 │   ├── providers/
 │   │   ├── core_providers.dart          # Foundation providers (SharedPreferences, storage, notifications, onboarding)
-│   │   ├── settings_providers.dart      # User preferences (zen mode, OLED, accessibility, theme, notifications)
+│   │   ├── settings_providers.dart      # User preferences (zen mode, OLED, accessibility, theme, notifications, auto-advance)
 │   │   ├── content_providers.dart       # Content state (pointings, favorites, affinity, teaching filters)
 │   │   ├── subscription_providers.dart  # Subscription state (RevenueCat integration, freemium daily limits)
 │   │   └── providers.dart               # Riverpod providers (storage, navigation, TTS)
 │   ├── screens/
 │   │   ├── main_shell.dart    # Bottom navigation shell with swipe gestures, AnimatedSwitcher transitions, zen mode
-│   │   ├── home_screen.dart   # Daily pointing display
+│   │   ├── home_screen.dart   # Daily pointing display with auto-advance timer
 │   │   ├── inquiry_screen.dart
 │   │   ├── inquiry_player_screen.dart    # Guided inquiry session with timed phase transitions
 │   │   ├── lineages_screen.dart
@@ -235,6 +235,7 @@ bundle exec fastlane android validate         # Validate service account credent
 - **Markdown**: flutter_markdown_plus (for content rendering)
 - **Utilities**: path_provider, share_plus
 - **Haptics**: flutter/services HapticFeedback (lightImpact/mediumImpact/heavyImpact)
+- **Timers**: dart:async Timer (auto-advance, inquiry phases)
 - **Testing**: flutter_test + mocktail (unit), patrol (integration)
 
 ## Design System
@@ -265,8 +266,9 @@ bundle exec fastlane android validate         # Validate service account credent
 **Riverpod Providers** (`lib/providers/providers.dart`): SharedPreferences instance, router, storage service providers, TTS providers, usage tracking providers.
 
 **Settings Providers** (`lib/providers/settings_providers.dart`): User preferences with persistence via StorageService:
-- **State providers**: zenModeProvider, oledModeProvider, fontSizeMultiplierProvider, reduceMotionOverrideProvider, highContrastProvider, themeModeProvider
-- **Settings notifier**: SettingsNotifier with copyWith updates (setTheme, setHighContrast, setZenMode)
+- **State providers**: zenModeProvider, oledModeProvider, fontSizeMultiplierProvider, reduceMotionOverrideProvider, highContrastProvider, themeModeProvider, autoAdvanceProvider, autoAdvanceDelayProvider
+- **Settings notifier**: SettingsNotifier with copyWith updates (setTheme, setHighContrast, setZenMode, setAutoAdvance, setAutoAdvanceDelay)
+- **Auto-advance**: Opt-out model (enabled by default), configurable delay (default 60s)
 - **Notification settings**: NotificationSettingsNotifier managing enabled state and notification times
 - **Accessibility helpers**: shouldReduceMotion(context, appOverride), isHighContrastEnabled(context, ref)
 - **Theme conversion**: AppThemeMode ↔ Flutter ThemeMode
@@ -579,7 +581,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Round-Robin Navigation** | `lib/providers/content_providers.dart` | CurrentPointingNotifier with persisted shuffled order. First launch shuffles all pointing IDs, persists `pointingOrder` + `pointingIndex`. next/previous traverse fixed order with wrap-around. Reshuffles at cycle end (keeps current at index 0 to avoid back-to-back repeat). Guarantees all pointings seen before any repeats. StorageKeys: `pointer_pointing_order`, `pointer_pointing_index`. |
 | **PointingSelector** | `lib/services/pointing_selector.dart` | Time-of-day aware pointing selection (TimeContext enum, respects viewed-today tracking, 30% preference for time-specific pointings) - NOTE: Currently unused, replaced by round-robin |
 | **AffinityService** | `lib/services/affinity_service.dart` | Tradition preference learning (view/save counts, weighted scoring 3x saves, getTraditionsByPreference()) |
-| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, pointingOrder/pointingIndex for round-robin, defaults: theme='system', hapticFeedback=true, autoAdvance=false) |
+| **StorageService** | `lib/services/storage_service.dart` | SharedPreferences wrapper (StorageKeys constants, AppSettings model with copyWith/toJson/fromJson, pointingOrder/pointingIndex for round-robin, defaults: theme='system', hapticFeedback=true, autoAdvance=true, autoAdvanceDelay=60) |
 | **SemanticsService Announcements** | `flutter/rendering` | Screen reader announcements: `SemanticsService.sendAnnouncement(View.of(context), message, TextDirection.ltr)` - requires BuildContext for View access (modern API, replaces deprecated announce()) |
 | **Accessibility Labels** | Android layouts + Flutter widgets | Android: All interactive widgets require `android:contentDescription` attributes (e.g., "Refresh pointings", "Previous pointing", "Next pointing", "Save to favorites"). Flutter: Semantics widgets should have clear directional hints (e.g., "Swipe up for next pointing, down for previous" not vague "swipe up or down for actions"). Ensures screen reader users understand widget purpose and gesture directions. |
 | **Teacher Model & Database** | `lib/models/teacher.dart` + `lib/data/teachers.dart` | Teacher info system (name, bio, dates, tradition, tags), 9 teachers database, getTeacher(name), getPointingsByTeacher(name) |
@@ -598,6 +600,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Responsive Layout (Foldables)** | `lib/screens/home_screen.dart` | Aspect ratio detection for foldables/tablets: `aspectRatio = screenHeight / screenWidth`, `isSquareAspect = aspectRatio < 1.3`. Dynamic spacing: nav bar space 80px for foldables vs 8% of screen height (80-120px) for phones. Card constraints: foldables use 25-40% screen height vs 65% for phones. Use `Expanded` for better vertical space on large screens. Pattern generalizable to other screens requiring responsive layout. |
 | **Notification Action Callbacks** | `lib/main.dart` | Global container pattern for notification callbacks: `_globalContainer` stores ProviderContainer reference for `notificationActionCallback()` entry point. Handler supports 'save' (toggle favorites via favoritesProvider) and 'another' (send new notification) actions. Annotated with `@pragma('vm:entry-point')` for background execution. Initialize with `onDidReceiveNotificationResponse` and `onDidReceiveBackgroundNotificationResponse` in FlutterLocalNotificationsPlugin. |
 | **Ambient Sound Global Guard** | `lib/main.dart` | Prevent duplicate audio playback during hot reloads: `_globalAmbientSoundPlayed` static flag guards `_playAmbientSound()`. Set to true on first play, persists across widget rebuilds. 500ms delay ensures providers are ready. Check `mounted` before accessing ref. Pattern prevents audio stacking during development and app lifecycle transitions. |
+| **Auto-Advance Timer** | `lib/screens/home_screen.dart` | Timer-based automatic pointing rotation (default 60s, configurable). Start in initState, cancel in dispose. Smart pausing: skips auto-advance during manual swipes, animations, save confirmations, or when freemium limit reached. Restarts timer on manual next/previous (full delay with new content). No haptic feedback on auto-advance (distinguishes from manual interaction). Checks `autoAdvanceProvider` for enabled state. Opt-out model: enabled by default for dynamic experience. |
 
 ### Anti-Patterns
 - ❌ Don't create new files when existing ones can be extended
