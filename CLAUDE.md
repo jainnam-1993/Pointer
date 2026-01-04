@@ -21,28 +21,34 @@ flutter test integration_test/screenshot_test.dart  # Screenshot tests (basic In
 flutter test --update-goldens  # Generate/update golden test baselines
 flutter test test/golden/      # Run golden tests (visual regression)
 
-# E2E Testing (Maestro) - Cross-platform UI automation
-maestro test maestro/flows/00_smoke_test.yaml       # Quick health check (~30s)
-maestro test maestro/flows/01_navigation.yaml       # Tab navigation flow
-maestro test maestro/flows/02_onboarding.yaml       # First-time user flow
-maestro test maestro/flows/03_freemium_paywall.yaml # Premium upgrade journey
-maestro test maestro/flows/04_home_interactions.yaml # Swipes, taps, saves
-maestro test maestro/flows/05_settings.yaml         # Settings & notifications
-maestro test maestro/flows/06_screenshots_all.yaml  # Store screenshot capture
-maestro test maestro/flows/07_accessibility_audit.yaml # Element accessibility check
-maestro test maestro/flows/08_inquiry_session.yaml  # Guided inquiry session
-maestro test maestro/flows/09_library_content.yaml  # Library articles & teachings
-maestro test maestro/flows/10_widget_test.yaml      # Home screen widget test (requires widget on home screen)
-maestro test maestro/flows/                         # Run all flows (~5 min)
+# E2E Testing (Maestro) - Cross-platform UI automation (15 flows: 7 core + 8 feature)
+# Core flows
+maestro test maestro/flows/01_navigation.yaml       # Tab navigation + content verification (~45s)
+maestro test maestro/flows/02_onboarding.yaml       # First-time user experience (~60s)
+maestro test maestro/flows/04_home_interactions.yaml # Swipes, taps, save, share (~60s)
+maestro test maestro/flows/05_settings.yaml         # Settings & developer menu unlock (~45s)
+maestro test maestro/flows/06_screenshots_all.yaml  # Store screenshot capture (~90s)
+maestro test maestro/flows/09_library_content.yaml  # Library browsing & premium gating (~60s)
+maestro test maestro/flows/10_widget_test.yaml      # Widget creation & verification - fully automated (~90s)
+# Feature flows
+maestro test maestro/flows/11_zen_mode.yaml         # Distraction-free mode (double-tap) (~45s)
+maestro test maestro/flows/12_save_favorites.yaml   # Long-press save, first-save celebration (~45s)
+maestro test maestro/flows/13_share_preview.yaml    # Share modal, templates, formats (~60s)
+maestro test maestro/flows/14_history.yaml          # View past pointings (~45s)
+maestro test maestro/flows/15_lineages.yaml         # Tradition preferences (~45s)
+maestro test maestro/flows/16_widget_interactions.yaml # Widget prev/next/save buttons (~60s)
+maestro test maestro/flows/17_theme_switching.yaml  # Dark/Light/OLED theme changes (~60s)
+maestro test maestro/flows/18_notification_config.yaml # Notification presets & time windows (~60s)
+maestro test maestro/flows/                         # Run all flows
 # Screenshots output to: maestro/screenshots/
 
 # Git Hooks - Pre-commit Quality Gates
 # Location: scripts/hooks/pre-commit
-# Runs Maestro smoke test before commits (requires Maestro installed + device/emulator)
+# Runs Maestro navigation test before commits (requires Maestro installed + device/emulator)
 # Currently opt-in: device detection stubbed (check_device() returns 1)
 # Install: ./scripts/setup-hooks.sh (auto-detects worktrees, creates symlinks)
 # Manual: Copy scripts/hooks/pre-commit to .git/hooks/pre-commit
-# Blocks commit if smoke test fails (60s timeout)
+# Blocks commit if test fails (60s timeout)
 
 # Build
 flutter build apk              # Android APK
@@ -168,21 +174,25 @@ bundle exec fastlane android validate         # Validate service account credent
 ├── integration_test/
 │   ├── screenshot_test.dart        # IntegrationTest screenshot tests (8 testWidgets)
 │   └── screenshot_helpers.dart     # Screenshot capture + UX issue tracking
-├── maestro/                      # E2E testing (Maestro) - cross-platform
-│   ├── README.md                 # Maestro documentation and usage guide
+├── maestro/                      # E2E testing (Maestro) - cross-platform (15 flows: 7 core + 8 feature)
+│   ├── README.md                 # Maestro documentation, test philosophy, removed flows
 │   ├── config.yaml               # Maestro configuration
 │   ├── flows/                    # Test flows (YAML)
-│   │   ├── 00_smoke_test.yaml    # Quick health check
-│   │   ├── 01_navigation.yaml    # Tab navigation
-│   │   ├── 02_onboarding.yaml    # First-time user flow
-│   │   ├── 03_freemium_paywall.yaml # Premium upgrade
-│   │   ├── 04_home_interactions.yaml # Swipes, taps, saves
-│   │   ├── 05_settings.yaml      # Settings & notifications
-│   │   ├── 06_screenshots_all.yaml # Store screenshots
-│   │   ├── 07_accessibility_audit.yaml # Element checks
-│   │   ├── 08_inquiry_session.yaml  # Guided inquiry session
-│   │   ├── 09_library_content.yaml  # Library articles & teachings
-│   │   └── 10_widget_test.yaml      # Widget loading verification (requires manual widget setup on home screen)
+│   │   ├── 01_navigation.yaml    # Tab navigation + content verification
+│   │   ├── 02_onboarding.yaml    # First-time user experience
+│   │   ├── 04_home_interactions.yaml # Swipes, taps, save, share
+│   │   ├── 05_settings.yaml      # Settings & developer menu unlock
+│   │   ├── 06_screenshots_all.yaml # Store screenshot capture
+│   │   ├── 09_library_content.yaml  # Library browsing & premium gating
+│   │   ├── 10_widget_test.yaml      # Widget creation & verification (fully automated)
+│   │   ├── 11_zen_mode.yaml         # Distraction-free mode (double-tap)
+│   │   ├── 12_save_favorites.yaml   # Long-press save, first-save celebration
+│   │   ├── 13_share_preview.yaml    # Share modal, templates, formats
+│   │   ├── 14_history.yaml          # View past pointings
+│   │   ├── 15_lineages.yaml         # Tradition preferences
+│   │   ├── 16_widget_interactions.yaml # Widget prev/next/save buttons
+│   │   ├── 17_theme_switching.yaml  # Dark/Light/OLED theme changes
+│   │   └── 18_notification_config.yaml # Notification presets & time windows
 │   └── screenshots/              # Test output
 ├── scripts/                      # Development scripts
 │   ├── hooks/
@@ -340,15 +350,39 @@ bundle exec fastlane android validate         # Validate service account credent
 **E2E tests** (`maestro/`): Cross-platform UI automation using Maestro (replaced platform-specific scripts).
 
 - **Framework**: Maestro CLI with YAML flows
-- **Coverage**: 10 flows covering smoke test, navigation, onboarding, freemium, interactions, settings, screenshots, accessibility, inquiry, library, widget
+- **Coverage**: 15 flows (7 core + 8 feature) covering navigation, onboarding, interactions, settings, screenshots, library, widget, zen mode, favorites, share, history, lineages, widget interactions, themes, notifications
 - **Cross-platform**: Same flows run on iOS and Android
 - **CI/CD**: `.github/workflows/maestro.yml` for automated testing
 - **Screenshots**: Output to `maestro/screenshots/` directory
 - **Usage**: `maestro test maestro/flows/` to run all flows
-- **Widget test setup**: Flow `10_widget_test.yaml` requires manual widget placement on home screen before running. Catches "Tap to load" empty state, cache population failures, RemoteViewsService errors.
+- **Widget test setup**: Flow `10_widget_test.yaml` now **fully automated** - automatically creates and tests widget (no manual setup required). Opens widget picker, finds Pointer widget, drags to home screen, verifies content. Catches "Tap to load" empty state, cache population failures, RemoteViewsService errors.
 - **Documentation**: See `maestro/README.md` for detailed flow descriptions and setup instructions
-- **When to use**: Black-box E2E testing, store screenshot generation, cross-platform parity verification
-- **When NOT to use**: State-controlled testing (use Flutter IntegrationTest), WCAG compliance (use Flutter accessibility tests)
+- **When to use**: Black-box E2E testing, store screenshot generation, cross-platform parity verification, native widget testing
+- **When NOT to use**: State-controlled testing (use Flutter IntegrationTest), WCAG compliance (use Flutter accessibility tests), timing-sensitive flows (use Flutter tests)
+
+**Test Philosophy - Maestro vs Flutter:**
+
+| Test Type | Maestro | Flutter Integration |
+|-----------|---------|---------------------|
+| Black-box E2E | ✅ Best | ❌ |
+| Cross-platform parity | ✅ Best | ❌ Single platform |
+| Native widget testing | ✅ Only option | ❌ Can't test |
+| Store screenshots | ✅ Actual device | State-specific only |
+| State-controlled testing | ❌ Can't inject state | ✅ Best (Riverpod) |
+| WCAG compliance | ❌ Can't verify semantics | ✅ Best |
+| Timing-sensitive flows | ❌ Unreliable | ✅ State control |
+
+**Removed flows (documented as redundant):**
+- `00_smoke_test.yaml` - Redundant with `01_navigation.yaml`
+- `03_freemium_paywall.yaml` - Flutter `integration_test/app_test.dart` group 7 is superior (state-controlled)
+- `07_accessibility_audit.yaml` - Flutter `test/accessibility/voiceover_test.dart` does real WCAG verification
+- `08_inquiry_session.yaml` - Flutter `test/screens/inquiry_player_test.dart` handles timing-sensitive phase transitions
+
+**Complementary Flutter tests:**
+- `integration_test/app_test.dart` - State-controlled E2E (929 lines, 8 groups)
+- `test/accessibility/voiceover_test.dart` - WCAG compliance (369 lines)
+- `test/screens/inquiry_player_test.dart` - Phase timing (531 lines)
+- `test/golden/` - Visual regression tests
 
 **Screenshot tests** (`integration_test/screenshot_test.dart`): State-controlled visual regression using Flutter IntegrationTest framework.
 
