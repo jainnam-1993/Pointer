@@ -547,7 +547,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   name: teacher,
                   description: lineage,
                   count: count,
-                  onTap: () => _openTeacher(context, teacher),
+                  onTap: () => _openTeacher(context, teacher, contentFilter),
                 ),
               ),
             );
@@ -599,7 +599,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   name: data.info.name,
                   description: data.info.description,
                   count: data.count,
-                  onTap: () => _openLineage(context, data.tradition, data.info),
+                  onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
                 ),
               ),
             );
@@ -655,7 +655,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   name: MoodTags.displayName(mood),
                   description: 'Best for ${mood.toLowerCase()} moments',
                   count: count,
-                  onTap: () => _openMood(context, mood),
+                  onTap: () => _openMood(context, mood, contentFilter),
                 ),
               ),
             );
@@ -666,29 +666,29 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  void _openTeacher(BuildContext context, String teacher) {
+  void _openTeacher(BuildContext context, String teacher, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => TeacherTeachingsScreen(teacher: teacher),
+        builder: (context) => TeacherTeachingsScreen(teacher: teacher, filter: filter),
       ),
     );
   }
 
-  void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info) {
+  void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info),
+        builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info, filter: filter),
       ),
     );
   }
 
-  void _openMood(BuildContext context, String mood) {
+  void _openMood(BuildContext context, String mood, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => MoodTeachingsScreen(mood: mood),
+        builder: (context) => MoodTeachingsScreen(mood: mood, filter: filter),
       ),
     );
   }
@@ -1723,8 +1723,9 @@ class _MarkdownContent extends StatelessWidget {
 /// Screen showing teachings by a specific teacher
 class TeacherTeachingsScreen extends ConsumerStatefulWidget {
   final String teacher;
+  final ContentFilter filter;
 
-  const TeacherTeachingsScreen({super.key, required this.teacher});
+  const TeacherTeachingsScreen({super.key, required this.teacher, this.filter = ContentFilter.all});
 
   @override
   ConsumerState<TeacherTeachingsScreen> createState() => _TeacherTeachingsScreenState();
@@ -1734,8 +1735,13 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final teachings = TeachingRepository.byTeacher(widget.teacher);
-    final articles = getArticlesByTeacher(widget.teacher);
+    final allTeachings = TeachingRepository.byTeacher(widget.teacher);
+    final allArticles = getArticlesByTeacher(widget.teacher);
+
+    // Apply filter
+    final teachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
+
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final subscriptionState = ref.watch(subscriptionProvider);
     final isPremium = subscriptionState.tier == SubscriptionTier.premium;
@@ -1903,18 +1909,25 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
 class LineageTeachingsScreen extends ConsumerWidget {
   final Tradition tradition;
   final TraditionInfo info;
+  final ContentFilter filter;
 
   const LineageTeachingsScreen({
     super.key,
     required this.tradition,
     required this.info,
+    this.filter = ContentFilter.all,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final teachings = TeachingRepository.byLineage(tradition);
-    final articles = getArticlesByTradition(tradition);
+    final allTeachings = TeachingRepository.byLineage(tradition);
+    final allArticles = getArticlesByTradition(tradition);
+
+    // Apply filter
+    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
+
     final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
@@ -2083,14 +2096,20 @@ class LineageTeachingsScreen extends ConsumerWidget {
 /// Screen showing teachings by mood
 class MoodTeachingsScreen extends ConsumerWidget {
   final String mood;
+  final ContentFilter filter;
 
-  const MoodTeachingsScreen({super.key, required this.mood});
+  const MoodTeachingsScreen({super.key, required this.mood, this.filter = ContentFilter.all});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final articles = getArticlesByMood(mood);
-    final teachings = TeachingRepository.byMood(mood);
+    final allArticles = getArticlesByMood(mood);
+    final allTeachings = TeachingRepository.byMood(mood);
+
+    // Apply filter
+    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
+    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+
     final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
