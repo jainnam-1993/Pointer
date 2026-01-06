@@ -439,22 +439,42 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
-    // Topics only show articles, hide if quotes filter selected
+    // When Quotes filter is selected, show TopicTags from teachings
     if (contentFilter == ContentFilter.quotes) {
-      return SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: Text(
-              'Switch to "All" or "Articles" to browse by topic',
-              style: TextStyle(color: colors.textMuted),
-              textAlign: TextAlign.center,
-            ),
+      final topicCounts = TeachingRepository.topicCounts;
+      final sortedTopics = topicCounts.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
+
+      return SliverPadding(
+        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final entry = sortedTopics[index];
+              final topic = entry.key;
+              final count = entry.value;
+
+              return StaggeredFadeIn(
+                index: index,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _BrowseCard(
+                    icon: TopicTags.icon(topic),
+                    name: TopicTags.displayName(topic),
+                    description: 'Quotes about ${topic.toLowerCase()}',
+                    count: count,
+                    onTap: () => _openTopic(context, topic, contentFilter),
+                  ),
+                ),
+              );
+            },
+            childCount: sortedTopics.length,
           ),
         ),
       );
     }
 
+    // When Articles filter or All, show ArticleCategory
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
@@ -479,6 +499,15 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           },
           childCount: ArticleCategory.values.length,
         ),
+      ),
+    );
+  }
+
+  void _openTopic(BuildContext context, String topic, ContentFilter filter) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TopicTeachingsScreen(topic: topic, filter: filter),
       ),
     );
   }
@@ -2255,6 +2284,191 @@ class MoodTeachingsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Screen showing teachings by topic tag
+class TopicTeachingsScreen extends ConsumerWidget {
+  final String topic;
+  final ContentFilter filter;
+
+  const TopicTeachingsScreen({super.key, required this.topic, this.filter = ContentFilter.all});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final allArticles = getArticlesByTopic(topic);
+    final allTeachings = TeachingRepository.byTopic(topic);
+
+    // Apply filter
+    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
+    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+
+    final isPremium = ref.watch(subscriptionProvider).isPremium;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AnimatedGradient()),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // App bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    TopicTags.icon(topic),
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    TopicTags.displayName(topic),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: colors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${articles.length} articles, ${teachings.length} quotes',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: colors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Articles section
+                if (articles.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _SectionHeader(
+                        title: 'Articles',
+                        count: articles.length,
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final article = articles[index];
+                          final isLocked = article.isPremium && !isPremium;
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _ArticleListItem(
+                                article: article,
+                                isLocked: isLocked,
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  if (isLocked) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Premium article - unlock with subscription'),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colors.glassBackground,
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ArticleReaderScreen(article: article),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: articles.length,
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Quotes section
+                if (teachings.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _SectionHeader(
+                        title: 'Quotes',
+                        count: teachings.length,
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      bottom: 32 + bottomPadding,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final teaching = teachings[index];
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _TeachingCard(teaching: teaching),
+                            ),
+                          );
+                        },
+                        childCount: teachings.length,
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Empty state if no content
+                if (articles.isEmpty && teachings.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Center(
+                        child: Text(
+                          'No content found for this topic',
+                          style: TextStyle(color: colors.textMuted),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
