@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
@@ -478,6 +479,114 @@ void main() {
       );
       final scaled = border.scale(0.5) as GradientBoxBorder;
       expect(scaled.width, 1.0);
+    });
+  });
+
+  group('GlassCard Breathing Animation', () {
+    setUpAll(() {
+      // Disable animations in test environment to prevent timer issues
+      AnimatedGradient.disableAnimations = true;
+    });
+
+    tearDownAll(() {
+      AnimatedGradient.disableAnimations = false;
+    });
+
+    testWidgets('enableBreathingAnimation defaults to false', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviderScope(const MaterialApp(
+          home: Scaffold(
+            body: GlassCard(
+              child: Text('Test'),
+            ),
+          ),
+        )),
+      );
+
+      // By default, animation is disabled, so no Stack overlay
+      final stacks = tester.widgetList<Stack>(
+        find.descendant(
+          of: find.byType(GlassCard),
+          matching: find.byType(Stack),
+        ),
+      );
+      // Should not find a Stack (animation overlay not added)
+      expect(stacks.length, 0);
+    });
+
+    testWidgets('does not render animation overlay when disableAnimations is true', (tester) async {
+      // Animation is already disabled via setUpAll
+      await tester.pumpWidget(
+        wrapWithProviderScope(const MaterialApp(
+          home: Scaffold(
+            body: GlassCard(
+              enableBreathingAnimation: true,
+              child: Text('Test'),
+            ),
+          ),
+        )),
+      );
+
+      // Even with enableBreathingAnimation: true, no Stack because disableAnimations is true
+      final stacks = tester.widgetList<Stack>(
+        find.descendant(
+          of: find.byType(GlassCard),
+          matching: find.byType(Stack),
+        ),
+      );
+      expect(stacks.length, 0);
+    });
+
+    testWidgets('respects reduceMotion accessibility setting', (tester) async {
+      // Force enable animations temporarily
+      AnimatedGradient.disableAnimations = false;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            highContrastProvider.overrideWith((ref) => false),
+            oledModeProvider.overrideWith((ref) => false),
+            // Force reduce motion ON
+            reduceMotionOverrideProvider.overrideWith((ref) => true),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: GlassCard(
+                enableBreathingAnimation: true,
+                child: Text('Test'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // reduceMotion is enabled, so animation should not render Stack overlay
+      final stacks = tester.widgetList<Stack>(
+        find.descendant(
+          of: find.byType(GlassCard),
+          matching: find.byType(Stack),
+        ),
+      );
+      expect(stacks.length, 0);
+
+      // Restore
+      AnimatedGradient.disableAnimations = true;
+    });
+
+    testWidgets('still renders content when animation is disabled', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviderScope(const MaterialApp(
+          home: Scaffold(
+            body: GlassCard(
+              enableBreathingAnimation: true,
+              child: Text('Content Still Visible'),
+            ),
+          ),
+        )),
+      );
+
+      // Content should always be visible regardless of animation state
+      expect(find.text('Content Still Visible'), findsOneWidget);
     });
   });
 }

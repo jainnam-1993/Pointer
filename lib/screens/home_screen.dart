@@ -470,6 +470,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ? screenHeight * 0.40
                                 : screenHeight * 0.55,
                             enableScrolling: true,
+                            // Subtle breathing animation syncs with "Ethereal Liquid Glass" design
+                            enableBreathingAnimation: true,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
