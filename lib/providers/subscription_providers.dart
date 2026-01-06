@@ -6,10 +6,16 @@
 /// Freemium Model v2:
 /// - FREE: Unlimited quotes/pointings
 /// - PREMIUM: Full library, audio (TTS), notifications, widget
+///
+/// Cross-Platform Purchase Sync:
+/// - Integrates with Firebase Auth via AuthService callbacks
+/// - On sign-in: Purchases.logIn(firebaseUid) syncs purchases across devices
+/// - On sign-out: Purchases.logOut() reverts to anonymous mode
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../services/auth_service.dart';
 import '../services/revenue_cat_service.dart';
 import '../services/storage_service.dart';
 import '../services/usage_tracking_service.dart';
@@ -22,7 +28,7 @@ import 'core_providers.dart';
 
 /// Set to true to force premium tier during testing
 /// PRODUCTION: Must be false for app store release
-const bool kForcePremiumForTesting = false;
+const bool kForcePremiumForTesting = true;
 
 // ============================================================
 // Freemium - Daily Usage Tracking
@@ -123,9 +129,73 @@ final subscriptionProvider =
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   final StorageService _storage;
   final RevenueCatService _revenueCat = RevenueCatService.instance;
+  final AuthService _auth = AuthService.instance;
 
   SubscriptionNotifier(this._storage) : super(const SubscriptionState()) {
+    _setupAuthCallbacks();
     _initialize();
+  }
+
+  /// Set up callbacks for auth state changes
+  void _setupAuthCallbacks() {
+    _auth.onSignIn = _handleSignIn;
+    _auth.onSignOut = _handleSignOut;
+  }
+
+  /// Handle user sign-in: sync RevenueCat with Firebase UID
+  Future<void> _handleSignIn(String firebaseUid) async {
+    if (!mounted) return;
+
+    print('[Subscription] Auth sign-in detected, syncing with RevenueCat...');
+    state = state.copyWith(isLoading: true);
+
+    try {
+      // Login to RevenueCat with Firebase UID
+      // This transfers any anonymous purchases to the authenticated user
+      final result = await _revenueCat.loginUser(firebaseUid);
+
+      if (!mounted) return;
+
+      if (result.success) {
+        final tier = result.hasPremium
+            ? SubscriptionTier.premium
+            : SubscriptionTier.free;
+
+        await _storage.setSubscriptionTier(result.hasPremium ? 'premium' : 'free');
+        await WidgetService.setPremiumStatus(result.hasPremium);
+
+        state = state.copyWith(tier: tier, isLoading: false);
+
+        if (result.created) {
+          print('[Subscription] New RevenueCat user created for Firebase UID');
+        }
+        if (result.hasPremium) {
+          print('[Subscription] Premium restored via cross-platform sync!');
+        }
+      } else {
+        state = state.copyWith(isLoading: false, error: result.error);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  /// Handle user sign-out: revert to anonymous mode
+  Future<void> _handleSignOut() async {
+    if (!mounted) return;
+
+    print('[Subscription] Auth sign-out detected, reverting to anonymous...');
+
+    try {
+      await _revenueCat.logoutUser();
+
+      // Keep local cache - user doesn't lose premium until next app launch
+      // This is intentional UX: signing out doesn't immediately revoke premium
+      // The cached tier will be validated on next app launch
+    } catch (e) {
+      print('[Subscription] Error during RevenueCat logout: $e');
+    }
   }
 
   Future<void> _initialize() async {
@@ -150,7 +220,27 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
       // Check if still mounted after async operation
       if (!mounted) return;
 
-      // Check current subscription status
+      // If user is already signed in (from previous session), sync with RevenueCat
+      // This ensures cross-device purchases are restored on app launch
+      final currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        print('[Subscription] User already signed in, syncing RevenueCat...');
+        final loginResult = await _revenueCat.loginUser(currentUser.uid);
+        if (loginResult.success && loginResult.hasPremium) {
+          await _storage.setSubscriptionTier('premium');
+          await WidgetService.setPremiumStatus(true);
+          if (!mounted) return;
+          state = state.copyWith(
+            tier: SubscriptionTier.premium,
+            isLoading: false,
+          );
+          // Load products in background
+          _loadProducts();
+          return;
+        }
+      }
+
+      // Check current subscription status (for anonymous or newly logged-in users)
       final status = await _revenueCat.getSubscriptionStatus();
       final tier =
           status.isPremium ? SubscriptionTier.premium : SubscriptionTier.free;
@@ -186,6 +276,17 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
       // Sync widget with cached status
       await WidgetService.setPremiumStatus(cachedTier == SubscriptionTier.premium);
+    }
+  }
+
+  /// Load products in background (non-blocking)
+  Future<void> _loadProducts() async {
+    try {
+      final products = await _revenueCat.getProducts();
+      if (!mounted) return;
+      state = state.copyWith(products: products);
+    } catch (e) {
+      // Ignore errors loading products
     }
   }
 

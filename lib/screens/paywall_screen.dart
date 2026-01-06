@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/providers.dart';
+import '../providers/auth_providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/sign_in_sheet.dart';
 
 class PaywallScreen extends ConsumerWidget {
   const PaywallScreen({super.key});
@@ -17,6 +19,61 @@ class PaywallScreen extends ConsumerWidget {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Handle restore purchases with sign-in prompt for cross-device sync.
+  ///
+  /// Flow:
+  /// 1. If user is not signed in, prompt to sign in first (for cross-device sync)
+  /// 2. After sign-in (or if already signed in), restore purchases
+  /// 3. Show result to user
+  Future<void> _handleRestore(
+    BuildContext context,
+    WidgetRef ref,
+    PointerColors colors,
+  ) async {
+    HapticFeedback.lightImpact();
+
+    final isSignedIn = ref.read(isSignedInProvider);
+
+    // If not signed in, prompt to sign in first for cross-device sync
+    if (!isSignedIn) {
+      final signedIn = await showSignInSheet(context);
+      if (!signedIn) {
+        // User cancelled sign-in, still try to restore (for same-device restoration)
+        if (!context.mounted) return;
+        await _performRestore(context, ref, colors);
+        return;
+      }
+      // User signed in successfully - RevenueCat will auto-sync purchases
+      // Give a moment for the sync to complete
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (!context.mounted) return;
+    await _performRestore(context, ref, colors);
+  }
+
+  Future<void> _performRestore(
+    BuildContext context,
+    WidgetRef ref,
+    PointerColors colors,
+  ) async {
+    final result = await ref.read(subscriptionProvider.notifier).restorePurchases();
+    if (!context.mounted) return;
+
+    if (result.hasPremium) {
+      HapticFeedback.heavyImpact();
+      context.pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No previous purchase found'),
+          backgroundColor: colors.surface,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -152,29 +209,12 @@ class PaywallScreen extends ConsumerWidget {
           ),
         ),
 
-        // Restore button
+        // Restore button (with sign-in prompt for cross-device sync)
         Semantics(
           button: true,
           label: 'Restore previous purchases',
           child: TextButton(
-            onPressed: () async {
-              HapticFeedback.lightImpact();
-              final result = await ref
-                  .read(subscriptionProvider.notifier)
-                  .restorePurchases();
-              if (!context.mounted) return;
-              if (result.hasPremium) {
-                context.pop();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('No previous purchase found'),
-                    backgroundColor: colors.surface,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
+            onPressed: () => _handleRestore(context, ref, colors),
             child: Text(
               'Restore',
               style: TextStyle(

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
+import 'services/auth_service.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'services/workmanager_service.dart';
@@ -46,6 +47,15 @@ void main() async {
   // Enable edge-to-edge
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
+  // Initialize Firebase FIRST (required for auth)
+  // Note: This will fail gracefully if Firebase is not configured (no google-services.json)
+  try {
+    await AuthService.instance.initialize();
+  } catch (e) {
+    // Firebase not configured - app works in anonymous-only mode
+    debugPrint('[Main] Firebase not configured, running in anonymous mode: $e');
+  }
+
   // Pre-load SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
 
@@ -59,7 +69,12 @@ void main() async {
 
   // Initialize notifications with action handler
   final notificationService = NotificationService(sharedPreferences);
-  await _initializeNotifications(notificationService);
+  try {
+    await _initializeNotifications(notificationService);
+  } catch (e) {
+    debugPrint('[Main] Notification initialization failed: $e');
+    // App continues without notifications - not fatal
+  }
 
   // Initialize WorkManager for background notifications
   await WorkManagerService.initialize();

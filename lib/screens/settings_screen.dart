@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
+import '../providers/auth_providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
 import '../services/workmanager_service.dart';
@@ -18,6 +19,7 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/premium_sheet.dart';
+import '../widgets/sign_in_sheet.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -417,45 +419,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 const SizedBox(height: 24),
                 _SectionHeader(title: 'ACCOUNT'),
                 const SizedBox(height: 12),
-                GlassCard(
-                  padding: EdgeInsets.zero,
-                  borderColor: subscription.isPremium
-                      ? goldColor.withValues(alpha: 0.3)
-                      : null,
-                  child: subscription.isPremium
-                      ? _SettingsRow(
-                          title: 'Premium Active',
-                          subtitle: 'All features unlocked',
-                          leading: Icon(
-                            Icons.auto_awesome,
-                            color: goldColor,
-                            size: 18,
-                          ),
-                          trailing: Icon(
-                            Icons.chevron_right,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            showPremiumSheet(context);
-                          },
-                        )
-                      : _SettingsRow(
-                          title: 'Upgrade to Premium',
-                          subtitle: 'Unlock all traditions & sessions',
-                          leading: Icon(
-                            Icons.auto_awesome,
-                            color: goldColor,
-                            size: 18,
-                          ),
-                          trailing: Icon(
-                            Icons.chevron_right,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
-                          onTap: () => context.push('/paywall'),
-                        ),
+                _AccountSection(
+                  isPremium: subscription.isPremium,
+                  goldColor: goldColor,
+                  textColorSubtle: textColorSubtle,
                 ),
 
                 // About section
@@ -1552,5 +1519,161 @@ class _AmbientSoundPicker extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+/// Account section with sign-in and subscription status
+class _AccountSection extends ConsumerWidget {
+  final bool isPremium;
+  final Color goldColor;
+  final Color textColorSubtle;
+
+  const _AccountSection({
+    required this.isPremium,
+    required this.goldColor,
+    required this.textColorSubtle,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSignedIn = ref.watch(isSignedInProvider);
+    final userEmail = ref.watch(userEmailProvider);
+    final authActionState = ref.watch(authActionProvider);
+    final colors = context.colors;
+
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      borderColor: isPremium ? goldColor.withValues(alpha: 0.3) : null,
+      child: Column(
+        children: [
+          // Sign-in status row
+          if (isSignedIn) ...[
+            _SettingsRow(
+              title: userEmail ?? 'Signed In',
+              subtitle: 'Tap to sign out',
+              leading: Icon(
+                Icons.account_circle,
+                color: colors.accent,
+                size: 18,
+              ),
+              trailing: authActionState.isLoading
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(colors.textMuted),
+                      ),
+                    )
+                  : Icon(
+                      Icons.logout,
+                      color: textColorSubtle,
+                      size: 20,
+                    ),
+              onTap: authActionState.isLoading
+                  ? null
+                  : () => _showSignOutConfirmation(context, ref),
+            ),
+            const _Divider(),
+          ] else ...[
+            _SettingsRow(
+              title: 'Sign In',
+              subtitle: 'Sync purchases across devices',
+              leading: Icon(
+                Icons.login,
+                color: colors.accent,
+                size: 18,
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: textColorSubtle,
+                size: 20,
+              ),
+              onTap: () async {
+                HapticFeedback.mediumImpact();
+                await showSignInSheet(context);
+              },
+            ),
+            const _Divider(),
+          ],
+
+          // Premium status row
+          if (isPremium)
+            _SettingsRow(
+              title: 'Premium Active',
+              subtitle: 'All features unlocked',
+              leading: Icon(
+                Icons.auto_awesome,
+                color: goldColor,
+                size: 18,
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: textColorSubtle,
+                size: 20,
+              ),
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                showPremiumSheet(context);
+              },
+            )
+          else
+            _SettingsRow(
+              title: 'Upgrade to Premium',
+              subtitle: 'Unlock all traditions & sessions',
+              leading: Icon(
+                Icons.auto_awesome,
+                color: goldColor,
+                size: 18,
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: textColorSubtle,
+                size: 20,
+              ),
+              onTap: () => context.push('/paywall'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showSignOutConfirmation(BuildContext context, WidgetRef ref) async {
+    HapticFeedback.mediumImpact();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => GlassDialog(
+        title: 'Sign Out',
+        content: Text(
+          'You will need to sign in again to sync purchases on this device.',
+          style: TextStyle(
+            color: context.colors.textSecondary,
+            fontSize: 14,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: context.colors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              'Sign Out',
+              style: TextStyle(color: Colors.red.shade400),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref.read(authActionProvider.notifier).signOut();
+    }
   }
 }

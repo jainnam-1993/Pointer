@@ -16,6 +16,10 @@ import 'screens/lineages_screen.dart';
 import 'widgets/animated_transitions.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _homeNavigatorKey = GlobalKey<NavigatorState>();
+final _inquiryNavigatorKey = GlobalKey<NavigatorState>();
+final _libraryNavigatorKey = GlobalKey<NavigatorState>();
+final _settingsNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
   final onboardingCompleted = ref.watch(onboardingCompletedProvider);
@@ -83,6 +87,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           // Home tab
           StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
             routes: [
               GoRoute(
                 path: '/',
@@ -93,6 +98,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Inquiry tab
           StatefulShellBranch(
+            navigatorKey: _inquiryNavigatorKey,
             routes: [
               GoRoute(
                 path: '/inquiry',
@@ -103,6 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Library tab
           StatefulShellBranch(
+            navigatorKey: _libraryNavigatorKey,
             routes: [
               GoRoute(
                 path: '/library',
@@ -113,6 +120,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           // Settings tab
           StatefulShellBranch(
+            navigatorKey: _settingsNavigatorKey,
             routes: [
               GoRoute(
                 path: '/settings',

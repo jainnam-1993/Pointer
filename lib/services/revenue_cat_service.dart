@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-/// RevenueCat API keys
+/// RevenueCat API keys (Production)
 class _RevenueCatKeys {
-  static const iosApiKey = 'test_wXZuGwQRPBNGSUglyDrlTGAxLEV';
-  static const androidApiKey = 'test_wXZuGwQRPBNGSUglyDrlTGAxLEV';
+  static const iosApiKey = 'appl_ZZhQKJNHbctZDigUjBMLPQuAPQZ';
+  static const androidApiKey = 'goog_bEfzURqLLRJFKJZRPWpXhXZzrGF';
 }
 
 /// Product identifiers configured in RevenueCat dashboard
@@ -15,7 +15,7 @@ class RevenueCatProducts {
 
 /// Entitlement identifiers
 class RevenueCatEntitlements {
-  static const premium = 'premium';
+  static const premium = 'Pointer Pro';
 }
 
 /// Service for managing in-app purchases via RevenueCat.
@@ -26,6 +26,7 @@ class RevenueCatEntitlements {
 /// - Processing purchases
 /// - Checking subscription status
 /// - Restoring purchases
+/// - User identity sync for cross-platform purchases
 class RevenueCatService {
   static RevenueCatService? _instance;
   bool _isInitialized = false;
@@ -166,6 +167,72 @@ class RevenueCatService {
     }
   }
 
+  // ============================================================
+  // User Identity (Cross-Platform Purchase Sync)
+  // ============================================================
+
+  /// Login with Firebase UID for cross-platform purchase sync.
+  ///
+  /// This associates the user's purchases with their Firebase account,
+  /// enabling purchase restoration across devices.
+  ///
+  /// Returns [LoginResult] with:
+  /// - `created`: true if this is a new RevenueCat user
+  /// - `hasPremium`: true if the user has active premium entitlement
+  /// - `customerInfo`: the merged customer info after login
+  ///
+  /// When an anonymous user with purchases logs in, RevenueCat automatically
+  /// transfers those purchases to the authenticated user.
+  Future<LoginResult> loginUser(String firebaseUid) async {
+    try {
+      final result = await Purchases.logIn(firebaseUid);
+      final isPremium = result.customerInfo.entitlements.active.containsKey(
+        RevenueCatEntitlements.premium,
+      );
+
+      print('[RevenueCat] Logged in user: $firebaseUid, created: ${result.created}, premium: $isPremium');
+
+      return LoginResult(
+        success: true,
+        created: result.created,
+        hasPremium: isPremium,
+        customerInfo: result.customerInfo,
+      );
+    } catch (e) {
+      print('[RevenueCat] Login error: $e');
+      return LoginResult(
+        success: false,
+        error: e.toString(),
+      );
+    }
+  }
+
+  /// Logout the current user, reverting to anonymous mode.
+  ///
+  /// After logout, purchases made will be associated with a new anonymous ID.
+  /// The user can sign back in to restore their purchases.
+  Future<void> logoutUser() async {
+    try {
+      await Purchases.logOut();
+      print('[RevenueCat] Logged out, reverted to anonymous');
+    } catch (e) {
+      print('[RevenueCat] Logout error: $e');
+      rethrow;
+    }
+  }
+
+  /// Get the current RevenueCat app user ID
+  ///
+  /// Returns the Firebase UID if logged in, or anonymous ID if not.
+  Future<String> getAppUserId() async {
+    return await Purchases.appUserID;
+  }
+
+  /// Check if the current user is anonymous (not signed in)
+  Future<bool> isAnonymous() async {
+    return await Purchases.isAnonymous;
+  }
+
   /// Listen to customer info updates
   void addCustomerInfoUpdateListener(void Function(CustomerInfo) listener) {
     Purchases.addCustomerInfoUpdateListener(listener);
@@ -247,6 +314,23 @@ class RestoreResult {
   const RestoreResult({
     required this.success,
     required this.hasPremium,
+    this.error,
+  });
+}
+
+/// Login result for cross-platform purchase sync
+class LoginResult {
+  final bool success;
+  final bool created;
+  final bool hasPremium;
+  final CustomerInfo? customerInfo;
+  final String? error;
+
+  const LoginResult({
+    required this.success,
+    this.created = false,
+    this.hasPremium = false,
+    this.customerInfo,
     this.error,
   });
 }

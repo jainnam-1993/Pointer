@@ -2,7 +2,7 @@ name: pointer
 description: "Pointer - Non-Dual Pointings App"
 publish_to: 'none'
 
-version: 1.0.0+6
+version: 1.0.0+7
 
 environment:
   sdk: ^3.10.4
@@ -43,6 +43,12 @@ dependencies:
 
   # In-App Purchases (RevenueCat)
   purchases_flutter: ^8.0.0
+
+  # Firebase Auth (cross-platform purchase sync)
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.3.4
+  google_sign_in: ^6.2.2
+  sign_in_with_apple: ^6.1.4
 
   # Audio Playback
   just_audio: ^0.9.40

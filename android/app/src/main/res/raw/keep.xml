@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Resource shrinking keep rules.
+  These resources are referenced by string from Flutter (flutter_local_notifications)
+  and not detected by the shrinker's static analysis.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_notification,@raw/bell_chime" />
