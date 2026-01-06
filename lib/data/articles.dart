@@ -56,6 +56,8 @@ The separate self is a useful fiction for daily life, but it has no ultimate rea
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'mind', 'nature'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -105,6 +107,8 @@ This awareness is not personal. It is the same awareness looking out of all eyes
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -150,6 +154,8 @@ This teaching is not for beginners. It requires a readiness to let go of all spi
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'practice', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -196,6 +202,8 @@ There is only awareness. It appears as the world when directed outward through t
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'ego', 'life', 'mind', 'practice'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -244,6 +252,8 @@ The goal is not belief but direct recognition.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'truth'},
+    moodTags: {'general'},
   ),
 
   // === ZEN BUDDHISM ARTICLES ===
@@ -297,6 +307,8 @@ The breakthrough is not understanding about the koan - it is the koan understand
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'mind', 'nature', 'self-inquiry', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -356,6 +368,8 @@ Even the concept of Buddha can become an obstacle to direct seeing.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'mind', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -405,6 +419,8 @@ The question doesn't give you something new. It removes the belief that you ever
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'nature', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // === DIRECT PATH ARTICLES ===
@@ -464,6 +480,8 @@ This is not about having a particular experience. It is about recognizing what i
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'self-inquiry', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -525,6 +543,8 @@ When this recognition stabilizes:
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'presence', 'nature'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -580,6 +600,8 @@ It is the natural fragrance of our true nature.''',
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'freedom', 'silence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // === CONTEMPORARY ARTICLES ===
@@ -644,6 +666,8 @@ This simple recognition is the doorway to freedom.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -698,6 +722,8 @@ The simplicity is deceptive. The mind wants complexity, wants a project, wants s
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'freedom', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -757,6 +783,8 @@ Because awakening is not passive. It is not a withdrawal from life. It is a full
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'enlightenment', 'freedom', 'practice', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // === PRACTICAL ARTICLES ===
@@ -816,6 +844,8 @@ Self-inquiry doesn't produce a result. It reveals what has always been present: 
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'meditation', 'mind'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -871,6 +901,8 @@ Awakening is the end of seeking, not the beginning of a new spiritual project.''
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'meditation'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -935,6 +967,8 @@ The ultimate obstacle is the belief that there are obstacles. What you are has n
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'ego', 'freedom', 'life'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -994,6 +1028,8 @@ He pointed away from himself to what is always already present in everyone.
     ],
     readingTimeMinutes: 3,
     isPremium: true,
+    topicTags: {'awareness', 'enlightenment', 'practice', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1064,6 +1100,8 @@ You are already what you seek.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'meditation', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // === GENERATED ARTICLES ===
@@ -1122,6 +1160,8 @@ Don't answer with a thought. Just look.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1179,6 +1219,8 @@ Come back to this simple question throughout your day:
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -1244,6 +1286,8 @@ The one who is aware of the thought is not the thought.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1301,6 +1345,8 @@ This noticing itself begins to loosen the grip.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general', 'uplifting'},
   ),
 
   Article(
@@ -1357,6 +1403,8 @@ This app is a finger pointing at the moon. Don't mistake the finger for the moon
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // --- AWARENESS INVESTIGATIONS ---
@@ -1410,6 +1458,8 @@ This is why compassion is natural to awakening. There is no real "other" to excl
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'presence', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1468,6 +1518,8 @@ Don't take this on faith. Keep looking until it becomes obvious from your own di
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'presence', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -1523,6 +1575,8 @@ Let this question work on you.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'presence', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -1581,6 +1635,8 @@ Look and see what is true.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1639,6 +1695,8 @@ You don't need to achieve contentless awareness. You experience it every night. 
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // --- PRACTICE GUIDES ---
@@ -1697,6 +1755,8 @@ Eventually, there is no practice. There is simply the obvious presence of awaren
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -1757,6 +1817,8 @@ From this recognition, appropriate action naturally arises.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -1817,6 +1879,8 @@ Not-doing is not just for meditation. It is possible to live from this place of 
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'meditation', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -1883,6 +1947,8 @@ Your most challenging relationship is your greatest teacher. Use it.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'relationship'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -1941,6 +2007,8 @@ What you are doesn't need any practice.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'presence'},
+    moodTags: {'general'},
   ),
 
   // --- TEACHER PROFILES ---
@@ -1997,6 +2065,8 @@ Ramana's influence on modern non-dual teaching is immense. Teachers like Papaji,
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'practice', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -2050,6 +2120,8 @@ His core instruction:
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'mind', 'nature', 'truth'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -2103,6 +2175,8 @@ Tolle has brought non-dual teaching to millions through his accessible, non-reli
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -2158,6 +2232,8 @@ Spira has made the Direct Path accessible to a wide audience through YouTube, re
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'nature', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -2215,6 +2291,8 @@ Adyashanti is known for not playing the role of enlightened master. He speaks of
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'ego', 'enlightenment', 'practice', 'presence'},
+    moodTags: {'challenging', 'general'},
   ),
 
   // --- DEEPER TOPICS ---
@@ -2277,6 +2355,8 @@ Everything else is just the show appearing in awareness.''',
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -2334,6 +2414,8 @@ Be radically honest with yourself. Your awakening won't be endangered by honesty
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'ego', 'life', 'meditation'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -2392,6 +2474,8 @@ What died was the seeker. What remains is what was always here.''',
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -2449,6 +2533,8 @@ Until then, don't worry about the paradox. Just look: What is aware right now?''
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'meditation', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -2504,6 +2590,8 @@ The world is not a problem to be escaped. It is awareness appearing as form.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // --- ZEN ARTICLES ---
@@ -2561,6 +2649,8 @@ Don't answer from memory. Look fresh.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -2620,6 +2710,8 @@ What happens when you stop trying?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'meditation', 'mind', 'nature', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -2680,6 +2772,8 @@ This doesn't mean nihilism or rejecting everything. It means not getting stuck -
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'practice', 'presence'},
+    moodTags: {'challenging', 'general'},
   ),
 
   // --- CONTEMPORARY POINTERS ---
@@ -2737,6 +2831,8 @@ The investigation matters more than the conclusions. Look for yourself: Is there
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'nature', 'presence', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -2802,6 +2898,8 @@ Both can be true simultaneously.''',
     ],
     readingTimeMinutes: 4,
     isPremium: true,
+    topicTags: {'awareness', 'ego', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -2862,6 +2960,8 @@ That awareness is what you are.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -2921,6 +3021,8 @@ Your professional life is not an obstacle to recognition. It is an invitation.''
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'meditation'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -2984,6 +3086,8 @@ And children learn from watching us fall down and get up with grace.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
+    moodTags: {'challenging', 'general'},
   ),
 
 
@@ -3047,6 +3151,8 @@ Don't answer. Just look.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3104,6 +3210,8 @@ Full awakening includes the body. Not as something owned by awareness, but as aw
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3172,6 +3280,8 @@ Look for yourself.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'relationship'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3233,6 +3343,8 @@ What you are is not only awareness. It is aware love. Knowing and loving are not
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'nature', 'practice'},
+    moodTags: {'general', 'uplifting'},
   ),
 
   Article(
@@ -3292,6 +3404,8 @@ Then listen.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'ego', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3355,6 +3469,8 @@ Let the natural world remind you what you are.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3412,6 +3528,8 @@ Look carefully. What you seek is what is looking.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'freedom', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3474,6 +3592,8 @@ You have only ever had to deal with now. And now is always manageable.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'mind', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3534,6 +3654,8 @@ But without a separate doer claiming ownership.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'mind', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3595,6 +3717,8 @@ Rest there.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3655,6 +3779,8 @@ The dewdrop realizes it was always the ocean. Thank you seems inadequate, but it
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3716,6 +3842,8 @@ What is this?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'presence', 'self-inquiry'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -3780,6 +3908,8 @@ Life continues, but without the fundamental anxiety of lacking something.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'relationship'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3837,6 +3967,8 @@ The ego is not evil. It is simply confused.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'mind', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -3892,6 +4024,8 @@ We can all discover this silence. It is what we are.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'practice', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -3956,6 +4090,8 @@ When the separate controller surrenders, there is only flow.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'life', 'mind', 'practice', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4018,6 +4154,8 @@ This is true freedom - not dependence on constant input.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'life', 'mind', 'practice', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4077,6 +4215,8 @@ This is the full path.''',
     ],
     readingTimeMinutes: 3,
     isPremium: true,
+    topicTags: {'awareness', 'ego', 'life', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4140,6 +4280,8 @@ And remember: all techniques are temporary. Eventually, practice gives way to si
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'life', 'meditation'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -4200,6 +4342,8 @@ The goal is not the retreat. It is bringing recognition into every moment.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'life', 'meditation', 'mind', 'practice'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -4263,6 +4407,8 @@ Trust your own direct experience above any authority.''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'freedom', 'life', 'practice', 'presence'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -4330,6 +4476,8 @@ Then put it down and look: What is aware of these words?''',
     ],
     readingTimeMinutes: 4,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'freedom', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4398,6 +4546,8 @@ When separation dissolves, community is not a thing you're part of - it's what y
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'practice', 'relationship'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
 
@@ -4460,6 +4610,8 @@ The empty self is full of the whole universe.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'relationship', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4524,6 +4676,8 @@ Then, if ready, let even the witness dissolve.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4590,6 +4744,8 @@ Notice what happens when resistance ends.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'life', 'practice', 'presence', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4660,6 +4816,8 @@ Just notice, when you remember, that thoughts are being watched.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4723,6 +4881,8 @@ You can be wrong. You can change. You can be seen. There's nothing essential at 
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'freedom', 'life'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4791,6 +4951,8 @@ Look. This is it.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -4860,6 +5022,8 @@ This is effortless presence. This is home.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -4928,6 +5092,8 @@ We are peace, appearing as a human life.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -4999,6 +5165,8 @@ But without the fundamental sense that something is missing.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'freedom', 'life'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -5069,6 +5237,8 @@ What's here?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -5142,6 +5312,8 @@ What happens when I can't?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -5210,6 +5382,8 @@ When recognized, you don't become something new. You see what you always already
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'truth'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -5281,6 +5455,8 @@ Loss is real at one level. At another, nothing is lost.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'mind', 'nature'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -5348,6 +5524,8 @@ Still, the pointing helps: You are that which reflects, not the reflections them
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -5421,6 +5599,8 @@ Let the practice deepen into recognition.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -5491,6 +5671,8 @@ The words are forms. The reality is formless love.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'devotion', 'life', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -5558,6 +5740,8 @@ The pathless path is walked without a walker, toward a destination that was neve
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'practice', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -5629,6 +5813,8 @@ You can be anything - and nothing - because you are not your identity.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'relationship'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -5703,6 +5889,8 @@ This is it. Not the myth. This.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'mind', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -5783,6 +5971,8 @@ Just this. Simple presence. Nothing missing.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   // More articles for variety
@@ -5848,6 +6038,8 @@ This is freedom within appearance.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'nature', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -5921,6 +6113,8 @@ Not worship of a person, but appreciation for the pointing.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'nature'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -5993,6 +6187,8 @@ What is present in both?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'nature', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -6063,6 +6259,8 @@ Mind sees clearly. Heart opens fully. Same awakening.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'presence'},
+    moodTags: {'general', 'uplifting'},
   ),
 
   Article(
@@ -6137,6 +6335,8 @@ There was never anything to do.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'life', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6211,6 +6411,8 @@ Then rest in what remains. Not nothing. Everything.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'practice', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6281,6 +6483,8 @@ Or is it the timeless presence in which all ending and beginning appears?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'mind', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6356,6 +6560,8 @@ See the stillness in the movement.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6434,6 +6640,8 @@ But always, already, beyond words.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6517,6 +6725,8 @@ Just this.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
 
@@ -6580,6 +6790,8 @@ This is the path.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'enlightenment', 'life', 'practice', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6647,6 +6859,8 @@ Which are you?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'freedom', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6718,6 +6932,8 @@ Can you find the refuge that is never not here?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'nature', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -6781,6 +6997,8 @@ This is it.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6847,6 +7065,8 @@ Is it something to get? Or something to recognize?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'freedom', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -6917,6 +7137,8 @@ Look. Not the thoughts. Awareness itself.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -6991,6 +7213,8 @@ The freedom itself is immediate.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'practice', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7066,6 +7290,8 @@ This is true awakening.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7141,6 +7367,8 @@ What is that?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -7219,6 +7447,8 @@ What is the gift of admitting you don't know?''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7290,6 +7520,8 @@ You are the space, not only what fills it.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -7372,6 +7604,8 @@ Home.''',
     ],
     readingTimeMinutes: 3,
     isPremium: false,
+    topicTags: {'freedom', 'life', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   // Quick additions to reach target
@@ -7441,6 +7675,8 @@ What is aware of this?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'meditation', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -7511,6 +7747,8 @@ Look.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'nature', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7577,6 +7815,8 @@ Rest there.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -7651,6 +7891,8 @@ What remains when the wave subsides?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'nature', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7719,6 +7961,8 @@ No problem.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'nature'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -7795,6 +8039,8 @@ What happens when you stop?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'mind', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -7860,6 +8106,8 @@ The answer is what you are.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -7933,6 +8181,8 @@ Welcome home.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -8007,6 +8257,8 @@ That's all.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'presence', 'truth'},
+    moodTags: {'general'},
   ),
 
   // Additional articles for variety
@@ -8074,6 +8326,8 @@ Let the day begin from here.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general', 'morning'},
   ),
 
   Article(
@@ -8145,6 +8399,8 @@ Just resting. As awareness. Always already at rest.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'mind', 'practice'},
+    moodTags: {'general', 'morning'},
   ),
 
   Article(
@@ -8220,6 +8476,8 @@ What is this moment, exactly as it is?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'life', 'meditation'},
+    moodTags: {'general'},
   ),
 
 
@@ -8287,6 +8545,8 @@ Don't think about it. Look.''',
     ],
     readingTimeMinutes: 1,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'meditation', 'mind'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8357,6 +8617,8 @@ What is that?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'meditation', 'nature'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8426,6 +8688,8 @@ What happens if you stop?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'freedom', 'life', 'practice', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8499,6 +8763,8 @@ Actually here.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'life', 'practice', 'presence', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8569,6 +8835,8 @@ Look.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'presence', 'self-inquiry'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8641,6 +8909,8 @@ Obvious. Overlooked. Recognized.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -8707,6 +8977,8 @@ The answer is what you are.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'enlightenment', 'freedom'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8780,6 +9052,8 @@ What you are.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'practice', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -8851,6 +9125,8 @@ What is your natural state?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'enlightenment', 'mind', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -8925,6 +9201,8 @@ Or only from the story about "me"?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'freedom', 'presence', 'truth'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   // More quick articles for count
@@ -8989,6 +9267,8 @@ Rest in that wonder.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'mind', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9059,6 +9339,8 @@ What is aware.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'mind', 'practice'},
+    moodTags: {'challenging', 'contemplative'},
   ),
 
   Article(
@@ -9127,6 +9409,8 @@ What if this, right now, is enough?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'nature', 'presence'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -9200,6 +9484,8 @@ Or only the preferred state?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'freedom', 'practice'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -9274,6 +9560,8 @@ Not seeing it. Being it.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'mind', 'presence'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9346,6 +9634,8 @@ Not as a thing. As what you are.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9420,6 +9710,8 @@ Just here.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'freedom', 'nature'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9491,6 +9783,8 @@ Because the fight with experience ends.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'ego', 'enlightenment', 'life', 'mind'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9563,6 +9857,8 @@ Now what?''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'ego', 'enlightenment', 'freedom', 'life'},
+    moodTags: {'contemplative', 'general'},
   ),
 
   Article(
@@ -9641,6 +9937,8 @@ Thank you.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
+    moodTags: {'general'},
   ),
 
   Article(
@@ -9710,6 +10008,8 @@ Find that one.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'life', 'practice', 'presence'},
+    moodTags: {'challenging', 'general'},
   ),
 
   Article(
@@ -9790,6 +10090,8 @@ The beginning of living it.''',
     ],
     readingTimeMinutes: 2,
     isPremium: false,
+    topicTags: {'awareness', 'ego', 'nature', 'silence'},
+    moodTags: {'general'},
   ),
 
 ];
@@ -9822,4 +10124,36 @@ List<Article> searchArticles(String query) {
         (a.subtitle?.toLowerCase().contains(lowerQuery) ?? false) ||
         a.content.toLowerCase().contains(lowerQuery);
   }).toList();
+}
+
+/// Get articles by topic tag
+List<Article> getArticlesByTopic(String topic) {
+  return articles.where((a) => a.hasTopic(topic)).toList();
+}
+
+/// Get articles by mood tag
+List<Article> getArticlesByMood(String mood) {
+  return articles.where((a) => a.hasMood(mood)).toList();
+}
+
+/// Get count of articles per topic tag
+Map<String, int> getArticleTopicCounts() {
+  final counts = <String, int>{};
+  for (final article in articles) {
+    for (final topic in article.topicTags) {
+      counts[topic] = (counts[topic] ?? 0) + 1;
+    }
+  }
+  return counts;
+}
+
+/// Get count of articles per mood tag
+Map<String, int> getArticleMoodCounts() {
+  final counts = <String, int>{};
+  for (final article in articles) {
+    for (final mood in article.moodTags) {
+      counts[mood] = (counts[mood] ?? 0) + 1;
+    }
+  }
+  return counts;
 }

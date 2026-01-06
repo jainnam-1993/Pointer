@@ -60,7 +60,7 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
 };
 
 /// Filter options for library content
-enum LibraryFilter { all, saved }
+enum LibraryFilter { all, articles, quotes, saved }
 
 /// Browse mode for category navigation
 enum LibraryBrowseMode {
@@ -108,6 +108,7 @@ class LibraryScreen extends ConsumerStatefulWidget {
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   LibraryFilter _currentFilter = LibraryFilter.all;
   LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
+  ContentFilter _contentFilter = ContentFilter.all;
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +159,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                     DropdownMenuItem(
                                       value: LibraryFilter.all,
                                       child: Text('All', style: TextStyle(color: colors.textPrimary)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: LibraryFilter.articles,
+                                      child: Text('Articles', style: TextStyle(color: colors.textPrimary)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: LibraryFilter.quotes,
+                                      child: Text('Quotes', style: TextStyle(color: colors.textPrimary)),
                                     ),
                                     DropdownMenuItem(
                                       value: LibraryFilter.saved,
@@ -370,13 +379,18 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                           currentMode: _browseMode,
                           onChanged: (mode) => setState(() => _browseMode = mode),
                         ),
+                        const Spacer(),
+                        _ContentTypeDropdown(
+                          currentFilter: _contentFilter,
+                          onChanged: (filter) => setState(() => _contentFilter = filter),
+                        ),
                       ],
                     ),
                   ),
                 ),
 
                 // Dynamic browse list based on mode
-                _buildBrowseList(colors, bottomPadding, subscription.isPremium),
+                _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
                 ], // end premium content
                 ], // end else
               ],
@@ -411,20 +425,36 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /// Build dynamic browse list based on current mode
-  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium) {
+  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
-        return _buildTopicsList(colors, bottomPadding, isPremium);
+        return _buildTopicsList(colors, bottomPadding, isPremium, contentFilter);
       case LibraryBrowseMode.teachers:
-        return _buildTeachersList(colors, bottomPadding);
+        return _buildTeachersList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.lineages:
-        return _buildLineagesList(colors, bottomPadding);
+        return _buildLineagesList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.moods:
-        return _buildMoodsList(colors, bottomPadding);
+        return _buildMoodsList(colors, bottomPadding, contentFilter);
     }
   }
 
-  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium) {
+  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+    // Topics only show articles, hide if quotes filter selected
+    if (contentFilter == ContentFilter.quotes) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Center(
+            child: Text(
+              'Switch to "All" or "Articles" to browse by topic',
+              style: TextStyle(color: colors.textMuted),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
@@ -453,10 +483,45 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  Widget _buildTeachersList(PointerColors colors, double bottomPadding) {
-    final teacherCounts = TeachingRepository.teacherCounts;
+  Widget _buildTeachersList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+    // Get teachers based on content filter
+    final Map<String, int> teacherCounts;
+    if (contentFilter == ContentFilter.articles) {
+      // Count articles per teacher
+      teacherCounts = <String, int>{};
+      for (final article in articles) {
+        if (article.teacher != null) {
+          teacherCounts[article.teacher!] = (teacherCounts[article.teacher!] ?? 0) + 1;
+        }
+      }
+    } else if (contentFilter == ContentFilter.quotes) {
+      teacherCounts = TeachingRepository.teacherCounts;
+    } else {
+      // All - merge both
+      teacherCounts = Map<String, int>.from(TeachingRepository.teacherCounts);
+      for (final article in articles) {
+        if (article.teacher != null) {
+          teacherCounts[article.teacher!] = (teacherCounts[article.teacher!] ?? 0) + 1;
+        }
+      }
+    }
+
     final sortedTeachers = teacherCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
+
+    if (sortedTeachers.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Center(
+            child: Text(
+              'No teachers found for this filter',
+              style: TextStyle(color: colors.textMuted),
+            ),
+          ),
+        ),
+      );
+    }
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
@@ -493,40 +558,82 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  Widget _buildLineagesList(PointerColors colors, double bottomPadding) {
+  Widget _buildLineagesList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+    // Build list of lineages with their counts based on filter
+    final lineageData = <({Tradition tradition, TraditionInfo info, int count})>[];
+
+    for (final tradition in Tradition.values) {
+      final info = traditions[tradition]!;
+      final int count;
+
+      if (contentFilter == ContentFilter.articles) {
+        count = getArticlesByTradition(tradition).length;
+      } else if (contentFilter == ContentFilter.quotes) {
+        count = TeachingRepository.byLineage(tradition).length;
+      } else {
+        // All - combined count
+        final teachingCount = TeachingRepository.byLineage(tradition).length;
+        final articleCount = getArticlesByTradition(tradition).length;
+        count = teachingCount + articleCount;
+      }
+
+      // Include lineage if it has content matching the filter
+      if (count > 0) {
+        lineageData.add((tradition: tradition, info: info, count: count));
+      }
+    }
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final tradition = Tradition.values[index];
-            final info = traditions[tradition]!;
-            final teachingCount = TeachingRepository.byLineage(tradition).length;
-            final articleCount = getArticlesByTradition(tradition).length;
-            final totalCount = teachingCount + articleCount;
+            final data = lineageData[index];
 
             return StaggeredFadeIn(
               index: index,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _BrowseCard(
-                  icon: info.icon,
-                  name: info.name,
-                  description: info.description,
-                  count: totalCount,
-                  onTap: () => _openLineage(context, tradition, info),
+                  icon: data.info.icon,
+                  name: data.info.name,
+                  description: data.info.description,
+                  count: data.count,
+                  onTap: () => _openLineage(context, data.tradition, data.info),
                 ),
               ),
             );
           },
-          childCount: Tradition.values.length,
+          childCount: lineageData.length,
         ),
       ),
     );
   }
 
-  Widget _buildMoodsList(PointerColors colors, double bottomPadding) {
-    final moodCounts = TeachingRepository.moodCounts;
+  Widget _buildMoodsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+    // Build mood counts based on filter
+    final Map<String, int> moodCounts;
+
+    if (contentFilter == ContentFilter.articles) {
+      moodCounts = getArticleMoodCounts();
+    } else if (contentFilter == ContentFilter.quotes) {
+      moodCounts = TeachingRepository.moodCounts;
+    } else {
+      // All - merge both counts
+      final quoteCounts = TeachingRepository.moodCounts;
+      final articleCounts = getArticleMoodCounts();
+      moodCounts = <String, int>{};
+
+      // Add all quote moods
+      for (final entry in quoteCounts.entries) {
+        moodCounts[entry.key] = entry.value;
+      }
+      // Add article moods (merge with existing)
+      for (final entry in articleCounts.entries) {
+        moodCounts[entry.key] = (moodCounts[entry.key] ?? 0) + entry.value;
+      }
+    }
+
     final sortedMoods = moodCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -636,6 +743,155 @@ class _BrowseModeDropdown extends StatelessWidget {
           Navigator.pop(context);
         },
       ),
+    );
+  }
+}
+
+/// Dropdown for content type filter (All/Articles/Quotes)
+class _ContentTypeDropdown extends StatelessWidget {
+  final ContentFilter currentFilter;
+  final ValueChanged<ContentFilter> onChanged;
+
+  const _ContentTypeDropdown({
+    required this.currentFilter,
+    required this.onChanged,
+  });
+
+  String get _label {
+    switch (currentFilter) {
+      case ContentFilter.all:
+        return 'All';
+      case ContentFilter.articles:
+        return 'Articles';
+      case ContentFilter.quotes:
+        return 'Quotes';
+    }
+  }
+
+  IconData get _icon {
+    switch (currentFilter) {
+      case ContentFilter.all:
+        return Icons.grid_view_rounded;
+      case ContentFilter.articles:
+        return Icons.article_outlined;
+      case ContentFilter.quotes:
+        return Icons.format_quote_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return GlassCard(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderRadius: 12,
+      onTap: () => _showFilterSelector(context),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(_icon, size: 16, color: colors.textPrimary),
+          const SizedBox(width: 6),
+          Text(
+            _label,
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(Icons.keyboard_arrow_down, color: colors.textMuted, size: 20),
+        ],
+      ),
+    );
+  }
+
+  void _showFilterSelector(BuildContext context) {
+    HapticFeedback.lightImpact();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _ContentTypeSheet(
+        currentFilter: currentFilter,
+        onSelected: (filter) {
+          onChanged(filter);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+}
+
+/// Bottom sheet for content type selection
+class _ContentTypeSheet extends StatelessWidget {
+  final ContentFilter currentFilter;
+  final ValueChanged<ContentFilter> onSelected;
+
+  const _ContentTypeSheet({
+    required this.currentFilter,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Show',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildOption(context, ContentFilter.all, 'All', Icons.grid_view_rounded),
+              _buildOption(context, ContentFilter.articles, 'Articles', Icons.article_outlined),
+              _buildOption(context, ContentFilter.quotes, 'Quotes', Icons.format_quote_rounded),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOption(BuildContext context, ContentFilter filter, String label, IconData icon) {
+    final colors = context.colors;
+    final isSelected = filter == currentFilter;
+
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? colors.accent : colors.textSecondary,
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? colors.accent : colors.textPrimary,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check, color: colors.accent)
+          : null,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onSelected(filter);
+      },
     );
   }
 }
@@ -1465,16 +1721,24 @@ class _MarkdownContent extends StatelessWidget {
 // ============================================================
 
 /// Screen showing teachings by a specific teacher
-class TeacherTeachingsScreen extends StatelessWidget {
+class TeacherTeachingsScreen extends ConsumerStatefulWidget {
   final String teacher;
 
   const TeacherTeachingsScreen({super.key, required this.teacher});
 
   @override
+  ConsumerState<TeacherTeachingsScreen> createState() => _TeacherTeachingsScreenState();
+}
+
+class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen> {
+  @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final teachings = TeachingRepository.byTeacher(teacher);
+    final teachings = TeachingRepository.byTeacher(widget.teacher);
+    final articles = getArticlesByTeacher(widget.teacher);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final subscriptionState = ref.watch(subscriptionProvider);
+    final isPremium = subscriptionState.tier == SubscriptionTier.premium;
 
     return Scaffold(
       body: Stack(
@@ -1499,7 +1763,7 @@ class TeacherTeachingsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                teacher,
+                                widget.teacher,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -1507,7 +1771,7 @@ class TeacherTeachingsScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${teachings.length} teachings',
+                                '${articles.length} articles, ${teachings.length} quotes',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: colors.textSecondary,
@@ -1521,7 +1785,89 @@ class TeacherTeachingsScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Teachings list
+                // Articles section (if any)
+                if (articles.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+                      child: Text(
+                        'ARTICLES (${articles.length})',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: colors.textMuted,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final article = articles[index];
+                          final isLocked = article.isPremium && !isPremium;
+
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _ArticleListItem(
+                                article: article,
+                                isLocked: isLocked,
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  if (isLocked) {
+                                    // Show paywall
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Premium article - unlock with subscription'),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colors.glassBackground,
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ArticleReaderScreen(
+                                          article: article,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: articles.length,
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Quotes section
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      articles.isNotEmpty ? 24 : 16,
+                      24,
+                      12,
+                    ),
+                    child: Text(
+                      'QUOTES (${teachings.length})',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textMuted,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                ),
                 SliverPadding(
                   padding: EdgeInsets.only(
                     left: 24,
@@ -1554,7 +1900,7 @@ class TeacherTeachingsScreen extends StatelessWidget {
 }
 
 /// Screen showing teachings by lineage/tradition
-class LineageTeachingsScreen extends StatelessWidget {
+class LineageTeachingsScreen extends ConsumerWidget {
   final Tradition tradition;
   final TraditionInfo info;
 
@@ -1565,9 +1911,11 @@ class LineageTeachingsScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final teachings = TeachingRepository.byLineage(tradition);
+    final articles = getArticlesByTradition(tradition);
+    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -1607,7 +1955,7 @@ class LineageTeachingsScreen extends StatelessWidget {
                                 ],
                               ),
                               Text(
-                                '${teachings.length} teachings',
+                                '${articles.length} articles · ${teachings.length} quotes',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: colors.textSecondary,
@@ -1635,7 +1983,72 @@ class LineageTeachingsScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Teachings list
+                // Articles section (if any)
+                if (articles.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _SectionHeader(title: 'Articles', count: articles.length),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final article = articles[index];
+                          final isLocked = article.isPremium && !isPremium;
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _ArticleListItem(
+                                article: article,
+                                isLocked: isLocked,
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  if (isLocked) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Premium article - unlock with subscription'),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colors.glassBackground,
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ArticleReaderScreen(article: article),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: articles.length,
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Quotes section
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      articles.isNotEmpty ? 24 : 0,
+                      24,
+                      12,
+                    ),
+                    child: _SectionHeader(
+                      title: 'Quotes',
+                      count: teachings.length,
+                    ),
+                  ),
+                ),
                 SliverPadding(
                   padding: EdgeInsets.only(
                     left: 24,
@@ -1668,15 +2081,17 @@ class LineageTeachingsScreen extends StatelessWidget {
 }
 
 /// Screen showing teachings by mood
-class MoodTeachingsScreen extends StatelessWidget {
+class MoodTeachingsScreen extends ConsumerWidget {
   final String mood;
 
   const MoodTeachingsScreen({super.key, required this.mood});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final articles = getArticlesByMood(mood);
     final teachings = TeachingRepository.byMood(mood);
+    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -1719,7 +2134,7 @@ class MoodTeachingsScreen extends StatelessWidget {
                                 ],
                               ),
                               Text(
-                                '${teachings.length} teachings',
+                                '${articles.length} articles, ${teachings.length} quotes',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: colors.textSecondary,
@@ -1733,7 +2148,72 @@ class MoodTeachingsScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Teachings list
+                // Articles section
+                if (articles.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _SectionHeader(
+                        title: 'Articles',
+                        count: articles.length,
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final article = articles[index];
+                          final isLocked = article.isPremium && !isPremium;
+
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _ArticleListItem(
+                                article: article,
+                                isLocked: isLocked,
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  if (isLocked) {
+                                    // Show paywall
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Premium article - unlock with subscription'),
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: colors.glassBackground,
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ArticleReaderScreen(article: article),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: articles.length,
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Quotes section
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _SectionHeader(
+                      title: 'Quotes',
+                      count: teachings.length,
+                    ),
+                  ),
+                ),
                 SliverPadding(
                   padding: EdgeInsets.only(
                     left: 24,
@@ -1757,6 +2237,53 @@ class MoodTeachingsScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Filter mode for content display
+enum ContentFilter { all, articles, quotes }
+
+/// Section header for separated content sections
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final int count;
+
+  const _SectionHeader({required this.title, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 12),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: colors.textPrimary,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: colors.accent.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              count.toString(),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: colors.accent,
+              ),
             ),
           ),
         ],

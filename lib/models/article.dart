@@ -59,6 +59,12 @@ class Article {
   /// Whether this is premium-only content
   final bool isPremium;
 
+  /// Topic tags for filtering (uses TopicTags constants)
+  final Set<String> topicTags;
+
+  /// Mood tags for context-based browsing (uses MoodTags constants)
+  final Set<String> moodTags;
+
   const Article({
     required this.id,
     required this.title,
@@ -71,6 +77,8 @@ class Article {
     required this.readingTimeMinutes,
     this.dateAdded,
     this.isPremium = false,
+    this.topicTags = const {},
+    this.moodTags = const {},
   });
 
   /// Check if article belongs to a specific category
@@ -79,6 +87,12 @@ class Article {
   /// Check if article is by a specific teacher
   bool isBy(String teacherName) =>
       teacher?.toLowerCase() == teacherName.toLowerCase();
+
+  /// Check if article has a specific topic tag
+  bool hasTopic(String topic) => topicTags.contains(topic);
+
+  /// Check if article has a specific mood tag
+  bool hasMood(String mood) => moodTags.contains(mood);
 
   @override
   bool operator ==(Object other) =>
