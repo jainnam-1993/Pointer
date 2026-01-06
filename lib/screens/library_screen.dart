@@ -673,7 +673,8 @@ class _BrowseModeSheet extends StatelessWidget {
                   onTap: () => onSelected(mode),
                 );
               }),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
+              // Account for bottom nav bar (80px) + system safe area
+              SizedBox(height: 80 + MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
