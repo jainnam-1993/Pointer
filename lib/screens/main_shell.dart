@@ -224,7 +224,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                       bottom: 6,
                       child: Container(
                         width: indicatorWidth,
-                        height: 3,
+                        height: 4,
                         decoration: BoxDecoration(
                           color: colors.accent,
                           borderRadius: BorderRadius.circular(2),
