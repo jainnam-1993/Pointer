@@ -429,6 +429,16 @@ class PointerWidgetProvider : AppWidgetProvider() {
             // Set empty view for when no data
             views.setEmptyView(R.id.widget_flipper, R.id.widget_empty_state)
 
+            // Check premium status and update empty state text accordingly
+            val widgetData = HomeWidgetPlugin.getData(context)
+            val isPremium = widgetData?.getBoolean("widget_is_premium", false) ?: false
+            val emptyText = if (isPremium) {
+                "Tap to load"
+            } else {
+                "Premium Feature\nUpgrade to unlock"
+            }
+            views.setTextViewText(R.id.widget_empty_text, emptyText)
+
             // Set up Previous button
             val prevIntent = Intent(context, PointerWidgetProvider::class.java).apply {
                 action = ACTION_PREV

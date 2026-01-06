@@ -187,9 +187,9 @@ void main() {
   });
 
   group('kForcePremiumForTesting', () {
-    test('is set to true for development', () {
-      // Document current value - should be false in production
-      expect(kForcePremiumForTesting, true);
+    test('is set to false for production', () {
+      // IMPORTANT: Must be false before store submission
+      expect(kForcePremiumForTesting, false);
     });
 
     test('is a compile-time constant', () {

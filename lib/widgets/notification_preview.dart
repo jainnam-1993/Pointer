@@ -87,7 +87,7 @@ class NotificationPreview extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header: Ensō icon + "Pointer" + "now"
+            // Header: Ensō icon + "Here Now" + "now"
             Row(
               children: [
                 EnsoIcon(
@@ -96,7 +96,7 @@ class NotificationPreview extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Pointer',
+                  'Here Now',
                   style: TextStyle(
                     color: headerColor,
                     fontSize: 12,

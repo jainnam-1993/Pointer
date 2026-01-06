@@ -6,7 +6,7 @@
     <!-- Background notifications via WorkManager (no exact alarm permissions needed) -->
 
     <application
-        android:label="Pointer"
+        android:label="Here Now"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

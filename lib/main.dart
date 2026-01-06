@@ -173,7 +173,7 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     final themeMode = ref.watch(flutterThemeModeProvider);
 
     return MaterialApp.router(
-      title: 'Pointer',
+      title: 'Here Now',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

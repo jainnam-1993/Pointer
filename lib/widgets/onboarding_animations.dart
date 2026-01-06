@@ -614,7 +614,7 @@ class NotificationSimulation extends StatefulWidget {
 
   const NotificationSimulation({
     super.key,
-    this.appName = 'Pointer',
+    this.appName = 'Here Now',
     required this.message,
     this.title = "Today's Pointing",
     this.attribution,

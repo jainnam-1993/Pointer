@@ -206,7 +206,7 @@ class ShareService {
       buffer.writeln('\n— ${pointing.teacher}');
     }
     buffer.writeln('\n━━━━━━━━━━━━━━━━━━━━');
-    buffer.writeln('Pointer - Daily Awareness Pointings');
+    buffer.writeln('Here Now - Daily Awareness Pointings');
     buffer.writeln('Download: https://pointer.app/download');
     buffer.writeln('━━━━━━━━━━━━━━━━━━━━');
     return buffer.toString();
@@ -224,7 +224,7 @@ class ShareService {
     }
     buffer.writeln();
     buffer.writeln('---');
-    buffer.writeln('Saved from Pointer on ${DateFormat.yMMMd().format(DateTime.now())}');
+    buffer.writeln('Saved from Here Now on ${DateFormat.yMMMd().format(DateTime.now())}');
     return buffer.toString();
   }
 }

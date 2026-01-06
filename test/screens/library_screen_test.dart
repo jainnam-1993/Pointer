@@ -7,11 +7,24 @@ import 'package:pointer/data/articles.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:pointer/providers/subscription_providers.dart';
+import 'package:pointer/services/storage_service.dart';
 
 late SharedPreferences prefs;
 
+/// Premium subscription state for testing
+final _premiumState = SubscriptionState(
+  tier: SubscriptionTier.premium,
+  isLoading: false,
+);
+
+final _freeState = SubscriptionState(
+  tier: SubscriptionTier.free,
+  isLoading: false,
+);
+
 /// Helper to wrap widget with ProviderScope for testing
-Widget wrapWithProviderScope(Widget child) {
+Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
@@ -19,9 +32,28 @@ Widget wrapWithProviderScope(Widget child) {
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
+      // Mock subscription state for testing
+      subscriptionProvider.overrideWith(
+        (ref) => _TestSubscriptionNotifier(isPremium ? _premiumState : _freeState),
+      ),
     ],
     child: child,
   );
+}
+
+/// Test subscription notifier that returns fixed state
+class _TestSubscriptionNotifier extends SubscriptionNotifier {
+  final SubscriptionState _fixedState;
+
+  _TestSubscriptionNotifier(this._fixedState) : super(_MockStorageService());
+
+  @override
+  SubscriptionState get state => _fixedState;
+}
+
+/// Minimal mock storage service for testing
+class _MockStorageService extends StorageService {
+  _MockStorageService() : super(prefs);
 }
 
 void main() {

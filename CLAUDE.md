@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Pointer is a Flutter mobile app that delivers daily non-dual awareness "pointings" from various spiritual traditions. Anti-meditation positioning: direct pointing vs guided meditation. No progress tracking, no gamification.
+Here Now is a Flutter mobile app that delivers daily non-dual awareness "pointings" from various spiritual traditions. Anti-meditation positioning: direct pointing vs guided meditation. No progress tracking, no gamification.
 
 ## Commands
 
@@ -41,7 +41,7 @@ maestro test maestro/flows/17_theme_switching.yaml  # Dark/Light/OLED theme chan
 maestro test maestro/flows/18_notification_config.yaml # Notification presets & time windows (~60s)
 maestro test maestro/flows/                         # Run all flows
 # Debug/Testing flows
-maestro test maestro/flows/11_notification_test.yaml # Enable 1-min notification test preset (requires manual verification after flow)
+maestro test maestro/flows/11_notification_test.yaml # Enable 1-min test preset, send test notif, verify in background (manual check required)
 # Screenshots output to: maestro/screenshots/
 
 # Git Hooks - Pre-commit Quality Gates
@@ -76,8 +76,8 @@ flutter pub get                # Install dependencies
 # - ProGuard rules: android/app/proguard-rules.pro (preserves Flutter, RevenueCat, Home Widget)
 
 # Play Store Deployment (Fastlane)
-bundle exec fastlane android internal         # Upload AAB to internal testing (skip metadata)
-bundle exec fastlane android metadata         # Upload metadata/screenshots only
+bundle exec fastlane android internal         # Upload AAB to internal testing as draft (skip metadata)
+bundle exec fastlane android metadata         # Upload metadata/screenshots only to internal track
 bundle exec fastlane android production       # Upload AAB to production track
 bundle exec fastlane android deploy_internal  # Upload AAB + metadata to internal
 bundle exec fastlane android validate         # Validate service account credentials
@@ -118,13 +118,19 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── tradition_badge.dart        # Tradition indicator badge
 │   │   ├── teacher_sheet.dart          # Modal sheet with teacher bio and pointings
 │   │   ├── article_tts_player.dart     # TTS playback controls
-│   │   └── audio_player_widget.dart    # Audio pointing player (guided readings)
+│   │   ├── audio_player_widget.dart    # Audio pointing player (guided readings)
+│   │   ├── notification_preview.dart   # Android notification preview widget (matches BigTextStyleInformation)
+│   │   ├── onboarding_animations.dart  # Word-by-word reveal animations for onboarding
+│   │   └── share_templates/
+│   │       └── share_card.dart         # Shareable card templates (minimal, gradient, tradition)
 │   ├── services/
 │   │   ├── storage_service.dart            # SharedPreferences wrapper
 │   │   ├── notification_service.dart       # Notification scheduling (presets, time windows, quiet hours, DEBUG test notification)
+│   │   ├── workmanager_service.dart        # Background notification scheduling via WorkManager (survives app termination)
 │   │   ├── usage_tracking_service.dart     # Daily pointing limit (freemium)
 │   │   ├── widget_service.dart             # Home widget data updates, theme sync via refreshWidget()
 │   │   ├── revenue_cat_service.dart        # RevenueCat integration (lifetime purchase)
+│   │   ├── share_service.dart              # Share card generation and export (templates, formats, providers)
 │   │   ├── aws_credential_service.dart     # AWS TOTP authentication
 │   │   ├── tts_service.dart                # Text-to-speech via AWS Polly
 │   │   ├── affinity_service.dart           # Tradition preference tracking
@@ -161,13 +167,16 @@ bundle exec fastlane android validate         # Validate service account credent
 ├── test/                      # Unit tests
 │   ├── dynamic_type_test.dart       # Dynamic Type accessibility tests (text scaling, font size clamping 0.8x-1.5x)
 │   ├── providers/
-│   │   └── content_providers_test.dart  # Content providers tests (CurrentPointingNotifier, FavoritesNotifier, TeachingFilterState)
+│   │   ├── content_providers_test.dart  # Content providers tests (CurrentPointingNotifier, FavoritesNotifier, TeachingFilterState)
+│   │   └── subscription_providers_test.dart  # Subscription providers tests (SubscriptionTier, SubscriptionState, DailyUsageNotifier, kForcePremiumForTesting validation)
 │   ├── services/
 │   │   └── notification_service_test.dart  # Notification service tests (Android/iOS channel config, v6 channel, NotificationSchedule time generation, testEveryMinute preset, quiet hours)
 │   ├── screens/
 │   │   ├── home_screen_test.dart        # HomeScreen widget tests (layout, content, interactions)
 │   │   ├── home_screen_auto_advance_test.dart  # Auto-advance timer tests (AppSettings defaults, provider behavior, widget rendering, timer limitations with fakeAsync)
-│   │   └── onboarding_screen_test.dart  # Onboarding widget tests (navigation, Dynamic Type)
+│   │   ├── library_screen_test.dart     # LibraryScreen widget tests (featured section, browse by dropdown, category display, theme variants, subscription state mocking)
+│   │   ├── onboarding_screen_test.dart  # Onboarding widget tests (navigation, Dynamic Type)
+│   │   └── paywall_screen_test.dart     # PaywallScreen widget tests (widget tree, features display, purchase states, large screen layout)
 │   ├── accessibility/
 │   │   ├── accessibility_test.dart      # Semantics widget configuration tests (screen reader labels, hints, button flags)
 │   │   └── voiceover_test.dart          # VoiceOver accessibility tests (semantic labels, focus order, custom actions, decorative exclusion)
@@ -188,7 +197,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   │   ├── 06_screenshots_all.yaml # Store screenshot capture
 │   │   ├── 09_library_content.yaml  # Library browsing & premium gating
 │   │   ├── 10_widget_test.yaml      # Widget creation & verification (fully automated)
-│   │   ├── 11_notification_test.yaml # Debug: 1-min notification test preset (manual verification required)
+│   │   ├── 11_notification_test.yaml # Debug: 1-min test preset, send test notif, verify in background (manual check)
 │   │   ├── 11_zen_mode.yaml         # Distraction-free mode (double-tap)
 │   │   ├── 12_save_favorites.yaml   # Long-press save, first-save celebration
 │   │   ├── 13_share_preview.yaml    # Share modal, templates, formats
@@ -218,7 +227,7 @@ bundle exec fastlane android validate         # Validate service account credent
 │   ├── Appfile                  # Fastlane config (package: com.dailypointer, credentials: android/play-store-credentials.json)
 │   ├── Fastfile                 # Deployment lanes (internal, metadata, production, deploy_internal, validate)
 │   └── metadata/android/en-US/  # Play Store listing
-│       ├── title.txt            # App title: "Pointer"
+│       ├── title.txt            # App title: "Here Now"
 │       ├── short_description.txt # 80-char tagline
 │       └── full_description.txt  # 4000-char app description (features, philosophy, premium)
 ├── patrol.yaml                # Patrol CLI configuration
@@ -239,7 +248,7 @@ bundle exec fastlane android validate         # Validate service account credent
 - **Storage**: SharedPreferences, flutter_secure_storage (TTS credentials)
 - **Animations**: flutter_animate, animations package, custom gradient animations
 - **UI Components**: Google Fonts, flutter_svg (for Ensō icon)
-- **Notifications**: flutter_local_notifications, timezone
+- **Notifications**: flutter_local_notifications, workmanager (background tasks)
 - **Audio/TTS**: just_audio (playback), audio_service (background), AWS Polly (synthesis), otp (TOTP auth), crypto (SigV4 signing)
 - **Video**: video_player
 - **Home Widget**: home_widget
@@ -247,7 +256,8 @@ bundle exec fastlane android validate         # Validate service account credent
 - **URL Launching**: url_launcher (for privacy/terms links)
 - **System Settings**: app_settings (notification permission deep links)
 - **Markdown**: flutter_markdown_plus (for content rendering)
-- **Utilities**: path_provider, share_plus
+- **Sharing**: share_plus, screenshot (widget capture), intl (date formatting)
+- **Utilities**: path_provider
 - **Haptics**: flutter/services HapticFeedback (lightImpact/mediumImpact/heavyImpact)
 - **Timers**: dart:async Timer (auto-advance, inquiry phases)
 - **Testing**: flutter_test + mocktail (unit), patrol (integration)
@@ -307,7 +317,7 @@ bundle exec fastlane android validate         # Validate service account credent
 - **DailyUsageNotifier**: canViewPointing() always returns true - quotes/pointings are FREE for all users (freemium v2)
 - **State models**: SubscriptionState (tier, loading, products, error, expirationDate), SubscriptionTier enum (free/premium)
 - **Freemium v2 model**: FREE tier gets unlimited quotes/pointings; PREMIUM unlocks full library, notifications, widget (TTS temporarily disabled)
-- **Testing flag**: `kForcePremiumForTesting` constant for development (set to false in production)
+- **Production flag**: `kForcePremiumForTesting = false` (production-ready, validated by test suite before store submission)
 - **Integration**: RevenueCatService singleton for purchases, WidgetService for premium gating, StorageService for offline caching
 
 **Data model**: `Pointing` has id, content, instruction, tradition (Advaita/Zen/Direct Path/Contemporary/Original), context (morning/midday/evening/stress/general), teacher, source.
@@ -349,7 +359,9 @@ bundle exec fastlane android validate         # Validate service account credent
 
 - **Animation handling**: For widgets with continuous animations (AnimatedGradient), use `pump(Duration(seconds: 2))` instead of `pumpAndSettle()` which times out on continuous animations. Disable animations in `setUpAll()` via `AnimatedGradient.disableAnimations = true`. Alternatively, pass `MediaQuery(data: MediaQueryData(disableAnimations: true))` wrapper to test helpers for fine-grained control.
 - **Riverpod test setup**: Create `ProviderScope` with overrides for mocked dependencies (SharedPreferences, services, state providers). Mock SharedPreferences before provider initialization.
-- **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`. Common sizes: iPhone 14 Pro Max (1290x2796, 3.0 DPR), standard phone (1080x1920, 2.0 DPR).
+- **Subscription state mocking**: Use `_TestSubscriptionNotifier` pattern to mock premium/free states. Create notifier extending SubscriptionNotifier that returns fixed SubscriptionState. Override `subscriptionProvider` with test notifier in ProviderScope. Requires minimal `_MockStorageService` mock. See `test/screens/library_screen_test.dart` and `test/screens/paywall_screen_test.dart` for implementation.
+- **Production flag validation**: `test/providers/subscription_providers_test.dart` validates `kForcePremiumForTesting = false` for store submission. This gate ensures testing flags are disabled before release.
+- **Screen size helpers**: Use `tester.view.physicalSize` and `tester.view.devicePixelRatio` for consistent test dimensions, reset in `tearDown()` via `addTearDown()`. Common sizes: iPhone 14 Pro Max (1290x2796, 3.0 DPR), iPad Pro (2048x2732, 2.0 DPR - prevents overflow in complex layouts), standard phone (1080x1920, 2.0 DPR).
 - **Dynamic Type testing**: Test text scaling with `MediaQuery.copyWith(textScaler: TextScaler.linear(scale))`. AppTextStyles automatically clamp scale factors (0.8x-1.5x range) to maintain readability.
 
 **Integration tests** (`integration_test/`): State-controlled E2E flows using Flutter IntegrationTest (for Riverpod state injection).
@@ -556,6 +568,7 @@ Freemium model with unlimited pointings for all users. Premium unlocks advanced 
 - `lib/providers/providers.dart` - Legacy `usageTrackingServiceProvider` (deprecated, use subscription_providers.dart)
 
 **Testing:**
+- `test/providers/subscription_providers_test.dart` - SubscriptionTier, SubscriptionState, DailyUsageNotifier, kForcePremiumForTesting validation (production flag = false)
 - `test/services/usage_tracking_service_test.dart` - Counter increment, daily reset (legacy tests, quotes now unlimited)
 
 ## Orchestration Settings
@@ -634,6 +647,7 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Screenshot Test Setup** | `integration_test/screenshot_test.dart` | UncontrolledProviderScope + mocked SharedPreferences + settle() helper |
 | **Golden Test Helpers** | `test/golden/golden_test_helpers.dart` | setupGoldenTests(), goldenTestTheme, createGoldenTestApp(), pumpForGolden(), GoldenDevices |
 | **Unit Test Animation Handling** | `test/screens/onboarding_screen_test.dart` | pump(Duration) for continuous animations instead of pumpAndSettle(), AnimatedGradient.disableAnimations flag, ProviderScope overrides, screen size helpers (iPhone 14 Pro Max: 1290x2796, 3.0 DPR to avoid overflow) |
+| **Subscription Provider Test Mocking** | `test/screens/library_screen_test.dart`, `test/screens/paywall_screen_test.dart` | Mock premium/free subscription states: Create _TestSubscriptionNotifier extending SubscriptionNotifier with fixed SubscriptionState, minimal _MockStorageService mock for StorageService dependency, wrapWithProviderScope() helper with isPremium parameter. Override subscriptionProvider in ProviderScope. Pattern enables testing premium-gated features (library, paywall) with controlled subscription states. Use iPad Pro screen size (2048x2732, 2.0 DPR) to prevent overflow in complex layouts. |
 | **Auto-Advance Timer Testing** | `test/screens/home_screen_auto_advance_test.dart` | Tests for auto-advance feature: AppSettings defaults verification (autoAdvance=true, autoAdvanceDelay=60), provider tests (autoAdvanceProvider, autoAdvanceDelayProvider read from settings JSON), widget rendering with auto-advance enabled/disabled, SettingsNotifier.setAutoAdvance integration. Note: Timer advancement testing with fakeAsync has complex interactions with Flutter's widget binding - provider and rendering tests provide sufficient coverage. Uses createHomeScreenWithAutoAdvance() helper, MockSharedPreferences with comprehensive setup, AnimatedGradient.disableAnimations in setUpAll. |
 | **Accessibility Testing** | `test/accessibility/voiceover_test.dart` + `accessibility_test.dart` + `scripts/adb_test_helper.sh` | VoiceOver tests: 6 test groups (semantic labels, decorative exclusion, custom actions, focus order, button semantics, screen reader hints), createTestApp() helper with ProviderScope overrides, pump(Duration) for continuous animations. Unit tests verify Semantics widget configuration (SemanticsFlag.isButton, labels, hints). ADB helper provides device-agnostic manual testing via percentage-based coordinates (tap_percent(), swipe_percent(), tap_element("content-desc"), list_elements(), analyze_layout()). UIAutomator integration finds elements by content-desc for reliable interaction. |
 | **iOS Simulator Testing** | `scripts/ios_test_helper.sh` | Cross-platform testing parity for iOS: percentage-based coordinates (tap/swipe), accessibility element finding via idb (Facebook's iOS Device Bridge), auto-detects booted simulator UDID, supports common device sizes (iPhone 15/14/SE, iPad Pro variants). Commands: tap_percent(), swipe_percent(), tap_element("label"), find_element("label"), list_elements(), screenshot(), launch_app(), analyze_layout(). Python3 JSON parsing for simctl output and accessibility tree. Requires `brew install idb-companion` for UI interaction. |
@@ -641,6 +655,10 @@ git worktree remove ../Pointer-feature-{name}                  # Cleanup after m
 | **Notification Action Callbacks** | `lib/main.dart` | Global container pattern for notification callbacks: `_globalContainer` stores ProviderContainer reference for `notificationActionCallback()` entry point. Handler supports 'save' (toggle favorites via favoritesProvider) and 'another' (send new notification) actions. Annotated with `@pragma('vm:entry-point')` for background execution. Initialize with `onDidReceiveNotificationResponse` and `onDidReceiveBackgroundNotificationResponse` in FlutterLocalNotificationsPlugin. |
 | **Ambient Sound Global Guard** | `lib/main.dart` | Prevent duplicate audio playback during hot reloads: `_globalAmbientSoundPlayed` static flag guards `_playAmbientSound()`. Set to true on first play, persists across widget rebuilds. 500ms delay ensures providers are ready. Check `mounted` before accessing ref. Pattern prevents audio stacking during development and app lifecycle transitions. |
 | **Auto-Advance Timer** | `lib/screens/home_screen.dart` | Timer-based automatic pointing rotation (default 60s, configurable). Start in initState, cancel in dispose. Smart pausing: skips auto-advance during manual swipes, animations, save confirmations, or when freemium limit reached. Restarts timer on manual next/previous (full delay with new content). No haptic feedback on auto-advance (distinguishes from manual interaction). Checks `autoAdvanceProvider` for enabled state. Opt-out model: enabled by default for dynamic experience. |
+| **WorkManager Background Notifications** | `lib/services/workmanager_service.dart` | Battery-efficient background notification scheduling that survives app termination. Replaces AlarmManager/timezone approach. Uses workmanager package for reliable notification delivery even when app is killed by system. Requires RECEIVE_BOOT_COMPLETED permission (AndroidManifest.xml) to reschedule notifications after device restart. |
+| **ShareService** | `lib/services/share_service.dart` | Share card generation and export with template/format management. ShareTemplate enum (minimal, gradient, tradition), ShareFormat enum (square 1:1, story 9:16). Persisted providers (shareTemplateProvider, shareFormatProvider). Methods: captureWidget() (screenshot package), shareImage(), shareToInstagramStories(), copyToClipboard(), exportToDayOne(), exportToNotes(). TraditionColors class in share_card.dart provides tradition-specific palettes. |
+| **NotificationPreview** | `lib/widgets/notification_preview.dart` | Android notification preview widget matching BigTextStyleInformation appearance. Used in onboarding and settings. Features: Header (Ensō icon + "Here Now" app name + timestamp), bold title, expandable body text, attribution line (tradition — teacher), action buttons (Save/Another, left-aligned pills). Matches actual notification shade styling with dark/light mode support. |
+| **Share Card Templates** | `lib/widgets/share_templates/share_card.dart` | Three shareable card templates: _MinimalTemplate (clean, text-focused, white bg, Georgia font), _GradientTemplate (app gradient background, tradition badge), _TraditionTemplate (tradition-specific color palettes). Supports square (1080x1080) and story (1080x1920) formats. Dynamic font sizing based on content length. Watermark included. |
 
 ### Anti-Patterns
 - ❌ Don't create new files when existing ones can be extended

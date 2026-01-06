@@ -100,9 +100,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     showDialog(
       context: context,
       builder: (context) => GlassDialog(
-        title: 'About Pointer',
+        title: 'About Here Now',
         content: Text(
-          'Pointer delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
+          'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
           'Each pointing is a direct invitation to recognize what you already are.\n\n'
           'Version 1.0.0',
           style: TextStyle(
@@ -467,7 +467,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   child: Column(
                     children: [
                       _SettingsRow(
-                        title: 'About Pointer',
+                        title: 'About Here Now',
                         trailing: Icon(
                           Icons.chevron_right,
                           color: textColorSubtle,
@@ -595,7 +595,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   onTap: _onVersionTap,
                   child: Center(
                     child: Text(
-                      'Pointer v1.0.0',
+                      'Here Now v1.0.0',
                       style: TextStyle(
                         color: textColorVersion,
                         fontSize: 12,

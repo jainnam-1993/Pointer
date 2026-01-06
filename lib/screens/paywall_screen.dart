@@ -60,7 +60,7 @@ class PaywallScreen extends ConsumerWidget {
                           StaggeredFadeIn(
                             index: 0,
                             child: Text(
-                              'Unlock Pointer',
+                              'Unlock Here Now',
                               style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                     color: colors.textPrimary,
                                   ),
@@ -351,7 +351,7 @@ class PaywallScreen extends ConsumerWidget {
             child: SizedBox(
               width: double.infinity,
               child: GlassButton(
-                label: 'Unlock Pointer',
+                label: 'Unlock Here Now',
                 onPressed: () async {
                   if (subscription.isLoading || lifetimeProduct == null) return;
                   HapticFeedback.heavyImpact();

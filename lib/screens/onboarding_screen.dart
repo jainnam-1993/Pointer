@@ -327,7 +327,7 @@ class _ContrastPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Pointer asks:',
+                    'Here Now asks:',
                     style: TextStyle(
                       fontSize: _responsiveFontSize(context, 16),
                       fontWeight: FontWeight.w500,

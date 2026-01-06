@@ -377,7 +377,7 @@ class _Watermark extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          'Pointer',
+          'Here Now',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,
