@@ -975,18 +975,27 @@ class _ThemeOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final selectedColor = colors.primary;
+    final isDark = context.isDarkMode;
+    // Use accent color for better visibility across themes
+    final accentColor = colors.accent;
     final unselectedColor = colors.textSecondary;
+
+    // Enhanced selection visibility:
+    // - Thicker border (2px selected vs 1px unselected)
+    // - Stronger background fill
+    // - High contrast border color
     final borderColor = isSelected
-        ? selectedColor
+        ? accentColor
         : colors.glassBorder;
+    final borderWidth = isSelected ? 2.0 : 1.0;
     final bgColor = isSelected
-        ? selectedColor.withValues(alpha: 0.2)
+        ? accentColor.withValues(alpha: isDark ? 0.25 : 0.15)
         : Colors.transparent;
 
     return Expanded(
       child: Semantics(
         button: true,
+        selected: isSelected,
         label: '$label theme${isSelected ? ', selected' : ''}',
         child: GestureDetector(
           onTap: () async {
@@ -999,14 +1008,39 @@ class _ThemeOption extends StatelessWidget {
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: borderColor, width: 1),
+              border: Border.all(color: borderColor, width: borderWidth),
             ),
             child: Column(
               children: [
-                Icon(
-                  icon,
-                  size: 24,
-                  color: isSelected ? selectedColor : unselectedColor,
+                // Stack icon with checkmark overlay when selected
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      icon,
+                      size: 24,
+                      color: isSelected ? accentColor : unselectedColor,
+                    ),
+                    // Checkmark indicator in bottom-right corner
+                    if (isSelected)
+                      Positioned(
+                        right: -4,
+                        bottom: -4,
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: accentColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            size: 10,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -1014,7 +1048,7 @@ class _ThemeOption extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected ? selectedColor : unselectedColor,
+                    color: isSelected ? accentColor : unselectedColor,
                   ),
                 ),
               ],
