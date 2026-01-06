@@ -302,25 +302,48 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   ),
                 ),
 
-                // Featured articles horizontal scroll
+                // Featured articles horizontal scroll with peek indicator
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 185,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: featured.length,
-                      itemBuilder: (context, index) {
-                        final article = featured[index];
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: _FeaturedArticleCard(
-                              article: article,
-                              onTap: () => _openArticle(context, article),
-                            ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenWidth = constraints.maxWidth;
+                        // Card takes ~70% of screen, leaving ~30% for peek
+                        // Peek shows ~24px of next card edge
+                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                        final cardSpacing = 8.0;
+                        // Calculate padding: 24px left, enough right for last card + peek area
+                        final horizontalPadding = 24.0;
+                        // Extra right padding ensures smooth scroll end (peek area width)
+                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
+
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: rightPadding.clamp(24.0, 80.0),
                           ),
+                          itemCount: featured.length,
+                          itemBuilder: (context, index) {
+                            final article = featured[index];
+                            final isLast = index == featured.length - 1;
+                            return StaggeredFadeIn(
+                              index: index,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  right: isLast ? 0 : cardSpacing,
+                                ),
+                                child: SizedBox(
+                                  width: cardWidth,
+                                  child: _FeaturedArticleCard(
+                                    article: article,
+                                    onTap: () => _openArticle(context, article),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -796,17 +819,11 @@ class _FeaturedArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final traditionInfo = traditions[article.tradition]!;
-    final screenWidth = MediaQuery.of(context).size.width;
-    // Responsive card width: 70% of screen with sensible bounds
-    // Min 180px ensures content fits on iPhone SE (320px), max 280px for larger screens
-    final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
 
     return Semantics(
       button: true,
       label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
-      child: SizedBox(
-        width: cardWidth,
-        child: GlassCard(
+      child: GlassCard(
           padding: const EdgeInsets.all(16),
           borderRadius: 20,
           onTap: onTap,
@@ -877,7 +894,6 @@ class _FeaturedArticleCard extends StatelessWidget {
                 ),
               ),
           ],
-        ),
         ),
       ),
     );
