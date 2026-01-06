@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../data/pointings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -16,6 +17,7 @@ class InquirySession {
   final String duration;
   final String level;
   final bool isPremium;
+  final Tradition tradition;
 
   const InquirySession({
     required this.id,
@@ -24,7 +26,24 @@ class InquirySession {
     required this.duration,
     required this.level,
     required this.isPremium,
+    required this.tradition,
   });
+
+  /// Get the accent color for this session's tradition
+  Color get accentColor {
+    switch (tradition) {
+      case Tradition.advaita:
+        return TraditionAccentColors.advaita;
+      case Tradition.zen:
+        return TraditionAccentColors.zen;
+      case Tradition.direct:
+        return TraditionAccentColors.direct;
+      case Tradition.contemporary:
+        return TraditionAccentColors.contemporary;
+      case Tradition.original:
+        return TraditionAccentColors.original;
+    }
+  }
 }
 
 const inquirySessions = [
@@ -35,6 +54,7 @@ const inquirySessions = [
     duration: '5 min',
     level: 'Beginner',
     isPremium: false,
+    tradition: Tradition.advaita,
   ),
   InquirySession(
     id: '2',
@@ -43,6 +63,7 @@ const inquirySessions = [
     duration: '7 min',
     level: 'Beginner',
     isPremium: false,
+    tradition: Tradition.direct,
   ),
   InquirySession(
     id: '3',
@@ -51,6 +72,7 @@ const inquirySessions = [
     duration: '10 min',
     level: 'Intermediate',
     isPremium: true,
+    tradition: Tradition.direct,
   ),
   InquirySession(
     id: '4',
@@ -59,6 +81,7 @@ const inquirySessions = [
     duration: '8 min',
     level: 'Intermediate',
     isPremium: true,
+    tradition: Tradition.zen,
   ),
   InquirySession(
     id: '5',
@@ -67,6 +90,7 @@ const inquirySessions = [
     duration: '12 min',
     level: 'Advanced',
     isPremium: true,
+    tradition: Tradition.contemporary,
   ),
 ];
 
@@ -195,16 +219,17 @@ class _SessionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final isDark = context.isDarkMode;
     final textColor = colors.textPrimary;
     final textColorSecondary = colors.textSecondary;
     final textColorMuted = colors.textMuted;
-    final circleColor = colors.primary.withValues(alpha: 0.1);
+    // Use tradition-specific accent color for the circle
+    final traditionAccent = session.accentColor;
+    final circleColor = traditionAccent.withValues(alpha: 0.15);
     final goldColor = colors.gold;
 
     return Semantics(
       button: true,
-      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level${isLocked ? '. Locked, premium required' : ''}',
+      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition${isLocked ? '. Locked, premium required' : ''}',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderColor: isLocked
@@ -215,7 +240,7 @@ class _SessionCard extends StatelessWidget {
         opacity: isLocked ? 0.6 : 1,
         child: Row(
           children: [
-            // Number or lock
+            // Number or lock with tradition-specific accent color
             Container(
               width: 40,
               height: 40,
@@ -235,7 +260,7 @@ class _SessionCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: colors.primary,
+                          color: traditionAccent,
                         ),
                       ),
               ),

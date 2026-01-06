@@ -617,3 +617,22 @@ extension ThemeCheck on BuildContext {
   /// Usage: context.colors.textPrimary, context.colors.gold, etc.
   PointerColors get colors => Theme.of(this).extension<PointerColors>() ?? PointerColors.dark;
 }
+
+/// Tradition-specific accent colors for visual consistency
+/// Maps each spiritual tradition to a distinctive color that aids recognition
+class TraditionAccentColors {
+  /// Gold/Orange accent for Advaita Vedanta tradition
+  static const Color advaita = Color(0xFFD4A574);
+
+  /// Teal accent for Zen Buddhism tradition
+  static const Color zen = Color(0xFF4DD0E1);
+
+  /// Purple accent for Direct Path tradition (matches app primary)
+  static const Color direct = Color(0xFF8B5CF6);
+
+  /// Cyan/Teal accent for Contemporary teachings
+  static const Color contemporary = Color(0xFF06B6D4);
+
+  /// Silver/White accent for Original content
+  static const Color original = Color(0xFFE0E0E0);
+}
