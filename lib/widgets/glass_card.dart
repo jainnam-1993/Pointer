@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../providers/providers.dart';
+import 'animated_gradient.dart';
 
 /// Glass effect intensity levels - matches iOS Control Center aesthetic
 enum GlassIntensity {
@@ -23,6 +25,11 @@ class GlassCard extends ConsumerWidget {
   final double? maxHeight;
   final bool enableScrolling;
 
+  /// Enable subtle breathing gradient animation
+  /// When true, adds a slow shimmer effect that "breathes" with the background
+  /// Respects reduceMotion accessibility setting
+  final bool enableBreathingAnimation;
+
   const GlassCard({
     super.key,
     required this.child,
@@ -34,6 +41,7 @@ class GlassCard extends ConsumerWidget {
     this.minHeight,
     this.maxHeight,
     this.enableScrolling = true,
+    this.enableBreathingAnimation = false,
   });
 
   @override
@@ -46,7 +54,7 @@ class GlassCard extends ConsumerWidget {
       return _buildHighContrastCard(context);
     }
 
-    return _buildGlassCard(context, colors, isDark);
+    return _buildGlassCard(context, ref, colors, isDark);
   }
 
   Widget _buildHighContrastCard(BuildContext context) {
@@ -71,7 +79,7 @@ class GlassCard extends ConsumerWidget {
     return card;
   }
 
-  Widget _buildGlassCard(BuildContext context, PointerColors colors, bool isDark) {
+  Widget _buildGlassCard(BuildContext context, WidgetRef ref, PointerColors colors, bool isDark) {
     // Get blur and opacity values based on intensity - iOS Control Center style
     final (double blur, double topAlpha, double bottomAlpha) = switch (intensity) {
       GlassIntensity.light => isDark ? (25.0, 0.15, 0.08) : (20.0, 0.7, 0.45),
@@ -127,6 +135,65 @@ class GlassCard extends ConsumerWidget {
       );
     }
 
+    // Check if breathing animation should be enabled
+    // Respects: reduceMotion accessibility, test environment, and flag
+    final appOverride = ref.watch(reduceMotionOverrideProvider);
+    final reduceMotion = shouldReduceMotion(context, appOverride);
+    final shouldAnimate = enableBreathingAnimation &&
+        !reduceMotion &&
+        !AnimatedGradient.disableAnimations &&
+        !AnimatedGradient.isTestEnvironment();
+
+    // Build the inner container with optional breathing animation overlay
+    Widget glassContainer = Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        gradient: glassGradient,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: GradientBoxBorder(
+          gradient: borderGradient,
+          width: isDark ? 1.5 : 1,
+        ),
+      ),
+      child: constrainedContent,
+    );
+
+    // Add breathing shimmer overlay when enabled
+    if (shouldAnimate) {
+      // Subtle shimmer that "breathes" - slower than background for layered effect
+      // Uses theme's shimmerColor for consistency
+      final shimmerColor = colors.shimmerColor.withValues(
+        alpha: isDark ? 0.12 : 0.08, // Very subtle - not distracting
+      );
+
+      glassContainer = Stack(
+        children: [
+          glassContainer,
+          // Animated shimmer overlay - positioned to match container bounds
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(borderRadius),
+                  ),
+                )
+                    .animate(
+                      onPlay: (controller) => controller.repeat(reverse: true),
+                    )
+                    .shimmer(
+                      duration: 8000.ms, // Slower than 4s background for layered feel
+                      color: shimmerColor,
+                      angle: 0.5, // Slight diagonal for organic feel
+                    ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     final card = Container(
       decoration: isDark
           ? null
@@ -145,18 +212,7 @@ class GlassCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              gradient: glassGradient,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: GradientBoxBorder(
-                gradient: borderGradient,
-                width: isDark ? 1.5 : 1,
-              ),
-            ),
-            child: constrainedContent,
-          ),
+          child: glassContainer,
         ),
       ),
     );
