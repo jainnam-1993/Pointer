@@ -3,11 +3,11 @@
 **Effective Date:** January 2, 2025
 **Last Updated:** January 2, 2025
 
-Pointer ("we," "our," or "the app") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use the Pointer mobile application.
+Here Now ("we," "our," or "the app") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use the Here Now mobile application.
 
 ## Summary
 
-- **No account required** - Use Pointer without creating an account
+- **No account required** - Use Here Now without creating an account
 - **Local storage** - Your preferences and favorites stay on your device
 - **Minimal data sharing** - Only purchase data (RevenueCat) and TTS audio requests (AWS Polly, premium only)
 - **No tracking** - No analytics, no advertising, no behavioral tracking
@@ -74,7 +74,7 @@ We do not collect, store, or have access to:
 
 ## Children's Privacy
 
-Pointer is not directed at children under 13. We do not knowingly collect information from children under 13. If you believe a child has provided us with personal information, please contact us.
+Here Now is not directed at children under 13. We do not knowingly collect information from children under 13. If you believe a child has provided us with personal information, please contact us.
 
 ---
 

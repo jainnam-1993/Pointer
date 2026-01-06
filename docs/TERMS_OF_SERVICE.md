@@ -3,13 +3,13 @@
 **Effective Date:** January 2, 2025
 **Last Updated:** January 2, 2025
 
-Welcome to Pointer. By downloading, installing, or using the Pointer mobile application ("the app"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the app.
+Welcome to Here Now. By downloading, installing, or using the Here Now mobile application ("the app"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the app.
 
 ---
 
 ## 1. Description of Service
 
-Pointer is a mobile application that delivers daily non-dual awareness pointings from various wisdom traditions. The app provides:
+Here Now is a mobile application that delivers daily non-dual awareness pointings from various wisdom traditions. The app provides:
 
 - Daily curated pointings from diverse spiritual traditions
 - A library of teachings and articles
@@ -21,7 +21,7 @@ Pointer is a mobile application that delivers daily non-dual awareness pointings
 
 ## 2. Acceptance of Terms
 
-By using Pointer, you confirm that:
+By using Here Now, you confirm that:
 
 - You are at least 13 years of age
 - You have the legal capacity to enter into these Terms
@@ -33,7 +33,7 @@ By using Pointer, you confirm that:
 
 ### 3.1 Lifetime Purchase
 
-Pointer offers a one-time lifetime purchase that unlocks premium features including:
+Here Now offers a one-time lifetime purchase that unlocks premium features including:
 
 - Full library access
 - Audio pointings and guided readings
@@ -57,7 +57,7 @@ If you reinstall the app or switch devices, you can restore your purchase throug
 
 ### 4.1 Spiritual Content
 
-The pointings, teachings, and articles in Pointer are drawn from various wisdom traditions for contemplative and educational purposes. This content:
+The pointings, teachings, and articles in Here Now are drawn from various wisdom traditions for contemplative and educational purposes. This content:
 
 - Is not medical, psychological, or professional advice
 - Should not replace professional mental health treatment
@@ -89,7 +89,7 @@ You agree NOT to:
 
 ### 6.1 App Ownership
 
-The Pointer app, including its design, code, features, and original content, is owned by us and protected by intellectual property laws.
+The Here Now app, including its design, code, features, and original content, is owned by us and protected by intellectual property laws.
 
 ### 6.2 Traditional Teachings
 
@@ -114,7 +114,7 @@ TO THE MAXIMUM EXTENT PERMITTED BY LAW:
 
 ## 8. Indemnification
 
-You agree to indemnify and hold harmless Pointer and its developers from any claims, damages, or expenses arising from:
+You agree to indemnify and hold harmless Here Now and its developers from any claims, damages, or expenses arising from:
 
 - Your use of the app
 - Your violation of these Terms
@@ -166,7 +166,7 @@ If any provision of these Terms is found unenforceable, the remaining provisions
 
 ## 15. Entire Agreement
 
-These Terms, together with the Privacy Policy, constitute the entire agreement between you and Pointer regarding the app.
+These Terms, together with the Privacy Policy, constitute the entire agreement between you and Here Now regarding the app.
 
 ---
 
