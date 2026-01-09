@@ -38,25 +38,10 @@ class _MainShellState extends ConsumerState<MainShell> {
           widget.navigationShell.goBranch(currentIndex - 1);
         }
       },
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 400),
-        switchInCurve: Curves.easeOut,
-        switchOutCurve: Curves.easeIn,
-        transitionBuilder: (child, animation) {
-          // Pure fade transition - calm and unhurried
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOut,
-            ),
-            child: child,
-          );
-        },
-        child: KeyedSubtree(
-          key: ValueKey(currentIndex),
-          child: widget.navigationShell,
-        ),
-      ),
+      // Don't wrap navigationShell in AnimatedSwitcher/KeyedSubtree - it has
+      // internal GlobalKeys that conflict when the widget tree changes.
+      // The shell handles its own tab state; transitions happen at content level.
+      child: widget.navigationShell,
     );
 
     // In zen mode, hide bottom nav bar
@@ -170,11 +155,16 @@ class _BottomNavBarState extends State<_BottomNavBar> {
         ? (screenWidth - maxNavWidth) / 2  // Center with calculated margins
         : (isTablet ? 48.0 : 24.0);
 
+    // Responsive bottom margin:
+    // - Consistent 8px margin across all devices for visible gap
+    const double bottomMargin = 8.0;
+
     return Container(
       margin: EdgeInsets.only(
         left: horizontalMargin,
         right: horizontalMargin,
-        bottom: bottomPadding + 16,
+        top: 4.0,  // Top padding for separation from content
+        bottom: bottomMargin,
       ),
       decoration: isDark
           ? null

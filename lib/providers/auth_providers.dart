@@ -147,6 +147,10 @@ class AuthActionNotifier extends StateNotifier<AuthActionState> {
   }
 
   String _getErrorMessage(dynamic error) {
+    // Handle our custom SignInException with user-friendly messages
+    if (error is SignInException) {
+      return error.message;
+    }
     if (error is FirebaseAuthException) {
       switch (error.code) {
         case 'account-exists-with-different-credential':

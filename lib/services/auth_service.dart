@@ -147,12 +147,23 @@ class AuthService {
 
       return user;
     } on SignInWithAppleAuthorizationException catch (e) {
-      if (e.code == AuthorizationErrorCode.canceled) {
-        print('[AuthService] Apple sign-in cancelled');
-        return null;
-      }
-      print('[AuthService] Apple sign-in error: $e');
-      rethrow;
+      // Handle ALL Apple Sign-In authorization errors gracefully by returning null
+      // This treats them as "user couldn't sign in" rather than showing an error
+      //
+      // Error codes include:
+      // - canceled: User cancelled the sign-in
+      // - failed: Sign-in failed (e.g., user tapped "Close" on system dialog)
+      // - notHandled: Sign-in not handled
+      // - notInteractive: Non-interactive context
+      // - invalidResponse: Invalid response from Apple
+      // - unknown: Unknown error
+      //
+      // On a real device with Apple ID signed in, sign-in proceeds normally.
+      // On simulator or device without Apple ID, system shows "Sign in to your
+      // Apple Account" dialog - tapping "Close" triggers this exception.
+      // We return null (like cancellation) to avoid showing an error message.
+      print('[AuthService] Apple sign-in authorization error: ${e.code} - ${e.message}');
+      return null;
     } catch (e) {
       print('[AuthService] Apple sign-in error: $e');
       rethrow;
@@ -228,4 +239,15 @@ class AuthResult {
         success: false,
         error: message,
       );
+}
+
+/// Custom exception for sign-in errors with user-friendly messages
+class SignInException implements Exception {
+  final String message;
+  final Object? originalError;
+
+  SignInException(this.message, {this.originalError});
+
+  @override
+  String toString() => message;
 }

@@ -1,0 +1,20 @@
+# Test navbar spacing on iPad
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- tapOn: "Continue"
+- tapOn: "Continue"
+- tapOn: "Continue"
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Take clean home screen screenshot
+- takeScreenshot: "navbar_01_home"
+
+# Navigate to settings
+- tapOn: ".*Settings.*"
+- takeScreenshot: "navbar_02_settings"
