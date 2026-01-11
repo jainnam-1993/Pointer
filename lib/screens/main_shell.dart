@@ -156,14 +156,14 @@ class _BottomNavBarState extends State<_BottomNavBar> {
         : (isTablet ? 48.0 : 24.0);
 
     // Responsive bottom margin:
-    // - Consistent 8px margin across all devices for visible gap
-    const double bottomMargin = 8.0;
+    // - Consistent 16px margin across all devices for visible gap (doubled from 8px)
+    const double bottomMargin = 16.0;
 
     return Container(
       margin: EdgeInsets.only(
         left: horizontalMargin,
         right: horizontalMargin,
-        top: 4.0,  // Top padding for separation from content
+        top: 8.0,  // Top padding for separation from content (doubled from 4px)
         bottom: bottomMargin,
       ),
       decoration: isDark
