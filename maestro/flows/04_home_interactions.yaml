@@ -30,12 +30,12 @@ appId: com.dailypointer
 
 # === INITIAL STATE ===
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "home_01_initial"
 
 # === NEXT BUTTON ===
 - tapOn:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - assertVisible:
     text: ".*invitation.*"
 - takeScreenshot: "home_02_after_next"
@@ -96,5 +96,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "home_08_final"

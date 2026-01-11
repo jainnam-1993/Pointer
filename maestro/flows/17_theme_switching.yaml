@@ -120,5 +120,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "theme_13_complete"

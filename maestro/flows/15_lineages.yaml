@@ -92,5 +92,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "lineages_09_complete"

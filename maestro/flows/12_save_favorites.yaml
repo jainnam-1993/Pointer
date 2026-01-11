@@ -28,7 +28,7 @@ appId: com.dailypointer
 
 # === INITIAL STATE ===
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "favorites_01_initial"
 
 # === FIRST SAVE (triggers first-save celebration) ===
@@ -52,7 +52,7 @@ appId: com.dailypointer
 
 # === NAVIGATE TO NEW POINTING ===
 - tapOn:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "favorites_04_new_pointing"
 
 # === SAVE SECOND POINTING ===
@@ -70,5 +70,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "favorites_07_complete"

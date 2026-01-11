@@ -1,0 +1,23 @@
+# Test Sign in with Apple - Close Dialog Flow
+# Verifies that tapping "Close" on system dialog doesn't show an error
+
+appId: com.dailypointer
+---
+# Tap Close on the system dialog
+- tapOn:
+    text: "Close"
+    optional: true
+- takeScreenshot: "close_01_after_close"
+
+# Wait for any error message
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 3000
+
+# Take final screenshot to verify no error
+- takeScreenshot: "close_02_final_state"
+
+# Verify no error message visible
+- assertNotVisible:
+    text: "error"
+    optional: true

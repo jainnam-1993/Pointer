@@ -28,8 +28,9 @@ appId: com.dailypointer
 # === HOME TAB ===
 - tapOn:
     text: ".*Home.*"
+- waitForAnimationToEnd
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - assertVisible:
     text: ".*invitation.*"
 - takeScreenshot: "01_home_screen"
@@ -66,6 +67,7 @@ appId: com.dailypointer
 # === RETURN TO HOME ===
 - tapOn:
     text: ".*Home.*"
+- waitForAnimationToEnd
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "05_home_return"

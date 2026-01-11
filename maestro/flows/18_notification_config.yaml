@@ -145,5 +145,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "notif_14_complete"

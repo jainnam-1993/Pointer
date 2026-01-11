@@ -535,10 +535,45 @@ class NotificationService {
     );
   }
 
-  /// Send a test notification.
+  /// Send a test notification with visible banner (unlike passive daily notifications).
   Future<void> sendTestNotification() async {
     final pointing = getRandomPointing();
-    await showImmediateNotification(pointing);
+    final traditionName = traditions[pointing.tradition]?.name ?? pointing.tradition.name;
+    final attribution = pointing.teacher != null ? '— ${pointing.teacher}' : '';
+    final subtitle = '$traditionName $attribution'.trim();
+
+    // Test notifications show visible banner (unlike passive daily notifications)
+    await _localNotifications.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      "🧪 Test Notification",
+      pointing.content,
+      NotificationDetails(
+        iOS: DarwinNotificationDetails(
+          interruptionLevel: InterruptionLevel.active, // Visible!
+          presentSound: true,
+          presentBanner: true, // Show banner for test
+          presentList: true,
+          subtitle: subtitle,
+        ),
+        android: AndroidNotificationDetails(
+          'pointings_v6',
+          'Daily Pointings',
+          channelDescription: 'Gentle reminders for your daily pointing',
+          importance: Importance.max,
+          priority: Priority.max,
+          enableVibration: true,
+          playSound: true,
+          sound: const RawResourceAndroidNotificationSound('bell_chime'),
+          styleInformation: BigTextStyleInformation(
+            pointing.content,
+            contentTitle: "🧪 Test Notification",
+            summaryText: subtitle,
+          ),
+        ),
+      ),
+      payload: pointing.id,
+    );
+    print('[NotificationService] Test notification sent: ${pointing.id}');
   }
 
   /// Cancel a scheduled notification.

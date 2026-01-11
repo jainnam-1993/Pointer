@@ -1,0 +1,59 @@
+appId: com.dailypointer
+name: Sign in with Apple Test
+tags:
+  - auth
+  - sign-in
+  - apple
+
+---
+
+# Test Sign in with Apple flow on iPad
+# This test verifies the authentication flow works correctly
+
+# Step 1: Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Step 2: Navigate to Settings tab
+- tapOn:
+    id: "settings_tab"
+- assertVisible: "Settings"
+
+# Step 3: Scroll to Account section and tap Sign In
+- scrollUntilVisible:
+    element: "Sign In"
+    direction: DOWN
+- tapOn: "Sign In"
+
+# Step 4: Wait for Sign-In sheet to appear
+- assertVisible: "Continue with Apple"
+- takeScreenshot: sign_in_sheet
+
+# Step 5: Tap Sign in with Apple
+- tapOn: "Continue with Apple"
+
+# Step 6: Wait and capture result
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 10000
+
+# Step 7: Take screenshot of result
+- takeScreenshot: sign_in_result
+
+# Step 8: Check for error message
+- runFlow:
+    when:
+      visible: "error"
+    commands:
+      - takeScreenshot: sign_in_error
+      - assertNotVisible: "error"  # This will fail if error is visible, marking the test as failed

@@ -27,11 +27,11 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - tapOn:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - tapOn:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - tapOn:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "history_01_after_viewing"
 
 # === NAVIGATE TO SETTINGS ===
@@ -85,5 +85,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "history_07_complete"

@@ -72,7 +72,7 @@ appId: com.dailypointer
 
 # Verify app opened to home screen
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
     optional: true
 
 # === FINAL STATE ===

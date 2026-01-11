@@ -30,7 +30,7 @@ appId: com.dailypointer
 
 # === INITIAL STATE ===
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "share_01_initial"
 
 # === OPEN SHARE MODAL ===
@@ -115,5 +115,5 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Home.*"
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - takeScreenshot: "share_11_complete"

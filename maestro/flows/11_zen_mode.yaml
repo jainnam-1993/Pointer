@@ -32,7 +32,7 @@ appId: com.dailypointer
 
 # === INITIAL STATE (Normal mode) ===
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - assertVisible:
     text: ".*Home.*"
 - takeScreenshot: "zen_01_normal_mode"
@@ -44,9 +44,9 @@ appId: com.dailypointer
 - takeScreenshot: "zen_02_entered"
 
 # Verify zen mode - bottom nav should be hidden
-# In zen mode, "Next Pointing" button and bottom tabs disappear
+# In zen mode, "Next" button and bottom tabs are hidden
 - assertNotVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
     optional: true
 
 # === NAVIGATE IN ZEN MODE ===
@@ -78,7 +78,7 @@ appId: com.dailypointer
 
 # Verify normal mode restored - UI elements visible
 - assertVisible:
-    text: "Next Pointing"
+    text: ".*Next.*"
 - assertVisible:
     text: ".*Home.*"
 - takeScreenshot: "zen_07_normal_restored"

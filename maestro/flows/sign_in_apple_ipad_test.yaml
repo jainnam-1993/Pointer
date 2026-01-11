@@ -1,0 +1,74 @@
+# Sign in with Apple iPad Test
+# Run: maestro test maestro/flows/sign_in_apple_ipad_test.yaml
+#
+# Tests: Sign in with Apple flow on iPad to debug App Store rejection
+# Device: iPad Air 11 M3 simulator
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# === COMPLETE ONBOARDING ===
+- takeScreenshot: "apple_signin_01_onboarding_start"
+
+# Page 1
+- tapOn:
+    text: "Continue"
+    optional: true
+- takeScreenshot: "apple_signin_02_onboarding_p2"
+
+# Page 2
+- tapOn:
+    text: "Continue"
+    optional: true
+- takeScreenshot: "apple_signin_03_onboarding_p3"
+
+# Page 3
+- tapOn:
+    text: "Continue"
+    optional: true
+- takeScreenshot: "apple_signin_04_onboarding_p4"
+
+# Page 4 - Skip notifications
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+- tapOn:
+    text: "Enable Notifications"
+    optional: true
+
+# === VERIFY HOME SCREEN ===
+- takeScreenshot: "apple_signin_05_home"
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- takeScreenshot: "apple_signin_06_settings"
+
+# === SCROLL TO FIND ACCOUNT SECTION ===
+- swipe:
+    direction: UP
+    duration: 500
+- takeScreenshot: "apple_signin_07_settings_scrolled"
+
+# === FIND AND TAP SIGN IN ===
+- tapOn:
+    text: "Sign In"
+    optional: true
+- tapOn:
+    text: ".*Sign.*In.*"
+    optional: true
+- takeScreenshot: "apple_signin_08_signin_sheet"
+
+# === TAP CONTINUE WITH APPLE ===
+- tapOn:
+    text: "Continue with Apple"
+    optional: true
+- takeScreenshot: "apple_signin_09_apple_result"
+
+# Wait for any dialog/error
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 5000
+- takeScreenshot: "apple_signin_10_final_state"
