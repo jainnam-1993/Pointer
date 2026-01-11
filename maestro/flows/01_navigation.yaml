@@ -33,6 +33,7 @@ appId: com.dailypointer
     text: ".*Next.*"
 - assertVisible:
     text: ".*invitation.*"
+    optional: true  # Footer text hidden in landscape and excluded from semantics
 - takeScreenshot: "01_home_screen"
 
 # === LIBRARY TAB ===

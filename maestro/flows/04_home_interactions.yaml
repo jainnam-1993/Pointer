@@ -37,7 +37,7 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Next.*"
 - assertVisible:
-    text: ".*invitation.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_02_after_next"
 
 # === SWIPE UP (Next pointing) ===
@@ -45,7 +45,7 @@ appId: com.dailypointer
     direction: UP
     duration: 500
 - assertVisible:
-    text: ".*invitation.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_03_after_swipe_up"
 
 # === SWIPE DOWN (Previous pointing) ===
@@ -53,7 +53,7 @@ appId: com.dailypointer
     direction: DOWN
     duration: 500
 - assertVisible:
-    text: ".*invitation.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_04_after_swipe_down"
 
 # === LONG PRESS TO SAVE (favorite toggle) ===
@@ -72,13 +72,11 @@ appId: com.dailypointer
     optional: true
 - takeScreenshot: "home_06_share_modal"
 
-# Close share modal if opened (tap outside or close button)
+# Close share modal if opened (tap X button in top-left corner)
 - tapOn:
-    text: ".*close.*"
+    point: "10%,15%"  # X button location
     optional: true
-- tapOn:
-    id: "close_button"
-    optional: true
+- waitForAnimationToEnd
 
 # === TEACHER INFO (tap on teacher name) ===
 # Teacher attribution shows at bottom of pointing card
