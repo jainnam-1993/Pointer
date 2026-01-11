@@ -23,12 +23,13 @@ import '../services/widget_service.dart';
 import 'core_providers.dart';
 
 // ============================================================
-// TESTING FLAG - Force premium during development
+// FREE ACCESS MODE - App Store Release (iOS & Android)
 // ============================================================
 
-/// Set to true to force premium tier during testing
-/// PRODUCTION: Must be false for app store release
-const bool kForcePremiumForTesting = true;
+/// FREE ACCESS MODE - All features unlocked, RevenueCat disabled
+/// Set to true for free app release (bypasses all IAP/subscription checks)
+/// Set to false when ready to enable monetization via RevenueCat
+const bool kFreeAccessEnabled = true;
 
 // ============================================================
 // Freemium - Daily Usage Tracking
@@ -144,6 +145,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// Handle user sign-in: sync RevenueCat with Firebase UID
   Future<void> _handleSignIn(String firebaseUid) async {
+    // Skip RevenueCat sync in free access mode
+    if (kFreeAccessEnabled) return;
     if (!mounted) return;
 
     print('[Subscription] Auth sign-in detected, syncing with RevenueCat...');
@@ -183,6 +186,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// Handle user sign-out: revert to anonymous mode
   Future<void> _handleSignOut() async {
+    // Skip RevenueCat logout in free access mode
+    if (kFreeAccessEnabled) return;
     if (!mounted) return;
 
     print('[Subscription] Auth sign-out detected, reverting to anonymous...');
@@ -201,13 +206,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   Future<void> _initialize() async {
     if (!mounted) return;
 
-    // Force premium for testing/development
-    if (kForcePremiumForTesting) {
-      state = state.copyWith(
-        tier: SubscriptionTier.premium,
-        isLoading: false,
-      );
-      // Sync widget with premium status
+    // Free access mode: skip all RevenueCat initialization, grant premium
+    if (kFreeAccessEnabled) {
+      state = state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
       await WidgetService.setPremiumStatus(true);
       return;
     }
@@ -292,6 +293,11 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// Purchase a subscription package
   Future<PurchaseResult> purchasePackage(SubscriptionProduct product) async {
+    // Free access mode: purchases not available
+    if (kFreeAccessEnabled) {
+      return const PurchaseResult(success: false, error: 'Free access mode');
+    }
+
     state = state.copyWith(isLoading: true, error: null);
     try {
       final result = await _revenueCat.purchasePackage(product.package);
@@ -320,6 +326,11 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// Restore previous purchases
   Future<RestoreResult> restorePurchases() async {
+    // Free access mode: always report success (premium is free)
+    if (kFreeAccessEnabled) {
+      return const RestoreResult(success: true, hasPremium: true);
+    }
+
     state = state.copyWith(isLoading: true, error: null);
     try {
       final result = await _revenueCat.restorePurchases();
@@ -344,6 +355,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// Refresh subscription status from server
   Future<void> refreshStatus() async {
+    // No-op in free access mode
+    if (kFreeAccessEnabled) return;
+
     try {
       final status = await _revenueCat.getSubscriptionStatus();
       final tier =

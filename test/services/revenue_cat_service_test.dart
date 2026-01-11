@@ -11,7 +11,8 @@ void main() {
 
   group('RevenueCatEntitlements', () {
     test('has correct premium entitlement', () {
-      expect(RevenueCatEntitlements.premium, 'premium');
+      // Must match the entitlement ID configured in RevenueCat dashboard
+      expect(RevenueCatEntitlements.premium, 'Pointer Pro');
     });
   });
 

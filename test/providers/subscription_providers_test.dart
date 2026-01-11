@@ -186,15 +186,15 @@ void main() {
     });
   });
 
-  group('kForcePremiumForTesting', () {
-    test('is set to false for production', () {
-      // IMPORTANT: Must be false before store submission
-      expect(kForcePremiumForTesting, false);
+  group('kFreeAccessEnabled', () {
+    test('is set to true for free release', () {
+      // IMPORTANT: Set to true for free app release (iOS & Android), false when IAP is ready
+      expect(kFreeAccessEnabled, true);
     });
 
     test('is a compile-time constant', () {
       // Verify it's a const (can be used in const expressions)
-      const value = kForcePremiumForTesting;
+      const value = kFreeAccessEnabled;
       expect(value, isA<bool>());
     });
   });

@@ -12,6 +12,12 @@ import 'package:pointer/widgets/glass_card.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Note: These tests account for kFreeAccessEnabled mode.
+// When kFreeAccessEnabled = true:
+// - "Restore" button is hidden
+// - "Coming Soon" UI shows instead of product loading/price display
+// - "Continue" button replaces purchase CTA
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class MockStorageService extends Mock implements StorageService {}
@@ -107,7 +113,12 @@ void main() {
 
       // Header icons
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
+      // In free access mode, auto_awesome appears in both header and Coming Soon section
+      if (kFreeAccessEnabled) {
+        expect(find.byIcon(Icons.auto_awesome), findsNWidgets(2));
+      } else {
+        expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
+      }
     });
 
     testWidgets('displays title text', (tester) async {
@@ -117,8 +128,14 @@ void main() {
       await tester.pumpWidget(createPaywallScreen());
       await tester.pump(const Duration(seconds: 2));
 
-      // Both title and CTA button have "Unlock Here Now" text
-      expect(find.text('Unlock Here Now'), findsNWidgets(2));
+      // In free access mode: title + "Continue" button (not "Unlock Here Now" CTA)
+      // In normal mode: title + "Unlock Here Now" CTA
+      if (kFreeAccessEnabled) {
+        expect(find.text('Unlock Here Now'), findsOneWidget); // Just title
+        expect(find.text('Continue'), findsOneWidget); // Coming Soon CTA
+      } else {
+        expect(find.text('Unlock Here Now'), findsNWidgets(2)); // Title + CTA
+      }
     });
 
     testWidgets('displays subtitle text', (tester) async {
@@ -131,14 +148,19 @@ void main() {
       expect(find.text('One-time purchase, yours forever'), findsOneWidget);
     });
 
-    testWidgets('has restore button text', (tester) async {
+    testWidgets('has restore button text (when not in free access mode)', (tester) async {
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
       await tester.pumpWidget(createPaywallScreen());
       await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text('Restore'), findsOneWidget);
+      // Restore button is hidden in free access mode
+      if (kFreeAccessEnabled) {
+        expect(find.text('Restore'), findsNothing);
+      } else {
+        expect(find.text('Restore'), findsOneWidget);
+      }
     });
   });
 
@@ -196,7 +218,7 @@ void main() {
   });
 
   group('PaywallScreen purchase state', () {
-    testWidgets('shows Loading when no products available', (tester) async {
+    testWidgets('shows Loading or Coming Soon when no products available', (tester) async {
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
@@ -209,10 +231,21 @@ void main() {
       ));
       await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text('Loading...'), findsOneWidget);
+      // In free access mode: Coming Soon UI shows instead of Loading
+      if (kFreeAccessEnabled) {
+        expect(find.text('Premium Coming Soon'), findsOneWidget);
+        expect(find.text('Loading...'), findsNothing);
+      } else {
+        expect(find.text('Loading...'), findsOneWidget);
+      }
     });
 
-    testWidgets('shows price when product available', (tester) async {
+    testWidgets('shows price when product available (not in free access mode)', (tester) async {
+      // Skip in free access mode - Coming Soon UI shows instead
+      if (kFreeAccessEnabled) {
+        return;
+      }
+
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
@@ -249,7 +282,12 @@ void main() {
       expect(find.text('lifetime'), findsOneWidget);
     });
 
-    testWidgets('shows disclaimer text with product', (tester) async {
+    testWidgets('shows disclaimer text with product (not in free access mode)', (tester) async {
+      // Skip in free access mode - Coming Soon UI shows instead
+      if (kFreeAccessEnabled) {
+        return;
+      }
+
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
@@ -285,7 +323,12 @@ void main() {
       expect(find.text('One-time purchase • No subscription'), findsOneWidget);
     });
 
-    testWidgets('CTA button shows loading state', (tester) async {
+    testWidgets('CTA button shows loading state (not in free access mode)', (tester) async {
+      // Skip in free access mode - Coming Soon CTA doesn't have loading state
+      if (kFreeAccessEnabled) {
+        return;
+      }
+
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
@@ -372,7 +415,12 @@ void main() {
       expect(backButtonFinder, findsWidgets);
     });
 
-    testWidgets('restore button has Semantics wrapper', (tester) async {
+    testWidgets('restore button has Semantics wrapper (not in free access mode)', (tester) async {
+      // Skip in free access mode - Restore button is hidden
+      if (kFreeAccessEnabled) {
+        return;
+      }
+
       setLargeScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 

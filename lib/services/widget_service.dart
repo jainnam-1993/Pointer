@@ -5,7 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
-import '../providers/subscription_providers.dart' show kForcePremiumForTesting;
+import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 
 /// Keys for widget data storage
 class _WidgetKeys {
@@ -67,10 +67,10 @@ class WidgetService {
   }
 
   /// Check if widget is enabled for premium user
-  /// Also respects kForcePremiumForTesting flag for development
+  /// Also respects kFreeAccessEnabled flag for free release mode
   static Future<bool> isPremiumEnabled() async {
-    // Development shortcut - avoid race condition with subscription init
-    if (kForcePremiumForTesting) {
+    // Free access mode - all users get premium features
+    if (kFreeAccessEnabled) {
       return true;
     }
     try {

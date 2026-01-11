@@ -209,21 +209,24 @@ class PaywallScreen extends ConsumerWidget {
           ),
         ),
 
-        // Restore button (with sign-in prompt for cross-device sync)
-        Semantics(
-          button: true,
-          label: 'Restore previous purchases',
-          child: TextButton(
-            onPressed: () => _handleRestore(context, ref, colors),
-            child: Text(
-              'Restore',
-              style: TextStyle(
-                color: colors.textSecondary,
-                fontSize: 14,
+        // Restore button - hide in free access mode (RevenueCat not initialized)
+        if (!kFreeAccessEnabled)
+          Semantics(
+            button: true,
+            label: 'Restore previous purchases',
+            child: TextButton(
+              onPressed: () => _handleRestore(context, ref, colors),
+              child: Text(
+                'Restore',
+                style: TextStyle(
+                  color: colors.textSecondary,
+                  fontSize: 14,
+                ),
               ),
             ),
-          ),
-        ),
+          )
+        else
+          const SizedBox(width: 48), // Placeholder for layout balance
       ],
     );
   }
@@ -317,6 +320,11 @@ class PaywallScreen extends ConsumerWidget {
     SubscriptionState subscription,
     PointerColors colors,
   ) {
+    // FREE ACCESS MODE: Show coming soon instead of products
+    if (kFreeAccessEnabled) {
+      return _buildComingSoonSection(context, colors);
+    }
+
     // Find lifetime product
     final lifetimeProduct = subscription.products.isNotEmpty
         ? subscription.products.firstWhere(
@@ -413,6 +421,57 @@ class PaywallScreen extends ConsumerWidget {
                 },
                 isLoading: subscription.isLoading,
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildComingSoonSection(BuildContext context, PointerColors colors) {
+    return Column(
+      children: [
+        StaggeredFadeIn(
+          index: 6,
+          child: Icon(
+            Icons.auto_awesome,
+            size: 48,
+            color: colors.gold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        StaggeredFadeIn(
+          index: 7,
+          child: Text(
+            'Premium Coming Soon',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: colors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 8),
+        StaggeredFadeIn(
+          index: 8,
+          child: Text(
+            'All features are free during our launch period.\nEnjoy!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: colors.textSecondary,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        StaggeredFadeIn(
+          index: 9,
+          child: SizedBox(
+            width: double.infinity,
+            child: GlassButton(
+              label: 'Continue',
+              onPressed: () => context.pop(),
             ),
           ),
         ),

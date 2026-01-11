@@ -193,12 +193,12 @@ Final thoughts.
   group('ArticleReaderScreen - Premium Gating', () {
     testWidgets('shows snackbar when non-premium tries TTS', (tester) async {
       // This test verifies the premium gating logic exists
-      // In the real app, kForcePremiumForTesting would be false
+      // In the real app with IAP enabled, kFreeAccessEnabled would be false
       await tester.pumpWidget(createTestWidget(article: testArticle));
       await tester.pumpAndSettle();
 
       // The TTS button behavior depends on premium status
-      // With kForcePremiumForTesting = true, button should work
+      // With kFreeAccessEnabled = true, button should work (premium features are free)
       // With false, it should show paywall snackbar
       expect(find.byType(ArticleReaderScreen), findsOneWidget);
     });

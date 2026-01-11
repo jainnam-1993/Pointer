@@ -8,6 +8,7 @@ import 'router.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/auth_service.dart';
 import 'services/notification_service.dart';
+import 'services/revenue_cat_service.dart';
 import 'services/widget_service.dart';
 import 'services/workmanager_service.dart';
 import 'theme/app_theme.dart';
@@ -58,6 +59,20 @@ void main() async {
 
   // Pre-load SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Set SharedPreferences for router redirect checks (BEFORE creating router)
+  setRouterSharedPreferences(sharedPreferences);
+
+  // Initialize RevenueCat EARLY (before any auth callbacks might use it)
+  // Skip in free access mode - RevenueCat not needed when all features are free
+  if (!kFreeAccessEnabled) {
+    try {
+      await RevenueCatService.instance.initialize();
+    } catch (e) {
+      debugPrint('[Main] RevenueCat initialization failed: $e');
+      // App continues without purchases - not fatal for basic functionality
+    }
+  }
 
   // Create provider container for notification callbacks
   final container = ProviderContainer(
@@ -184,7 +199,11 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    final router = ref.watch(routerProvider);
+    // Use ref.read (not watch) - router is a singleton that never changes.
+    // Using ref.watch would cause MaterialApp.router to rebuild on unrelated
+    // provider changes (like theme), triggering GlobalKey conflicts in
+    // StatefulShellRoute's internal navigation state.
+    final router = ref.read(routerProvider);
     final themeMode = ref.watch(flutterThemeModeProvider);
 
     return MaterialApp.router(
