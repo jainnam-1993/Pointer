@@ -1,3 +1,10 @@
+//
+//  PointerWidgetBundle.swift
+//  PointerWidget
+//
+//  Created by Jain, Naman on 1/11/26.
+//
+
 import WidgetKit
 import SwiftUI
 

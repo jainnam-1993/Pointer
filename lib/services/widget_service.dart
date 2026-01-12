@@ -43,10 +43,10 @@ class WidgetService {
   static Future<void> initialize() async {
     // Set iOS App Group for shared storage
     await HomeWidget.setAppGroupId(iosAppGroup);
+    debugPrint('[WidgetService] App Group ID set: $iosAppGroup');
     // Register the callback for widget taps
     HomeWidget.registerInteractivityCallback(widgetBackgroundCallback);
-    // Note: Don't populate cache here - wait for premium status to be known
-    // populatePointingsCache() will be called when subscription loads
+    debugPrint('[WidgetService] Initialized');
   }
 
   /// Set premium status for widget gating.
@@ -107,11 +107,13 @@ class WidgetService {
   /// Also syncs favorites list for save button state.
   /// Only works for premium users.
   static Future<void> populatePointingsCache() async {
+    debugPrint('[WidgetService] populatePointingsCache called');
     try {
       // Check premium status first
       final isPremium = await isPremiumEnabled();
+      debugPrint('[WidgetService] isPremiumEnabled: $isPremium, kFreeAccessEnabled: $kFreeAccessEnabled');
       if (!isPremium) {
-        debugPrint('Widget cache not populated - not premium');
+        debugPrint('[WidgetService] Widget cache not populated - not premium');
         return;
       }
 
@@ -173,12 +175,21 @@ class WidgetService {
 
       // Save as JSON string
       final jsonString = jsonEncode(pointingsJson);
+      debugPrint('[WidgetService] Saving ${pointingsJson.length} pointings to widget cache (${jsonString.length} bytes)');
       await HomeWidget.saveWidgetData<String>(
         _WidgetKeys.pointingsCache,
         jsonString,
       );
 
-      debugPrint('Widget cache populated: ${favoritePointings.length} favorites, '
+      // Verify the data was saved correctly
+      final verifyData = await HomeWidget.getWidgetData<String>(_WidgetKeys.pointingsCache);
+      if (verifyData != null) {
+        debugPrint('[WidgetService] VERIFIED: Cache saved successfully (${verifyData.length} bytes)');
+      } else {
+        debugPrint('[WidgetService] ERROR: Failed to verify cache save - data is null!');
+      }
+
+      debugPrint('[WidgetService] Widget cache populated: ${favoritePointings.length} favorites, '
           '${otherPointings.length} others, ${interleavedList.length} total');
 
       // Also sync favorites from SharedPreferences
@@ -302,6 +313,68 @@ class WidgetService {
       return data != null;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Process any pending widget actions from iOS.
+  /// iOS widget intents store pending saves in UserDefaults via app groups.
+  /// Call this on app launch/resume to process queued actions.
+  static Future<void> processPendingWidgetActions() async {
+    try {
+      // Check for pending saves (iOS widget save button stores content here)
+      final pendingSavesJson = await HomeWidget.getWidgetData<String>('pending_saves');
+      if (pendingSavesJson != null && pendingSavesJson.isNotEmpty) {
+        final List<dynamic> pendingSaves = jsonDecode(pendingSavesJson);
+
+        if (pendingSaves.isNotEmpty) {
+          debugPrint('Processing ${pendingSaves.length} pending widget saves');
+
+          // Process each pending save
+          for (final content in pendingSaves) {
+            if (content is String && content.isNotEmpty) {
+              await _savePointingByContent(content);
+            }
+          }
+
+          // Clear pending saves
+          await HomeWidget.saveWidgetData<String>('pending_saves', '[]');
+          debugPrint('Pending widget saves processed and cleared');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error processing pending widget actions: $e');
+    }
+  }
+
+  /// Save a pointing by matching its content.
+  /// Used by iOS widget intent callback processing.
+  static Future<void> _savePointingByContent(String content) async {
+    try {
+      // Find matching pointing by content
+      final matching = pointings.where((p) => p.content == content).toList();
+      if (matching.isEmpty) {
+        debugPrint('Could not find pointing to save by content');
+        return;
+      }
+
+      final pointing = matching.first;
+      final prefs = await SharedPreferences.getInstance();
+      const favoritesKey = 'favorite_pointings';
+      final stored = prefs.getString(favoritesKey);
+      final favorites = stored != null
+          ? List<String>.from(jsonDecode(stored))
+          : <String>[];
+
+      if (!favorites.contains(pointing.id)) {
+        favorites.add(pointing.id);
+        await prefs.setString(favoritesKey, jsonEncode(favorites));
+        debugPrint('Widget save: Added ${pointing.id} to favorites');
+
+        // Sync favorites to widget
+        await updateFavorites(favorites.toSet());
+      }
+    } catch (e) {
+      debugPrint('Error saving pointing by content: $e');
     }
   }
 

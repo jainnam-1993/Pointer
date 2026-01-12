@@ -5,23 +5,27 @@ import AppIntents
 // MARK: - Data Model
 
 struct PointingData: Codable {
+    let id: String?
     let content: String
     let teacher: String?
     let tradition: String
     let lastUpdated: String?
+    let isFavorite: Bool
 
     static let placeholder = PointingData(
+        id: nil,
         content: "Rest doesn't come from stopping. Notice what has never been disturbed.",
         teacher: "Papaji",
         tradition: "Advaita Vedanta",
-        lastUpdated: nil
+        lastUpdated: nil,
+        isFavorite: false
     )
 }
 
 // MARK: - Timeline Provider
 
 struct Provider: TimelineProvider {
-    private let appGroupId = "group.com.pointer.widget"
+    private let appGroupId = "group.com.dailypointer.widget"
 
     /// How often to show a new quote (in minutes)
     private let rotationIntervalMinutes = 30
@@ -40,8 +44,9 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<PointingEntry>) -> Void) {
-        // Load all pointings from cache
+        // Load all pointings and favorites from cache
         let allPointings = loadAllPointings()
+        let favorites = loadFavorites()
 
         guard !allPointings.isEmpty else {
             // No cache - use single entry and request refresh
@@ -52,12 +57,19 @@ struct Provider: TimelineProvider {
             return
         }
 
-        // Create timeline entries that rotate through quotes
+        // Get current index from user navigation (prev/next buttons)
+        let currentIndex = sharedDefaults?.integer(forKey: "widget_current_index") ?? 0
+        // Wrap around if index exceeds bounds
+        let safeIndex = currentIndex % allPointings.count
+        // Ensure non-negative after wrap
+        let normalizedIndex = safeIndex >= 0 ? safeIndex : allPointings.count + safeIndex
+
+        // Create timeline entries starting from current index
         var entries: [PointingEntry] = []
         let currentDate = Date()
 
         // Generate 12 entries (6 hours worth at 30-min intervals)
-        // WidgetKit will show each entry at its scheduled time
+        // Starting from the user-selected index
         for i in 0..<12 {
             let entryDate = Calendar.current.date(
                 byAdding: .minute,
@@ -65,18 +77,27 @@ struct Provider: TimelineProvider {
                 to: currentDate
             ) ?? currentDate.addingTimeInterval(Double(i * rotationIntervalMinutes * 60))
 
-            // Pick a pointing for this time slot (pseudo-random but deterministic for same time)
-            let index = (i + Int(currentDate.timeIntervalSince1970 / 3600)) % allPointings.count
+            // Start from current index and advance
+            let index = (normalizedIndex + i) % allPointings.count
             let pointing = allPointings[index]
+            let pointingId = pointing["id"] as? String
 
             let data = PointingData(
+                id: pointingId,
                 content: pointing["content"] as? String ?? "",
                 teacher: pointing["teacher"] as? String,
                 tradition: pointing["tradition"] as? String ?? "Unknown",
-                lastUpdated: nil
+                lastUpdated: nil,
+                isFavorite: pointingId != nil && favorites.contains(pointingId!)
             )
 
             entries.append(PointingEntry(date: entryDate, data: data))
+        }
+
+        // Store current pointing content and ID for save intent
+        if let firstPointing = allPointings[safe: normalizedIndex] {
+            sharedDefaults?.set(firstPointing["content"] as? String ?? "", forKey: "pointing_content")
+            sharedDefaults?.set(firstPointing["id"] as? String ?? "", forKey: "pointing_id")
         }
 
         // Request refresh after all entries are shown
@@ -89,18 +110,48 @@ struct Provider: TimelineProvider {
 
     /// Load all pointings from the JSON cache
     private func loadAllPointings() -> [[String: Any]] {
-        guard let defaults = sharedDefaults,
-              let cacheJson = defaults.string(forKey: "pointings_cache"),
-              let data = cacheJson.data(using: .utf8),
-              let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+        guard let defaults = sharedDefaults else {
+            print("[PointerWidget] ERROR: Could not access app group UserDefaults")
             return []
         }
+
+        guard let cacheJson = defaults.string(forKey: "pointings_cache") else {
+            print("[PointerWidget] WARNING: No pointings_cache in UserDefaults")
+            // Debug: List all keys to see what's there
+            let allKeys = defaults.dictionaryRepresentation().keys
+            print("[PointerWidget] Available keys: \(Array(allKeys.prefix(10)))")
+            return []
+        }
+
+        guard let data = cacheJson.data(using: .utf8) else {
+            print("[PointerWidget] ERROR: Could not convert cache to data")
+            return []
+        }
+
+        guard let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            print("[PointerWidget] ERROR: Could not parse JSON")
+            return []
+        }
+
+        print("[PointerWidget] Loaded \(array.count) pointings from cache")
         return array
+    }
+
+    /// Load favorites set from the JSON cache
+    private func loadFavorites() -> Set<String> {
+        guard let defaults = sharedDefaults,
+              let favoritesJson = defaults.string(forKey: "widget_favorites"),
+              let data = favoritesJson.data(using: .utf8),
+              let array = try? JSONSerialization.jsonObject(with: data) as? [String] else {
+            return []
+        }
+        return Set(array)
     }
 
     /// Load a random entry for snapshots
     private func loadRandomEntry() -> PointingEntry {
         let allPointings = loadAllPointings()
+        let favorites = loadFavorites()
 
         guard !allPointings.isEmpty else {
             return PointingEntry(date: Date(), data: .placeholder)
@@ -108,12 +159,15 @@ struct Provider: TimelineProvider {
 
         let randomIndex = Int.random(in: 0..<allPointings.count)
         let pointing = allPointings[randomIndex]
+        let pointingId = pointing["id"] as? String
 
         let data = PointingData(
+            id: pointingId,
             content: pointing["content"] as? String ?? "",
             teacher: pointing["teacher"] as? String,
             tradition: pointing["tradition"] as? String ?? "Unknown",
-            lastUpdated: nil
+            lastUpdated: nil,
+            isFavorite: pointingId != nil && favorites.contains(pointingId!)
         )
 
         return PointingEntry(date: Date(), data: data)
@@ -136,8 +190,8 @@ struct PointerWidgetEntryView: View {
 
     var body: some View {
         ZStack {
-            // Glass background (only for home screen widgets)
-            if !isAccessoryWidget {
+            // Glass background for iOS < 17 (iOS 17+ uses containerBackground)
+            if #unavailable(iOS 17.0), !isAccessoryWidget {
                 glassBackground
             }
 
@@ -201,10 +255,11 @@ struct PointerWidgetEntryView: View {
 
             Spacer()
 
-            // Quote excerpt
+            // Quote excerpt with auto-sizing (like Android autoSizeTextType)
             Text(entry.data.content)
-                .font(.system(size: 12, weight: .light))
-                .lineLimit(4)
+                .font(.system(size: dynamicFontSize(for: .systemSmall), weight: .light))
+                .minimumScaleFactor(0.7)  // Can shrink to 70% for long text
+                .lineLimit(6)
                 .foregroundColor(textColor)
 
             Spacer()
@@ -228,10 +283,11 @@ struct PointerWidgetEntryView: View {
 
             Spacer()
 
-            // Quote
+            // Quote with auto-sizing (like Android autoSizeTextType)
             Text(entry.data.content)
-                .font(.system(size: 14, weight: .light))
-                .lineLimit(3)
+                .font(.system(size: dynamicFontSize(for: .systemMedium), weight: .light))
+                .minimumScaleFactor(0.65)  // Can shrink to 65% for long text
+                .lineLimit(5)
                 .foregroundColor(textColor)
 
             // Teacher
@@ -262,9 +318,11 @@ struct PointerWidgetEntryView: View {
 
             Spacer()
 
-            // Quote
+            // Quote with auto-sizing (like Android autoSizeTextType)
             Text(entry.data.content)
-                .font(.system(size: 17, weight: .light))
+                .font(.system(size: dynamicFontSize(for: .systemLarge), weight: .light))
+                .minimumScaleFactor(0.6)  // Can shrink to 60% for long text
+                .lineLimit(10)
                 .foregroundColor(textColor)
                 .multilineTextAlignment(.leading)
 
@@ -395,6 +453,8 @@ struct PointerWidgetEntryView: View {
 
             Text(entry.data.content)
                 .font(.system(size: 16, weight: .light))
+                .minimumScaleFactor(0.6)  // Can shrink to 60% for long text
+                .lineLimit(8)
                 .foregroundColor(textColor)
                 .multilineTextAlignment(.leading)
 
@@ -408,24 +468,43 @@ struct PointerWidgetEntryView: View {
         }
     }
 
-    /// Action buttons for interactive widgets
+    /// Action buttons for interactive widgets - matches Android layout: Save | ◀ | ▶
     @ViewBuilder
     private func actionButtons(iconSize: CGFloat, spacing: CGFloat) -> some View {
         if #available(iOS 17.0, *) {
-            HStack(spacing: spacing) {
-                Button(intent: RefreshPointingIntent()) {
-                    Image(systemName: "arrow.clockwise")
+            HStack(spacing: 0) {
+                // Save button on left (like Android) - filled heart if already saved
+                Button(intent: SavePointingIntent()) {
+                    Image(systemName: entry.data.isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: iconSize, weight: .medium))
-                        .foregroundColor(mutedTextColor)
+                        .foregroundColor(entry.data.isFavorite ? accentColor : mutedTextColor)
                 }
                 .buttonStyle(.plain)
 
-                Button(intent: SavePointingIntent()) {
-                    Image(systemName: "bookmark")
-                        .font(.system(size: iconSize, weight: .medium))
-                        .foregroundColor(mutedTextColor)
+                Spacer()
+
+                // Navigation buttons centered (like Android ◀ ▶)
+                HStack(spacing: spacing * 1.5) {
+                    Button(intent: PreviousPointingIntent()) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: iconSize + 4, weight: .semibold))
+                            .foregroundColor(accentColor)
+                    }
+                    .buttonStyle(.plain)
+
+                    Button(intent: NextPointingIntent()) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: iconSize + 4, weight: .semibold))
+                            .foregroundColor(accentColor)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
+
+                Spacer()
+
+                // Empty spacer to balance layout (like Android)
+                Color.clear
+                    .frame(width: iconSize + 16)
             }
         } else {
             // No interactive buttons for iOS < 17
@@ -480,6 +559,23 @@ struct PointerWidgetEntryView: View {
         return truncated + "..."
     }
 
+    // MARK: - Dynamic Font Sizing
+
+    /// Calculate base font size for widget family (matches Android autoSizeTextType)
+    /// The minimumScaleFactor allows shrinking for longer text
+    private func dynamicFontSize(for family: WidgetFamily) -> CGFloat {
+        switch family {
+        case .systemSmall:
+            return 13  // Base size, can shrink to 70% (9.1pt) for long text
+        case .systemMedium:
+            return 15  // Base size, can shrink to 65% (9.75pt) for long text
+        case .systemLarge:
+            return 17  // Base size, can shrink to 60% (10.2pt) for long text
+        default:
+            return 14
+        }
+    }
+
     // MARK: - Colors
 
     private var textColor: Color {
@@ -495,6 +591,31 @@ struct PointerWidgetEntryView: View {
     }
 }
 
+// MARK: - Container Background (iOS 17+)
+
+/// Custom container background for iOS 17+ widgets
+/// Matches the app's glass/gradient theme
+@available(iOS 17.0, *)
+struct ContainerBackgroundView: View {
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        ZStack {
+            // Base gradient matching app theme
+            LinearGradient(
+                colors: colorScheme == .dark
+                    ? [Color(hex: "0F0524"), Color(hex: "1A0A3A")]
+                    : [Color(hex: "F8F6FF"), Color(hex: "EDE8F5")],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            // Glass overlay
+            Color.white.opacity(colorScheme == .dark ? 0.05 : 0.6)
+        }
+    }
+}
+
 // MARK: - Widget Configuration
 
 struct PointerWidget: Widget {
@@ -504,7 +625,10 @@ struct PointerWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 PointerWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(for: .widget) {
+                        // Use custom glass background matching app theme
+                        ContainerBackgroundView()
+                    }
             } else {
                 PointerWidgetEntryView(entry: entry)
             }
@@ -547,6 +671,15 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+}
+
+// MARK: - Collection Extension
+
+extension Collection {
+    /// Safe subscript that returns nil for out-of-bounds indices
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }
 
