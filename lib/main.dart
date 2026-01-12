@@ -74,15 +74,7 @@ void main() async {
     }
   }
 
-  // Create provider container for notification callbacks
-  final container = ProviderContainer(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-    ],
-  );
-  _globalContainer = container;
-
-  // Initialize notifications with action handler
+  // Initialize notifications with action handler FIRST
   final notificationService = NotificationService(sharedPreferences);
   try {
     await _initializeNotifications(notificationService);
@@ -91,8 +83,22 @@ void main() async {
     // App continues without notifications - not fatal
   }
 
+  // Create provider container with initialized services
+  // CRITICAL: Override notificationServiceProvider so all code uses the SAME
+  // initialized instance. Creating new NotificationService instances via
+  // the default provider results in uninitialized FlutterLocalNotificationsPlugin
+  // instances that cannot show notifications on iOS.
+  final container = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+      notificationServiceProvider.overrideWithValue(notificationService),
+    ],
+  );
+  _globalContainer = container;
+
   // Initialize WorkManager for background notifications
-  await WorkManagerService.initialize();
+  // TEMP: Disabled to diagnose iOS 26 beta crash
+  // await WorkManagerService.initialize();
 
   // Initialize home screen widget
   await WidgetService.initialize();
@@ -116,29 +122,11 @@ void main() async {
 
 /// Initialize notification plugin with action callbacks and create Android channel
 Future<void> _initializeNotifications(NotificationService service) async {
-  // Initialize the service (creates Android notification channel)
-  await service.initialize();
-
-  // Re-initialize with action callbacks (required for notification actions)
-  final plugin = FlutterLocalNotificationsPlugin();
-
-  // Use dedicated notification icon (white-only for Android status bar)
-  const initSettingsAndroid = AndroidInitializationSettings('@drawable/ic_notification');
-  const initSettingsIOS = DarwinInitializationSettings(
-    requestAlertPermission: false,
-    requestBadgePermission: false,
-    requestSoundPermission: false,
-  );
-
-  const initSettings = InitializationSettings(
-    android: initSettingsAndroid,
-    iOS: initSettingsIOS,
-  );
-
-  await plugin.initialize(
-    initSettings,
-    onDidReceiveNotificationResponse: notificationActionCallback,
-    onDidReceiveBackgroundNotificationResponse: notificationActionCallback,
+  // Initialize the service with callbacks for notification actions (Save, Another buttons)
+  // This uses a single FlutterLocalNotificationsPlugin instance throughout the app
+  await service.initialize(
+    onNotificationResponse: notificationActionCallback,
+    onBackgroundNotificationResponse: notificationActionCallback,
   );
 }
 

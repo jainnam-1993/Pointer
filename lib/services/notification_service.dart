@@ -363,7 +363,13 @@ class NotificationService {
   ///
   /// Sets up platform-specific configurations and creates the Android
   /// notification channel.
-  Future<void> initialize() async {
+  ///
+  /// [onNotificationResponse] - Callback for when user interacts with notification
+  /// [onBackgroundNotificationResponse] - Callback for background notification interactions
+  Future<void> initialize({
+    void Function(NotificationResponse)? onNotificationResponse,
+    void Function(NotificationResponse)? onBackgroundNotificationResponse,
+  }) async {
     // Use dedicated notification icon (white-only for Android status bar)
     const initSettingsAndroid = AndroidInitializationSettings(
       '@drawable/ic_notification',
@@ -373,6 +379,12 @@ class NotificationService {
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
+      // Show notifications while app is in foreground
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: false, // Silent for meditation app
+      defaultPresentBanner: true,
+      defaultPresentList: true,
     );
 
     const initSettings = InitializationSettings(
@@ -380,7 +392,11 @@ class NotificationService {
       iOS: initSettingsIOS,
     );
 
-    await _localNotifications.initialize(initSettings);
+    await _localNotifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: onNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationResponse,
+    );
 
     // Create the Android notification channel
     await _configureAndroidChannel();
@@ -550,6 +566,7 @@ class NotificationService {
       NotificationDetails(
         iOS: DarwinNotificationDetails(
           interruptionLevel: InterruptionLevel.active, // Visible!
+          presentAlert: true, // Required for iOS to show notification
           presentSound: true,
           presentBanner: true, // Show banner for test
           presentList: true,

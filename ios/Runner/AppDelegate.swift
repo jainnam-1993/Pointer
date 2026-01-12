@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import AVFoundation
+import flutter_local_notifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -19,7 +20,22 @@ import AVFoundation
       print("Failed to set up AVAudioSession: \(error)")
     }
 
+    // Required for flutter_local_notifications to handle foreground notifications
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
+
+    // Set notification center delegate for foreground notification display
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+    }
+
     GeneratedPluginRegistrant.register(with: self)
+
+    // Enable background fetch for WorkManager periodic notifications
+    // WorkManager's Flutter plugin automatically registers BGTaskScheduler handlers
+    UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
