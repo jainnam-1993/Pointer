@@ -61,15 +61,45 @@ struct SavePointingIntent: AppIntent {
             return .result()
         }
 
-        // Get current pointing content from widget
-        if let currentContent = defaults.string(forKey: "pointing_content") {
-            // Store save request - Flutter will process on next launch
+        // Get current pointing ID and content
+        let currentId = defaults.string(forKey: "pointing_id")
+        let currentContent = defaults.string(forKey: "pointing_content")
+
+        // Store save request for Flutter to persist to SharedPreferences on next launch
+        if let content = currentContent {
             var pendingSaves = defaults.stringArray(forKey: "pending_saves") ?? []
-            if !pendingSaves.contains(currentContent) {
-                pendingSaves.append(currentContent)
+            if !pendingSaves.contains(content) {
+                pendingSaves.append(content)
                 defaults.set(pendingSaves, forKey: "pending_saves")
             }
         }
+
+        // Update widget_favorites immediately for instant UI feedback (optimistic update)
+        if let pointingId = currentId, !pointingId.isEmpty {
+            // Load current favorites from JSON
+            var favorites: [String] = []
+            if let favoritesJson = defaults.string(forKey: "widget_favorites"),
+               let data = favoritesJson.data(using: .utf8),
+               let array = try? JSONSerialization.jsonObject(with: data) as? [String] {
+                favorites = array
+            }
+
+            // Toggle favorite: add if not present, remove if present
+            if favorites.contains(pointingId) {
+                favorites.removeAll { $0 == pointingId }
+            } else {
+                favorites.append(pointingId)
+            }
+
+            // Save back as JSON
+            if let jsonData = try? JSONSerialization.data(withJSONObject: favorites),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                defaults.set(jsonString, forKey: "widget_favorites")
+            }
+        }
+
+        // Reload widget timeline to refresh UI
+        WidgetCenter.shared.reloadAllTimelines()
 
         return .result()
     }

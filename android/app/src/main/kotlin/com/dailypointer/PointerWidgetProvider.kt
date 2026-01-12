@@ -59,19 +59,26 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 notifyDataChanged(context)
             }
             ACTION_SAVE -> {
-                // Get the current pointing ID from intent
-                val pointingId = intent.getStringExtra(EXTRA_POINTING_ID)
-                Log.d(TAG, "Save action for pointing: $pointingId")
+                // Get the current pointing ID
+                val currentId = getCurrentPointingId(context)
+                Log.d(TAG, "Save action for pointing: $currentId")
 
-                // Send background intent to Flutter for save
+                // Toggle favorite status locally for immediate UI feedback
+                val wasAdded = toggleFavorite(context, currentId)
+
+                // Send background intent to Flutter to persist the change
                 val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
                     context,
                     Uri.parse("pointer://widget/save")
                 )
                 backgroundIntent.send()
 
-                // Show brief feedback
-                Toast.makeText(context, "Saved to favorites", Toast.LENGTH_SHORT).show()
+                // Show appropriate feedback
+                val message = if (wasAdded) "Saved to favorites" else "Removed from favorites"
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+                // Update all widgets to reflect the change
+                updateAllWidgets(context)
             }
             ACTION_ITEM_CLICK -> {
                 // User tapped on a stack item - open app
@@ -243,6 +250,47 @@ class PointerWidgetProvider : AppWidgetProvider() {
             } catch (e: Exception) {
                 Log.e(TAG, "Error getting current pointing ID: ${e.message}")
                 return null
+            }
+        }
+
+        /**
+         * Toggle favorite status for a pointing ID.
+         * Updates the widget_favorites in SharedPreferences for immediate UI feedback.
+         * Returns true if the pointing was added to favorites, false if removed.
+         */
+        private fun toggleFavorite(context: Context, pointingId: String?): Boolean {
+            if (pointingId == null) return false
+            try {
+                // Read current favorites from home_widget SharedPreferences
+                val widgetData = HomeWidgetPlugin.getData(context)
+                val favoritesJson = widgetData?.getString(KEY_FAVORITES, "[]") ?: "[]"
+
+                val favorites = mutableListOf<String>()
+                val jsonArray = org.json.JSONArray(favoritesJson)
+                for (i in 0 until jsonArray.length()) {
+                    favorites.add(jsonArray.getString(i))
+                }
+
+                // Toggle: add if not present, remove if present
+                val wasAdded = if (favorites.contains(pointingId)) {
+                    favorites.remove(pointingId)
+                    false
+                } else {
+                    favorites.add(pointingId)
+                    true
+                }
+
+                // Save back to home_widget SharedPreferences
+                val newJsonArray = org.json.JSONArray(favorites)
+                val prefsName = "${context.packageName}.homewidget"
+                val prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+                prefs.edit().putString(KEY_FAVORITES, newJsonArray.toString()).apply()
+
+                Log.d(TAG, "toggleFavorite: $pointingId -> ${if (wasAdded) "added" else "removed"}, total=${favorites.size}")
+                return wasAdded
+            } catch (e: Exception) {
+                Log.e(TAG, "Error toggling favorite: ${e.message}")
+                return false
             }
         }
 
