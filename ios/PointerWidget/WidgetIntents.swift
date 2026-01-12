@@ -66,11 +66,21 @@ struct SavePointingIntent: AppIntent {
         let currentContent = defaults.string(forKey: "pointing_content")
 
         // Store save request for Flutter to persist to SharedPreferences on next launch
+        // IMPORTANT: Store as JSON string, not native array, so Flutter can read it
         if let content = currentContent {
-            var pendingSaves = defaults.stringArray(forKey: "pending_saves") ?? []
+            var pendingSaves: [String] = []
+            if let existingJson = defaults.string(forKey: "pending_saves"),
+               let data = existingJson.data(using: .utf8),
+               let array = try? JSONSerialization.jsonObject(with: data) as? [String] {
+                pendingSaves = array
+            }
+
             if !pendingSaves.contains(content) {
                 pendingSaves.append(content)
-                defaults.set(pendingSaves, forKey: "pending_saves")
+                if let jsonData = try? JSONSerialization.data(withJSONObject: pendingSaves),
+                   let jsonString = String(data: jsonData, encoding: .utf8) {
+                    defaults.set(jsonString, forKey: "pending_saves")
+                }
             }
         }
 

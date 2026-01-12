@@ -185,6 +185,11 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       // Refresh widget when app comes to foreground (picks up theme changes)
       WidgetService.refreshWidget();
+      // Process any pending widget saves (iOS saves from widget buttons)
+      WidgetService.processPendingWidgetActions().then((_) {
+        // Refresh favorites provider to pick up any new saves
+        ref.invalidate(favoritesProvider);
+      });
     }
   }
 
