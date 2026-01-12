@@ -119,7 +119,7 @@ class WidgetService {
 
       // Load favorites list first
       final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('favorite_pointings');
+      final stored = prefs.getString('pointer_favorites');
       final favoriteIds = stored != null
           ? Set<String>.from(jsonDecode(stored))
           : <String>{};
@@ -210,7 +210,7 @@ class WidgetService {
   static Future<void> _syncFavoritesFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('favorite_pointings');
+      final stored = prefs.getString('pointer_favorites');
       final favorites = stored != null
           ? List<String>.from(jsonDecode(stored))
           : <String>[];
@@ -359,7 +359,7 @@ class WidgetService {
 
       final pointing = matching.first;
       final prefs = await SharedPreferences.getInstance();
-      const favoritesKey = 'favorite_pointings';
+      const favoritesKey = 'pointer_favorites';
       final stored = prefs.getString(favoritesKey);
       final favorites = stored != null
           ? List<String>.from(jsonDecode(stored))
@@ -491,7 +491,7 @@ Future<void> _saveCurrentWidgetPointing() async {
 
     // Initialize SharedPreferences and save to favorites
     final prefs = await SharedPreferences.getInstance();
-    final favoritesKey = 'favorite_pointings';
+    final favoritesKey = 'pointer_favorites';
     final stored = prefs.getString(favoritesKey);
     final favorites = stored != null
         ? List<String>.from(jsonDecode(stored))
