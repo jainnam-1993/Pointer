@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
@@ -102,9 +103,10 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
                 onPressed: () {
                   Navigator.pop(context);
                   // Navigate to paywall - delayed to allow bottom sheet to close
+                  // Uses GoRouter for redirect handling when kFreeAccessEnabled
                   Future.delayed(const Duration(milliseconds: 100), () {
                     if (context.mounted) {
-                      Navigator.of(context).pushNamed('/paywall');
+                      context.push('/paywall');
                     }
                   });
                 },

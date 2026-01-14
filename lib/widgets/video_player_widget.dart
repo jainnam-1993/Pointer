@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import '../theme/app_theme.dart';
 
@@ -93,7 +94,8 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
               child: FilledButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed('/paywall');
+                  // Uses GoRouter for redirect handling when kFreeAccessEnabled
+                  context.push('/paywall');
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: colors.accent,

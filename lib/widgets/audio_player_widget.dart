@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../services/audio_pointing_service.dart';
 import '../theme/app_theme.dart';
 
@@ -127,7 +128,8 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
               child: FilledButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed('/paywall');
+                  // Uses GoRouter for redirect handling when kFreeAccessEnabled
+                  context.push('/paywall');
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: colors.accent,

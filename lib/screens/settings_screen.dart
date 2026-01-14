@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
 import '../providers/auth_providers.dart';
+import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
 import '../services/workmanager_service.dart';
@@ -253,38 +254,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 ),
                 const SizedBox(height: 24),
 
-                // Notifications section (Premium feature)
+                // Notifications section (Premium feature when IAP enabled)
                 _SectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
-                // Premium badge for notifications
-                if (!subscription.isPremium)
+                // Premium badge for notifications - hidden when kFreeAccessEnabled
+                if (!kFreeAccessEnabled && !subscription.isPremium)
                   _PremiumFeatureBanner(
                     feature: 'Notifications',
                     onUpgrade: () => context.push('/paywall'),
                   ),
-                // Add permission banner when disabled (only show if premium)
-                if (subscription.isPremium && !_permissionGranted)
+                // Add permission banner when disabled (show if premium OR free access mode)
+                if ((kFreeAccessEnabled || subscription.isPremium) && !_permissionGranted)
                   _NotificationPermissionBanner(
                     onOpenSettings: () => AppSettings.openAppSettings(type: AppSettingsType.notification),
                   ),
                 GlassCard(
                   padding: EdgeInsets.zero,
-                  borderColor: !subscription.isPremium ? goldColor.withValues(alpha: 0.3) : null,
+                  borderColor: !kFreeAccessEnabled && !subscription.isPremium ? goldColor.withValues(alpha: 0.3) : null,
                   child: Column(
                     children: [
                       _SettingsRow(
                         title: 'Daily Pointings',
-                        subtitle: !subscription.isPremium
+                        // When kFreeAccessEnabled, show normal subtitle (not "Premium feature")
+                        subtitle: !kFreeAccessEnabled && !subscription.isPremium
                             ? 'Premium feature'
                             : _permissionGranted
                                 ? _getNotificationCountSummary()
                                 : 'Permission required',
-                        leading: !subscription.isPremium
+                        // Hide lock icon when kFreeAccessEnabled
+                        leading: !kFreeAccessEnabled && !subscription.isPremium
                             ? Icon(Icons.lock_outline, color: goldColor, size: 18)
                             : null,
                         trailing: Switch(
-                          value: subscription.isPremium && _notificationsEnabled && _permissionGranted,
-                          onChanged: subscription.isPremium
+                          // Allow toggle when kFreeAccessEnabled OR premium
+                          value: (kFreeAccessEnabled || subscription.isPremium) && _notificationsEnabled && _permissionGranted,
+                          onChanged: (kFreeAccessEnabled || subscription.isPremium)
                               ? (value) async {
                                   HapticFeedback.mediumImpact();
 
@@ -317,7 +321,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (!subscription.isPremium)
+                            // Hide lock icon when kFreeAccessEnabled
+                            if (!kFreeAccessEnabled && !subscription.isPremium)
                               Icon(Icons.lock_outline, color: goldColor, size: 14)
                             else
                               Text(
@@ -335,7 +340,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             ),
                           ],
                         ),
-                        onTap: subscription.isPremium
+                        // Allow access when kFreeAccessEnabled OR premium
+                        onTap: (kFreeAccessEnabled || subscription.isPremium)
                             ? _showNotificationTimesSheet
                             : () {
                                 HapticFeedback.mediumImpact();

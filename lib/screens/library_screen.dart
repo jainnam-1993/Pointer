@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
+import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 // TTS imports disabled - feature temporarily removed
 // import '../services/aws_credential_service.dart';
 // import '../services/tts_service.dart';
@@ -286,10 +288,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ] else ...[
 
                 // Full Library is PREMIUM - show upgrade prompt for free users
-                if (!subscription.isPremium) ...[
+                // When kFreeAccessEnabled, skip this gate (all content free)
+                if (!kFreeAccessEnabled && !subscription.isPremium) ...[
                   SliverFillRemaining(
                     child: _LibraryPremiumUpgrade(
-                      onUpgrade: () => Navigator.of(context).pushNamed('/paywall'),
+                      // Uses GoRouter for redirect handling when kFreeAccessEnabled
+                      onUpgrade: () => context.push('/paywall'),
                     ),
                   ),
                 ] else ...[
@@ -1357,7 +1361,7 @@ class CategoryArticlesScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final article = categoryArticles[index];
-                        final isLocked = article.isPremium && !isPremium;
+                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                         return StaggeredFadeIn(
                           index: index,
@@ -1446,7 +1450,8 @@ class _ArticleListItem extends StatelessWidget {
                             color: colors.textPrimary,
                           ),
                         ),
-                        if (article.isPremium) ...[
+                        // Hide premium badge when kFreeAccessEnabled (all content free)
+                        if (!kFreeAccessEnabled && article.isPremium) ...[
                           const SizedBox(width: 8),
                           Icon(
                             isLocked ? Icons.lock_outline : Icons.auto_awesome,
@@ -1842,7 +1847,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = article.isPremium && !isPremium;
+                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                           return StaggeredFadeIn(
                             index: index,
@@ -2039,7 +2044,7 @@ class LineageTeachingsScreen extends ConsumerWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = article.isPremium && !isPremium;
+                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
                           return StaggeredFadeIn(
                             index: index,
                             child: Padding(
@@ -2213,7 +2218,7 @@ class MoodTeachingsScreen extends ConsumerWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = article.isPremium && !isPremium;
+                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                           return StaggeredFadeIn(
                             index: index,
@@ -2384,7 +2389,7 @@ class TopicTeachingsScreen extends ConsumerWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = article.isPremium && !isPremium;
+                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
                           return StaggeredFadeIn(
                             index: index,
                             child: Padding(

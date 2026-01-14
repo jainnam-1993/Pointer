@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
 import '../providers/providers.dart';
+import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
@@ -169,7 +170,8 @@ class InquiryScreen extends ConsumerWidget {
                 ...inquirySessions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final session = entry.value;
-                  final isLocked = session.isPremium && !subscription.isPremium;
+                    // When kFreeAccessEnabled, all sessions are unlocked
+                  final isLocked = !kFreeAccessEnabled && session.isPremium && !subscription.isPremium;
 
                   return StaggeredFadeIn(
                     index: index + 1, // Offset by 1 for intro card
@@ -282,7 +284,8 @@ class _SessionCard extends StatelessWidget {
                           color: isLocked ? textColor.withValues(alpha: 0.5) : textColor,
                         ),
                       ),
-                      if (session.isPremium) ...[
+                      // Hide premium badge when kFreeAccessEnabled (all content free)
+                      if (!kFreeAccessEnabled && session.isPremium) ...[
                         const SizedBox(width: 8),
                         Icon(
                           Icons.auto_awesome,
