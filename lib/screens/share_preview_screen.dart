@@ -18,12 +18,67 @@ class SharePreviewScreen extends ConsumerStatefulWidget {
 
 class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   bool _isSharing = false;
+  Uint8List? _previewImage;
+  bool _isGeneratingPreview = false;
+
+  // Track current template/format to detect changes
+  ShareTemplate? _lastTemplate;
+  ShareFormat? _lastFormat;
+
+  @override
+  void initState() {
+    super.initState();
+    // Generate initial preview after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _generatePreview();
+    });
+  }
+
+  Future<void> _generatePreview() async {
+    final template = ref.read(shareTemplateProvider);
+    final format = ref.read(shareFormatProvider);
+
+    setState(() => _isGeneratingPreview = true);
+
+    try {
+      final shareService = ref.read(shareServiceProvider);
+      final card = ShareCard(
+        pointing: widget.pointing,
+        template: template,
+        format: format,
+      );
+
+      // Use lower pixelRatio for preview (faster, still looks good)
+      final bytes = await shareService.captureWidget(card, pixelRatio: 1.0);
+
+      if (mounted) {
+        setState(() {
+          _previewImage = bytes;
+          _isGeneratingPreview = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isGeneratingPreview = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final template = ref.watch(shareTemplateProvider);
     final format = ref.watch(shareFormatProvider);
+
+    // Regenerate preview when template or format changes
+    if (template != _lastTemplate || format != _lastFormat) {
+      _lastTemplate = template;
+      _lastFormat = format;
+      // Schedule regeneration after this frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _generatePreview();
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -44,7 +99,9 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
           // Export menu
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: colors.textPrimary),
-            color: colors.glassBackground,
+            color: const Color(0xFF1C1C1E), // Opaque dark background
+            position: PopupMenuPosition.under,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             onSelected: (value) => _handleExportOption(value),
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -157,31 +214,60 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   }
 
   Widget _buildPreview(ShareTemplate template, ShareFormat format) {
-    // Scale down for preview
-    final previewScale = format == ShareFormat.story ? 0.25 : 0.35;
+    final colors = context.colors;
+    final aspectRatio = format.width / format.height;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate preview size that fits within constraints while maintaining aspect ratio
+        final maxWidth = constraints.maxWidth * 0.85;
+        final maxHeight = constraints.maxHeight * 0.85;
+
+        double previewWidth;
+        double previewHeight;
+
+        // Fit within bounds while preserving aspect ratio
+        if (maxWidth / maxHeight > aspectRatio) {
+          // Constrained by height
+          previewHeight = maxHeight;
+          previewWidth = previewHeight * aspectRatio;
+        } else {
+          // Constrained by width
+          previewWidth = maxWidth;
+          previewHeight = previewWidth / aspectRatio;
+        }
+
+        return Container(
+          width: previewWidth,
+          height: previewHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Transform.scale(
-          scale: previewScale,
-          child: ShareCard(
-            pointing: widget.pointing,
-            template: template,
-            format: format,
-          ),
-        ),
-      ),
+          clipBehavior: Clip.antiAlias,
+          child: _isGeneratingPreview || _previewImage == null
+              ? Container(
+                  color: colors.glassBackground,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation(colors.textMuted),
+                    ),
+                  ),
+                )
+              : Image.memory(
+                  _previewImage!,
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true, // Prevents flickering during updates
+                ),
+        );
+      },
     );
   }
 
