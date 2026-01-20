@@ -57,15 +57,13 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ),
 };
 
-/// Filter options for library content
-enum LibraryFilter { all, articles, quotes, saved }
-
 /// Browse mode for category navigation
 enum LibraryBrowseMode {
   topics,
   teachers,
   lineages,
   moods,
+  saved,
 }
 
 extension LibraryBrowseModeExt on LibraryBrowseMode {
@@ -79,6 +77,8 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
         return 'Lineages';
       case LibraryBrowseMode.moods:
         return 'Moods';
+      case LibraryBrowseMode.saved:
+        return 'Saved';
     }
   }
 
@@ -92,6 +92,8 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
         return Icons.account_tree_outlined;
       case LibraryBrowseMode.moods:
         return Icons.mood_outlined;
+      case LibraryBrowseMode.saved:
+        return Icons.bookmark_outline;
     }
   }
 }
@@ -104,7 +106,6 @@ class LibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
-  LibraryFilter _currentFilter = LibraryFilter.all;
   LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
   ContentFilter _contentFilter = ContentFilter.all;
 
@@ -130,79 +131,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Library',
-                              style: Theme.of(context).textTheme.displayLarge,
-                            ),
-                            // Filter dropdown
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: colors.glassBackground,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: colors.glassBorder),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<LibraryFilter>(
-                                  value: _currentFilter,
-                                  isDense: true,
-                                  dropdownColor: colors.cardBackground,
-                                  borderRadius: BorderRadius.circular(12),
-                                  icon: Icon(Icons.arrow_drop_down, color: colors.textSecondary, size: 20),
-                                  style: TextStyle(color: colors.textPrimary, fontSize: 14),
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: LibraryFilter.all,
-                                      child: Text('All', style: TextStyle(color: colors.textPrimary)),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: LibraryFilter.articles,
-                                      child: Text('Articles', style: TextStyle(color: colors.textPrimary)),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: LibraryFilter.quotes,
-                                      child: Text('Quotes', style: TextStyle(color: colors.textPrimary)),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: LibraryFilter.saved,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text('Saved', style: TextStyle(color: colors.textPrimary)),
-                                          if (favorites.isNotEmpty) ...[
-                                            const SizedBox(width: 4),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: colors.accent.withValues(alpha: 0.2),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                '${favorites.length}',
-                                                style: TextStyle(color: colors.accent, fontSize: 11),
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() => _currentFilter = value);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'Library',
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          _currentFilter == LibraryFilter.saved
+                          _browseMode == LibraryBrowseMode.saved
                               ? 'Your saved pointings'
                               : 'Explore teachings and articles',
                           style: TextStyle(
@@ -215,8 +150,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   ),
                 ),
 
-                // Show saved pointings if filtered
-                if (_currentFilter == LibraryFilter.saved) ...[
+                // Show saved pointings if browsing saved
+                if (_browseMode == LibraryBrowseMode.saved) ...[
                   if (favorites.isEmpty)
                     SliverFillRemaining(
                       child: Center(
@@ -363,28 +298,34 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                    child: Row(
-                      children: [
-                        Text(
-                          'BROWSE BY',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textMuted,
-                            letterSpacing: 1,
+                    // FittedBox scales content down proportionally on small screens
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'BROWSE BY',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: colors.textMuted,
+                              letterSpacing: 1,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        _BrowseModeDropdown(
-                          currentMode: _browseMode,
-                          onChanged: (mode) => setState(() => _browseMode = mode),
-                        ),
-                        const Spacer(),
-                        _ContentTypeDropdown(
-                          currentFilter: _contentFilter,
-                          onChanged: (filter) => setState(() => _contentFilter = filter),
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          _BrowseModeDropdown(
+                            currentMode: _browseMode,
+                            onChanged: (mode) => setState(() => _browseMode = mode),
+                          ),
+                          const SizedBox(width: 8),
+                          _ContentTypeDropdown(
+                            currentFilter: _contentFilter,
+                            onChanged: (filter) => setState(() => _contentFilter = filter),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -435,6 +376,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
         return _buildLineagesList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.moods:
         return _buildMoodsList(colors, bottomPadding, contentFilter);
+      case LibraryBrowseMode.saved:
+        // Saved pointings are handled separately in the main build
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
   }
 
@@ -746,11 +690,16 @@ class _BrowseModeDropdown extends StatelessWidget {
         children: [
           Icon(currentMode.icon, size: 16, color: colors.textPrimary),
           const SizedBox(width: 6),
-          Text(
-            currentMode.label,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontWeight: FontWeight.w500,
+          // Flexible allows text to shrink when space is constrained
+          Flexible(
+            child: Text(
+              currentMode.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: colors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -821,11 +770,16 @@ class _ContentTypeDropdown extends StatelessWidget {
         children: [
           Icon(_icon, size: 16, color: colors.textPrimary),
           const SizedBox(width: 6),
-          Text(
-            _label,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontWeight: FontWeight.w500,
+          // Flexible allows text to shrink when space is constrained
+          Flexible(
+            child: Text(
+              _label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: colors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -851,7 +805,117 @@ class _ContentTypeDropdown extends StatelessWidget {
   }
 }
 
-/// Bottom sheet for content type selection
+/// Shared glassmorphism bottom sheet for filter options
+class _FilterSheet<T> extends StatelessWidget {
+  final String title;
+  final List<_FilterOption<T>> options;
+  final T currentValue;
+  final ValueChanged<T> onSelected;
+
+  const _FilterSheet({
+    required this.title,
+    required this.options,
+    required this.currentValue,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+    // Navbar clearance: navbar height (~65) + small gap (8)
+    const navbarClearance = 73.0;
+
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            decoration: BoxDecoration(
+              // Dark frosted glass: semi-opaque dark base + subtle light gradient overlay
+              color: isDark
+                  ? const Color(0xFF1C1C1E).withValues(alpha: 0.85) // iOS system gray6 dark
+                  : Colors.white.withValues(alpha: 0.92),
+              gradient: isDark
+                  ? LinearGradient(
+                      colors: [
+                        Colors.white.withValues(alpha: 0.08),
+                        Colors.white.withValues(alpha: 0.02),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              border: isDark
+                  ? Border.all(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      width: 0.5,
+                    )
+                  : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ...options.map((option) {
+                  final isSelected = option.value == currentValue;
+                  return ListTile(
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    leading: Icon(
+                      option.icon,
+                      color: isSelected ? colors.accent : colors.textMuted,
+                    ),
+                    title: Text(
+                      option.label,
+                      style: TextStyle(
+                        color: isSelected ? colors.accent : colors.textPrimary,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check, color: colors.accent)
+                        : null,
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      onSelected(option.value);
+                    },
+                  );
+                }),
+                // Navbar clearance
+                SizedBox(height: navbarClearance + MediaQuery.of(context).padding.bottom),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Option for filter sheet
+class _FilterOption<T> {
+  final T value;
+  final String label;
+  final IconData icon;
+
+  const _FilterOption({
+    required this.value,
+    required this.label,
+    required this.icon,
+  });
+}
+
 class _ContentTypeSheet extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onSelected;
@@ -863,64 +927,15 @@ class _ContentTypeSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Show',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildOption(context, ContentFilter.all, 'All', Icons.grid_view_rounded),
-              _buildOption(context, ContentFilter.articles, 'Articles', Icons.article_outlined),
-              _buildOption(context, ContentFilter.quotes, 'Quotes', Icons.format_quote_rounded),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOption(BuildContext context, ContentFilter filter, String label, IconData icon) {
-    final colors = context.colors;
-    final isSelected = filter == currentFilter;
-
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: isSelected ? colors.accent : colors.textSecondary,
-      ),
-      title: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? colors.accent : colors.textPrimary,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-        ),
-      ),
-      trailing: isSelected
-          ? Icon(Icons.check, color: colors.accent)
-          : null,
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onSelected(filter);
-      },
+    return _FilterSheet<ContentFilter>(
+      title: 'Show',
+      currentValue: currentFilter,
+      onSelected: onSelected,
+      options: const [
+        _FilterOption(value: ContentFilter.all, label: 'All', icon: Icons.grid_view_rounded),
+        _FilterOption(value: ContentFilter.articles, label: 'Articles', icon: Icons.article_outlined),
+        _FilterOption(value: ContentFilter.quotes, label: 'Quotes', icon: Icons.format_quote_rounded),
+      ],
     );
   }
 }
@@ -936,57 +951,17 @@ class _BrowseModeSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            // Use solid background for better contrast - consistent with settings sheets
-            color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Browse by',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ...LibraryBrowseMode.values.map((mode) {
-                final isSelected = mode == currentMode;
-                return ListTile(
-                  leading: Icon(
-                    mode.icon,
-                    color: isSelected ? colors.accent : colors.textMuted,
-                  ),
-                  title: Text(
-                    mode.label,
-                    style: TextStyle(
-                      color: isSelected ? colors.accent : colors.textPrimary,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    ),
-                  ),
-                  trailing: isSelected
-                      ? Icon(Icons.check, color: colors.accent)
-                      : null,
-                  onTap: () => onSelected(mode),
-                );
-              }),
-              // Account for bottom nav bar (80px) + system safe area
-              SizedBox(height: 80 + MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        ),
-      ),
+    return _FilterSheet<LibraryBrowseMode>(
+      title: 'Browse by',
+      currentValue: currentMode,
+      onSelected: onSelected,
+      options: LibraryBrowseMode.values
+          .map((mode) => _FilterOption(
+                value: mode,
+                label: mode.label,
+                icon: mode.icon,
+              ))
+          .toList(),
     );
   }
 }
@@ -1438,12 +1413,16 @@ class _ArticleListItem extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          article.title,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textPrimary,
+                        Expanded(
+                          child: Text(
+                            article.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: colors.textPrimary,
+                            ),
                           ),
                         ),
                         // Hide premium badge when kFreeAccessEnabled (all content free)
@@ -1461,6 +1440,8 @@ class _ArticleListItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         article.subtitle!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 13,
                           color: colors.textSecondary,
@@ -1485,11 +1466,15 @@ class _ArticleListItem extends StatelessWidget {
                               color: colors.textMuted,
                             ),
                           ),
-                          Text(
-                            article.teacher!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.textMuted,
+                          Flexible(
+                            child: Text(
+                              article.teacher!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colors.textMuted,
+                              ),
                             ),
                           ),
                         ],
@@ -1638,11 +1623,15 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                                 color: colors.textMuted,
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                widget.article.teacher!,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: colors.textMuted,
+                              Flexible(
+                                child: Text(
+                                  widget.article.teacher!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: colors.textMuted,
+                                  ),
                                 ),
                               ),
                             ],
@@ -2558,15 +2547,19 @@ class _TeachingCard extends StatelessWidget {
           // Footer: Teacher and lineage
           Row(
             children: [
-              Text(
-                '— ${teaching.teacher}',
-                style: TextStyle(
-                  color: colors.textMuted,
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
+              Expanded(
+                child: Text(
+                  '— ${teaching.teacher}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: colors.textMuted,
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
