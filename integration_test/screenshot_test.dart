@@ -139,25 +139,9 @@ void main() {
   });
 
   // ==========================================================================
-  // PAYWALL SCREEN - Premium upgrade flow (outside shell - no GlobalKey issue)
+  // PAYWALL SCREEN - REMOVED (IAP removed, all features free)
+  // To restore: git checkout v1.0-with-auth
   // ==========================================================================
-  group('Paywall Screen', () {
-    testWidgets('Paywall display', (tester) async {
-      final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
-      await settle(tester);
-
-      // Navigate to paywall (outside the shell, so no GlobalKey issues)
-      final router = container.read(routerProvider);
-      router.go('/paywall');
-      await settle(tester);
-
-      await screenshot(tester, 'paywall_screen');
-      container.dispose();
-    });
-  });
 
   // ==========================================================================
   // SETTINGS SCREEN - Via navigation tap (demonstrates TTS UX gap)

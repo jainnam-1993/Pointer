@@ -328,7 +328,16 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
 
       final imageBytes = await shareService.captureWidget(card);
       if (imageBytes != null) {
-        await shareService.shareImage(imageBytes, '');
+        // Get screen bounds for iPad popover positioning
+        final box = context.findRenderObject() as RenderBox?;
+        final sharePositionOrigin = box != null
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null;
+        await shareService.shareImage(
+          imageBytes,
+          '',
+          sharePositionOrigin: sharePositionOrigin,
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -347,6 +356,12 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     final shareService = ref.read(shareServiceProvider);
     HapticFeedback.lightImpact();
 
+    // Get screen bounds for iPad popover positioning
+    final box = context.findRenderObject() as RenderBox?;
+    final sharePositionOrigin = box != null
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
+
     switch (option) {
       case 'clipboard':
         await shareService.copyToClipboard(widget.pointing);
@@ -357,7 +372,10 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
         }
         break;
       case 'text':
-        await shareService.shareText(widget.pointing);
+        await shareService.shareText(
+          widget.pointing,
+          sharePositionOrigin: sharePositionOrigin,
+        );
         break;
       case 'dayone':
         final success = await shareService.exportToDayOne(widget.pointing);

@@ -15,30 +15,29 @@ void main() {
   });
 
   group('SubscriptionState', () {
-    test('default values are correct', () {
+    test('default values are correct (always premium in free mode)', () {
       const state = SubscriptionState();
-      expect(state.tier, SubscriptionTier.free);
+      expect(state.tier, SubscriptionTier.premium); // Default is premium now
       expect(state.isLoading, false);
-      expect(state.products, isEmpty);
+      expect(state.products, isEmpty); // Empty list - no IAP
       expect(state.error, isNull);
-      expect(state.expirationDate, isNull);
     });
 
-    test('isPremium getter returns true for premium tier', () {
+    test('isPremium always returns true (all features free)', () {
       const state = SubscriptionState(tier: SubscriptionTier.premium);
       expect(state.isPremium, true);
     });
 
-    test('isPremium getter returns false for free tier', () {
+    test('isPremium returns true even for free tier (override)', () {
+      // In the simplified model, isPremium always returns true
       const state = SubscriptionState(tier: SubscriptionTier.free);
-      expect(state.isPremium, false);
+      expect(state.isPremium, true); // Always true now
     });
 
     test('copyWith creates modified copy', () {
       const original = SubscriptionState(
         tier: SubscriptionTier.free,
         isLoading: false,
-        products: [],
         error: 'original error',
       );
 
@@ -51,26 +50,20 @@ void main() {
       expect(modified.tier, SubscriptionTier.premium);
       expect(modified.isLoading, true);
       expect(modified.error, 'new error');
-      expect(modified.products, isEmpty); // unchanged
     });
 
     test('copyWith preserves unmodified fields', () {
-      final expiration = DateTime(2025, 12, 31);
-      final original = SubscriptionState(
+      const original = SubscriptionState(
         tier: SubscriptionTier.premium,
         isLoading: false,
-        products: const [],
         error: 'test error',
-        expirationDate: expiration,
       );
 
       final modified = original.copyWith(isLoading: true);
 
       expect(modified.tier, SubscriptionTier.premium); // preserved
       expect(modified.isLoading, true); // changed
-      expect(modified.products, isEmpty); // preserved
       expect(modified.error, isNull); // copyWith clears nullable fields if not provided
-      expect(modified.expirationDate, expiration); // preserved
     });
 
     test('copyWith can clear error by passing null', () {
@@ -188,7 +181,7 @@ void main() {
 
   group('kFreeAccessEnabled', () {
     test('is set to true for free release', () {
-      // IMPORTANT: Set to true for free app release (iOS & Android), false when IAP is ready
+      // IMPORTANT: Set to true for free app release (all features free, no IAP)
       expect(kFreeAccessEnabled, true);
     });
 

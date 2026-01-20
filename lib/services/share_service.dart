@@ -116,7 +116,12 @@ class ShareService {
   }
 
   /// Share captured image via system share sheet
-  Future<void> shareImage(Uint8List imageBytes, String text) async {
+  /// [sharePositionOrigin] is required for iPad popover positioning
+  Future<void> shareImage(
+    Uint8List imageBytes,
+    String text, {
+    Rect? sharePositionOrigin,
+  }) async {
     final tempDir = await getTemporaryDirectory();
     final file = File('${tempDir.path}/pointer_card_${DateTime.now().millisecondsSinceEpoch}.png');
     await file.writeAsBytes(imageBytes);
@@ -124,11 +129,16 @@ class ShareService {
     await Share.shareXFiles(
       [XFile(file.path)],
       text: text,
+      sharePositionOrigin: sharePositionOrigin,
     );
   }
 
   /// Share to Instagram Stories (iOS only)
-  Future<bool> shareToInstagramStories(Uint8List imageBytes) async {
+  /// [sharePositionOrigin] is required for iPad popover positioning
+  Future<bool> shareToInstagramStories(
+    Uint8List imageBytes, {
+    Rect? sharePositionOrigin,
+  }) async {
     if (!Platform.isIOS) return false;
 
     try {
@@ -141,7 +151,10 @@ class ShareService {
       if (await canLaunchUrl(uri)) {
         // Note: For full Instagram Stories integration, would need
         // UIPasteboard on iOS. Using share sheet as fallback.
-        await Share.shareXFiles([XFile(file.path)]);
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          sharePositionOrigin: sharePositionOrigin,
+        );
         return true;
       }
     } catch (e) {
@@ -157,9 +170,13 @@ class ShareService {
   }
 
   /// Share plain text (existing behavior)
-  Future<void> shareText(Pointing pointing) async {
+  /// [sharePositionOrigin] is required for iPad popover positioning
+  Future<void> shareText(
+    Pointing pointing, {
+    Rect? sharePositionOrigin,
+  }) async {
     final text = _formatForShare(pointing);
-    await Share.share(text);
+    await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }
 
   /// Export to Day One journal (iOS)
@@ -175,9 +192,13 @@ class ShareService {
   }
 
   /// Export to Apple Notes via share sheet
-  Future<void> exportToNotes(Pointing pointing) async {
+  /// [sharePositionOrigin] is required for iPad popover positioning
+  Future<void> exportToNotes(
+    Pointing pointing, {
+    Rect? sharePositionOrigin,
+  }) async {
     final text = _formatForJournal(pointing);
-    await Share.share(text);
+    await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }
 
   /// Get tradition display name

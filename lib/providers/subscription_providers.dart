@@ -1,38 +1,28 @@
-/// Subscription providers - Premium status, daily usage limits, freemium model
+/// Subscription providers - Simplified (no IAP)
 ///
-/// Manages subscription state via RevenueCat and enforces daily pointing limits
-/// for free users.
+/// All features are free. This file provides stub implementations
+/// to maintain API compatibility with the rest of the codebase.
 ///
-/// Freemium Model v2:
-/// - FREE: Unlimited quotes/pointings
-/// - PREMIUM: Full library, audio (TTS), notifications, widget
-///
-/// Cross-Platform Purchase Sync:
-/// - Integrates with Firebase Auth via AuthService callbacks
-/// - On sign-in: Purchases.logIn(firebaseUid) syncs purchases across devices
-/// - On sign-out: Purchases.logOut() reverts to anonymous mode
+/// To restore IAP functionality: git checkout v1.0-with-auth
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/auth_service.dart';
-import '../services/revenue_cat_service.dart';
 import '../services/storage_service.dart';
 import '../services/usage_tracking_service.dart';
 import '../services/widget_service.dart';
 import 'core_providers.dart';
 
 // ============================================================
-// FREE ACCESS MODE - App Store Release (iOS & Android)
+// FREE ACCESS MODE - All Features Free (No IAP)
 // ============================================================
 
-/// FREE ACCESS MODE - All features unlocked, RevenueCat disabled
-/// Set to true for free app release (bypasses all IAP/subscription checks)
-/// Set to false when ready to enable monetization via RevenueCat
+/// All features are free - no IAP
+/// To restore IAP: git checkout v1.0-with-auth
 const bool kFreeAccessEnabled = true;
 
 // ============================================================
-// Freemium - Daily Usage Tracking
+// Freemium - Daily Usage Tracking (Kept for analytics)
 // ============================================================
 
 /// Provider for usage tracking service
@@ -49,24 +39,15 @@ final dailyUsageProvider =
 });
 
 /// Notifier for managing daily usage state
-///
-/// NOTE: Daily limits are now disabled - quotes/pointings are FREE for all users.
-/// Premium features are: Full Library, Audio (TTS), Notifications, Widget.
 class DailyUsageNotifier extends StateNotifier<DailyUsage> {
   final UsageTrackingService _service;
 
   DailyUsageNotifier(this._service) : super(_service.getUsage());
 
-  /// Check if user can view more pointings
-  ///
-  /// Always returns true - quotes/pointings are free for all users.
-  /// Premium gating is now only for: full library, audio, notifications, widget.
-  bool canViewPointing(bool isPremium) {
-    // Quotes are FREE for all users (freemium model v2)
-    return true;
-  }
+  /// Always returns true - all content is free
+  bool canViewPointing(bool isPremium) => true;
 
-  /// Record a pointing view
+  /// Record a pointing view (for analytics)
   Future<void> recordView() async {
     state = await _service.incrementViewCount();
   }
@@ -79,298 +60,115 @@ class DailyUsageNotifier extends StateNotifier<DailyUsage> {
 }
 
 // ============================================================
-// Subscription State & Tier
+// Subscription State (Stub - Always Premium)
 // ============================================================
 
-/// Subscription tier enum
+/// Subscription tier enum (kept for API compatibility)
 enum SubscriptionTier { free, premium }
 
-/// Subscription state
+/// Subscription state (always premium)
 class SubscriptionState {
   final SubscriptionTier tier;
   final bool isLoading;
-  final List<SubscriptionProduct> products;
   final String? error;
-  final DateTime? expirationDate;
 
   const SubscriptionState({
-    this.tier = SubscriptionTier.free,
+    this.tier = SubscriptionTier.premium,
     this.isLoading = false,
-    this.products = const [],
     this.error,
-    this.expirationDate,
   });
 
-  bool get isPremium => tier == SubscriptionTier.premium;
+  bool get isPremium => true; // Always premium
+  List<SubscriptionProduct> get products => const []; // No products
 
   SubscriptionState copyWith({
     SubscriptionTier? tier,
     bool? isLoading,
-    List<SubscriptionProduct>? products,
     String? error,
-    DateTime? expirationDate,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
       isLoading: isLoading ?? this.isLoading,
-      products: products ?? this.products,
       error: error,
-      expirationDate: expirationDate ?? this.expirationDate,
     );
   }
 }
 
-/// Subscription provider
+/// Stub product class (API compatibility)
+class SubscriptionProduct {
+  final String identifier;
+  final String title;
+  final String price;
+  final dynamic package; // RevenueCat Package type
+
+  const SubscriptionProduct({
+    required this.identifier,
+    required this.title,
+    required this.price,
+    this.package,
+  });
+}
+
+/// Stub purchase result (API compatibility)
+class PurchaseResult {
+  final bool success;
+  final bool isCancelled;
+  final String? error;
+
+  const PurchaseResult({
+    this.success = true,
+    this.isCancelled = false,
+    this.error,
+  });
+}
+
+/// Stub restore result (API compatibility)
+class RestoreResult {
+  final bool success;
+  final bool hasPremium;
+  final String? error;
+
+  const RestoreResult({
+    this.success = true,
+    this.hasPremium = true,
+    this.error,
+  });
+}
+
+/// Subscription provider (always premium)
 final subscriptionProvider =
     StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return SubscriptionNotifier(storage);
 });
 
+/// Subscription notifier (stub - all features free)
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
-  final StorageService _storage;
-  final RevenueCatService _revenueCat = RevenueCatService.instance;
-  final AuthService _auth = AuthService.instance;
-
-  SubscriptionNotifier(this._storage) : super(const SubscriptionState()) {
-    _setupAuthCallbacks();
+  SubscriptionNotifier(StorageService storage)
+      : super(const SubscriptionState()) {
     _initialize();
   }
 
-  /// Set up callbacks for auth state changes
-  void _setupAuthCallbacks() {
-    _auth.onSignIn = _handleSignIn;
-    _auth.onSignOut = _handleSignOut;
-  }
-
-  /// Handle user sign-in: sync RevenueCat with Firebase UID
-  Future<void> _handleSignIn(String firebaseUid) async {
-    // Skip RevenueCat sync in free access mode
-    if (kFreeAccessEnabled) return;
-    if (!mounted) return;
-
-    print('[Subscription] Auth sign-in detected, syncing with RevenueCat...');
-    state = state.copyWith(isLoading: true);
-
-    try {
-      // Login to RevenueCat with Firebase UID
-      // This transfers any anonymous purchases to the authenticated user
-      final result = await _revenueCat.loginUser(firebaseUid);
-
-      if (!mounted) return;
-
-      if (result.success) {
-        final tier = result.hasPremium
-            ? SubscriptionTier.premium
-            : SubscriptionTier.free;
-
-        await _storage.setSubscriptionTier(result.hasPremium ? 'premium' : 'free');
-        await WidgetService.setPremiumStatus(result.hasPremium);
-
-        state = state.copyWith(tier: tier, isLoading: false);
-
-        if (result.created) {
-          print('[Subscription] New RevenueCat user created for Firebase UID');
-        }
-        if (result.hasPremium) {
-          print('[Subscription] Premium restored via cross-platform sync!');
-        }
-      } else {
-        state = state.copyWith(isLoading: false, error: result.error);
-      }
-    } catch (e) {
-      if (!mounted) return;
-      state = state.copyWith(isLoading: false, error: e.toString());
-    }
-  }
-
-  /// Handle user sign-out: revert to anonymous mode
-  Future<void> _handleSignOut() async {
-    // Skip RevenueCat logout in free access mode
-    if (kFreeAccessEnabled) return;
-    if (!mounted) return;
-
-    print('[Subscription] Auth sign-out detected, reverting to anonymous...');
-
-    try {
-      await _revenueCat.logoutUser();
-
-      // Keep local cache - user doesn't lose premium until next app launch
-      // This is intentional UX: signing out doesn't immediately revoke premium
-      // The cached tier will be validated on next app launch
-    } catch (e) {
-      print('[Subscription] Error during RevenueCat logout: $e');
-    }
-  }
-
   Future<void> _initialize() async {
-    if (!mounted) return;
-
-    // Free access mode: skip all RevenueCat initialization, grant premium
-    if (kFreeAccessEnabled) {
+    // All features free - mark as premium, sync widget
+    await WidgetService.setPremiumStatus(true);
+    if (mounted) {
       state = state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
-      await WidgetService.setPremiumStatus(true);
-      return;
-    }
-
-    state = state.copyWith(isLoading: true);
-    try {
-      // Initialize RevenueCat SDK
-      await _revenueCat.initialize();
-
-      // Check if still mounted after async operation
-      if (!mounted) return;
-
-      // If user is already signed in (from previous session), sync with RevenueCat
-      // This ensures cross-device purchases are restored on app launch
-      final currentUser = _auth.currentUser;
-      if (currentUser != null) {
-        print('[Subscription] User already signed in, syncing RevenueCat...');
-        final loginResult = await _revenueCat.loginUser(currentUser.uid);
-        if (loginResult.success && loginResult.hasPremium) {
-          await _storage.setSubscriptionTier('premium');
-          await WidgetService.setPremiumStatus(true);
-          if (!mounted) return;
-          state = state.copyWith(
-            tier: SubscriptionTier.premium,
-            isLoading: false,
-          );
-          // Load products in background
-          _loadProducts();
-          return;
-        }
-      }
-
-      // Check current subscription status (for anonymous or newly logged-in users)
-      final status = await _revenueCat.getSubscriptionStatus();
-      final tier =
-          status.isPremium ? SubscriptionTier.premium : SubscriptionTier.free;
-
-      // Cache status locally for offline access
-      await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
-
-      // Sync widget with premium status (widget is premium-only feature)
-      await WidgetService.setPremiumStatus(status.isPremium);
-
-      // Check if still mounted after async operations
-      if (!mounted) return;
-
-      // Load available products
-      final products = await _revenueCat.getProducts();
-
-      // Final mounted check before setting state
-      if (!mounted) return;
-
-      state = state.copyWith(
-        tier: tier,
-        isLoading: false,
-        products: products,
-        expirationDate: status.expirationDate,
-      );
-    } catch (e) {
-      // Fallback to cached subscription status (only if still mounted)
-      if (!mounted) return;
-      final cachedTier = _storage.subscriptionTier == 'premium'
-          ? SubscriptionTier.premium
-          : SubscriptionTier.free;
-      state = state.copyWith(tier: cachedTier, isLoading: false);
-
-      // Sync widget with cached status
-      await WidgetService.setPremiumStatus(cachedTier == SubscriptionTier.premium);
     }
   }
 
-  /// Load products in background (non-blocking)
-  Future<void> _loadProducts() async {
-    try {
-      final products = await _revenueCat.getProducts();
-      if (!mounted) return;
-      state = state.copyWith(products: products);
-    } catch (e) {
-      // Ignore errors loading products
-    }
-  }
-
-  /// Purchase a subscription package
+  /// No-op: IAP disabled
   Future<PurchaseResult> purchasePackage(SubscriptionProduct product) async {
-    // Free access mode: purchases not available
-    if (kFreeAccessEnabled) {
-      return const PurchaseResult(success: false, error: 'Free access mode');
-    }
-
-    state = state.copyWith(isLoading: true, error: null);
-    try {
-      final result = await _revenueCat.purchasePackage(product.package);
-
-      if (result.success) {
-        await _storage.setSubscriptionTier('premium');
-        // Sync widget - now premium features (widget, notifications) are unlocked
-        await WidgetService.setPremiumStatus(true);
-        state = state.copyWith(
-          tier: SubscriptionTier.premium,
-          isLoading: false,
-        );
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          error: result.isCancelled ? null : result.error,
-        );
-      }
-
-      return result;
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-      return PurchaseResult(success: false, error: e.toString());
-    }
+    return const PurchaseResult(success: true);
   }
 
-  /// Restore previous purchases
+  /// No-op: Always premium
   Future<RestoreResult> restorePurchases() async {
-    // Free access mode: always report success (premium is free)
-    if (kFreeAccessEnabled) {
-      return const RestoreResult(success: true, hasPremium: true);
-    }
-
-    state = state.copyWith(isLoading: true, error: null);
-    try {
-      final result = await _revenueCat.restorePurchases();
-
-      if (result.hasPremium) {
-        await _storage.setSubscriptionTier('premium');
-        // Sync widget - premium features restored
-        await WidgetService.setPremiumStatus(true);
-        state =
-            state.copyWith(tier: SubscriptionTier.premium, isLoading: false);
-      } else {
-        state = state.copyWith(isLoading: false);
-      }
-
-      return result;
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-      return RestoreResult(
-          success: false, hasPremium: false, error: e.toString());
-    }
+    return const RestoreResult(success: true, hasPremium: true);
   }
 
-  /// Refresh subscription status from server
-  Future<void> refreshStatus() async {
-    // No-op in free access mode
-    if (kFreeAccessEnabled) return;
-
-    try {
-      final status = await _revenueCat.getSubscriptionStatus();
-      final tier =
-          status.isPremium ? SubscriptionTier.premium : SubscriptionTier.free;
-      await _storage.setSubscriptionTier(status.isPremium ? 'premium' : 'free');
-      state = state.copyWith(
-        tier: tier,
-        expirationDate: status.expirationDate,
-      );
-    } catch (e) {
-      // Ignore errors during refresh
-    }
-  }
+  /// No-op: Always premium
+  Future<void> refreshStatus() async {}
 
   /// Clear any error state
   void clearError() {

@@ -6,11 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
-import 'services/auth_service.dart';
 import 'services/notification_service.dart';
-import 'services/revenue_cat_service.dart';
 import 'services/widget_service.dart';
-import 'services/workmanager_service.dart';
 import 'theme/app_theme.dart';
 import 'data/pointings.dart';
 import 'data/teaching.dart';
@@ -48,31 +45,11 @@ void main() async {
   // Enable edge-to-edge
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Initialize Firebase FIRST (required for auth)
-  // Note: This will fail gracefully if Firebase is not configured (no google-services.json)
-  try {
-    await AuthService.instance.initialize();
-  } catch (e) {
-    // Firebase not configured - app works in anonymous-only mode
-    debugPrint('[Main] Firebase not configured, running in anonymous mode: $e');
-  }
-
   // Pre-load SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
 
   // Set SharedPreferences for router redirect checks (BEFORE creating router)
   setRouterSharedPreferences(sharedPreferences);
-
-  // Initialize RevenueCat EARLY (before any auth callbacks might use it)
-  // Skip in free access mode - RevenueCat not needed when all features are free
-  if (!kFreeAccessEnabled) {
-    try {
-      await RevenueCatService.instance.initialize();
-    } catch (e) {
-      debugPrint('[Main] RevenueCat initialization failed: $e');
-      // App continues without purchases - not fatal for basic functionality
-    }
-  }
 
   // Initialize notifications with action handler FIRST
   final notificationService = NotificationService(sharedPreferences);

@@ -17,7 +17,6 @@ import 'package:pointer/screens/inquiry_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
-import 'package:pointer/screens/paywall_screen.dart';
 
 import 'test_helpers.dart';
 
@@ -588,146 +587,10 @@ void main() {
   });
 
   // ============================================================
-  // 7. PREMIUM PAYWALL
-  // Tags: premium
-  // Equivalent to: 07_premium_paywall.yaml
+  // 7. PREMIUM PAYWALL - REMOVED (all features now free)
+  // Tests removed: paywall/IAP no longer exists
+  // To restore: git checkout v1.0-with-auth
   // ============================================================
-  group('Premium Paywall', () {
-    testWidgets(
-      'tapping locked session shows paywall',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToInquiry(tester);
-        await scrollDown(tester);
-
-        // Tap on a premium session
-        await tester.tap(find.text('The Space of Awareness'));
-        await pumpAndSettle(tester);
-
-        // Verify paywall screen
-        expectTextVisible('Unlock Everything');
-        expectTextVisible('Access all traditions and guided sessions');
-        expect(find.byType(PaywallScreen), findsOneWidget);
-      },
-      tags: [TestTags.premium],
-    );
-
-    testWidgets(
-      'paywall shows features list',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToInquiry(tester);
-        await scrollDown(tester);
-
-        // Tap on a premium session
-        await tester.tap(find.text('The Space of Awareness'));
-        await pumpAndSettle(tester);
-
-        // Verify features
-        expectTextVisible('All Traditions');
-        expectTextVisible('Access pointings from all 5 lineages');
-        expectTextVisible('Guided Sessions');
-        expectTextVisible('Unlock all self-inquiry sessions');
-        expectTextVisible('Custom Notifications');
-      },
-      tags: [TestTags.premium],
-    );
-
-    testWidgets(
-      'paywall shows pricing',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToInquiry(tester);
-        await scrollDown(tester);
-
-        // Tap on a premium session
-        await tester.tap(find.text('The Space of Awareness'));
-        await pumpAndSettle(tester);
-
-        // Verify pricing
-        expectTextVisible('\$4.99 / month');
-        expectTextVisible('Cancel anytime');
-      },
-      tags: [TestTags.premium],
-    );
-
-    testWidgets(
-      'paywall has subscribe button',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToInquiry(tester);
-        await scrollDown(tester);
-
-        // Tap on a premium session
-        await tester.tap(find.text('The Space of Awareness'));
-        await pumpAndSettle(tester);
-
-        expectTextVisible('Subscribe Now');
-        expectTextVisible('Restore Purchases');
-      },
-      tags: [TestTags.premium],
-    );
-
-    testWidgets(
-      'paywall close button works',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToInquiry(tester);
-        await scrollDown(tester);
-
-        // Tap on a premium session
-        await tester.tap(find.text('The Space of Awareness'));
-        await pumpAndSettle(tester);
-
-        // Verify we're on paywall
-        expect(find.byType(PaywallScreen), findsOneWidget);
-
-        // Tap close button
-        await tester.tap(find.byIcon(Icons.close));
-        await pumpAndSettle(tester);
-
-        // Verify we're back on Inquiry screen
-        expect(find.byType(InquiryScreen), findsOneWidget);
-      },
-      tags: [TestTags.premium],
-    );
-
-    testWidgets(
-      'can access paywall from settings',
-      (WidgetTester tester) async {
-        final app = await createTestApp(onboardingCompleted: true, isPremium: false);
-        await tester.pumpWidget(app);
-        await pumpAndSettle(tester);
-
-        await navigateToSettings(tester);
-        await scrollDown(tester);
-
-        // Tap on Upgrade to Premium
-        await tester.tap(find.text('Upgrade to Premium'));
-        await pumpAndSettle(tester);
-
-        // Verify paywall screen
-        expectTextVisible('Unlock Everything');
-        expect(find.byType(PaywallScreen), findsOneWidget);
-      },
-      tags: [TestTags.premium],
-    );
-  });
 
   // ============================================================
   // 8. ONBOARDING FLOW

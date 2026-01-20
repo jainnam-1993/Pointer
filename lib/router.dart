@@ -11,7 +11,6 @@ import 'screens/inquiry_player_screen.dart';
 import 'screens/library_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/paywall_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/lineages_screen.dart';
@@ -76,16 +75,11 @@ GoRouter _createRouter() {
         ),
       ),
 
-      // Paywall route (outside shell) - vertical axis for modal feel
-      // When kFreeAccessEnabled, redirect to home (no IAP available)
+      // Paywall route - redirect to home (IAP removed, all features free)
       GoRoute(
         path: '/paywall',
-        redirect: (context, state) => kFreeAccessEnabled ? '/' : null,
-        pageBuilder: (context, state) => SharedAxisPage(
-          key: state.pageKey,
-          transitionType: SharedAxisTransitionType.vertical,
-          child: const PaywallScreen(),
-        ),
+        redirect: (context, state) => '/',
+        builder: (context, state) => const SizedBox.shrink(), // Never reached
       ),
 
       // History route (outside shell) - horizontal for related content
