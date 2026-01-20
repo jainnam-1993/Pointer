@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,44 +99,9 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
         centerTitle: true,
         actions: [
           // Export menu
-          PopupMenuButton<String>(
+          IconButton(
             icon: Icon(Icons.more_vert, color: colors.textPrimary),
-            color: const Color(0xFF1C1C1E), // Opaque dark background
-            position: PopupMenuPosition.under,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            onSelected: (value) => _handleExportOption(value),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'clipboard',
-                child: Row(
-                  children: [
-                    Icon(Icons.copy, size: 20, color: colors.textSecondary),
-                    const SizedBox(width: 12),
-                    Text('Copy Text', style: TextStyle(color: colors.textPrimary)),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'text',
-                child: Row(
-                  children: [
-                    Icon(Icons.text_fields, size: 20, color: colors.textSecondary),
-                    const SizedBox(width: 12),
-                    Text('Share as Text', style: TextStyle(color: colors.textPrimary)),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'dayone',
-                child: Row(
-                  children: [
-                    Icon(Icons.book, size: 20, color: colors.textSecondary),
-                    const SizedBox(width: 12),
-                    Text('Export to Day One', style: TextStyle(color: colors.textPrimary)),
-                  ],
-                ),
-              ),
-            ],
+            onPressed: () => _showExportSheet(context),
           ),
         ],
       ),
@@ -438,6 +405,87 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     }
   }
 
+  void _showExportSheet(BuildContext context) {
+    HapticFeedback.lightImpact();
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF1C1C1E).withValues(alpha: 0.85)
+                  : Colors.white.withValues(alpha: 0.92),
+              gradient: isDark
+                  ? LinearGradient(
+                      colors: [
+                        Colors.white.withValues(alpha: 0.08),
+                        Colors.white.withValues(alpha: 0.02),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              border: Border(
+                top: BorderSide(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.black.withValues(alpha: 0.05),
+                ),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'More Options',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _ExportOption(
+                  icon: Icons.copy,
+                  label: 'Copy Text',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _handleExportOption('clipboard');
+                  },
+                ),
+                _ExportOption(
+                  icon: Icons.text_fields,
+                  label: 'Share as Text',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _handleExportOption('text');
+                  },
+                ),
+                _ExportOption(
+                  icon: Icons.book,
+                  label: 'Export to Day One',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _handleExportOption('dayone');
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _handleExportOption(String option) async {
     final shareService = ref.read(shareServiceProvider);
     HapticFeedback.lightImpact();
@@ -472,5 +520,47 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
         }
         break;
     }
+  }
+}
+
+/// Export option item for the glass bottom sheet
+class _ExportOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ExportOption({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+          child: Row(
+            children: [
+              Icon(icon, size: 22, color: colors.textSecondary),
+              const SizedBox(width: 16),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 17,
+                  color: colors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

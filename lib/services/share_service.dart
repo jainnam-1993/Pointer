@@ -205,16 +205,16 @@ class ShareService {
     return traditions[tradition]?.name ?? tradition.name;
   }
 
-  /// Format pointing for clipboard (markdown)
+  /// Format pointing for clipboard (plain text)
   String _formatForClipboard(Pointing pointing) {
     final buffer = StringBuffer();
-    buffer.writeln('> "${pointing.content}"');
+    buffer.writeln('"${pointing.content}"');
     if (pointing.teacher != null) {
-      buffer.writeln('>');
-      buffer.writeln('> — ${pointing.teacher}');
+      buffer.writeln();
+      buffer.writeln('— ${pointing.teacher}');
     }
     buffer.writeln();
-    buffer.writeln('*${_getTraditionName(pointing.tradition)}*');
+    buffer.writeln(_getTraditionName(pointing.tradition));
     return buffer.toString();
   }
 
