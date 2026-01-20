@@ -6,7 +6,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
@@ -354,16 +353,7 @@ void main() {
           ),
         );
 
-        // Find the ConstrainedBox that should have minHeight
-        final constrainedBoxes = tester.widgetList<ConstrainedBox>(
-          find.descendant(
-            of: find.byType(GlassCard),
-            matching: find.byType(ConstrainedBox),
-          ),
-        );
-
-        // At least one ConstrainedBox should exist with minHeight constraint
-        // (implementation detail - just verify GlassCard renders without issues)
+        // Verify GlassCard renders without issues at large text scale
         expect(find.byType(GlassCard), findsOneWidget);
       });
     });

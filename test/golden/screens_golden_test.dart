@@ -9,7 +9,6 @@
 // Run tests:
 //   flutter test test/golden/screens_golden_test.dart
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';

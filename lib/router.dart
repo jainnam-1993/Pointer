@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'providers/providers.dart';
-import 'providers/subscription_providers.dart' show kFreeAccessEnabled;
 import 'screens/home_screen.dart';
 import 'screens/inquiry_screen.dart';
 import 'screens/inquiry_player_screen.dart';

@@ -8,17 +8,13 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_settings/app_settings.dart';
 import '../providers/providers.dart';
-import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
 import '../services/workmanager_service.dart';
 import '../services/ambient_sound_service.dart';
-// TTS disabled - feature temporarily removed
-// import '../services/aws_credential_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
-import '../widgets/premium_sheet.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -818,7 +814,6 @@ class _AppearanceSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentMode = ref.watch(themeModeProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GlassCard(
       padding: const EdgeInsets.all(16),

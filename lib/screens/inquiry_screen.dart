@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
 import '../providers/providers.dart';
-import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';

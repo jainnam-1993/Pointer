@@ -10,7 +10,6 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/save_confirmation.dart';
 import 'package:pointer/widgets/glass_card.dart';
-import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/theme/app_theme.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}

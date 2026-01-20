@@ -10,10 +10,6 @@ import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
-import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
-// TTS imports disabled - feature temporarily removed
-// import '../services/aws_credential_service.dart';
-// import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';

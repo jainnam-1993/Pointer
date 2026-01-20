@@ -7,7 +7,6 @@ import 'package:pointer/data/articles.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/providers/subscription_providers.dart';
 import 'package:pointer/services/storage_service.dart';
 
 late SharedPreferences prefs;

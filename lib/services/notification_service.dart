@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -477,7 +478,7 @@ class NotificationService {
     final schedule = getSchedule();
     if (!schedule.isEnabled) return;
 
-    print('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
+    debugPrint('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
 
     // Use WorkManager for periodic notifications
     await WorkManagerService.schedulePeriodicNotifications(
@@ -486,7 +487,7 @@ class NotificationService {
       endHour: schedule.endHour,
     );
 
-    print('[NotificationService] WorkManager scheduled successfully');
+    debugPrint('[NotificationService] WorkManager scheduled successfully');
   }
 
   /// Show an immediate notification for a pointing.
@@ -590,7 +591,7 @@ class NotificationService {
       ),
       payload: pointing.id,
     );
-    print('[NotificationService] Test notification sent: ${pointing.id}');
+    debugPrint('[NotificationService] Test notification sent: ${pointing.id}');
   }
 
   /// Cancel a scheduled notification.
@@ -612,14 +613,14 @@ class NotificationService {
   /// Debug: Print all pending notifications to console.
   Future<void> debugPrintPendingNotifications() async {
     final pending = await getPendingNotifications();
-    print('[NotificationService] ===== PENDING NOTIFICATIONS =====');
-    print('[NotificationService] Total pending: ${pending.length}');
+    debugPrint('[NotificationService] ===== PENDING NOTIFICATIONS =====');
+    debugPrint('[NotificationService] Total pending: ${pending.length}');
     print('[NotificationService] Mode: inexactAllowWhileIdle (no exact alarm permission needed)');
     for (final notification in pending) {
-      print('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
+      debugPrint('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
       print('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
-      print('[NotificationService]   Payload: ${notification.payload}');
+      debugPrint('[NotificationService]   Payload: ${notification.payload}');
     }
-    print('[NotificationService] ================================');
+    debugPrint('[NotificationService] ================================');
   }
 }

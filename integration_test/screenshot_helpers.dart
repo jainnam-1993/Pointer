@@ -24,7 +24,7 @@ class ScreenshotConfig {
   static String getFileName(String stepName) {
     _screenshotCounter++;
     final sanitizedStep = stepName.replaceAll(' ', '_').toLowerCase();
-    return '${_currentFlow}/${_screenshotCounter.toString().padLeft(2, '0')}_$sanitizedStep';
+    return '$_currentFlow/${_screenshotCounter.toString().padLeft(2, '0')}_$sanitizedStep';
   }
 
   /// Reset counter (call between test groups)

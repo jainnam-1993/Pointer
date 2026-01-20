@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
@@ -23,7 +24,7 @@ class _NotificationKeys {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    print('[WorkManager] Executing task: $task');
+    debugPrint('[WorkManager] Executing task: $task');
 
     try {
       switch (task) {
@@ -32,11 +33,11 @@ void callbackDispatcher() {
           await _showNotificationFromBackground();
           break;
         default:
-          print('[WorkManager] Unknown task: $task');
+          debugPrint('[WorkManager] Unknown task: $task');
       }
       return true;
     } catch (e) {
-      print('[WorkManager] Error executing task: $e');
+      debugPrint('[WorkManager] Error executing task: $e');
       return false;
     }
   });
@@ -50,7 +51,7 @@ Future<void> _showNotificationFromBackground() async {
   // Check if notifications are enabled
   final enabled = prefs.getBool(_NotificationKeys.enabled) ?? false;
   if (!enabled) {
-    print('[WorkManager] Notifications disabled, skipping');
+    debugPrint('[WorkManager] Notifications disabled, skipping');
     return;
   }
 
@@ -101,7 +102,7 @@ Future<void> _showNotificationFromBackground() async {
     payload: pointing['id'],
   );
 
-  print('[WorkManager] Notification shown successfully');
+  debugPrint('[WorkManager] Notification shown successfully');
 }
 
 /// Get a random pointing for the notification.
@@ -154,7 +155,7 @@ class WorkManagerService {
     );
 
     _isInitialized = true;
-    print('[WorkManagerService] Initialized');
+    debugPrint('[WorkManagerService] Initialized');
   }
 
   /// Schedule periodic notifications.
@@ -192,7 +193,7 @@ class WorkManagerService {
       existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
     );
 
-    print('[WorkManagerService] Scheduled periodic notifications every $effectiveFrequency minutes');
+    debugPrint('[WorkManagerService] Scheduled periodic notifications every $effectiveFrequency minutes');
   }
 
   /// Schedule a one-time notification after a delay.
@@ -215,19 +216,19 @@ class WorkManagerService {
       ),
     );
 
-    print('[WorkManagerService] Scheduled one-time notification in ${delay.inMinutes} minutes');
+    debugPrint('[WorkManagerService] Scheduled one-time notification in ${delay.inMinutes} minutes');
   }
 
   /// Cancel all scheduled WorkManager tasks.
   /// Note: Does NOT modify the enabled preference - that's managed by NotificationService.
   static Future<void> cancelAll() async {
     await Workmanager().cancelAll();
-    print('[WorkManagerService] Cancelled all WorkManager tasks');
+    debugPrint('[WorkManagerService] Cancelled all WorkManager tasks');
   }
 
   /// Cancel periodic notifications only.
   static Future<void> cancelPeriodic() async {
     await Workmanager().cancelByUniqueName(WorkManagerTasks.periodicNotification);
-    print('[WorkManagerService] Cancelled periodic notifications');
+    debugPrint('[WorkManagerService] Cancelled periodic notifications');
   }
 }

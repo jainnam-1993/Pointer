@@ -8,16 +8,13 @@
 // - Proper hints for screen reader users
 
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/data/pointings.dart';
-import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
-import 'package:pointer/screens/main_shell.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
@@ -222,17 +219,6 @@ void main() {
       // Verify key semantic elements exist in the tree
       // The order is defined by MergeSemantics and Semantics widgets
       // in the widget tree, which VoiceOver traverses top-to-bottom
-
-      // Should have pointing content accessible
-      final pointingSemantics = find.byWidgetPredicate((widget) {
-        if (widget is Semantics) {
-          final label = widget.properties.label ?? '';
-          return label.contains('pointing') ||
-              label.contains('content') ||
-              label.contains('Test');
-        }
-        return false;
-      });
 
       // Tradition info should be visible in the consolidated card
       // (Phase 5.11 moved TraditionBadge inline inside the card)

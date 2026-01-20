@@ -39,10 +39,9 @@ void main() {
     });
 
     testWidgets('accepts onClose callback', (tester) async {
-      bool closeCalled = false;
       await tester.pumpWidget(createTestWidget(
         articleId: 'test',
-        onClose: () => closeCalled = true,
+        onClose: () {}, // Verify widget accepts callback parameter
       ));
       await tester.pumpAndSettle();
 

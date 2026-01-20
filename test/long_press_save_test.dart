@@ -7,7 +7,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';

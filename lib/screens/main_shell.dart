@@ -96,7 +96,6 @@ class _BottomNavBarState extends State<_BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final colors = context.colors;
     final isDark = context.isDarkMode;
 

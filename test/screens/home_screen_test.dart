@@ -76,17 +76,6 @@ void main() {
     await tester.pump();
   }
 
-  // PLACEHOLDER_TO_REMOVE
-  Future<void> OLD_pumpHomeScreen(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
-    await tester.runAsync(() async {
-      await tester.pumpWidget(widget);
-    });
-    await tester.pump();
-  }
-
   group('HomeScreen', () {
     testWidgets('renders without errors', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());

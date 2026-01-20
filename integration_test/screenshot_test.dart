@@ -14,14 +14,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:pointer/main.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   late SharedPreferences prefs;
-  bool _surfaceConverted = false;
+  var surfaceConverted = false;
 
   /// Creates a fresh ProviderContainer for each test
   ProviderContainer createContainer() {
@@ -40,9 +39,9 @@ void main() {
 
   /// Takes a screenshot with the given name
   Future<void> screenshot(WidgetTester tester, String name) async {
-    if (!_surfaceConverted) {
+    if (!surfaceConverted) {
       await binding.convertFlutterSurfaceToImage();
-      _surfaceConverted = true;
+      surfaceConverted = true;
     }
     await tester.pump();
     await binding.takeScreenshot(name);
@@ -58,7 +57,7 @@ void main() {
   });
 
   setUp(() {
-    _surfaceConverted = false;
+    surfaceConverted = false;
   });
 
   // ==========================================================================

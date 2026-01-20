@@ -8,14 +8,12 @@ import 'package:pointer/theme/app_theme.dart';
 void main() {
   group('Notification Permission Banner', () {
     testWidgets('displays warning message when rendered', (tester) async {
-      bool settingsOpened = false;
-      
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
           home: Scaffold(
             body: _TestPermissionBanner(
-              onOpenSettings: () => settingsOpened = true,
+              onOpenSettings: () {}, // Verify widget accepts callback
             ),
           ),
         ),
