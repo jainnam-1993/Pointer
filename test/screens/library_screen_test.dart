@@ -240,15 +240,13 @@ void main() {
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     });
 
-    testWidgets('shows lock icon for premium articles when not subscribed',
+    // Note: With kFreeAccessEnabled=true, premium gating is disabled.
+    // These tests verify that no lock icons appear (all content is free).
+    testWidgets('does not show lock icons when kFreeAccessEnabled is true',
         (tester) async {
-      // Use modernPointers category which has premium articles
+      // Use modernPointers category which has premium articles in data
       const category = ArticleCategory.modernPointers;
       final info = categoryInfoMap[category]!;
-      final categoryArticles = getArticlesByCategory(category);
-
-      // Verify this category has premium articles for the test
-      final premiumCount = categoryArticles.where((a) => a.isPremium).length;
 
       await tester.pumpWidget(
         wrapWithProviderScope(
@@ -257,23 +255,18 @@ void main() {
             home: CategoryArticlesScreen(
               category: category,
               info: info,
-              isPremium: false,
+              isPremium: false, // Even non-premium users see no locks
             ),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      // If there are premium articles in this category, expect lock icons
-      if (premiumCount > 0) {
-        expect(find.byIcon(Icons.lock_outline), findsWidgets);
-      } else {
-        // Test passes if no premium articles exist
-        expect(find.byType(CategoryArticlesScreen), findsOneWidget);
-      }
+      // With kFreeAccessEnabled=true, no lock icons should appear
+      expect(find.byIcon(Icons.lock_outline), findsNothing);
     });
 
-    testWidgets('does not show lock icon when user is premium', (tester) async {
+    testWidgets('premium users also see no lock icons', (tester) async {
       const category = ArticleCategory.natureOfAwareness;
       final info = categoryInfoMap[category]!;
 
