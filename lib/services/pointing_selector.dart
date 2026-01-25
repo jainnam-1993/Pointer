@@ -1,14 +1,27 @@
 // Time-of-Day Aware Pointing Selection Service
 //
 // Provides contextually appropriate pointing selection based on time of day.
-// Time boundaries:
-// - Morning: 5am - 11am (awakening, presence themes)
-// - Midday: 11am - 5pm (action, engagement themes)
-// - Evening: 5pm - 10pm (reflection, release themes)
-// - Night: 10pm - 5am (rest, surrender themes)
+// See [TimeContextBoundaries] for hour boundaries.
 
 import 'dart:math';
 import '../data/pointings.dart';
+
+/// Hour boundaries for time-of-day context detection.
+///
+/// Each constant represents the starting hour (inclusive) for that period:
+/// - Morning: 5am - 11am (awakening, presence themes)
+/// - Midday: 11am - 5pm (action, engagement themes)
+/// - Evening: 5pm - 10pm (reflection, release themes)
+/// - Night: 10pm - 5am (rest, surrender themes)
+class TimeContextBoundaries {
+  static const int morningStart = 5;   // 5:00 AM
+  static const int middayStart = 11;   // 11:00 AM
+  static const int eveningStart = 17;  // 5:00 PM
+  static const int nightStart = 22;    // 10:00 PM
+
+  // Prevent instantiation
+  TimeContextBoundaries._();
+}
 
 /// Time context for pointing selection based on clock time.
 /// Separate from PointingContext to allow mapping flexibility.
@@ -28,10 +41,19 @@ TimeContext getCurrentTimeContext() {
 /// Returns the TimeContext for a given hour (0-23).
 /// Exposed for testing.
 TimeContext getTimeContextForHour(int hour) {
-  if (hour >= 5 && hour < 11) return TimeContext.morning;
-  if (hour >= 11 && hour < 17) return TimeContext.midday;
-  if (hour >= 17 && hour < 22) return TimeContext.evening;
-  return TimeContext.night; // 22-4 (10pm - 5am)
+  if (hour >= TimeContextBoundaries.morningStart &&
+      hour < TimeContextBoundaries.middayStart) {
+    return TimeContext.morning;
+  }
+  if (hour >= TimeContextBoundaries.middayStart &&
+      hour < TimeContextBoundaries.eveningStart) {
+    return TimeContext.midday;
+  }
+  if (hour >= TimeContextBoundaries.eveningStart &&
+      hour < TimeContextBoundaries.nightStart) {
+    return TimeContext.evening;
+  }
+  return TimeContext.night; // nightStart onwards until morningStart
 }
 
 /// Maps a TimeContext to the corresponding PointingContext values.
