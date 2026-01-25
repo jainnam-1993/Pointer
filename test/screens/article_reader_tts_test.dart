@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pointer/screens/library_screen.dart';
+import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
