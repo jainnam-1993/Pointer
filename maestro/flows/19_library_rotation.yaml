@@ -1,0 +1,135 @@
+# Library Rotation Flow - Test teaching view tracking and rotation
+# Run: maestro test maestro/flows/19_library_rotation.yaml
+#
+# Tests: Teaching view tracking, visual state changes, list reordering
+# Feature: Tapped teachings get marked as viewed (0.7 opacity) and sink
+#          to bottom of list on subsequent visits
+#
+# Note: Opacity changes visible in screenshots but not programmatically verifiable
+# This flow captures the user journey for visual regression testing
+
+appId: com.dailypointer
+---
+- launchApp
+- waitForAnimationToEnd
+
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
+
+# Navigate to Library tab
+- tapOn:
+    text: ".*Library.*"
+- assertVisible:
+    text: "Library"
+- takeScreenshot: "rotation_01_library_home"
+
+# === BROWSE BY TEACHERS ===
+# Tap the browse dropdown to select Teachers
+- tapOn:
+    text: "Topics"
+    optional: true
+- tapOn:
+    text: "Teachers"
+    optional: true
+- takeScreenshot: "rotation_02_teachers_list"
+
+# Tap on first available teacher (e.g., Ramana Maharshi)
+- tapOn:
+    text: ".*Ramana.*"
+    optional: true
+- tapOn:
+    text: ".*Nisargadatta.*"
+    optional: true
+- tapOn:
+    text: ".*Mooji.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "rotation_03_teacher_teachings"
+
+# Scroll to see the teaching cards
+- swipe:
+    direction: UP
+    duration: 300
+
+# === TAP FIRST TEACHING TO MARK AS VIEWED ===
+# This triggers markTeachingAsViewed() and should change opacity to 0.7
+- tapOn:
+    text: ".*tradition.*"
+    index: 0
+    optional: true
+- takeScreenshot: "rotation_04_after_first_tap"
+
+# Tap another teaching to mark it viewed too
+- swipe:
+    direction: UP
+    duration: 200
+- tapOn:
+    text: ".*tradition.*"
+    index: 0
+    optional: true
+- takeScreenshot: "rotation_05_after_second_tap"
+
+# === NAVIGATE AWAY AND RETURN ===
+# Go back to teacher list
+- back
+- waitForAnimationToEnd
+- takeScreenshot: "rotation_06_back_to_teachers"
+
+# Re-enter the same teacher's teachings
+- tapOn:
+    text: ".*Ramana.*"
+    optional: true
+- tapOn:
+    text: ".*Nisargadatta.*"
+    optional: true
+- tapOn:
+    text: ".*Mooji.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "rotation_07_revisit_teachings"
+# At this point, viewed teachings should be sorted to bottom (visible in screenshot)
+
+# === TEST LINEAGES BROWSE MODE ===
+- back
+- tapOn:
+    text: "Teachers"
+    optional: true
+- tapOn:
+    text: "Lineages"
+    optional: true
+- takeScreenshot: "rotation_08_lineages_list"
+
+# Tap on Advaita lineage
+- tapOn:
+    text: ".*Advaita.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "rotation_09_lineage_teachings"
+
+# Tap a teaching in this list
+- swipe:
+    direction: UP
+    duration: 300
+- tapOn:
+    text: ".*tradition.*"
+    index: 0
+    optional: true
+- takeScreenshot: "rotation_10_lineage_tap"
+
+# === RETURN TO HOME ===
+- tapOn:
+    text: ".*Home.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "rotation_11_complete"
