@@ -84,6 +84,9 @@ class AppSettings {
 class StorageService {
   final SharedPreferences _prefs;
 
+  // Cache for viewed teachings to avoid repeated JSON parsing
+  Set<String>? _viewedTeachingIdsCache;
+
   StorageService(this._prefs);
 
   // Onboarding
@@ -169,11 +172,15 @@ class StorageService {
     // Keep last 200 teachings (more than pointings since library is larger)
     final trimmed = viewed.take(200).toList();
     await _prefs.setString(StorageKeys.viewedTeachings, jsonEncode(trimmed));
+    // Invalidate cache - will be repopulated on next access
+    _viewedTeachingIdsCache = null;
   }
 
-  /// Get all viewed teaching IDs (for sorting: viewed items should appear after unviewed)
+  /// Get all viewed teaching IDs (cached for performance)
+  /// Cache invalidated on markTeachingAsViewed()
   Set<String> get viewedTeachingIds {
-    return viewedTeachings.map((v) => v['id'] as String).toSet();
+    _viewedTeachingIdsCache ??= viewedTeachings.map((v) => v['id'] as String).toSet();
+    return _viewedTeachingIdsCache!;
   }
 
   // Preferred traditions
@@ -244,5 +251,7 @@ class StorageService {
     await _prefs.remove(StorageKeys.currentPointingId);
     await _prefs.remove(StorageKeys.pointingOrder);
     await _prefs.remove(StorageKeys.pointingIndex);
+    // Invalidate caches
+    _viewedTeachingIdsCache = null;
   }
 }
