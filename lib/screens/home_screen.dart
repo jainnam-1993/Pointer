@@ -136,6 +136,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
 
+    // Track tradition affinity for personalization
+    final affinity = ref.read(affinityServiceProvider);
+    await affinity.recordView(newPointing.tradition);
+
     // Restart timer for the new pointing (gives full 60s with new content)
     _startAutoAdvanceTimer();
   }
@@ -196,6 +200,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Record in history
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
+
+    // Track tradition affinity for personalization
+    final affinity = ref.read(affinityServiceProvider);
+    await affinity.recordView(newPointing.tradition);
 
     // Restart timer for the new pointing (gives full 60s with new content)
     _startAutoAdvanceTimer();
@@ -277,6 +285,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Update widget with new favorites data
     await WidgetService.updateFavorites({...favorites, pointing.id});
 
+    // Track tradition affinity (saves weighted 3x in affinity algorithm)
+    final affinity = ref.read(affinityServiceProvider);
+    await affinity.recordSave(pointing.tradition);
+
     // Show confirmation with celebration state
     setState(() {
       _isFirstSave = isFirstSave;
@@ -310,6 +322,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(width: 6),
           Text(
             traditionInfo.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: colors.textSecondary,
               fontSize: 12,
