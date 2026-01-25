@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -74,8 +75,8 @@ Future<void> _showNotificationFromBackground() async {
 
   await plugin.initialize(initSettings);
 
-  // Show notification with a random pointing
-  final pointing = _getRandomPointing();
+  // Show notification with time-aware pointing from cache
+  final pointing = await _getTimeAwarePointing(prefs);
 
   await plugin.show(
     DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -105,40 +106,99 @@ Future<void> _showNotificationFromBackground() async {
   debugPrint('[WorkManager] Notification shown successfully');
 }
 
-/// Get a random pointing for the notification.
-/// Simplified version that doesn't require full data loading.
-Map<String, String> _getRandomPointing() {
-  // Sample pointings for background notifications
-  // In a full implementation, you might load these from SharedPreferences cache
-  final pointings = [
+/// Storage keys matching notification_service.dart
+const _pointingsCacheKey = 'pointer_notification_pointings_cache';
+const _recentNotificationIdsKey = 'pointer_recent_notification_ids';
+
+/// Get a time-aware pointing from the cached data.
+///
+/// Loads pointings cached by NotificationService and selects based on:
+/// - Current time of day (morning/midday/evening)
+/// - Recently shown IDs (avoids repeats within last 10)
+Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async {
+  // Determine time context
+  final hour = DateTime.now().hour;
+  String timeContext;
+  if (hour >= 5 && hour < 11) {
+    timeContext = 'morning';
+  } else if (hour >= 11 && hour < 17) {
+    timeContext = 'midday';
+  } else {
+    timeContext = 'evening';
+  }
+
+  // Load cached pointings
+  final cacheJson = prefs.getString(_pointingsCacheKey);
+  if (cacheJson == null) {
+    debugPrint('[WorkManager] No pointing cache found, using fallback');
+    return _getFallbackPointing();
+  }
+
+  try {
+    final cache = jsonDecode(cacheJson) as Map<String, dynamic>;
+    final contextPointings = (cache[timeContext] as List?)?.cast<Map<String, dynamic>>() ?? [];
+
+    if (contextPointings.isEmpty) {
+      debugPrint('[WorkManager] No pointings for $timeContext, using fallback');
+      return _getFallbackPointing();
+    }
+
+    // Get recently shown IDs to avoid repeats
+    final recentIds = prefs.getStringList(_recentNotificationIdsKey) ?? [];
+
+    // Filter out recently shown pointings
+    var candidates = contextPointings
+        .where((p) => !recentIds.contains(p['id']))
+        .toList();
+
+    // If all have been shown, reset and use all
+    if (candidates.isEmpty) {
+      candidates = contextPointings;
+      await prefs.setStringList(_recentNotificationIdsKey, []);
+    }
+
+    // Select random from candidates
+    final selected = candidates[Random().nextInt(candidates.length)];
+
+    // Track this ID as recently shown (keep last 10)
+    final updatedRecent = [...recentIds, selected['id'] as String];
+    if (updatedRecent.length > 10) {
+      updatedRecent.removeAt(0);
+    }
+    await prefs.setStringList(_recentNotificationIdsKey, updatedRecent);
+
+    debugPrint('[WorkManager] Selected $timeContext pointing: ${selected['id']}');
+    return {
+      'id': selected['id'] as String,
+      'content': selected['content'] as String,
+      'tradition': selected['tradition'] as String,
+    };
+  } catch (e) {
+    debugPrint('[WorkManager] Error parsing cache: $e');
+    return _getFallbackPointing();
+  }
+}
+
+/// Fallback pointing if cache is unavailable.
+Map<String, String> _getFallbackPointing() {
+  final fallbacks = [
     {
-      'id': 'bg_1',
+      'id': 'fallback_1',
       'content': 'You are not the body, not the mind. You are the awareness in which both appear.',
       'tradition': 'Advaita',
     },
     {
-      'id': 'bg_2',
+      'id': 'fallback_2',
       'content': 'What is it that is aware right now? Look directly, without thinking.',
       'tradition': 'Direct Path',
     },
     {
-      'id': 'bg_3',
+      'id': 'fallback_3',
       'content': 'Before thought arises, what are you?',
       'tradition': 'Zen',
     },
-    {
-      'id': 'bg_4',
-      'content': 'Rest in the gap between thoughts. This is your natural state.',
-      'tradition': 'Contemporary',
-    },
-    {
-      'id': 'bg_5',
-      'content': 'The one who is looking is what you are looking for.',
-      'tradition': 'Advaita',
-    },
   ];
-
-  return pointings[Random().nextInt(pointings.length)];
+  return fallbacks[Random().nextInt(fallbacks.length)];
 }
 
 /// Service for managing WorkManager-based notifications.

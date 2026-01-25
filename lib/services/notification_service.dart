@@ -227,6 +227,8 @@ class _NotificationStorageKeys {
   static const notificationsEnabled = 'pointer_notifications_enabled';
   static const notificationTimes = 'pointer_notification_times'; // Legacy
   static const notificationSchedule = 'pointer_notification_schedule';
+  static const pointingsCache = 'pointer_notification_pointings_cache';
+  static const recentNotificationIds = 'pointer_recent_notification_ids';
 }
 
 /// Service for managing local notifications with non-urgent styling.
@@ -319,10 +321,65 @@ class NotificationService {
   Future<void> setNotificationsEnabled(bool enabled) async {
     await _prefs.setBool(_NotificationStorageKeys.notificationsEnabled, enabled);
     if (enabled) {
+      // Cache pointings for background notification access
+      await cachePointingsForBackground();
       await scheduleAllNotifications();
     } else {
       await cancelAllNotifications();
     }
+  }
+
+  /// Cache pointings data for background notification access.
+  ///
+  /// Background isolates can't access Flutter data, so we serialize
+  /// a subset of pointings grouped by time context to SharedPreferences.
+  Future<void> cachePointingsForBackground() async {
+    // Group pointings by time context for smart selection
+    final morningPointings = pointings
+        .where((p) => p.contexts.contains(PointingContext.morning) ||
+                      p.contexts.contains(PointingContext.general))
+        .take(20)
+        .toList();
+
+    final middayPointings = pointings
+        .where((p) => p.contexts.contains(PointingContext.midday) ||
+                      p.contexts.contains(PointingContext.general))
+        .take(20)
+        .toList();
+
+    final eveningPointings = pointings
+        .where((p) => p.contexts.contains(PointingContext.evening) ||
+                      p.contexts.contains(PointingContext.general))
+        .take(20)
+        .toList();
+
+    // Serialize for background access
+    final cache = {
+      'morning': morningPointings.map((p) => {
+        'id': p.id,
+        'content': p.content,
+        'tradition': p.tradition.name,
+        'teacher': p.teacher,
+      }).toList(),
+      'midday': middayPointings.map((p) => {
+        'id': p.id,
+        'content': p.content,
+        'tradition': p.tradition.name,
+        'teacher': p.teacher,
+      }).toList(),
+      'evening': eveningPointings.map((p) => {
+        'id': p.id,
+        'content': p.content,
+        'tradition': p.tradition.name,
+        'teacher': p.teacher,
+      }).toList(),
+    };
+
+    await _prefs.setString(
+      _NotificationStorageKeys.pointingsCache,
+      jsonEncode(cache),
+    );
+    debugPrint('[NotificationService] Cached ${morningPointings.length + middayPointings.length + eveningPointings.length} pointings for background');
   }
 
   /// Get configured notification times.
