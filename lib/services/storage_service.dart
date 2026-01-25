@@ -6,6 +6,7 @@ class StorageKeys {
   static const onboardingCompleted = 'pointer_onboarding_completed';
   static const favoritePointings = 'pointer_favorites';
   static const viewedPointings = 'pointer_viewed';
+  static const viewedTeachings = 'pointer_viewed_teachings';
   static const preferredTraditions = 'pointer_preferred_traditions';
   static const settings = 'pointer_settings';
   static const subscriptionTier = 'pointer_subscription';
@@ -151,6 +152,30 @@ class StorageService {
         .toSet();
   }
 
+  // Viewed teachings (for library rotation - read items sink down)
+  List<Map<String, dynamic>> get viewedTeachings {
+    final stored = _prefs.getString(StorageKeys.viewedTeachings);
+    if (stored == null) return [];
+    return List<Map<String, dynamic>>.from(jsonDecode(stored));
+  }
+
+  /// Mark a teaching as viewed (for library sorting)
+  Future<void> markTeachingAsViewed(String teachingId) async {
+    final viewed = viewedTeachings;
+    // Remove if already exists (to update timestamp)
+    viewed.removeWhere((v) => v['id'] == teachingId);
+    // Add to front with timestamp
+    viewed.insert(0, {'id': teachingId, 'viewedAt': DateTime.now().millisecondsSinceEpoch});
+    // Keep last 200 teachings (more than pointings since library is larger)
+    final trimmed = viewed.take(200).toList();
+    await _prefs.setString(StorageKeys.viewedTeachings, jsonEncode(trimmed));
+  }
+
+  /// Get all viewed teaching IDs (for sorting: viewed items should appear after unviewed)
+  Set<String> get viewedTeachingIds {
+    return viewedTeachings.map((v) => v['id'] as String).toSet();
+  }
+
   // Preferred traditions
   List<String> get preferredTraditions {
     final stored = _prefs.getString(StorageKeys.preferredTraditions);
@@ -211,6 +236,7 @@ class StorageService {
     await _prefs.remove(StorageKeys.onboardingCompleted);
     await _prefs.remove(StorageKeys.favoritePointings);
     await _prefs.remove(StorageKeys.viewedPointings);
+    await _prefs.remove(StorageKeys.viewedTeachings);
     await _prefs.remove(StorageKeys.preferredTraditions);
     await _prefs.remove(StorageKeys.settings);
     await _prefs.remove(StorageKeys.subscriptionTier);

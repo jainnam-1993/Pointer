@@ -17,6 +17,22 @@ import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
 
+/// Extension to sort teachings with unviewed first (viewed items sink down)
+extension TeachingListSorting on List<Teaching> {
+  /// Returns a new list sorted with unviewed teachings first, then viewed
+  List<Teaching> sortedByViewedStatus(Set<String> viewedIds) {
+    final copy = List<Teaching>.from(this);
+    copy.sort((a, b) {
+      final aViewed = viewedIds.contains(a.id);
+      final bViewed = viewedIds.contains(b.id);
+      if (aViewed && !bViewed) return 1;  // viewed sinks down
+      if (!aViewed && bViewed) return -1; // unviewed stays up
+      return 0; // maintain relative order
+    });
+    return copy;
+  }
+}
+
 /// Category metadata for display
 class CategoryInfo {
   final String name;
@@ -1520,11 +1536,14 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final storage = ref.watch(storageServiceProvider);
+    final viewedIds = storage.viewedTeachingIds;
     final allTeachings = TeachingRepository.byTeacher(widget.teacher);
     final allArticles = getArticlesByTeacher(widget.teacher);
 
-    // Apply filter
-    final teachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    // Apply filter and sort by viewed status (unviewed first)
+    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
     final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
 
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -1669,11 +1688,20 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
+                        final isViewed = viewedIds.contains(teaching.id);
                         return StaggeredFadeIn(
                           index: index,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(teaching: teaching),
+                            child: _TeachingCard(
+                              teaching: teaching,
+                              isViewed: isViewed,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                await storage.markTeachingAsViewed(teaching.id);
+                                if (context.mounted) setState(() {});
+                              },
+                            ),
                           ),
                         );
                       },
@@ -1691,7 +1719,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
 }
 
 /// Screen showing teachings by lineage/tradition
-class LineageTeachingsScreen extends ConsumerWidget {
+class LineageTeachingsScreen extends ConsumerStatefulWidget {
   final Tradition tradition;
   final TraditionInfo info;
   final ContentFilter filter;
@@ -1704,14 +1732,22 @@ class LineageTeachingsScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    final allTeachings = TeachingRepository.byLineage(tradition);
-    final allArticles = getArticlesByTradition(tradition);
+  ConsumerState<LineageTeachingsScreen> createState() => _LineageTeachingsScreenState();
+}
 
-    // Apply filter
-    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
-    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
+class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final storage = ref.watch(storageServiceProvider);
+    final viewedIds = storage.viewedTeachingIds;
+    final allTeachings = TeachingRepository.byLineage(widget.tradition);
+    final allArticles = getArticlesByTradition(widget.tradition);
+
+    // Apply filter and sort by viewed status (unviewed first)
+    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
+    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
 
     final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -1740,10 +1776,10 @@ class LineageTeachingsScreen extends ConsumerWidget {
                             children: [
                               Row(
                                 children: [
-                                  Text(info.icon, style: const TextStyle(fontSize: 18)),
+                                  Text(widget.info.icon, style: const TextStyle(fontSize: 18)),
                                   const SizedBox(width: 8),
                                   Text(
-                                    info.name,
+                                    widget.info.name,
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600,
@@ -1772,7 +1808,7 @@ class LineageTeachingsScreen extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
                     child: Text(
-                      info.description,
+                      widget.info.description,
                       style: TextStyle(
                         color: colors.textSecondary,
                         fontSize: 15,
@@ -1857,11 +1893,20 @@ class LineageTeachingsScreen extends ConsumerWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
+                        final isViewed = viewedIds.contains(teaching.id);
                         return StaggeredFadeIn(
                           index: index,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(teaching: teaching),
+                            child: _TeachingCard(
+                              teaching: teaching,
+                              isViewed: isViewed,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                await storage.markTeachingAsViewed(teaching.id);
+                                if (context.mounted) setState(() {});
+                              },
+                            ),
                           ),
                         );
                       },
@@ -1879,21 +1924,29 @@ class LineageTeachingsScreen extends ConsumerWidget {
 }
 
 /// Screen showing teachings by mood
-class MoodTeachingsScreen extends ConsumerWidget {
+class MoodTeachingsScreen extends ConsumerStatefulWidget {
   final String mood;
   final ContentFilter filter;
 
   const MoodTeachingsScreen({super.key, required this.mood, this.filter = ContentFilter.all});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    final allArticles = getArticlesByMood(mood);
-    final allTeachings = TeachingRepository.byMood(mood);
+  ConsumerState<MoodTeachingsScreen> createState() => _MoodTeachingsScreenState();
+}
 
-    // Apply filter
-    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
-    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final storage = ref.watch(storageServiceProvider);
+    final viewedIds = storage.viewedTeachingIds;
+    final allArticles = getArticlesByMood(widget.mood);
+    final allTeachings = TeachingRepository.byMood(widget.mood);
+
+    // Apply filter and sort by viewed status (unviewed first)
+    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
+    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
 
     final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -1923,12 +1976,12 @@ class MoodTeachingsScreen extends ConsumerWidget {
                               Row(
                                 children: [
                                   Text(
-                                    MoodTags.icon(mood),
+                                    MoodTags.icon(widget.mood),
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    MoodTags.displayName(mood),
+                                    MoodTags.displayName(widget.mood),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600,
@@ -2028,11 +2081,20 @@ class MoodTeachingsScreen extends ConsumerWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final teaching = teachings[index];
+                        final isViewed = viewedIds.contains(teaching.id);
                         return StaggeredFadeIn(
                           index: index,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(teaching: teaching),
+                            child: _TeachingCard(
+                              teaching: teaching,
+                              isViewed: isViewed,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                await storage.markTeachingAsViewed(teaching.id);
+                                if (context.mounted) setState(() {});
+                              },
+                            ),
                           ),
                         );
                       },
@@ -2050,21 +2112,29 @@ class MoodTeachingsScreen extends ConsumerWidget {
 }
 
 /// Screen showing teachings by topic tag
-class TopicTeachingsScreen extends ConsumerWidget {
+class TopicTeachingsScreen extends ConsumerStatefulWidget {
   final String topic;
   final ContentFilter filter;
 
   const TopicTeachingsScreen({super.key, required this.topic, this.filter = ContentFilter.all});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    final allArticles = getArticlesByTopic(topic);
-    final allTeachings = TeachingRepository.byTopic(topic);
+  ConsumerState<TopicTeachingsScreen> createState() => _TopicTeachingsScreenState();
+}
 
-    // Apply filter
-    final articles = filter == ContentFilter.quotes ? <Article>[] : allArticles;
-    final teachings = filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final storage = ref.watch(storageServiceProvider);
+    final viewedIds = storage.viewedTeachingIds;
+    final allArticles = getArticlesByTopic(widget.topic);
+    final allTeachings = TeachingRepository.byTopic(widget.topic);
+
+    // Apply filter and sort by viewed status (unviewed first)
+    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
+    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
+    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
 
     final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -2094,12 +2164,12 @@ class TopicTeachingsScreen extends ConsumerWidget {
                               Row(
                                 children: [
                                   Text(
-                                    TopicTags.icon(topic),
+                                    TopicTags.icon(widget.topic),
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    TopicTags.displayName(topic),
+                                    TopicTags.displayName(widget.topic),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600,
@@ -2198,11 +2268,20 @@ class TopicTeachingsScreen extends ConsumerWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final teaching = teachings[index];
+                          final isViewed = viewedIds.contains(teaching.id);
                           return StaggeredFadeIn(
                             index: index,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 12),
-                              child: _TeachingCard(teaching: teaching),
+                              child: _TeachingCard(
+                                teaching: teaching,
+                                isViewed: isViewed,
+                                onTap: () async {
+                                  HapticFeedback.lightImpact();
+                                  await storage.markTeachingAsViewed(teaching.id);
+                                  if (context.mounted) setState(() {});
+                                },
+                              ),
                             ),
                           );
                         },
@@ -2284,8 +2363,14 @@ class _SectionHeader extends StatelessWidget {
 /// Card for displaying a teaching
 class _TeachingCard extends StatelessWidget {
   final Teaching teaching;
+  final VoidCallback? onTap;
+  final bool isViewed;
 
-  const _TeachingCard({required this.teaching});
+  const _TeachingCard({
+    required this.teaching,
+    this.onTap,
+    this.isViewed = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -2293,10 +2378,13 @@ class _TeachingCard extends StatelessWidget {
     final traditionInfo = traditions[teaching.lineage]!;
 
     return Semantics(
-      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.',
+      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
       child: GlassCard(
       padding: const EdgeInsets.all(16),
-      child: Column(
+      onTap: onTap,
+      child: Opacity(
+        opacity: isViewed ? 0.7 : 1.0,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Content
@@ -2380,7 +2468,8 @@ class _TeachingCard extends StatelessWidget {
           ],
         ],
       ),
-      ),
+      ),  // Opacity
+      ),  // GlassCard
     );
   }
 }
