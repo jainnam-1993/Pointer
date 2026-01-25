@@ -636,3 +636,45 @@ class TraditionAccentColors {
   /// Silver/White accent for Original content
   static const Color original = Color(0xFFE0E0E0);
 }
+
+/// Centralized spacing constants for consistent layout
+///
+/// Usage: Replace hardcoded values with these constants
+/// - EdgeInsets.all(AppSpacing.md) instead of EdgeInsets.all(16)
+/// - SizedBox(height: AppSpacing.sm) instead of SizedBox(height: 12)
+///
+/// Naming follows t-shirt sizing (xs, sm, md, lg, xl, xxl)
+/// with semantic aliases for common use cases.
+class AppSpacing {
+  // Base spacing scale (8pt grid system)
+  static const double xs = 4.0;    // Tight spacing, icon gaps
+  static const double sm = 8.0;    // Small spacing, list items
+  static const double md = 12.0;   // Medium spacing, card padding
+  static const double lg = 16.0;   // Large spacing, section gaps
+  static const double xl = 24.0;   // Extra large, screen padding
+  static const double xxl = 32.0;  // Maximum spacing, hero sections
+
+  // Semantic aliases for clarity
+  static const double screenPadding = xl;        // 24.0 - horizontal screen edges
+  static const double cardPadding = xl;          // 24.0 - inside cards/modals
+  static const double sectionGap = lg;           // 16.0 - between sections
+  static const double itemGap = md;              // 12.0 - between list items
+  static const double iconGap = sm;              // 8.0  - icon to text spacing
+  static const double navBarOffset = 120.0;      // Bottom nav clearance
+
+  // Border radius constants (matching spacing scale)
+  static const double radiusSm = 8.0;
+  static const double radiusMd = 12.0;
+  static const double radiusLg = 16.0;
+  static const double radiusXl = 24.0;
+  static const double radiusCard = 24.0;  // Default card radius
+
+  // Common EdgeInsets presets
+  static const EdgeInsets screenH = EdgeInsets.symmetric(horizontal: xl);
+  static const EdgeInsets screenAll = EdgeInsets.all(xl);
+  static const EdgeInsets cardAll = EdgeInsets.all(xl);
+  static const EdgeInsets listItem = EdgeInsets.symmetric(
+    horizontal: xl,
+    vertical: md,
+  );
+}
