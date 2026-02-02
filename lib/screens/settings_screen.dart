@@ -589,7 +589,6 @@ class _SettingsRow extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
-  final String? semanticLabel;
 
   const _SettingsRow({
     required this.title,
@@ -597,7 +596,6 @@ class _SettingsRow extends StatelessWidget {
     this.leading,
     this.trailing,
     this.onTap,
-    this.semanticLabel,
   });
 
   @override
@@ -643,7 +641,7 @@ class _SettingsRow extends StatelessWidget {
       ),
     );
 
-    final label = semanticLabel ?? '$title${subtitle != null ? ', $subtitle' : ''}';
+    final label = '$title${subtitle != null ? ', $subtitle' : ''}';
 
     if (onTap != null) {
       return Semantics(

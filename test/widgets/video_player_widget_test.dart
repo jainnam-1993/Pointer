@@ -531,7 +531,7 @@ void main() {
     });
 
     testWidgets('handles very long videoUrl', (tester) async {
-      final longUrl = 'https://example.com/' + 'a' * 1000 + '.mp4';
+      final longUrl = 'https://example.com/${'a' * 1000}.mp4';
 
       await tester.pumpWidget(
         ProviderScope(

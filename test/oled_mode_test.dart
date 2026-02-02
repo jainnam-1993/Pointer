@@ -152,11 +152,11 @@ void main() {
     test('OLED mode background color is exactly Color(0xFF000000)', () {
       // Assert - Colors.black is exactly #000000
       expect(Colors.black, equals(const Color(0xFF000000)));
-      expect(Colors.black.value, equals(0xFF000000));
-      expect(Colors.black.red, equals(0));
-      expect(Colors.black.green, equals(0));
-      expect(Colors.black.blue, equals(0));
-      expect(Colors.black.alpha, equals(255));
+      expect(Colors.black.toARGB32(), equals(0xFF000000));
+      expect((Colors.black.r * 255).round(), equals(0));
+      expect((Colors.black.g * 255).round(), equals(0));
+      expect((Colors.black.b * 255).round(), equals(0));
+      expect((Colors.black.a * 255).round(), equals(255));
     });
 
     test('PointerColors.oled has pure black cardBackground', () {

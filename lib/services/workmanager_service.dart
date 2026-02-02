@@ -62,7 +62,7 @@ Future<void> _showNotificationFromBackground() async {
   final endHour = prefs.getInt(_NotificationKeys.endHour) ?? 21;
 
   if (now.hour < startHour || now.hour >= endHour) {
-    print('[WorkManager] Outside notification window ($startHour-$endHour), current hour: ${now.hour}');
+    debugPrint('[WorkManager] Outside notification window ($startHour-$endHour), current hour: ${now.hour}');
     return;
   }
 
@@ -211,7 +211,6 @@ class WorkManagerService {
 
     await Workmanager().initialize(
       callbackDispatcher,
-      isInDebugMode: true, // Set to false in production
     );
 
     _isInitialized = true;
