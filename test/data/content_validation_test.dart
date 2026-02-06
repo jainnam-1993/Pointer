@@ -1,0 +1,296 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/data/articles.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/data/teachers.dart';
+import 'package:pointer/data/teaching.dart';
+
+void main() {
+  group('Pointings content validation', () {
+    test('no empty content fields', () {
+      for (final p in pointings) {
+        expect(p.content.trim(), isNotEmpty,
+            reason: 'Pointing ${p.id} has empty content');
+      }
+    });
+
+    test('no empty IDs', () {
+      for (final p in pointings) {
+        expect(p.id.trim(), isNotEmpty,
+            reason: 'Found pointing with empty id');
+      }
+    });
+
+    test('all IDs are unique', () {
+      final ids = pointings.map((p) => p.id).toList();
+      final uniqueIds = ids.toSet();
+      expect(ids.length, uniqueIds.length,
+          reason:
+              'Duplicate IDs found: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}');
+    });
+
+    test('all traditions are valid enum members', () {
+      for (final p in pointings) {
+        expect(Tradition.values, contains(p.tradition),
+            reason: 'Pointing ${p.id} has invalid tradition');
+      }
+    });
+
+    test('all teachers exist in teachers map when present', () {
+      for (final p in pointings) {
+        if (p.teacher != null) {
+          // Some pointings use text names as teacher (e.g., 'Ashtavakra Gita')
+          // which are also valid teacher map entries
+          expect(teachers.containsKey(p.teacher), true,
+              reason: 'Pointing ${p.id} references unknown teacher: ${p.teacher}');
+        }
+      }
+    });
+
+    test('no HTML entities in content', () {
+      final htmlEntities = RegExp(r'&(amp|lt|gt|quot|apos|nbsp);');
+      for (final p in pointings) {
+        expect(p.content, isNot(matches(htmlEntities)),
+            reason: 'Pointing ${p.id} contains HTML entities');
+      }
+    });
+
+    test('no encoding artifacts in content', () {
+      // Common UTF-8 mojibake patterns
+      final artifacts = RegExp(r'â€™|â€œ|â€|Ã©|Ã¨|Ã¼|â€"');
+      for (final p in pointings) {
+        expect(p.content, isNot(matches(artifacts)),
+            reason: 'Pointing ${p.id} contains encoding artifacts');
+      }
+    });
+
+    test('no markdown syntax in content', () {
+      // Pointings are plain text, not markdown
+      final markdownHeaders = RegExp(r'^#{1,6}\s', multiLine: true);
+      final boldSyntax = RegExp(r'\*\*[^*]+\*\*');
+      for (final p in pointings) {
+        expect(p.content, isNot(matches(markdownHeaders)),
+            reason: 'Pointing ${p.id} contains markdown headers');
+        expect(p.content, isNot(matches(boldSyntax)),
+            reason: 'Pointing ${p.id} contains markdown bold syntax');
+      }
+    });
+
+    test('source field is not empty string when present', () {
+      for (final p in pointings) {
+        if (p.source != null) {
+          expect(p.source!.trim(), isNotEmpty,
+              reason: 'Pointing ${p.id} has empty source string');
+        }
+      }
+    });
+
+    test('content length > 10 chars (not truncated)', () {
+      for (final p in pointings) {
+        expect(p.content.length, greaterThan(10),
+            reason:
+                'Pointing ${p.id} has suspiciously short content: "${p.content}"');
+      }
+    });
+
+    test('sourceUrl is valid URL when present', () {
+      final urlPattern = RegExp(r'^https?://');
+      for (final p in pointings) {
+        if (p.sourceUrl != null) {
+          expect(p.sourceUrl!, matches(urlPattern),
+              reason:
+                  'Pointing ${p.id} has invalid sourceUrl: ${p.sourceUrl}');
+        }
+      }
+    });
+
+    test('sourceUrl only on pointings that have a source', () {
+      for (final p in pointings) {
+        if (p.sourceUrl != null) {
+          expect(p.source, isNotNull,
+              reason:
+                  'Pointing ${p.id} has sourceUrl but no source text');
+        }
+      }
+    });
+  });
+
+  group('Articles content validation', () {
+    test('all IDs are unique', () {
+      final ids = articles.map((a) => a.id).toList();
+      final uniqueIds = ids.toSet();
+      expect(ids.length, uniqueIds.length,
+          reason:
+              'Duplicate article IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}');
+    });
+
+    test('readingTimeMinutes > 0', () {
+      for (final a in articles) {
+        expect(a.readingTimeMinutes, greaterThan(0),
+            reason: 'Article ${a.id} has invalid readingTimeMinutes');
+      }
+    });
+
+    test('teacher matches teachers map when present', () {
+      for (final a in articles) {
+        if (a.teacher != null) {
+          expect(teachers.containsKey(a.teacher), true,
+              reason:
+                  'Article ${a.id} references unknown teacher: ${a.teacher}');
+        }
+      }
+    });
+
+    test('no encoding artifacts in content', () {
+      final artifacts = RegExp(r'â€™|â€œ|â€|Ã©|Ã¨|Ã¼|â€"');
+      for (final a in articles) {
+        expect(a.content, isNot(matches(artifacts)),
+            reason: 'Article ${a.id} contains encoding artifacts');
+      }
+    });
+
+    test('topicTags use valid constants', () {
+      for (final a in articles) {
+        for (final tag in a.topicTags) {
+          expect(TopicTags.all, contains(tag),
+              reason: 'Article ${a.id} has invalid topicTag: $tag');
+        }
+      }
+    });
+
+    test('moodTags use valid constants', () {
+      for (final a in articles) {
+        for (final tag in a.moodTags) {
+          expect(MoodTags.all, contains(tag),
+              reason: 'Article ${a.id} has invalid moodTag: $tag');
+        }
+      }
+    });
+
+    test('content is not empty', () {
+      for (final a in articles) {
+        expect(a.content.trim(), isNotEmpty,
+            reason: 'Article ${a.id} has empty content');
+      }
+    });
+
+    test('title is not empty', () {
+      for (final a in articles) {
+        expect(a.title.trim(), isNotEmpty,
+            reason: 'Article ${a.id} has empty title');
+      }
+    });
+
+    test('has at least one category', () {
+      for (final a in articles) {
+        expect(a.categories, isNotEmpty,
+            reason: 'Article ${a.id} has no categories');
+      }
+    });
+  });
+
+  group('Teachers content validation', () {
+    test('has expected number of teachers', () {
+      expect(teachers.length, 22);
+    });
+
+    test('all teachers have name, bio, and tradition', () {
+      for (final entry in teachers.entries) {
+        expect(entry.value.name.trim(), isNotEmpty,
+            reason: 'Teacher ${entry.key} has empty name');
+        expect(entry.value.bio.trim(), isNotEmpty,
+            reason: 'Teacher ${entry.key} has empty bio');
+        expect(Tradition.values, contains(entry.value.tradition),
+            reason: 'Teacher ${entry.key} has invalid tradition');
+      }
+    });
+
+    test('no duplicate teacher names', () {
+      final names = teachers.values.map((t) => t.name).toList();
+      final uniqueNames = names.toSet();
+      expect(names.length, uniqueNames.length,
+          reason: 'Duplicate teacher names found');
+    });
+
+    test('map keys match teacher names', () {
+      for (final entry in teachers.entries) {
+        expect(entry.key, entry.value.name,
+            reason:
+                'Teacher key "${entry.key}" does not match name "${entry.value.name}"');
+      }
+    });
+  });
+
+  group('Cross-data integrity', () {
+    test('expected pointing count', () {
+      expect(pointings.length, greaterThanOrEqualTo(2400),
+          reason: 'Expected ~2434 pointings, got ${pointings.length}');
+    });
+
+    test('expected article count', () {
+      expect(articles.length, greaterThanOrEqualTo(160),
+          reason: 'Expected ~166 articles, got ${articles.length}');
+    });
+
+    test('all traditions have at least one pointing', () {
+      for (final tradition in Tradition.values) {
+        final count = pointings.where((p) => p.tradition == tradition).length;
+        expect(count, greaterThan(0),
+            reason: 'Tradition ${tradition.name} has no pointings');
+      }
+    });
+
+    test('all traditions have at least one article', () {
+      for (final tradition in Tradition.values) {
+        final count = articles.where((a) => a.tradition == tradition).length;
+        expect(count, greaterThan(0),
+            reason: 'Tradition ${tradition.name} has no articles');
+      }
+    });
+  });
+
+  group('Source link coverage', () {
+    test('findArticleForPointing returns article for known sources', () {
+      // "I Am That" should match article with same title
+      final p = pointings.firstWhere((p) => p.source == 'I Am That');
+      final article = findArticleForPointing(p);
+      expect(article, isNotNull, reason: '"I Am That" should match an article');
+      expect(article!.title, 'I Am That');
+    });
+
+    test('findArticleForPointing falls back to teacher match', () {
+      // "Before I Am" has no title-matching article, but Mooji has articles
+      final p = pointings.firstWhere((p) => p.source == 'Before I Am');
+      final article = findArticleForPointing(p);
+      expect(article, isNotNull,
+          reason: '"Before I Am" by Mooji should match a Mooji article');
+    });
+
+    test('findArticleForPointing returns null for unmatched pointings', () {
+      // A pointing with no source and no teacher should return null
+      const orphan = Pointing(
+        id: 'test-orphan',
+        content: 'Test content',
+        tradition: Tradition.original,
+        contexts: [PointingContext.general],
+      );
+      expect(findArticleForPointing(orphan), isNull);
+    });
+
+    test('significant portion of pointings have some link', () {
+      int withArticle = 0;
+      int withExternalUrl = 0;
+      for (final p in pointings) {
+        if (findArticleForPointing(p) != null) {
+          withArticle++;
+        } else if (p.sourceUrl != null) {
+          withExternalUrl++;
+        }
+      }
+      final total = withArticle + withExternalUrl;
+      // At least 40% of pointings should have some link
+      expect(total, greaterThan(pointings.length * 0.4),
+          reason:
+              'Only $total/${pointings.length} pointings have links ($withArticle in-app, $withExternalUrl external)');
+    });
+  });
+}

@@ -291,6 +291,7 @@ class Teaching {
       topicTags: _inferTopics(p.content),
       moodTags: p.contexts.map((c) => c.name).toSet(),
       type: TeachingType.pointing,
+      sourceUrl: p.sourceUrl,
     );
   }
 

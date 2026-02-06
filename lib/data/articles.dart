@@ -10929,3 +10929,40 @@ Map<String, int> getArticleMoodCounts() {
   }
   return counts;
 }
+
+// --- Article lookup for pointing source links ---
+
+Map<String, Article>? _articleByTitleIndex;
+Map<String, Article>? _articleByTeacherIndex;
+
+void _ensureArticleIndex() {
+  if (_articleByTitleIndex != null) return;
+  _articleByTitleIndex = {};
+  _articleByTeacherIndex = {};
+  for (final a in articles) {
+    _articleByTitleIndex![a.title.toLowerCase()] = a;
+    // First article per teacher wins (most relevant)
+    if (a.teacher != null && !_articleByTeacherIndex!.containsKey(a.teacher)) {
+      _articleByTeacherIndex![a.teacher!] = a;
+    }
+  }
+}
+
+/// Find the best matching library article for a pointing.
+/// Returns null if no match found.
+///
+/// Priority: source title match → teacher match.
+Article? findArticleForPointing(Pointing p) {
+  _ensureArticleIndex();
+  // 1. Exact source → article title match
+  if (p.source != null) {
+    final match = _articleByTitleIndex![p.source!.toLowerCase()];
+    if (match != null) return match;
+  }
+  // 2. Teacher match
+  if (p.teacher != null) {
+    final match = _articleByTeacherIndex![p.teacher!];
+    if (match != null) return match;
+  }
+  return null;
+}
