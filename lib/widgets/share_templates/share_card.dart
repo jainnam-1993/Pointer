@@ -146,6 +146,17 @@ class _MinimalTemplate extends StatelessWidget {
                 color: Color(0xFF666666),
               ),
             ),
+          if (pointing.source != null)
+            Text(
+              pointing.source!,
+              style: const TextStyle(
+                fontSize: 10,
+                fontStyle: FontStyle.italic,
+                color: Color(0xFF999999),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           const Spacer(),
           // Watermark
           _Watermark(color: const Color(0xFF999999)),
@@ -222,6 +233,17 @@ class _GradientTemplate extends StatelessWidget {
                 color: Color(0xFFA78BFA),
               ),
             ),
+          if (pointing.source != null)
+            Text(
+              pointing.source!,
+              style: TextStyle(
+                fontSize: 10,
+                fontStyle: FontStyle.italic,
+                color: const Color(0xFFA78BFA).withValues(alpha: 0.6),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           const Spacer(),
           // Watermark
           _Watermark(color: const Color(0xFF8B5CF6).withValues(alpha: 0.6)),
@@ -297,6 +319,17 @@ class _TraditionTemplate extends StatelessWidget {
                 fontStyle: FontStyle.italic,
                 color: colors.accent,
               ),
+            ),
+          if (pointing.source != null)
+            Text(
+              pointing.source!,
+              style: TextStyle(
+                fontSize: 10,
+                fontStyle: FontStyle.italic,
+                color: colors.accent.withValues(alpha: 0.6),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           const Spacer(),
           // Watermark
