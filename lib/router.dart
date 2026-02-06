@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,20 +48,6 @@ bool _isOnboardingCompleted() {
   return _sharedPrefs?.getBool('pointer_onboarding_completed') ?? false;
 }
 
-/// Check if animations are enabled from stored settings
-bool _areAnimationsEnabled() {
-  final settingsJson = _sharedPrefs?.getString('pointer_settings');
-  if (settingsJson == null) return true; // default
-  try {
-    final map = Map<String, dynamic>.from(
-      const JsonDecoder().convert(settingsJson) as Map,
-    );
-    return map['animationsEnabled'] as bool? ?? true;
-  } catch (_) {
-    return true;
-  }
-}
-
 GoRouter _createRouter() {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -74,14 +58,11 @@ GoRouter _createRouter() {
       final isOnboarding = location == '/onboarding';
       final onboardingCompleted = _isOnboardingCompleted();
 
-      // Splash: show once per cold start, skip if animations disabled
+      // Splash: show once per cold start (always, regardless of animation settings)
       if (!_hasShownSplash && !isSplash && !isOnboarding) {
-        if (_areAnimationsEnabled()) {
-          _hasShownSplash = true;
-          final dest = onboardingCompleted ? '/' : '/onboarding';
-          return '/splash?dest=${Uri.encodeComponent(dest)}';
-        }
-        _hasShownSplash = true; // mark shown even if skipped
+        _hasShownSplash = true;
+        final dest = onboardingCompleted ? '/' : '/onboarding';
+        return '/splash?dest=${Uri.encodeComponent(dest)}';
       }
 
       // Don't redirect away from splash (it self-navigates)

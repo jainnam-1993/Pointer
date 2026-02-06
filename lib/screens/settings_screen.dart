@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import 'package:app_settings/app_settings.dart';
+import 'dart:io' show Platform;
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
@@ -137,6 +137,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     }
   }
 
+  /// Opens the app-specific settings page on iOS/Android.
+  /// On iOS, uses the app-settings: URL scheme which reliably opens the app's
+  /// own settings page (with Notifications toggle) across iOS versions.
+  /// Falls back to generic settings if the scheme isn't supported.
+  Future<void> _openAppNotificationSettings() async {
+    if (Platform.isIOS) {
+      // app-settings: is the documented URL scheme for app-specific settings on iOS.
+      // This opens the app's page in Settings where Notifications is listed.
+      final uri = Uri.parse('app-settings:');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } else {
+      // Android: open app notification channel settings
+      final uri = Uri.parse('package:com.dailypointer');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      }
+    }
+  }
+
   Future<void> _showPermissionDeniedDialog() async {
     if (!mounted) return;
 
@@ -146,7 +167,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         title: 'Permission Required',
         content: Text(
           'Notification permission is required to receive daily pointings. '
-          'Please enable notifications in your device settings.',
+          'Tap Open Settings, then enable Notifications.',
           style: TextStyle(
             color: context.colors.textSecondary,
             fontSize: 14,
@@ -161,7 +182,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              AppSettings.openAppSettings(type: AppSettingsType.notification);
+              _openAppNotificationSettings();
             },
             child: Text('Open Settings', style: TextStyle(color: context.colors.accent)),
           ),
@@ -261,7 +282,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 // Add permission banner when disabled (show if premium OR free access mode)
                 if ((kFreeAccessEnabled || subscription.isPremium) && !_permissionGranted)
                   _NotificationPermissionBanner(
-                    onOpenSettings: () => AppSettings.openAppSettings(type: AppSettingsType.notification),
+                    onOpenSettings: () => _openAppNotificationSettings(),
                   ),
                 GlassCard(
                   padding: EdgeInsets.zero,

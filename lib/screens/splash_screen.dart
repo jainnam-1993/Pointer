@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
-
-import '../providers/settings_providers.dart';
 
 /// Full-screen branded video splash screen.
 ///
 /// Plays a theme-aware nonduality animation (dark/light variant)
 /// then auto-advances to the next screen. Tap anywhere to skip.
-/// Respects reduceMotion and animationsEnabled settings.
-class SplashScreen extends ConsumerStatefulWidget {
+/// Respects system reduce-motion accessibility setting.
+class SplashScreen extends StatefulWidget {
   /// Where to navigate after splash completes.
   final String destination;
 
   const SplashScreen({super.key, required this.destination});
 
   @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   VideoPlayerController? _controller;
   bool _navigated = false;
   double _opacity = 1.0;
