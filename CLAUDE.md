@@ -23,33 +23,37 @@ bundle exec fastlane android internal/production
 ```
 lib/
 ├── main.dart                  # Entry point, graceful service initialization (Firebase→RevenueCat [skipped if kFreeAccessEnabled]→notifications with try-catch), notificationServiceProvider override for single initialized instance, teaching repository initialization, ambient sound guard, notification callbacks, widget theme sync
-├── router.dart                # GoRouter singleton with SharedPreferences-based redirects
+├── router.dart                # GoRouter singleton with SharedPreferences-based redirects, /splash route with cold-start-only video
 ├── theme/app_theme.dart       # PointerColors (dark/light/highContrast/oled), AppThemeMode
 ├── providers/                 # Riverpod state management
 │   ├── core_providers.dart    # SharedPreferences, storage, notifications
-│   ├── settings_providers.dart # Zen mode, OLED, accessibility, theme, auto-advance
+│   ├── settings_providers.dart # Zen mode, OLED, accessibility, theme, auto-advance, animationsEnabled
 │   ├── content_providers.dart # Pointings, favorites, affinity, teaching filters
 │   ├── subscription_providers.dart # RevenueCat, freemium, auth callbacks
+│   ├── donation_providers.dart # Tip jar via in-app purchases (consumable products)
 │   └── auth_providers.dart    # Firebase auth state
 ├── screens/                   # Main UI screens
 │   ├── main_shell.dart        # Bottom nav shell with swipe gestures, FloatingParticles, responsive nav bar (3-tier breakpoints), GlobalKey conflict prevention
-│   ├── home_screen.dart       # Daily pointing with auto-advance timer
+│   ├── home_screen.dart       # Daily pointing with auto-advance timer, source citations
 │   ├── inquiry_player_screen.dart # Guided inquiry with timed phases
 │   ├── library_screen.dart    # Browse articles/quotes with filters (all/articles/quotes/saved), browse modes, ContentFilter integration
-│   ├── settings_screen.dart   # Settings, account, developer options
+│   ├── settings_screen.dart   # Settings, animation toggle, donation in About, developer options
+│   ├── splash_screen.dart     # Video splash (theme-aware nonduality animation, cold-start only)
 │   └── paywall_screen.dart    # Premium paywall with restore purchases (prompts sign-in for cross-device sync)
 ├── widgets/                   # Reusable components
 │   ├── glass_card.dart        # GlassCard/GlassButton (intensity levels)
-│   ├── animated_gradient.dart # Background gradient animation
+│   ├── animated_gradient.dart # Background gradient animation (adaptive fps: 60/45/30 by device tier, RepaintBoundary isolated)
 │   ├── teacher_sheet.dart     # Teacher bio modal
 │   ├── sign_in_sheet.dart     # Google/Apple Sign-In modal
-│   └── share_templates/share_card.dart # Shareable card templates
+│   ├── donation_button.dart   # Expandable tip jar (2x2 grid: Tea/Cushion/Incense/Retreat)
+│   └── share_templates/share_card.dart # Shareable card templates (with source citations)
 ├── services/                  # Business logic
 │   ├── storage_service.dart   # SharedPreferences wrapper
 │   ├── notification_service.dart # Scheduling with presets, time windows
 │   ├── workmanager_service.dart # Background notifications
 │   ├── widget_service.dart    # Home widget data updates
 │   ├── revenue_cat_service.dart # RevenueCat integration
+│   ├── donation_service.dart  # Tip jar via in_app_purchase (4 consumable tiers)
 │   ├── auth_service.dart      # Firebase Google/Apple Sign-In
 │   ├── share_service.dart     # Share card generation
 │   ├── tts_service.dart       # AWS Polly TTS (DISABLED)
@@ -62,7 +66,7 @@ lib/
     ├── pointings.dart         # Curated pointings
     ├── articles.dart          # Curated articles with topicTags/moodTags
     ├── teaching.dart          # TopicTags/MoodTags constants, TeachingType enum
-    ├── teachers.dart          # Teacher database (9 teachers)
+    ├── teachers.dart          # Teacher database (22 teachers)
     └── teachings/             # Extended teaching content
         ├── papaji.dart        # Papaji's teachings
         └── adyashanti.dart    # Adyashanti's teachings
@@ -98,7 +102,7 @@ fastlane/                      # Play Store deployment
 ## Tech Stack
 
 **Framework**: Flutter 3.x + Dart 3.10, GoRouter 14.x, Riverpod 2.5
-**Key Deps**: Firebase Auth (Google/Apple Sign-In), RevenueCat (IAP), flutter_local_notifications + workmanager, just_audio, share_plus, screenshot
+**Key Deps**: Firebase Auth (Google/Apple Sign-In), RevenueCat (IAP), in_app_purchase (tip jar), flutter_local_notifications + workmanager, just_audio, share_plus, screenshot
 **Testing**: flutter_test + mocktail, Maestro (E2E)
 **Design**: "Ethereal Liquid Glass" - 4 PointerColors themes, iOS Control Center glassmorphism. See `/DESIGN_SYSTEM.md`.
 **Principles**: Prefer Flutter packages over native code. Never commit signing files. Always use `context.colors` for theme access.
@@ -106,9 +110,10 @@ fastlane/                      # Play Store deployment
 ## Key Patterns
 
 ### Providers
-- **Settings** (`settings_providers.dart`): User prefs (zen mode, OLED, accessibility, theme, auto-advance 60s default). SettingsNotifier with copyWith updates
+- **Settings** (`settings_providers.dart`): User prefs (zen mode, OLED, accessibility, theme, auto-advance 60s default, animationsEnabled). SettingsNotifier with copyWith updates. `reduceMotionOverrideProvider` derived from `animationsEnabled` (false → reduce motion ON, true → follow system). `backgroundShimmerActiveProvider` controls GlassCard shimmer
 - **Content** (`content_providers.dart`): Round-robin pointing navigation (persisted shuffled order), favorites, affinity tracking, teaching filters
 - **Subscription** (`subscription_providers.dart`): RevenueCat integration, freemium v2 (unlimited quotes, premium for library/notifications/widget), Firebase auth callbacks for cross-platform sync. **⚠️ kFreeAccessEnabled = TRUE** - enables free access mode for App Store release without IAP (RevenueCat disabled). Set to false when ready to enable monetization
+- **Donation** (`donation_providers.dart`): Tip jar via in_app_purchase (consumable products). DonationState with isAvailable, isLoading, products, error, lastResult. DonationNotifier manages purchase flow
 - **Auth** (`auth_providers.dart`): Firebase auth state (Google/Apple Sign-In), AuthActionNotifier for UI loading/error states
 
 ### Services
@@ -121,7 +126,7 @@ fastlane/                      # Play Store deployment
 ### Data Models
 - **Pointing**: id, content, instruction, tradition (Advaita/Zen/Direct Path/Contemporary/Original), context (morning/midday/evening/stress/general), teacher, source
 - **Article** (`models/article.dart` + `data/articles.dart`): id, title, subtitle, content (markdown), excerpt, tradition, teacher, categories (ArticleCategory enum), readingTimeMinutes, isPremium, topicTags (Set<String> from TopicTags constants), moodTags (Set<String> from MoodTags constants). Helper methods: hasCategory(), isBy(), hasTopic(), hasMood()
-- **Teacher** (`models/teacher.dart` + `data/teachers.dart`): 9 teachers across traditions. getTeacher(name), getPointingsByTeacher(name)
+- **Teacher** (`models/teacher.dart` + `data/teachers.dart`): 22 teachers across traditions (expanded from teachings-db). getTeacher(name), getPointingsByTeacher(name)
 
 ## Testing
 
@@ -171,9 +176,9 @@ fastlane/                      # Play Store deployment
 
 **Theme** (`app_theme.dart`): PointerColors (4 variants), access via `context.colors.{property}` | GlassCard/Button (intensity levels, high contrast) | AnimatedGradient | HapticFeedback (light/medium/heavy)
 
-**Providers** (`providers/`): Settings (zen, OLED, accessibility, theme, auto-advance) | Content (round-robin persisted order, favorites, affinity, teaching filters) | Subscription (RevenueCat, freemium v2, **⚠️ kFreeAccessEnabled=TRUE** - free access mode for App Store release) | Auth (Firebase, Google/Apple Sign-In, RevenueCat callbacks)
+**Providers** (`providers/`): Settings (zen, OLED, accessibility, theme, auto-advance) | Content (round-robin persisted order, favorites, affinity, teaching filters) | Subscription (RevenueCat, freemium v2, **⚠️ kFreeAccessEnabled=TRUE** - free access mode for App Store release) | Donation (tip jar, in_app_purchase consumables, DonationState) | Auth (Firebase, Google/Apple Sign-In, RevenueCat callbacks)
 
-**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience) | WorkManager (**TEMP DISABLED** for iOS 26 beta crash diagnosis; normally: background notifications surviving termination; iOS uses UIApplication.backgroundFetchIntervalMinimum in AppDelegate, Flutter plugin auto-registers BGTaskScheduler handlers) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard) | Auth (Apple Sign-In silent failures: catch ALL SignInWithAppleAuthorizationException, return null instead of rethrowing to avoid error messages on simulator/devices without Apple ID)
+**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience) | WorkManager (**TEMP DISABLED** for iOS 26 beta crash diagnosis; normally: background notifications surviving termination; iOS uses UIApplication.backgroundFetchIntervalMinimum in AppDelegate, Flutter plugin auto-registers BGTaskScheduler handlers) | DonationService (tip jar, DonationProductIds, isAvailable/loadProducts/purchaseDonation/completePurchase, graceful degradation) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard) | Auth (Apple Sign-In silent failures: catch ALL SignInWithAppleAuthorizationException, return null instead of rethrowing to avoid error messages on simulator/devices without Apple ID)
 
 **Android Widget** (`*.kt`): PointerWidgetProvider (zero-config AdapterViewFlipper, prev/next, auto-rotation, theme sync) | PointerWidgetService (RemoteViewsFactory) | Widget glassmorphism cards (multi-layer, matches app themes)
 
@@ -181,13 +186,15 @@ fastlane/                      # Play Store deployment
 
 **Widgets**: TeacherSheet/SignInSheet (modals, DraggableScrollableSheet) | NotificationPreview (matches BigTextStyleInformation) | Share Card Templates (minimal/gradient/tradition)
 
-**Data**: Article (topicTags/moodTags, hasTopic/hasMood, ArticleCategory, isPremium) | TopicTags/MoodTags constants (18 topics, 8 moods) | Teacher (9 teachers, getTeacher/getPointingsByTeacher)
+**Data**: Article (topicTags/moodTags, hasTopic/hasMood, ArticleCategory, isPremium) | TopicTags/MoodTags constants (18 topics, 8 moods) | Teacher (22 teachers, getTeacher/getPointingsByTeacher) | Pointing.source (populated from teachings-db, rendered on home + share cards) | 2,434 pointings, 166 articles
 
-**Navigation**: GoRouter (singleton pattern with _appRouter/_getOrCreateRouter() to prevent GlobalKey conflicts, use ref.read not ref.watch for router to prevent MaterialApp.router rebuilds, SharedPreferences direct access via setRouterSharedPreferences() for redirects, tab-specific navigator keys, route transitions: FadeThrough/SharedAxis/Calm, redirect function for onboarding logic) | MainShell (don't wrap navigationShell in AnimatedSwitcher/KeyedSubtree - has internal GlobalKeys that conflict when widget tree changes; 8px top margin + 16px bottom margin for content separation and visible gap, navbar's rounded corners provide visual separation) | Round-Robin (persisted shuffled order, wrap-around)
+**Navigation**: GoRouter (singleton pattern with _appRouter/_getOrCreateRouter() to prevent GlobalKey conflicts, use ref.read not ref.watch for router to prevent MaterialApp.router rebuilds, SharedPreferences direct access via setRouterSharedPreferences() for redirects, tab-specific navigator keys, route transitions: FadeThrough/SharedAxis/Calm, redirect function for onboarding logic, /splash route with ?dest= param and in-memory _hasShownSplash flag for cold-start-only video) | MainShell (don't wrap navigationShell in AnimatedSwitcher/KeyedSubtree - has internal GlobalKeys that conflict when widget tree changes; 8px top margin + 16px bottom margin for content separation and visible gap, navbar's rounded corners provide visual separation) | Round-Robin (persisted shuffled order, wrap-around)
 
 **Testing**: Animation handling (pump(Duration), disableAnimations flag) | Subscription mocking (_TestSubscriptionNotifier) | Screen sizes (iPhone 14 Pro Max, iPad Pro) | Golden helpers (setupGoldenTests, pumpForGolden) | Accessibility (VoiceOver semantics, screen reader hints)
 
-**Special**: Auto-Advance Timer (60s default, smart pausing) | Responsive Layout (aspect ratio <1.3 for foldables) | Notification Callbacks (global container, @pragma entry-point) | Graceful Service Init (Firebase/RevenueCat/notifications wrapped in try-catch with fallback modes, non-fatal failures) | NotificationService Provider Override (single initialized instance via container override prevents uninitialized FlutterLocalNotificationsPlugin on iOS) | Ambient Sound Guard (_globalAmbientSoundPlayed flag prevents duplicate plays on cold start)
+**Performance**: AnimatedGradient adaptive frame rate (_DeviceTier: high 60fps/mid 45fps/low 30fps based on screen height + DPR), RepaintBoundary isolation on FloatingParticles/shimmer/GlassCard, particle count scales with tier (6/3/2), consolidated animation controllers (12→3 via Tween composition). `animationsEnabled` toggle persisted in AppSettings, bridges to reduceMotionOverrideProvider
+
+**Special**: Auto-Advance Timer (60s default, smart pausing) | Responsive Layout (aspect ratio <1.3 for foldables) | Notification Callbacks (global container, @pragma entry-point) | Graceful Service Init (Firebase/RevenueCat/notifications wrapped in try-catch with fallback modes, non-fatal failures) | NotificationService Provider Override (single initialized instance via container override prevents uninitialized FlutterLocalNotificationsPlugin on iOS) | Ambient Sound Guard (_globalAmbientSoundPlayed flag prevents duplicate plays on cold start) | Video Splash Screen (3.5s trimmed nonduality animation, theme-aware black/white, skips if reduceMotion or animationsEnabled=false)
 
 **Anti-Patterns**: ❌ New files vs extending | ❌ Hardcode colors | ❌ Skip tests | ❌ Commit without build verification
 
