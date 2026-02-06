@@ -139,7 +139,7 @@ void main() {
 
       // Verify it uses dark theme colors (very dark gray/black tones)
       expect(gradient.colors.isNotEmpty, true);
-      expect(gradient.colors.first.value, lessThan(0xFF202020),
+      expect(gradient.colors.first.toARGB32(), lessThan(0xFF202020),
           reason: 'Dark theme gradient should use very dark colors');
     });
 
@@ -177,7 +177,7 @@ void main() {
 
       // Verify it uses light theme colors (lavender/soft tones)
       expect(gradient.colors.isNotEmpty, true);
-      expect(gradient.colors.first.value, greaterThan(0xFFE0E0E0),
+      expect(gradient.colors.first.toARGB32(), greaterThan(0xFFE0E0E0),
           reason: 'Light theme gradient should use light colors');
     });
   });

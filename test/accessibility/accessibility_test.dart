@@ -1,6 +1,10 @@
 // Accessibility unit tests for Pointer app
 // Verifies Semantics widgets are properly configured
 
+// ignore_for_file: deprecated_member_use
+// Note: hasFlag is deprecated but flagsCollection.contains() doesn't work in Flutter 3.38+
+// See: https://github.com/flutter/flutter/issues - awaiting proper replacement API
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

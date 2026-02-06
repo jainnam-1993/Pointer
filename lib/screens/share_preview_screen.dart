@@ -261,7 +261,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             scrollDirection: Axis.horizontal,
             itemCount: ShareTemplate.values.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               final template = ShareTemplate.values[index];
               final isSelected = template == selected;
@@ -320,7 +320,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             scrollDirection: Axis.horizontal,
             itemCount: ShareFormat.values.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               final format = ShareFormat.values[index];
               final isSelected = format == selected;
@@ -380,7 +380,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       );
 
       final imageBytes = await shareService.captureWidget(card);
-      if (imageBytes != null) {
+      if (imageBytes != null && mounted) {
         // Get screen bounds for iPad popover positioning
         final box = context.findRenderObject() as RenderBox?;
         final sharePositionOrigin = box != null

@@ -16,7 +16,7 @@ enum AppThemeMode {
 }
 
 /// Custom colors theme extension for Pointer app
-/// Access via: Theme.of(context).extension<PointerColors>()!
+/// Access via: `Theme.of(context).extension&lt;PointerColors&gt;()!`
 @immutable
 class PointerColors extends ThemeExtension<PointerColors> {
   // Core theme colors

@@ -197,7 +197,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
-    _announcePointingContent(context, newPointing);
+    if (mounted) _announcePointingContent(context, newPointing);
     WidgetService.updateWidget(newPointing);
 
     // Record in history
@@ -230,7 +230,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
-    _announcePointingContent(context, newPointing);
+    if (mounted) _announcePointingContent(context, newPointing);
     WidgetService.updateWidget(newPointing);
 
     // Restart timer for the new pointing (gives full 60s with new content)

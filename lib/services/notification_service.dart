@@ -228,7 +228,7 @@ class _NotificationStorageKeys {
   static const notificationTimes = 'pointer_notification_times'; // Legacy
   static const notificationSchedule = 'pointer_notification_schedule';
   static const pointingsCache = 'pointer_notification_pointings_cache';
-  static const recentNotificationIds = 'pointer_recent_notification_ids';
+  // Note: recentNotificationIds key reserved for future duplicate prevention
 }
 
 /// Service for managing local notifications with non-urgent styling.
@@ -672,10 +672,10 @@ class NotificationService {
     final pending = await getPendingNotifications();
     debugPrint('[NotificationService] ===== PENDING NOTIFICATIONS =====');
     debugPrint('[NotificationService] Total pending: ${pending.length}');
-    print('[NotificationService] Mode: inexactAllowWhileIdle (no exact alarm permission needed)');
+    debugPrint('[NotificationService] Mode: inexactAllowWhileIdle (no exact alarm permission needed)');
     for (final notification in pending) {
       debugPrint('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
-      print('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
+      debugPrint('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
       debugPrint('[NotificationService]   Payload: ${notification.payload}');
     }
     debugPrint('[NotificationService] ================================');

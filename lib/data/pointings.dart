@@ -174,7 +174,7 @@ const pointings = <Pointing>[
   // === DIRECT PATH ===
   Pointing(
     id: 'dir-1',
-    content: "Notice: you are already aware. You didn\'t have to do anything to become aware.",
+    content: "Notice: you are already aware. You didn't have to do anything to become aware.",
     tradition: Tradition.direct,
     contexts: [PointingContext.morning, PointingContext.general],
   ),
@@ -252,13 +252,13 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'org-2',
-    content: "The deadline is real. The one who\'s stressed about it—can you find them?",
+    content: "The deadline is real. The one who's stressed about it—can you find them?",
     tradition: Tradition.original,
     contexts: [PointingContext.stress],
   ),
   Pointing(
     id: 'org-3',
-    content: "Notice: you didn\'t start being aware. Awareness was here before the first thought.",
+    content: "Notice: you didn't start being aware. Awareness was here before the first thought.",
     tradition: Tradition.original,
     contexts: [PointingContext.morning],
   ),
@@ -278,19 +278,19 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'org-6',
-    content: "Rest doesn\'t come from stopping. Notice what has never been disturbed.",
+    content: "Rest doesn't come from stopping. Notice what has never been disturbed.",
     tradition: Tradition.original,
     contexts: [PointingContext.evening],
   ),
   Pointing(
     id: 'org-7',
-    content: "Before reading this, notice: you\'re already aware.",
+    content: "Before reading this, notice: you're already aware.",
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
   Pointing(
     id: 'org-8',
-    content: "You're scrolling for something. What if it\'s already here?",
+    content: "You're scrolling for something. What if it's already here?",
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.stress],
   ),
@@ -459,7 +459,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-111',
-    content: "Being aware or awareness itself is always present. It doesn\'t suddenly begin when it is noticed.",
+    content: "Being aware or awareness itself is always present. It doesn't suddenly begin when it is noticed.",
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
@@ -547,7 +547,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-105',
-    content: "There is no such thing as an absolutely True thought. This doesn\'t mean that some thoughts are not truer than others.",
+    content: "There is no such thing as an absolutely True thought. This doesn't mean that some thoughts are not truer than others.",
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',

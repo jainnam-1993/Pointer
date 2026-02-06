@@ -78,7 +78,7 @@ void main() {
       test('has solid card background (no transparency)', () {
         final cardBg = PointerColors.highContrast.cardBackground;
         // Card background should be solid (alpha = 255)
-        expect(cardBg.alpha, 255);
+        expect((cardBg.a * 255).round(), 255);
       });
     });
 
