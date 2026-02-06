@@ -14,6 +14,7 @@ import '../services/workmanager_service.dart';
 import '../services/ambient_sound_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/donation_button.dart';
 import '../widgets/glass_card.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -455,6 +456,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     ],
                   ),
                 ),
+                const SizedBox(height: 12),
+                const DonationButton(),
 
                 // Developer section (hidden until 7 taps on version)
                 if (_showDeveloperOptions) ...[

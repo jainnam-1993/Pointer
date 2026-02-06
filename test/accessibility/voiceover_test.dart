@@ -13,6 +13,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:pointer/providers/donation_providers.dart';
+import 'package:pointer/services/donation_service.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/services/storage_service.dart';
@@ -20,6 +23,27 @@ import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/widgets/glass_card.dart';
+
+class _MockDonationService extends DonationService {
+  @override
+  Future<bool> isAvailable() async => false;
+  @override
+  Future<List<ProductDetails>> loadProducts() async => [];
+  @override
+  Stream<List<PurchaseDetails>> get purchaseUpdates => const Stream.empty();
+  @override
+  void dispose() {}
+}
+
+class _TestDonationNotifier extends DonationNotifier {
+  _TestDonationNotifier(DonationService service) : super(service);
+  @override
+  Future<void> initialize() async {
+    state = const DonationState(isAvailable: false, isLoading: false);
+  }
+}
+
+final _mockDonationService = _MockDonationService();
 
 /// Creates a test app with providers configured
 Widget createTestApp({
@@ -37,6 +61,10 @@ Widget createTestApp({
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
+      donationServiceProvider.overrideWithValue(_mockDonationService),
+      donationProvider.overrideWith(
+        (ref) => _TestDonationNotifier(_mockDonationService),
+      ),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final storage = ref.watch(storageServiceProvider);
@@ -238,6 +266,10 @@ void main() {
             storageServiceProvider
                 .overrideWith((ref) => StorageService(prefs)),
             highContrastProvider.overrideWith((ref) => false),
+            donationServiceProvider.overrideWithValue(_mockDonationService),
+            donationProvider.overrideWith(
+              (ref) => _TestDonationNotifier(_mockDonationService),
+            ),
           ],
           child: MaterialApp(
             theme: AppTheme.dark,

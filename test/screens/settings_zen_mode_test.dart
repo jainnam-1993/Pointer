@@ -4,9 +4,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:pointer/providers/donation_providers.dart';
+import 'package:pointer/services/donation_service.dart';
 import 'package:pointer/theme/app_theme.dart';
 
 late SharedPreferences prefs;
+
+/// Mock donation service that does nothing (no real IAP calls)
+class _MockDonationService extends DonationService {
+  @override
+  Future<bool> isAvailable() async => false;
+
+  @override
+  Future<List<ProductDetails>> loadProducts() async => [];
+
+  @override
+  Stream<List<PurchaseDetails>> get purchaseUpdates => const Stream.empty();
+
+  @override
+  void dispose() {}
+}
+
+/// Test notifier that skips real initialization
+class _TestDonationNotifier extends DonationNotifier {
+  _TestDonationNotifier(DonationService service) : super(service);
+
+  @override
+  Future<void> initialize() async {
+    // Return inactive state so DonationButton renders SizedBox.shrink()
+    state = const DonationState(isAvailable: false, isLoading: false);
+  }
+}
+
+final _mockDonationService = _MockDonationService();
 
 Widget wrapWithProviderScope(Widget child, {bool initialZenMode = false}) {
   return ProviderScope(
@@ -16,6 +47,10 @@ Widget wrapWithProviderScope(Widget child, {bool initialZenMode = false}) {
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       zenModeProvider.overrideWith((ref) => initialZenMode),
+      donationServiceProvider.overrideWithValue(_mockDonationService),
+      donationProvider.overrideWith(
+        (ref) => _TestDonationNotifier(_mockDonationService),
+      ),
     ],
     child: child,
   );
