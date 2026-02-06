@@ -15,10 +15,6 @@ class Pointing {
   final List<PointingContext> contexts;
   final String? teacher;
   final String? source;
-  final String? commentary;
-  final String? audioUrl;
-  final String? videoUrl;
-  final String? sourceUrl;
 
   const Pointing({
     required this.id,
@@ -28,10 +24,6 @@ class Pointing {
     required this.contexts,
     this.teacher,
     this.source,
-    this.commentary,
-    this.audioUrl,
-    this.videoUrl,
-    this.sourceUrl,
   });
 }
 
@@ -93,7 +85,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-3',
@@ -103,8 +94,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    audioUrl: 'asset:///assets/audio/ramana_who_am_i.mp3',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-4',
@@ -114,7 +103,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-5',
@@ -124,7 +112,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
     source: 'I Am That',
-    audioUrl: 'asset:///assets/audio/nisargadatta_world_in_you.mp3',
   ),
   Pointing(
     id: 'adv-6',
@@ -134,7 +121,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
 
   // === ZEN ===
@@ -192,7 +178,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
     source: 'The Nature of Consciousness',
-    audioUrl: 'asset:///assets/audio/spira_what_is_looking.mp3',
   ),
   Pointing(
     id: 'dir-3',
@@ -235,7 +220,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Eckhart Tolle',
     source: 'The Power of Now',
-    audioUrl: 'asset:///assets/audio/tolle_present_moment.mp3',
   ),
   Pointing(
     id: 'con-3',
@@ -245,7 +229,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Pema Chödrön',
     source: 'When Things Fall Apart',
-    audioUrl: 'asset:///assets/audio/pema_sky_weather.mp3',
   ),
 
   // === ORIGINAL ===
@@ -728,7 +711,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-122',
@@ -756,7 +738,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-125',
@@ -766,7 +747,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-126',
@@ -776,7 +756,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-127',
@@ -822,7 +801,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-132',
@@ -850,7 +828,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-135',
@@ -860,7 +837,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-136',
@@ -870,7 +846,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-137',
@@ -916,7 +891,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-142',
@@ -944,7 +918,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-145',
@@ -954,7 +927,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-146',
@@ -964,7 +936,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-147',
@@ -1010,7 +981,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-152',
@@ -1038,7 +1008,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-155',
@@ -1048,7 +1017,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-156',
@@ -1058,7 +1026,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-157',
@@ -1104,7 +1071,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-162',
@@ -1132,7 +1098,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-165',
@@ -1142,7 +1107,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-166',
@@ -1152,7 +1116,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-167',
@@ -1198,7 +1161,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-172',
@@ -1226,7 +1188,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-175',
@@ -1236,7 +1197,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-176',
@@ -1246,7 +1206,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-177',
@@ -1292,7 +1251,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-182',
@@ -1320,7 +1278,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-185',
@@ -1330,7 +1287,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-186',
@@ -1340,7 +1296,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-187',
@@ -1386,7 +1341,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-192',
@@ -1414,7 +1368,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-195',
@@ -1424,7 +1377,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-196',
@@ -1434,7 +1386,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-197',
@@ -1480,7 +1431,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-202',
@@ -1508,7 +1458,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-205',
@@ -1518,7 +1467,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-206',
@@ -1528,7 +1476,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-207',
@@ -1574,7 +1521,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-212',
@@ -1602,7 +1548,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-215',
@@ -1612,7 +1557,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-216',
@@ -1622,7 +1566,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-217',
@@ -1668,7 +1611,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-222',
@@ -1696,7 +1638,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-225',
@@ -1706,7 +1647,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-226',
@@ -1716,7 +1656,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-227',
@@ -1762,7 +1701,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-232',
@@ -1790,7 +1728,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-235',
@@ -1800,7 +1737,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-236',
@@ -1810,7 +1746,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-237',
@@ -1856,7 +1791,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-242',
@@ -1884,7 +1818,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-245',
@@ -1894,7 +1827,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-246',
@@ -1904,7 +1836,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-247',
@@ -1950,7 +1881,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-252',
@@ -1978,7 +1908,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-255',
@@ -1988,7 +1917,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-256',
@@ -1998,7 +1926,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-257',
@@ -2044,7 +1971,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-262',
@@ -2072,7 +1998,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-265',
@@ -2082,7 +2007,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-266',
@@ -2092,7 +2016,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-267',
@@ -2138,7 +2061,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-272',
@@ -2166,7 +2088,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-275',
@@ -2176,7 +2097,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-276',
@@ -2186,7 +2106,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-277',
@@ -2232,7 +2151,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-282',
@@ -2260,7 +2178,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-285',
@@ -2270,7 +2187,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-286',
@@ -2280,7 +2196,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-287',
@@ -2326,7 +2241,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-292',
@@ -2354,7 +2268,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-295',
@@ -2364,7 +2277,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-296',
@@ -2374,7 +2286,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-297',
@@ -2420,7 +2331,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-302',
@@ -2448,7 +2358,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-305',
@@ -2458,7 +2367,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-306',
@@ -2468,7 +2376,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-307',
@@ -2514,7 +2421,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-312',
@@ -2542,7 +2448,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-315',
@@ -2552,7 +2457,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-316',
@@ -2562,7 +2466,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-317',
@@ -2608,7 +2511,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-322',
@@ -2636,7 +2538,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-325',
@@ -2646,7 +2547,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-326',
@@ -2656,7 +2556,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-327',
@@ -2702,7 +2601,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-332',
@@ -2730,7 +2628,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-335',
@@ -2740,7 +2637,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-336',
@@ -2750,7 +2646,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-337',
@@ -2796,7 +2691,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-342',
@@ -2824,7 +2718,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-345',
@@ -2834,7 +2727,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-346',
@@ -2844,7 +2736,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-347',
@@ -2890,7 +2781,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-352',
@@ -2918,7 +2808,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-355',
@@ -2928,7 +2817,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-356',
@@ -2938,7 +2826,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-357',
@@ -2984,7 +2871,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-362',
@@ -3012,7 +2898,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-365',
@@ -3022,7 +2907,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-366',
@@ -3032,7 +2916,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-367',
@@ -3078,7 +2961,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-372',
@@ -3106,7 +2988,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-375',
@@ -3116,7 +2997,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-376',
@@ -3126,7 +3006,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-377',
@@ -3172,7 +3051,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-382',
@@ -3200,7 +3078,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-385',
@@ -3210,7 +3087,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-386',
@@ -3220,7 +3096,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-387',
@@ -3266,7 +3141,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-392',
@@ -3294,7 +3168,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-395',
@@ -3304,7 +3177,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-396',
@@ -3314,7 +3186,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-397',
@@ -3360,7 +3231,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-402',
@@ -3388,7 +3258,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-405',
@@ -3398,7 +3267,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-406',
@@ -3408,7 +3276,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-407',
@@ -3454,7 +3321,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-412',
@@ -3482,7 +3348,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-415',
@@ -3492,7 +3357,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-416',
@@ -3502,7 +3366,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-417',
@@ -3548,7 +3411,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-422',
@@ -3576,7 +3438,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-425',
@@ -3586,7 +3447,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-426',
@@ -3596,7 +3456,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-427',
@@ -3642,7 +3501,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-432',
@@ -3670,7 +3528,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-435',
@@ -3680,7 +3537,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-436',
@@ -3690,7 +3546,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-437',
@@ -3736,7 +3591,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-442',
@@ -3764,7 +3618,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-445',
@@ -3774,7 +3627,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-446',
@@ -3784,7 +3636,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-447',
@@ -3830,7 +3681,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-452',
@@ -3858,7 +3708,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-455',
@@ -3868,7 +3717,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-456',
@@ -3878,7 +3726,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-457',
@@ -3924,7 +3771,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-462',
@@ -3952,7 +3798,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-465',
@@ -3962,7 +3807,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-466',
@@ -3972,7 +3816,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-467',
@@ -4018,7 +3861,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-472',
@@ -4046,7 +3888,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-475',
@@ -4056,7 +3897,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-476',
@@ -4066,7 +3906,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-477',
@@ -4112,7 +3951,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-482',
@@ -4140,7 +3978,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-485',
@@ -4150,7 +3987,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-486',
@@ -4160,7 +3996,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-487',
@@ -4206,7 +4041,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-492',
@@ -4234,7 +4068,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-495',
@@ -4244,7 +4077,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-496',
@@ -4254,7 +4086,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-497',
@@ -4302,7 +4133,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-109',
@@ -4312,7 +4142,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-110',
@@ -4322,7 +4151,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-111',
@@ -4332,7 +4160,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-112',
@@ -4342,7 +4169,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-113',
@@ -4352,7 +4178,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-114',
@@ -4362,7 +4187,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-115',
@@ -4372,7 +4196,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-116',
@@ -4382,7 +4205,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-117',
@@ -4392,7 +4214,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-118',
@@ -4402,7 +4223,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-119',
@@ -4412,7 +4232,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-120',
@@ -4422,7 +4241,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-121',
@@ -4432,7 +4250,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-122',
@@ -4442,7 +4259,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-123',
@@ -4452,7 +4268,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-124',
@@ -4462,7 +4277,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-125',
@@ -4472,7 +4286,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-126',
@@ -4482,7 +4295,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-127',
@@ -4492,7 +4304,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-128',
@@ -4502,7 +4313,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-129',
@@ -4512,7 +4322,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-130',
@@ -4522,7 +4331,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-131',
@@ -4532,7 +4340,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-132',
@@ -4542,7 +4349,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-133',
@@ -4552,7 +4358,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-134',
@@ -4562,7 +4367,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-135',
@@ -4572,7 +4376,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-136',
@@ -4582,7 +4385,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-137',
@@ -4592,7 +4394,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-138',
@@ -4602,7 +4403,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-139',
@@ -4612,7 +4412,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-140',
@@ -4622,7 +4421,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-141',
@@ -4632,7 +4430,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-142',
@@ -4642,7 +4439,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-143',
@@ -4652,7 +4448,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-144',
@@ -4662,7 +4457,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-145',
@@ -4672,7 +4466,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-146',
@@ -4682,7 +4475,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-147',
@@ -4692,7 +4484,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-148',
@@ -4702,7 +4493,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-149',
@@ -4712,7 +4502,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-150',
@@ -4722,7 +4511,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-151',
@@ -4732,7 +4520,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-152',
@@ -4742,7 +4529,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-153',
@@ -4752,7 +4538,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-154',
@@ -4762,7 +4547,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-155',
@@ -4772,7 +4556,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-156',
@@ -4782,7 +4565,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-157',
@@ -4792,7 +4574,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-158',
@@ -4802,7 +4583,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-159',
@@ -4812,7 +4592,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-160',
@@ -4822,7 +4601,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-161',
@@ -4832,7 +4610,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-162',
@@ -4842,7 +4619,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-163',
@@ -4852,7 +4628,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-164',
@@ -4862,7 +4637,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-165',
@@ -4872,7 +4646,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-166',
@@ -4882,7 +4655,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-167',
@@ -5792,7 +5564,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-268',
@@ -5802,7 +5573,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-269',
@@ -5812,7 +5582,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-270',
@@ -5822,7 +5591,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-271',
@@ -5832,7 +5600,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-272',
@@ -5842,7 +5609,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-273',
@@ -5852,7 +5618,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-274',
@@ -5862,7 +5627,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-275',
@@ -5872,7 +5636,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-276',
@@ -5882,7 +5645,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-277',
@@ -5892,7 +5654,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-278',
@@ -5902,7 +5663,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-279',
@@ -5912,7 +5672,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-280',
@@ -5922,7 +5681,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-281',
@@ -5932,7 +5690,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-282',
@@ -5942,7 +5699,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-283',
@@ -5952,7 +5708,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-284',
@@ -5962,7 +5717,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-285',
@@ -5972,7 +5726,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-286',
@@ -5982,7 +5735,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-287',
@@ -5992,7 +5744,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-288',
@@ -6002,7 +5753,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-289',
@@ -6012,7 +5762,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-290',
@@ -6022,7 +5771,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-291',
@@ -6032,7 +5780,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-292',
@@ -6042,7 +5789,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-293',
@@ -6052,7 +5798,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-294',
@@ -6062,7 +5807,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-295',
@@ -6072,7 +5816,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-296',
@@ -6082,7 +5825,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-297',
@@ -6092,7 +5834,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-298',
@@ -6102,7 +5843,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-299',
@@ -6112,7 +5852,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-300',
@@ -6122,7 +5861,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-301',
@@ -6132,7 +5870,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-302',
@@ -6142,7 +5879,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-303',
@@ -6152,7 +5888,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-304',
@@ -6162,7 +5897,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-305',
@@ -6172,7 +5906,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-306',
@@ -6182,7 +5915,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-307',
@@ -6192,7 +5924,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-308',
@@ -6202,7 +5933,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-309',
@@ -6212,7 +5942,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-310',
@@ -6222,7 +5951,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-311',
@@ -6232,7 +5960,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-312',
@@ -6242,7 +5969,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-313',
@@ -6252,7 +5978,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-314',
@@ -6262,7 +5987,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-315',
@@ -6272,7 +5996,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-316',
@@ -6282,7 +6005,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-317',
@@ -6292,7 +6014,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-318',
@@ -6302,7 +6023,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-319',
@@ -6312,7 +6032,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-320',
@@ -6322,7 +6041,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-321',
@@ -6332,7 +6050,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-322',
@@ -6342,7 +6059,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-323',
@@ -6352,7 +6068,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-324',
@@ -6362,7 +6077,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-325',
@@ -6372,7 +6086,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-326',
@@ -6382,7 +6095,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-327',
@@ -6392,7 +6104,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-328',
@@ -6402,7 +6113,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-329',
@@ -6412,7 +6122,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-330',
@@ -6422,7 +6131,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-331',
@@ -6432,7 +6140,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-332',
@@ -6442,7 +6149,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-333',
@@ -6452,7 +6158,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-334',
@@ -6462,7 +6167,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-335',
@@ -6472,7 +6176,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-336',
@@ -6482,7 +6185,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-337',
@@ -6492,7 +6194,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-338',
@@ -6502,7 +6203,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-339',
@@ -6512,7 +6212,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-340',
@@ -6522,7 +6221,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-341',
@@ -6532,7 +6230,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-342',
@@ -6542,7 +6239,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-343',
@@ -6552,7 +6248,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-344',
@@ -7426,7 +7121,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-441',
@@ -7436,7 +7130,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-442',
@@ -7446,7 +7139,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-443',
@@ -7456,7 +7148,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-444',
@@ -7466,7 +7157,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-445',
@@ -7476,7 +7166,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-446',
@@ -7486,7 +7175,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-447',
@@ -7496,7 +7184,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-448',
@@ -7506,7 +7193,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-449',
@@ -7516,7 +7202,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-450',
@@ -7526,7 +7211,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-451',
@@ -7536,7 +7220,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-452',
@@ -7546,7 +7229,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-453',
@@ -7556,7 +7238,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-454',
@@ -7566,7 +7247,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-455',
@@ -7576,7 +7256,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-456',
@@ -7586,7 +7265,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-457',
@@ -7596,7 +7274,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-458',
@@ -7606,7 +7283,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-459',
@@ -7616,7 +7292,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-460',
@@ -7626,7 +7301,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-461',
@@ -7636,7 +7310,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-462',
@@ -7646,7 +7319,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-463',
@@ -7656,7 +7328,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-464',
@@ -7666,7 +7337,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-465',
@@ -7676,7 +7346,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-466',
@@ -7686,7 +7355,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-467',
@@ -7696,7 +7364,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-468',
@@ -7706,7 +7373,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-469',
@@ -7716,7 +7382,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-470',
@@ -7726,7 +7391,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-471',
@@ -7736,7 +7400,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-472',
@@ -7746,7 +7409,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-473',
@@ -7756,7 +7418,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-474',
@@ -7766,7 +7427,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-475',
@@ -7776,7 +7436,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-476',
@@ -7786,7 +7445,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-477',
@@ -7796,7 +7454,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-478',
@@ -7806,7 +7463,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-479',
@@ -7816,7 +7472,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Joshu',
     source: 'The Recorded Sayings of Zen Master Joshu',
-    sourceUrl: 'https://terebess.hu/zen/joshu.html',
   ),
   Pointing(
     id: 'zen-480',
@@ -7826,7 +7481,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-481',
@@ -7836,7 +7490,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-482',
@@ -7846,7 +7499,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-483',
@@ -7856,7 +7508,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-484',
@@ -7866,7 +7517,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-485',
@@ -7876,7 +7526,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-486',
@@ -7886,7 +7535,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-487',
@@ -7896,7 +7544,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-488',
@@ -7906,7 +7553,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-489',
@@ -7916,7 +7562,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-490',
@@ -7926,7 +7571,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-491',
@@ -7936,7 +7580,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-492',
@@ -7946,7 +7589,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-493',
@@ -7956,7 +7598,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-494',
@@ -7966,7 +7607,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-495',
@@ -7976,7 +7616,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-496',
@@ -7986,7 +7625,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-497',
@@ -7996,7 +7634,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-498',
@@ -8006,7 +7643,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-499',
@@ -8016,7 +7652,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-500',
@@ -8026,7 +7661,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-501',
@@ -8036,7 +7670,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-502',
@@ -8046,7 +7679,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-503',
@@ -8056,7 +7688,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-504',
@@ -8066,7 +7697,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-505',
@@ -8076,7 +7706,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-506',
@@ -8086,7 +7715,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
   Pointing(
     id: 'zen-507',
@@ -8096,7 +7724,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Linji',
     source: 'The Record of Linji',
-    sourceUrl: 'https://terebess.hu/zen/linji.html',
   ),
 
   // --- contemporary_quotes.dart ---
@@ -15920,7 +15547,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-122',
@@ -15930,7 +15556,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-123',
@@ -15940,7 +15565,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-124',
@@ -15950,7 +15574,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-125',
@@ -15960,7 +15583,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-126',
@@ -15970,7 +15592,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-127',
@@ -15980,7 +15601,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-128',
@@ -15990,7 +15610,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-129',
@@ -16000,7 +15619,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.evening],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-130',
@@ -16010,7 +15628,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-131',
@@ -16380,7 +15997,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-172',
@@ -16390,7 +16006,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-173',
@@ -16400,7 +16015,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-174',
@@ -16410,7 +16024,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-175',
@@ -16420,7 +16033,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-176',
@@ -16430,7 +16042,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-177',
@@ -16440,7 +16051,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-178',
@@ -16450,7 +16060,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-179',
@@ -16460,7 +16069,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-180',
@@ -16470,7 +16078,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-181',
@@ -16480,7 +16087,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-182',
@@ -16490,7 +16096,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-183',
@@ -16500,7 +16105,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-184',
@@ -16510,7 +16114,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-185',
@@ -16520,7 +16123,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-186',
@@ -16530,7 +16132,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-187',
@@ -16540,7 +16141,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-188',
@@ -16550,7 +16150,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-189',
@@ -16560,7 +16159,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-190',
@@ -16570,7 +16168,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-191',
@@ -16580,7 +16177,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-192',
@@ -16671,7 +16267,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-202',
@@ -16681,7 +16276,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-203',
@@ -16691,7 +16285,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-204',
@@ -16836,7 +16429,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-220',
@@ -16855,7 +16447,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-106',
@@ -16873,7 +16464,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-108',
@@ -16883,7 +16473,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-109',
@@ -16893,7 +16482,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-110',
@@ -16903,7 +16491,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-111',
@@ -16913,7 +16500,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-112',
@@ -16923,7 +16509,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-113',
@@ -16933,7 +16518,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-114',
@@ -16943,7 +16527,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-115',
@@ -16953,7 +16536,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-116',
@@ -16963,7 +16545,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-117',
@@ -16973,7 +16554,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-118',
@@ -16983,7 +16563,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-119',
@@ -16993,7 +16572,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-120',
@@ -17003,7 +16581,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-121',
@@ -17013,7 +16590,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-122',
@@ -17023,7 +16599,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-123',
@@ -17049,7 +16624,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-126',
@@ -17059,7 +16633,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-127',
@@ -17069,7 +16642,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-128',
@@ -17079,7 +16651,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-129',
@@ -17089,7 +16660,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-130',
@@ -17099,7 +16669,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-131',
@@ -17109,7 +16678,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-132',
@@ -17119,7 +16687,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-133',
@@ -17129,7 +16696,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-134',
@@ -17139,7 +16705,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-135',
@@ -17149,7 +16714,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-136',
@@ -17159,7 +16723,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-137',
@@ -17169,7 +16732,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-138',
@@ -17179,7 +16741,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-139',
@@ -17189,7 +16750,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-140',
@@ -17538,7 +17098,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-180',
@@ -17548,7 +17107,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-181',
@@ -17558,7 +17116,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-182',
@@ -17672,7 +17229,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-196',
@@ -17682,7 +17238,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-197',
@@ -17692,7 +17247,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-198',
@@ -17702,7 +17256,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-199',
@@ -17712,7 +17265,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-    sourceUrl: 'https://terebess.hu/zen/huangbo.html',
   ),
   Pointing(
     id: 'zen-200',
@@ -17722,7 +17274,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-201',
@@ -17732,7 +17283,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Bodhidharma',
     source: 'The Zen Teaching of Bodhidharma',
-    sourceUrl: 'https://terebess.hu/zen/bodhidharma.html',
   ),
   Pointing(
     id: 'zen-202',
@@ -17742,7 +17292,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-203',
@@ -17752,7 +17301,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'zen-204',
@@ -17762,7 +17310,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Bankei',
     source: 'The Unborn',
-    sourceUrl: 'https://terebess.hu/zen/bankei.html',
   ),
   Pointing(
     id: 'dir-122',
@@ -18195,7 +17742,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-170',
@@ -18205,7 +17751,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-171',
@@ -18215,7 +17760,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-172',
@@ -18225,7 +17769,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-173',
@@ -18235,7 +17778,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-174',
@@ -18245,7 +17787,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-175',
@@ -18255,7 +17796,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-176',
@@ -18265,7 +17805,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-177',
@@ -18275,7 +17814,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-178',
@@ -18285,7 +17823,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-179',
@@ -18448,7 +17985,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-197',
@@ -18458,7 +17994,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-198',
@@ -18468,7 +18003,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-199',
@@ -18595,7 +18129,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-213',
@@ -18605,7 +18138,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-214',
@@ -18615,7 +18147,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-215',
@@ -18625,7 +18156,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
     source: 'Atma Darshan',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'dir-216',
@@ -20292,7 +19822,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-507',
@@ -20301,7 +19830,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-508',
@@ -20310,7 +19838,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-509',
@@ -20343,7 +19870,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-513',
@@ -20392,7 +19918,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-519',
@@ -20401,7 +19926,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-520',
@@ -20410,7 +19934,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
   Pointing(
     id: 'adv-521',
@@ -20419,7 +19942,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-522',
@@ -20428,7 +19950,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-523',
@@ -20437,7 +19958,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Ashtavakra',
     source: 'Ashtavakra Gita',
-    sourceUrl: 'https://holybooks.com/ashtavakra-gita/',
   ),
   Pointing(
     id: 'adv-524',
@@ -20446,7 +19966,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Adi Shankara',
     source: 'Vivekachudamani',
-    sourceUrl: 'https://www.sriramanamaharshi.org/downloadbooks/',
   ),
   Pointing(
     id: 'adv-525',
@@ -20455,7 +19974,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
     source: 'Avadhuta Gita',
-    sourceUrl: 'https://www.advaita.it/library/avadhuta_gita.htm',
   ),
 
   // --- Zen: Classical Koans & Wisdom ---
@@ -20466,7 +19984,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Sengcan',
     source: 'Xinxin Ming',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Miscellaneous/Hsin_Hsin_Ming.html',
   ),
   Pointing(
     id: 'zen-511',
@@ -20488,7 +20005,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Sengcan',
     source: 'Xinxin Ming',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Miscellaneous/Hsin_Hsin_Ming.html',
   ),
   Pointing(
     id: 'zen-514',
@@ -20497,7 +20013,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Sengcan',
     source: 'Xinxin Ming',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Miscellaneous/Hsin_Hsin_Ming.html',
   ),
   Pointing(
     id: 'zen-515',
@@ -20512,7 +20027,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Dōgen',
     source: 'Shōbōgenzō',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-517',
@@ -20521,7 +20035,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dōgen',
     source: 'Shōbōgenzō',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Dogen_Teachings/Shobogenzo_Contents.html',
   ),
   Pointing(
     id: 'zen-518',
@@ -20536,7 +20049,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Sengcan',
     source: 'Xinxin Ming',
-    sourceUrl: 'https://www.thezensite.com/ZenTeachings/Miscellaneous/Hsin_Hsin_Ming.html',
   ),
   Pointing(
     id: 'zen-520',

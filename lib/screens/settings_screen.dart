@@ -231,18 +231,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     return '$displayHour$period';
   }
 
-  // TTS Configuration dialog disabled - feature temporarily removed
-  // Future<void> _showTTSConfigDialog() async { ... }
-
   @override
   Widget build(BuildContext context) {
-    final subscription = ref.watch(subscriptionProvider);
     final isDark = context.isDarkMode;
     final colors = context.colors;
     final textColorMuted = colors.textMuted;
     final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : colors.textMuted;
     final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : colors.textMuted;
-    final goldColor = colors.gold;
     final switchThumbColor = isDark ? Colors.white : colors.primary;
     final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
     final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
@@ -269,61 +264,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 ),
                 const SizedBox(height: 24),
 
-                // Notifications section (Premium feature when IAP enabled)
+                // Notifications section
                 _SectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
-                // Premium badge for notifications - hidden when kFreeAccessEnabled
-                if (!kFreeAccessEnabled && !subscription.isPremium)
-                  _PremiumFeatureBanner(
-                    feature: 'Notifications',
-                    onUpgrade: () => context.push('/paywall'),
-                  ),
-                // Add permission banner when disabled (show if premium OR free access mode)
-                if ((kFreeAccessEnabled || subscription.isPremium) && !_permissionGranted)
+                if (!_permissionGranted)
                   _NotificationPermissionBanner(
                     onOpenSettings: () => _openAppNotificationSettings(),
                   ),
                 GlassCard(
                   padding: EdgeInsets.zero,
-                  borderColor: !kFreeAccessEnabled && !subscription.isPremium ? goldColor.withValues(alpha: 0.3) : null,
                   child: Column(
                     children: [
                       _SettingsRow(
                         title: 'Daily Pointings',
-                        // When kFreeAccessEnabled, show normal subtitle (not "Premium feature")
-                        subtitle: !kFreeAccessEnabled && !subscription.isPremium
-                            ? 'Premium feature'
-                            : _permissionGranted
-                                ? _getNotificationCountSummary()
-                                : 'Permission required',
-                        // Hide lock icon when kFreeAccessEnabled
-                        leading: !kFreeAccessEnabled && !subscription.isPremium
-                            ? Icon(Icons.lock_outline, color: goldColor, size: 18)
-                            : null,
+                        subtitle: _permissionGranted
+                            ? _getNotificationCountSummary()
+                            : 'Permission required',
                         trailing: Switch(
-                          // Allow toggle when kFreeAccessEnabled OR premium
-                          value: (kFreeAccessEnabled || subscription.isPremium) && _notificationsEnabled && _permissionGranted,
-                          onChanged: (kFreeAccessEnabled || subscription.isPremium)
-                              ? (value) async {
-                                  HapticFeedback.mediumImpact();
+                          value: _notificationsEnabled && _permissionGranted,
+                          onChanged: (value) async {
+                            HapticFeedback.mediumImpact();
 
-                                  if (value && !_permissionGranted) {
-                                    final notificationService = ref.read(notificationServiceProvider);
-                                    final granted = await notificationService.requestPermissions();
-                                    if (!granted) {
-                                      _showPermissionDeniedDialog();
-                                      return;
-                                    }
-                                    setState(() => _permissionGranted = true);
-                                  }
+                            if (value && !_permissionGranted) {
+                              final notificationService = ref.read(notificationServiceProvider);
+                              final granted = await notificationService.requestPermissions();
+                              if (!granted) {
+                                _showPermissionDeniedDialog();
+                                return;
+                              }
+                              setState(() => _permissionGranted = true);
+                            }
 
-                                  setState(() => _notificationsEnabled = value);
-                                  await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
-                                }
-                              : (_) {
-                                  HapticFeedback.mediumImpact();
-                                  context.push('/paywall');
-                                },
+                            setState(() => _notificationsEnabled = value);
+                            await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
+                          },
                           activeThumbColor: switchThumbColor,
                           activeTrackColor: switchActiveTrackColor,
                           inactiveThumbColor: isDark ? Colors.white : Colors.grey,
@@ -336,17 +310,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Hide lock icon when kFreeAccessEnabled
-                            if (!kFreeAccessEnabled && !subscription.isPremium)
-                              Icon(Icons.lock_outline, color: goldColor, size: 14)
-                            else
-                              Text(
-                                _getScheduleTimeSummary(),
-                                style: TextStyle(
-                                  color: textColorMuted,
-                                  fontSize: 14,
-                                ),
+                            Text(
+                              _getScheduleTimeSummary(),
+                              style: TextStyle(
+                                color: textColorMuted,
+                                fontSize: 14,
                               ),
+                            ),
                             const SizedBox(width: 8),
                             Icon(
                               Icons.chevron_right,
@@ -355,13 +325,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             ),
                           ],
                         ),
-                        // Allow access when kFreeAccessEnabled OR premium
-                        onTap: (kFreeAccessEnabled || subscription.isPremium)
-                            ? _showNotificationTimesSheet
-                            : () {
-                                HapticFeedback.mediumImpact();
-                                context.push('/paywall');
-                              },
+                        onTap: _showNotificationTimesSheet,
                       ),
                     ],
                   ),
@@ -534,13 +498,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             }
                           },
                         ),
-                        // TTS Configuration disabled - feature temporarily removed
-                        // const _Divider(),
-                        // _SettingsRow(
-                        //   title: 'TTS Configuration',
-                        //   subtitle: 'Article audio access',
-                        //   ...
-                        // ),
                       ],
                     ),
                   ),
@@ -585,14 +542,12 @@ class _SectionHeader extends StatelessWidget {
 class _SettingsRow extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
 
   const _SettingsRow({
     required this.title,
     this.subtitle,
-    this.leading,
     this.trailing,
     this.onTap,
   });
@@ -607,10 +562,6 @@ class _SettingsRow extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 8),
-          ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -737,73 +688,6 @@ class _NotificationPermissionBanner extends StatelessWidget {
   }
 }
 
-/// Banner showing a premium feature is locked
-class _PremiumFeatureBanner extends StatelessWidget {
-  final String feature;
-  final VoidCallback onUpgrade;
-
-  const _PremiumFeatureBanner({
-    required this.feature,
-    required this.onUpgrade,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final goldColor = colors.gold;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: goldColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: goldColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.auto_awesome, color: goldColor, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$feature is a Premium Feature',
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Upgrade to unlock $feature and more',
-                  style: TextStyle(
-                    color: colors.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          TextButton(
-            onPressed: onUpgrade,
-            child: Text(
-              'Upgrade',
-              style: TextStyle(
-                color: goldColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _AppearanceSelector extends ConsumerWidget {
   const _AppearanceSelector();

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
@@ -13,7 +12,6 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
-// import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
 
@@ -131,7 +129,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
-    final subscription = ref.watch(subscriptionProvider);
     final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
@@ -235,18 +232,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     ),
                 ] else ...[
 
-                // Full Library is PREMIUM - show upgrade prompt for free users
-                // When kFreeAccessEnabled, skip this gate (all content free)
-                if (!kFreeAccessEnabled && !subscription.isPremium) ...[
-                  SliverFillRemaining(
-                    child: _LibraryPremiumUpgrade(
-                      // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                      onUpgrade: () => context.push('/paywall'),
-                    ),
-                  ),
-                ] else ...[
-                // PREMIUM CONTENT BELOW
-
                 // Featured Section
                 SliverToBoxAdapter(
                   child: Padding(
@@ -348,9 +333,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ),
 
                 // Dynamic browse list based on mode
-                _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
-                ], // end premium content
-                ], // end else
+                _buildBrowseList(colors, bottomPadding, _contentFilter),
+                ], // end library content
               ],
             ),
           ),
@@ -369,24 +353,23 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   void _openCategory(BuildContext context, ArticleCategory category,
-      CategoryInfo info, bool isPremium) {
+      CategoryInfo info) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CategoryArticlesScreen(
           category: category,
           info: info,
-          isPremium: isPremium,
         ),
       ),
     );
   }
 
   /// Build dynamic browse list based on current mode
-  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+  Widget _buildBrowseList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
-        return _buildTopicsList(colors, bottomPadding, isPremium, contentFilter);
+        return _buildTopicsList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.teachers:
         return _buildTeachersList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.lineages:
@@ -399,7 +382,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
   }
 
-  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+  Widget _buildTopicsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // When Quotes filter is selected, show TopicTags from teachings
     if (contentFilter == ContentFilter.quotes) {
       final topicCounts = TeachingRepository.topicCounts;
@@ -453,7 +436,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   category: category,
                   info: info,
                   articleCount: articleCount,
-                  onTap: () => _openCategory(context, category, info, isPremium),
+                  onTap: () => _openCategory(context, category, info),
                 ),
               ),
             );
@@ -1278,13 +1261,11 @@ class _CategoryCard extends StatelessWidget {
 class CategoryArticlesScreen extends StatelessWidget {
   final ArticleCategory category;
   final CategoryInfo info;
-  final bool isPremium;
 
   const CategoryArticlesScreen({
     super.key,
     required this.category,
     required this.info,
-    required this.isPremium,
   });
 
   @override
@@ -1349,7 +1330,6 @@ class CategoryArticlesScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final article = categoryArticles[index];
-                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                         return StaggeredFadeIn(
                           index: index,
@@ -1357,27 +1337,15 @@ class CategoryArticlesScreen extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: _ArticleListItem(
                               article: article,
-                              isLocked: isLocked,
                               onTap: () {
                                 HapticFeedback.lightImpact();
-                                if (isLocked) {
-                                  // Show paywall
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Premium article - unlock with subscription'),
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: colors.glassBackground,
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ArticleReaderScreen(article: article),
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -1398,12 +1366,10 @@ class CategoryArticlesScreen extends StatelessWidget {
 
 class _ArticleListItem extends StatelessWidget {
   final Article article;
-  final bool isLocked;
   final VoidCallback onTap;
 
   const _ArticleListItem({
     required this.article,
-    required this.isLocked,
     required this.onTap,
   });
 
@@ -1414,13 +1380,11 @@ class _ArticleListItem extends StatelessWidget {
     return Semantics(
       button: true,
       label:
-          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${isLocked ? ". Premium content, locked" : ""}',
+          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         onTap: onTap,
-        child: Opacity(
-          opacity: isLocked ? 0.6 : 1,
-          child: Row(
+        child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Content
@@ -1428,30 +1392,15 @@ class _ArticleListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            article.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        // Hide premium badge when kFreeAccessEnabled (all content free)
-                        if (!kFreeAccessEnabled && article.isPremium) ...[
-                          const SizedBox(width: 8),
-                          Icon(
-                            isLocked ? Icons.lock_outline : Icons.auto_awesome,
-                            size: 14,
-                            color: colors.accent,
-                          ),
-                        ],
-                      ],
+                    Text(
+                      article.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textPrimary,
+                      ),
                     ),
                     if (article.subtitle != null) ...[
                       const SizedBox(height: 4),
@@ -1509,7 +1458,6 @@ class _ArticleListItem extends StatelessWidget {
               ),
             ],
           ),
-        ),
       ),
     );
   }
@@ -1547,8 +1495,6 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
     final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
 
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final subscriptionState = ref.watch(subscriptionProvider);
-    final isPremium = subscriptionState.tier == SubscriptionTier.premium;
 
     return Scaffold(
       body: Stack(
@@ -1617,7 +1563,6 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                           return StaggeredFadeIn(
                             index: index,
@@ -1625,28 +1570,16 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                               padding: const EdgeInsets.only(bottom: 12),
                               child: _ArticleListItem(
                                 article: article,
-                                isLocked: isLocked,
                                 onTap: () {
                                   HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    // Show paywall
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ArticleReaderScreen(
+                                        article: article,
                                       ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => ArticleReaderScreen(
-                                          article: article,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                    ),
+                                  );
                                 },
                               ),
                             ),
@@ -1749,7 +1682,6 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
     final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
     final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
 
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -1831,32 +1763,20 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
                           return StaggeredFadeIn(
                             index: index,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: _ArticleListItem(
                                 article: article,
-                                isLocked: isLocked,
                                 onTap: () {
                                   HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArticleReaderScreen(article: article),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
@@ -1948,7 +1868,6 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
     final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
     final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
 
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -2022,7 +1941,6 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                           return StaggeredFadeIn(
                             index: index,
@@ -2030,26 +1948,14 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: _ArticleListItem(
                                 article: article,
-                                isLocked: isLocked,
                                 onTap: () {
                                   HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    // Show paywall
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArticleReaderScreen(article: article),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
@@ -2136,7 +2042,6 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
     final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
     final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
 
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -2210,32 +2115,20 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
                           return StaggeredFadeIn(
                             index: index,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: _ArticleListItem(
                                 article: article,
-                                isLocked: isLocked,
                                 onTap: () {
                                   HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArticleReaderScreen(article: article),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
@@ -2475,130 +2368,3 @@ class _TeachingCard extends StatelessWidget {
 }
 
 /// Premium upgrade prompt for free users trying to access the library
-class _LibraryPremiumUpgrade extends StatelessWidget {
-  final VoidCallback onUpgrade;
-
-  const _LibraryPremiumUpgrade({required this.onUpgrade});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final goldColor = colors.gold;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Premium icon
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: goldColor.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.auto_awesome,
-                size: 40,
-                color: goldColor,
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Title
-            Text(
-              'Unlock the Full Library',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: colors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-
-            // Description
-            Text(
-              'Browse teachings by topic, teacher, lineage, and mood. '
-              'Access featured articles and extended commentary.',
-              style: TextStyle(
-                fontSize: 15,
-                color: colors.textSecondary,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-
-            // What's included
-            Container(
-              margin: const EdgeInsets.only(top: 16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colors.glassBackground,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: colors.glassBorder),
-              ),
-              child: Column(
-                children: [
-                  _FeatureRow(icon: Icons.library_books, text: 'Full article library'),
-                  const SizedBox(height: 12),
-                  _FeatureRow(icon: Icons.notifications_active, text: 'Daily notifications'),
-                  const SizedBox(height: 12),
-                  _FeatureRow(icon: Icons.widgets, text: 'Home screen widget'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Upgrade button
-            GlassButton(
-              label: 'Upgrade to Premium',
-              onPressed: onUpgrade,
-              icon: Icon(Icons.auto_awesome, color: goldColor, size: 18),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Free features reminder
-            Text(
-              'Free forever: Unlimited pointings & saved favorites',
-              style: TextStyle(
-                fontSize: 12,
-                color: colors.textMuted,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FeatureRow extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _FeatureRow({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: colors.gold),
-        const SizedBox(width: 12),
-        Text(
-          text,
-          style: TextStyle(
-            color: colors.textPrimary,
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-}

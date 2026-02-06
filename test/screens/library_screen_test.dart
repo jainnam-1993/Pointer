@@ -209,7 +209,6 @@ void main() {
             home: CategoryArticlesScreen(
               category: category,
               info: info,
-              isPremium: false,
             ),
           ),
         ),
@@ -231,7 +230,6 @@ void main() {
             home: CategoryArticlesScreen(
               category: category,
               info: info,
-              isPremium: false,
             ),
           ),
         ),
@@ -241,9 +239,9 @@ void main() {
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     });
 
-    // Note: With kFreeAccessEnabled=true, premium gating is disabled.
-    // These tests verify that no lock icons appear (all content is free).
-    testWidgets('does not show lock icons when kFreeAccessEnabled is true',
+    // All content is free - no premium gating.
+    // These tests verify that no lock icons appear.
+    testWidgets('does not show lock icons (all content free)',
         (tester) async {
       // Use modernPointers category which has premium articles in data
       const category = ArticleCategory.modernPointers;
@@ -256,18 +254,17 @@ void main() {
             home: CategoryArticlesScreen(
               category: category,
               info: info,
-              isPremium: false, // Even non-premium users see no locks
             ),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      // With kFreeAccessEnabled=true, no lock icons should appear
+      // No lock icons should appear (all content is free)
       expect(find.byIcon(Icons.lock_outline), findsNothing);
     });
 
-    testWidgets('premium users also see no lock icons', (tester) async {
+    testWidgets('no lock icons appear for any category', (tester) async {
       const category = ArticleCategory.natureOfAwareness;
       final info = categoryInfoMap[category]!;
 
@@ -278,14 +275,13 @@ void main() {
             home: CategoryArticlesScreen(
               category: category,
               info: info,
-              isPremium: true,
             ),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      // Premium users should not see lock icons
+      // No lock icons should appear
       expect(find.byIcon(Icons.lock_outline), findsNothing);
     });
   });
