@@ -75,6 +75,110 @@ const teachers = <String, Teacher>{
     tradition: Tradition.original,
     tags: ['Christian mysticism', 'Unity'],
   ),
+  'Mooji': Teacher(
+    name: 'Mooji',
+    bio:
+        'Jamaican-born teacher in the lineage of Papaji and Ramana Maharshi. Known for his warm, direct invitation to recognize the Self through the simple question "Who is aware?"',
+    dates: 'born 1954',
+    tradition: Tradition.contemporary,
+    tags: ['Self-inquiry', 'Papaji lineage', 'Satsang'],
+  ),
+  'Adyashanti': Teacher(
+    name: 'Adyashanti',
+    bio:
+        'American teacher who practiced Zen for 14 years before a series of awakening experiences. Teaches "True Meditation" and uniquely emphasizes post-awakening integration.',
+    dates: 'born 1962',
+    tradition: Tradition.contemporary,
+    tags: ['Zen roots', 'True Meditation', 'Integration'],
+  ),
+  'Papaji': Teacher(
+    name: 'Papaji',
+    bio:
+        'Direct disciple of Ramana Maharshi who became the primary conduit of his teaching to the West. Famous for his radical instruction to simply stop all seeking.',
+    dates: '1910-1997',
+    tradition: Tradition.advaita,
+    tags: ['Ramana lineage', 'Direct pointing', 'Satsang'],
+  ),
+  'Byron Katie': Teacher(
+    name: 'Byron Katie',
+    bio:
+        'After a spontaneous awakening from severe depression in 1986, developed "The Work" \u2014 four questions that investigate stressful thoughts and reveal the peace beneath belief.',
+    dates: 'born 1942',
+    tradition: Tradition.contemporary,
+    tags: ['The Work', 'Self-inquiry', 'Thought investigation'],
+  ),
+  'Gangaji': Teacher(
+    name: 'Gangaji',
+    bio:
+        'Student of Papaji who carries the Ramana Maharshi lineage to the West. Known for her fierce yet tender invitation to simply stop seeking and recognize what is already free.',
+    dates: 'born 1942',
+    tradition: Tradition.contemporary,
+    tags: ['Papaji lineage', 'Stopping', 'Emotional honesty'],
+  ),
+  'Jed McKenna': Teacher(
+    name: 'Jed McKenna',
+    bio:
+        'Pseudonymous author of the "Spiritual Enlightenment" trilogy. Teaches spiritual autolysis \u2014 ruthless self-inquiry through writing \u2014 as the only process that leads to truth.',
+    dates: null,
+    tradition: Tradition.contemporary,
+    tags: ['Spiritual Autolysis', 'Truth vs. comfort', 'Pseudonymous'],
+  ),
+  'Jean Klein': Teacher(
+    name: 'Jean Klein',
+    bio:
+        'Czech-born European pioneer of non-dual teaching who uniquely integrated body awareness with Advaita and Kashmir Shaivism. Teacher of Francis Lucille.',
+    dates: '1912-1998',
+    tradition: Tradition.direct,
+    tags: ['Body awareness', 'Kashmir Shaivism', 'Direct Path'],
+  ),
+  'Annamalai Swami': Teacher(
+    name: 'Annamalai Swami',
+    bio:
+        'Served Ramana Maharshi for ten years before spending 47 years in near-total silence. Taught abiding as the pure sense "I am" as the direct path to Self-realization.',
+    dates: '1906-1995',
+    tradition: Tradition.advaita,
+    tags: ['Ramana disciple', 'I Am', 'Silence'],
+  ),
+  'Tony Parsons': Teacher(
+    name: 'Tony Parsons',
+    bio:
+        'British teacher of radical non-duality. After a spontaneous shift in 1971, communicates the uncompromising message that there is no separate self, no path, and no one to become enlightened.',
+    dates: 'born 1933',
+    tradition: Tradition.contemporary,
+    tags: ['Radical non-duality', 'No path', 'The Open Secret'],
+  ),
+  'Jeff Foster': Teacher(
+    name: 'Jeff Foster',
+    bio:
+        'British teacher who evolved beyond neo-Advaita to embrace deep acceptance that includes the full range of human experience. Bridges non-dual understanding with emotional embodiment.',
+    dates: 'born 1980',
+    tradition: Tradition.contemporary,
+    tags: ['Deep acceptance', 'Embodiment', 'Post-neo-Advaita'],
+  ),
+  'Ramesh Balsekar': Teacher(
+    name: 'Ramesh Balsekar',
+    bio:
+        'Former President of the Bank of India who became Nisargadatta Maharaj\'s translator and closest disciple. Taught that there is no individual doer \u2014 all action is the impersonal functioning of Totality.',
+    dates: '1917-2009',
+    tradition: Tradition.advaita,
+    tags: ['Nisargadatta lineage', 'No doership', 'Consciousness'],
+  ),
+  'Adi Shankara': Teacher(
+    name: 'Adi Shankara',
+    bio:
+        'Eighth-century philosopher-sage who systematized Advaita Vedanta into a rigorous philosophical framework. His teaching that Brahman alone is real transformed Indian spirituality.',
+    dates: '788-820 CE',
+    tradition: Tradition.advaita,
+    tags: ['Advaita Vedanta', 'Classical', 'Vivekachudamani'],
+  ),
+  'Dattatreya': Teacher(
+    name: 'Dattatreya',
+    bio:
+        'Legendary avadhuta sage who learned from 24 gurus drawn from nature and everyday life. The Avadhuta Gita attributed to him is among the most uncompromising non-dual texts ever composed.',
+    dates: null,
+    tradition: Tradition.advaita,
+    tags: ['Avadhuta Gita', 'Classical', '24 Gurus'],
+  ),
 };
 
 /// Get teacher by name, returns null if not found

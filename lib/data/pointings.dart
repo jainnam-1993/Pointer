@@ -90,6 +90,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-3',
@@ -98,6 +99,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
     audioUrl: 'asset:///assets/audio/ramana_who_am_i.mp3',
   ),
   Pointing(
@@ -107,6 +109,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-5',
@@ -115,6 +118,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
     audioUrl: 'asset:///assets/audio/nisargadatta_world_in_you.mp3',
   ),
   Pointing(
@@ -124,6 +128,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
 
   // === ZEN ===
@@ -163,6 +168,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.evening, PointingContext.stress],
     teacher: 'Bashō',
+    source: 'The Narrow Road to the Deep North',
   ),
 
   // === DIRECT PATH ===
@@ -179,6 +185,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
     audioUrl: 'asset:///assets/audio/spira_what_is_looking.mp3',
   ),
   Pointing(
@@ -188,6 +195,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-4',
@@ -220,6 +228,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
     audioUrl: 'asset:///assets/audio/tolle_present_moment.mp3',
   ),
   Pointing(
@@ -229,6 +238,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Pema Chödrön',
+    source: 'When Things Fall Apart',
     audioUrl: 'asset:///assets/audio/pema_sky_weather.mp3',
   ),
 
@@ -293,6 +303,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-102',
@@ -301,6 +312,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'adv-103',
@@ -309,6 +321,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'adv-104',
@@ -317,6 +330,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'adv-105',
@@ -325,6 +339,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'adv-106',
@@ -333,6 +348,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'zen-101',
@@ -341,6 +357,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'zen-102',
@@ -348,6 +365,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'zen-103',
@@ -356,6 +374,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'zen-104',
@@ -364,6 +383,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'dir-101',
@@ -372,6 +392,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'J. Krishnamurti',
+    source: 'Freedom from the Known',
   ),
   Pointing(
     id: 'dir-102',
@@ -380,6 +401,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'J. Krishnamurti',
+    source: 'Freedom from the Known',
   ),
   Pointing(
     id: 'dir-103',
@@ -388,6 +410,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'J. Krishnamurti',
+    source: 'Freedom from the Known',
   ),
   Pointing(
     id: 'dir-104',
@@ -396,6 +419,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'J. Krishnamurti',
+    source: 'Freedom from the Known',
   ),
   Pointing(
     id: 'dir-105',
@@ -404,6 +428,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'J. Krishnamurti',
+    source: 'Freedom from the Known',
   ),
   Pointing(
     id: 'dir-107',
@@ -412,6 +437,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-108',
@@ -420,6 +446,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-110',
@@ -428,6 +455,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-111',
@@ -435,6 +463,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-112',
@@ -443,6 +472,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-113',
@@ -451,6 +481,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-117',
@@ -458,6 +489,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-118',
@@ -466,6 +498,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-119',
@@ -474,6 +507,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-121',
@@ -482,6 +516,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'con-101',
@@ -490,6 +525,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-102',
@@ -498,6 +534,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-103',
@@ -506,6 +543,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-105',
@@ -513,6 +551,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-106',
@@ -521,6 +560,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-107',
@@ -529,6 +569,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'adv-107',
@@ -537,6 +578,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-108',
@@ -545,6 +587,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-109',
@@ -553,6 +596,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-110',
@@ -561,6 +605,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-111',
@@ -569,6 +614,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'con-108',
@@ -577,6 +623,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'con-109',
@@ -585,6 +632,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'con-111',
@@ -593,6 +641,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Osho',
+    source: 'The Book of Secrets',
   ),
   Pointing(
     id: 'adv-113',
@@ -600,6 +649,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-114',
@@ -607,6 +657,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-115',
@@ -615,6 +666,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-116',
@@ -623,6 +675,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-117',
@@ -630,6 +683,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-118',
@@ -638,6 +692,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-119',
@@ -645,6 +700,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-120',
@@ -652,6 +708,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
 
   // === MERGED CONTENT ===
@@ -664,6 +721,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-122',
@@ -672,6 +730,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-123',
@@ -680,6 +739,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-124',
@@ -688,6 +748,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-125',
@@ -696,6 +757,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-126',
@@ -704,6 +766,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-127',
@@ -712,6 +775,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-128',
@@ -720,6 +784,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-129',
@@ -728,6 +793,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-130',
@@ -736,6 +802,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-131',
@@ -744,6 +811,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-132',
@@ -752,6 +820,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-133',
@@ -760,6 +829,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-134',
@@ -768,6 +838,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-135',
@@ -776,6 +847,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-136',
@@ -784,6 +856,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-137',
@@ -792,6 +865,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-138',
@@ -800,6 +874,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-139',
@@ -808,6 +883,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-140',
@@ -816,6 +892,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-141',
@@ -824,6 +901,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-142',
@@ -832,6 +910,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-143',
@@ -840,6 +919,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-144',
@@ -848,6 +928,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-145',
@@ -856,6 +937,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-146',
@@ -864,6 +946,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-147',
@@ -872,6 +955,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-148',
@@ -880,6 +964,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-149',
@@ -888,6 +973,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-150',
@@ -896,6 +982,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-151',
@@ -904,6 +991,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-152',
@@ -912,6 +1000,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-153',
@@ -920,6 +1009,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-154',
@@ -928,6 +1018,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-155',
@@ -936,6 +1027,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-156',
@@ -944,6 +1036,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-157',
@@ -952,6 +1045,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-158',
@@ -960,6 +1054,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-159',
@@ -968,6 +1063,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-160',
@@ -976,6 +1072,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-161',
@@ -984,6 +1081,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-162',
@@ -992,6 +1090,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-163',
@@ -1000,6 +1099,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-164',
@@ -1008,6 +1108,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-165',
@@ -1016,6 +1117,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-166',
@@ -1024,6 +1126,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-167',
@@ -1032,6 +1135,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-168',
@@ -1040,6 +1144,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-169',
@@ -1048,6 +1153,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-170',
@@ -1056,6 +1162,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-171',
@@ -1064,6 +1171,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-172',
@@ -1072,6 +1180,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-173',
@@ -1080,6 +1189,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-174',
@@ -1088,6 +1198,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-175',
@@ -1096,6 +1207,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-176',
@@ -1104,6 +1216,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-177',
@@ -1112,6 +1225,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-178',
@@ -1120,6 +1234,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-179',
@@ -1128,6 +1243,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-180',
@@ -1136,6 +1252,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-181',
@@ -1144,6 +1261,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-182',
@@ -1152,6 +1270,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-183',
@@ -1160,6 +1279,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-184',
@@ -1168,6 +1288,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-185',
@@ -1176,6 +1297,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-186',
@@ -1184,6 +1306,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-187',
@@ -1192,6 +1315,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-188',
@@ -1200,6 +1324,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-189',
@@ -1208,6 +1333,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-190',
@@ -1216,6 +1342,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-191',
@@ -1224,6 +1351,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-192',
@@ -1232,6 +1360,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-193',
@@ -1240,6 +1369,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-194',
@@ -1248,6 +1378,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-195',
@@ -1256,6 +1387,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-196',
@@ -1264,6 +1396,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-197',
@@ -1272,6 +1405,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-198',
@@ -1280,6 +1414,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-199',
@@ -1288,6 +1423,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-200',
@@ -1296,6 +1432,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-201',
@@ -1304,6 +1441,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-202',
@@ -1312,6 +1450,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-203',
@@ -1320,6 +1459,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-204',
@@ -1328,6 +1468,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-205',
@@ -1336,6 +1477,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-206',
@@ -1344,6 +1486,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-207',
@@ -1352,6 +1495,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-208',
@@ -1360,6 +1504,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-209',
@@ -1368,6 +1513,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-210',
@@ -1376,6 +1522,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-211',
@@ -1384,6 +1531,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-212',
@@ -1392,6 +1540,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-213',
@@ -1400,6 +1549,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-214',
@@ -1408,6 +1558,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-215',
@@ -1416,6 +1567,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-216',
@@ -1424,6 +1576,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-217',
@@ -1432,6 +1585,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-218',
@@ -1440,6 +1594,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-219',
@@ -1448,6 +1603,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-220',
@@ -1456,6 +1612,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-221',
@@ -1464,6 +1621,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-222',
@@ -1472,6 +1630,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-223',
@@ -1480,6 +1639,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-224',
@@ -1488,6 +1648,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-225',
@@ -1496,6 +1657,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-226',
@@ -1504,6 +1666,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-227',
@@ -1512,6 +1675,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-228',
@@ -1520,6 +1684,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-229',
@@ -1528,6 +1693,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-230',
@@ -1536,6 +1702,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-231',
@@ -1544,6 +1711,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-232',
@@ -1552,6 +1720,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-233',
@@ -1560,6 +1729,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-234',
@@ -1568,6 +1738,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-235',
@@ -1576,6 +1747,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-236',
@@ -1584,6 +1756,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-237',
@@ -1592,6 +1765,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-238',
@@ -1600,6 +1774,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-239',
@@ -1608,6 +1783,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-240',
@@ -1616,6 +1792,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-241',
@@ -1624,6 +1801,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-242',
@@ -1632,6 +1810,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-243',
@@ -1640,6 +1819,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-244',
@@ -1648,6 +1828,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-245',
@@ -1656,6 +1837,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-246',
@@ -1664,6 +1846,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-247',
@@ -1672,6 +1855,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-248',
@@ -1680,6 +1864,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-249',
@@ -1688,6 +1873,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-250',
@@ -1696,6 +1882,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-251',
@@ -1704,6 +1891,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-252',
@@ -1712,6 +1900,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-253',
@@ -1720,6 +1909,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-254',
@@ -1728,6 +1918,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-255',
@@ -1736,6 +1927,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-256',
@@ -1744,6 +1936,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-257',
@@ -1752,6 +1945,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-258',
@@ -1760,6 +1954,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-259',
@@ -1768,6 +1963,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-260',
@@ -1776,6 +1972,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-261',
@@ -1784,6 +1981,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-262',
@@ -1792,6 +1990,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-263',
@@ -1800,6 +1999,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-264',
@@ -1808,6 +2008,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-265',
@@ -1816,6 +2017,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-266',
@@ -1824,6 +2026,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-267',
@@ -1832,6 +2035,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-268',
@@ -1840,6 +2044,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-269',
@@ -1848,6 +2053,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-270',
@@ -1856,6 +2062,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-271',
@@ -1864,6 +2071,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-272',
@@ -1872,6 +2080,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-273',
@@ -1880,6 +2089,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-274',
@@ -1888,6 +2098,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-275',
@@ -1896,6 +2107,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-276',
@@ -1904,6 +2116,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-277',
@@ -1912,6 +2125,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-278',
@@ -1920,6 +2134,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-279',
@@ -1928,6 +2143,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-280',
@@ -1936,6 +2152,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-281',
@@ -1944,6 +2161,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-282',
@@ -1952,6 +2170,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-283',
@@ -1960,6 +2179,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-284',
@@ -1968,6 +2188,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-285',
@@ -1976,6 +2197,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-286',
@@ -1984,6 +2206,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-287',
@@ -1992,6 +2215,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-288',
@@ -2000,6 +2224,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-289',
@@ -2008,6 +2233,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-290',
@@ -2016,6 +2242,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-291',
@@ -2024,6 +2251,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-292',
@@ -2032,6 +2260,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-293',
@@ -2040,6 +2269,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-294',
@@ -2048,6 +2278,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-295',
@@ -2056,6 +2287,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-296',
@@ -2064,6 +2296,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-297',
@@ -2072,6 +2305,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-298',
@@ -2080,6 +2314,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-299',
@@ -2088,6 +2323,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-300',
@@ -2096,6 +2332,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-301',
@@ -2104,6 +2341,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-302',
@@ -2112,6 +2350,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-303',
@@ -2120,6 +2359,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-304',
@@ -2128,6 +2368,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-305',
@@ -2136,6 +2377,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-306',
@@ -2144,6 +2386,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-307',
@@ -2152,6 +2395,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-308',
@@ -2160,6 +2404,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-309',
@@ -2168,6 +2413,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-310',
@@ -2176,6 +2422,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-311',
@@ -2184,6 +2431,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-312',
@@ -2192,6 +2440,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-313',
@@ -2200,6 +2449,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-314',
@@ -2208,6 +2458,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-315',
@@ -2216,6 +2467,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-316',
@@ -2224,6 +2476,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-317',
@@ -2232,6 +2485,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-318',
@@ -2240,6 +2494,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-319',
@@ -2248,6 +2503,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-320',
@@ -2256,6 +2512,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-321',
@@ -2264,6 +2521,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-322',
@@ -2272,6 +2530,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-323',
@@ -2280,6 +2539,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-324',
@@ -2288,6 +2548,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-325',
@@ -2296,6 +2557,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-326',
@@ -2304,6 +2566,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-327',
@@ -2312,6 +2575,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-328',
@@ -2320,6 +2584,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-329',
@@ -2328,6 +2593,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-330',
@@ -2336,6 +2602,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-331',
@@ -2344,6 +2611,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-332',
@@ -2352,6 +2620,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-333',
@@ -2360,6 +2629,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-334',
@@ -2368,6 +2638,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-335',
@@ -2376,6 +2647,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-336',
@@ -2384,6 +2656,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-337',
@@ -2392,6 +2665,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-338',
@@ -2400,6 +2674,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-339',
@@ -2408,6 +2683,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-340',
@@ -2416,6 +2692,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-341',
@@ -2424,6 +2701,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-342',
@@ -2432,6 +2710,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-343',
@@ -2440,6 +2719,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-344',
@@ -2448,6 +2728,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-345',
@@ -2456,6 +2737,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-346',
@@ -2464,6 +2746,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-347',
@@ -2472,6 +2755,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-348',
@@ -2480,6 +2764,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-349',
@@ -2488,6 +2773,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-350',
@@ -2496,6 +2782,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-351',
@@ -2504,6 +2791,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-352',
@@ -2512,6 +2800,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-353',
@@ -2520,6 +2809,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-354',
@@ -2528,6 +2818,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-355',
@@ -2536,6 +2827,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-356',
@@ -2544,6 +2836,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-357',
@@ -2552,6 +2845,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-358',
@@ -2560,6 +2854,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-359',
@@ -2568,6 +2863,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-360',
@@ -2576,6 +2872,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-361',
@@ -2584,6 +2881,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-362',
@@ -2592,6 +2890,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-363',
@@ -2600,6 +2899,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-364',
@@ -2608,6 +2908,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-365',
@@ -2616,6 +2917,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-366',
@@ -2624,6 +2926,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-367',
@@ -2632,6 +2935,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-368',
@@ -2640,6 +2944,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-369',
@@ -2648,6 +2953,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-370',
@@ -2656,6 +2962,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-371',
@@ -2664,6 +2971,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-372',
@@ -2672,6 +2980,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-373',
@@ -2680,6 +2989,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-374',
@@ -2688,6 +2998,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-375',
@@ -2696,6 +3007,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-376',
@@ -2704,6 +3016,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-377',
@@ -2712,6 +3025,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-378',
@@ -2720,6 +3034,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-379',
@@ -2728,6 +3043,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-380',
@@ -2736,6 +3052,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-381',
@@ -2744,6 +3061,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-382',
@@ -2752,6 +3070,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-383',
@@ -2760,6 +3079,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-384',
@@ -2768,6 +3088,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-385',
@@ -2776,6 +3097,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-386',
@@ -2784,6 +3106,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-387',
@@ -2792,6 +3115,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-388',
@@ -2800,6 +3124,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-389',
@@ -2808,6 +3133,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-390',
@@ -2816,6 +3142,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-391',
@@ -2824,6 +3151,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-392',
@@ -2832,6 +3160,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-393',
@@ -2840,6 +3169,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-394',
@@ -2848,6 +3178,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-395',
@@ -2856,6 +3187,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-396',
@@ -2864,6 +3196,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-397',
@@ -2872,6 +3205,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-398',
@@ -2880,6 +3214,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-399',
@@ -2888,6 +3223,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-400',
@@ -2896,6 +3232,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-401',
@@ -2904,6 +3241,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-402',
@@ -2912,6 +3250,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-403',
@@ -2920,6 +3259,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-404',
@@ -2928,6 +3268,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-405',
@@ -2936,6 +3277,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-406',
@@ -2944,6 +3286,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-407',
@@ -2952,6 +3295,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-408',
@@ -2960,6 +3304,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-409',
@@ -2968,6 +3313,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-410',
@@ -2976,6 +3322,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-411',
@@ -2984,6 +3331,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-412',
@@ -2992,6 +3340,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-413',
@@ -3000,6 +3349,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-414',
@@ -3008,6 +3358,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-415',
@@ -3016,6 +3367,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-416',
@@ -3024,6 +3376,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-417',
@@ -3032,6 +3385,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-418',
@@ -3040,6 +3394,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-419',
@@ -3048,6 +3403,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-420',
@@ -3056,6 +3412,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-421',
@@ -3064,6 +3421,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-422',
@@ -3072,6 +3430,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-423',
@@ -3080,6 +3439,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-424',
@@ -3088,6 +3448,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-425',
@@ -3096,6 +3457,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-426',
@@ -3104,6 +3466,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-427',
@@ -3112,6 +3475,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-428',
@@ -3120,6 +3484,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-429',
@@ -3128,6 +3493,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-430',
@@ -3136,6 +3502,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-431',
@@ -3144,6 +3511,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-432',
@@ -3152,6 +3520,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-433',
@@ -3160,6 +3529,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-434',
@@ -3168,6 +3538,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-435',
@@ -3176,6 +3547,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-436',
@@ -3184,6 +3556,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-437',
@@ -3192,6 +3565,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-438',
@@ -3200,6 +3574,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-439',
@@ -3208,6 +3583,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-440',
@@ -3216,6 +3592,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-441',
@@ -3224,6 +3601,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-442',
@@ -3232,6 +3610,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-443',
@@ -3240,6 +3619,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-444',
@@ -3248,6 +3628,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-445',
@@ -3256,6 +3637,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-446',
@@ -3264,6 +3646,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-447',
@@ -3272,6 +3655,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-448',
@@ -3280,6 +3664,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-449',
@@ -3288,6 +3673,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-450',
@@ -3296,6 +3682,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-451',
@@ -3304,6 +3691,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-452',
@@ -3312,6 +3700,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-453',
@@ -3320,6 +3709,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-454',
@@ -3328,6 +3718,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-455',
@@ -3336,6 +3727,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-456',
@@ -3344,6 +3736,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-457',
@@ -3352,6 +3745,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-458',
@@ -3360,6 +3754,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-459',
@@ -3368,6 +3763,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-460',
@@ -3376,6 +3772,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-461',
@@ -3384,6 +3781,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-462',
@@ -3392,6 +3790,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-463',
@@ -3400,6 +3799,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-464',
@@ -3408,6 +3808,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-465',
@@ -3416,6 +3817,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-466',
@@ -3424,6 +3826,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-467',
@@ -3432,6 +3835,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-468',
@@ -3440,6 +3844,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-469',
@@ -3448,6 +3853,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-470',
@@ -3456,6 +3862,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-471',
@@ -3464,6 +3871,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-472',
@@ -3472,6 +3880,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-473',
@@ -3480,6 +3889,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-474',
@@ -3488,6 +3898,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-475',
@@ -3496,6 +3907,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-476',
@@ -3504,6 +3916,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-477',
@@ -3512,6 +3925,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-478',
@@ -3520,6 +3934,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-479',
@@ -3528,6 +3943,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-480',
@@ -3536,6 +3952,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-481',
@@ -3544,6 +3961,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-482',
@@ -3552,6 +3970,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-483',
@@ -3560,6 +3979,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-484',
@@ -3568,6 +3988,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-485',
@@ -3576,6 +3997,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-486',
@@ -3584,6 +4006,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-487',
@@ -3592,6 +4015,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-488',
@@ -3600,6 +4024,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-489',
@@ -3608,6 +4033,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-490',
@@ -3616,6 +4042,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
   Pointing(
     id: 'adv-491',
@@ -3624,6 +4051,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-492',
@@ -3632,6 +4060,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-493',
@@ -3640,6 +4069,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-494',
@@ -3648,6 +4078,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
   ),
   Pointing(
     id: 'adv-495',
@@ -3656,6 +4087,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-496',
@@ -3664,6 +4096,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
   ),
   Pointing(
     id: 'adv-497',
@@ -3672,6 +4105,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Annamalai Swami',
+    source: 'Final Talks',
   ),
   Pointing(
     id: 'adv-498',
@@ -3680,6 +4114,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-499',
@@ -3688,6 +4123,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Robert Adams',
+    source: 'Silence of the Heart',
   ),
   Pointing(
     id: 'adv-520',
@@ -3696,6 +4132,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Lakshmana Swamy',
+    source: 'No Mind, I Am the Self',
   ),
 
   // --- zen_quotes.dart ---
@@ -3706,6 +4143,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-109',
@@ -3714,6 +4152,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-110',
@@ -3722,6 +4161,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-111',
@@ -3730,6 +4170,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-112',
@@ -3738,6 +4179,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-113',
@@ -3746,6 +4188,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-114',
@@ -3754,6 +4197,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-115',
@@ -3762,6 +4206,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-116',
@@ -3770,6 +4215,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-117',
@@ -3778,6 +4224,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-118',
@@ -3786,6 +4233,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-119',
@@ -3794,6 +4242,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-120',
@@ -3802,6 +4251,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-121',
@@ -3810,6 +4260,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-122',
@@ -3818,6 +4269,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-123',
@@ -3826,6 +4278,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-124',
@@ -3834,6 +4287,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-125',
@@ -3842,6 +4296,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-126',
@@ -3850,6 +4305,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-127',
@@ -3858,6 +4314,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-128',
@@ -3866,6 +4323,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-129',
@@ -3874,6 +4332,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-130',
@@ -3882,6 +4341,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-131',
@@ -3890,6 +4350,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-132',
@@ -3898,6 +4359,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-133',
@@ -3906,6 +4368,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-134',
@@ -3914,6 +4377,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-135',
@@ -3922,6 +4386,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-136',
@@ -3930,6 +4395,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-137',
@@ -3938,6 +4404,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-138',
@@ -3946,6 +4413,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-139',
@@ -3954,6 +4422,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-140',
@@ -3962,6 +4431,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-141',
@@ -3970,6 +4440,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-142',
@@ -3978,6 +4449,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-143',
@@ -3986,6 +4458,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-144',
@@ -3994,6 +4467,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-145',
@@ -4002,6 +4476,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-146',
@@ -4010,6 +4485,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-147',
@@ -4018,6 +4494,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-148',
@@ -4026,6 +4503,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-149',
@@ -4034,6 +4512,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-150',
@@ -4042,6 +4521,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-151',
@@ -4050,6 +4530,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-152',
@@ -4058,6 +4539,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-153',
@@ -4066,6 +4548,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-154',
@@ -4074,6 +4557,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-155',
@@ -4082,6 +4566,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-156',
@@ -4090,6 +4575,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-157',
@@ -4098,6 +4584,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-158',
@@ -4106,6 +4593,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-159',
@@ -4114,6 +4602,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-160',
@@ -4122,6 +4611,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-161',
@@ -4130,6 +4620,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-162',
@@ -4138,6 +4629,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-163',
@@ -4146,6 +4638,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-164',
@@ -4154,6 +4647,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-165',
@@ -4162,6 +4656,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-166',
@@ -4170,6 +4665,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-167',
@@ -4178,6 +4674,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-168',
@@ -4186,6 +4683,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-169',
@@ -4194,6 +4692,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-170',
@@ -4202,6 +4701,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-171',
@@ -4210,6 +4710,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-172',
@@ -4218,6 +4719,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-173',
@@ -4226,6 +4728,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-174',
@@ -4234,6 +4737,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-175',
@@ -4242,6 +4746,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-176',
@@ -4250,6 +4755,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-177',
@@ -4258,6 +4764,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-178',
@@ -4266,6 +4773,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-179',
@@ -4274,6 +4782,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-180',
@@ -4282,6 +4791,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-181',
@@ -4290,6 +4800,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-182',
@@ -4298,6 +4809,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-183',
@@ -4306,6 +4818,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-184',
@@ -4314,6 +4827,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-185',
@@ -4322,6 +4836,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-186',
@@ -4330,6 +4845,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-187',
@@ -4338,6 +4854,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-188',
@@ -4346,6 +4863,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-189',
@@ -4354,6 +4872,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-190',
@@ -4362,6 +4881,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-191',
@@ -4370,6 +4890,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-192',
@@ -4378,6 +4899,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-193',
@@ -4386,6 +4908,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-194',
@@ -4394,6 +4917,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-195',
@@ -4402,6 +4926,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-196',
@@ -4410,6 +4935,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-197',
@@ -4418,6 +4944,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-198',
@@ -4426,6 +4953,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-199',
@@ -4434,6 +4962,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-200',
@@ -4442,6 +4971,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-201',
@@ -4450,6 +4980,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-202',
@@ -4458,6 +4989,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-203',
@@ -4466,6 +4998,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-204',
@@ -4474,6 +5007,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-205',
@@ -4482,6 +5016,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-206',
@@ -4490,6 +5025,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-207',
@@ -4498,6 +5034,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-208',
@@ -4506,6 +5043,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-209',
@@ -4514,6 +5052,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-210',
@@ -4522,6 +5061,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-211',
@@ -4530,6 +5070,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-212',
@@ -4538,6 +5079,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-213',
@@ -4546,6 +5088,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-214',
@@ -4554,6 +5097,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-215',
@@ -4562,6 +5106,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-216',
@@ -4570,6 +5115,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-217',
@@ -4578,6 +5124,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-218',
@@ -4586,6 +5133,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-219',
@@ -4594,6 +5142,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-220',
@@ -4602,6 +5151,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-221',
@@ -4610,6 +5160,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-222',
@@ -4618,6 +5169,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-223',
@@ -4626,6 +5178,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-224',
@@ -4634,6 +5187,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-225',
@@ -4642,6 +5196,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-226',
@@ -4650,6 +5205,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-227',
@@ -4658,6 +5214,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-228',
@@ -4666,6 +5223,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-229',
@@ -4674,6 +5232,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-230',
@@ -4682,6 +5241,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-231',
@@ -4690,6 +5250,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-232',
@@ -4698,6 +5259,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-233',
@@ -4706,6 +5268,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-234',
@@ -4714,6 +5277,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-235',
@@ -4722,6 +5286,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-236',
@@ -4730,6 +5295,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-237',
@@ -4738,6 +5304,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-238',
@@ -4746,6 +5313,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-239',
@@ -4754,6 +5322,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-240',
@@ -4762,6 +5331,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-241',
@@ -4770,6 +5340,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-242',
@@ -4778,6 +5349,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-243',
@@ -4786,6 +5358,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-244',
@@ -4794,6 +5367,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-245',
@@ -4802,6 +5376,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-246',
@@ -4810,6 +5385,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-247',
@@ -4818,6 +5394,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-248',
@@ -4826,6 +5403,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-249',
@@ -4834,6 +5412,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-250',
@@ -4842,6 +5421,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-251',
@@ -4850,6 +5430,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-252',
@@ -4858,6 +5439,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-253',
@@ -4866,6 +5448,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-254',
@@ -4874,6 +5457,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-255',
@@ -4882,6 +5466,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-256',
@@ -4890,6 +5475,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-257',
@@ -4898,6 +5484,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-258',
@@ -4906,6 +5493,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-259',
@@ -4914,6 +5502,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-260',
@@ -4922,6 +5511,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-261',
@@ -4930,6 +5520,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-262',
@@ -4938,6 +5529,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-263',
@@ -4946,6 +5538,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-264',
@@ -4954,6 +5547,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-265',
@@ -4962,6 +5556,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-266',
@@ -4970,6 +5565,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-267',
@@ -4978,6 +5574,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-268',
@@ -4986,6 +5583,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-269',
@@ -4994,6 +5592,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-270',
@@ -5002,6 +5601,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-271',
@@ -5010,6 +5610,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-272',
@@ -5018,6 +5619,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-273',
@@ -5026,6 +5628,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-274',
@@ -5034,6 +5637,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-275',
@@ -5042,6 +5646,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-276',
@@ -5050,6 +5655,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-277',
@@ -5058,6 +5664,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-278',
@@ -5066,6 +5673,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-279',
@@ -5074,6 +5682,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-280',
@@ -5082,6 +5691,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-281',
@@ -5090,6 +5700,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-282',
@@ -5098,6 +5709,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-283',
@@ -5106,6 +5718,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-284',
@@ -5114,6 +5727,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-285',
@@ -5122,6 +5736,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-286',
@@ -5130,6 +5745,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-287',
@@ -5138,6 +5754,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-288',
@@ -5146,6 +5763,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-289',
@@ -5154,6 +5772,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-290',
@@ -5162,6 +5781,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-291',
@@ -5170,6 +5790,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-292',
@@ -5178,6 +5799,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-293',
@@ -5186,6 +5808,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-294',
@@ -5194,6 +5817,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-295',
@@ -5202,6 +5826,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-296',
@@ -5210,6 +5835,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-297',
@@ -5218,6 +5844,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-298',
@@ -5226,6 +5853,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-299',
@@ -5234,6 +5862,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-300',
@@ -5242,6 +5871,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-301',
@@ -5250,6 +5880,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-302',
@@ -5258,6 +5889,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-303',
@@ -5266,6 +5898,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-304',
@@ -5274,6 +5907,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-305',
@@ -5282,6 +5916,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-306',
@@ -5290,6 +5925,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-307',
@@ -5298,6 +5934,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-308',
@@ -5306,6 +5943,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-309',
@@ -5314,6 +5952,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-310',
@@ -5322,6 +5961,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-311',
@@ -5330,6 +5970,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-312',
@@ -5338,6 +5979,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-313',
@@ -5346,6 +5988,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-314',
@@ -5354,6 +5997,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-315',
@@ -5362,6 +6006,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-316',
@@ -5370,6 +6015,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-317',
@@ -5378,6 +6024,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-318',
@@ -5386,6 +6033,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-319',
@@ -5394,6 +6042,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-320',
@@ -5402,6 +6051,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-321',
@@ -5410,6 +6060,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-322',
@@ -5418,6 +6069,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-323',
@@ -5426,6 +6078,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-324',
@@ -5434,6 +6087,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-325',
@@ -5442,6 +6096,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-326',
@@ -5450,6 +6105,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-327',
@@ -5458,6 +6114,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-328',
@@ -5466,6 +6123,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-329',
@@ -5474,6 +6132,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-330',
@@ -5482,6 +6141,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-331',
@@ -5490,6 +6150,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-332',
@@ -5498,6 +6159,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-333',
@@ -5506,6 +6168,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-334',
@@ -5514,6 +6177,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-335',
@@ -5522,6 +6186,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-336',
@@ -5530,6 +6195,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-337',
@@ -5538,6 +6204,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-338',
@@ -5546,6 +6213,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-339',
@@ -5554,6 +6222,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-340',
@@ -5562,6 +6231,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-341',
@@ -5570,6 +6240,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-342',
@@ -5578,6 +6249,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-343',
@@ -5586,6 +6258,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-344',
@@ -5594,6 +6267,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-345',
@@ -5602,6 +6276,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-346',
@@ -5610,6 +6285,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-347',
@@ -5618,6 +6294,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-348',
@@ -5626,6 +6303,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-349',
@@ -5634,6 +6312,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-350',
@@ -5642,6 +6321,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-351',
@@ -5650,6 +6330,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-352',
@@ -5658,6 +6339,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-353',
@@ -5666,6 +6348,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-354',
@@ -5674,6 +6357,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-355',
@@ -5682,6 +6366,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-356',
@@ -5690,6 +6375,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-357',
@@ -5698,6 +6384,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-358',
@@ -5706,6 +6393,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-359',
@@ -5714,6 +6402,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-360',
@@ -5722,6 +6411,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-361',
@@ -5730,6 +6420,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-362',
@@ -5738,6 +6429,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-363',
@@ -5746,6 +6438,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-364',
@@ -5754,6 +6447,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-365',
@@ -5762,6 +6456,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-366',
@@ -5770,6 +6465,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-367',
@@ -5778,6 +6474,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-368',
@@ -5786,6 +6483,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-369',
@@ -5794,6 +6492,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-370',
@@ -5802,6 +6501,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-371',
@@ -5810,6 +6510,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-372',
@@ -5818,6 +6519,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-373',
@@ -5826,6 +6528,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-374',
@@ -5834,6 +6537,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-375',
@@ -5842,6 +6546,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-376',
@@ -5850,6 +6555,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-377',
@@ -5858,6 +6564,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-378',
@@ -5866,6 +6573,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-379',
@@ -5874,6 +6582,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-380',
@@ -5882,6 +6591,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-381',
@@ -5890,6 +6600,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-382',
@@ -5898,6 +6609,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-383',
@@ -5906,6 +6618,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-384',
@@ -5914,6 +6627,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-385',
@@ -5922,6 +6636,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-386',
@@ -5930,6 +6645,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-387',
@@ -5938,6 +6654,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-388',
@@ -5946,6 +6663,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-389',
@@ -5954,6 +6672,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-390',
@@ -5962,6 +6681,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-391',
@@ -5970,6 +6690,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-392',
@@ -5978,6 +6699,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-393',
@@ -5986,6 +6708,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-394',
@@ -5994,6 +6717,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-395',
@@ -6002,6 +6726,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-396',
@@ -6010,6 +6735,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-397',
@@ -6018,6 +6744,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-398',
@@ -6026,6 +6753,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-399',
@@ -6034,6 +6762,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Alan Watts',
+    source: 'The Way of Zen',
   ),
   Pointing(
     id: 'zen-400',
@@ -6042,6 +6771,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-401',
@@ -6050,6 +6780,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-402',
@@ -6058,6 +6789,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-403',
@@ -6066,6 +6798,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-404',
@@ -6074,6 +6807,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-405',
@@ -6082,6 +6816,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-406',
@@ -6090,6 +6825,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-407',
@@ -6098,6 +6834,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-408',
@@ -6106,6 +6843,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-409',
@@ -6114,6 +6852,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-410',
@@ -6122,6 +6861,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-411',
@@ -6130,6 +6870,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-412',
@@ -6138,6 +6879,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-413',
@@ -6146,6 +6888,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-414',
@@ -6154,6 +6897,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-415',
@@ -6162,6 +6906,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-416',
@@ -6170,6 +6915,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-417',
@@ -6178,6 +6924,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-418',
@@ -6186,6 +6933,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-419',
@@ -6194,6 +6942,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Charlotte Joko Beck',
+    source: 'Everyday Zen',
   ),
   Pointing(
     id: 'zen-420',
@@ -6202,6 +6951,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-421',
@@ -6210,6 +6960,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-422',
@@ -6218,6 +6969,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-423',
@@ -6226,6 +6978,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-424',
@@ -6234,6 +6987,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-425',
@@ -6242,6 +6996,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-426',
@@ -6250,6 +7005,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-427',
@@ -6258,6 +7014,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-428',
@@ -6266,6 +7023,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-429',
@@ -6274,6 +7032,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-430',
@@ -6282,6 +7041,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-431',
@@ -6290,6 +7050,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-432',
@@ -6298,6 +7059,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-433',
@@ -6306,6 +7068,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-434',
@@ -6314,6 +7077,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-435',
@@ -6322,6 +7086,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-436',
@@ -6330,6 +7095,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-437',
@@ -6338,6 +7104,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-438',
@@ -6346,6 +7113,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-439',
@@ -6354,6 +7122,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Sheng Yen',
+    source: 'The Method of No-Method',
   ),
   Pointing(
     id: 'zen-440',
@@ -6362,6 +7131,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-441',
@@ -6370,6 +7140,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-442',
@@ -6378,6 +7149,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-443',
@@ -6386,6 +7158,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-444',
@@ -6394,6 +7167,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-445',
@@ -6402,6 +7176,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-446',
@@ -6410,6 +7185,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-447',
@@ -6418,6 +7194,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-448',
@@ -6426,6 +7203,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-449',
@@ -6434,6 +7212,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-450',
@@ -6442,6 +7221,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-451',
@@ -6450,6 +7230,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-452',
@@ -6458,6 +7239,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-453',
@@ -6466,6 +7248,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-454',
@@ -6474,6 +7257,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-455',
@@ -6482,6 +7266,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-456',
@@ -6490,6 +7275,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-457',
@@ -6498,6 +7284,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-458',
@@ -6506,6 +7293,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-459',
@@ -6514,6 +7302,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-460',
@@ -6522,6 +7311,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-461',
@@ -6530,6 +7320,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-462',
@@ -6538,6 +7329,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-463',
@@ -6546,6 +7338,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-464',
@@ -6554,6 +7347,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-465',
@@ -6562,6 +7356,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-466',
@@ -6570,6 +7365,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-467',
@@ -6578,6 +7374,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-468',
@@ -6586,6 +7383,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-469',
@@ -6594,6 +7392,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-470',
@@ -6602,6 +7401,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-471',
@@ -6610,6 +7410,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-472',
@@ -6618,6 +7419,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-473',
@@ -6626,6 +7428,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-474',
@@ -6634,6 +7437,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-475',
@@ -6642,6 +7446,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-476',
@@ -6650,6 +7455,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-477',
@@ -6658,6 +7464,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-478',
@@ -6666,6 +7473,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-479',
@@ -6674,6 +7482,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Joshu',
+    source: 'The Recorded Sayings of Zen Master Joshu',
   ),
   Pointing(
     id: 'zen-480',
@@ -6682,6 +7491,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-481',
@@ -6690,6 +7500,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-482',
@@ -6698,6 +7509,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-483',
@@ -6706,6 +7518,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-484',
@@ -6714,6 +7527,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-485',
@@ -6722,6 +7536,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-486',
@@ -6730,6 +7545,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-487',
@@ -6738,6 +7554,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-488',
@@ -6746,6 +7563,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-489',
@@ -6754,6 +7572,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-490',
@@ -6762,6 +7581,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-491',
@@ -6770,6 +7590,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-492',
@@ -6778,6 +7599,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-493',
@@ -6786,6 +7608,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-494',
@@ -6794,6 +7617,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-495',
@@ -6802,6 +7626,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-496',
@@ -6810,6 +7635,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-497',
@@ -6818,6 +7644,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-498',
@@ -6826,6 +7653,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-499',
@@ -6834,6 +7662,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-500',
@@ -6842,6 +7671,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-501',
@@ -6850,6 +7680,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-502',
@@ -6858,6 +7689,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-503',
@@ -6866,6 +7698,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-504',
@@ -6874,6 +7707,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-505',
@@ -6882,6 +7716,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-506',
@@ -6890,6 +7725,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
   Pointing(
     id: 'zen-507',
@@ -6898,6 +7734,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Linji',
+    source: 'The Record of Linji',
   ),
 
   // --- contemporary_quotes.dart ---
@@ -6908,6 +7745,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-114',
@@ -6916,6 +7754,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-115',
@@ -6924,6 +7763,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-116',
@@ -6932,6 +7772,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-117',
@@ -6940,6 +7781,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-118',
@@ -6948,6 +7790,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-119',
@@ -6956,6 +7799,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-120',
@@ -6964,6 +7808,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-121',
@@ -6972,6 +7817,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-122',
@@ -6980,6 +7826,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-123',
@@ -6988,6 +7835,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-124',
@@ -6996,6 +7844,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-125',
@@ -7004,6 +7853,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-126',
@@ -7012,6 +7862,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-127',
@@ -7020,6 +7871,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-128',
@@ -7028,6 +7880,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-129',
@@ -7036,6 +7889,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-130',
@@ -7044,6 +7898,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-131',
@@ -7052,6 +7907,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-132',
@@ -7060,6 +7916,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-133',
@@ -7068,6 +7925,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-134',
@@ -7076,6 +7934,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-135',
@@ -7084,6 +7943,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-136',
@@ -7092,6 +7952,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-137',
@@ -7100,6 +7961,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-138',
@@ -7108,6 +7970,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-139',
@@ -7116,6 +7979,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-140',
@@ -7124,6 +7988,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-141',
@@ -7132,6 +7997,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-142',
@@ -7140,6 +8006,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-143',
@@ -7148,6 +8015,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-144',
@@ -7156,6 +8024,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-145',
@@ -7164,6 +8033,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-146',
@@ -7172,6 +8042,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-147',
@@ -7180,6 +8051,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-148',
@@ -7188,6 +8060,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-149',
@@ -7196,6 +8069,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-150',
@@ -7204,6 +8078,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-151',
@@ -7212,6 +8087,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-152',
@@ -7220,6 +8096,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-153',
@@ -7228,6 +8105,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-154',
@@ -7236,6 +8114,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-155',
@@ -7244,6 +8123,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-156',
@@ -7252,6 +8132,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-157',
@@ -7260,6 +8141,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-158',
@@ -7268,6 +8150,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-159',
@@ -7276,6 +8159,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-160',
@@ -7284,6 +8168,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-161',
@@ -7292,6 +8177,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-162',
@@ -7300,6 +8186,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-163',
@@ -7308,6 +8195,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-164',
@@ -7316,6 +8204,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-165',
@@ -7324,6 +8213,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-166',
@@ -7332,6 +8222,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-167',
@@ -7340,6 +8231,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-168',
@@ -7348,6 +8240,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-169',
@@ -7356,6 +8249,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-170',
@@ -7364,6 +8258,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-171',
@@ -7372,6 +8267,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-172',
@@ -7380,6 +8276,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-173',
@@ -7388,6 +8285,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-174',
@@ -7396,6 +8294,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-175',
@@ -7404,6 +8303,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-176',
@@ -7412,6 +8312,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-177',
@@ -7420,6 +8321,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-178',
@@ -7428,6 +8330,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-179',
@@ -7436,6 +8339,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-180',
@@ -7444,6 +8348,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-181',
@@ -7452,6 +8357,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-182',
@@ -7460,6 +8366,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-183',
@@ -7468,6 +8375,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-184',
@@ -7476,6 +8384,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-185',
@@ -7484,6 +8393,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-186',
@@ -7492,6 +8402,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-187',
@@ -7500,6 +8411,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-188',
@@ -7508,6 +8420,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-189',
@@ -7516,6 +8429,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-190',
@@ -7524,6 +8438,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-191',
@@ -7532,6 +8447,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-192',
@@ -7540,6 +8456,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-193',
@@ -7548,6 +8465,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-194',
@@ -7556,6 +8474,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-195',
@@ -7564,6 +8483,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-196',
@@ -7572,6 +8492,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-197',
@@ -7580,6 +8501,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-198',
@@ -7588,6 +8510,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-199',
@@ -7596,6 +8519,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-200',
@@ -7604,6 +8528,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-201',
@@ -7612,6 +8537,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-202',
@@ -7620,6 +8546,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-203',
@@ -7628,6 +8555,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-204',
@@ -7636,6 +8564,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-205',
@@ -7644,6 +8573,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-206',
@@ -7652,6 +8582,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-207',
@@ -7660,6 +8591,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-208',
@@ -7668,6 +8600,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-209',
@@ -7676,6 +8609,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-210',
@@ -7684,6 +8618,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-211',
@@ -7692,6 +8627,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-212',
@@ -7700,6 +8636,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-213',
@@ -7708,6 +8645,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-214',
@@ -7716,6 +8654,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-215',
@@ -7724,6 +8663,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-216',
@@ -7732,6 +8672,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-217',
@@ -7740,6 +8681,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-218',
@@ -7748,6 +8690,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-219',
@@ -7756,6 +8699,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-220',
@@ -7764,6 +8708,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-221',
@@ -7772,6 +8717,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-222',
@@ -7780,6 +8726,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-223',
@@ -7788,6 +8735,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-224',
@@ -7796,6 +8744,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-225',
@@ -7804,6 +8753,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-226',
@@ -7812,6 +8762,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-227',
@@ -7820,6 +8771,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-228',
@@ -7828,6 +8780,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-229',
@@ -7836,6 +8789,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-230',
@@ -7844,6 +8798,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-231',
@@ -7852,6 +8807,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-232',
@@ -7860,6 +8816,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-233',
@@ -7868,6 +8825,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-234',
@@ -7876,6 +8834,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-235',
@@ -7884,6 +8843,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-236',
@@ -7892,6 +8852,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-237',
@@ -7900,6 +8861,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-238',
@@ -7908,6 +8870,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-239',
@@ -7916,6 +8879,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-240',
@@ -7924,6 +8888,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-241',
@@ -7932,6 +8897,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-242',
@@ -7940,6 +8906,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-243',
@@ -7948,6 +8915,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-244',
@@ -7956,6 +8924,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-245',
@@ -7964,6 +8933,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-246',
@@ -7972,6 +8942,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-247',
@@ -7980,6 +8951,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-248',
@@ -7988,6 +8960,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-249',
@@ -7996,6 +8969,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-250',
@@ -8004,6 +8978,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-251',
@@ -8012,6 +8987,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-252',
@@ -8020,6 +8996,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-253',
@@ -8028,6 +9005,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-254',
@@ -8036,6 +9014,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-255',
@@ -8044,6 +9023,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-256',
@@ -8052,6 +9032,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-257',
@@ -8060,6 +9041,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-258',
@@ -8068,6 +9050,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-259',
@@ -8076,6 +9059,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-260',
@@ -8084,6 +9068,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-261',
@@ -8092,6 +9077,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-262',
@@ -8100,6 +9086,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-263',
@@ -8108,6 +9095,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-264',
@@ -8116,6 +9104,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-265',
@@ -8124,6 +9113,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-266',
@@ -8132,6 +9122,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-267',
@@ -8140,6 +9131,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-268',
@@ -8148,6 +9140,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-269',
@@ -8156,6 +9149,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-270',
@@ -8164,6 +9158,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-271',
@@ -8172,6 +9167,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-272',
@@ -8180,6 +9176,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-273',
@@ -8188,6 +9185,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-274',
@@ -8196,6 +9194,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-275',
@@ -8204,6 +9203,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-276',
@@ -8212,6 +9212,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-277',
@@ -8220,6 +9221,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-278',
@@ -8228,6 +9230,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-279',
@@ -8236,6 +9239,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-280',
@@ -8244,6 +9248,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-281',
@@ -8252,6 +9257,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-282',
@@ -8260,6 +9266,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-283',
@@ -8268,6 +9275,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-284',
@@ -8276,6 +9284,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-285',
@@ -8284,6 +9293,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-286',
@@ -8292,6 +9302,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-287',
@@ -8300,6 +9311,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-288',
@@ -8308,6 +9320,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-289',
@@ -8316,6 +9329,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-290',
@@ -8324,6 +9338,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-291',
@@ -8332,6 +9347,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-292',
@@ -8340,6 +9356,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-293',
@@ -8348,6 +9365,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-294',
@@ -8356,6 +9374,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-295',
@@ -8364,6 +9383,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-296',
@@ -8372,6 +9392,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-297',
@@ -8380,6 +9401,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-298',
@@ -8388,6 +9410,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-299',
@@ -8396,6 +9419,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-300',
@@ -8404,6 +9428,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-301',
@@ -8412,6 +9437,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-302',
@@ -8420,6 +9446,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-303',
@@ -8428,6 +9455,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-304',
@@ -8436,6 +9464,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-305',
@@ -8444,6 +9473,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-306',
@@ -8452,6 +9482,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-307',
@@ -8460,6 +9491,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-308',
@@ -8468,6 +9500,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-309',
@@ -8476,6 +9509,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-310',
@@ -8484,6 +9518,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-311',
@@ -8492,6 +9527,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-312',
@@ -8500,6 +9536,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-313',
@@ -8508,6 +9545,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-314',
@@ -8516,6 +9554,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-315',
@@ -8524,6 +9563,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-316',
@@ -8532,6 +9572,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-317',
@@ -8540,6 +9581,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-318',
@@ -8548,6 +9590,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-319',
@@ -8556,6 +9599,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-320',
@@ -8564,6 +9608,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-321',
@@ -8572,6 +9617,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-322',
@@ -8580,6 +9626,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-323',
@@ -8588,6 +9635,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-324',
@@ -8596,6 +9644,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-325',
@@ -8604,6 +9653,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-326',
@@ -8612,6 +9662,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-327',
@@ -8620,6 +9671,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-328',
@@ -8628,6 +9680,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-329',
@@ -8636,6 +9689,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-330',
@@ -8644,6 +9698,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-331',
@@ -8652,6 +9707,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-332',
@@ -8660,6 +9716,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-333',
@@ -8668,6 +9725,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-334',
@@ -8676,6 +9734,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-335',
@@ -8684,6 +9743,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-336',
@@ -8692,6 +9752,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-337',
@@ -8700,6 +9761,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-338',
@@ -8708,6 +9770,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-339',
@@ -8716,6 +9779,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-340',
@@ -8724,6 +9788,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-341',
@@ -8732,6 +9797,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-342',
@@ -8740,6 +9806,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-343',
@@ -8748,6 +9815,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-344',
@@ -8756,6 +9824,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-345',
@@ -8764,6 +9833,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-346',
@@ -8772,6 +9842,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-347',
@@ -8780,6 +9851,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-348',
@@ -8788,6 +9860,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-349',
@@ -8796,6 +9869,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-350',
@@ -8804,6 +9878,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-351',
@@ -8812,6 +9887,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-352',
@@ -8820,6 +9896,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-353',
@@ -8828,6 +9905,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-354',
@@ -8836,6 +9914,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-355',
@@ -8844,6 +9923,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-356',
@@ -8852,6 +9932,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-357',
@@ -8860,6 +9941,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-358',
@@ -8868,6 +9950,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-359',
@@ -8876,6 +9959,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-360',
@@ -8884,6 +9968,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-361',
@@ -8892,6 +9977,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-362',
@@ -8900,6 +9986,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-363',
@@ -8908,6 +9995,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-364',
@@ -8916,6 +10004,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-365',
@@ -8924,6 +10013,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-366',
@@ -8932,6 +10022,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-367',
@@ -8940,6 +10031,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-368',
@@ -8948,6 +10040,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-369',
@@ -8956,6 +10049,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-370',
@@ -8964,6 +10058,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-371',
@@ -8972,6 +10067,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-372',
@@ -8980,6 +10076,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-373',
@@ -8988,6 +10085,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-374',
@@ -8996,6 +10094,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-375',
@@ -9004,6 +10103,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-376',
@@ -9012,6 +10112,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-377',
@@ -9020,6 +10121,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-378',
@@ -9028,6 +10130,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-379',
@@ -9036,6 +10139,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-380',
@@ -9044,6 +10148,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-381',
@@ -9052,6 +10157,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-382',
@@ -9060,6 +10166,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-383',
@@ -9068,6 +10175,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-384',
@@ -9076,6 +10184,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-385',
@@ -9084,6 +10193,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-386',
@@ -9092,6 +10202,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-387',
@@ -9100,6 +10211,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-388',
@@ -9108,6 +10220,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-389',
@@ -9116,6 +10229,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-390',
@@ -9124,6 +10238,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-391',
@@ -9132,6 +10247,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-392',
@@ -9140,6 +10256,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-393',
@@ -9148,6 +10265,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-394',
@@ -9156,6 +10274,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-395',
@@ -9164,6 +10283,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-396',
@@ -9172,6 +10292,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-397',
@@ -9180,6 +10301,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-398',
@@ -9188,6 +10310,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-399',
@@ -9196,6 +10319,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-400',
@@ -9204,6 +10328,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-401',
@@ -9212,6 +10337,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-402',
@@ -9220,6 +10346,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-403',
@@ -9228,6 +10355,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-404',
@@ -9236,6 +10364,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-405',
@@ -9244,6 +10373,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-406',
@@ -9252,6 +10382,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-407',
@@ -9260,6 +10391,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-408',
@@ -9268,6 +10400,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-409',
@@ -9276,6 +10409,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-410',
@@ -9284,6 +10418,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-411',
@@ -9292,6 +10427,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-412',
@@ -9300,6 +10436,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-413',
@@ -9308,6 +10445,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-414',
@@ -9316,6 +10454,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-415',
@@ -9324,6 +10463,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-416',
@@ -9332,6 +10472,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-417',
@@ -9340,6 +10481,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-418',
@@ -9348,6 +10490,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-419',
@@ -9356,6 +10499,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-420',
@@ -9364,6 +10508,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-421',
@@ -9372,6 +10517,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-422',
@@ -9380,6 +10526,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-423',
@@ -9388,6 +10535,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-424',
@@ -9396,6 +10544,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-425',
@@ -9404,6 +10553,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-426',
@@ -9412,6 +10562,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-427',
@@ -9420,6 +10571,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-428',
@@ -9428,6 +10580,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-429',
@@ -9436,6 +10589,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-430',
@@ -9444,6 +10598,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-431',
@@ -9452,6 +10607,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-432',
@@ -9460,6 +10616,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-433',
@@ -9468,6 +10625,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-434',
@@ -9476,6 +10634,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-435',
@@ -9484,6 +10643,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-436',
@@ -9492,6 +10652,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-437',
@@ -9500,6 +10661,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-438',
@@ -9508,6 +10670,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-439',
@@ -9516,6 +10679,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-440',
@@ -9524,6 +10688,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-441',
@@ -9532,6 +10697,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-442',
@@ -9540,6 +10706,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-443',
@@ -9548,6 +10715,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-444',
@@ -9556,6 +10724,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-445',
@@ -9564,6 +10733,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-446',
@@ -9572,6 +10742,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-447',
@@ -9580,6 +10751,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-448',
@@ -9588,6 +10760,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-449',
@@ -9596,6 +10769,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-450',
@@ -9604,6 +10778,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-451',
@@ -9612,6 +10787,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-452',
@@ -9620,6 +10796,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-453',
@@ -9628,6 +10805,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-454',
@@ -9636,6 +10814,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-455',
@@ -9644,6 +10823,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-456',
@@ -9652,6 +10832,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-457',
@@ -9660,6 +10841,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-458',
@@ -9668,6 +10850,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-459',
@@ -9676,6 +10859,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-460',
@@ -9684,6 +10868,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-461',
@@ -9692,6 +10877,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-462',
@@ -9700,6 +10886,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-463',
@@ -9708,6 +10895,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-464',
@@ -9716,6 +10904,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-465',
@@ -9724,6 +10913,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-466',
@@ -9732,6 +10922,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-467',
@@ -9740,6 +10931,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-468',
@@ -9748,6 +10940,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-469',
@@ -9756,6 +10949,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-470',
@@ -9764,6 +10958,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-471',
@@ -9772,6 +10967,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-472',
@@ -9780,6 +10976,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-473',
@@ -9788,6 +10985,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-474',
@@ -9796,6 +10994,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-475',
@@ -9804,6 +11003,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-476',
@@ -9812,6 +11012,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-477',
@@ -9820,6 +11021,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-478',
@@ -9828,6 +11030,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-479',
@@ -9836,6 +11039,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-480',
@@ -9844,6 +11048,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-481',
@@ -9852,6 +11057,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-482',
@@ -9860,6 +11066,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-483',
@@ -9868,6 +11075,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-484',
@@ -9876,6 +11084,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-485',
@@ -9884,6 +11093,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-486',
@@ -9892,6 +11102,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-487',
@@ -9900,6 +11111,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-488',
@@ -9908,6 +11120,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-489',
@@ -9916,6 +11129,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-490',
@@ -9924,6 +11138,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-491',
@@ -9932,6 +11147,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-492',
@@ -9940,6 +11156,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-493',
@@ -9948,6 +11165,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-494',
@@ -9956,6 +11174,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-495',
@@ -9964,6 +11183,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-496',
@@ -9972,6 +11192,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-497',
@@ -9980,6 +11201,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-498',
@@ -9988,6 +11210,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-499',
@@ -9996,6 +11219,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-500',
@@ -10004,6 +11228,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-501',
@@ -10012,6 +11237,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-502',
@@ -10020,6 +11246,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
   Pointing(
     id: 'con-503',
@@ -10028,6 +11255,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-504',
@@ -10036,6 +11264,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-505',
@@ -10044,6 +11273,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-506',
@@ -10052,6 +11282,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
   ),
   Pointing(
     id: 'con-507',
@@ -10060,6 +11291,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-508',
@@ -10068,6 +11300,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Pema Chodron',
+    source: 'When Things Fall Apart',
   ),
   Pointing(
     id: 'con-509',
@@ -10076,6 +11309,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jack Kornfield',
+    source: 'A Path with Heart',
   ),
   Pointing(
     id: 'con-510',
@@ -10084,6 +11318,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tara Brach',
+    source: 'Radical Acceptance',
   ),
   Pointing(
     id: 'con-511',
@@ -10092,6 +11327,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Michael Singer',
+    source: 'The Untethered Soul',
   ),
   Pointing(
     id: 'con-512',
@@ -10100,6 +11336,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
   ),
 
   // --- original_quotes.dart ---
@@ -14320,6 +15557,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-122',
@@ -14328,6 +15566,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-123',
@@ -14336,6 +15575,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-124',
@@ -14344,6 +15584,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-125',
@@ -14352,6 +15593,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-126',
@@ -14360,6 +15602,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-127',
@@ -14368,6 +15611,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-128',
@@ -14376,6 +15620,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-129',
@@ -14384,6 +15629,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.evening],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-130',
@@ -14392,6 +15638,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-131',
@@ -14400,6 +15647,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-132',
@@ -14408,6 +15656,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-133',
@@ -14416,6 +15665,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-134',
@@ -14424,6 +15674,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-135',
@@ -14432,6 +15683,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-136',
@@ -14440,6 +15692,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-137',
@@ -14448,6 +15701,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-138',
@@ -14456,6 +15710,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-139',
@@ -14464,6 +15719,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-140',
@@ -14472,6 +15728,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-141',
@@ -14480,6 +15737,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-142',
@@ -14488,6 +15746,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-143',
@@ -14496,6 +15755,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-144',
@@ -14504,6 +15764,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-145',
@@ -14512,6 +15773,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-146',
@@ -14520,6 +15782,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-147',
@@ -14528,6 +15791,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-148',
@@ -14536,6 +15800,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-149',
@@ -14544,6 +15809,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-150',
@@ -14552,6 +15818,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-151',
@@ -14560,6 +15827,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.stress],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-152',
@@ -14568,6 +15836,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-153',
@@ -14576,6 +15845,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-154',
@@ -14584,6 +15854,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.evening],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-155',
@@ -14592,6 +15863,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-156',
@@ -14600,6 +15872,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-157',
@@ -14608,6 +15881,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-158',
@@ -14616,6 +15890,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-159',
@@ -14624,6 +15899,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.stress],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-160',
@@ -14632,6 +15908,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-161',
@@ -14640,6 +15917,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-162',
@@ -14648,6 +15926,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-163',
@@ -14656,6 +15935,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-164',
@@ -14664,6 +15944,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-165',
@@ -14672,6 +15953,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-166',
@@ -14680,6 +15962,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-167',
@@ -14688,6 +15971,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-168',
@@ -14696,6 +15980,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-169',
@@ -14704,6 +15989,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-170',
@@ -14712,6 +15998,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.evening],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-171',
@@ -14720,6 +16007,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-172',
@@ -14728,6 +16016,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-173',
@@ -14736,6 +16025,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-174',
@@ -14744,6 +16034,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-175',
@@ -14752,6 +16043,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-176',
@@ -14760,6 +16052,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-177',
@@ -14768,6 +16061,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-178',
@@ -14776,6 +16070,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-179',
@@ -14784,6 +16079,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-180',
@@ -14792,6 +16088,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-181',
@@ -14800,6 +16097,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-182',
@@ -14808,6 +16106,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-183',
@@ -14816,6 +16115,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-184',
@@ -14824,6 +16124,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-185',
@@ -14832,6 +16133,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-186',
@@ -14840,6 +16142,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ashtavakra Gita',
+    source: 'Ashtavakra Gita',
   ),
   Pointing(
     id: 'adv-187',
@@ -14848,6 +16151,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-188',
@@ -14856,6 +16160,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-189',
@@ -14864,6 +16169,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-190',
@@ -14872,6 +16178,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-191',
@@ -14880,6 +16187,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-192',
@@ -14888,6 +16196,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-193',
@@ -14896,6 +16205,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-194',
@@ -14904,6 +16214,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-195',
@@ -14912,6 +16223,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-196',
@@ -14920,6 +16232,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-197',
@@ -14928,6 +16241,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-198',
@@ -14936,6 +16250,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-199',
@@ -14944,6 +16259,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-200',
@@ -14952,6 +16268,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-201',
@@ -14960,6 +16277,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-202',
@@ -14968,6 +16286,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-203',
@@ -14976,6 +16295,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-204',
@@ -14984,6 +16304,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-205',
@@ -14992,6 +16313,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-206',
@@ -15000,6 +16322,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-207',
@@ -15008,6 +16331,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-208',
@@ -15016,6 +16340,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-209',
@@ -15024,6 +16349,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'adv-210',
@@ -15032,6 +16358,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-211',
@@ -15040,6 +16367,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-212',
@@ -15048,6 +16376,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-213',
@@ -15056,6 +16385,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-214',
@@ -15064,6 +16394,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-215',
@@ -15072,6 +16403,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-216',
@@ -15080,6 +16412,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'adv-217',
@@ -15088,6 +16421,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-218',
@@ -15096,6 +16430,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Papaji',
+    source: 'Wake Up and Roar',
   ),
   Pointing(
     id: 'adv-219',
@@ -15104,6 +16439,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramana Maharshi',
+    source: 'Talks with Sri Ramana Maharshi',
   ),
   Pointing(
     id: 'adv-220',
@@ -15112,6 +16448,7 @@ const pointings = <Pointing>[
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
+    source: 'I Am That',
   ),
   Pointing(
     id: 'zen-105',
@@ -15120,6 +16457,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-106',
@@ -15136,6 +16474,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-108',
@@ -15144,6 +16483,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-109',
@@ -15152,6 +16492,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-110',
@@ -15160,6 +16501,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-111',
@@ -15168,6 +16510,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-112',
@@ -15176,6 +16519,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-113',
@@ -15184,6 +16528,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-114',
@@ -15192,6 +16537,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-115',
@@ -15200,6 +16546,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-116',
@@ -15208,6 +16555,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-117',
@@ -15216,6 +16564,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-118',
@@ -15224,6 +16573,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-119',
@@ -15232,6 +16582,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-120',
@@ -15240,6 +16591,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-121',
@@ -15248,6 +16600,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-122',
@@ -15256,6 +16609,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-123',
@@ -15280,6 +16634,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-126',
@@ -15288,6 +16643,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-127',
@@ -15296,6 +16652,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-128',
@@ -15304,6 +16661,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-129',
@@ -15312,6 +16670,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-130',
@@ -15320,6 +16679,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-131',
@@ -15328,6 +16688,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-132',
@@ -15336,6 +16697,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-133',
@@ -15344,6 +16706,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-134',
@@ -15352,6 +16715,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-135',
@@ -15360,6 +16724,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-136',
@@ -15368,6 +16733,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-137',
@@ -15376,6 +16742,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-138',
@@ -15384,6 +16751,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-139',
@@ -15392,6 +16760,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-140',
@@ -15432,6 +16801,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-145',
@@ -15440,6 +16810,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-146',
@@ -15448,6 +16819,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-147',
@@ -15456,6 +16828,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-148',
@@ -15464,6 +16837,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-149',
@@ -15472,6 +16846,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-150',
@@ -15480,6 +16855,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-151',
@@ -15488,6 +16864,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-152',
@@ -15496,6 +16873,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-153',
@@ -15504,6 +16882,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
+    source: 'Zen Mind, Beginner\'s Mind',
   ),
   Pointing(
     id: 'zen-154',
@@ -15512,6 +16891,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-155',
@@ -15520,6 +16900,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-156',
@@ -15528,6 +16909,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-157',
@@ -15536,6 +16918,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-158',
@@ -15544,6 +16927,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-159',
@@ -15552,6 +16936,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-160',
@@ -15560,6 +16945,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-161',
@@ -15568,6 +16954,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-162',
@@ -15576,6 +16963,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-163',
@@ -15584,6 +16972,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-164',
@@ -15592,6 +16981,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-165',
@@ -15600,6 +16990,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-166',
@@ -15608,6 +16999,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-167',
@@ -15616,6 +17008,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-168',
@@ -15624,6 +17017,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-169',
@@ -15632,6 +17026,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-170',
@@ -15640,6 +17035,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
+    source: 'The Heart of the Buddha\'s Teaching',
   ),
   Pointing(
     id: 'zen-171',
@@ -15712,6 +17108,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-180',
@@ -15720,6 +17117,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-181',
@@ -15728,6 +17126,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Dogen',
+    source: 'Shobogenzo',
   ),
   Pointing(
     id: 'zen-182',
@@ -15840,6 +17239,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-196',
@@ -15848,6 +17248,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-197',
@@ -15856,6 +17257,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-198',
@@ -15864,6 +17266,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-199',
@@ -15872,6 +17275,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
+    source: 'The Zen Teaching of Huang Po',
   ),
   Pointing(
     id: 'zen-200',
@@ -15880,6 +17284,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-201',
@@ -15888,6 +17293,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Bodhidharma',
+    source: 'The Zen Teaching of Bodhidharma',
   ),
   Pointing(
     id: 'zen-202',
@@ -15896,6 +17302,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-203',
@@ -15904,6 +17311,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'zen-204',
@@ -15912,6 +17320,7 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Bankei',
+    source: 'The Unborn',
   ),
   Pointing(
     id: 'dir-122',
@@ -15920,6 +17329,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-123',
@@ -15928,6 +17338,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-124',
@@ -15936,6 +17347,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-125',
@@ -15944,6 +17356,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-126',
@@ -15952,6 +17365,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-127',
@@ -15960,6 +17374,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-128',
@@ -15968,6 +17383,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-129',
@@ -15976,6 +17392,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-130',
@@ -15984,6 +17401,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-131',
@@ -15992,6 +17410,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-132',
@@ -16000,6 +17419,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-133',
@@ -16008,6 +17428,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-134',
@@ -16016,6 +17437,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-135',
@@ -16024,6 +17446,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-136',
@@ -16032,6 +17455,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-137',
@@ -16040,6 +17464,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-138',
@@ -16048,6 +17473,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-139',
@@ -16056,6 +17482,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-140',
@@ -16064,6 +17491,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-141',
@@ -16072,6 +17500,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-142',
@@ -16080,6 +17509,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-143',
@@ -16088,6 +17518,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-144',
@@ -16096,6 +17527,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-145',
@@ -16104,6 +17536,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-146',
@@ -16112,6 +17545,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-147',
@@ -16120,6 +17554,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-148',
@@ -16128,6 +17563,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-149',
@@ -16136,6 +17572,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-150',
@@ -16144,6 +17581,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-151',
@@ -16152,6 +17590,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-152',
@@ -16160,6 +17599,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-153',
@@ -16168,6 +17608,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-154',
@@ -16176,6 +17617,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-155',
@@ -16184,6 +17626,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-156',
@@ -16192,6 +17635,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-157',
@@ -16200,6 +17644,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-158',
@@ -16208,6 +17653,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-159',
@@ -16216,6 +17662,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-160',
@@ -16224,6 +17671,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-161',
@@ -16232,6 +17680,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-162',
@@ -16240,6 +17689,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-163',
@@ -16248,6 +17698,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-164',
@@ -16256,6 +17707,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-165',
@@ -16264,6 +17716,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-166',
@@ -16272,6 +17725,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-167',
@@ -16280,6 +17734,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-168',
@@ -16288,6 +17743,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-169',
@@ -16296,6 +17752,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-170',
@@ -16304,6 +17761,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-171',
@@ -16312,6 +17770,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-172',
@@ -16320,6 +17779,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-173',
@@ -16328,6 +17788,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-174',
@@ -16336,6 +17797,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-175',
@@ -16344,6 +17806,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-176',
@@ -16352,6 +17815,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-177',
@@ -16360,6 +17824,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-178',
@@ -16368,6 +17833,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-179',
@@ -16376,6 +17842,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-180',
@@ -16384,6 +17851,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-181',
@@ -16392,6 +17860,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-182',
@@ -16400,6 +17869,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-183',
@@ -16408,6 +17878,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-184',
@@ -16416,6 +17887,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-185',
@@ -16424,6 +17896,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-186',
@@ -16432,6 +17905,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-187',
@@ -16440,6 +17914,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-188',
@@ -16448,6 +17923,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-189',
@@ -16456,6 +17932,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-190',
@@ -16464,6 +17941,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-191',
@@ -16472,6 +17950,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-192',
@@ -16480,6 +17959,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-193',
@@ -16488,6 +17968,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-194',
@@ -16496,6 +17977,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-195',
@@ -16504,6 +17986,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-196',
@@ -16512,6 +17995,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-197',
@@ -16520,6 +18004,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-198',
@@ -16528,6 +18013,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-199',
@@ -16536,6 +18022,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-200',
@@ -16544,6 +18031,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-201',
@@ -16552,6 +18040,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-202',
@@ -16560,6 +18049,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-203',
@@ -16568,6 +18058,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-204',
@@ -16576,6 +18067,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-205',
@@ -16584,6 +18076,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-206',
@@ -16592,6 +18085,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-207',
@@ -16600,6 +18094,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-208',
@@ -16608,6 +18103,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
   ),
   Pointing(
     id: 'dir-209',
@@ -16616,6 +18112,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-210',
@@ -16624,6 +18121,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-211',
@@ -16632,6 +18130,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Jean Klein',
+    source: 'I Am',
   ),
   Pointing(
     id: 'dir-212',
@@ -16640,6 +18139,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-213',
@@ -16648,6 +18148,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-214',
@@ -16656,6 +18157,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-215',
@@ -16664,6 +18166,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Atmananda Krishna Menon',
+    source: 'Atma Darshan',
   ),
   Pointing(
     id: 'dir-216',
@@ -16672,6 +18175,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-217',
@@ -16680,6 +18184,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-218',
@@ -16688,6 +18193,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-219',
@@ -16696,6 +18202,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-220',
@@ -16704,6 +18211,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'dir-221',
@@ -16712,6 +18220,7 @@ const pointings = <Pointing>[
     tradition: Tradition.direct,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Rupert Spira',
+    source: 'The Nature of Consciousness',
   ),
   Pointing(
     id: 'con-112',
@@ -16720,6 +18229,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-113',
@@ -16728,6 +18238,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-114',
@@ -16736,6 +18247,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-115',
@@ -16744,6 +18256,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-116',
@@ -16752,6 +18265,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-117',
@@ -16760,6 +18274,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-118',
@@ -16768,6 +18283,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-119',
@@ -16776,6 +18292,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-120',
@@ -16784,6 +18301,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-121',
@@ -16792,6 +18310,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-122',
@@ -16800,6 +18319,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-123',
@@ -16808,6 +18328,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-124',
@@ -16816,6 +18337,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-125',
@@ -16824,6 +18346,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-126',
@@ -16832,6 +18355,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-127',
@@ -16840,6 +18364,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-128',
@@ -16848,6 +18373,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-129',
@@ -16856,6 +18382,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-130',
@@ -16864,6 +18391,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-131',
@@ -16872,6 +18400,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-132',
@@ -16880,6 +18409,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-133',
@@ -16888,6 +18418,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-134',
@@ -16896,6 +18427,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-135',
@@ -16904,6 +18436,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-136',
@@ -16912,6 +18445,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-137',
@@ -16920,6 +18454,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-138',
@@ -16928,6 +18463,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-139',
@@ -16936,6 +18472,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-140',
@@ -16944,6 +18481,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-141',
@@ -16952,6 +18490,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-142',
@@ -16960,6 +18499,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-143',
@@ -16968,6 +18508,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-144',
@@ -16976,6 +18517,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-145',
@@ -16984,6 +18526,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-146',
@@ -16992,6 +18535,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-147',
@@ -17000,6 +18544,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-148',
@@ -17008,6 +18553,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-149',
@@ -17016,6 +18562,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-150',
@@ -17024,6 +18571,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-151',
@@ -17032,6 +18580,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-152',
@@ -17040,6 +18589,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-153',
@@ -17048,6 +18598,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-154',
@@ -17056,6 +18607,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-155',
@@ -17064,6 +18616,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-156',
@@ -17072,6 +18625,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Rumi',
+    source: 'The Essential Rumi',
   ),
   Pointing(
     id: 'con-157',
@@ -17080,6 +18634,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-158',
@@ -17088,6 +18643,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-159',
@@ -17096,6 +18652,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-160',
@@ -17104,6 +18661,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-161',
@@ -17112,6 +18670,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.evening],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-162',
@@ -17120,6 +18679,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Ram Dass',
+    source: 'Be Here Now',
   ),
   Pointing(
     id: 'con-163',
@@ -17128,6 +18688,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-164',
@@ -17136,6 +18697,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-165',
@@ -17144,6 +18706,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-166',
@@ -17152,6 +18715,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-167',
@@ -17160,6 +18724,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-168',
@@ -17168,6 +18733,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-169',
@@ -17176,6 +18742,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-170',
@@ -17184,6 +18751,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-171',
@@ -17192,6 +18760,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-172',
@@ -17200,6 +18769,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Sam Harris',
+    source: 'Waking Up',
   ),
   Pointing(
     id: 'con-173',
@@ -17208,6 +18778,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-174',
@@ -17216,6 +18787,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-175',
@@ -17224,6 +18796,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-176',
@@ -17232,6 +18805,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-177',
@@ -17240,6 +18814,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-178',
@@ -17248,6 +18823,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-179',
@@ -17256,6 +18832,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-180',
@@ -17264,6 +18841,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-181',
@@ -17272,6 +18850,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-182',
@@ -17280,6 +18859,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-183',
@@ -17288,6 +18868,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
+    source: 'Loving What Is',
   ),
   Pointing(
     id: 'con-184',
@@ -17296,6 +18877,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-185',
@@ -17304,6 +18886,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-186',
@@ -17312,6 +18895,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-187',
@@ -17320,6 +18904,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-188',
@@ -17328,6 +18913,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-189',
@@ -17336,6 +18922,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-190',
@@ -17344,6 +18931,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-191',
@@ -17352,6 +18940,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
   Pointing(
     id: 'con-192',
@@ -17360,6 +18949,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-193',
@@ -17368,6 +18958,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-194',
@@ -17376,6 +18967,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-195',
@@ -17384,6 +18976,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-196',
@@ -17392,6 +18985,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-197',
@@ -17400,6 +18994,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-198',
@@ -17408,6 +19003,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-199',
@@ -17416,6 +19012,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-200',
@@ -17424,6 +19021,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.evening],
     teacher: 'Eckhart Tolle',
+    source: 'The Power of Now',
   ),
   Pointing(
     id: 'con-201',
@@ -17432,6 +19030,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-202',
@@ -17440,6 +19039,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-203',
@@ -17448,6 +19048,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-204',
@@ -17456,6 +19057,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-205',
@@ -17464,6 +19066,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-206',
@@ -17472,6 +19075,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-207',
@@ -17480,6 +19084,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-208',
@@ -17488,6 +19093,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-209',
@@ -17496,6 +19102,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-210',
@@ -17504,6 +19111,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'con-211',
@@ -17512,6 +19120,7 @@ const pointings = <Pointing>[
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Mooji',
+    source: 'Before I Am',
   ),
   Pointing(
     id: 'org-9',
@@ -18212,6 +19821,641 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
+  ),
+
+  // === NEW IMPORTS FROM TEACHINGS-DB (2026-02) ===
+
+  // --- Advaita: Classical Texts & Underrepresented Teachers ---
+  Pointing(
+    id: 'adv-506',
+    content: 'I am the boundless deep in which the worlds come and go. I have nothing to win, nothing to lose.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-507',
+    content: 'I am neither bound nor free. How can I say this body is mine? I am awareness itself — unchanging, infinite, like space.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
+  ),
+  Pointing(
+    id: 'adv-508',
+    content: 'I have no caste, no creed, no tradition. I am not what you see, nor what you think. I am awareness itself.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
+  ),
+  Pointing(
+    id: 'adv-509',
+    content: 'In deep sleep, the mind is absent but you still exist. That existence which remains is the Self.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.evening, PointingContext.general],
+    teacher: 'Annamalai Swami',
+    source: 'Final Talks',
+  ),
+  Pointing(
+    id: 'adv-510',
+    content: 'The Self is self-luminous. It doesn\'t need the mind\'s help to reveal itself.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Annamalai Swami',
+    source: 'Final Talks',
+  ),
+  Pointing(
+    id: 'adv-511',
+    content: 'The final understanding is that there is no one to understand. Understanding happens in the dream, to a dream character.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ramesh Balsekar',
+    source: 'Consciousness Speaks',
+  ),
+  Pointing(
+    id: 'adv-512',
+    content: 'When the five sheaths are removed, what remains is the witness, pure awareness, self-luminous.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
+  ),
+  Pointing(
+    id: 'adv-513',
+    content: 'The sense of personal doership is the root of suffering.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Ramesh Balsekar',
+    source: 'Consciousness Speaks',
+  ),
+  Pointing(
+    id: 'adv-514',
+    content: 'Did this body-mind choose its genetics? Its conditioning? Its circumstances? Then how can you be the author of your actions?',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Ramesh Balsekar',
+    source: 'Consciousness Speaks',
+  ),
+  Pointing(
+    id: 'adv-515',
+    content: 'When the understanding happens that you are not the doer, life continues. Actions happen. But there is no involvement, no guilt, no pride.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ramesh Balsekar',
+    source: 'Consciousness Speaks',
+  ),
+  Pointing(
+    id: 'adv-516',
+    content: 'Constant effort is required until the Self is realized. After realization, effort drops away naturally.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Annamalai Swami',
+    source: 'Final Talks',
+  ),
+  Pointing(
+    id: 'adv-517',
+    content: 'If thoughts arise, let them. Just don\'t follow them. Return to the feeling \'I am.\'',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Annamalai Swami',
+    source: 'Final Talks',
+  ),
+  Pointing(
+    id: 'adv-518',
+    content: 'The world, like a dream, is true as long as one is ignorant. It becomes false when one awakens to the Self.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
+  ),
+  Pointing(
+    id: 'adv-519',
+    content: 'Attachment to the body gives birth to fear. Even the learned who know this truth still tremble at the shadow of death.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
+  ),
+  Pointing(
+    id: 'adv-520',
+    content: 'How can I tell you what I am? I am beyond mind and speech. The words you hear are not my teaching; truth cannot be spoken.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
+  ),
+  Pointing(
+    id: 'adv-521',
+    content: 'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-522',
+    content: 'Scorching in the sun or resting in the shade — what is that to one who has transcended all duality?',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-523',
+    content: 'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Ashtavakra',
+    source: 'Ashtavakra Gita',
+  ),
+  Pointing(
+    id: 'adv-524',
+    content: 'The body is impermanent. Wealth is unstable. Death is ever near. Therefore be absorbed in contemplation of the Self.',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.evening, PointingContext.general],
+    teacher: 'Adi Shankara',
+    source: 'Vivekachudamani',
+  ),
+  Pointing(
+    id: 'adv-525',
+    content: 'All practices were for the imaginary bound one. Now that bondage is seen as unreal, what remains to practice?',
+    tradition: Tradition.advaita,
+    contexts: [PointingContext.general],
+    teacher: 'Dattatreya',
+    source: 'Avadhuta Gita',
+  ),
+
+  // --- Zen: Classical Koans & Wisdom ---
+  Pointing(
+    id: 'zen-510',
+    content: 'The great way is not difficult for those who have no preferences.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Sengcan',
+    source: 'Xinxin Ming',
+  ),
+  Pointing(
+    id: 'zen-511',
+    content: 'Not knowing is most intimate.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+    teacher: 'Dizang',
+  ),
+  Pointing(
+    id: 'zen-512',
+    content: 'In the landscape of spring, there is neither better nor worse. The flowering branches grow naturally, some long, some short.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.morning, PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-513',
+    content: 'When you try to stop activity to achieve passivity, your very effort fills you with activity.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Sengcan',
+    source: 'Xinxin Ming',
+  ),
+  Pointing(
+    id: 'zen-514',
+    content: 'Do not seek the truth. Only cease to cherish opinions.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+    teacher: 'Sengcan',
+    source: 'Xinxin Ming',
+  ),
+  Pointing(
+    id: 'zen-515',
+    content: 'The ten thousand things return to the One. Where does the One return to?',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-516',
+    content: 'The whole moon and the entire sky are reflected in one dewdrop on the grass.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Dōgen',
+    source: 'Shōbōgenzō',
+  ),
+  Pointing(
+    id: 'zen-517',
+    content: 'To study the self is to forget the self. To forget the self is to be awakened by all things.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+    teacher: 'Dōgen',
+    source: 'Shōbōgenzō',
+  ),
+  Pointing(
+    id: 'zen-518',
+    content: 'If you understand, things are just as they are. If you do not understand, things are just as they are.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.stress, PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-519',
+    content: 'When the mind is not disturbed, the ten thousand things offer no offense.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Sengcan',
+    source: 'Xinxin Ming',
+  ),
+  Pointing(
+    id: 'zen-520',
+    content: 'The wild geese do not intend to cast their reflection. The water has no mind to retain their image.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.evening, PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-521',
+    content: 'Chop wood, carry water. Before and after — nothing changes. Everything changes.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-522',
+    content: 'A monk asked the master: What is Buddha? The master replied: Three pounds of flax.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+    teacher: 'Dongshan',
+  ),
+  Pointing(
+    id: 'zen-523',
+    content: 'Spring comes, the grass grows by itself. Where is the one who makes it grow?',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.morning, PointingContext.general],
+  ),
+  Pointing(
+    id: 'zen-524',
+    content: 'The mind of the past is ungraspable. The mind of the present is ungraspable. The mind of the future is ungraspable.',
+    tradition: Tradition.zen,
+    contexts: [PointingContext.general],
+    teacher: 'Diamond Sutra',
+  ),
+
+  // --- Direct Path: Jean Klein, Francis Lucille ---
+  Pointing(
+    id: 'dir-121',
+    content: 'There is only light. The objects are nothing but light taking shape.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-122',
+    content: 'There is nothing to become. All becoming belongs to the apparent person.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-123',
+    content: 'You don\'t have awareness. You ARE awareness. The \'having\' is the illusion.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-124',
+    content: 'Beauty is the expression of wholeness. When the separate self falls away, beauty is everywhere.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-125',
+    content: 'In the natural state, there is no one making effort to be natural.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-126',
+    content: 'Don\'t try to still the mind. Simply be aware of the mind. Awareness is already still.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-127',
+    content: 'You are the looking itself. Stop looking for the looker.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-128',
+    content: 'Action arises from stillness. Speech arises from silence. Form arises from formlessness.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-129',
+    content: 'The teacher doesn\'t transmit something. He removes the obstacles to recognizing what you already are.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-130',
+    content: 'Patterns of a lifetime don\'t dissolve in a moment. Give them space to unwind.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+  Pointing(
+    id: 'dir-131',
+    content: 'Awareness is not the highest state. It is the only state.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-132',
+    content: 'You are not looking for awareness. You ARE awareness looking.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-133',
+    content: 'You cannot experience awareness because you ARE awareness. Awareness is not an experience.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-134',
+    content: 'The eye cannot see itself, but it doesn\'t need to. It sees. You don\'t need to find awareness. You ARE it.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-135',
+    content: 'In the absence of the sense of separation, what you call love is simply the natural state.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-136',
+    content: 'Don\'t seek consciousness. Everything you find IS consciousness.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-137',
+    content: 'The body is not the container of awareness; it is a perception appearing IN awareness.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-138',
+    content: 'The knower and the known are made of the same substance. That substance is what you are.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-139',
+    content: 'Life becomes effortlessly ethical when there is no sense of a separate self to defend.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Francis Lucille',
+    source: 'The Perfume of Silence',
+  ),
+  Pointing(
+    id: 'dir-140',
+    content: 'Let the body be flooded with understanding. The cells themselves must know.',
+    tradition: Tradition.direct,
+    contexts: [PointingContext.general],
+    teacher: 'Jean Klein',
+    source: 'I Am',
+  ),
+
+  // --- Contemporary: Parsons, Foster, Katie, Gangaji, McKenna, Adyashanti ---
+  Pointing(
+    id: 'con-513',
+    content: 'What you\'re looking for is already here — you just won\'t recognize it because it\'s not what you expect.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-514',
+    content: 'There is no one to take the journey. The \'seeker\' is a fiction.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-515',
+    content: 'The search keeps the seeker in place. Drop the search and see what happens.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-516',
+    content: 'Liberation is utterly ordinary. Not a special state, not bliss, not permanent peace. Just this.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-517',
+    content: 'There is no enlightenment for a person. There\'s only the collapse of the person-illusion.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-518',
+    content: 'Every path and practice reinforces the sense of a person who is making progress.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-519',
+    content: 'The extraordinary is the ordinary recognized for what it is.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Tony Parsons',
+    source: 'The Open Secret',
+  ),
+  Pointing(
+    id: 'con-520',
+    content: 'The deepest acceptance is the acceptance of the one who cannot accept.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-521',
+    content: 'Can this feeling be here? Not: should it be here — but: can it be here? Look and see.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-522',
+    content: 'The feeling isn\'t the problem — the war with the feeling is.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-523',
+    content: 'Awakening isn\'t the end of feelings — it\'s the end of the war with feelings.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-524',
+    content: 'Stop trying to be spiritual and simply be human.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-525',
+    content: 'Life doesn\'t need you to hold it together. It\'s already held.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-526',
+    content: 'An awake life includes everything — joy and sorrow, clarity and confusion, connection and loneliness.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jeff Foster',
+    source: 'The Deepest Acceptance',
+  ),
+  Pointing(
+    id: 'con-527',
+    content: 'When you argue with reality, you lose — but only 100% of the time.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Byron Katie',
+    source: 'Loving What Is',
+  ),
+  Pointing(
+    id: 'con-528',
+    content: 'A thought is harmless unless we believe it. It\'s not our thoughts but our attachment to our thoughts that causes suffering.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Byron Katie',
+    source: 'Loving What Is',
+  ),
+  Pointing(
+    id: 'con-529',
+    content: 'I don\'t let go of my concepts — I meet them with understanding. Then they let go of me.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Byron Katie',
+    source: 'Loving What Is',
+  ),
+  Pointing(
+    id: 'con-530',
+    content: 'Reality is always kinder than your story about it.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.stress, PointingContext.general],
+    teacher: 'Byron Katie',
+    source: 'Loving What Is',
+  ),
+  Pointing(
+    id: 'con-531',
+    content: 'Stop. Just for this instant, stop. Who are you before the next thought?',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general, PointingContext.morning],
+    teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
+  ),
+  Pointing(
+    id: 'con-532',
+    content: 'What is here right now, before the next thought arises?',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.morning, PointingContext.general],
+    teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
+  ),
+  Pointing(
+    id: 'con-533',
+    content: 'Freedom is not a state you enter. It is what remains when the illusion of bondage is seen through.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Gangaji',
+    source: 'The Diamond in Your Pocket',
+  ),
+  Pointing(
+    id: 'con-534',
+    content: 'All paths lead away from the truth because the truth is not somewhere else.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
+  ),
+  Pointing(
+    id: 'con-535',
+    content: 'What remains when everything false is removed? That\'s what you are — not something, but the absence of the false.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
+  ),
+  Pointing(
+    id: 'con-536',
+    content: 'Belief is the most effective tool for not-knowing. As long as you believe something, you don\'t have to know it.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Jed McKenna',
+    source: 'Spiritual Enlightenment: The Damnedest Thing',
+  ),
+  Pointing(
+    id: 'con-537',
+    content: 'Enlightenment is a destructive process. It has nothing to do with becoming better or being happier. It is the crumbling away of untruth.',
+    tradition: Tradition.contemporary,
+    contexts: [PointingContext.general],
+    teacher: 'Adyashanti',
+    source: 'The End of Your World',
   ),
 ];
 
