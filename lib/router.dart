@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/lineages_screen.dart';
+import 'screens/splash_screen.dart';
 import 'widgets/animated_transitions.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -19,6 +22,10 @@ final _homeNavigatorKey = GlobalKey<NavigatorState>();
 final _inquiryNavigatorKey = GlobalKey<NavigatorState>();
 final _libraryNavigatorKey = GlobalKey<NavigatorState>();
 final _settingsNavigatorKey = GlobalKey<NavigatorState>();
+
+/// In-memory flag: splash only shown once per cold start.
+/// Resets naturally when the process is killed.
+bool _hasShownSplash = false;
 
 /// SharedPreferences reference for redirect checks
 /// Set by main.dart before runApp()
@@ -43,13 +50,42 @@ bool _isOnboardingCompleted() {
   return _sharedPrefs?.getBool('pointer_onboarding_completed') ?? false;
 }
 
+/// Check if animations are enabled from stored settings
+bool _areAnimationsEnabled() {
+  final settingsJson = _sharedPrefs?.getString('pointer_settings');
+  if (settingsJson == null) return true; // default
+  try {
+    final map = Map<String, dynamic>.from(
+      const JsonDecoder().convert(settingsJson) as Map,
+    );
+    return map['animationsEnabled'] as bool? ?? true;
+  } catch (_) {
+    return true;
+  }
+}
+
 GoRouter _createRouter() {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
     redirect: (context, state) {
-      final isOnboarding = state.matchedLocation == '/onboarding';
+      final location = state.matchedLocation;
+      final isSplash = location == '/splash';
+      final isOnboarding = location == '/onboarding';
       final onboardingCompleted = _isOnboardingCompleted();
+
+      // Splash: show once per cold start, skip if animations disabled
+      if (!_hasShownSplash && !isSplash && !isOnboarding) {
+        if (_areAnimationsEnabled()) {
+          _hasShownSplash = true;
+          final dest = onboardingCompleted ? '/' : '/onboarding';
+          return '/splash?dest=${Uri.encodeComponent(dest)}';
+        }
+        _hasShownSplash = true; // mark shown even if skipped
+      }
+
+      // Don't redirect away from splash (it self-navigates)
+      if (isSplash) return null;
 
       // If onboarding not completed and not on onboarding page, redirect
       if (!onboardingCompleted && !isOnboarding) {
@@ -64,6 +100,18 @@ GoRouter _createRouter() {
       return null;
     },
     routes: [
+      // Splash video route (outside shell) - calm fade for branded entry
+      GoRoute(
+        path: '/splash',
+        pageBuilder: (context, state) {
+          final dest = state.uri.queryParameters['dest'] ?? '/';
+          return CalmPageTransition(
+            key: state.pageKey,
+            child: SplashScreen(destination: dest),
+          );
+        },
+      ),
+
       // Onboarding route (outside shell) - fade through for entry
       GoRoute(
         path: '/onboarding',

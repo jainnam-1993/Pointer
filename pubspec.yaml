@@ -86,6 +86,7 @@ flutter:
     - assets/audio/
     - assets/icons/
     - assets/sounds/
+    - assets/videos/
 
 # App Icon Configuration
 flutter_launcher_icons:
