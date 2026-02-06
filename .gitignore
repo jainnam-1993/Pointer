@@ -55,3 +55,17 @@ android/app/upload-keystore.jks
 *.keystore
 *.jks
 android/play-store-credentials.json
+
+# Maestro test screenshots (generated output, not source)
+maestro/screenshots/
+
+# Build artifacts
+.gradle/
+android/app/local.properties
+android/gradle/
+
+# Claude Code local state
+.claude/
+
+# iOS generated files
+ios/ExportOptions.plist
