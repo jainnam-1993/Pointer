@@ -32,10 +32,6 @@ import flutter_local_notifications
 
     GeneratedPluginRegistrant.register(with: self)
 
-    // Enable background fetch for WorkManager periodic notifications
-    // WorkManager's Flutter plugin automatically registers BGTaskScheduler handlers
-    UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

@@ -73,10 +73,6 @@ void main() async {
   );
   _globalContainer = container;
 
-  // Initialize WorkManager for background notifications
-  // TEMP: Disabled to diagnose iOS 26 beta crash
-  // await WorkManagerService.initialize();
-
   // Initialize home screen widget
   await WidgetService.initialize();
 

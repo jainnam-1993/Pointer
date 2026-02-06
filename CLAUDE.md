@@ -2,6 +2,16 @@
 
 Here Now: Flutter mobile app delivering daily non-dual awareness "pointings" from spiritual traditions. Anti-meditation positioning. No progress tracking or gamification.
 
+## Current Context
+<!-- Auto-synced by obsidian-vault. Full details in vault. -->
+
+**Vault**: [[Projects/Personal/Pointer/README]]
+**Status**: App Store Ready | Premium UI hidden, resubmission pending
+**Synced**: 2026-02-06
+
+**Active**: App-Publishing (75%), Firebase-Auth (100%), Library-Improvements (100%)
+**Last Session**: 2026-01-14 | Premium UI soft-disabled for App Store approval
+
 ## Commands
 
 ```bash
@@ -17,6 +27,65 @@ bundle exec fastlane android internal/production
 # Android: Kotlin 2.3.0, ProGuard enabled, google-services.json
 # iOS: Manual via Xcode Archive (ExportOptions.plist)
 ```
+
+## Remote Development (Dev Desktop)
+
+This project syncs to the dev desktop via Unison. The dev desktop (32 cores, 123GB RAM) handles heavy compute; the Mac handles emulator display.
+
+```
+Dev Desktop: dev-dsk-jainnam-2a-70f1af09.us-west-2.amazon.com
+Project:     /workplace/jainnam/Personal/Pointer
+Sync:        Unison bidirectional (auto, ~15s cycle)
+```
+
+### Quick Commands (Dev Desktop)
+```bash
+pt                  # cd to Pointer project
+pt-test             # flutter test --concurrency=8
+pt-analyze          # flutter analyze
+pt-build            # flutter build apk --debug
+pt-ci               # analyze + test + build (full check)
+adb-tunnel          # adb connect localhost:5555 && adb devices
+```
+
+### Testing on Dev Desktop
+```bash
+# Unit/widget tests (no emulator needed, uses 32 cores)
+flutter test --concurrency=8
+
+# Static analysis
+flutter analyze
+
+# Debug APK build
+flutter build apk --debug
+```
+
+### Testing on Mac Emulator via ADB Tunnel
+
+Requires the Mac user to run `./scripts/start-tunnel.sh` first (starts SSH reverse tunnel on port 5555).
+
+```bash
+# Connect to tunneled emulator
+adb connect localhost:5555
+flutter devices                        # Verify emulator visible
+
+# Run on Mac emulator from dev desktop
+flutter run -d localhost:5555
+
+# E2E tests via tunnel
+maestro test maestro/flows/01_navigation.yaml
+maestro test maestro/flows/            # All 21 flows
+```
+
+### Golden Tests
+Golden tests (16 in `test/golden/`) will FAIL on Linux dev desktop — expected due to font rendering differences (FreeType vs CoreText). Only validate goldens on Mac. Use `--update-goldens` on Mac only.
+
+### Workflow
+1. Edit code on dev desktop (Claude Code / vim / VS Code Remote)
+2. Run `pt-test` and `pt-analyze` immediately (fast, no emulator)
+3. Unison auto-syncs changes to Mac within ~15s
+4. For interactive/visual testing: `flutter run` on Mac (or via tunnel)
+5. For E2E: `maestro test` on either side (Mac direct = faster, devdesk via tunnel = works)
 
 ## Architecture
 
@@ -50,7 +119,6 @@ lib/
 ├── services/                  # Business logic
 │   ├── storage_service.dart   # SharedPreferences wrapper
 │   ├── notification_service.dart # Scheduling with presets, time windows
-│   ├── workmanager_service.dart # Background notifications
 │   ├── widget_service.dart    # Home widget data updates
 │   ├── revenue_cat_service.dart # RevenueCat integration
 │   ├── donation_service.dart  # Tip jar via in_app_purchase (4 consumable tiers)
@@ -84,7 +152,7 @@ ios/Runner/
 ├── Info.plist                 # App config: Google OAuth URL scheme, export compliance, permissions
 ├── GoogleService-Info.plist   # Firebase configuration
 ├── Runner.entitlements        # App capabilities (Sign in with Apple, push notifications)
-└── AppDelegate.swift          # App lifecycle, AVAudioSession config (.playback, .mixWithOthers, .duckOthers), flutter_local_notifications plugin registration callback for foreground handling, UNUserNotificationCenter delegate setup (iOS 10+), background fetch (UIApplication.backgroundFetchIntervalMinimum) for WorkManager periodic notifications
+└── AppDelegate.swift          # App lifecycle, AVAudioSession config (.playback, .mixWithOthers, .duckOthers), flutter_local_notifications plugin registration callback for foreground handling, UNUserNotificationCenter delegate setup (iOS 10+)
 
 test/                          # Unit tests
 ├── providers/                 # Provider tests
@@ -102,7 +170,7 @@ fastlane/                      # Play Store deployment
 ## Tech Stack
 
 **Framework**: Flutter 3.x + Dart 3.10, GoRouter 14.x, Riverpod 2.5
-**Key Deps**: Firebase Auth (Google/Apple Sign-In), RevenueCat (IAP), in_app_purchase (tip jar), flutter_local_notifications + workmanager, just_audio, share_plus, screenshot
+**Key Deps**: Firebase Auth (Google/Apple Sign-In), RevenueCat (IAP), in_app_purchase (tip jar), flutter_local_notifications, just_audio, share_plus, screenshot
 **Testing**: flutter_test + mocktail, Maestro (E2E)
 **Design**: "Ethereal Liquid Glass" - 4 PointerColors themes, iOS Control Center glassmorphism. See `/DESIGN_SYSTEM.md`.
 **Principles**: Prefer Flutter packages over native code. Never commit signing files. Always use `context.colors` for theme access.
@@ -134,6 +202,9 @@ fastlane/                      # Play Store deployment
 - **Setup**: ProviderScope with mocked deps, SharedPreferences mocking, mocktail for services
 - **Animations**: Use `pump(Duration(seconds: 2))` not `pumpAndSettle()` for continuous animations. Set `AnimatedGradient.disableAnimations = true` in `setUpAll()`
 - **Subscription mocking**: `_TestSubscriptionNotifier` pattern extends SubscriptionNotifier with fixed state. See `library_screen_test.dart`
+- **Donation mocking**: `MockDonationService` extends DonationService (not Mock), `TestDonationNotifier` with setTestState() for controlled donation state. See `settings_screen_test.dart`
+- **Inline widget testing**: Use scrollTo helpers (e.g., `scrollToDonationButton`) to access widgets below viewport in ListView before assertions
+- **Golden tests on Linux**: Will fail due to font rendering differences (FreeType vs CoreText). Only update goldens on Mac
 - **Screen sizes**: iPhone 14 Pro Max (1290x2796, 3.0 DPR), iPad Pro (2048x2732, 2.0 DPR), standard phone (1080x1920, 2.0 DPR)
 - **Golden tests** (`test/golden/`): setupGoldenTests(), goldenTestTheme (Roboto), pumpForGolden(), GoldenDevices
 - **Accessibility** (`test/accessibility/`): VoiceOver semantics, labels, focus order, custom actions, screen reader hints
@@ -178,7 +249,7 @@ fastlane/                      # Play Store deployment
 
 **Providers** (`providers/`): Settings (zen, OLED, accessibility, theme, auto-advance) | Content (round-robin persisted order, favorites, affinity, teaching filters) | Subscription (RevenueCat, freemium v2, **⚠️ kFreeAccessEnabled=TRUE** - free access mode for App Store release) | Donation (tip jar, in_app_purchase consumables, DonationState) | Auth (Firebase, Google/Apple Sign-In, RevenueCat callbacks)
 
-**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience) | WorkManager (**TEMP DISABLED** for iOS 26 beta crash diagnosis; normally: background notifications surviving termination; iOS uses UIApplication.backgroundFetchIntervalMinimum in AppDelegate, Flutter plugin auto-registers BGTaskScheduler handlers) | DonationService (tip jar, DonationProductIds, isAvailable/loadProducts/purchaseDonation/completePurchase, graceful degradation) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard) | Auth (Apple Sign-In silent failures: catch ALL SignInWithAppleAuthorizationException, return null instead of rethrowing to avoid error messages on simulator/devices without Apple ID)
+**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience, scheduling via flutter_local_notifications) | DonationService (tip jar, DonationProductIds, isAvailable/loadProducts/purchaseDonation/completePurchase, graceful degradation) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard) | Auth (Apple Sign-In silent failures: catch ALL SignInWithAppleAuthorizationException, return null instead of rethrowing to avoid error messages on simulator/devices without Apple ID)
 
 **Android Widget** (`*.kt`): PointerWidgetProvider (zero-config AdapterViewFlipper, prev/next, auto-rotation, theme sync) | PointerWidgetService (RemoteViewsFactory) | Widget glassmorphism cards (multi-layer, matches app themes)
 
