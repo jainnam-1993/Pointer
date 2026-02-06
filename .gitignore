@@ -56,8 +56,13 @@ android/app/upload-keystore.jks
 *.jks
 android/play-store-credentials.json
 
-# Maestro test screenshots (generated output, not source)
+# Test output (integration test screenshots, generated assets)
+test_output/
 maestro/screenshots/
+
+# Root-level test screenshots & Unison conflict artifacts
+/*conflict*.png
+/*was_deleted*.png
 
 # Build artifacts
 .gradle/

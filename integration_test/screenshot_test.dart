@@ -37,16 +37,16 @@ void main() {
     await tester.pump(Duration(seconds: seconds));
   }
 
-  /// Takes a screenshot with the given name
+  /// Takes a screenshot with the given name, output to test_output/ directory
   Future<void> screenshot(WidgetTester tester, String name) async {
     if (!surfaceConverted) {
       await binding.convertFlutterSurfaceToImage();
       surfaceConverted = true;
     }
     await tester.pump();
-    await binding.takeScreenshot(name);
+    await binding.takeScreenshot('test_output/$name');
     // ignore: avoid_print
-    print('📸 Screenshot: $name');
+    print('📸 Screenshot: test_output/$name');
   }
 
   setUpAll(() async {
