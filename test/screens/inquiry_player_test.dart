@@ -5,7 +5,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/inquiry_player_screen.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/providers/inquiry_providers.dart';
 import 'package:pointer/data/inquiries.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/models/inquiry.dart';
@@ -476,34 +475,6 @@ void main() {
 
       expect(find.byType(InquiryVisual), findsOneWidget);
       // Should render but without animations (static version)
-    });
-  });
-
-  group('inquiryByIdProvider', () {
-    test('returns inquiry when ID exists', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final inquiry = container.read(inquiryByIdProvider('si_001'));
-      expect(inquiry, isNotNull);
-      expect(inquiry!.id, 'si_001');
-      expect(inquiry.question, 'Who is aware of this thought?');
-    });
-
-    test('returns null when ID does not exist', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final inquiry = container.read(inquiryByIdProvider('nonexistent_id'));
-      expect(inquiry, isNull);
     });
   });
 

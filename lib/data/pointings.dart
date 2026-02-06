@@ -15,9 +15,6 @@ class Pointing {
   final List<PointingContext> contexts;
   final String? teacher;
   final String? source;
-  final String? commentary;
-  final String? audioUrl;
-  final String? videoUrl;
 
   const Pointing({
     required this.id,
@@ -27,9 +24,6 @@ class Pointing {
     required this.contexts,
     this.teacher,
     this.source,
-    this.commentary,
-    this.audioUrl,
-    this.videoUrl,
   });
 }
 
@@ -100,7 +94,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-    audioUrl: 'asset:///assets/audio/ramana_who_am_i.mp3',
   ),
   Pointing(
     id: 'adv-4',
@@ -119,7 +112,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
     source: 'I Am That',
-    audioUrl: 'asset:///assets/audio/nisargadatta_world_in_you.mp3',
   ),
   Pointing(
     id: 'adv-6',
@@ -186,7 +178,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
     source: 'The Nature of Consciousness',
-    audioUrl: 'asset:///assets/audio/spira_what_is_looking.mp3',
   ),
   Pointing(
     id: 'dir-3',
@@ -229,7 +220,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.stress],
     teacher: 'Eckhart Tolle',
     source: 'The Power of Now',
-    audioUrl: 'asset:///assets/audio/tolle_present_moment.mp3',
   ),
   Pointing(
     id: 'con-3',
@@ -239,7 +229,6 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Pema Chödrön',
     source: 'When Things Fall Apart',
-    audioUrl: 'asset:///assets/audio/pema_sky_weather.mp3',
   ),
 
   // === ORIGINAL ===

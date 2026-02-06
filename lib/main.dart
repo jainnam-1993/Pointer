@@ -81,9 +81,6 @@ void main() async {
   await WidgetService.initialize();
 
   // Populate widget cache on startup
-  // NOTE: Previously relied on SubscriptionNotifier._initialize() to call this,
-  // but that provider is lazy and never instantiated on startup. Calling directly
-  // ensures widget has data when kFreeAccessEnabled = true.
   await WidgetService.populatePointingsCache();
 
   // Process any pending widget actions from iOS (save requests from widget buttons)

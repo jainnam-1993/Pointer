@@ -7,7 +7,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
@@ -44,9 +43,6 @@ final zenModeProvider = StateProvider<bool>((ref) {
 // ============================================================
 // Typography Customization
 // ============================================================
-
-/// Font size multiplier (1.0 = default, 0.8-1.4 range)
-final fontSizeMultiplierProvider = StateProvider<double>((ref) => 1.0);
 
 // ============================================================
 // OLED Black Mode - True black for OLED displays
@@ -194,113 +190,3 @@ final flutterThemeModeProvider = Provider<ThemeMode>((ref) {
   return AppTheme.toThemeMode(appThemeMode);
 });
 
-// ============================================================
-// Notification Settings
-// ============================================================
-
-/// Notification settings state
-class NotificationSettingsState {
-  final bool isEnabled;
-  final List<NotificationTime> times;
-  final bool isLoading;
-
-  const NotificationSettingsState({
-    this.isEnabled = false,
-    this.times = const [],
-    this.isLoading = false,
-  });
-
-  NotificationSettingsState copyWith({
-    bool? isEnabled,
-    List<NotificationTime>? times,
-    bool? isLoading,
-  }) {
-    return NotificationSettingsState(
-      isEnabled: isEnabled ?? this.isEnabled,
-      times: times ?? this.times,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
-}
-
-/// Notification settings provider
-final notificationSettingsProvider =
-    StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>(
-        (ref) {
-  final notificationService = ref.watch(notificationServiceProvider);
-  return NotificationSettingsNotifier(notificationService);
-});
-
-class NotificationSettingsNotifier
-    extends StateNotifier<NotificationSettingsState> {
-  final NotificationService _service;
-
-  NotificationSettingsNotifier(this._service)
-      : super(const NotificationSettingsState()) {
-    _loadSettings();
-  }
-
-  void _loadSettings() {
-    final enabled = _service.isNotificationsEnabled;
-    final times = _service.getNotificationTimes();
-    state = NotificationSettingsState(isEnabled: enabled, times: times);
-  }
-
-  /// Toggle notifications enabled/disabled
-  Future<void> setEnabled(bool enabled) async {
-    state = state.copyWith(isLoading: true);
-    try {
-      await _service.setNotificationsEnabled(enabled);
-      state = state.copyWith(isEnabled: enabled, isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  /// Update a specific notification time
-  Future<void> updateTime(NotificationTime updated) async {
-    final newTimes =
-        state.times.map((t) => t.id == updated.id ? updated : t).toList();
-    state = state.copyWith(times: newTimes, isLoading: true);
-    try {
-      await _service.saveNotificationTimes(newTimes);
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  /// Add a new notification time
-  Future<void> addTime(NotificationTime time) async {
-    final newTimes = [...state.times, time];
-    state = state.copyWith(times: newTimes, isLoading: true);
-    try {
-      await _service.saveNotificationTimes(newTimes);
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  /// Remove a notification time
-  Future<void> removeTime(String id) async {
-    final newTimes = state.times.where((t) => t.id != id).toList();
-    state = state.copyWith(times: newTimes, isLoading: true);
-    try {
-      await _service.saveNotificationTimes(newTimes);
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  /// Send a test notification
-  Future<void> sendTestNotification() async {
-    await _service.sendTestNotification();
-  }
-
-  /// Reschedule all notifications (useful after app update)
-  Future<void> rescheduleAll() async {
-    await _service.scheduleAllNotifications();
-  }
-}

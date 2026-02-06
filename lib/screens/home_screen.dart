@@ -6,8 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import '../data/pointings.dart';
 import 'share_preview_screen.dart';
 import '../data/teachers.dart';
@@ -15,14 +13,9 @@ import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
-import '../widgets/audio_player_widget.dart';
-import '../widgets/commentary_section.dart';
-import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
 import '../widgets/save_confirmation.dart';
-// Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
-// import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -110,19 +103,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Use the existing _handleNext logic but without haptic feedback
     // to distinguish from manual interaction
-    final subscription = ref.read(subscriptionProvider);
-    final isPremium = subscription.isPremium;
-    final dailyUsage = ref.read(dailyUsageProvider);
-
-    // Don't auto-advance if limit reached (let user see paywall on manual tap)
-    if (!isPremium && dailyUsage.limitReached) return;
-
     setState(() => _isAnimating = true);
 
     ref.read(currentPointingProvider.notifier).nextPointing();
-    if (!isPremium) {
-      ref.read(dailyUsageProvider.notifier).recordView();
-    }
 
     await Future.delayed(300.ms);
 
@@ -166,19 +149,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleNext() async {
     if (_isAnimating) return;
 
-    // Check freemium limit
-    final subscription = ref.read(subscriptionProvider);
-    final isPremium = subscription.isPremium;
-    final dailyUsage = ref.read(dailyUsageProvider);
-
-    if (!isPremium && dailyUsage.limitReached) {
-      // Show paywall when limit reached
-      if (mounted) {
-        context.push('/paywall');
-      }
-      return;
-    }
-
     // Haptic feedback
     HapticFeedback.mediumImpact();
 
@@ -186,9 +156,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Get next pointing
     ref.read(currentPointingProvider.notifier).nextPointing();
-    if (!isPremium) {
-      ref.read(dailyUsageProvider.notifier).recordView();
-    }
 
     // Wait for transition animation to complete
     await Future.delayed(300.ms);
@@ -615,32 +582,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
-                                // Extended commentary (premium feature)
-                                if (pointing.commentary != null) ...[
-                                  const SizedBox(height: 16),
-                                  CommentarySection(
-                                    commentary: pointing.commentary,
-                                    pointingId: pointing.id,
-                                  ),
-                                ],
-                                // Audio player (premium feature)
-                                if (pointing.audioUrl != null) ...[
-                                  const SizedBox(height: 16),
-                                  AudioPlayerWidget(
-                                    pointingId: pointing.id,
-                                    audioUrl: pointing.audioUrl,
-                                    isPremium: ref.watch(subscriptionProvider).isPremium,
-                                  ),
-                                ],
-                                // Video player (premium feature)
-                                if (pointing.videoUrl != null) ...[
-                                  const SizedBox(height: 16),
-                                  VideoPlayerWidget(
-                                    pointingId: pointing.id,
-                                    videoUrl: pointing.videoUrl,
-                                    isPremium: ref.watch(subscriptionProvider).isPremium,
-                                  ),
-                                ],
                               ],
                             ),
                           ),
