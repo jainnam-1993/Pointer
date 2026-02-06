@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/theme/app_theme.dart';
@@ -249,9 +250,12 @@ void main() {
   });
 
   group('Reduced Motion - Provider', () {
-    test('reduceMotionOverrideProvider defaults to null', () {
+    test('reduceMotionOverrideProvider defaults to null', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
       final container = ProviderContainer(
         overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
           oledModeProvider.overrideWith((ref) => false),
             themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
         ],

@@ -26,6 +26,7 @@ class AppSettings {
   final bool highContrast;
   final bool oledMode;
   final bool zenMode;
+  final bool animationsEnabled;
 
   const AppSettings({
     this.hapticFeedback = true,
@@ -35,6 +36,7 @@ class AppSettings {
     this.highContrast = false,
     this.oledMode = false,
     this.zenMode = false,
+    this.animationsEnabled = true,
   });
 
   AppSettings copyWith({
@@ -45,6 +47,7 @@ class AppSettings {
     bool? highContrast,
     bool? oledMode,
     bool? zenMode,
+    bool? animationsEnabled,
   }) {
     return AppSettings(
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
@@ -54,6 +57,7 @@ class AppSettings {
       highContrast: highContrast ?? this.highContrast,
       oledMode: oledMode ?? this.oledMode,
       zenMode: zenMode ?? this.zenMode,
+      animationsEnabled: animationsEnabled ?? this.animationsEnabled,
     );
   }
 
@@ -65,6 +69,7 @@ class AppSettings {
         'highContrast': highContrast,
         'oledMode': oledMode,
         'zenMode': zenMode,
+        'animationsEnabled': animationsEnabled,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -76,6 +81,7 @@ class AppSettings {
       highContrast: json['highContrast'] ?? false,
       oledMode: json['oledMode'] ?? false,
       zenMode: json['zenMode'] ?? false,
+      animationsEnabled: json['animationsEnabled'] ?? true,
     );
   }
 }

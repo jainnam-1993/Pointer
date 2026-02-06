@@ -88,6 +88,18 @@ LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
   }
 }
 
+/// Device performance tier for adaptive animation complexity
+enum _DeviceTier { high, mid, low }
+
+/// Classify device by screen metrics for adaptive animation tuning
+_DeviceTier _getDeviceTier(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  final dpr = MediaQuery.of(context).devicePixelRatio;
+  if (size.height >= 800 && dpr >= 3.0) return _DeviceTier.high;
+  if (size.height < 700) return _DeviceTier.low;
+  return _DeviceTier.mid;
+}
+
 /// Animated gradient background using flutter_animate
 ///
 /// Features:
@@ -197,14 +209,24 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
       return container;
     }
 
-    return container
-        .animate(
-          onPlay: (controller) => controller.repeat(reverse: true),
-        )
-        .shimmer(
-          duration: 4000.ms, // Slightly slower for smoother feel
-          color: shimmerColor,
-        );
+    // Adaptive shimmer duration based on device capability
+    final tier = _getDeviceTier(context);
+    final shimmerDuration = switch (tier) {
+      _DeviceTier.high => 4000.ms,
+      _DeviceTier.mid => 5333.ms,  // ~45fps equivalent
+      _DeviceTier.low => 8000.ms,  // ~30fps equivalent
+    };
+
+    return RepaintBoundary(
+      child: container
+          .animate(
+            onPlay: (controller) => controller.repeat(reverse: true),
+          )
+          .shimmer(
+            duration: shimmerDuration,
+            color: shimmerColor,
+          ),
+    );
   }
 }
 
@@ -240,6 +262,19 @@ class FloatingParticles extends ConsumerWidget {
     final particleColor = isDark ? Colors.white : Colors.black;
     final baseAlpha = isDark ? 0.15 : 0.1;
 
+    // Adaptive particle count and duration based on device capability
+    final tier = _getDeviceTier(context);
+    final particleCount = switch (tier) {
+      _DeviceTier.high => 6,
+      _DeviceTier.mid => 3,
+      _DeviceTier.low => 2,
+    };
+    final baseDuration = switch (tier) {
+      _DeviceTier.high => 4000,
+      _DeviceTier.mid => 5333,
+      _DeviceTier.low => 8000,
+    };
+
     // Exclude decorative particles from accessibility tree
     // Position particles around edges only (corners and margins)
     return ExcludeSemantics(
@@ -250,7 +285,7 @@ class FloatingParticles extends ConsumerWidget {
             final height = constraints.maxHeight;
 
             // Edge positions (corners and margins, avoiding center)
-            final positions = [
+            final allPositions = [
               // Top corners
               Offset(20, 40),
               Offset(width - 30, 60),
@@ -262,12 +297,16 @@ class FloatingParticles extends ConsumerWidget {
               Offset(width - 20, height * 0.85),
             ];
 
+            final positions = allPositions.take(particleCount).toList();
+
             return Stack(
               children: List.generate(positions.length, (index) {
                 final pos = positions[index];
                 return Positioned(
                   left: pos.dx,
                   top: pos.dy,
+                  // Single controller per particle (was 2: moveY + fade)
+                  // Synced base duration replaces index*600 offset
                   child: Container(
                     width: 3 + (index % 3) * 1.5,
                     height: 3 + (index % 3) * 1.5,
@@ -279,16 +318,16 @@ class FloatingParticles extends ConsumerWidget {
                       .animate(
                         onPlay: (controller) => controller.repeat(reverse: true),
                       )
-                      .moveY(
-                        begin: 0,
-                        end: -15 - index * 3.0,
-                        duration: (4000 + index * 600).ms,
+                      .custom(
+                        duration: baseDuration.ms,
                         curve: Curves.easeInOut,
-                      )
-                      .fade(
-                        begin: 0.0,
-                        end: 1.0,
-                        duration: 2000.ms,
+                        builder: (context, value, child) => Opacity(
+                          opacity: value,
+                          child: Transform.translate(
+                            offset: Offset(0, -15 * value),
+                            child: child,
+                          ),
+                        ),
                       ),
                 );
               }),

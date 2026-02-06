@@ -856,6 +856,8 @@ class _AppearanceSelector extends ConsumerWidget {
           // OLED Black Mode toggle removed (Phase 5.5) - caused light mode to turn black
           // Zen Mode toggle
           _ZenModeToggle(),
+          const SizedBox(height: 12),
+          _AnimationToggle(),
         ],
       ),
     );
@@ -901,6 +903,56 @@ class _ZenModeToggle extends ConsumerWidget {
           value: isZenMode,
           onChanged: (value) {
             ref.read(zenModeProvider.notifier).state = value;
+          },
+          activeThumbColor: switchThumbColor,
+          activeTrackColor: switchActiveTrackColor,
+          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
+          inactiveTrackColor: switchInactiveTrackColor,
+        ),
+      ],
+    );
+  }
+}
+
+class _AnimationToggle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = context.colors;
+    final switchThumbColor = isDark ? Colors.white : colors.primary;
+    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
+    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Background Animation',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Animated gradient and floating particles',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: colors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: settings.animationsEnabled,
+          onChanged: (value) {
+            ref.read(settingsProvider.notifier).setAnimationsEnabled(value);
           },
           activeThumbColor: switchThumbColor,
           activeTrackColor: switchActiveTrackColor,

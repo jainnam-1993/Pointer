@@ -49,6 +49,7 @@ class TestSetup {
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
         oledModeProvider.overrideWith((ref) => false),
         reduceMotionOverrideProvider.overrideWith((ref) => null),
+        backgroundShimmerActiveProvider.overrideWith((ref) => false),
       ];
 
   /// Wrap a widget with ProviderScope and MaterialApp for testing

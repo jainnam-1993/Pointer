@@ -49,8 +49,9 @@ class _MainShellState extends ConsumerState<MainShell> {
       return Scaffold(
         body: Stack(
           children: [
-            // Global particles effect (behind content)
-            const Positioned.fill(child: FloatingParticles()),
+            // Global particles effect (behind content) — RepaintBoundary isolates
+            // continuous particle animations from triggering full-tree repaints
+            const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
             content,
           ],
         ),
@@ -62,7 +63,7 @@ class _MainShellState extends ConsumerState<MainShell> {
       body: Stack(
         children: [
           // Global particles effect (behind content)
-          const Positioned.fill(child: FloatingParticles()),
+          const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
           content,
         ],
       ),

@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/animated_gradient.dart';
 import 'core_providers.dart';
 
 // ============================================================
@@ -61,16 +62,18 @@ final oledModeProvider = StateProvider<bool>((ref) {
 // Accessibility - Reduced Motion
 // ============================================================
 
-/// Optional app-level override for reduce motion setting.
+/// App-level override for reduce motion setting, derived from animationsEnabled.
 ///
-/// - `null`: Follow system setting (default)
-/// - `true`: Force reduce motion ON (app setting can enable)
-/// - `false`: Follow system setting (app cannot override system accessibility)
+/// - `null`: Follow system setting (animationsEnabled == true)
+/// - `true`: Force reduce motion ON (animationsEnabled == false)
 ///
 /// Note: When system disableAnimations is true, we always respect it.
 /// The app override can only enable reduce motion, not disable it when
 /// the system requires it for accessibility.
-final reduceMotionOverrideProvider = StateProvider<bool?>((ref) => null);
+final reduceMotionOverrideProvider = Provider<bool?>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.animationsEnabled ? null : true;
+});
 
 /// Helper function to determine if motion should be reduced.
 ///
@@ -90,6 +93,13 @@ bool shouldReduceMotion(BuildContext context, bool? appOverride) {
   // App override can enable reduce motion (but not disable system setting)
   return appOverride == true;
 }
+
+/// Whether background gradient shimmer is active (for GlassCard optimization).
+/// When true, GlassCard skips its own breathing shimmer to avoid redundant GPU work.
+final backgroundShimmerActiveProvider = Provider<bool>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return settings.animationsEnabled && !AnimatedGradient.disableAnimations;
+});
 
 // ============================================================
 // Accessibility - High Contrast
@@ -158,6 +168,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Set auto-advance delay (in seconds)
   Future<void> setAutoAdvanceDelay(int seconds) async {
     final newSettings = state.copyWith(autoAdvanceDelay: seconds);
+    await update(newSettings);
+  }
+
+  /// Toggle background animations
+  Future<void> setAnimationsEnabled(bool enabled) async {
+    final newSettings = state.copyWith(animationsEnabled: enabled);
     await update(newSettings);
   }
 }

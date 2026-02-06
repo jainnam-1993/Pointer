@@ -136,13 +136,19 @@ class GlassCard extends ConsumerWidget {
     }
 
     // Check if breathing animation should be enabled
-    // Respects: reduceMotion accessibility, test environment, and flag
+    // Respects: reduceMotion accessibility, test environment, flag,
+    // and whether background gradient shimmer is already running
     final appOverride = ref.watch(reduceMotionOverrideProvider);
     final reduceMotion = shouldReduceMotion(context, appOverride);
-    final shouldAnimate = enableBreathingAnimation &&
+    var shouldAnimate = enableBreathingAnimation &&
         !reduceMotion &&
         !AnimatedGradient.disableAnimations &&
         !AnimatedGradient.isTestEnvironment();
+    // Only check background shimmer when animation would otherwise be enabled.
+    // Deferred watch avoids settingsProvider dependency chain in tests/disabled states.
+    if (shouldAnimate) {
+      shouldAnimate = !ref.watch(backgroundShimmerActiveProvider);
+    }
 
     // Build the inner container with optional breathing animation overlay
     Widget glassContainer = Container(
@@ -169,24 +175,26 @@ class GlassCard extends ConsumerWidget {
       glassContainer = Stack(
         children: [
           glassContainer,
-          // Animated shimmer overlay - positioned to match container bounds
+          // Animated shimmer overlay — RepaintBoundary isolates shimmer repaints
           Positioned.fill(
-            child: IgnorePointer(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(borderRadius),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                  ),
-                )
-                    .animate(
-                      onPlay: (controller) => controller.repeat(reverse: true),
-                    )
-                    .shimmer(
-                      duration: 8000.ms, // Slower than 4s background for layered feel
-                      color: shimmerColor,
-                      angle: 0.5, // Slight diagonal for organic feel
+            child: RepaintBoundary(
+              child: IgnorePointer(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(borderRadius),
                     ),
+                  )
+                      .animate(
+                        onPlay: (controller) => controller.repeat(reverse: true),
+                      )
+                      .shimmer(
+                        duration: 8000.ms, // Slower than 4s background for layered feel
+                        color: shimmerColor,
+                        angle: 0.5, // Slight diagonal for organic feel
+                      ),
+                ),
               ),
             ),
           ),
