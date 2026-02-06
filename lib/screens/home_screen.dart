@@ -153,6 +153,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (pointing.teacher != null) {
       announcement.write('. By ${pointing.teacher}');
     }
+    if (pointing.source != null) {
+      announcement.write('. From ${pointing.source}');
+    }
     SemanticsService.sendAnnouncement(
       View.of(context),
       announcement.toString(),
@@ -599,6 +602,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                   ),
                                 ],
+                                if (pointing.source != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      pointing.source!,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontStyle: FontStyle.italic,
+                                        color: colors.textSecondary.withValues(alpha: 0.6),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 // Extended commentary (premium feature)
                                 if (pointing.commentary != null) ...[
                                   const SizedBox(height: 16),
