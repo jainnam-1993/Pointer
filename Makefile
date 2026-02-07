@@ -50,24 +50,27 @@ test-golden:
 # Quick confidence check (~30s) — THE go-to command after every change
 test-e2e-smoke:
 	@echo "Running smoke test..."
-	~/.maestro/bin/maestro test maestro/flows/00_smoke_test.yaml
+	@mkdir -p maestro/screenshots
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/00_smoke_test.yaml
 
 # Core confidence flows — high-signal tests that catch real regressions
 test-e2e-core:
 	@echo "Running core E2E flows..."
-	~/.maestro/bin/maestro test maestro/flows/00_smoke_test.yaml
-	~/.maestro/bin/maestro test maestro/flows/01_navigation.yaml
-	~/.maestro/bin/maestro test maestro/flows/04_home_interactions.yaml
-	~/.maestro/bin/maestro test maestro/flows/11_zen_mode.yaml
-	~/.maestro/bin/maestro test maestro/flows/12_save_favorites.yaml
-	~/.maestro/bin/maestro test maestro/flows/20_inquiry_player.yaml
-	~/.maestro/bin/maestro test maestro/flows/21_article_reader.yaml
-	~/.maestro/bin/maestro test maestro/flows/25_favorites_to_library.yaml
+	@mkdir -p maestro/screenshots
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/00_smoke_test.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/01_navigation.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/04_home_interactions.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/11_zen_mode.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/12_save_favorites.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/20_inquiry_player.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/21_article_reader.yaml
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/25_favorites_to_library.yaml
 
 # All Maestro E2E tests
 test-e2e:
 	@echo "Running all Maestro E2E tests..."
-	~/.maestro/bin/maestro test maestro/flows/
+	@mkdir -p maestro/screenshots
+	~/.maestro/bin/maestro test --output maestro/screenshots maestro/flows/
 
 # Headless tests (no device needed) — fast feedback on devdesk
 test-headless:
