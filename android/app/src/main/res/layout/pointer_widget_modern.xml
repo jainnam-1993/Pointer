@@ -28,7 +28,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@mipmap/ic_launcher"
-                android:contentDescription="Pointer"
+                android:contentDescription="Here Now"
                 android:layout_marginBottom="12dp" />
 
             <!-- Pointing content -->

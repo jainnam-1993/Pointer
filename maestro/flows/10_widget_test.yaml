@@ -87,9 +87,9 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - takeScreenshot: widget_list_scrolled
 
-# Look for Pointer widget entry and tap it to see preview
+# Look for Here Now widget entry and tap it to see preview
 - tapOn:
-    text: ".*Pointer.*"
+    text: ".*Here Now.*"
 - waitForAnimationToEnd
 - takeScreenshot: widget_preview
 
