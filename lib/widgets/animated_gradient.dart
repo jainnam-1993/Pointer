@@ -209,13 +209,12 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
       return container;
     }
 
-    // Slow shimmer — decorative effect doesn't need high frame rate.
-    // Longer duration = fewer repaints = less CPU/GPU heat.
+    // Adaptive shimmer duration based on device capability
     final tier = _getDeviceTier(context);
     final shimmerDuration = switch (tier) {
-      _DeviceTier.high => 10000.ms,
-      _DeviceTier.mid => 12000.ms,
-      _DeviceTier.low => 16000.ms,
+      _DeviceTier.high => 4000.ms,
+      _DeviceTier.mid => 5333.ms,  // ~45fps equivalent
+      _DeviceTier.low => 8000.ms,  // ~30fps equivalent
     };
 
     return RepaintBoundary(
@@ -263,18 +262,17 @@ class FloatingParticles extends ConsumerWidget {
     final particleColor = isDark ? Colors.white : Colors.black;
     final baseAlpha = isDark ? 0.15 : 0.1;
 
-    // Fewer particles + slower animation = less CPU heat.
-    // Particles are subtle — 3 max is plenty, slower drift looks more organic.
+    // Adaptive particle count and duration based on device capability
     final tier = _getDeviceTier(context);
     final particleCount = switch (tier) {
-      _DeviceTier.high => 3,
-      _DeviceTier.mid => 2,
-      _DeviceTier.low => 1,
+      _DeviceTier.high => 6,
+      _DeviceTier.mid => 3,
+      _DeviceTier.low => 2,
     };
     final baseDuration = switch (tier) {
-      _DeviceTier.high => 10000,
-      _DeviceTier.mid => 12000,
-      _DeviceTier.low => 16000,
+      _DeviceTier.high => 4000,
+      _DeviceTier.mid => 5333,
+      _DeviceTier.low => 8000,
     };
 
     // Exclude decorative particles from accessibility tree
