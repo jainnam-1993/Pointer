@@ -418,30 +418,72 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       );
     }
 
-    // When Articles filter or All, show ArticleCategory
+    // When Articles filter, show ArticleCategory only
+    if (contentFilter == ContentFilter.articles) {
+      return SliverPadding(
+        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final category = ArticleCategory.values[index];
+              final info = categoryInfoMap[category]!;
+              final articleCount = getArticlesByCategory(category).length;
+
+              return StaggeredFadeIn(
+                index: index,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _CategoryCard(
+                    category: category,
+                    info: info,
+                    articleCount: articleCount,
+                    onTap: () => _openCategory(context, category, info),
+                  ),
+                ),
+              );
+            },
+            childCount: ArticleCategory.values.length,
+          ),
+        ),
+      );
+    }
+
+    // When All, show TopicTags with combined counts (articles + quotes)
+    final teachingCounts = TeachingRepository.topicCounts;
+    final combinedCounts = <String, int>{};
+    for (final topic in TopicTags.all) {
+      final articleCount = getArticlesByTopic(topic).length;
+      final teachingCount = teachingCounts[topic] ?? 0;
+      final total = articleCount + teachingCount;
+      if (total > 0) combinedCounts[topic] = total;
+    }
+    final sortedTopics = combinedCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final category = ArticleCategory.values[index];
-            final info = categoryInfoMap[category]!;
-            final articleCount = getArticlesByCategory(category).length;
+            final entry = sortedTopics[index];
+            final topic = entry.key;
+            final count = entry.value;
 
             return StaggeredFadeIn(
               index: index,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _CategoryCard(
-                  category: category,
-                  info: info,
-                  articleCount: articleCount,
-                  onTap: () => _openCategory(context, category, info),
+                child: _BrowseCard(
+                  icon: TopicTags.icon(topic),
+                  name: TopicTags.displayName(topic),
+                  description: '${getArticlesByTopic(topic).length} articles, ${teachingCounts[topic] ?? 0} quotes',
+                  count: count,
+                  onTap: () => _openTopic(context, topic, contentFilter),
                 ),
               ),
             );
           },
-          childCount: ArticleCategory.values.length,
+          childCount: sortedTopics.length,
         ),
       ),
     );

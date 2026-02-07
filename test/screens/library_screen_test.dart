@@ -165,39 +165,45 @@ void main() {
     );
 
     testWidgets(
-      'Given library screen loaded, When rendered, Then displays category cards with names and descriptions',
+      'Given library screen loaded, When rendered, Then displays topic cards with names from TopicTags',
       (tester) async {
         setScreenSize(tester);
         await tester.pumpWidget(buildLibraryScreen());
         await tester.pump(const Duration(seconds: 2));
 
-        // Verify actual category names from categoryInfoMap
-        for (final entry in categoryInfoMap.entries) {
+        // In "All" mode, topics view shows TopicTags with combined counts
+        // Verify at least some well-known topic names are visible
+        final visibleTopics = ['Awareness', 'Self-Inquiry', 'Presence'];
+        for (final topicName in visibleTopics) {
           expect(
-            find.text(entry.value.name),
+            find.text(topicName),
             findsAtLeastNWidgets(1),
-            reason: 'Category "${entry.value.name}" should be visible in BROWSE BY section',
+            reason: 'Topic "$topicName" should be visible in BROWSE BY section',
           );
         }
       },
     );
 
     testWidgets(
-      'Given library screen loaded, When rendered, Then category cards show non-zero article counts',
+      'Given library screen loaded, When rendered, Then topic cards show combined article+quote counts',
       (tester) async {
         setScreenSize(tester);
         await tester.pumpWidget(buildLibraryScreen());
         await tester.pump(const Duration(seconds: 2));
 
-        // Each category should show its count, and each count should be > 0
-        for (final category in ArticleCategory.values) {
-          final count = getArticlesByCategory(category).length;
-          expect(count, greaterThan(0),
-              reason: 'Category ${category.name} should have articles');
+        // Each visible topic should have combined count > 0 (articles + quotes)
+        final teachingCounts = TeachingRepository.topicCounts;
+        // Check a few topics that definitely have content
+        for (final topic in [TopicTags.awareness, TopicTags.presence, TopicTags.selfInquiry]) {
+          final articleCount = getArticlesByTopic(topic).length;
+          final teachingCount = teachingCounts[topic] ?? 0;
+          final total = articleCount + teachingCount;
+          expect(total, greaterThan(0),
+              reason: 'Topic $topic should have combined content');
           expect(
-            find.text('$count'),
+            find.text('$total'),
             findsAtLeastNWidgets(1),
-            reason: 'Category ${category.name} count ($count) should be displayed',
+            reason: 'Topic $topic combined count ($total) should be displayed',
           );
         }
       },
