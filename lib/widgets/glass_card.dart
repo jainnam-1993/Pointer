@@ -30,11 +30,6 @@ class GlassCard extends ConsumerWidget {
   /// Respects reduceMotion accessibility setting
   final bool enableBreathingAnimation;
 
-  /// Whether to use BackdropFilter blur (GPU-expensive).
-  /// When false, uses a semi-transparent solid fill instead — visually similar
-  /// but zero blur cost. Set to false for items in scrollable lists.
-  final bool useBackdropFilter;
-
   const GlassCard({
     super.key,
     required this.child,
@@ -47,7 +42,6 @@ class GlassCard extends ConsumerWidget {
     this.maxHeight,
     this.enableScrolling = true,
     this.enableBreathingAnimation = false,
-    this.useBackdropFilter = true,
   });
 
   @override
@@ -208,28 +202,6 @@ class GlassCard extends ConsumerWidget {
       );
     }
 
-    final Widget cardContent;
-    if (useBackdropFilter) {
-      cardContent = ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: glassContainer,
-        ),
-      );
-    } else {
-      // Lightweight fallback: semi-transparent fill instead of GPU blur
-      cardContent = Container(
-        decoration: BoxDecoration(
-          color: isDark
-              ? Colors.black.withValues(alpha: 0.45)
-              : Colors.white.withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        child: glassContainer,
-      );
-    }
-
     final card = Container(
       decoration: isDark
           ? null
@@ -244,7 +216,13 @@ class GlassCard extends ConsumerWidget {
                 ),
               ],
             ),
-      child: cardContent,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: glassContainer,
+        ),
+      ),
     );
 
     if (onTap != null) {

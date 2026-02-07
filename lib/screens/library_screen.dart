@@ -992,6 +992,56 @@ class _BrowseModeSheet extends StatelessWidget {
   }
 }
 
+/// Lightweight card for scroll list items — semi-transparent fill, no BackdropFilter blur.
+/// Visually similar to GlassCard but zero GPU blur cost during scroll.
+class _ListCard extends StatelessWidget {
+  final Widget child;
+  final double borderRadius;
+  final VoidCallback? onTap;
+
+  const _ListCard({
+    required this.child,
+    this.borderRadius = 24,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+
+    final card = Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.white.withValues(alpha: 0.75),
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: isDark
+              ? colors.glassBorder
+              : Colors.black.withValues(alpha: 0.06),
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: child,
+    );
+
+    if (onTap != null) {
+      return GestureDetector(onTap: onTap, child: card);
+    }
+    return card;
+  }
+}
+
 /// Generic browse card for teachers, lineages, moods
 class _BrowseCard extends StatelessWidget {
   final String icon;
@@ -1015,9 +1065,7 @@ class _BrowseCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '$name. $description. $count teachings.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        useBackdropFilter: false,
+      child: _ListCard(
         onTap: onTap,
         child: Row(
           children: [
@@ -1111,10 +1159,8 @@ class _FeaturedArticleCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
-      child: GlassCard(
-          padding: const EdgeInsets.all(16),
+      child: _ListCard(
           borderRadius: 20,
-          useBackdropFilter: false,
           onTap: onTap,
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1209,9 +1255,7 @@ class _CategoryCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '${info.name}. ${info.description}. $articleCount articles.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        useBackdropFilter: false,
+      child: _ListCard(
         onTap: onTap,
         child: Row(
           children: [
@@ -1360,23 +1404,20 @@ class CategoryArticlesScreen extends StatelessWidget {
                       (context, index) {
                         final article = categoryArticles[index];
 
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _ArticleListItem(
-                              article: article,
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ArticleReaderScreen(article: article),
-                                  ),
-                                );
-                              },
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _ArticleListItem(
+                            article: article,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ArticleReaderScreen(article: article),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
@@ -1410,8 +1451,7 @@ class _ArticleListItem extends StatelessWidget {
       button: true,
       label:
           '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
+      child: _ListCard(
         onTap: onTap,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1593,24 +1633,21 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                         (context, index) {
                           final article = articles[index];
 
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ArticleReaderScreen(
-                                        article: article,
-                                      ),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ArticleListItem(
+                              article: article,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ArticleReaderScreen(
+                                      article: article,
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
@@ -1651,19 +1688,16 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                       (context, index) {
                         final teaching = teachings[index];
                         final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(
+                            teaching: teaching,
+                            isViewed: isViewed,
+                            onTap: () async {
+                              HapticFeedback.lightImpact();
+                              await storage.markTeachingAsViewed(teaching.id);
+                              if (context.mounted) setState(() {});
+                            },
                           ),
                         );
                       },
@@ -1792,22 +1826,19 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                },
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ArticleListItem(
+                              article: article,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArticleReaderScreen(article: article),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
@@ -1843,19 +1874,16 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                       (context, index) {
                         final teaching = teachings[index];
                         final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(
+                            teaching: teaching,
+                            isViewed: isViewed,
+                            onTap: () async {
+                              HapticFeedback.lightImpact();
+                              await storage.markTeachingAsViewed(teaching.id);
+                              if (context.mounted) setState(() {});
+                            },
                           ),
                         );
                       },
@@ -1971,22 +1999,19 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                         (context, index) {
                           final article = articles[index];
 
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                },
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ArticleListItem(
+                              article: article,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArticleReaderScreen(article: article),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
@@ -2017,19 +2042,16 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                       (context, index) {
                         final teaching = teachings[index];
                         final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TeachingCard(
+                            teaching: teaching,
+                            isViewed: isViewed,
+                            onTap: () async {
+                              HapticFeedback.lightImpact();
+                              await storage.markTeachingAsViewed(teaching.id);
+                              if (context.mounted) setState(() {});
+                            },
                           ),
                         );
                       },
@@ -2144,22 +2166,19 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final article = articles[index];
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                },
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ArticleListItem(
+                              article: article,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArticleReaderScreen(article: article),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
@@ -2191,19 +2210,16 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                         (context, index) {
                           final teaching = teachings[index];
                           final isViewed = viewedIds.contains(teaching.id);
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _TeachingCard(
-                                teaching: teaching,
-                                isViewed: isViewed,
-                                onTap: () async {
-                                  HapticFeedback.lightImpact();
-                                  await storage.markTeachingAsViewed(teaching.id);
-                                  if (context.mounted) setState(() {});
-                                },
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _TeachingCard(
+                              teaching: teaching,
+                              isViewed: isViewed,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                await storage.markTeachingAsViewed(teaching.id);
+                                if (context.mounted) setState(() {});
+                              },
                             ),
                           );
                         },
@@ -2301,8 +2317,7 @@ class _TeachingCard extends StatelessWidget {
 
     return Semantics(
       label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
-      child: GlassCard(
-      padding: const EdgeInsets.all(16),
+      child: _ListCard(
       onTap: onTap,
       child: Opacity(
         opacity: isViewed ? 0.7 : 1.0,
