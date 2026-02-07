@@ -992,56 +992,6 @@ class _BrowseModeSheet extends StatelessWidget {
   }
 }
 
-/// Lightweight card for scroll list items — semi-transparent fill, no BackdropFilter blur.
-/// Visually similar to GlassCard but zero GPU blur cost during scroll.
-class _ListCard extends StatelessWidget {
-  final Widget child;
-  final double borderRadius;
-  final VoidCallback? onTap;
-
-  const _ListCard({
-    required this.child,
-    this.borderRadius = 24,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-
-    final card = Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.08)
-            : Colors.white.withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: isDark
-              ? colors.glassBorder
-              : Colors.black.withValues(alpha: 0.06),
-        ),
-        boxShadow: isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
-      child: child,
-    );
-
-    if (onTap != null) {
-      return GestureDetector(onTap: onTap, child: card);
-    }
-    return card;
-  }
-}
-
 /// Generic browse card for teachers, lineages, moods
 class _BrowseCard extends StatelessWidget {
   final String icon;
@@ -1065,7 +1015,7 @@ class _BrowseCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '$name. $description. $count teachings.',
-      child: _ListCard(
+      child: GlassCard(padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Row(
           children: [
@@ -1159,7 +1109,7 @@ class _FeaturedArticleCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
-      child: _ListCard(
+      child: GlassCard(padding: const EdgeInsets.all(16),
           borderRadius: 20,
           onTap: onTap,
           child: Column(
@@ -1255,7 +1205,7 @@ class _CategoryCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '${info.name}. ${info.description}. $articleCount articles.',
-      child: _ListCard(
+      child: GlassCard(padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Row(
           children: [
@@ -1451,7 +1401,7 @@ class _ArticleListItem extends StatelessWidget {
       button: true,
       label:
           '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read',
-      child: _ListCard(
+      child: GlassCard(padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2317,7 +2267,7 @@ class _TeachingCard extends StatelessWidget {
 
     return Semantics(
       label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
-      child: _ListCard(
+      child: GlassCard(padding: const EdgeInsets.all(16),
       onTap: onTap,
       child: Opacity(
         opacity: isViewed ? 0.7 : 1.0,
