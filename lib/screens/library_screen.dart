@@ -714,6 +714,7 @@ class _BrowseModeDropdown extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      useRootNavigator: true,
       builder: (context) => _BrowseModeSheet(
         currentMode: currentMode,
         onSelected: (mode) {
@@ -794,6 +795,7 @@ class _ContentTypeDropdown extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      useRootNavigator: true,
       builder: (context) => _ContentTypeSheet(
         currentFilter: currentFilter,
         onSelected: (filter) {
@@ -823,8 +825,7 @@ class _FilterSheet<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = context.isDarkMode;
-    // Navbar clearance: navbar height (~65) + small gap (8)
-    const navbarClearance = 73.0;
+    // Bottom safe area for home indicator
 
     return RepaintBoundary(
       child: ClipRRect(
@@ -892,8 +893,7 @@ class _FilterSheet<T> extends StatelessWidget {
                     },
                   );
                 }),
-                // Navbar clearance
-                SizedBox(height: navbarClearance + MediaQuery.of(context).padding.bottom),
+                SizedBox(height: 16 + MediaQuery.of(context).padding.bottom),
               ],
             ),
           ),

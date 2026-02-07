@@ -11,6 +11,7 @@ void showTeacherSheet(BuildContext context, Teacher teacher) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    useRootNavigator: true,
     builder: (context) => TeacherSheet(teacher: teacher),
   );
 }

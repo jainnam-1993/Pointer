@@ -216,6 +216,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      useRootNavigator: true,
       useSafeArea: true,
       builder: (context) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.9,

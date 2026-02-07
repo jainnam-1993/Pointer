@@ -85,6 +85,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      useRootNavigator: true,
       builder: (context) => _NotificationTimesSheet(showTestPreset: _showDeveloperOptions),
     );
   }
@@ -985,6 +986,7 @@ class _NotificationTimesSheetState extends ConsumerState<_NotificationTimesSheet
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      useRootNavigator: true,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
