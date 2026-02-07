@@ -9,8 +9,9 @@ Here Now: Flutter mobile app delivering daily non-dual awareness "pointings" fro
 **Status**: App Store Ready | Tests hardened, E2E flows strict
 **Synced**: 2026-02-07
 
-**Active**: App-Publishing (80%), Test-Hardening (100%), Source-Citations (100%), Firebase-Auth (100%), Library-Improvements (100%)
-**Last Session**: 2026-02-07 | Rewrote library tests with real content validation, removed all 147 optional:true from 22 Maestro E2E flows, committed tappable source citations + splash fix
+**Active**: App-Publishing (80%)
+**Archived**: Test-Hardening, Dead-Code-Cleanup, Source-Citations, Firebase-Auth, Library-Improvements (all 100%)
+**Last Session**: 2026-02-07 | Context optimization, vault cleanup, CLAUDE.md deduplication
 
 ## Commands
 
@@ -74,11 +75,11 @@ flutter run -d localhost:5555
 
 # E2E tests via tunnel
 maestro test maestro/flows/01_navigation.yaml
-maestro test maestro/flows/            # All 21 flows
+maestro test maestro/flows/            # All 26 flows
 ```
 
 ### Golden Tests
-Golden tests (16 in `test/golden/`) will FAIL on Linux dev desktop — expected due to font rendering differences (FreeType vs CoreText). Only validate goldens on Mac. Use `--update-goldens` on Mac only.
+Golden tests (`test/golden/`, 2 test files) will FAIL on Linux dev desktop — expected due to font rendering differences (FreeType vs CoreText). Only validate goldens on Mac. Use `--update-goldens` on Mac only.
 
 ### Workflow
 1. Edit code on dev desktop (Claude Code / vim / VS Code Remote)
@@ -155,6 +156,7 @@ lib/
 
 android/app/src/main/kotlin/com/dailypointer/
 ├── MainActivity.kt            # Theme change listener
+├── BootReceiver.kt            # Widget refresh on device boot
 ├── PointerWidgetProvider.kt   # Home widget with AdapterViewFlipper
 └── PointerWidgetService.kt    # RemoteViewsService for widget data
 
@@ -166,17 +168,26 @@ ios/Runner/
 ├── Info.plist                 # App config: Google OAuth URL scheme, export compliance, permissions
 ├── GoogleService-Info.plist   # Firebase configuration
 ├── Runner.entitlements        # App capabilities (Sign in with Apple, push notifications)
-└── AppDelegate.swift          # App lifecycle, AVAudioSession config (.playback, .mixWithOthers, .duckOthers), flutter_local_notifications plugin registration callback for foreground handling, UNUserNotificationCenter delegate setup (iOS 10+)
+└── AppDelegate.swift          # App lifecycle, AVAudioSession config, flutter_local_notifications, UNUserNotificationCenter delegate
+
+ios/PointerWidget/             # iOS home screen widget extension
+├── PointerWidget.swift        # Widget timeline provider
+├── PointerWidgetBundle.swift  # Widget bundle entry point
+├── WidgetIntents.swift        # Widget configuration intents
+└── PointerWidget.entitlements # Widget capabilities
 
 test/                          # Unit tests
 ├── providers/                 # Provider tests
 ├── services/                  # Service tests
 ├── screens/                   # Widget tests
+├── widgets/                   # Component widget tests
+├── data/                      # Content validation tests
+├── helpers/                   # Test setup utilities
 ├── accessibility/             # Semantics & VoiceOver tests
 └── golden/                    # Visual regression tests
 
 integration_test/              # State-controlled E2E flows
-maestro/flows/                 # Cross-platform E2E (21 YAML flows)
+maestro/flows/                 # Cross-platform E2E (26 YAML flows)
 docs/                          # Legal docs, store assets
 fastlane/                      # Play Store deployment
 ```
@@ -196,12 +207,10 @@ fastlane/                      # Play Store deployment
 - **Content** (`content_providers.dart`): Round-robin pointing navigation (persisted shuffled order), favorites, affinity tracking, teaching filters
 - **Subscription** (`subscription_providers.dart`): RevenueCat integration, freemium v2 (unlimited quotes, premium for library/notifications/widget), Firebase auth callbacks for cross-platform sync. **⚠️ kFreeAccessEnabled = TRUE** - enables free access mode for App Store release without IAP (RevenueCat disabled). Set to false when ready to enable monetization
 - **Donation** (`donation_providers.dart`): Tip jar via in_app_purchase (consumable products). DonationState with isAvailable, isLoading, products, error, lastResult. DonationNotifier manages purchase flow
-- **Auth** (`auth_providers.dart`): Firebase auth state (Google/Apple Sign-In), AuthActionNotifier for UI loading/error states
 
 ### Services
 - **Notifications** (`notification_service.dart`): Presets (Morning/All day/Evening/Minimal/Test), time windows with frequencyMinutes (30-720min), max 50 scheduled, Android 12+ exact alarm permission, pointings_v6 channel. initialize() accepts optional onNotificationResponse/onBackgroundNotificationResponse callbacks. iOS foreground presentation: alerts/banners enabled, sound disabled (silent for meditation app). Test notifications use InterruptionLevel.active for visible banner
 - **Widget** (`widget_service.dart`): Premium gating (respects kFreeAccessEnabled), pointings cache population with favorite interleaving, theme sync via refreshWidget()
-- **Auth** (`auth_service.dart`): Firebase singleton, Google/Apple Sign-In, RevenueCat identity sync callbacks (onSignIn/onSignOut). Apple Sign-In: ALL SignInWithAppleAuthorizationException errors return null (silent failure) to prevent error messages when users tap "Close" on system dialog (simulator/devices without Apple ID); includes SignInException for custom user-friendly errors
 - **Share** (`share_service.dart`): Card generation (minimal/gradient/tradition templates), square/story formats, captureWidget/shareImage/copyToClipboard
 - **AmbientSound** (`ambient_sound_service.dart`): Opening sound on cold start (bell via just_audio), persisted user preference, global guard prevents duplicate plays
 
@@ -264,10 +273,6 @@ fastlane/                      # Play Store deployment
 
 ## Features
 
-**TTS** (`tts_service.dart` + `aws_credential_service.dart`): AWS Polly article synthesis. **STATUS: DISABLED** - code remains for future re-enablement.
-
-**Audio Pointings** (`audio_pointing_service.dart` + `audio_player_widget.dart`): Pre-recorded guided readings via just_audio. Premium-gated.
-
 **Freemium V2**: FREE = unlimited pointings/quotes. PREMIUM (lifetime purchase via RevenueCat) = library, audio, notifications, widget. Firebase auth callbacks sync purchases cross-device. `kFreeAccessEnabled` flag in `subscription_providers.dart` (**⚠️ currently TRUE** - all features unlocked, RevenueCat disabled for App Store release without IAP).
 
 ## Execution Protocol
@@ -280,13 +285,11 @@ fastlane/                      # Play Store deployment
 
 **Theme** (`app_theme.dart`): PointerColors (4 variants), access via `context.colors.{property}` | GlassCard/Button (intensity levels, high contrast) | AnimatedGradient | HapticFeedback (light/medium/heavy)
 
-**Providers** (`providers/`): Settings (zen, OLED, accessibility, theme, auto-advance) | Content (round-robin persisted order, favorites, affinity, teaching filters) | Subscription (RevenueCat, freemium v2, **⚠️ kFreeAccessEnabled=TRUE** - free access mode for App Store release) | Donation (tip jar, in_app_purchase consumables, DonationState) | Auth (Firebase, Google/Apple Sign-In, RevenueCat callbacks)
-
-**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience, scheduling via flutter_local_notifications) | DonationService (tip jar, DonationProductIds, isAvailable/loadProducts/purchaseDonation/completePurchase, graceful degradation) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard) | Auth (Apple Sign-In silent failures: catch ALL SignInWithAppleAuthorizationException, return null instead of rethrowing to avoid error messages on simulator/devices without Apple ID)
-
+**Providers** (`providers/`): Settings (zen, OLED, accessibility, theme, auto-advance) | Content (round-robin persisted order, favorites, affinity, teaching filters) | Subscription (RevenueCat, freemium v2, **⚠️ kFreeAccessEnabled=TRUE** - free access mode for App Store release) | Donation (tip jar, in_app_purchase consumables, DonationState)
+**Services** (`services/`): StorageService (SharedPreferences wrapper, AppSettings) | AffinityService (tradition learning, 3x weight for saves) | NotificationService (initialize() with optional onNotificationResponse/onBackgroundNotificationResponse callbacks, iOS foreground presentation: defaultPresentAlert/defaultPresentBanner=true, defaultPresentSound=false for silent meditation experience, scheduling via flutter_local_notifications) | DonationService (tip jar, DonationProductIds, isAvailable/loadProducts/purchaseDonation/completePurchase, graceful degradation) | ShareService (card templates, formats) | AmbientSound (opening sound on cold start, global guard)
 **Android Widget** (`*.kt`): PointerWidgetProvider (zero-config AdapterViewFlipper, prev/next, auto-rotation, theme sync) | PointerWidgetService (RemoteViewsFactory) | Widget glassmorphism cards (multi-layer, matches app themes)
 
-**Screens**: InquiryPlayer (timed phases, haptic feedback) | LibraryScreen (LibraryFilter: all/articles/quotes/saved; browse modes: topics/teachers/lineages/moods; ContentFilter integration with filter propagation to detail screens; peek indicator with LayoutBuilder at 70% card width for horizontal scroll reveal; topics source switches to TeachingRepository.topicCounts when quotes filter active; premium gating) | Detail screens (TeacherTeachingsScreen, LineageTeachingsScreen, MoodTeachingsScreen) accept ContentFilter parameter from parent, show filtered articles/quotes sections, premium gating with _ArticleListItem | PaywallScreen (_handleRestore flow: prompts sign-in before restore for cross-device sync, falls back to same-device restore if cancelled) | Settings helpers (_getNotificationCountSummary, _getScheduleTimeSummary, _formatHourShort, _AccountSection)
+**Screens**: InquiryPlayer (timed phases, haptic feedback) | LibraryScreen (LibraryFilter: all/articles/quotes/saved; browse modes: topics/teachers/lineages/moods; ContentFilter integration with filter propagation to detail screens; peek indicator with LayoutBuilder at 70% card width for horizontal scroll reveal; topics source switches to TeachingRepository.topicCounts when quotes filter active; premium gating) | Detail screens (TeacherTeachingsScreen, LineageTeachingsScreen, MoodTeachingsScreen) accept ContentFilter parameter from parent, show filtered articles/quotes sections, premium gating with _ArticleListItem | Settings helpers (_getNotificationCountSummary, _getScheduleTimeSummary, _formatHourShort, _AccountSection)
 
 **Widgets**: TeacherSheet/SignInSheet (modals, DraggableScrollableSheet) | NotificationPreview (matches BigTextStyleInformation) | Share Card Templates (minimal/gradient/tradition)
 
