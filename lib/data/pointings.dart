@@ -15,6 +15,7 @@ class Pointing {
   final List<PointingContext> contexts;
   final String? teacher;
   final String? source;
+  final String? sourceUrl;
 
   const Pointing({
     required this.id,
@@ -24,6 +25,7 @@ class Pointing {
     required this.contexts,
     this.teacher,
     this.source,
+    this.sourceUrl,
   });
 }
 

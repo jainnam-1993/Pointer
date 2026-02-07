@@ -6,7 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../data/articles.dart';
 import '../data/pointings.dart';
+import 'article_reader_screen.dart';
 import 'share_preview_screen.dart';
 import '../data/teachers.dart';
 import '../widgets/teacher_sheet.dart';
@@ -570,18 +573,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                 ],
                                 if (pointing.source != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      pointing.source!,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontStyle: FontStyle.italic,
-                                        color: colors.textSecondary.withValues(alpha: 0.6),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                                  Builder(builder: (context) {
+                                    final article = findArticleForPointing(pointing);
+                                    final hasLink = article != null || pointing.sourceUrl != null;
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: hasLink
+                                          ? Semantics(
+                                              link: true,
+                                              hint: article != null
+                                                  ? 'Tap to read full article'
+                                                  : 'Tap to learn more',
+                                              child: GestureDetector(
+                                                onTap: () async {
+                                                  HapticFeedback.lightImpact();
+                                                  if (article != null) {
+                                                    Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (_) => ArticleReaderScreen(article: article),
+                                                      ),
+                                                    );
+                                                  } else if (pointing.sourceUrl != null) {
+                                                    final uri = Uri.parse(pointing.sourceUrl!);
+                                                    if (await canLaunchUrl(uri)) {
+                                                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                                    }
+                                                  }
+                                                },
+                                                child: Text(
+                                                  pointing.source!,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontStyle: FontStyle.italic,
+                                                    color: colors.textSecondary.withValues(alpha: 0.6),
+                                                    decoration: TextDecoration.underline,
+                                                    decorationColor: colors.textSecondary.withValues(alpha: 0.3),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              pointing.source!,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontStyle: FontStyle.italic,
+                                                color: colors.textSecondary.withValues(alpha: 0.6),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                    );
+                                  }),
                               ],
                             ),
                           ),

@@ -58,10 +58,16 @@ class _SplashScreenState extends State<SplashScreen> {
     final controller = _controller;
     if (controller == null || _navigated) return;
 
-    // Auto-advance when video reaches the end
-    if (controller.value.isInitialized &&
-        controller.value.position >= controller.value.duration &&
-        controller.value.duration > Duration.zero) {
+    final value = controller.value;
+    if (!value.isInitialized) return;
+
+    // Auto-advance when video completes.
+    // Check both isCompleted (playback finished) and position >= duration
+    // (edge case: some platforms don't set isCompleted reliably).
+    final completed = value.isCompleted ||
+        (value.duration > Duration.zero &&
+            value.position >= value.duration - const Duration(milliseconds: 100));
+    if (completed) {
       _navigateAway();
     }
   }
