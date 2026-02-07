@@ -1,0 +1,97 @@
+# Favorites to Library Flow - Cross-screen data flow
+# Run: maestro test maestro/flows/25_favorites_to_library.yaml
+#
+# Tests: Save pointings via long-press on home, then navigate to Library
+#        and verify saved content appears in "Saved" browse mode.
+#
+# This is the critical cross-screen data flow test:
+#   Home (save) -> Library (Saved mode shows saved pointings)
+
+appId: com.dailypointer
+---
+# Fresh state to ensure no pre-existing favorites
+- clearState
+- launchApp
+
+# Wait for app to render, then dismiss splash video
+- waitForAnimationToEnd
+- tapOn:
+    point: "50%,50%"
+- tapOn:
+    point: "50%,50%"
+
+# Wait for splash to finish and onboarding to appear
+- extendedWaitUntil:
+    visible:
+      text: "Continue"
+    timeout: 10000
+
+# Complete onboarding
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Maybe Later"
+- waitForAnimationToEnd
+
+# === SAVE FIRST POINTING ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+
+# Long-press to save current pointing
+- longPressOn:
+    point: "50%,40%"
+- waitForAnimationToEnd
+- waitForAnimationToEnd
+- takeScreenshot: "fav2lib_01_first_save"
+
+# === SAVE SECOND POINTING ===
+- tapOn:
+    text: ".*Next.*"
+- longPressOn:
+    point: "50%,40%"
+- waitForAnimationToEnd
+- waitForAnimationToEnd
+- takeScreenshot: "fav2lib_02_second_save"
+
+# === NAVIGATE TO LIBRARY ===
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+- takeScreenshot: "fav2lib_03_library"
+
+# === SWITCH TO SAVED BROWSE MODE ===
+- swipe:
+    direction: UP
+    duration: 400
+
+# Open browse mode dropdown and select Saved
+- tapOn:
+    text: ".*Topics.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Saved.*"
+- waitForAnimationToEnd
+- takeScreenshot: "fav2lib_04_saved_mode"
+
+# === VERIFY SAVED CONTENT APPEARS ===
+- assertVisible:
+    text: ".*saved pointing.*"
+- takeScreenshot: "fav2lib_05_saved_content"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "fav2lib_06_final"

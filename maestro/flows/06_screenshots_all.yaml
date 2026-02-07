@@ -3,7 +3,6 @@
 #
 # Purpose: Generate consistent screenshots for both platforms
 # Output: maestro/screenshots/ directory
-# Replaces: scripts/screenshot_test.sh, integration_test/screenshot_test.dart (for this use case)
 
 appId: com.dailypointer
 ---
@@ -14,43 +13,31 @@ appId: com.dailypointer
 - takeScreenshot: "store_01_onboarding"
 
 # Complete onboarding
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
+- runFlow: ../shared/skip_onboarding.yaml
 
 # === HOME SCREEN SCREENSHOTS ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - takeScreenshot: "store_02_home"
 
 # Show pointer content
 - tapOn:
-    text: ".*next pointing.*"
-    optional: true
+    text: ".*Next.*"
 - takeScreenshot: "store_03_home_pointing"
 
 # === INQUIRY SCREEN ===
 - tapOn:
-    text: ".*Inquiry.*"
+    text: "Inquiry tab.*"
 - takeScreenshot: "store_04_inquiry"
 
 # === LIBRARY SCREEN ===
 - tapOn:
-    text: ".*Library.*"
+    text: "Library tab.*"
 - takeScreenshot: "store_05_library"
 
 # === SETTINGS SCREEN ===
 - tapOn:
-    text: ".*Settings.*"
+    text: "Settings tab.*"
 - takeScreenshot: "store_06_settings"
 
 # Scroll for more settings
@@ -60,5 +47,7 @@ appId: com.dailypointer
 
 # === BACK TO HOME - FINAL STATE ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
 - takeScreenshot: "store_08_final"

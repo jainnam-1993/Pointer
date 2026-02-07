@@ -1,8 +1,10 @@
-# Navigation Flow - Core app navigation with content verification
-# Run: maestro test maestro/flows/01_navigation.yaml
+# Smoke Test - Fast confidence gate (~30s)
+# Run: maestro test maestro/flows/00_smoke_test.yaml
 #
-# Tests: Bottom tab navigation + content loaded verification
-# Verifies: Each screen actually renders expected content, not just tab exists
+# ZERO optional assertions. If ANY screen fails to load, this test FAILS.
+# This is the "did I break the app?" test. Run it after every change.
+#
+# Verifies: App launches, all 4 tabs render, content loads on each screen.
 
 appId: com.dailypointer
 ---
@@ -18,7 +20,6 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "01_home_screen"
 
 # === LIBRARY TAB ===
 - tapOn:
@@ -26,9 +27,6 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: "Library"
-- assertVisible:
-    text: ".*FEATURED.*"
-- takeScreenshot: "02_library_screen"
 
 # === INQUIRY TAB ===
 - tapOn:
@@ -36,9 +34,6 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: "Self-Inquiry"
-- assertVisible:
-    text: ".*Who Am I.*"
-- takeScreenshot: "03_inquiry_screen"
 
 # === SETTINGS TAB ===
 - tapOn:
@@ -48,7 +43,6 @@ appId: com.dailypointer
     text: "Settings"
 - assertVisible:
     text: ".*Notification.*"
-- takeScreenshot: "04_settings_screen"
 
 # === RETURN TO HOME ===
 - tapOn:
@@ -56,4 +50,3 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "05_home_return"

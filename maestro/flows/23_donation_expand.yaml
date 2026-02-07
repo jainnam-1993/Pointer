@@ -1,0 +1,69 @@
+# Donation Button Flow - Expand/collapse tip jar
+# Run: maestro test maestro/flows/23_donation_expand.yaml
+#
+# Tests: Navigate to Settings, scroll to About section, find donation button,
+#        expand it, verify tip products visible, collapse.
+#
+# Donation button header: "Support Development"
+# Expanded shows: description text + 2x2 grid (Tea/Cushion/Incense/Retreat)
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === NAVIGATE TO SETTINGS ===
+- tapOn:
+    text: "Settings tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Settings"
+- takeScreenshot: "donation_01_settings"
+
+# === SCROLL TO ABOUT SECTION ===
+- swipe:
+    direction: UP
+    duration: 500
+- swipe:
+    direction: UP
+    duration: 500
+- swipe:
+    direction: UP
+    duration: 500
+- takeScreenshot: "donation_02_scrolled"
+
+# === FIND DONATION BUTTON ===
+- assertVisible:
+    text: ".*Support Development.*"
+- takeScreenshot: "donation_03_button_found"
+
+# === EXPAND DONATION BUTTON ===
+- tapOn:
+    text: ".*Support Development.*"
+- waitForAnimationToEnd
+- takeScreenshot: "donation_04_expanded"
+
+# Verify expanded content shows description and tip products
+- assertVisible:
+    text: ".*free forever.*"
+- assertVisible:
+    text: ".*Tea.*"
+- assertVisible:
+    text: ".*Cushion.*"
+- takeScreenshot: "donation_05_products"
+
+# === COLLAPSE DONATION BUTTON ===
+- tapOn:
+    text: ".*Support Development.*"
+- waitForAnimationToEnd
+- takeScreenshot: "donation_06_collapsed"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "donation_07_final"

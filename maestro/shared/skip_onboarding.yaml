@@ -1,0 +1,44 @@
+# Shared: Skip splash + onboarding screens
+# Usage: - runFlow: ../shared/skip_onboarding.yaml
+#
+# 1. Waits for app to fully render, then taps to dismiss splash video
+# 2. Waits for onboarding "Continue" button to appear
+# 3. Taps through Continue screens (with animation waits) and dismisses notification prompt.
+# Every step is required — caller must use clearState: true.
+
+appId: com.dailypointer
+---
+# Wait for app to render (splash video needs Flutter engine ready)
+- waitForAnimationToEnd
+
+# Dismiss splash video (tap anywhere to skip) — multiple taps for reliability
+- tapOn:
+    point: "50%,50%"
+- tapOn:
+    point: "50%,50%"
+
+# Wait for splash to finish and onboarding to appear
+- extendedWaitUntil:
+    visible:
+      text: "Continue"
+    timeout: 10000
+
+# Page 1 -> Page 2
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+
+# Page 2 -> Page 3
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+
+# Page 3 -> Page 4 (Notifications)
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+
+# Dismiss notification prompt -> Home
+- tapOn:
+    text: "Maybe Later"
+- waitForAnimationToEnd

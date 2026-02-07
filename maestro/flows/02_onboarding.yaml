@@ -9,38 +9,46 @@ appId: com.dailypointer
 - launchApp:
     clearState: true
 
-# === PAGE 1: The Interruption ===
+# === SPLASH ===
 - takeScreenshot: "onboarding_01_interruption"
 
-# Advance through pages
+# Wait for app to render, then dismiss splash video
+- waitForAnimationToEnd
+- tapOn:
+    point: "50%,50%"
+- tapOn:
+    point: "50%,50%"
+
+# Wait for splash to finish and onboarding to appear
+- extendedWaitUntil:
+    visible:
+      text: "Continue"
+    timeout: 10000
+
+# === PAGE 1 ===
 - tapOn:
     text: "Continue"
-    optional: true
+- waitForAnimationToEnd
 
 # === PAGE 2: The Contrast ===
 - takeScreenshot: "onboarding_02_contrast"
-
 - tapOn:
     text: "Continue"
-    optional: true
+- waitForAnimationToEnd
 
 # === PAGE 3: The Simplicity ===
 - takeScreenshot: "onboarding_03_simplicity"
-
 - tapOn:
     text: "Continue"
-    optional: true
+- waitForAnimationToEnd
 
 # === PAGE 4: Notifications ===
 - takeScreenshot: "onboarding_04_notifications"
-
-# Complete onboarding (skip notifications for test)
 - tapOn:
     text: "Maybe Later"
-    optional: true
-- tapOn:
-    text: "Enable Notifications"
-    optional: true
+- waitForAnimationToEnd
 
 # Verify we reached home screen
+- assertVisible:
+    text: ".*Next.*"
 - takeScreenshot: "onboarding_05_complete"

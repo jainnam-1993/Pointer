@@ -4,36 +4,25 @@
 # Purpose: Enable 1-minute notification scheduling to verify notification delivery
 # Tests: Developer unlock, notification enable, test preset selection
 #
-# IMPORTANT: After running this flow, wait 1-2 minutes and verify notifications
-# arrive on the device. This flow sets up scheduling but cannot verify delivery.
+# After running: wait 1-2 minutes and verify notifications arrive on the device.
 
 appId: com.dailypointer
 ---
 - launchApp:
-    clearState: true  # Start fresh to ensure clean notification state
+    clearState: true
 
-# === HANDLE ONBOARDING ===
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
 
 # === NAVIGATE TO SETTINGS ===
 - tapOn:
-    text: ".*Settings.*"
+    text: "Settings tab.*"
 - takeScreenshot: "notif_01_settings_initial"
 
 # === UNLOCK DEVELOPER OPTIONS (7 taps on version) ===
-- scroll:
-    direction: DOWN
+- swipe:
+    direction: UP
+    duration: 300
 - tapOn:
     text: ".*Pointer v.*"
 - tapOn:
@@ -53,14 +42,14 @@ appId: com.dailypointer
 # === GRANT ALARM PERMISSION (if needed) ===
 - tapOn:
     text: ".*Grant Alarm Permission.*"
-    optional: true
 - extendedWaitUntil:
     visible: ".*Settings.*"
     timeout: 5000
 
 # === SCROLL UP TO FIND NOTIFICATIONS SECTION ===
-- scroll:
-    direction: UP
+- swipe:
+    direction: DOWN
+    duration: 300
 
 # === ENABLE NOTIFICATIONS ===
 - tapOn:
@@ -70,41 +59,25 @@ appId: com.dailypointer
 # === SELECT TEST PRESET (every 1 minute) ===
 - tapOn:
     text: ".*Test.*"
-    optional: true
 - takeScreenshot: "notif_04_test_preset_selected"
 
 # === CONFIRM/SAVE SCHEDULE ===
 - tapOn:
     text: ".*Save.*"
-    optional: true
-- tapOn:
-    text: ".*Done.*"
-    optional: true
 
 # === VERIFY SCHEDULE IS ACTIVE ===
-- scroll:
-    direction: DOWN
+- swipe:
+    direction: UP
+    duration: 300
 - takeScreenshot: "notif_05_schedule_saved"
 
 # === SEND IMMEDIATE TEST NOTIFICATION ===
 - tapOn:
     text: ".*Test Notification.*"
-    optional: true
 - tapOn:
     text: ".*Send Test.*"
-    optional: true
 - takeScreenshot: "notif_06_test_sent"
 
 # === BACKGROUND THE APP ===
 - pressKey: Home
 - takeScreenshot: "notif_07_backgrounded"
-
-# === INSTRUCTIONS FOR MANUAL VERIFICATION ===
-#
-# After this flow completes:
-# 1. Wait 1-2 minutes
-# 2. Check if notifications arrive in the notification shade
-# 3. If notifications DON'T arrive:
-#    - Check "Alarms & reminders" permission in Android Settings
-#    - Check notification channel is enabled
-#    - Check Android battery optimization isn't killing the app

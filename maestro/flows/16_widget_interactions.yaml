@@ -4,13 +4,6 @@
 # Tests: Widget prev/next navigation, save button, app launch from widget
 # Requires: Pointer widget placed on home screen before running
 # Platform: Android only (iOS widgets work differently)
-#
-# Widget features:
-# - Prev/Next buttons for pointing navigation
-# - Save button to add to favorites
-# - Tap content to open app
-# - Auto-rotation every 30 minutes
-# - Dark/light theme sync
 
 appId: com.dailypointer
 ---
@@ -19,53 +12,33 @@ appId: com.dailypointer
 - takeScreenshot: "widget_01_home_screen"
 
 # === VERIFY WIDGET LOADED ===
-# Widget should show pointing content, not "Tap to load"
 - assertNotVisible:
     text: "Tap to load"
-    optional: true
 - takeScreenshot: "widget_02_loaded"
 
 # === NEXT BUTTON ===
-# Tap the next arrow button on widget
 - tapOn:
-    text: ".*next.*"
-    optional: true
-- tapOn:
-    id: "next_button"
-    optional: true
+    text: "Next pointing"
 - takeScreenshot: "widget_03_after_next"
 
 # === PREVIOUS BUTTON ===
-# Tap the previous arrow button on widget
 - tapOn:
-    text: ".*prev.*"
-    optional: true
-- tapOn:
-    id: "prev_button"
-    optional: true
+    text: "Previous pointing"
 - takeScreenshot: "widget_04_after_prev"
 
 # === NAVIGATE MULTIPLE TIMES ===
 - tapOn:
-    id: "next_button"
-    optional: true
+    text: "Next pointing"
 - tapOn:
-    id: "next_button"
-    optional: true
+    text: "Next pointing"
 - takeScreenshot: "widget_05_multiple_nav"
 
 # === SAVE BUTTON ===
-# Tap save/favorite button on widget
 - tapOn:
-    text: ".*save.*"
-    optional: true
-- tapOn:
-    id: "save_button"
-    optional: true
+    text: "Save to favorites"
 - takeScreenshot: "widget_06_saved"
 
 # === LAUNCH APP FROM WIDGET ===
-# Tap on the pointing content area to open app
 - tapOn:
     point: "50%,50%"
 - takeScreenshot: "widget_07_app_launched"
@@ -73,7 +46,6 @@ appId: com.dailypointer
 # Verify app opened to home screen
 - assertVisible:
     text: ".*Next.*"
-    optional: true
 
 # === FINAL STATE ===
 - takeScreenshot: "widget_08_complete"

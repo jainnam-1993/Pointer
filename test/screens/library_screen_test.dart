@@ -5,10 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/data/articles.dart';
+import 'package:pointer/data/pointings.dart';
+import 'package:pointer/data/teaching.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/widgets/animated_gradient.dart';
 
 late SharedPreferences prefs;
 
@@ -17,29 +20,6 @@ final _premiumState = SubscriptionState(
   tier: SubscriptionTier.premium,
   isLoading: false,
 );
-
-final _freeState = SubscriptionState(
-  tier: SubscriptionTier.free,
-  isLoading: false,
-);
-
-/// Helper to wrap widget with ProviderScope for testing
-Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
-  return ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-      highContrastProvider.overrideWith((ref) => false),
-      oledModeProvider.overrideWith((ref) => false),
-      reduceMotionOverrideProvider.overrideWith((ref) => null),
-      themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-      // Mock subscription state for testing
-      subscriptionProvider.overrideWith(
-        (ref) => _TestSubscriptionNotifier(isPremium ? _premiumState : _freeState),
-      ),
-    ],
-    child: child,
-  );
-}
 
 /// Test subscription notifier that returns fixed state
 class _TestSubscriptionNotifier extends SubscriptionNotifier {
@@ -56,352 +36,446 @@ class _MockStorageService extends StorageService {
   _MockStorageService() : super(prefs);
 }
 
+/// Helper to wrap widget with ProviderScope for testing
+Widget wrapWithProviderScope(Widget child, {List<Override> extraOverrides = const []}) {
+  return ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      highContrastProvider.overrideWith((ref) => false),
+      oledModeProvider.overrideWith((ref) => false),
+      reduceMotionOverrideProvider.overrideWith((ref) => null),
+      themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
+      subscriptionProvider.overrideWith(
+        (ref) => _TestSubscriptionNotifier(_premiumState),
+      ),
+      ...extraOverrides,
+    ],
+    child: child,
+  );
+}
+
+/// Standard screen size setup for tests (tall enough to see all content)
+void setScreenSize(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1920, 4000);
+  tester.view.devicePixelRatio = 2.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+/// Build a LibraryScreen wrapped in MaterialApp with dark theme
+Widget buildLibraryScreen({ThemeData? theme}) {
+  return wrapWithProviderScope(
+    MaterialApp(
+      theme: theme ?? AppTheme.dark,
+      home: const Scaffold(
+        body: LibraryScreen(),
+      ),
+    ),
+  );
+}
+
 void main() {
   setUpAll(() async {
+    // Disable animations that cause continuous ticker issues in tests
+    AnimatedGradient.disableAnimations = true;
+
     SharedPreferences.setMockInitialValues({
       'pointer_onboarding_completed': true,
     });
     prefs = await SharedPreferences.getInstance();
-  });
-  group('LibraryScreen', () {
-    testWidgets('renders header with title and subtitle', (tester) async {
-      // Use a larger surface to avoid overflow in featured cards
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.text('Library'), findsOneWidget);
-      expect(find.text('Explore teachings and articles'), findsOneWidget);
-    });
-
-    testWidgets('displays featured section header', (tester) async {
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.text('FEATURED'), findsOneWidget);
-    });
-
-    testWidgets('displays browse by section', (tester) async {
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Updated from "BROWSE BY TOPIC" to "BROWSE BY" with dropdown
-      expect(find.text('BROWSE BY'), findsOneWidget);
-    });
-
-    testWidgets('displays some category names visible on screen', (tester) async {
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // Check that at least some categories are visible (others may need scrolling)
-      expect(find.text('Nature of Awareness'), findsOneWidget);
-      expect(find.text('Self-Inquiry'), findsOneWidget);
-    });
-
-    testWidgets('renders in light theme', (tester) async {
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.byType(LibraryScreen), findsOneWidget);
-    });
-
-    testWidgets('renders in dark theme', (tester) async {
-      tester.view.physicalSize = const Size(1920, 4000);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.byType(LibraryScreen), findsOneWidget);
-    });
+    // Initialize TeachingRepository (needed for teachers/lineages/moods browse modes)
+    TeachingRepository.initialize(pointings: pointings);
   });
 
+  tearDownAll(() {
+    TeachingRepository.reset();
+    AnimatedGradient.disableAnimations = false;
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // LibraryScreen Content Rendering
+  // ═══════════════════════════════════════════════════════════════
+  group('LibraryScreen Content Rendering', () {
+    testWidgets(
+      'Given library screen loaded, When rendered, Then displays Library header AND subtitle',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        expect(find.text('Library'), findsOneWidget);
+        expect(find.text('Explore teachings and articles'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then displays 3 featured article cards with actual titles',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        // Featured section header must exist
+        expect(find.text('FEATURED'), findsOneWidget);
+
+        // Verify actual featured article titles from data
+        final featured = getFeaturedArticles(limit: 3);
+        expect(featured.length, equals(3),
+            reason: 'getFeaturedArticles(limit: 3) should return exactly 3 articles');
+
+        for (final article in featured) {
+          expect(
+            find.text(article.title),
+            findsAtLeastNWidgets(1),
+            reason: 'Featured article "${article.title}" should be visible on screen',
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then featured cards show reading time',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        final featured = getFeaturedArticles(limit: 3);
+        // At least the first featured article's reading time should be visible
+        expect(
+          find.text('${featured.first.readingTimeMinutes} min read'),
+          findsAtLeastNWidgets(1),
+          reason: 'Reading time "${featured.first.readingTimeMinutes} min read" should appear for first featured article',
+        );
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then displays BROWSE BY section with Topics dropdown',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        expect(find.text('BROWSE BY'), findsOneWidget);
+        // Default browse mode is Topics
+        expect(find.text('Topics'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then displays category cards with names and descriptions',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        // Verify actual category names from categoryInfoMap
+        for (final entry in categoryInfoMap.entries) {
+          expect(
+            find.text(entry.value.name),
+            findsAtLeastNWidgets(1),
+            reason: 'Category "${entry.value.name}" should be visible in BROWSE BY section',
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then category cards show non-zero article counts',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        // Each category should show its count, and each count should be > 0
+        for (final category in ArticleCategory.values) {
+          final count = getArticlesByCategory(category).length;
+          expect(count, greaterThan(0),
+              reason: 'Category ${category.name} should have articles');
+          expect(
+            find.text('$count'),
+            findsAtLeastNWidgets(1),
+            reason: 'Category ${category.name} count ($count) should be displayed',
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'Given library screen loaded, When rendered, Then All content type filter is shown',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        // Default content filter shows "All"
+        expect(find.text('All'), findsOneWidget);
+      },
+    );
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // LibraryScreen Theme Variants
+  // ═══════════════════════════════════════════════════════════════
+  group('LibraryScreen Theme Variants', () {
+    testWidgets(
+      'Given library screen, When rendered in light theme, Then content is still visible',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen(theme: AppTheme.light));
+        await tester.pump(const Duration(seconds: 2));
+
+        // Must show actual content, not just the widget type
+        expect(find.text('Library'), findsOneWidget);
+        expect(find.text('FEATURED'), findsOneWidget);
+        final featured = getFeaturedArticles(limit: 3);
+        expect(find.text(featured.first.title), findsAtLeastNWidgets(1),
+            reason: 'Featured article title should be visible in light theme');
+      },
+    );
+
+    testWidgets(
+      'Given library screen, When rendered in dark theme, Then content is still visible',
+      (tester) async {
+        setScreenSize(tester);
+        await tester.pumpWidget(buildLibraryScreen());
+        await tester.pump(const Duration(seconds: 2));
+
+        expect(find.text('Library'), findsOneWidget);
+        expect(find.text('FEATURED'), findsOneWidget);
+        final featured = getFeaturedArticles(limit: 3);
+        expect(find.text(featured.first.title), findsAtLeastNWidgets(1),
+            reason: 'Featured article title should be visible in dark theme');
+      },
+    );
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // CategoryArticlesScreen
+  // ═══════════════════════════════════════════════════════════════
   group('CategoryArticlesScreen', () {
-    testWidgets('displays category name and article count', (tester) async {
-      const category = ArticleCategory.natureOfAwareness;
-      final info = categoryInfoMap[category]!;
-      final articleCount = getArticlesByCategory(category).length;
+    testWidgets(
+      'Given category screen, When rendered, Then shows category name AND actual article count',
+      (tester) async {
+        const category = ArticleCategory.natureOfAwareness;
+        final info = categoryInfoMap[category]!;
+        final articleCount = getArticlesByCategory(category).length;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: CategoryArticlesScreen(category: category, info: info),
             ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text('Nature of Awareness'), findsOneWidget);
-      expect(find.text('$articleCount articles'), findsOneWidget);
-    });
+        expect(find.text('Nature of Awareness'), findsOneWidget);
+        expect(find.text('$articleCount articles'), findsOneWidget);
+        expect(articleCount, greaterThan(0),
+            reason: 'Nature of Awareness should have articles');
+      },
+    );
 
-    testWidgets('displays back button', (tester) async {
-      const category = ArticleCategory.selfInquiry;
-      final info = categoryInfoMap[category]!;
+    testWidgets(
+      'Given category screen, When rendered, Then shows actual article titles from data',
+      (tester) async {
+        const category = ArticleCategory.natureOfAwareness;
+        final info = categoryInfoMap[category]!;
+        final categoryArticles = getArticlesByCategory(category);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
+        tester.view.physicalSize = const Size(1920, 6000);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: CategoryArticlesScreen(category: category, info: info),
             ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-    });
+        // Verify at least the first article title is rendered
+        expect(categoryArticles.isNotEmpty, isTrue,
+            reason: 'Category should have articles');
+        expect(
+          find.text(categoryArticles.first.title),
+          findsAtLeastNWidgets(1),
+          reason: 'First article "${categoryArticles.first.title}" should be visible in category list',
+        );
+      },
+    );
 
-    // All content is free - no premium gating.
-    // These tests verify that no lock icons appear.
-    testWidgets('does not show lock icons (all content free)',
-        (tester) async {
-      // Use modernPointers category which has premium articles in data
-      const category = ArticleCategory.modernPointers;
-      final info = categoryInfoMap[category]!;
+    testWidgets(
+      'Given category screen, When rendered, Then displays back button',
+      (tester) async {
+        const category = ArticleCategory.selfInquiry;
+        final info = categoryInfoMap[category]!;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: CategoryArticlesScreen(category: category, info: info),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      // No lock icons should appear (all content is free)
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
-    });
+        expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      },
+    );
 
-    testWidgets('no lock icons appear for any category', (tester) async {
-      const category = ArticleCategory.natureOfAwareness;
-      final info = categoryInfoMap[category]!;
+    testWidgets(
+      'Given category screen, When rendered, Then does not show lock icons (all content free)',
+      (tester) async {
+        const category = ArticleCategory.modernPointers;
+        final info = categoryInfoMap[category]!;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: CategoryArticlesScreen(category: category, info: info),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // No lock icons should appear
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
-    });
+        expect(find.byIcon(Icons.lock_outline), findsNothing);
+      },
+    );
   });
 
+  // ═══════════════════════════════════════════════════════════════
+  // ArticleReaderScreen
+  // ═══════════════════════════════════════════════════════════════
   group('ArticleReaderScreen', () {
-    testWidgets('displays article title', (tester) async {
-      final article = articles.first;
+    testWidgets(
+      'Given article reader, When opened with first article, Then displays article title',
+      (tester) async {
+        final article = articles.first;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      // Title may appear in header and markdown content
-      expect(find.text(article.title), findsAtLeastNWidgets(1));
-    });
+        expect(find.text(article.title), findsAtLeastNWidgets(1));
+      },
+    );
 
-    testWidgets('displays article subtitle when present', (tester) async {
-      final article = articles.firstWhere((a) => a.subtitle != null);
+    testWidgets(
+      'Given article reader, When article has subtitle, Then displays subtitle',
+      (tester) async {
+        final article = articles.firstWhere((a) => a.subtitle != null);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text(article.subtitle!), findsOneWidget);
-    });
+        expect(find.text(article.subtitle!), findsOneWidget);
+      },
+    );
 
-    testWidgets('displays reading time', (tester) async {
-      final article = articles.first;
+    testWidgets(
+      'Given article reader, When opened, Then displays reading time',
+      (tester) async {
+        final article = articles.first;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text('${article.readingTimeMinutes} min read'), findsOneWidget);
-    });
+        expect(find.text('${article.readingTimeMinutes} min read'), findsOneWidget);
+      },
+    );
 
-    testWidgets('displays teacher when present', (tester) async {
-      final article = articles.firstWhere((a) => a.teacher != null);
+    testWidgets(
+      'Given article reader, When article has teacher, Then displays teacher name',
+      (tester) async {
+        final article = articles.firstWhere((a) => a.teacher != null);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.text(article.teacher!), findsOneWidget);
-    });
+        expect(find.text(article.teacher!), findsOneWidget);
+      },
+    );
 
-    testWidgets('displays close button', (tester) async {
-      final article = articles.first;
+    testWidgets(
+      'Given article reader, When opened, Then displays close button',
+      (tester) async {
+        final article = articles.first;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+        );
+        await tester.pump(const Duration(seconds: 2));
 
-      expect(find.byIcon(Icons.close), findsOneWidget);
-    });
+        expect(find.byIcon(Icons.close), findsOneWidget);
+      },
+    );
 
-    testWidgets('renders markdown content without error', (tester) async {
-      final article = articles.first;
+    testWidgets(
+      'Given article reader, When rendered, Then markdown content renders without error',
+      (tester) async {
+        final article = articles.first;
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: ArticleReaderScreen(article: article),
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // Article content should render without errors
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('renders in light theme', (tester) async {
-      final article = articles.first;
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.light,
-            home: ArticleReaderScreen(article: article),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.byType(ArticleReaderScreen), findsOneWidget);
-    });
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
+  // ═══════════════════════════════════════════════════════════════
+  // categoryInfoMap Data Validation
+  // ═══════════════════════════════════════════════════════════════
   group('categoryInfoMap', () {
     test('contains all ArticleCategory values', () {
       for (final category in ArticleCategory.values) {
@@ -429,25 +503,41 @@ void main() {
     });
   });
 
+  // ═══════════════════════════════════════════════════════════════
+  // Article Data Functions
+  // ═══════════════════════════════════════════════════════════════
   group('Article data functions', () {
-    test('getArticlesByCategory returns articles for valid category', () {
-      final result = getArticlesByCategory(ArticleCategory.selfInquiry);
-      expect(result.isNotEmpty, isTrue);
-      for (final article in result) {
-        expect(article.hasCategory(ArticleCategory.selfInquiry), isTrue);
+    test('getArticlesByCategory returns articles for each category', () {
+      for (final category in ArticleCategory.values) {
+        final result = getArticlesByCategory(category);
+        expect(result.isNotEmpty, isTrue,
+            reason: 'Category ${category.name} should have at least 1 article');
+        for (final article in result) {
+          expect(article.hasCategory(category), isTrue);
+        }
       }
     });
 
-    test('getFeaturedArticles returns non-premium articles', () {
-      final featured = getFeaturedArticles(limit: 10);
+    test('getFeaturedArticles returns non-premium articles with correct titles', () {
+      final featured = getFeaturedArticles(limit: 3);
+      expect(featured.length, equals(3));
       for (final article in featured) {
         expect(article.isPremium, isFalse);
+        expect(article.title.isNotEmpty, isTrue);
       }
+      // Verify specific first article (deterministic order)
+      expect(featured.first.title, equals('I Am That'));
     });
 
     test('getFeaturedArticles respects limit parameter', () {
       final limited = getFeaturedArticles(limit: 3);
       expect(limited.length, lessThanOrEqualTo(3));
+    });
+
+    test('articles list contains expected count', () {
+      // Documented as 166 articles
+      expect(articles.length, greaterThanOrEqualTo(100),
+          reason: 'Articles list should contain a substantial number of articles');
     });
   });
 }

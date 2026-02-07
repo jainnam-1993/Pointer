@@ -1,0 +1,81 @@
+# Inquiry Player Flow - Guided inquiry session E2E
+# Run: maestro test maestro/flows/20_inquiry_player.yaml
+#
+# Tests: Navigate to Inquiry tab, start a session, verify player opens,
+#        observe phase transitions, exit back to inquiry list.
+#
+# Sessions available: "Who Am I?" (free), "Finding the Looker" (free),
+#   "The Space of Awareness" (premium), etc.
+# Player phases: setup → question → followUp/complete
+# Complete phase shows "Rest here." with "Another" and "Done" buttons.
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === NAVIGATE TO INQUIRY TAB ===
+- tapOn:
+    text: "Inquiry tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Self-Inquiry"
+- assertVisible:
+    text: ".*Who Am I.*"
+- takeScreenshot: "inquiry_01_list"
+
+# === START FIRST SESSION ===
+# Tap on "Who Am I?" — the first free inquiry
+- tapOn:
+    text: ".*Who Am I.*"
+- waitForAnimationToEnd
+- takeScreenshot: "inquiry_02_player_opened"
+
+# Verify inquiry player opened (close button and tradition badge visible)
+- assertVisible:
+    text: ".*Close inquiry.*"
+
+# === WAIT FOR PHASE TRANSITIONS ===
+# Setup phase is 8 seconds, then transitions to question phase (20 seconds)
+# Wait past setup into question phase
+- extendedWaitUntil:
+    visible:
+      text: ".*"
+    timeout: 12000
+
+- takeScreenshot: "inquiry_03_question_phase"
+
+# Wait for question phase to complete and reach followUp or complete
+# Total: 8s setup + 20s question = 28s. Wait up to 35s from start.
+- extendedWaitUntil:
+    visible:
+      text: ".*Done.*"
+    timeout: 35000
+
+# === VERIFY COMPLETION ===
+# Complete phase shows "Rest here." and action buttons
+- assertVisible:
+    text: ".*Done.*"
+- assertVisible:
+    text: ".*Another.*"
+- takeScreenshot: "inquiry_04_complete"
+
+# === TAP DONE TO EXIT ===
+- tapOn:
+    text: ".*Done.*"
+- waitForAnimationToEnd
+
+# Back on inquiry list
+- assertVisible:
+    text: "Self-Inquiry"
+- takeScreenshot: "inquiry_05_back_to_list"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "inquiry_06_final"
