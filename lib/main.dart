@@ -73,10 +73,17 @@ void main() async {
   );
   _globalContainer = container;
 
+  // Initialize WorkManager for background notifications
+  // TEMP: Disabled to diagnose iOS 26 beta crash
+  // await WorkManagerService.initialize();
+
   // Initialize home screen widget
   await WidgetService.initialize();
 
   // Populate widget cache on startup
+  // NOTE: Previously relied on SubscriptionNotifier._initialize() to call this,
+  // but that provider is lazy and never instantiated on startup. Calling directly
+  // ensures widget has data when kFreeAccessEnabled = true.
   await WidgetService.populatePointingsCache();
 
   // Process any pending widget actions from iOS (save requests from widget buttons)
@@ -135,8 +142,9 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     _globalAmbientSoundPlayed = true;
     debugPrint('AmbientSound: Global guard set to true');
 
-    // Delay slightly to ensure providers are ready
-    Future.delayed(const Duration(milliseconds: 500), () {
+    // Delay until after splash video finishes (~4s) to avoid audio/video
+    // codec contention that causes the app to hang on cold start
+    Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return;
       final sound = ref.read(ambientSoundProvider);
       ref.read(ambientSoundServiceProvider).playOpeningSound(sound);
