@@ -10868,14 +10868,68 @@ Robert taught three foundational understandings:
 
 ];
 
-/// Get articles filtered by tradition
-List<Article> getArticlesByTradition(Tradition tradition) {
-  return articles.where((a) => a.tradition == tradition).toList();
+// --- Lazy caches for article lookups ---
+Map<Tradition, List<Article>>? _articlesByTraditionCache;
+Map<ArticleCategory, List<Article>>? _articlesByCategoryCache;
+Map<String, List<Article>>? _articlesByTopicCache;
+Map<String, List<Article>>? _articlesByMoodCache;
+Map<String, int>? _articleTopicCountsCache;
+Map<String, int>? _articleMoodCountsCache;
+
+Map<Tradition, List<Article>> get _articlesByTradition {
+  return _articlesByTraditionCache ??= () {
+    final index = <Tradition, List<Article>>{};
+    for (final a in articles) {
+      (index[a.tradition] ??= []).add(a);
+    }
+    return index;
+  }();
 }
 
-/// Get articles filtered by category
+Map<ArticleCategory, List<Article>> get _articlesByCategory {
+  return _articlesByCategoryCache ??= () {
+    final index = <ArticleCategory, List<Article>>{};
+    for (final a in articles) {
+      for (final cat in a.categories) {
+        (index[cat] ??= []).add(a);
+      }
+    }
+    return index;
+  }();
+}
+
+Map<String, List<Article>> get _articlesByTopic {
+  return _articlesByTopicCache ??= () {
+    final index = <String, List<Article>>{};
+    for (final a in articles) {
+      for (final topic in a.topicTags) {
+        (index[topic] ??= []).add(a);
+      }
+    }
+    return index;
+  }();
+}
+
+Map<String, List<Article>> get _articlesByMood {
+  return _articlesByMoodCache ??= () {
+    final index = <String, List<Article>>{};
+    for (final a in articles) {
+      for (final mood in a.moodTags) {
+        (index[mood] ??= []).add(a);
+      }
+    }
+    return index;
+  }();
+}
+
+/// Get articles filtered by tradition (cached)
+List<Article> getArticlesByTradition(Tradition tradition) {
+  return _articlesByTradition[tradition] ?? const [];
+}
+
+/// Get articles filtered by category (cached)
 List<Article> getArticlesByCategory(ArticleCategory category) {
-  return articles.where((a) => a.hasCategory(category)).toList();
+  return _articlesByCategory[category] ?? const [];
 }
 
 /// Get articles filtered by teacher
@@ -10898,36 +10952,40 @@ List<Article> searchArticles(String query) {
   }).toList();
 }
 
-/// Get articles by topic tag
+/// Get articles by topic tag (cached)
 List<Article> getArticlesByTopic(String topic) {
-  return articles.where((a) => a.hasTopic(topic)).toList();
+  return _articlesByTopic[topic] ?? const [];
 }
 
-/// Get articles by mood tag
+/// Get articles by mood tag (cached)
 List<Article> getArticlesByMood(String mood) {
-  return articles.where((a) => a.hasMood(mood)).toList();
+  return _articlesByMood[mood] ?? const [];
 }
 
-/// Get count of articles per topic tag
+/// Get count of articles per topic tag (cached)
 Map<String, int> getArticleTopicCounts() {
-  final counts = <String, int>{};
-  for (final article in articles) {
-    for (final topic in article.topicTags) {
-      counts[topic] = (counts[topic] ?? 0) + 1;
+  return _articleTopicCountsCache ??= () {
+    final counts = <String, int>{};
+    for (final article in articles) {
+      for (final topic in article.topicTags) {
+        counts[topic] = (counts[topic] ?? 0) + 1;
+      }
     }
-  }
-  return counts;
+    return counts;
+  }();
 }
 
-/// Get count of articles per mood tag
+/// Get count of articles per mood tag (cached)
 Map<String, int> getArticleMoodCounts() {
-  final counts = <String, int>{};
-  for (final article in articles) {
-    for (final mood in article.moodTags) {
-      counts[mood] = (counts[mood] ?? 0) + 1;
+  return _articleMoodCountsCache ??= () {
+    final counts = <String, int>{};
+    for (final article in articles) {
+      for (final mood in article.moodTags) {
+        counts[mood] = (counts[mood] ?? 0) + 1;
+      }
     }
-  }
-  return counts;
+    return counts;
+  }();
 }
 
 // --- Article lookup for pointing source links ---

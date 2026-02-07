@@ -398,17 +398,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               final topic = entry.key;
               final count = entry.value;
 
-              return StaggeredFadeIn(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _BrowseCard(
-                    icon: TopicTags.icon(topic),
-                    name: TopicTags.displayName(topic),
-                    description: 'Quotes about ${topic.toLowerCase()}',
-                    count: count,
-                    onTap: () => _openTopic(context, topic, contentFilter),
-                  ),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _BrowseCard(
+                  icon: TopicTags.icon(topic),
+                  name: TopicTags.displayName(topic),
+                  description: 'Quotes about ${topic.toLowerCase()}',
+                  count: count,
+                  onTap: () => _openTopic(context, topic, contentFilter),
                 ),
               );
             },
@@ -429,16 +426,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               final info = categoryInfoMap[category]!;
               final articleCount = getArticlesByCategory(category).length;
 
-              return StaggeredFadeIn(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _CategoryCard(
-                    category: category,
-                    info: info,
-                    articleCount: articleCount,
-                    onTap: () => _openCategory(context, category, info),
-                  ),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _CategoryCard(
+                  category: category,
+                  info: info,
+                  articleCount: articleCount,
+                  onTap: () => _openCategory(context, category, info),
                 ),
               );
             },
@@ -450,40 +444,37 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     // When All, show TopicTags with combined counts (articles + quotes)
     final teachingCounts = TeachingRepository.topicCounts;
-    final combinedCounts = <String, int>{};
+    // Pre-compute all data outside the itemBuilder
+    final topicData = <({String topic, int total, String desc})>[];
     for (final topic in TopicTags.all) {
       final articleCount = getArticlesByTopic(topic).length;
-      final teachingCount = teachingCounts[topic] ?? 0;
-      final total = articleCount + teachingCount;
-      if (total > 0) combinedCounts[topic] = total;
+      final quoteCount = teachingCounts[topic] ?? 0;
+      final total = articleCount + quoteCount;
+      if (total > 0) {
+        topicData.add((topic: topic, total: total, desc: '$articleCount articles, $quoteCount quotes'));
+      }
     }
-    final sortedTopics = combinedCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    topicData.sort((a, b) => b.total.compareTo(a.total));
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final entry = sortedTopics[index];
-            final topic = entry.key;
-            final count = entry.value;
+            final data = topicData[index];
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: TopicTags.icon(topic),
-                  name: TopicTags.displayName(topic),
-                  description: '${getArticlesByTopic(topic).length} articles, ${teachingCounts[topic] ?? 0} quotes',
-                  count: count,
-                  onTap: () => _openTopic(context, topic, contentFilter),
-                ),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: TopicTags.icon(data.topic),
+                name: TopicTags.displayName(data.topic),
+                description: data.desc,
+                count: data.total,
+                onTap: () => _openTopic(context, data.topic, contentFilter),
               ),
             );
           },
-          childCount: sortedTopics.length,
+          childCount: topicData.length,
         ),
       ),
     );
@@ -538,36 +529,35 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       );
     }
 
+    // Pre-compute lineage descriptions outside itemBuilder
+    final teacherData = sortedTeachers.map((entry) {
+      final teacher = entry.key;
+      final teachingsSample = TeachingRepository.byTeacher(teacher);
+      final lineage = teachingsSample.isNotEmpty
+          ? traditions[teachingsSample.first.lineage]?.name ?? ''
+          : '';
+      return (teacher: teacher, count: entry.value, lineage: lineage);
+    }).toList();
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final entry = sortedTeachers[index];
-            final teacher = entry.key;
-            final count = entry.value;
+            final data = teacherData[index];
 
-            // Get lineage for this teacher (from first teaching)
-            final teachingsSample = TeachingRepository.byTeacher(teacher);
-            final lineage = teachingsSample.isNotEmpty
-                ? traditions[teachingsSample.first.lineage]?.name ?? ''
-                : '';
-
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: '🙏',
-                  name: teacher,
-                  description: lineage,
-                  count: count,
-                  onTap: () => _openTeacher(context, teacher, contentFilter),
-                ),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: '🙏',
+                name: data.teacher,
+                description: data.lineage,
+                count: data.count,
+                onTap: () => _openTeacher(context, data.teacher, contentFilter),
               ),
             );
           },
-          childCount: sortedTeachers.length,
+          childCount: teacherData.length,
         ),
       ),
     );
@@ -605,17 +595,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           (context, index) {
             final data = lineageData[index];
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: data.info.icon,
-                  name: data.info.name,
-                  description: data.info.description,
-                  count: data.count,
-                  onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
-                ),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: data.info.icon,
+                name: data.info.name,
+                description: data.info.description,
+                count: data.count,
+                onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
               ),
             );
           },
@@ -661,17 +648,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             final mood = entry.key;
             final count = entry.value;
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: MoodTags.icon(mood),
-                  name: MoodTags.displayName(mood),
-                  description: 'Best for ${mood.toLowerCase()} moments',
-                  count: count,
-                  onTap: () => _openMood(context, mood, contentFilter),
-                ),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: MoodTags.icon(mood),
+                name: MoodTags.displayName(mood),
+                description: 'Best for ${mood.toLowerCase()} moments',
+                count: count,
+                onTap: () => _openMood(context, mood, contentFilter),
               ),
             );
           },
@@ -1033,6 +1017,7 @@ class _BrowseCard extends StatelessWidget {
       label: '$name. $description. $count teachings.',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
+        useBackdropFilter: false,
         onTap: onTap,
         child: Row(
           children: [
@@ -1129,6 +1114,7 @@ class _FeaturedArticleCard extends StatelessWidget {
       child: GlassCard(
           padding: const EdgeInsets.all(16),
           borderRadius: 20,
+          useBackdropFilter: false,
           onTap: onTap,
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1225,6 +1211,7 @@ class _CategoryCard extends StatelessWidget {
       label: '${info.name}. ${info.description}. $articleCount articles.',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
+        useBackdropFilter: false,
         onTap: onTap,
         child: Row(
           children: [

@@ -401,6 +401,7 @@ class TeachingRepository {
   /// Add teachings to the repository
   static void addTeachings(List<Teaching> teachings) {
     _allTeachings.addAll(teachings);
+    _invalidateCaches();
   }
 
   /// Initialize the repository (call once at app startup)
@@ -427,6 +428,22 @@ class TeachingRepository {
   static void reset() {
     _allTeachings.clear();
     _initialized = false;
+    _invalidateCaches();
+  }
+
+  // --- Lazy caches for computed getters ---
+  static Map<String, int>? _topicCountsCache;
+  static Map<String, int>? _moodCountsCache;
+  static Map<Tradition, int>? _lineageCountsCache;
+  static Map<String, int>? _teacherCountsCache;
+  static List<String>? _uniqueTeachersCache;
+
+  static void _invalidateCaches() {
+    _topicCountsCache = null;
+    _moodCountsCache = null;
+    _lineageCountsCache = null;
+    _teacherCountsCache = null;
+    _uniqueTeachersCache = null;
   }
 
   /// Filter teachings by various criteria
@@ -460,13 +477,18 @@ class TeachingRepository {
     return filtered.first;
   }
 
-  /// Get list of unique teachers
+  /// Get list of unique teachers (cached)
   static List<String> get uniqueTeachers {
-    return _allTeachings.map((t) => t.teacher).toSet().toList()..sort();
+    return _uniqueTeachersCache ??=
+        _allTeachings.map((t) => t.teacher).toSet().toList()..sort();
   }
 
-  /// Get count of teachings per topic
+  /// Get count of teachings per topic (cached)
   static Map<String, int> get topicCounts {
+    return _topicCountsCache ??= _computeTopicCounts();
+  }
+
+  static Map<String, int> _computeTopicCounts() {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
       for (final topic in t.topicTags) {
@@ -476,8 +498,12 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per mood
+  /// Get count of teachings per mood (cached)
   static Map<String, int> get moodCounts {
+    return _moodCountsCache ??= _computeMoodCounts();
+  }
+
+  static Map<String, int> _computeMoodCounts() {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
       for (final mood in t.moodTags) {
@@ -487,8 +513,12 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per lineage
+  /// Get count of teachings per lineage (cached)
   static Map<Tradition, int> get lineageCounts {
+    return _lineageCountsCache ??= _computeLineageCounts();
+  }
+
+  static Map<Tradition, int> _computeLineageCounts() {
     final counts = <Tradition, int>{};
     for (final t in _allTeachings) {
       counts[t.lineage] = (counts[t.lineage] ?? 0) + 1;
@@ -496,8 +526,12 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per teacher
+  /// Get count of teachings per teacher (cached)
   static Map<String, int> get teacherCounts {
+    return _teacherCountsCache ??= _computeTeacherCounts();
+  }
+
+  static Map<String, int> _computeTeacherCounts() {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
       counts[t.teacher] = (counts[t.teacher] ?? 0) + 1;
