@@ -45,32 +45,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _controller = VideoPlayerController.asset(asset)
       ..initialize().then((_) {
-        if (!mounted) return;
+        if (!mounted || _navigated) return;
         setState(() {});
         _controller!.play();
-        _controller!.addListener(_onVideoProgress);
+        // Navigate after the video's own duration. Deterministic — doesn't
+        // rely on isCompleted or position callbacks which are unreliable
+        // on Android emulators with software video decoders.
+        final duration = _controller!.value.duration;
+        Future.delayed(duration, _navigateAway);
       }).catchError((_) {
         // Video failed to load — skip to destination
         _navigateAway();
       });
-  }
-
-  void _onVideoProgress() {
-    final controller = _controller;
-    if (controller == null || _navigated) return;
-
-    final value = controller.value;
-    if (!value.isInitialized) return;
-
-    // Auto-advance when video completes.
-    // Check both isCompleted (playback finished) and position >= duration
-    // (edge case: some platforms don't set isCompleted reliably).
-    final completed = value.isCompleted ||
-        (value.duration > Duration.zero &&
-            value.position >= value.duration - const Duration(milliseconds: 100));
-    if (completed) {
-      _navigateAway();
-    }
   }
 
   void _navigateAway() {
@@ -87,7 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
-    _controller?.removeListener(_onVideoProgress);
     _controller?.dispose();
     super.dispose();
   }
