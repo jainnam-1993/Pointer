@@ -61,8 +61,7 @@ test_output/
 maestro/screenshots/
 
 # Root-level test screenshots & Unison conflict artifacts
-/*conflict*.png
-/*was_deleted*.png
+/*.png
 
 # Build artifacts
 .gradle/

@@ -45,7 +45,7 @@ class InquirySession {
 
 const inquirySessions = [
   InquirySession(
-    id: '1',
+    id: 'si_003',
     title: 'Who Am I?',
     description: 'The fundamental inquiry',
     duration: '5 min',
@@ -54,7 +54,7 @@ const inquirySessions = [
     tradition: Tradition.advaita,
   ),
   InquirySession(
-    id: '2',
+    id: 'dp_001',
     title: 'Finding the Looker',
     description: 'Turn attention to its source',
     duration: '7 min',
@@ -63,7 +63,7 @@ const inquirySessions = [
     tradition: Tradition.direct,
   ),
   InquirySession(
-    id: '3',
+    id: 'dp_005',
     title: 'The Space of Awareness',
     description: "Recognizing what doesn't change",
     duration: '10 min',
@@ -72,7 +72,7 @@ const inquirySessions = [
     tradition: Tradition.direct,
   ),
   InquirySession(
-    id: '4',
+    id: 'koan_001',
     title: 'Investigating Thoughts',
     description: 'What are thoughts made of?',
     duration: '8 min',
@@ -81,7 +81,7 @@ const inquirySessions = [
     tradition: Tradition.zen,
   ),
   InquirySession(
-    id: '5',
+    id: 'cont_001',
     title: 'Resting as Awareness',
     description: 'Beyond the practice',
     duration: '12 min',

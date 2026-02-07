@@ -127,8 +127,13 @@ class _SaveConfirmationState extends State<SaveConfirmation>
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return Stack(
-      children: [
+    return Semantics(
+      liveRegion: true,
+      label: widget.isFirstSave
+          ? 'First Save! Find your saved pointings in Library'
+          : 'Saved to favorites',
+      child: Stack(
+        children: [
         // Confetti layer (behind the card)
         if (widget.isFirstSave)
           Align(
@@ -232,7 +237,8 @@ class _SaveConfirmationState extends State<SaveConfirmation>
             ),
           ),
         ),
-      ],
+        ],
+      ),
     );
   }
 }
