@@ -39,8 +39,9 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final asset = 'assets/videos/nonduality_${isDark ? 'black' : 'white'}.mp4';
+    // Always use black variant — native splash is always black background
+    // for seamless transition. No white flash between native and Flutter splash.
+    const asset = 'assets/videos/nonduality_black.mp4';
 
     _controller = VideoPlayerController.asset(asset)
       ..initialize().then((_) {
@@ -93,10 +94,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark ? Colors.black : Colors.white,
+      backgroundColor: Colors.black,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _navigateAway,
