@@ -1,8 +1,8 @@
-# Theme Switching Flow - Dark/Light/High Contrast/OLED themes
+# Theme Switching Flow - Dark/Light/System themes
 # Run: maestro test maestro/flows/17_theme_switching.yaml
 #
 # Tests: Theme toggle in settings, visual theme changes
-# Themes: Dark, Light, High Contrast, OLED
+# Themes: Dark, Light, System (inline _ThemeOption row)
 
 appId: com.dailypointer
 ---
@@ -65,31 +65,16 @@ appId: com.dailypointer
 - tapOn:
     text: "Settings tab.*"
 
-# === THEME: HIGH CONTRAST ===
+# === RESTORE DEFAULT (Dark) ===
 - tapOn:
-    text: ".*High Contrast.*"
-- takeScreenshot: "theme_09_high_contrast"
-
-# === THEME: OLED ===
-- tapOn:
-    text: ".*OLED.*"
-- takeScreenshot: "theme_10_oled"
-
-# Verify OLED theme (true black backgrounds)
-- tapOn:
-    text: "Home tab.*"
-- takeScreenshot: "theme_11_oled_home"
-
-# === RESTORE DEFAULT ===
-- tapOn:
-    text: "Settings tab.*"
+    text: ".*Theme.*"
 - tapOn:
     text: ".*Dark.*"
-- takeScreenshot: "theme_12_restored"
+- takeScreenshot: "theme_09_restored"
 
 # === FINAL STATE ===
 - tapOn:
     text: "Home tab.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "theme_13_complete"
+- takeScreenshot: "theme_10_complete"
