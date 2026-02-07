@@ -1,7 +1,7 @@
 # Settings Screen Flow - User preferences and notifications
 # Run: maestro test maestro/flows/05_settings.yaml
 #
-# Tests: Settings navigation, notification access, developer unlock (7-tap easter egg)
+# Tests: Settings navigation, theme options, developer unlock (7-tap easter egg)
 
 appId: com.dailypointer
 ---
@@ -20,45 +20,38 @@ appId: com.dailypointer
     text: "Settings"
 - takeScreenshot: "settings_01_initial"
 
-# === SCROLL DOWN TO REVEAL MORE OPTIONS ===
+# === SCROLL DOWN TO REVEAL ABOUT SECTION ===
 - swipe:
-    direction: DOWN
+    direction: UP
+    duration: 400
+- swipe:
+    direction: UP
+    duration: 400
+- swipe:
+    direction: UP
+    duration: 400
 - takeScreenshot: "settings_02_scrolled"
-
-# === NOTIFICATION SETTINGS ===
-- tapOn:
-    text: ".*Notification.*"
-- takeScreenshot: "settings_03_notifications"
-
-# Go back to settings
-- back
-- waitForAnimationToEnd
-
-# === SCROLL MORE FOR ABOUT SECTION ===
-- swipe:
-    direction: DOWN
-- takeScreenshot: "settings_04_about"
 
 # === DEVELOPER MENU UNLOCK (7-tap easter egg) ===
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
-- takeScreenshot: "settings_05_developer_unlocked"
+    text: ".*Here Now v.*"
+- takeScreenshot: "settings_03_developer_unlocked"
 
 # === BACK TO HOME ===
 - tapOn:
     text: "Home tab.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "settings_06_back_home"
+- takeScreenshot: "settings_04_back_home"

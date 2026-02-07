@@ -24,19 +24,19 @@ appId: com.dailypointer
     direction: UP
     duration: 300
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - takeScreenshot: "notif_02_developer_unlocked"
 
 # === GRANT ALARM PERMISSION (if needed) ===
