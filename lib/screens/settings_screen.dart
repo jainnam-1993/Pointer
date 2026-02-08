@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:io' show Platform;
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/notification_service.dart';
@@ -26,6 +25,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with WidgetsBindingObserver {
+  static const _settingsChannel = MethodChannel('com.dailypointer/settings');
+
   bool _notificationsEnabled = false;  // Match service default, loaded in _checkPermissions
   bool _permissionGranted = true;
 
@@ -137,24 +138,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     }
   }
 
-  /// Opens the app-specific settings page on iOS/Android.
-  /// On iOS, uses the app-settings: URL scheme which reliably opens the app's
-  /// own settings page (with Notifications toggle) across iOS versions.
-  /// Falls back to generic settings if the scheme isn't supported.
+  /// Opens the app-specific notification settings via platform channel.
+  /// Android: Settings.ACTION_APP_NOTIFICATION_SETTINGS (API 26+)
+  /// iOS 16+: UIApplication.openNotificationSettingsURLString (direct to notifications)
+  /// iOS <16: UIApplication.openSettingsURLString (general app settings)
   Future<void> _openAppNotificationSettings() async {
-    if (Platform.isIOS) {
-      // app-settings: is the documented URL scheme for app-specific settings on iOS.
-      // This opens the app's page in Settings where Notifications is listed.
-      final uri = Uri.parse('app-settings:');
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } else {
-      // Android: open app notification channel settings
-      final uri = Uri.parse('package:com.dailypointer');
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      }
+    try {
+      await _settingsChannel.invokeMethod('openNotificationSettings');
+    } catch (e) {
+      debugPrint('Failed to open notification settings: $e');
     }
   }
 
