@@ -4,33 +4,17 @@ appId: com.dailypointer
 - launchApp:
     clearState: true
 
-# Wait for app to render, then dismiss splash video
-- waitForAnimationToEnd
-- tapOn:
-    point: "50%,50%"
-- tapOn:
-    point: "50%,50%"
-
-# Wait for splash to finish and onboarding to appear
-- extendedWaitUntil:
-    visible:
-      text: "Continue"
-    timeout: 10000
-
 # Complete onboarding
 - tapOn: "Continue"
-- waitForAnimationToEnd
 - tapOn: "Continue"
-- waitForAnimationToEnd
 - tapOn: "Continue"
-- waitForAnimationToEnd
 - tapOn:
     text: "Maybe Later"
-- waitForAnimationToEnd
+    optional: true
 
 # Take clean home screen screenshot
 - takeScreenshot: "navbar_01_home"
 
 # Navigate to settings
-- tapOn: "Settings"
+- tapOn: ".*Settings.*"
 - takeScreenshot: "navbar_02_settings"

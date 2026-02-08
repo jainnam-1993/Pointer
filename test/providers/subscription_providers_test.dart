@@ -1,5 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:pointer/providers/subscription_providers.dart';
+import 'package:pointer/services/usage_tracking_service.dart';
+
+class MockUsageTrackingService extends Mock implements UsageTrackingService {}
 
 void main() {
   group('SubscriptionTier', () {
@@ -15,6 +19,7 @@ void main() {
       const state = SubscriptionState();
       expect(state.tier, SubscriptionTier.premium); // Default is premium now
       expect(state.isLoading, false);
+      expect(state.products, isEmpty); // Empty list - no IAP
       expect(state.error, isNull);
     });
 
@@ -68,4 +73,127 @@ void main() {
     });
   });
 
+  group('DailyUsageNotifier', () {
+    late MockUsageTrackingService mockService;
+    late DailyUsageNotifier notifier;
+
+    setUp(() {
+      mockService = MockUsageTrackingService();
+    });
+
+    test('canViewPointing returns true for premium users', () {
+      final usage = DailyUsage(
+        viewCount: 10, // Over limit
+        lastResetDate: _todayString(),
+      );
+      when(() => mockService.getUsage()).thenReturn(usage);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.canViewPointing(true), true);
+    });
+
+    test('canViewPointing returns true when under limit', () {
+      final usage = DailyUsage(
+        viewCount: 1, // Under limit (2)
+        lastResetDate: _todayString(),
+      );
+      when(() => mockService.getUsage()).thenReturn(usage);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.canViewPointing(false), true);
+      expect(notifier.state.limitReached, false);
+    });
+
+    test('canViewPointing always returns true (freemium v2 model)', () {
+      // Under freemium v2 model, all pointings are free regardless of view count
+      final usage = DailyUsage(
+        viewCount: 2, // At limit, but still returns true
+        lastResetDate: _todayString(),
+      );
+      when(() => mockService.getUsage()).thenReturn(usage);
+
+      notifier = DailyUsageNotifier(mockService);
+      // Quotes are free for all users now
+      expect(notifier.canViewPointing(false), true);
+      expect(notifier.state.limitReached, true); // State still tracks limit
+    });
+
+    test('recordView increments count', () async {
+      final initial = DailyUsage(
+        viewCount: 1,
+        lastResetDate: _todayString(),
+      );
+      final updated = DailyUsage(
+        viewCount: 2,
+        lastResetDate: _todayString(),
+      );
+
+      when(() => mockService.getUsage()).thenReturn(initial);
+      when(() => mockService.incrementViewCount())
+          .thenAnswer((_) async => updated);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.state.viewCount, 1);
+
+      await notifier.recordView();
+      expect(notifier.state.viewCount, 2);
+      verify(() => mockService.incrementViewCount()).called(1);
+    });
+
+    test('reset clears usage', () async {
+      final initial = DailyUsage(
+        viewCount: 2,
+        lastResetDate: _todayString(),
+      );
+      final resetUsage = DailyUsage(
+        viewCount: 0,
+        lastResetDate: _todayString(),
+      );
+
+      // First call (constructor) returns initial, subsequent calls return reset
+      var callCount = 0;
+      when(() => mockService.getUsage()).thenAnswer((_) {
+        callCount++;
+        return callCount == 1 ? initial : resetUsage;
+      });
+      when(() => mockService.resetUsage()).thenAnswer((_) async {});
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.state.viewCount, 2);
+
+      await notifier.reset();
+      expect(notifier.state.viewCount, 0);
+      verify(() => mockService.resetUsage()).called(1);
+    });
+
+    test('initializes with service usage on creation', () {
+      final usage = DailyUsage(
+        viewCount: 1,
+        lastResetDate: _todayString(),
+      );
+      when(() => mockService.getUsage()).thenReturn(usage);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.state.viewCount, 1);
+      expect(notifier.state.lastResetDate, _todayString());
+    });
+  });
+
+  group('kFreeAccessEnabled', () {
+    test('is set to true for free release', () {
+      // IMPORTANT: Set to true for free app release (all features free, no IAP)
+      expect(kFreeAccessEnabled, true);
+    });
+
+    test('is a compile-time constant', () {
+      // Verify it's a const (can be used in const expressions)
+      const value = kFreeAccessEnabled;
+      expect(value, isA<bool>());
+    });
+  });
+}
+
+String _todayString() {
+  final now = DateTime.now();
+  return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 }

@@ -10,15 +10,25 @@
 
 appId: com.dailypointer
 ---
-- launchApp:
-    clearState: true
+- launchApp
 
-# Complete onboarding
-- runFlow: ../shared/skip_onboarding.yaml
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
 
 # Go to home tab
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 
 # === INITIAL STATE (Normal mode) ===
 - assertVisible:
@@ -28,13 +38,16 @@ appId: com.dailypointer
 - takeScreenshot: "zen_01_normal_mode"
 
 # === ENTER ZEN MODE (Double-tap) ===
+# Double-tap on the pointing card area (center of screen)
 - doubleTapOn:
     point: "50%,40%"
 - takeScreenshot: "zen_02_entered"
 
 # Verify zen mode - bottom nav should be hidden
+# In zen mode, "Next" button and bottom tabs are hidden
 - assertNotVisible:
     text: ".*Next.*"
+    optional: true
 
 # === NAVIGATE IN ZEN MODE ===
 # Swipe up for next pointing

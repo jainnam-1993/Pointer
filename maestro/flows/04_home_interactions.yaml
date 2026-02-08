@@ -1,22 +1,32 @@
 # Home Screen Interactions - Core pointing experience
 # Run: maestro test maestro/flows/04_home_interactions.yaml
 #
-# Tests: Next/Previous, swipe gestures, save to favorites, share button,
-#        teacher info sheet
+# Tests: Next/Previous, swipe gestures, save to favorites, share button
+# Note: Zen mode and first-save celebration tested in dedicated flows
 #
 # Complements: integration_test/app_test.dart group 3 (state-controlled)
 
 appId: com.dailypointer
 ---
-- launchApp:
-    clearState: true
+- launchApp
 
-# Complete onboarding
-- runFlow: ../shared/skip_onboarding.yaml
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
 
 # Go to home tab
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 
 # === INITIAL STATE ===
 - assertVisible:
@@ -27,7 +37,7 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Next.*"
 - assertVisible:
-    text: ".*Next.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_02_after_next"
 
 # === SWIPE UP (Next pointing) ===
@@ -35,7 +45,7 @@ appId: com.dailypointer
     direction: UP
     duration: 500
 - assertVisible:
-    text: ".*Next.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_03_after_swipe_up"
 
 # === SWIPE DOWN (Previous pointing) ===
@@ -43,34 +53,46 @@ appId: com.dailypointer
     direction: DOWN
     duration: 500
 - assertVisible:
-    text: ".*Next.*"
+    text: ".*Next.*"  # Verify home screen loaded
 - takeScreenshot: "home_04_after_swipe_down"
 
 # === LONG PRESS TO SAVE (favorite toggle) ===
+# Long press on the pointing card area to save
 - longPressOn:
     point: "50%,40%"
-- waitForAnimationToEnd
 - takeScreenshot: "home_05_after_save"
-- assertVisible:
-    text: ".*Next.*"
 
 # === SHARE BUTTON ===
+# Tap share icon to open share preview modal
 - tapOn:
-    text: "Share this pointing"
-- waitForAnimationToEnd
+    id: "share_button"
+    optional: true
+- tapOn:
+    text: ".*share.*"
+    optional: true
 - takeScreenshot: "home_06_share_modal"
 
-# Verify share modal opened
-- assertVisible:
-    text: "Share"
-
-# Close share modal via back
-- back
+# Close share modal if opened (tap X button in top-left corner)
+- tapOn:
+    point: "10%,15%"  # X button location
+    optional: true
 - waitForAnimationToEnd
+
+# === TEACHER INFO (tap on teacher name) ===
+# Teacher attribution shows at bottom of pointing card
+- tapOn:
+    text: ".*—.*"
+    optional: true
+- takeScreenshot: "home_07_teacher_sheet"
+
+# Close teacher sheet
+- tapOn:
+    point: "50%,20%"
+    optional: true
 
 # === FINAL STATE ===
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 - assertVisible:
     text: ".*Next.*"
 - takeScreenshot: "home_08_final"

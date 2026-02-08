@@ -10,7 +10,7 @@ import 'package:integration_test/integration_test.dart';
 
 /// Screenshot capture configuration
 class ScreenshotConfig {
-  static const outputDir = 'test_output';
+  static const outputDir = 'screenshots';
   static int _screenshotCounter = 0;
   static String _currentFlow = 'default';
 
@@ -20,11 +20,11 @@ class ScreenshotConfig {
     _screenshotCounter = 0;
   }
 
-  /// Generate screenshot filename (outputs to test_output/ directory)
+  /// Generate screenshot filename
   static String getFileName(String stepName) {
     _screenshotCounter++;
     final sanitizedStep = stepName.replaceAll(' ', '_').toLowerCase();
-    return '$outputDir/$_currentFlow/${_screenshotCounter.toString().padLeft(2, '0')}_$sanitizedStep';
+    return '$_currentFlow/${_screenshotCounter.toString().padLeft(2, '0')}_$sanitizedStep';
   }
 
   /// Reset counter (call between test groups)

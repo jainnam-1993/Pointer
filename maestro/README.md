@@ -39,7 +39,7 @@ maestro test maestro/flows/01_navigation.yaml
 | `14_history.yaml` | View past pointings | ~45s |
 | `15_lineages.yaml` | Tradition preferences | ~45s |
 | `16_widget_interactions.yaml` | Widget prev/next/save buttons | ~60s |
-| `17_theme_switching.yaml` | Dark/Light/System theme switching | ~60s |
+| `17_theme_switching.yaml` | Dark/Light/OLED theme changes | ~60s |
 | `18_notification_config.yaml` | Notification presets & time windows | ~60s |
 
 ## Test Philosophy

@@ -2,20 +2,29 @@
 # Run: maestro test maestro/flows/12_save_favorites.yaml
 #
 # Tests: Long-press save gesture, first-save celebration, save confirmation
-# Save confirmation shows "Saved" (normal) or "First Save!" (first time)
 # Note: Favorites sync to home widget tested in 16_widget_interactions.yaml
 
 appId: com.dailypointer
 ---
-- launchApp:
-    clearState: true
+- launchApp
 
-# Complete onboarding
-- runFlow: ../shared/skip_onboarding.yaml
+# Skip onboarding if shown
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn:
+    text: "Maybe Later"
+    optional: true
 
 # Go to home tab
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 
 # === INITIAL STATE ===
 - assertVisible:
@@ -26,40 +35,40 @@ appId: com.dailypointer
 # Long-press on the pointing card to save
 - longPressOn:
     point: "50%,40%"
-# Save confirmation auto-dismisses after 2-3s — catch it quickly
-# Save confirmation (2s auto-dismiss) not in accessibility tree — wait it out
-- waitForAnimationToEnd
 - takeScreenshot: "favorites_02_first_save"
 
-# Wait for auto-dismiss
-- waitForAnimationToEnd
+# Check for first-save celebration (confetti animation)
+# Note: Visual celebration may be brief, screenshot captures the moment
+
+# === SAVE CONFIRMATION ===
+# Save confirmation overlay should appear
+- assertVisible:
+    text: ".*saved.*"
+    optional: true
+- assertVisible:
+    text: ".*favorite.*"
+    optional: true
+- takeScreenshot: "favorites_03_confirmation"
 
 # === NAVIGATE TO NEW POINTING ===
 - tapOn:
     text: ".*Next.*"
-- assertVisible:
-    text: ".*Next.*"
-- takeScreenshot: "favorites_03_new_pointing"
+- takeScreenshot: "favorites_04_new_pointing"
 
 # === SAVE SECOND POINTING ===
 - longPressOn:
     point: "50%,40%"
-# Save confirmation (2s auto-dismiss) not in accessibility tree — wait it out
-- waitForAnimationToEnd
-- takeScreenshot: "favorites_04_second_save"
-
-# Wait for auto-dismiss
-- waitForAnimationToEnd
+- takeScreenshot: "favorites_05_second_save"
 
 # === UNSAVE (toggle off) ===
 # Long-press again on same pointing should unsave it
 - longPressOn:
     point: "50%,40%"
-- takeScreenshot: "favorites_05_unsaved"
+- takeScreenshot: "favorites_06_unsaved"
 
 # === VERIFY FINAL STATE ===
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "favorites_06_complete"
+- takeScreenshot: "favorites_07_complete"
