@@ -50,8 +50,7 @@ class MockDonationService extends DonationService {
 class TestDonationNotifier extends DonationNotifier {
   final DonationState _initialState;
 
-  TestDonationNotifier(this._initialState, DonationService service)
-      : super(service);
+  TestDonationNotifier(this._initialState, super.service);
 
   @override
   Future<void> initialize() async {

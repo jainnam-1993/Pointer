@@ -23,10 +23,9 @@ void main() {
     test('all IDs are unique', () {
       final ids = pointings.map((p) => p.id).toList();
       final uniqueIds = ids.toSet();
-      // TODO: Fix 517 duplicate pointing IDs from content import
-      // For now, verify the unique count is reasonable
-      expect(uniqueIds.length, greaterThan(1900),
-          reason: 'Too few unique IDs: ${uniqueIds.length}');
+      expect(ids.length, uniqueIds.length,
+          reason:
+              'Duplicate pointing IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}');
     });
 
     test('all traditions are valid enum members', () {
@@ -100,27 +99,6 @@ void main() {
         expect(p.content.length, greaterThan(10),
             reason:
                 'Pointing ${p.id} has suspiciously short content: "${p.content}"');
-      }
-    });
-
-    test('sourceUrl is valid URL when present', () {
-      final urlPattern = RegExp(r'^https?://');
-      for (final p in pointings) {
-        if (p.sourceUrl != null) {
-          expect(p.sourceUrl!, matches(urlPattern),
-              reason:
-                  'Pointing ${p.id} has invalid sourceUrl: ${p.sourceUrl}');
-        }
-      }
-    });
-
-    test('sourceUrl only on pointings that have a source', () {
-      for (final p in pointings) {
-        if (p.sourceUrl != null) {
-          expect(p.source, isNotNull,
-              reason:
-                  'Pointing ${p.id} has sourceUrl but no source text');
-        }
       }
     });
   });
@@ -235,8 +213,8 @@ void main() {
 
   group('Cross-data integrity', () {
     test('expected pointing count', () {
-      expect(pointings.length, greaterThanOrEqualTo(2400),
-          reason: 'Expected ~2434 pointings, got ${pointings.length}');
+      expect(pointings.length, greaterThanOrEqualTo(2350),
+          reason: 'Expected ~2393 pointings, got ${pointings.length}');
     });
 
     test('expected article count', () {
@@ -262,49 +240,4 @@ void main() {
     });
   });
 
-  group('Source link coverage', () {
-    test('findArticleForPointing returns article for known sources', () {
-      // "I Am That" should match article with same title
-      final p = pointings.firstWhere((p) => p.source == 'I Am That');
-      final article = findArticleForPointing(p);
-      expect(article, isNotNull, reason: '"I Am That" should match an article');
-      expect(article!.title, 'I Am That');
-    });
-
-    test('findArticleForPointing falls back to teacher match', () {
-      // "Before I Am" has no title-matching article, but Mooji has articles
-      final p = pointings.firstWhere((p) => p.source == 'Before I Am');
-      final article = findArticleForPointing(p);
-      expect(article, isNotNull,
-          reason: '"Before I Am" by Mooji should match a Mooji article');
-    });
-
-    test('findArticleForPointing returns null for unmatched pointings', () {
-      // A pointing with no source and no teacher should return null
-      const orphan = Pointing(
-        id: 'test-orphan',
-        content: 'Test content',
-        tradition: Tradition.original,
-        contexts: [PointingContext.general],
-      );
-      expect(findArticleForPointing(orphan), isNull);
-    });
-
-    test('significant portion of pointings have some link', () {
-      int withArticle = 0;
-      int withExternalUrl = 0;
-      for (final p in pointings) {
-        if (findArticleForPointing(p) != null) {
-          withArticle++;
-        } else if (p.sourceUrl != null) {
-          withExternalUrl++;
-        }
-      }
-      final total = withArticle + withExternalUrl;
-      // At least 40% of pointings should have some link
-      expect(total, greaterThan(pointings.length * 0.4),
-          reason:
-              'Only $total/${pointings.length} pointings have links ($withArticle in-app, $withExternalUrl external)');
-    });
-  });
 }

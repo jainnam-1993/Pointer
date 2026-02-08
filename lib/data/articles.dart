@@ -47,7 +47,7 @@ What remains when you stop looking for an answer?
 
 The separate self is a useful fiction for daily life, but it has no ultimate reality. What you truly are was never born and will never die.''',
     excerpt:
-        'Nisargadatta\'s radical teaching: You are not what you think yourself to be. Find out what you are.',
+        "Nisargadatta's radical teaching: You are not what you think yourself to be. Find out what you are.",
     tradition: Tradition.advaita,
     teacher: 'Nisargadatta Maharaj',
     categories: [
@@ -98,7 +98,7 @@ What you discover is not something new. It is what has always been present:
 
 This awareness is not personal. It is the same awareness looking out of all eyes, hearing through all ears. Recognition of this is enlightenment.''',
     excerpt:
-        'Ramana Maharshi\'s self-inquiry method: the direct path to Self-realization.',
+        "Ramana Maharshi's self-inquiry method: the direct path to Self-realization.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
     categories: [
@@ -147,7 +147,7 @@ This teaching is not for beginners. It requires a readiness to let go of all spi
     excerpt:
         'The most radical non-dual scripture: You are already free. Your only bondage is believing you are not.',
     tradition: Tradition.advaita,
-    teacher: 'Ashtavakra Gita',
+    teacher: 'Ashtavakra',
     categories: [
       ArticleCategory.traditionalTeachings,
       ArticleCategory.natureOfAwareness,
@@ -193,7 +193,7 @@ Self-inquiry is not a technique to be perfected. It is a returning to what you a
 
 There is only awareness. It appears as the world when directed outward through the senses. It knows itself as Self when it rests in itself. Both are the same awareness.''',
     excerpt:
-        'Ramana\'s essential teaching: Your duty is to be, and not to be this or that.',
+        "Ramana's essential teaching: Your duty is to be, and not to be this or that.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
     categories: [
@@ -534,7 +534,7 @@ When this recognition stabilizes:
 - Peace is not sought because it is recognized as ever-present
 - Life becomes an exploration, not a problem to solve''',
     excerpt:
-        'Rupert Spira\'s teaching on awareness: we don\'t become present, we notice that we already are.',
+        "Rupert Spira's teaching on awareness: we don't become present, we notice that we already are.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
     categories: [
@@ -591,7 +591,7 @@ Why "perfume of silence"? Because this recognition brings a quality to life that
 
 It is the natural fragrance of our true nature.''',
     excerpt:
-        'Francis Lucille\'s teaching: The separate self is not eliminated. It is seen through.',
+        "Francis Lucille's teaching: The separate self is not eliminated. It is seen through.",
     tradition: Tradition.direct,
     teacher: 'Francis Lucille',
     categories: [
@@ -657,7 +657,7 @@ The ego is the identification with form - the body, thoughts, possessions, roles
 
 This simple recognition is the doorway to freedom.''',
     excerpt:
-        'Eckhart Tolle\'s teaching: The present moment is all you ever have.',
+        "Eckhart Tolle's teaching: The present moment is all you ever have.",
     tradition: Tradition.contemporary,
     teacher: 'Eckhart Tolle',
     categories: [
@@ -713,7 +713,7 @@ Don't answer with another thought. Look. Is there actually someone there to whom
 > "Keep quiet. Do nothing. Be as you are. That's it."
 
 The simplicity is deceptive. The mind wants complexity, wants a project, wants something to do. But freedom is simpler than the mind can accept.''',
-    excerpt: 'Mooji\'s invitation: Can you just be? Not be something - just be?',
+    excerpt: "Mooji's invitation: Can you just be? Not be something - just be?",
     tradition: Tradition.contemporary,
     teacher: 'Mooji',
     categories: [
@@ -774,9 +774,9 @@ Because awakening is not passive. It is not a withdrawal from life. It is a full
 
 > "Celebrate! You were never bound!"''',
     excerpt:
-        'Papaji\'s teaching: Don\'t postpone. This instant is freedom.',
+        "Papaji's teaching: Don't postpone. This instant is freedom.",
     tradition: Tradition.advaita,
-    teacher: 'Papaji (H.W.L. Poonja)',
+    teacher: 'Papaji',
     categories: [
       ArticleCategory.traditionalTeachings,
       ArticleCategory.selfInquiry,
@@ -1019,7 +1019,7 @@ He pointed away from himself to what is always already present in everyone.
 
 > "You are the light in which all appears. You are not in the picture. You are what makes the picture possible."''',
     excerpt:
-        'Jean Klein\'s teaching: Remain with a listening attention, without conclusion.',
+        "Jean Klein's teaching: Remain with a listening attention, without conclusion.",
     tradition: Tradition.direct,
     teacher: 'Jean Klein',
     categories: [
@@ -1152,7 +1152,7 @@ Non-duality is not about adding new beliefs. It is about examining what we alrea
 **What is aware of your current experience?**
 
 Don't answer with a thought. Just look.''',
-    excerpt: 'A complete introduction to non-duality for beginners - what it is, what it isn\'t, and why it matters.',
+    excerpt: "A complete introduction to non-duality for beginners - what it is, what it isn't, and why it matters.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.natureOfAwareness,
@@ -2224,7 +2224,7 @@ Spira has made the Direct Path accessible to a wide audience through YouTube, re
 ## His Words
 
 "The greatest discovery is that awareness is not personal. What you are is the same awareness that looks out of all eyes."''',
-    excerpt: 'Rupert Spira\'s precise, elegant approach to self-investigation and recognition.',
+    excerpt: "Rupert Spira's precise, elegant approach to self-investigation and recognition.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
     categories: [
@@ -2283,7 +2283,7 @@ Unlike many teachers who emphasize only the positive aspects of awakening, Adyas
 ## The Honesty
 
 Adyashanti is known for not playing the role of enlightened master. He speaks of his own continuing discoveries and challenges, making his teaching refreshingly authentic.''',
-    excerpt: 'Adyashanti\'s honest, grounded approach to awakening and its integration.',
+    excerpt: "Adyashanti's honest, grounded approach to awakening and its integration.",
     tradition: Tradition.contemporary,
     teacher: 'Adyashanti',
     categories: [
@@ -2598,7 +2598,7 @@ The world is not a problem to be escaped. It is awareness appearing as form.''',
 
   Article(
     id: 'art_zen_001',
-    title: 'Beginner\'s Mind',
+    title: "Beginner's Mind",
     subtitle: 'The Most Important Zen Teaching',
     content: '''# Beginner's Mind
 
@@ -2765,7 +2765,7 @@ Don't settle for any Buddha. Keep looking until there is nothing left to look fo
 ## The Warning
 
 This doesn't mean nihilism or rejecting everything. It means not getting stuck - in anything.''',
-    excerpt: 'Understanding one of Zen\'s most provocative teachings - and why concepts must die.',
+    excerpt: "Understanding one of Zen's most provocative teachings - and why concepts must die.",
     tradition: Tradition.zen,
     categories: [
       ArticleCategory.traditionalTeachings,
@@ -4147,7 +4147,7 @@ On the other side of boredom is contentment that needs nothing.
 When we can be at peace without stimulation, we are free. Entertainment is enjoyed when available and not needed when absent.
 
 This is true freedom - not dependence on constant input.''',
-    excerpt: 'How boredom can become a doorway to presence - if we don\'t run from it.',
+    excerpt: "How boredom can become a doorway to presence - if we don't run from it.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.everydayAwakening,
@@ -5229,7 +5229,7 @@ Not looking for something special. Not trying to improve it.
 Just this.
 
 What's here?''',
-    excerpt: 'Why awakening is ordinary - and why that\'s actually extraordinary.',
+    excerpt: "Why awakening is ordinary - and why that's actually extraordinary.",
     tradition: Tradition.zen,
     categories: [
       ArticleCategory.everydayAwakening,
@@ -5881,7 +5881,7 @@ This moment, without the story of enlightenment, what is present?
 Ordinary awareness. Ordinary life. Just this.
 
 This is it. Not the myth. This.''',
-    excerpt: 'Debunking the fantasy of enlightenment - what awakening actually is and isn\'t.',
+    excerpt: "Debunking the fantasy of enlightenment - what awakening actually is and isn't.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.everydayAwakening,
@@ -6403,7 +6403,7 @@ Neti neti leads to Iti - "This!" The positive recognition of what you are.
 Use negation to clear away false identification.
 
 Then rest in what remains. Not nothing. Everything.''',
-    excerpt: 'The ancient method of negation - finding what you are by eliminating what you\'re not.',
+    excerpt: "The ancient method of negation - finding what you are by eliminating what you're not.",
     tradition: Tradition.advaita,
     categories: [
       ArticleCategory.traditionalTeachings,
@@ -7129,7 +7129,7 @@ Right now, without changing anything:
 Is awareness content?
 
 Look. Not the thoughts. Awareness itself.''',
-    excerpt: 'Finding contentment that doesn\'t depend on conditions - the natural state of awareness.',
+    excerpt: "Finding contentment that doesn't depend on conditions - the natural state of awareness.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.everydayAwakening,
@@ -8250,7 +8250,7 @@ The end of looking elsewhere.
 You are here. You are aware.
 
 That's all.''',
-    excerpt: 'The final word after all teaching - you are aware, and that\'s all.',
+    excerpt: "The final word after all teaching - you are aware, and that's all.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.natureOfAwareness,
@@ -8828,7 +8828,7 @@ You are the answer.
 Not in the future. Now.
 
 Look.''',
-    excerpt: 'The recognition that you are the answer you\'ve been seeking.',
+    excerpt: "The recognition that you are the answer you've been seeking.",
     tradition: Tradition.contemporary,
     categories: [
       ArticleCategory.selfInquiry,
@@ -10099,7 +10099,7 @@ The beginning of living it.''',
   Article(
     id: 'art_true_meditation_001',
     title: 'True Meditation',
-    subtitle: 'Adyashanti\'s Radical Approach',
+    subtitle: "Adyashanti's Radical Approach",
     content: '''## The Absence of Technique
 
 Most meditation is a subtle form of control. We sit down wanting peace, clarity, or awakening. We employ techniques to get somewhere. True meditation, as Adyashanti points to, is the opposite: the complete abandonment of the meditator.
@@ -10120,7 +10120,7 @@ When you stop rejecting, the energy that was going into resistance becomes avail
 
 What if you sat down with absolutely no agenda? Not even the agenda to have no agenda? The moment there is an agenda, there is a meditator. The moment there is a meditator, there is separation.
 
-**3. Discover What\'s Already at Rest**
+**3. Discover What's Already at Rest**
 
 You do not need to become still. Stillness is already here. Even in the midst of mental chaos, something is aware of the chaos. That awareness is not chaotic. It was never not still.
 
@@ -10135,7 +10135,7 @@ You do not need to become still. Stillness is already here. Even in the midst of
 ## The Deeper Instruction
 
 Underneath all the steps, there is one instruction: be what you already are. You are not becoming aware. You are recognizing you have always been awareness. True meditation is simply no longer pretending otherwise.''',
-    excerpt: 'Adyashanti\'s revolutionary approach: meditation as the abandonment of the meditator.',
+    excerpt: "Adyashanti's revolutionary approach: meditation as the abandonment of the meditator.",
     tradition: Tradition.contemporary,
     teacher: 'Adyashanti',
     categories: [
@@ -10151,12 +10151,12 @@ Underneath all the steps, there is one instruction: be what you already are. You
   Article(
     id: 'art_i_am_practice_001',
     title: 'Holding to I Am',
-    subtitle: 'Nisargadatta Maharaj\'s Core Practice',
+    subtitle: "Nisargadatta Maharaj's Core Practice",
     content: '''## The Primal Sense of Being
 
-> "Just stay with the sense \'I am.\' That is your capital. Guard it well."
+> "Just stay with the sense 'I am.' That is your capital. Guard it well."
 
-The instruction to hold to "I am" is the cornerstone of Nisargadatta\'s teaching. The "I am" is not a thought, concept, or mantra. It is the primal sense of existing — the awareness of being that underlies all experience.
+The instruction to hold to "I am" is the cornerstone of Nisargadatta's teaching. The "I am" is not a thought, concept, or mantra. It is the primal sense of existing — the awareness of being that underlies all experience.
 
 In ordinary experience, "I am" is always followed by something: I am tired, I am a seeker, I am successful. The teaching is to drop everything after "I am" and remain with the bare sense of existing.
 
@@ -10187,7 +10187,7 @@ Nisargadatta received three instructions from his guru:
 
 When you hold to "I am" faithfully, it reveals what you are not, shows you what is permanent, and eventually dissolves itself — revealing what is prior to even "I am."
 
-> "Go back to that state of pure being, where the \'I am\' is still in its purity before it gets contaminated with \'I am this\' or \'I am that.\'"''',
+> "Go back to that state of pure being, where the 'I am' is still in its purity before it gets contaminated with 'I am this' or 'I am that.'"''',
     excerpt: 'Nisargadatta\'s essential practice: holding to the pure sense of "I am" before all qualifications.',
     tradition: Tradition.advaita,
     teacher: 'Nisargadatta Maharaj',
@@ -10204,10 +10204,10 @@ When you hold to "I am" faithfully, it reveals what you are not, shows you what 
   Article(
     id: 'art_atma_vichara_001',
     title: 'The Art of Self-Inquiry',
-    subtitle: 'Ramana Maharshi\'s Atma Vichara',
+    subtitle: "Ramana Maharshi's Atma Vichara",
     content: '''## Investigation, Not Thought
 
-> "The question \'Who am I?\' will destroy all other thoughts, and like the stick used for stirring the funeral pyre, it will itself be destroyed in the end."
+> "The question 'Who am I?' will destroy all other thoughts, and like the stick used for stirring the funeral pyre, it will itself be destroyed in the end."
 
 Self-inquiry is the direct path taught by Ramana Maharshi. Unlike practices that calm the mind or develop concentration, self-inquiry goes directly to the root of the "I" thought to discover what lies beyond it.
 
@@ -10244,7 +10244,7 @@ When inquiry is genuine and persistent, there comes a point where the "I" that w
 When stress arises: "Who is stressed?" When ambition drives: "Who wants success?" When conflict occurs: "Who feels threatened?" The inquiry applies everywhere — not as obsession but as natural turning inward.
 
 > "There is no greater mystery than this: being Reality ourselves, we seek to gain Reality."''',
-    excerpt: 'A practical guide to Ramana Maharshi\'s self-inquiry — investigation, not thinking.',
+    excerpt: "A practical guide to Ramana Maharshi's self-inquiry — investigation, not thinking.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
     categories: [
@@ -10260,7 +10260,7 @@ When stress arises: "Who is stressed?" When ambition drives: "Who wants success?
   Article(
     id: 'art_three_stages_001',
     title: 'Understanding, Feeling, Living',
-    subtitle: 'Rupert Spira\'s Three Stages of Recognition',
+    subtitle: "Rupert Spira's Three Stages of Recognition",
     content: '''## The Direct Path
 
 The direct path begins with the recognition that what you seek — peace, happiness, freedom — is not something to be attained in the future but is your present nature. It does not take the seeker to enlightenment. It takes enlightenment to the seeker.
@@ -10297,7 +10297,7 @@ The direct path is fundamentally an investigation of present experience:
 4. Where is awareness located? — Location cannot be found
 
 > "You are not on a path to enlightenment. You ARE enlightenment, appearing to be on a path."''',
-    excerpt: 'Rupert Spira\'s direct path unfolds through understanding, feeling, and embodied living.',
+    excerpt: "Rupert Spira's direct path unfolds through understanding, feeling, and embodied living.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
     categories: [
@@ -10318,7 +10318,7 @@ The direct path is fundamentally an investigation of present experience:
 
 Every spiritual path implies causation: do this practice, follow this method, and enlightenment will result. Tony Parsons points to something more radical: liberation has no cause because there is no one to be liberated.
 
-> "Nothing you can do will bring about liberation because there\'s no one there to do anything. And liberation isn\'t something that\'s brought about — it\'s what IS when the illusion of someone falls away."
+> "Nothing you can do will bring about liberation because there's no one there to do anything. And liberation isn't something that's brought about — it's what IS when the illusion of someone falls away."
 
 The entire causal framework is part of the dream. Practice cannot cause awakening. Grace cannot cause it. Understanding cannot cause it. Yet awakening does seem to "happen" — but when it is seen, it is seen that no one woke up.
 
@@ -10338,7 +10338,7 @@ Liberation does not exclude anything. The apparent seeker is included. The appar
 
 ## What Remains
 
-> "This is it. And you won\'t find it because you are it."
+> "This is it. And you won't find it because you are it."
 
 What remains is:
 - **Aliveness** — not your aliveness, just aliveness
@@ -10346,7 +10346,7 @@ What remains is:
 - **This** — whatever is appearing, simply appearing
 
 The secret is not hidden. It is open — it is everything. The secret is that there is no secret.''',
-    excerpt: 'Tony Parsons\' radical message: liberation has no cause, because there is no one to be liberated.',
+    excerpt: "Tony Parsons' radical message: liberation has no cause, because there is no one to be liberated.",
     tradition: Tradition.contemporary,
     teacher: 'Tony Parsons',
     categories: [
@@ -10362,7 +10362,7 @@ The secret is not hidden. It is open — it is everything. The secret is that th
   Article(
     id: 'art_body_approach_001',
     title: 'The Body as Doorway',
-    subtitle: 'Jean Klein\'s Approach to Embodied Awakening',
+    subtitle: "Jean Klein's Approach to Embodied Awakening",
     content: '''## Beyond Transcendence
 
 Most seekers want to transcend the body. They see it as the prison of the soul. Jean Klein pointed out this is like a fish trying to escape from water.
@@ -10395,7 +10395,7 @@ When you remove all mental additions from a sensation, what remains is pure aliv
 The approach is not transcendence but transparency. The body becomes transparent — not solid, not "mine," not a barrier — simply sensation appearing in awareness.
 
 > "The body is the final frontier of understanding. When awareness permeates the body completely, the journey is complete."''',
-    excerpt: 'Jean Klein\'s unique teaching: the body is not an obstacle to awakening but a doorway into presence.',
+    excerpt: "Jean Klein's unique teaching: the body is not an obstacle to awakening but a doorway into presence.",
     tradition: Tradition.direct,
     teacher: 'Jean Klein',
     categories: [
@@ -10411,12 +10411,12 @@ The approach is not transcendence but transparency. The body becomes transparent
   Article(
     id: 'art_invitation_001',
     title: 'The Invitation to Freedom',
-    subtitle: 'Mooji\'s Core Pointing',
+    subtitle: "Mooji's Core Pointing",
     content: '''## Invitation, Not Instruction
 
-Mooji\'s teaching is not instruction but invitation. Instruction tells you what to do. Invitation asks you to look. Instruction assumes you lack something. Invitation assumes you ARE what you seek.
+Mooji's teaching is not instruction but invitation. Instruction tells you what to do. Invitation asks you to look. Instruction assumes you lack something. Invitation assumes you ARE what you seek.
 
-> "I\'m not giving you something you don\'t have. I\'m inviting you to see what has always been here."
+> "I'm not giving you something you don't have. I'm inviting you to see what has always been here."
 
 An invitation does not give you what you lack. It draws your attention to what is already present.
 
@@ -10430,7 +10430,7 @@ When you truly look for the one who is looking, you find nothing perceivable. An
 
 After a glimpse of recognition, the mind wants to analyze what happened, compare it to expectations, question if it was "real." Mooji speaks of "marinating in presence" — allowing the recognition to soak in without commentary.
 
-> "Stay in the fire. Let it burn away what isn\'t real."
+> "Stay in the fire. Let it burn away what isn't real."
 
 When recognition occurs, even a glimpse: do not rush, do not analyze, do not grasp, stay silent, be here.
 
@@ -10440,10 +10440,10 @@ If what you have found requires effort to maintain, special conditions, constant
 
 What you ARE requires nothing to be, is present in all conditions, cannot be enhanced by practice, and is untouched by any experience.
 
-> "Just be. Not \'be something.\' Not \'be better.\' Not \'be spiritual.\' Just BE. And notice: you cannot NOT be. Being is your nature, not your achievement."
+> "Just be. Not 'be something.' Not 'be better.' Not 'be spiritual.' Just BE. And notice: you cannot NOT be. Being is your nature, not your achievement."
 
 > "Stop being a tourist in your own Self."''',
-    excerpt: 'Mooji\'s invitation: you are already that which you seek — stop being a tourist in your own Self.',
+    excerpt: "Mooji's invitation: you are already that which you seek — stop being a tourist in your own Self.",
     tradition: Tradition.contemporary,
     teacher: 'Mooji',
     categories: [
@@ -10459,10 +10459,10 @@ What you ARE requires nothing to be, is present in all conditions, cannot be enh
   Article(
     id: 'art_the_work_001',
     title: 'The Four Questions',
-    subtitle: 'Byron Katie\'s Method of Self-Inquiry',
+    subtitle: "Byron Katie's Method of Self-Inquiry",
     content: '''## A Different Kind of Inquiry
 
-> "I discovered that when I believed my thoughts, I suffered, but that when I didn\'t believe them, I didn\'t suffer, and that this is true for every human being."
+> "I discovered that when I believed my thoughts, I suffered, but that when I didn't believe them, I didn't suffer, and that this is true for every human being."
 
 The Work is a process of inquiry that teaches you to identify and question thoughts that cause suffering. It begins not with spiritual concepts but with raw, honest experience — your actual judgments about others.
 
@@ -10471,9 +10471,9 @@ The Work is a process of inquiry that teaches you to identify and question thoug
 Take any stressful thought and ask:
 
 **1. Is it true?**
-Sit with this question. Do not rush to answer. Let the question sink below the mind\'s immediate response.
+Sit with this question. Do not rush to answer. Let the question sink below the mind's immediate response.
 
-**2. Can you absolutely know that it\'s true?**
+**2. Can you absolutely know that it's true?**
 This deeper inquiry opens the mind to uncertainty. Has there ever been a time when the opposite was true?
 
 **3. How do you react when you believe that thought?**
@@ -10486,9 +10486,9 @@ In the same situation, with the same person, but without the ability to think th
 
 After the four questions, find opposites of your original statement:
 
-- **Turn it to the self:** "He doesn\'t listen to me" becomes "I don\'t listen to me"
-- **Turn it to the other:** "He doesn\'t listen to me" becomes "I don\'t listen to him"
-- **Turn it to the opposite:** "He doesn\'t listen to me" becomes "He does listen to me"
+- **Turn it to the self:** "He doesn't listen to me" becomes "I don't listen to me"
+- **Turn it to the other:** "He doesn't listen to me" becomes "I don't listen to him"
+- **Turn it to the opposite:** "He doesn't listen to me" becomes "He does listen to me"
 
 For each turnaround, find three specific, genuine examples of how it is true.
 
@@ -10496,8 +10496,8 @@ For each turnaround, find three specific, genuine examples of how it is true.
 
 The Work does not tell you what to think. It helps you discover what you actually think — and whether those thoughts serve you. When a thought is seen clearly, it loses its power to cause suffering.
 
-> "It\'s not the problem that causes our suffering; it\'s our thinking about the problem."''',
-    excerpt: 'Byron Katie\'s four questions that end suffering: a radical method of questioning stressful thoughts.',
+> "It's not the problem that causes our suffering; it's our thinking about the problem."''',
+    excerpt: "Byron Katie's four questions that end suffering: a radical method of questioning stressful thoughts.",
     tradition: Tradition.contemporary,
     teacher: 'Byron Katie',
     categories: [
@@ -10513,14 +10513,14 @@ The Work does not tell you what to think. It helps you discover what you actuall
   Article(
     id: 'art_stop_teaching_001',
     title: 'Stop',
-    subtitle: 'Papaji\'s One-Word Teaching',
+    subtitle: "Papaji's One-Word Teaching",
     content: '''## The Single Instruction
 
-Papaji\'s entire teaching can be reduced to a single word: STOP.
+Papaji's entire teaching can be reduced to a single word: STOP.
 
 Not stop gradually. Not stop after preparation. Not stop when worthy. Just stop.
 
-> "Don\'t wait one more moment. Freedom is not the result of anything. It is HERE — now — in this instant of stopping."
+> "Don't wait one more moment. Freedom is not the result of anything. It is HERE — now — in this instant of stopping."
 
 In the instant of stopping all mental activity — before the next thought arises, before the mind comments on the stopping — freedom is revealed. Not achieved. Revealed. Because it was always here, obscured only by the movement of seeking it.
 
@@ -10532,7 +10532,7 @@ The mind immediately wants to make stopping into a process: first quiet down, th
 
 ## The Gap Before Thought
 
-> "Between one thought and the next, there is a gap. In that gap, there is no \'I,\' no problem, no world, no seeker. What is THAT?"
+> "Between one thought and the next, there is a gap. In that gap, there is no 'I,' no problem, no world, no seeker. What is THAT?"
 
 This gap is your nature — always present, not affected by thoughts appearing, not created by practice. You do not enter the gap. You ARE the gap pretending to be the thoughts.
 
@@ -10546,8 +10546,8 @@ You are looking for what you already are. The search creates the sense of lack. 
 
 When seeking stops, what remains is not nothing. It cannot be named because naming is the next thought. It can only be pointed to: what is here right now that does not need a thought to exist?
 
-> "When you stop, you don\'t become free. You recognize you were always free."''',
-    excerpt: 'Papaji\'s radical instruction: stop everything this instant and recognize what was always here.',
+> "When you stop, you don't become free. You recognize you were always free."''',
+    excerpt: "Papaji's radical instruction: stop everything this instant and recognize what was always here.",
     tradition: Tradition.advaita,
     teacher: 'Papaji',
     categories: [
@@ -10563,7 +10563,7 @@ When seeking stops, what remains is not nothing. It cannot be named because nami
   Article(
     id: 'art_awareness_teaching_001',
     title: 'The Substance of Experience',
-    subtitle: 'Francis Lucille\'s Scientific Inquiry',
+    subtitle: "Francis Lucille's Scientific Inquiry",
     content: '''## Awareness Is All There Is
 
 > "Awareness is not the highest state. It is the only state. Everything else is awareness appearing as this or that."
@@ -10577,7 +10577,7 @@ Francis Lucille brings the precision of a scientist to the investigation of cons
 3. **What is awareness made of?** Investigate the substance of knowing itself. No edges, center, or composition can be found
 4. **Is awareness separate from what it knows?** Look for the border between knower and known. It cannot be found
 
-> "In the moment of recognizing \'I am aware,\' you already have all the enlightenment there is. The problem is only that you don\'t value this recognition."
+> "In the moment of recognizing 'I am aware,' you already have all the enlightenment there is. The problem is only that you don't value this recognition."
 
 ## The Substance Investigation
 
@@ -10599,8 +10599,8 @@ All suffering comes from one illusion: the belief that there is a knower here an
 
 When this split is seen through, suffering ends — not because life changes, but because there is no one standing apart from life.
 
-> "I don\'t ask you to believe me. I ask you to look."''',
-    excerpt: 'Francis Lucille\'s rigorous investigation: awareness is not the highest state — it is the only state.',
+> "I don't ask you to believe me. I ask you to look."''',
+    excerpt: "Francis Lucille's rigorous investigation: awareness is not the highest state — it is the only state.",
     tradition: Tradition.direct,
     teacher: 'Francis Lucille',
     categories: [
@@ -10623,9 +10623,9 @@ The Ashtavakra Gita stands apart from nearly all spiritual literature. Where oth
 
 > "You are not the body. The body is not yours. You are not the doer. You are awareness itself, the one witness, unchanging, free."
 
-King Janaka asks: how is knowledge acquired? How is liberation attained? Ashtavakra\'s answer upends every assumption: you are already free.
+King Janaka asks: how is knowledge acquired? How is liberation attained? Ashtavakra's answer upends every assumption: you are already free.
 
-## Janaka\'s Recognition
+## Janaka's Recognition
 
 Upon hearing the truth directly, Janaka responds with ecstasy:
 
@@ -10639,7 +10639,7 @@ Both bondage and liberation are mental constructs. The Self was never bound, so 
 
 ## The Natural State
 
-In Ashtavakra\'s vision, the realized being does nothing to maintain freedom. There is no effort, no practice, no vigilance required. Actions happen spontaneously without a sense of doership.
+In Ashtavakra's vision, the realized being does nothing to maintain freedom. There is no effort, no practice, no vigilance required. Actions happen spontaneously without a sense of doership.
 
 - Neither holding nor rejecting
 - Neither pure nor impure
@@ -10651,7 +10651,7 @@ In Ashtavakra\'s vision, the realized being does nothing to maintain freedom. Th
 ## For the Mature Seeker
 
 This teaching is not for beginners. It requires a readiness to let go of all spiritual ambition, all hope of attainment. The Ashtavakra Gita offers no comfort to the seeker — only annihilation. And in that annihilation, the recognition that nothing was ever lost.''',
-    excerpt: 'The Ashtavakra Gita\'s blazing declaration: you are already free, you were never bound.',
+    excerpt: "The Ashtavakra Gita's blazing declaration: you are already free, you were never bound.",
     tradition: Tradition.advaita,
     teacher: 'Ashtavakra',
     categories: [
@@ -10667,7 +10667,7 @@ This teaching is not for beginners. It requires a readiness to let go of all spi
   Article(
     id: 'art_avadhuta_001',
     title: 'Song of the Avadhuta',
-    subtitle: 'Dattatreya\'s Ecstatic Freedom',
+    subtitle: "Dattatreya's Ecstatic Freedom",
     content: '''## The One Who Has Shaken Off Everything
 
 The Avadhuta Gita is among the most radical and ecstatic expressions of non-dual realization in Sanskrit literature. Attributed to the sage Dattatreya, it sings of absolute freedom — the state of one who has shaken off all limitations, all identities, all concepts of bondage and liberation.
@@ -10695,7 +10695,7 @@ The Self cannot be captured in language. All descriptions miss it. Silence point
 > "There is no I, no you, no world, no God. There is only THAT — indescribable, infinite, free."
 
 The Avadhuta Gita does not comfort or instruct. It celebrates. It is the song of one for whom the game is over, the dream is recognized, and what remains is too vast for words.''',
-    excerpt: 'Dattatreya\'s ecstatic song of absolute freedom — beyond all paths, all concepts, all limitation.',
+    excerpt: "Dattatreya's ecstatic song of absolute freedom — beyond all paths, all concepts, all limitation.",
     tradition: Tradition.advaita,
     teacher: 'Dattatreya',
     categories: [
@@ -10728,7 +10728,7 @@ Robert Adams taught that silence is not merely the absence of sound or thought �
 
 ## Self-Inquiry Simplified
 
-Robert took Ramana\'s teaching and made it extraordinarily accessible:
+Robert took Ramana's teaching and made it extraordinarily accessible:
 
 1. A thought or feeling arises
 2. Ask: "To whom does this come?"
@@ -10741,12 +10741,12 @@ The question is not meant to produce an answer. It is meant to stop the mind. Wh
 
 ## Everything Is Unfolding
 
-> "Everything is unfolding as it should. You don\'t have to fix anything, change anything, make anything happen."
+> "Everything is unfolding as it should. You don't have to fix anything, change anything, make anything happen."
 
 This is not passivity. It is recognition of a deeper order. From the absolute perspective, there is only consciousness appearing as all this. The apparent person is also an appearance. When you know this, you can participate in life fully without being bound by it.
 
-> "You don\'t have to do anything to find silence. You have to stop doing."''',
-    excerpt: 'Robert Adams\' teaching on silence: not the absence of sound, but the presence of the Self.',
+> "You don't have to do anything to find silence. You have to stop doing."''',
+    excerpt: "Robert Adams' teaching on silence: not the absence of sound, but the presence of the Self.",
     tradition: Tradition.advaita,
     teacher: 'Robert Adams',
     categories: [
@@ -10799,7 +10799,7 @@ Feel the aliveness within the body. Not thinking about the body but directly fee
 When any difficulty arises, ask: What is my problem right now? Not the story — what is actually happening? Can I accept what is in this moment? What action, if any, can I take right now?
 
 Presence is not a special state to achieve. It is the simple recognition of what is already here when attention is withdrawn from the stream of thinking.''',
-    excerpt: 'Five practical doorways to presence: Eckhart Tolle\'s guide to stepping into the now.',
+    excerpt: "Five practical doorways to presence: Eckhart Tolle's guide to stepping into the now.",
     tradition: Tradition.contemporary,
     teacher: 'Eckhart Tolle',
     categories: [
@@ -10852,7 +10852,7 @@ Robert taught three foundational understandings:
 2. **Everything is unfolding as it should** — Trust the intelligence of existence
 3. **You are not the doer** — Actions happen through the body-mind
 
-> "The Self knows. Trust that. Your personal preferences don\'t know what is needed. The Self does."''',
+> "The Self knows. Trust that. Your personal preferences don't know what is needed. The Self does."''',
     excerpt: 'Robert Adams on trusting the deeper intelligence: everything is unfolding exactly as it should.',
     tradition: Tradition.advaita,
     teacher: 'Robert Adams',

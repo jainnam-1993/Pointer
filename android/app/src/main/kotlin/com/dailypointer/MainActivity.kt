@@ -15,7 +15,7 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
 
-    private val CHANNEL = "com.dailypointer/settings"
+    private val channel = "com.dailypointer/settings"
     private var currentNightMode: Int = Configuration.UI_MODE_NIGHT_UNDEFINED
 
     private val configChangeReceiver = object : BroadcastReceiver() {
@@ -31,11 +31,18 @@ class MainActivity : FlutterActivity() {
         currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Register for configuration changes (including theme)
-        registerReceiver(
-            configChangeReceiver,
-            IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED),
-            Context.RECEIVER_NOT_EXPORTED
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                configChangeReceiver,
+                IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED),
+                RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            registerReceiver(
+                configChangeReceiver,
+                IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED)
+            )
+        }
         Log.d("MainActivity", "Registered config change receiver")
     }
 
@@ -50,7 +57,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "openNotificationSettings" -> {

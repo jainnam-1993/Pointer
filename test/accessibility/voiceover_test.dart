@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pointer/providers/donation_providers.dart';
 import 'package:pointer/services/donation_service.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
@@ -36,7 +35,7 @@ class _MockDonationService extends DonationService {
 }
 
 class _TestDonationNotifier extends DonationNotifier {
-  _TestDonationNotifier(DonationService service) : super(service);
+  _TestDonationNotifier(super.service);
   @override
   Future<void> initialize() async {
     state = const DonationState(isAvailable: false, isLoading: false);
