@@ -1,26 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+
+import '../services/ambient_sound_service.dart';
 
 /// Full-screen branded video splash screen.
 ///
 /// Plays a theme-aware nonduality animation (dark/light variant)
 /// then auto-advances to the next screen. Tap anywhere to skip.
 /// Respects system reduce-motion accessibility setting.
-class SplashScreen extends StatefulWidget {
+/// Mutes video audio when the user has set Opening Sound to "None".
+class SplashScreen extends ConsumerStatefulWidget {
   /// Where to navigate after splash completes.
   final String destination;
 
   const SplashScreen({super.key, required this.destination});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   Player? _player;
   VideoController? _videoController;
   StreamSubscription<bool>? _completedSub;
@@ -49,6 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _player = Player();
     _videoController = VideoController(_player!);
+
+    // Mute video when user has disabled opening sound
+    final sound = ref.read(ambientSoundProvider);
+    if (sound == AmbientSound.none) {
+      _player!.setVolume(0.0);
+    }
 
     // Listen for video completion before opening media
     _completedSub = _player!.stream.completed.listen((completed) {
