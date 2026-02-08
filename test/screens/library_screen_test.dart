@@ -130,7 +130,7 @@ void main() {
       expect(find.text('BROWSE BY'), findsOneWidget);
     });
 
-    testWidgets('displays some category names visible on screen', (tester) async {
+    testWidgets('displays some topic names visible on screen', (tester) async {
       tester.view.physicalSize = const Size(1920, 4000);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -148,9 +148,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Check that at least some categories are visible (others may need scrolling)
-      expect(find.text('Nature of Awareness'), findsOneWidget);
+      // Topics browse now shows TopicTags for all filters (unified view)
       expect(find.text('Self-Inquiry'), findsOneWidget);
+      expect(find.text('Awareness'), findsOneWidget);
     });
 
     testWidgets('renders in light theme', (tester) async {

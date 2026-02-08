@@ -16,6 +16,7 @@ import '../widgets/animated_transitions.dart';
 // import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
+import 'share_preview_screen.dart';
 
 /// Extension to sort teachings with unviewed first (viewed items sink down)
 extension TeachingListSorting on List<Teaching> {
@@ -368,20 +369,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  void _openCategory(BuildContext context, ArticleCategory category,
-      CategoryInfo info, bool isPremium) {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CategoryArticlesScreen(
-          category: category,
-          info: info,
-          isPremium: isPremium,
-        ),
-      ),
-    );
-  }
-
   /// Build dynamic browse list based on current mode
   Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
     switch (_browseMode) {
@@ -400,65 +387,50 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
-    // When Quotes filter is selected, show TopicTags from teachings
+    // Always show TopicTags with merged counts based on filter
+    final Map<String, int> topicCounts;
+
     if (contentFilter == ContentFilter.quotes) {
-      final topicCounts = TeachingRepository.topicCounts;
-      final sortedTopics = topicCounts.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value));
-
-      return SliverPadding(
-        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-        sliver: SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final entry = sortedTopics[index];
-              final topic = entry.key;
-              final count = entry.value;
-
-              return StaggeredFadeIn(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _BrowseCard(
-                    icon: TopicTags.icon(topic),
-                    name: TopicTags.displayName(topic),
-                    description: 'Quotes about ${topic.toLowerCase()}',
-                    count: count,
-                    onTap: () => _openTopic(context, topic, contentFilter),
-                  ),
-                ),
-              );
-            },
-            childCount: sortedTopics.length,
-          ),
-        ),
-      );
+      topicCounts = TeachingRepository.topicCounts;
+    } else if (contentFilter == ContentFilter.articles) {
+      topicCounts = getArticleTopicCounts();
+    } else {
+      // All - merge both counts
+      final quoteCounts = TeachingRepository.topicCounts;
+      final articleCounts = getArticleTopicCounts();
+      topicCounts = Map<String, int>.from(quoteCounts);
+      for (final entry in articleCounts.entries) {
+        topicCounts[entry.key] = (topicCounts[entry.key] ?? 0) + entry.value;
+      }
     }
 
-    // When Articles filter or All, show ArticleCategory
+    final sortedTopics = topicCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final category = ArticleCategory.values[index];
-            final info = categoryInfoMap[category]!;
-            final articleCount = getArticlesByCategory(category).length;
+            final entry = sortedTopics[index];
+            final topic = entry.key;
+            final count = entry.value;
 
             return StaggeredFadeIn(
               index: index,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _CategoryCard(
-                  category: category,
-                  info: info,
-                  articleCount: articleCount,
-                  onTap: () => _openCategory(context, category, info, isPremium),
+                child: _BrowseCard(
+                  icon: TopicTags.icon(topic),
+                  name: TopicTags.displayName(topic),
+                  description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
+                  count: count,
+                  onTap: () => _openTopic(context, topic, contentFilter),
                 ),
               ),
             );
           },
-          childCount: ArticleCategory.values.length,
+          childCount: sortedTopics.length,
         ),
       ),
     );
@@ -1178,102 +1150,6 @@ class _FeaturedArticleCard extends StatelessWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
-  final ArticleCategory category;
-  final CategoryInfo info;
-  final int articleCount;
-  final VoidCallback onTap;
-
-  const _CategoryCard({
-    required this.category,
-    required this.info,
-    required this.articleCount,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Semantics(
-      button: true,
-      label: '${info.name}. ${info.description}. $articleCount articles.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        onTap: onTap,
-        child: Row(
-          children: [
-            // Icon
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: colors.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  info.icon,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: colors.accent,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    info.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    info.description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Count and arrow
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '$articleCount',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textMuted,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: colors.textMuted,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// Screen showing articles in a specific category
 class CategoryArticlesScreen extends StatelessWidget {
   final ArticleCategory category;
@@ -1701,6 +1577,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                                 await storage.markTeachingAsViewed(teaching.id);
                                 if (context.mounted) setState(() {});
                               },
+                              onShare: () => _showShareSheet(context, teaching),
                             ),
                           ),
                         );
@@ -1906,6 +1783,7 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                                 await storage.markTeachingAsViewed(teaching.id);
                                 if (context.mounted) setState(() {});
                               },
+                              onShare: () => _showShareSheet(context, teaching),
                             ),
                           ),
                         );
@@ -2094,6 +1972,7 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                                 await storage.markTeachingAsViewed(teaching.id);
                                 if (context.mounted) setState(() {});
                               },
+                              onShare: () => _showShareSheet(context, teaching),
                             ),
                           ),
                         );
@@ -2281,6 +2160,7 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                                   await storage.markTeachingAsViewed(teaching.id);
                                   if (context.mounted) setState(() {});
                                 },
+                                onShare: () => _showShareSheet(context, teaching),
                               ),
                             ),
                           );
@@ -2360,15 +2240,36 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
+/// Show share sheet for a teaching
+void _showShareSheet(BuildContext context, Teaching teaching) {
+  HapticFeedback.mediumImpact();
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    useSafeArea: true,
+    useRootNavigator: true,
+    builder: (ctx) => SizedBox(
+      height: MediaQuery.of(ctx).size.height * 0.9,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: SharePreviewScreen(pointing: teaching.toPointing()),
+      ),
+    ),
+  );
+}
+
 /// Card for displaying a teaching
 class _TeachingCard extends StatelessWidget {
   final Teaching teaching;
   final VoidCallback? onTap;
+  final VoidCallback? onShare;
   final bool isViewed;
 
   const _TeachingCard({
     required this.teaching,
     this.onTap,
+    this.onShare,
     this.isViewed = false,
   });
 
@@ -2398,7 +2299,7 @@ class _TeachingCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Footer: Teacher and lineage
+          // Footer: Teacher, share, and lineage
           Row(
             children: [
               Expanded(
@@ -2413,6 +2314,17 @@ class _TeachingCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (onShare != null) ...[
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: onShare,
+                  child: Icon(
+                    Icons.share_outlined,
+                    size: 18,
+                    color: colors.textMuted,
+                  ),
+                ),
+              ],
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

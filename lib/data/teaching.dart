@@ -335,9 +335,56 @@ class Teaching {
     if (lower.contains('practice') || lower.contains('technique')) {
       topics.add(TopicTags.practice);
     }
+    if (lower.contains('love') ||
+        lower.contains('bhakti') ||
+        lower.contains('prayer') ||
+        lower.contains('devoti')) {
+      topics.add(TopicTags.devotion);
+    }
+    if (lower.contains('relat') || lower.contains('togeth')) {
+      topics.add(TopicTags.relationship);
+    }
+    if (lower.contains('death') ||
+        lower.contains('dying') ||
+        lower.contains('mortal')) {
+      topics.add(TopicTags.death);
+    }
+    if (lower.contains('rebirth') ||
+        lower.contains('renewal') ||
+        lower.contains('reincarn')) {
+      topics.add(TopicTags.rebirth);
+    }
+    if (lower.contains('daily') ||
+        lower.contains('everyday') ||
+        lower.contains('ordinary') ||
+        lower.contains('mundane')) {
+      topics.add(TopicTags.life);
+    }
+    if (lower.contains('nature') ||
+        lower.contains('essence') ||
+        lower.contains('innate') ||
+        lower.contains('original face')) {
+      topics.add(TopicTags.nature);
+    }
 
     return topics.isEmpty ? {TopicTags.awareness} : topics;
   }
+
+  /// Convert Teaching back to Pointing for sharing
+  Pointing toPointing() => Pointing(
+        id: id.startsWith('pointing_') ? id.substring(9) : id,
+        content: content,
+        instruction: instruction,
+        tradition: lineage,
+        contexts: moodTags
+            .map((m) => PointingContext.values.firstWhere(
+                  (c) => c.name == m,
+                  orElse: () => PointingContext.general,
+                ))
+            .toList(),
+        teacher: teacher == 'Unknown' ? null : teacher,
+        source: source,
+      );
 
   /// Check if teaching matches the given filters
   bool matchesFilters({

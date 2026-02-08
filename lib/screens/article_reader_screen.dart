@@ -1,11 +1,13 @@
 // Article Reader Screen - Full article display with markdown rendering
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import 'share_preview_screen.dart';
 
 /// Full article reader screen with TTS support
 class ArticleReaderScreen extends ConsumerStatefulWidget {
@@ -26,6 +28,33 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   final bool _showTTSPlayer = false;
   // ignore: unused_field
   final bool _ttsConfigured = false;
+
+  void _shareArticle(BuildContext context) {
+    HapticFeedback.mediumImpact();
+    final article = widget.article;
+    final pointing = Pointing(
+      id: 'article_${article.id}',
+      content: article.excerpt ?? article.title,
+      tradition: article.tradition,
+      contexts: const [PointingContext.general],
+      teacher: article.teacher,
+      source: article.title,
+    );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      useRootNavigator: true,
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(ctx).size.height * 0.9,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: SharePreviewScreen(pointing: pointing),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +83,10 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           },
                         ),
                         const Spacer(),
-                        // TTS button disabled - feature temporarily removed
-                        // TODO: Re-enable when TTS feature is ready
+                        IconButton(
+                          icon: Icon(Icons.share_outlined, color: colors.textPrimary),
+                          onPressed: () => _shareArticle(context),
+                        ),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
