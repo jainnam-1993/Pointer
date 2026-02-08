@@ -262,12 +262,6 @@ class StorageService {
   /// Persist updated [AppSettings] as JSON.
   Future<void> updateSettings(AppSettings newSettings) => _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
 
-  /// Current subscription tier (e.g. `'free'` or `'premium'`).
-  String get subscriptionTier => _prefs.getString(StorageKeys.subscriptionTier) ?? 'free';
-
-  /// Persist the subscription tier string.
-  Future<void> setSubscriptionTier(String tier) => _prefs.setString(StorageKeys.subscriptionTier, tier);
-
   /// ID of the last-viewed [Pointing], used to restore position on restart.
   String? get currentPointingId => _prefs.getString(StorageKeys.currentPointingId);
 

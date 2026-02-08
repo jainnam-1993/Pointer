@@ -287,26 +287,6 @@ void main() {
     });
   });
 
-  group('StorageService - Subscription', () {
-    test('subscriptionTier returns free when not set', () {
-      when(() => mockPrefs.getString(StorageKeys.subscriptionTier)).thenReturn(null);
-      expect(storageService.subscriptionTier, 'free');
-    });
-
-    test('subscriptionTier returns stored value', () {
-      when(() => mockPrefs.getString(StorageKeys.subscriptionTier)).thenReturn('premium');
-      expect(storageService.subscriptionTier, 'premium');
-    });
-
-    test('setSubscriptionTier saves value', () async {
-      when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
-
-      await storageService.setSubscriptionTier('premium');
-
-      verify(() => mockPrefs.setString(StorageKeys.subscriptionTier, 'premium')).called(1);
-    });
-  });
-
   group('StorageService - Clear All', () {
     test('clearAll removes all storage keys', () async {
       when(() => mockPrefs.remove(any())).thenAnswer((_) async => true);
