@@ -496,22 +496,64 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                 },
                                                 child: _buildInlineTraditionBadge(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
                                               ),
-                                              // Share icon - separate focusable element
-                                              Semantics(
-                                                button: true,
-                                                label: 'Share this pointing',
-                                                focusable: true,
-                                                child: GestureDetector(
-                                                  onTap: _handleShare,
-                                                  child: Container(
-                                                    padding: const EdgeInsets.all(8),
-                                                    decoration: BoxDecoration(
-                                                      color: colors.accent.withValues(alpha: 0.1),
-                                                      borderRadius: BorderRadius.circular(10),
+                                              // Heart + Share icons
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // Save/favorite icon
+                                                  Semantics(
+                                                    button: true,
+                                                    label: ref.watch(favoritesProvider).contains(pointing.id)
+                                                        ? 'Remove from favorites'
+                                                        : 'Save to favorites',
+                                                    focusable: true,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        final favorites = ref.read(favoritesProvider);
+                                                        if (favorites.contains(pointing.id)) {
+                                                          HapticFeedback.mediumImpact();
+                                                          ref.read(favoritesProvider.notifier).toggle(pointing.id);
+                                                        } else {
+                                                          _handleSave();
+                                                        }
+                                                      },
+                                                      child: Container(
+                                                        padding: const EdgeInsets.all(8),
+                                                        decoration: BoxDecoration(
+                                                          color: colors.accent.withValues(alpha: 0.1),
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: Icon(
+                                                          ref.watch(favoritesProvider).contains(pointing.id)
+                                                              ? Icons.favorite
+                                                              : Icons.favorite_border,
+                                                          size: 18,
+                                                          color: ref.watch(favoritesProvider).contains(pointing.id)
+                                                              ? colors.accent
+                                                              : colors.textSecondary,
+                                                        ),
+                                                      ),
                                                     ),
-                                                    child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
                                                   ),
-                                                ),
+                                                  const SizedBox(width: 8),
+                                                  // Share icon
+                                                  Semantics(
+                                                    button: true,
+                                                    label: 'Share this pointing',
+                                                    focusable: true,
+                                                    child: GestureDetector(
+                                                      onTap: _handleShare,
+                                                      child: Container(
+                                                        padding: const EdgeInsets.all(8),
+                                                        decoration: BoxDecoration(
+                                                          color: colors.accent.withValues(alpha: 0.1),
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
