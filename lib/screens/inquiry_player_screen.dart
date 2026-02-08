@@ -1,5 +1,8 @@
-// Inquiry Player Screen - Guided inquiry session with timed phase transitions
-// Phases: Setup -> Question -> FollowUp -> Complete
+/**
+ * Inquiry Player Screen - Guided inquiry session with timed phase transitions.
+ * Phases: Setup -> Question -> FollowUp -> Complete.
+ */
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';

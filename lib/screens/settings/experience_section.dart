@@ -1,4 +1,6 @@
-// Experience settings section: auto-advance toggle and ambient sound picker.
+/** Experience settings section: auto-advance toggle and ambient sound picker. */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

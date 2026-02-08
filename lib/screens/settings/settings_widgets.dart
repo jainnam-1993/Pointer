@@ -1,4 +1,6 @@
-// Shared widgets for settings screen layout: SettingsSectionHeader, SettingsRow, SettingsDivider.
+/** Shared widgets for settings screen layout: SettingsSectionHeader, SettingsRow, SettingsDivider. */
+library;
+
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 

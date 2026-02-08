@@ -100,10 +100,10 @@ class SubscriptionState {
   const SubscriptionState({this.tier = SubscriptionTier.premium, this.isLoading = false, this.error});
 
   /// Always `true` in free-access mode. Checked by premium-gated features.
-  bool get isPremium => true; // Always premium
+  bool get isPremium => true;
 
   /// Available purchase products (empty in free-access mode).
-  List<SubscriptionProduct> get products => const []; // No products
+  List<SubscriptionProduct> get products => const [];
 
   /// Creates a copy with selectively overridden fields.
   SubscriptionState copyWith({SubscriptionTier? tier, bool? isLoading, String? error}) {
@@ -128,7 +128,7 @@ class SubscriptionProduct {
   final String price;
 
   /// RevenueCat Package instance (typed as `dynamic` to avoid hard dependency).
-  final dynamic package; // RevenueCat Package type
+  final dynamic package;
 
   const SubscriptionProduct({required this.identifier, required this.title, required this.price, this.package});
 }

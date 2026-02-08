@@ -1,11 +1,15 @@
-// Library screen for browsing articles and teachings from non-dual traditions.
-//
-// Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
-// ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
-// featured articles section with peek indicator, browse mode and content type
-// dropdowns, and premium gating via kFreeAccessEnabled.
-//
-// Re-exports all library/ subfiles for backward compatibility.
+/**
+ * Library screen for browsing articles and teachings from non-dual traditions.
+ *
+ * Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
+ * ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
+ * featured articles section with peek indicator, browse mode and content type
+ * dropdowns, and premium gating via kFreeAccessEnabled.
+ *
+ * Re-exports all library/ subfiles for backward compatibility.
+ */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
@@ -41,7 +45,7 @@ export 'library/topic_teachings_screen.dart';
 /**
  * Main library screen with featured articles, browse-by navigation, and saved pointings.
  *
- * Premium content is gated behind [SubscriptionProvider] unless [kFreeAccessEnabled]
+ * Premium content is gated behind [subscriptionProvider] unless [kFreeAccessEnabled]
  * is true. Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
  * [LibraryBrowseMode.lineages], [LibraryBrowseMode.moods], and [LibraryBrowseMode.saved].
  */

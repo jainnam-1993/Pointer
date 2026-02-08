@@ -144,7 +144,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
-  /// Launches an external URL in the system browser via [url_launcher].
+  /// Launches an external URL in the system browser via `url_launcher`.
   Future<void> _launchUrl(String urlString) async {
     HapticFeedback.mediumImpact();
 

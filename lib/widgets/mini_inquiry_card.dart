@@ -1,4 +1,6 @@
-// Mini-Inquiry Card - Entry point to inquiry experience from home screen
+/** Mini-Inquiry Card - Entry point to inquiry experience from home screen. */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';

@@ -1,4 +1,6 @@
-// Banners for the settings screen: notification permission and premium feature alerts.
+/** Banners for the settings screen: notification permission and premium feature alerts. */
+library;
+
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 

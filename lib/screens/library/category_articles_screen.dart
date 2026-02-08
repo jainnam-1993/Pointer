@@ -1,4 +1,6 @@
-// Screen showing articles filtered by a specific ArticleCategory.
+/** Screen showing articles filtered by a specific ArticleCategory. */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../data/articles.dart';

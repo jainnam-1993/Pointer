@@ -1,5 +1,9 @@
-// Full article reading screen with markdown rendering, share functionality,
-// and tradition-tagged header. TTS playback is currently disabled.
+/**
+ * Full article reading screen with markdown rendering, share functionality,
+ * and tradition-tagged header. TTS playback is currently disabled.
+ */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';

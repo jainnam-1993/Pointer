@@ -1,8 +1,12 @@
-// Library data models, enums, and extensions for the LibraryScreen.
-//
-// Defines ContentFilter for article/quote filtering, LibraryBrowseMode
-// for category navigation, CategoryInfo for article category metadata,
-// and TeachingListSorting for viewed/unviewed ordering.
+/**
+ * Library data models, enums, and extensions for the LibraryScreen.
+ *
+ * Defines ContentFilter for article/quote filtering, LibraryBrowseMode
+ * for category navigation, CategoryInfo for article category metadata,
+ * and TeachingListSorting for viewed/unviewed ordering.
+ */
+library;
+
 import 'package:flutter/material.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';

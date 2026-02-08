@@ -1,4 +1,6 @@
-// Notification schedule management bottom sheet with presets, time window, and frequency controls.
+/** Notification schedule management bottom sheet with presets, time window, and frequency controls. */
+library;
+
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

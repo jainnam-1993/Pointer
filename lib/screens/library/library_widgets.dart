@@ -1,7 +1,11 @@
-// Shared widgets for library screens: SectionHeader, ArticleListItem, TeachingCard,
-// FilterSheet, FilterOption, LibraryPremiumUpgrade, and FeatureRow.
-//
-// Also provides showLibraryShareSheet for sharing teachings via SharePreviewScreen.
+/**
+ * Shared widgets for library screens: SectionHeader, ArticleListItem, TeachingCard,
+ * FilterSheet, FilterOption, LibraryPremiumUpgrade, and FeatureRow.
+ *
+ * Also provides showLibraryShareSheet for sharing teachings via SharePreviewScreen.
+ */
+library;
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

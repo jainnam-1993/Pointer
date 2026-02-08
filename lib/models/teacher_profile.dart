@@ -1,8 +1,11 @@
-// Teacher Profile Data Model
-// Represents detailed profiles of spiritual teachers in the Library feature
-//
-// Teacher profiles provide biographical information and context about the
-// masters and contemporary teachers whose teachings appear in the app.
+/**
+ * Teacher Profile Data Model.
+ * Represents detailed profiles of spiritual teachers in the Library feature.
+ *
+ * Teacher profiles provide biographical information and context about the
+ * masters and contemporary teachers whose teachings appear in the app.
+ */
+library;
 
 import '../data/pointings.dart';
 

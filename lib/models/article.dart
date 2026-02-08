@@ -1,8 +1,11 @@
-// Article Data Model
-// Represents articles/essays in the Library feature
-//
-// Articles contain markdown-formatted content from classic non-dual teachings,
-// excerpts from books, and explanatory essays on spiritual concepts.
+/**
+ * Article Data Model.
+ * Represents articles/essays in the Library feature.
+ *
+ * Articles contain markdown-formatted content from classic non-dual teachings,
+ * excerpts from books, and explanatory essays on spiritual concepts.
+ */
+library;
 
 import '../data/pointings.dart';
 

@@ -1,5 +1,8 @@
-// Inquiry Phase Content - Display widget for each inquiry phase
-// Handles setup, question, followUp, and complete phases
+/**
+ * Inquiry Phase Content - Display widget for each inquiry phase.
+ * Handles setup, question, followUp, and complete phases.
+ */
+library;
 
 import 'package:flutter/material.dart';
 import '../models/inquiry.dart';

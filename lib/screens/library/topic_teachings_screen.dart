@@ -1,4 +1,6 @@
-// Screen showing articles and quotes filtered by topic tag.
+/** Screen showing articles and quotes filtered by topic tag. */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

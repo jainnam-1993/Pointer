@@ -3,7 +3,7 @@
  *
  * Provides state management for the donation/tip jar feature via
  * [DonationNotifier]. All donations are consumable products (can be
- * purchased multiple times) using the [in_app_purchase] package directly
+ * purchased multiple times) using the `in_app_purchase` package directly
  * (not RevenueCat). Four tiers: Tea, Cushion, Incense, and Retreat.
  *
  * [DonationState] tracks product availability, loading state, and

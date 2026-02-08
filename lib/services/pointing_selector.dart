@@ -1,7 +1,10 @@
-// Time-of-Day Aware Pointing Selection Service
-//
-// Provides contextually appropriate pointing selection based on time of day.
-// See [TimeContextBoundaries] for hour boundaries.
+/**
+ * Time-of-Day Aware Pointing Selection Service.
+ *
+ * Provides contextually appropriate pointing selection based on time of day.
+ * See [TimeContextBoundaries] for hour boundaries.
+ */
+library;
 
 import 'dart:math';
 import '../data/pointings.dart';

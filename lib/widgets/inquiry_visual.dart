@@ -1,5 +1,8 @@
-// Inquiry Visual - Breathing/pulse animation for inquiry pauses
-// Respects accessibility settings (reduced motion)
+/**
+ * Inquiry Visual - Breathing/pulse animation for inquiry pauses.
+ * Respects accessibility settings (reduced motion).
+ */
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
