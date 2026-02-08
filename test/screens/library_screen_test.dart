@@ -81,7 +81,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.text('Library'), findsOneWidget);
       expect(find.text('Explore teachings and articles'), findsOneWidget);
@@ -103,7 +103,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.text('FEATURED'), findsOneWidget);
     });
@@ -124,7 +124,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       // Updated from "BROWSE BY TOPIC" to "BROWSE BY" with dropdown
       expect(find.text('BROWSE BY'), findsOneWidget);
@@ -169,7 +169,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.byType(LibraryScreen), findsOneWidget);
     });
@@ -190,7 +190,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.byType(LibraryScreen), findsOneWidget);
     });

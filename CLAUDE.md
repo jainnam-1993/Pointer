@@ -36,8 +36,22 @@ lib/
 │   ├── main_shell.dart        # Bottom nav shell with swipe gestures, FloatingParticles, responsive nav bar (3-tier breakpoints), GlobalKey conflict prevention
 │   ├── home_screen.dart       # Daily pointing with auto-advance timer, source citations
 │   ├── inquiry_player_screen.dart # Guided inquiry with timed phases
-│   ├── library_screen.dart    # Browse articles/quotes with filters (all/articles/quotes/saved), browse modes, ContentFilter integration
-│   ├── settings_screen.dart   # Settings, animation toggle, donation in About, developer options
+│   ├── library_screen.dart    # Main library screen + re-exports library/* subfiles
+│   ├── library/               # Library subfiles (extracted from library_screen.dart)
+│   │   ├── library_models.dart          # ContentFilter, CategoryInfo, LibraryBrowseMode, TeachingListSorting
+│   │   ├── library_widgets.dart         # SectionHeader, ArticleListItem, TeachingCard, FilterSheet, LibraryPremiumUpgrade
+│   │   ├── category_articles_screen.dart # Articles by category
+│   │   ├── teacher_teachings_screen.dart  # Quotes/articles by teacher
+│   │   ├── lineage_teachings_screen.dart  # Quotes/articles by lineage
+│   │   ├── mood_teachings_screen.dart     # Quotes/articles by mood
+│   │   └── topic_teachings_screen.dart    # Quotes/articles by topic
+│   ├── settings_screen.dart   # Main settings screen + re-exports settings/* subfiles
+│   ├── settings/              # Settings subfiles (extracted from settings_screen.dart)
+│   │   ├── settings_widgets.dart        # SettingsSectionHeader, SettingsRow, SettingsDivider
+│   │   ├── settings_banners.dart        # NotificationPermissionBanner, PremiumFeatureBanner
+│   │   ├── appearance_section.dart      # AppearanceSelector, ThemeOption, ZenModeToggle, AnimationToggle
+│   │   ├── experience_section.dart      # AutoAdvanceToggle, AmbientSoundPicker
+│   │   └── notification_times_sheet.dart # NotificationTimesSheet (schedule management)
 │   ├── splash_screen.dart     # Video splash (theme-aware nonduality animation, cold-start only)
 │   └── paywall_screen.dart    # Premium paywall with restore purchases (prompts sign-in for cross-device sync)
 ├── widgets/                   # Reusable components
@@ -87,9 +101,11 @@ ios/Runner/
 └── AppDelegate.swift          # App lifecycle, AVAudioSession config (.playback, .mixWithOthers, .duckOthers), flutter_local_notifications plugin registration callback for foreground handling, UNUserNotificationCenter delegate setup (iOS 10+), background fetch (UIApplication.backgroundFetchIntervalMinimum) for WorkManager periodic notifications
 
 test/                          # Unit tests
-├── providers/                 # Provider tests
-├── services/                  # Service tests
-├── screens/                   # Widget tests
+├── providers/                 # Provider tests (high contrast, OLED mode)
+├── services/                  # Service tests (time of day)
+├── screens/                   # Widget tests (dynamic type, long press, zen mode)
+├── data/                      # Data model tests (inquiry, library, pointings)
+├── widgets/                   # Widget tests (reduced motion)
 ├── accessibility/             # Semantics & VoiceOver tests
 └── golden/                    # Visual regression tests
 
