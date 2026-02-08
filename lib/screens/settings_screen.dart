@@ -338,6 +338,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                 const SizedBox(height: 12),
                 const AppearanceSelector(),
 
+                // Support section (prominent placement)
+                const SizedBox(height: 24),
+                const DonationButton(),
+
                 // Traditions section
                 const SizedBox(height: 24),
                 SettingsSectionHeader(title: 'TRADITIONS'),
@@ -415,9 +419,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                const DonationButton(),
-
                 // Developer section (hidden until 7 taps on version)
                 if (_showDeveloperOptions) ...[
                   const SizedBox(height: 24),
