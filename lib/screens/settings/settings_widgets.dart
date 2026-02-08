@@ -9,10 +9,7 @@ class SettingsSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.labelSmall,
-    );
+    return Text(title, style: Theme.of(context).textTheme.labelSmall);
   }
 }
 
@@ -23,14 +20,7 @@ class SettingsRow extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
 
-  const SettingsRow({
-    super.key,
-    required this.title,
-    this.subtitle,
-    this.leading,
-    this.trailing,
-    this.onTap,
-  });
+  const SettingsRow({super.key, required this.title, this.subtitle, this.leading, this.trailing, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -42,30 +32,15 @@ class SettingsRow extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 8),
-          ],
+          if (leading != null) ...[leading!, const SizedBox(width: 8)],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: textColor,
-                  ),
-                ),
+                Text(title, style: TextStyle(fontSize: 16, color: textColor)),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
-                  Text(
-                    subtitle!,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: textColorSubtitle,
-                    ),
-                  ),
+                  Text(subtitle!, style: TextStyle(fontSize: 14, color: textColorSubtitle)),
                 ],
               ],
             ),
@@ -81,16 +56,10 @@ class SettingsRow extends StatelessWidget {
       return Semantics(
         button: true,
         label: label,
-        child: InkWell(
-          onTap: onTap,
-          child: content,
-        ),
+        child: InkWell(onTap: onTap, child: content),
       );
     }
-    return Semantics(
-      label: label,
-      child: content,
-    );
+    return Semantics(label: label, child: content);
   }
 }
 
@@ -103,9 +72,7 @@ class SettingsDivider extends StatelessWidget {
     return Container(
       height: 1,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.1)
-          : Colors.black.withValues(alpha: 0.1),
+      color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.1),
     );
   }
 }

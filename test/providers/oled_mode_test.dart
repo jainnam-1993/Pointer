@@ -22,9 +22,7 @@ void main() {
   group('OLED Mode Provider Tests', () {
     test('oledModeProvider reads from settings', () async {
       // Setup - Mock SharedPreferences with OLED mode enabled
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: '{"oledMode": true}',
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": true}'});
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
@@ -64,12 +62,9 @@ void main() {
   });
 
   group('AnimatedGradient OLED Mode Tests', () {
-    testWidgets('returns pure black Container when OLED mode enabled',
-        (WidgetTester tester) async {
+    testWidgets('returns pure black Container when OLED mode enabled', (WidgetTester tester) async {
       // Setup - Mock SharedPreferences with OLED mode enabled
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: '{"oledMode": true}',
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": true}'});
       final prefs = await SharedPreferences.getInstance();
 
       // Build widget with OLED mode enabled
@@ -81,18 +76,13 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: AnimatedGradient(),
-            ),
+            home: const Scaffold(body: AnimatedGradient()),
           ),
         ),
       );
 
       // Find the Container widget
-      final containerFinder = find.descendant(
-        of: find.byType(AnimatedGradient),
-        matching: find.byType(Container),
-      );
+      final containerFinder = find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container));
 
       expect(containerFinder, findsOneWidget);
 
@@ -105,12 +95,9 @@ void main() {
       expect(container.color, equals(const Color(0xFF000000)));
     });
 
-    testWidgets('returns gradient when OLED mode disabled',
-        (WidgetTester tester) async {
+    testWidgets('returns gradient when OLED mode disabled', (WidgetTester tester) async {
       // Setup - Mock SharedPreferences with OLED mode disabled
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: '{"oledMode": false}',
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": false}'});
       final prefs = await SharedPreferences.getInstance();
 
       // Build widget with OLED mode disabled
@@ -122,18 +109,13 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: AnimatedGradient(),
-            ),
+            home: const Scaffold(body: AnimatedGradient()),
           ),
         ),
       );
 
       // Find the Container widget
-      final containerFinder = find.descendant(
-        of: find.byType(AnimatedGradient),
-        matching: find.byType(Container),
-      );
+      final containerFinder = find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container));
 
       expect(containerFinder, findsOneWidget);
 
@@ -169,9 +151,7 @@ void main() {
   group('Settings Toggle Updates oledModeProvider', () {
     test('toggling OLED mode in settings updates provider', () async {
       // Setup - Mock SharedPreferences with OLED mode disabled initially
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: '{"oledMode": false}',
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": false}'});
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
@@ -238,11 +218,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       var prefs = await SharedPreferences.getInstance();
 
-      var container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-        ],
-      );
+      var container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(prefs)]);
 
       // Enable OLED mode in first session
       final settingsNotifier = container.read(settingsProvider.notifier);
@@ -257,16 +233,10 @@ void main() {
       container.dispose();
 
       // Simulate app restart - Create new container with persisted data
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: storedValue!,
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: storedValue!});
       prefs = await SharedPreferences.getInstance();
 
-      final newContainer = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-        ],
-      );
+      final newContainer = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(prefs)]);
       addTearDown(newContainer.dispose);
 
       // Assert - OLED mode should still be enabled after "restart"
@@ -276,12 +246,9 @@ void main() {
   });
 
   group('AnimatedGradient Integration with Settings', () {
-    testWidgets('AnimatedGradient updates when oledMode changes',
-        (WidgetTester tester) async {
+    testWidgets('AnimatedGradient updates when oledMode changes', (WidgetTester tester) async {
       // Setup - Mock SharedPreferences with OLED mode disabled
-      SharedPreferences.setMockInitialValues({
-        StorageKeys.settings: '{"oledMode": false}',
-      });
+      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": false}'});
       final prefs = await SharedPreferences.getInstance();
 
       await tester.pumpWidget(
@@ -301,9 +268,7 @@ void main() {
                       ElevatedButton(
                         onPressed: () async {
                           final settings = ref.read(settingsProvider);
-                          await ref.read(settingsProvider.notifier).update(
-                                settings.copyWith(oledMode: true),
-                              );
+                          await ref.read(settingsProvider.notifier).update(settings.copyWith(oledMode: true));
                         },
                         child: const Text('Enable OLED'),
                       ),
@@ -318,10 +283,7 @@ void main() {
 
       // Initially should have gradient (OLED mode off)
       Container container = tester.widget(
-        find.descendant(
-          of: find.byType(AnimatedGradient),
-          matching: find.byType(Container),
-        ),
+        find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)),
       );
       expect(container.decoration, isA<BoxDecoration>());
 
@@ -330,12 +292,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Now should be pure black (OLED mode on)
-      container = tester.widget(
-        find.descendant(
-          of: find.byType(AnimatedGradient),
-          matching: find.byType(Container),
-        ),
-      );
+      container = tester.widget(find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)));
       expect(container.color, equals(Colors.black));
       expect(container.decoration, isNull);
     });

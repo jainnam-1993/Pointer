@@ -23,10 +23,7 @@ import '../widgets/inquiry_phase_content.dart';
 ///
 /// Respects accessibility settings for reduced motion.
 class InquiryPlayerScreen extends ConsumerStatefulWidget {
-  const InquiryPlayerScreen({
-    super.key,
-    required this.inquiryId,
-  });
+  const InquiryPlayerScreen({super.key, required this.inquiryId});
 
   /// ID of the inquiry to play, or 'random' for a random inquiry
   final String inquiryId;
@@ -44,8 +41,7 @@ class InquiryPlayerScreen extends ConsumerStatefulWidget {
   ConsumerState<InquiryPlayerScreen> createState() => _InquiryPlayerScreenState();
 }
 
-class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
-    with SingleTickerProviderStateMixin {
+class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with SingleTickerProviderStateMixin {
   Inquiry? _currentInquiry;
   InquiryPhase _phase = InquiryPhase.setup;
   Timer? _phaseTimer;
@@ -82,9 +78,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
 
   void _loadInquiry() {
     // Check if ID is a valid inquiry ID or if we should get a random one
-    final inquiry = widget.inquiryId == 'random'
-        ? getRandomInquiry()
-        : getInquiryById(widget.inquiryId);
+    final inquiry = widget.inquiryId == 'random' ? getRandomInquiry() : getInquiryById(widget.inquiryId);
 
     // Fall back to random if ID not found
     _currentInquiry = inquiry ?? getRandomInquiry();
@@ -211,11 +205,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     final colors = context.colors;
 
     if (_currentInquiry == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -264,10 +254,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             button: true,
             label: 'Close inquiry',
             child: IconButton(
-              icon: Icon(
-                Icons.close,
-                color: colors.textMuted,
-              ),
+              icon: Icon(Icons.close, color: colors.textMuted),
               onPressed: _onDone,
             ),
           ),
@@ -282,11 +269,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             ),
             child: Text(
               _getTraditionLabel(_currentInquiry!.tradition),
-              style: TextStyle(
-                color: colors.textMuted,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w500),
             ),
           ),
 
@@ -311,10 +294,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             AnimatedBuilder(
               animation: _timerController!,
               builder: (context, child) {
-                return _BreathingProgressRing(
-                  progress: _timerController!.value,
-                  colors: colors,
-                );
+                return _BreathingProgressRing(progress: _timerController!.value, colors: colors);
               },
             ),
           if (showTimer) const SizedBox(height: 16),
@@ -364,11 +344,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
 }
 
 class _PhaseIndicatorDot extends StatelessWidget {
-  const _PhaseIndicatorDot({
-    required this.isActive,
-    required this.isPast,
-    required this.colors,
-  });
+  const _PhaseIndicatorDot({required this.isActive, required this.isPast, required this.colors});
 
   final bool isActive;
   final bool isPast;
@@ -381,9 +357,7 @@ class _PhaseIndicatorDot extends StatelessWidget {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive || isPast
-            ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4)
-            : colors.glassBorder,
+        color: isActive || isPast ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4) : colors.glassBorder,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -394,10 +368,7 @@ class _PhaseIndicatorDot extends StatelessWidget {
 /// Creates a gentle visual cue without being distracting
 /// Matches the liquid glass design system
 class _BreathingProgressRing extends StatelessWidget {
-  const _BreathingProgressRing({
-    required this.progress,
-    required this.colors,
-  });
+  const _BreathingProgressRing({required this.progress, required this.colors});
 
   /// Progress from 0.0 to 1.0
   final double progress;
@@ -410,12 +381,8 @@ class _BreathingProgressRing extends StatelessWidget {
     final breathingScale = 1.0 + (0.015 * (1 - (progress * 2 - 1).abs()));
 
     // Theme-consistent colors matching liquid glass style
-    final ringColor = isDark
-        ? colors.accent.withValues(alpha: 0.5)
-        : colors.primary.withValues(alpha: 0.4);
-    final bgColor = isDark
-        ? colors.glassBorder.withValues(alpha: 0.3)
-        : Colors.black.withValues(alpha: 0.06);
+    final ringColor = isDark ? colors.accent.withValues(alpha: 0.5) : colors.primary.withValues(alpha: 0.4);
+    final bgColor = isDark ? colors.glassBorder.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.06);
 
     return Transform.scale(
       scale: breathingScale,

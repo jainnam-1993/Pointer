@@ -50,9 +50,7 @@ void main() {
   }
 
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({
-      'pointer_onboarding_completed': true,
-    });
+    SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
   });
 
@@ -66,9 +64,7 @@ void main() {
   group('Home Screen', () {
     testWidgets('Initial home view', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
       await screenshot(tester, '01_home_initial');
       expect(find.text('Next'), findsOneWidget);
@@ -77,9 +73,7 @@ void main() {
 
     testWidgets('After tapping Next button', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       await tester.tap(find.text('Next'));
@@ -90,9 +84,7 @@ void main() {
 
     testWidgets('After swipe up gesture', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       // Swipe up to get next pointing
@@ -104,9 +96,7 @@ void main() {
 
     testWidgets('Multiple pointings (freemium flow)', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
       await screenshot(tester, 'freemium_01_start');
 
@@ -150,9 +140,7 @@ void main() {
   group('Settings Screen (TTS UX Gap)', () {
     testWidgets('Settings view - TTS not discoverable', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       // Navigate to Settings via bottom nav tap
@@ -187,9 +175,7 @@ void main() {
 
     testWidgets('Developer menu unlock (7-tap easter egg)', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       // Navigate to Settings
@@ -236,9 +222,7 @@ void main() {
   group('Other Tabs', () {
     testWidgets('Inquiry screen', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       await tester.tap(find.text('Inquiry'));
@@ -250,9 +234,7 @@ void main() {
 
     testWidgets('Library screen', (tester) async {
       final container = createContainer();
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: const PointerApp()),
-      );
+      await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const PointerApp()));
       await settle(tester);
 
       await tester.tap(find.text('Library'));

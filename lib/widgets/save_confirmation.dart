@@ -34,8 +34,7 @@ class SaveConfirmation extends StatefulWidget {
   State<SaveConfirmation> createState() => _SaveConfirmationState();
 }
 
-class _SaveConfirmationState extends State<SaveConfirmation>
-    with SingleTickerProviderStateMixin {
+class _SaveConfirmationState extends State<SaveConfirmation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
@@ -55,17 +54,12 @@ class _SaveConfirmationState extends State<SaveConfirmation>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
 
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -76,9 +70,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
 
     // Initialize confetti controller (longer duration for first save)
     _confettiController = ConfettiController(
-      duration: widget.isFirstSave
-          ? const Duration(milliseconds: 1500)
-          : const Duration(milliseconds: 500),
+      duration: widget.isFirstSave ? const Duration(milliseconds: 1500) : const Duration(milliseconds: 500),
     );
 
     // Start animation
@@ -91,9 +83,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
 
     // Auto-dismiss after duration (skip in test mode)
     // Longer duration for first save to let confetti finish
-    final dismissDuration = widget.isFirstSave
-        ? const Duration(seconds: 3)
-        : widget.autoDismissDuration;
+    final dismissDuration = widget.isFirstSave ? const Duration(seconds: 3) : widget.autoDismissDuration;
 
     if (!SaveConfirmation.disableAutoDismiss) {
       Future.delayed(dismissDuration, () {
@@ -156,10 +146,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
             builder: (context, child) {
               return Opacity(
                 opacity: _opacityAnimation.value,
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: child,
-                ),
+                child: Transform.scale(scale: _scaleAnimation.value, child: child),
               );
             },
             child: Container(
@@ -168,9 +155,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
                 color: colors.glassBackground,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: widget.isFirstSave
-                      ? colors.accent.withValues(alpha: 0.5)
-                      : colors.glassBorder,
+                  color: widget.isFirstSave ? colors.accent.withValues(alpha: 0.5) : colors.glassBorder,
                   width: widget.isFirstSave ? 2 : 1,
                 ),
                 boxShadow: [
@@ -191,16 +176,11 @@ class _SaveConfirmationState extends State<SaveConfirmation>
                     duration: const Duration(milliseconds: 600),
                     curve: Curves.elasticOut,
                     builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: child,
-                      );
+                      return Transform.scale(scale: value, child: child);
                     },
                     child: Icon(
                       Icons.favorite,
-                      color: widget.isFirstSave
-                          ? colors.accent
-                          : Theme.of(context).colorScheme.primary,
+                      color: widget.isFirstSave ? colors.accent : Theme.of(context).colorScheme.primary,
                       size: widget.isFirstSave ? 56 : 48,
                     ),
                   ),
@@ -210,9 +190,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
                     style: TextStyle(
                       color: colors.textPrimary,
                       fontSize: widget.isFirstSave ? 18 : 16,
-                      fontWeight: widget.isFirstSave
-                          ? FontWeight.w600
-                          : FontWeight.w500,
+                      fontWeight: widget.isFirstSave ? FontWeight.w600 : FontWeight.w500,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -220,11 +198,7 @@ class _SaveConfirmationState extends State<SaveConfirmation>
                     const SizedBox(height: 4),
                     Text(
                       'Find your saved pointings in Library',
-                      style: TextStyle(
-                        color: colors.textSecondary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: TextStyle(color: colors.textSecondary, fontSize: 12, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ],

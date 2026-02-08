@@ -38,35 +38,24 @@ class TestSetup {
     when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.setDouble(any(), any())).thenAnswer((_) async => true);
-    when(() => mockPrefs.setStringList(any(), any()))
-        .thenAnswer((_) async => true);
+    when(() => mockPrefs.setStringList(any(), any())).thenAnswer((_) async => true);
     when(() => mockPrefs.remove(any())).thenAnswer((_) async => true);
     when(() => mockPrefs.clear()).thenAnswer((_) async => true);
   }
 
   /// Standard provider overrides for common test scenarios
   List<Override> get standardOverrides => [
-        sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        oledModeProvider.overrideWith((ref) => false),
-        reduceMotionOverrideProvider.overrideWith((ref) => null),
-        backgroundShimmerActiveProvider.overrideWith((ref) => false),
-      ];
+    sharedPreferencesProvider.overrideWithValue(mockPrefs),
+    oledModeProvider.overrideWith((ref) => false),
+    reduceMotionOverrideProvider.overrideWith((ref) => null),
+    backgroundShimmerActiveProvider.overrideWith((ref) => false),
+  ];
 
   /// Wrap a widget with ProviderScope and MaterialApp for testing
-  Widget wrapWithProviders(
-    Widget child, {
-    List<Override>? additionalOverrides,
-    ThemeData? theme,
-  }) {
+  Widget wrapWithProviders(Widget child, {List<Override>? additionalOverrides, ThemeData? theme}) {
     return ProviderScope(
-      overrides: [
-        ...standardOverrides,
-        if (additionalOverrides != null) ...additionalOverrides,
-      ],
-      child: MaterialApp(
-        theme: theme ?? ThemeData.dark(),
-        home: child,
-      ),
+      overrides: [...standardOverrides, if (additionalOverrides != null) ...additionalOverrides],
+      child: MaterialApp(theme: theme ?? ThemeData.dark(), home: child),
     );
   }
 }

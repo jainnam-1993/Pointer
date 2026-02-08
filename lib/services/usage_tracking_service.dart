@@ -6,31 +6,19 @@ class DailyUsage {
   final String lastResetDate;
   static const int freeUserLimit = 2;
 
-  const DailyUsage({
-    this.viewCount = 0,
-    required this.lastResetDate,
-  });
+  const DailyUsage({this.viewCount = 0, required this.lastResetDate});
 
   bool get limitReached => viewCount >= freeUserLimit;
   int get remaining => freeUserLimit - viewCount;
 
   DailyUsage copyWith({int? viewCount, String? lastResetDate}) {
-    return DailyUsage(
-      viewCount: viewCount ?? this.viewCount,
-      lastResetDate: lastResetDate ?? this.lastResetDate,
-    );
+    return DailyUsage(viewCount: viewCount ?? this.viewCount, lastResetDate: lastResetDate ?? this.lastResetDate);
   }
 
-  Map<String, dynamic> toJson() => {
-        'viewCount': viewCount,
-        'lastResetDate': lastResetDate,
-      };
+  Map<String, dynamic> toJson() => {'viewCount': viewCount, 'lastResetDate': lastResetDate};
 
   factory DailyUsage.fromJson(Map<String, dynamic> json) {
-    return DailyUsage(
-      viewCount: json['viewCount'] ?? 0,
-      lastResetDate: json['lastResetDate'] ?? _todayString(),
-    );
+    return DailyUsage(viewCount: json['viewCount'] ?? 0, lastResetDate: json['lastResetDate'] ?? _todayString());
   }
 
   factory DailyUsage.initial() {
@@ -59,9 +47,7 @@ class UsageTrackingService {
 
     try {
       final usage = DailyUsage.fromJson(
-        Map<String, dynamic>.from(
-          Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v))),
-        ),
+        Map<String, dynamic>.from(Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v)))),
       );
 
       // Check if we need to reset for a new day
@@ -92,8 +78,7 @@ class UsageTrackingService {
   }
 
   Future<void> _saveUsage(DailyUsage usage) async {
-    final encoded =
-        'viewCount=${usage.viewCount}&lastResetDate=${usage.lastResetDate}';
+    final encoded = 'viewCount=${usage.viewCount}&lastResetDate=${usage.lastResetDate}';
     await _prefs.setString(_usageKey, encoded);
   }
 

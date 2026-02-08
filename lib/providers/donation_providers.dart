@@ -75,8 +75,7 @@ final donationServiceProvider = Provider<DonationService>((ref) {
 });
 
 /// Provider for donation state and actions
-final donationProvider =
-    StateNotifierProvider<DonationNotifier, DonationState>((ref) {
+final donationProvider = StateNotifierProvider<DonationNotifier, DonationState>((ref) {
   final service = ref.watch(donationServiceProvider);
   return DonationNotifier(service);
 });
@@ -105,11 +104,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
       if (!mounted) return;
 
       if (!available) {
-        state = state.copyWith(
-          isAvailable: false,
-          isLoading: false,
-          products: [],
-        );
+        state = state.copyWith(isAvailable: false, isLoading: false, products: []);
         return;
       }
 
@@ -117,18 +112,10 @@ class DonationNotifier extends StateNotifier<DonationState> {
 
       if (!mounted) return;
 
-      state = state.copyWith(
-        isAvailable: true,
-        isLoading: false,
-        products: products,
-      );
+      state = state.copyWith(isAvailable: true, isLoading: false, products: products);
     } catch (e) {
       if (!mounted) return;
-      state = state.copyWith(
-        isAvailable: false,
-        isLoading: false,
-        error: 'Failed to load donation options: $e',
-      );
+      state = state.copyWith(isAvailable: false, isLoading: false, error: 'Failed to load donation options: $e');
     }
   }
 
@@ -186,10 +173,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
         // CRITICAL: Complete the purchase to acknowledge receipt
         await _service.completePurchase(purchase);
         if (!mounted) return;
-        state = state.copyWith(
-          isLoading: false,
-          lastResult: DonationResult.success,
-        );
+        state = state.copyWith(isLoading: false, lastResult: DonationResult.success);
         break;
 
       case PurchaseStatus.restored:
@@ -210,10 +194,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
 
       case PurchaseStatus.canceled:
         if (!mounted) return;
-        state = state.copyWith(
-          isLoading: false,
-          lastResult: DonationResult.cancelled,
-        );
+        state = state.copyWith(isLoading: false, lastResult: DonationResult.cancelled);
         break;
     }
   }

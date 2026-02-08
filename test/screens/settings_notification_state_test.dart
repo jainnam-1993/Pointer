@@ -21,8 +21,7 @@ void main() {
 
   group('NotificationService isNotificationsEnabled', () {
     test('defaults to false when not set', () {
-      when(() => mockPrefs.getBool('pointer_notifications_enabled'))
-          .thenReturn(null);
+      when(() => mockPrefs.getBool('pointer_notifications_enabled')).thenReturn(null);
 
       final service = NotificationService(mockPrefs);
 
@@ -30,8 +29,7 @@ void main() {
     });
 
     test('returns true when enabled', () {
-      when(() => mockPrefs.getBool('pointer_notifications_enabled'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_notifications_enabled')).thenReturn(true);
 
       final service = NotificationService(mockPrefs);
 
@@ -39,8 +37,7 @@ void main() {
     });
 
     test('returns false when disabled', () {
-      when(() => mockPrefs.getBool('pointer_notifications_enabled'))
-          .thenReturn(false);
+      when(() => mockPrefs.getBool('pointer_notifications_enabled')).thenReturn(false);
 
       final service = NotificationService(mockPrefs);
 

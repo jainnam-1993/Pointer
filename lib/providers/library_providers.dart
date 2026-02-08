@@ -18,26 +18,22 @@ import '../models/teacher_profile.dart';
 final articlesProvider = Provider<List<Article>>((ref) => articles);
 
 /// Provides articles filtered by tradition
-final articlesByTraditionProvider =
-    Provider.family<List<Article>, Tradition>((ref, tradition) {
+final articlesByTraditionProvider = Provider.family<List<Article>, Tradition>((ref, tradition) {
   return articles.where((a) => a.tradition == tradition).toList();
 });
 
 /// Provides articles filtered by category
-final articlesByCategoryProvider =
-    Provider.family<List<Article>, ArticleCategory>((ref, category) {
+final articlesByCategoryProvider = Provider.family<List<Article>, ArticleCategory>((ref, category) {
   return articles.where((a) => a.hasCategory(category)).toList();
 });
 
 /// Provides articles filtered by teacher
-final articlesByTeacherProvider =
-    Provider.family<List<Article>, String>((ref, teacherName) {
+final articlesByTeacherProvider = Provider.family<List<Article>, String>((ref, teacherName) {
   return articles.where((a) => a.isBy(teacherName)).toList();
 });
 
 /// Provides a single article by ID
-final articleByIdProvider =
-    Provider.family<Article?, String>((ref, id) {
+final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
   try {
     return articles.firstWhere((a) => a.id == id);
   } catch (e) {
@@ -56,14 +52,12 @@ final premiumArticlesProvider = Provider<List<Article>>((ref) {
 });
 
 /// Provides article count by tradition
-final articleCountByTraditionProvider =
-    Provider.family<int, Tradition>((ref, tradition) {
+final articleCountByTraditionProvider = Provider.family<int, Tradition>((ref, tradition) {
   return articles.where((a) => a.tradition == tradition).length;
 });
 
 /// Provides article count by category
-final articleCountByCategoryProvider =
-    Provider.family<int, ArticleCategory>((ref, category) {
+final articleCountByCategoryProvider = Provider.family<int, ArticleCategory>((ref, category) {
   return articles.where((a) => a.hasCategory(category)).length;
 });
 
@@ -72,27 +66,20 @@ final articleCountByCategoryProvider =
 // ============================================================
 
 /// Provides all teacher profiles
-final teacherProfilesProvider =
-    Provider<List<TeacherProfile>>((ref) => teacherProfiles);
+final teacherProfilesProvider = Provider<List<TeacherProfile>>((ref) => teacherProfiles);
 
 /// Provides teacher profile by name
-final teacherByNameProvider =
-    Provider.family<TeacherProfile?, String>((ref, name) {
+final teacherByNameProvider = Provider.family<TeacherProfile?, String>((ref, name) {
   try {
-    return teacherProfiles.firstWhere(
-      (t) => t.name.toLowerCase() == name.toLowerCase(),
-    );
+    return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == name.toLowerCase());
   } catch (e) {
     return null;
   }
 });
 
 /// Provides teachers filtered by tradition
-final teachersByTraditionProvider =
-    Provider.family<List<TeacherProfile>, Tradition>((ref, tradition) {
-  return teacherProfiles
-      .where((t) => t.primaryTradition == tradition)
-      .toList();
+final teachersByTraditionProvider = Provider.family<List<TeacherProfile>, Tradition>((ref, tradition) {
+  return teacherProfiles.where((t) => t.primaryTradition == tradition).toList();
 });
 
 /// Provides teachers who have related articles
@@ -154,12 +141,10 @@ final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
 // ============================================================
 
 /// Selected tradition filter for articles
-final selectedTraditionFilterProvider =
-    StateProvider<Tradition?>((ref) => null);
+final selectedTraditionFilterProvider = StateProvider<Tradition?>((ref) => null);
 
 /// Selected category filter for articles
-final selectedCategoryFilterProvider =
-    StateProvider<ArticleCategory?>((ref) => null);
+final selectedCategoryFilterProvider = StateProvider<ArticleCategory?>((ref) => null);
 
 /// Filtered articles based on current filters
 final filteredArticlesProvider = Provider<List<Article>>((ref) {
@@ -187,8 +172,7 @@ final filteredArticlesProvider = Provider<List<Article>>((ref) {
 final totalArticleCountProvider = Provider<int>((ref) => articles.length);
 
 /// Total teacher count
-final totalTeacherCountProvider =
-    Provider<int>((ref) => teacherProfiles.length);
+final totalTeacherCountProvider = Provider<int>((ref) => teacherProfiles.length);
 
 /// Total reading time across all articles
 final totalReadingTimeProvider = Provider<int>((ref) {
@@ -196,8 +180,7 @@ final totalReadingTimeProvider = Provider<int>((ref) {
 });
 
 /// Articles per tradition statistics
-final articlesPerTraditionProvider =
-    Provider<Map<Tradition, int>>((ref) {
+final articlesPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   final map = <Tradition, int>{};
   for (final tradition in Tradition.values) {
     map[tradition] = articles.where((a) => a.tradition == tradition).length;
@@ -206,12 +189,10 @@ final articlesPerTraditionProvider =
 });
 
 /// Teachers per tradition statistics
-final teachersPerTraditionProvider =
-    Provider<Map<Tradition, int>>((ref) {
+final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   final map = <Tradition, int>{};
   for (final tradition in Tradition.values) {
-    map[tradition] =
-        teacherProfiles.where((t) => t.primaryTradition == tradition).length;
+    map[tradition] = teacherProfiles.where((t) => t.primaryTradition == tradition).length;
   }
   return map;
 });
@@ -221,20 +202,16 @@ final teachersPerTraditionProvider =
 // ============================================================
 
 /// Get articles related to a teacher profile
-final articlesForTeacherProvider =
-    Provider.family<List<Article>, TeacherProfile>((ref, teacher) {
+final articlesForTeacherProvider = Provider.family<List<Article>, TeacherProfile>((ref, teacher) {
   return articles.where((a) => teacher.articleIds.contains(a.id)).toList();
 });
 
 /// Get teacher for an article (if attributed)
-final teacherForArticleProvider =
-    Provider.family<TeacherProfile?, Article>((ref, article) {
+final teacherForArticleProvider = Provider.family<TeacherProfile?, Article>((ref, article) {
   if (article.teacher == null) return null;
 
   try {
-    return teacherProfiles.firstWhere(
-      (t) => t.name.toLowerCase() == article.teacher!.toLowerCase(),
-    );
+    return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == article.teacher!.toLowerCase());
   } catch (e) {
     return null;
   }

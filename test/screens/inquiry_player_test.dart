@@ -283,10 +283,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.setup,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.setup),
             ),
           ),
         ),
@@ -315,10 +312,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.question,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.question),
             ),
           ),
         ),
@@ -390,10 +384,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.complete,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.complete),
             ),
           ),
         ),
@@ -417,9 +408,7 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 100),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 100)),
           ),
         ),
       );
@@ -438,18 +427,13 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 200),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 200)),
           ),
         ),
       );
 
       final sizedBox = tester.widget<SizedBox>(
-        find.descendant(
-          of: find.byType(InquiryVisual),
-          matching: find.byType(SizedBox),
-        ).first,
+        find.descendant(of: find.byType(InquiryVisual), matching: find.byType(SizedBox)).first,
       );
 
       expect(sizedBox.width, 200);
@@ -467,9 +451,7 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 100),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 100)),
           ),
         ),
       );
@@ -481,11 +463,7 @@ void main() {
 
   group('inquiryByIdProvider', () {
     test('returns inquiry when ID exists', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final inquiry = container.read(inquiryByIdProvider('si_001'));
@@ -495,11 +473,7 @@ void main() {
     });
 
     test('returns null when ID does not exist', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final inquiry = container.read(inquiryByIdProvider('nonexistent_id'));

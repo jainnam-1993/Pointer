@@ -64,19 +64,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Library',
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
+                        Text('Library', style: Theme.of(context).textTheme.displayLarge),
                         const SizedBox(height: 4),
                         Text(
                           _browseMode == LibraryBrowseMode.saved
                               ? 'Your saved pointings'
                               : 'Explore teachings and articles',
-                          style: TextStyle(
-                            color: colors.textSecondary,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: colors.textSecondary, fontSize: 16),
                         ),
                       ],
                     ),
@@ -95,10 +89,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                             children: [
                               Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
                               const SizedBox(height: 16),
-                              Text(
-                                'No saved pointings yet',
-                                style: TextStyle(color: colors.textMuted, fontSize: 16),
-                              ),
+                              Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
                               const SizedBox(height: 8),
                               Text(
                                 'Long-press a pointing to save it',
@@ -113,159 +104,150 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     SliverPadding(
                       padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
                       sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final pointingId = favorites[index];
-                            final pointing = pointings.firstWhere(
-                              (p) => p.id == pointingId,
-                              orElse: () => pointings.first,
-                            );
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: GlassCard(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final pointingId = favorites[index];
+                          final pointing = pointings.firstWhere(
+                            (p) => p.id == pointingId,
+                            orElse: () => pointings.first,
+                          );
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: GlassCard(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    pointing.content,
+                                    style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  if (pointing.teacher != null) ...[
+                                    const SizedBox(height: 8),
                                     Text(
-                                      pointing.content,
-                                      style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
+                                      '— ${pointing.teacher}',
+                                      style: TextStyle(color: colors.textMuted, fontSize: 13),
                                     ),
-                                    if (pointing.teacher != null) ...[
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        '— ${pointing.teacher}',
-                                        style: TextStyle(color: colors.textMuted, fontSize: 13),
-                                      ),
-                                    ],
                                   ],
-                                ),
+                                ],
                               ),
-                            );
-                          },
-                          childCount: favorites.length,
+                            ),
+                          );
+                        }, childCount: favorites.length),
+                      ),
+                    ),
+                ] else ...[
+                  // Full Library is PREMIUM - show upgrade prompt for free users
+                  // When kFreeAccessEnabled, skip this gate (all content free)
+                  if (!kFreeAccessEnabled && !subscription.isPremium) ...[
+                    SliverFillRemaining(
+                      child: LibraryPremiumUpgrade(
+                        // Uses GoRouter for redirect handling when kFreeAccessEnabled
+                        onUpgrade: () => context.push('/paywall'),
+                      ),
+                    ),
+                  ] else ...[
+                    // PREMIUM CONTENT BELOW
+
+                    // Featured Section
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                        child: Text(
+                          'FEATURED',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textMuted,
+                            letterSpacing: 1,
+                          ),
                         ),
                       ),
                     ),
-                ] else ...[
 
-                // Full Library is PREMIUM - show upgrade prompt for free users
-                // When kFreeAccessEnabled, skip this gate (all content free)
-                if (!kFreeAccessEnabled && !subscription.isPremium) ...[
-                  SliverFillRemaining(
-                    child: LibraryPremiumUpgrade(
-                      // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                      onUpgrade: () => context.push('/paywall'),
-                    ),
-                  ),
-                ] else ...[
-                // PREMIUM CONTENT BELOW
+                    // Featured articles horizontal scroll with peek indicator
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 185,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final screenWidth = constraints.maxWidth;
+                            // Card takes ~70% of screen, leaving ~30% for peek
+                            // Peek shows ~24px of next card edge
+                            final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                            final cardSpacing = 8.0;
+                            // Calculate padding: 24px left, enough right for last card + peek area
+                            final horizontalPadding = 24.0;
+                            // Extra right padding ensures smooth scroll end (peek area width)
+                            final rightPadding = screenWidth - cardWidth - horizontalPadding;
 
-                // Featured Section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                    child: Text(
-                      'FEATURED',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Featured articles horizontal scroll with peek indicator
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 185,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final screenWidth = constraints.maxWidth;
-                        // Card takes ~70% of screen, leaving ~30% for peek
-                        // Peek shows ~24px of next card edge
-                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                        final cardSpacing = 8.0;
-                        // Calculate padding: 24px left, enough right for last card + peek area
-                        final horizontalPadding = 24.0;
-                        // Extra right padding ensures smooth scroll end (peek area width)
-                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
-
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: rightPadding.clamp(24.0, 80.0),
-                          ),
-                          itemCount: featured.length,
-                          itemBuilder: (context, index) {
-                            final article = featured[index];
-                            final isLast = index == featured.length - 1;
-                            return StaggeredFadeIn(
-                              index: index,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  right: isLast ? 0 : cardSpacing,
-                                ),
-                                child: SizedBox(
-                                  width: cardWidth,
-                                  child: _FeaturedArticleCard(
-                                    article: article,
-                                    onTap: () => _openArticle(context, article),
+                            return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.only(left: horizontalPadding, right: rightPadding.clamp(24.0, 80.0)),
+                              itemCount: featured.length,
+                              itemBuilder: (context, index) {
+                                final article = featured[index];
+                                final isLast = index == featured.length - 1;
+                                return StaggeredFadeIn(
+                                  index: index,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
+                                    child: SizedBox(
+                                      width: cardWidth,
+                                      child: _FeaturedArticleCard(
+                                        article: article,
+                                        onTap: () => _openArticle(context, article),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-                // Browse Mode Section with Dropdown
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                    // FittedBox scales content down proportionally on small screens
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'BROWSE BY',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textMuted,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          _BrowseModeDropdown(
-                            currentMode: _browseMode,
-                            onChanged: (mode) => setState(() => _browseMode = mode),
-                          ),
-                          const SizedBox(width: 8),
-                          _ContentTypeDropdown(
-                            currentFilter: _contentFilter,
-                            onChanged: (filter) => setState(() => _contentFilter = filter),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Dynamic browse list based on mode
-                _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
-                ], // end premium content
+                    // Browse Mode Section with Dropdown
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+                        // FittedBox scales content down proportionally on small screens
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'BROWSE BY',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: colors.textMuted,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              _BrowseModeDropdown(
+                                currentMode: _browseMode,
+                                onChanged: (mode) => setState(() => _browseMode = mode),
+                              ),
+                              const SizedBox(width: 8),
+                              _ContentTypeDropdown(
+                                currentFilter: _contentFilter,
+                                onChanged: (filter) => setState(() => _contentFilter = filter),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Dynamic browse list based on mode
+                    _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
+                  ], // end premium content
                 ], // end else
               ],
             ),
@@ -277,11 +259,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openArticle(BuildContext context, Article article) {
     HapticFeedback.lightImpact();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ArticleReaderScreen(article: article),
-      ),
-    );
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
   }
 
   /// Build dynamic browse list based on current mode
@@ -319,34 +297,30 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       }
     }
 
-    final sortedTopics = topicCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTopics = topicCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = sortedTopics[index];
-            final topic = entry.key;
-            final count = entry.value;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedTopics[index];
+          final topic = entry.key;
+          final count = entry.value;
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: TopicTags.icon(topic),
-                  name: TopicTags.displayName(topic),
-                  description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
-                  count: count,
-                  onTap: () => _openTopic(context, topic, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: TopicTags.icon(topic),
+                name: TopicTags.displayName(topic),
+                description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
+                count: count,
+                onTap: () => _openTopic(context, topic, contentFilter),
               ),
-            );
-          },
-          childCount: sortedTopics.length,
-        ),
+            ),
+          );
+        }, childCount: sortedTopics.length),
       ),
     );
   }
@@ -383,18 +357,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       }
     }
 
-    final sortedTeachers = teacherCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTeachers = teacherCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     if (sortedTeachers.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Center(
-            child: Text(
-              'No teachers found for this filter',
-              style: TextStyle(color: colors.textMuted),
-            ),
+            child: Text('No teachers found for this filter', style: TextStyle(color: colors.textMuted)),
           ),
         ),
       );
@@ -403,34 +373,29 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = sortedTeachers[index];
-            final teacher = entry.key;
-            final count = entry.value;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedTeachers[index];
+          final teacher = entry.key;
+          final count = entry.value;
 
-            // Get lineage for this teacher (from first teaching)
-            final teachingsSample = TeachingRepository.byTeacher(teacher);
-            final lineage = teachingsSample.isNotEmpty
-                ? traditions[teachingsSample.first.lineage]?.name ?? ''
-                : '';
+          // Get lineage for this teacher (from first teaching)
+          final teachingsSample = TeachingRepository.byTeacher(teacher);
+          final lineage = teachingsSample.isNotEmpty ? traditions[teachingsSample.first.lineage]?.name ?? '' : '';
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: '🙏',
-                  name: teacher,
-                  description: lineage,
-                  count: count,
-                  onTap: () => _openTeacher(context, teacher, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: '🙏',
+                name: teacher,
+                description: lineage,
+                count: count,
+                onTap: () => _openTeacher(context, teacher, contentFilter),
               ),
-            );
-          },
-          childCount: sortedTeachers.length,
-        ),
+            ),
+          );
+        }, childCount: sortedTeachers.length),
       ),
     );
   }
@@ -463,26 +428,23 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final data = lineageData[index];
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final data = lineageData[index];
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: data.info.icon,
-                  name: data.info.name,
-                  description: data.info.description,
-                  count: data.count,
-                  onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: data.info.icon,
+                name: data.info.name,
+                description: data.info.description,
+                count: data.count,
+                onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
               ),
-            );
-          },
-          childCount: lineageData.length,
-        ),
+            ),
+          );
+        }, childCount: lineageData.length),
       ),
     );
   }
@@ -511,34 +473,30 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       }
     }
 
-    final sortedMoods = moodCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedMoods = moodCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = sortedMoods[index];
-            final mood = entry.key;
-            final count = entry.value;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedMoods[index];
+          final mood = entry.key;
+          final count = entry.value;
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: MoodTags.icon(mood),
-                  name: MoodTags.displayName(mood),
-                  description: 'Best for ${mood.toLowerCase()} moments',
-                  count: count,
-                  onTap: () => _openMood(context, mood, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: MoodTags.icon(mood),
+                name: MoodTags.displayName(mood),
+                description: 'Best for ${mood.toLowerCase()} moments',
+                count: count,
+                onTap: () => _openMood(context, mood, contentFilter),
               ),
-            );
-          },
-          childCount: sortedMoods.length,
-        ),
+            ),
+          );
+        }, childCount: sortedMoods.length),
       ),
     );
   }
@@ -576,10 +534,7 @@ class _BrowseModeDropdown extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onChanged;
 
-  const _BrowseModeDropdown({
-    required this.currentMode,
-    required this.onChanged,
-  });
+  const _BrowseModeDropdown({required this.currentMode, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -600,10 +555,7 @@ class _BrowseModeDropdown extends StatelessWidget {
               currentMode.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 4),
@@ -634,10 +586,7 @@ class _ContentTypeDropdown extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onChanged;
 
-  const _ContentTypeDropdown({
-    required this.currentFilter,
-    required this.onChanged,
-  });
+  const _ContentTypeDropdown({required this.currentFilter, required this.onChanged});
 
   String get _label {
     switch (currentFilter) {
@@ -680,10 +629,7 @@ class _ContentTypeDropdown extends StatelessWidget {
               _label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 4),
@@ -713,10 +659,7 @@ class _ContentTypeSheet extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onSelected;
 
-  const _ContentTypeSheet({
-    required this.currentFilter,
-    required this.onSelected,
-  });
+  const _ContentTypeSheet({required this.currentFilter, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -737,10 +680,7 @@ class _BrowseModeSheet extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onSelected;
 
-  const _BrowseModeSheet({
-    required this.currentMode,
-    required this.onSelected,
-  });
+  const _BrowseModeSheet({required this.currentMode, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -749,11 +689,7 @@ class _BrowseModeSheet extends StatelessWidget {
       currentValue: currentMode,
       onSelected: onSelected,
       options: LibraryBrowseMode.values
-          .map((mode) => FilterOption(
-                value: mode,
-                label: mode.label,
-                icon: mode.icon,
-              ))
+          .map((mode) => FilterOption(value: mode, label: mode.label, icon: mode.icon))
           .toList(),
     );
   }
@@ -796,13 +732,7 @@ class _BrowseCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
-                child: Text(
-                  icon,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: colors.accent,
-                  ),
-                ),
+                child: Text(icon, style: TextStyle(fontSize: 20, color: colors.accent)),
               ),
             ),
             const SizedBox(width: 14),
@@ -814,19 +744,12 @@ class _BrowseCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: 13, color: colors.textSecondary),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -840,17 +763,9 @@ class _BrowseCard extends StatelessWidget {
               children: [
                 Text(
                   '$count',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textMuted,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textMuted),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: colors.textMuted,
-                ),
+                Icon(Icons.arrow_forward_ios, size: 12, color: colors.textMuted),
               ],
             ),
           ],
@@ -864,10 +779,7 @@ class _FeaturedArticleCard extends StatelessWidget {
   final Article article;
   final VoidCallback onTap;
 
-  const _FeaturedArticleCard({
-    required this.article,
-    required this.onTap,
-  });
+  const _FeaturedArticleCard({required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -876,12 +788,13 @@ class _FeaturedArticleCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
+      label:
+          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
       child: GlassCard(
-          padding: const EdgeInsets.all(16),
-          borderRadius: 20,
-          onTap: onTap,
-          child: Column(
+        padding: const EdgeInsets.all(16),
+        borderRadius: 20,
+        onTap: onTap,
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Tradition + reading time row
@@ -893,19 +806,10 @@ class _FeaturedArticleCard extends StatelessWidget {
                     color: colors.accent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    traditionInfo.icon,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+                  child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  '${article.readingTimeMinutes} min read',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colors.textMuted,
-                  ),
-                ),
+                Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 12, color: colors.textMuted)),
               ],
             ),
             const SizedBox(height: 12),
@@ -913,11 +817,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             // Title
             Text(
               article.title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: colors.textPrimary,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -927,10 +827,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.subtitle != null)
               Text(
                 article.subtitle!,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 13, color: colors.textSecondary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -941,11 +838,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.teacher != null)
               Text(
                 article.teacher!,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.textMuted,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: TextStyle(fontSize: 12, color: colors.textMuted, fontStyle: FontStyle.italic),
               ),
           ],
         ),

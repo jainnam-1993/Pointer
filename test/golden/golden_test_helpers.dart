@@ -49,15 +49,12 @@ Future<void> setupGoldenTests() async {
 
   // Create and configure mock notification service
   _mockNotificationService = MockNotificationService();
-  when(() => _mockNotificationService.checkPermissions())
-      .thenAnswer((_) async => true);
+  when(() => _mockNotificationService.checkPermissions()).thenAnswer((_) async => true);
   when(() => _mockNotificationService.isNotificationsEnabled).thenReturn(false);
-  when(() => _mockNotificationService.getSchedule())
-      .thenReturn(const NotificationSchedule());
+  when(() => _mockNotificationService.getSchedule()).thenReturn(const NotificationSchedule());
 
   // Mock home_widget plugin to prevent MissingPluginException
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('home_widget'),
     (MethodCall methodCall) async {
       // Return null for all home_widget calls - they're no-ops in tests
@@ -66,8 +63,7 @@ Future<void> setupGoldenTests() async {
   );
 
   // Mock flutter_local_notifications plugin
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('dexterous.com/flutter/local_notifications'),
     (MethodCall methodCall) async {
       // Return appropriate values for notification plugin calls
@@ -122,30 +118,12 @@ ThemeData get goldenTestTheme {
         color: colors.textPrimary,
         letterSpacing: -0.5,
       ),
-      titleLarge: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: colors.textPrimary,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: colors.textPrimary,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: colors.textSecondary,
-      ),
-      labelSmall: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: colors.textMuted,
-        letterSpacing: 1,
-      ),
+      titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
+      bodyLarge: TextStyle(fontSize: 16, color: colors.textPrimary),
+      bodyMedium: TextStyle(fontSize: 14, color: colors.textSecondary),
+      labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
     ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
+    appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
   );
 }
 
@@ -160,8 +138,7 @@ Widget createGoldenTestApp({
   return ProviderScope(
     overrides: [
       if (prefs != null) sharedPreferencesProvider.overrideWithValue(prefs),
-      if (prefs != null)
-        storageServiceProvider.overrideWith((ref) => StorageService(prefs)),
+      if (prefs != null) storageServiceProvider.overrideWith((ref) => StorageService(prefs)),
       if (prefs != null)
         settingsProvider.overrideWith((ref) {
           final storage = StorageService(prefs);
@@ -201,11 +178,7 @@ Widget createGoldenTestApp({
           devicePixelRatio: 3.0,
           padding: const EdgeInsets.only(top: 47, bottom: 34), // Safe area
         ),
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: child,
-        ),
+        child: SizedBox(width: size.width, height: size.height, child: child),
       ),
     ),
   );
@@ -216,11 +189,7 @@ Widget createGoldenTestApp({
 /// This function sets up the test environment and pumps the widget.
 /// When using createGoldenTestApp(), the widget already has ProviderScope,
 /// so we don't add another one.
-Future<void> pumpForGolden(
-  WidgetTester tester,
-  Widget widget, {
-  Size size = GoldenDevices.iPhone14Pro,
-}) async {
+Future<void> pumpForGolden(WidgetTester tester, Widget widget, {Size size = GoldenDevices.iPhone14Pro}) async {
   // Set surface size
   tester.view.physicalSize = size * 3.0; // Account for pixel ratio
   tester.view.devicePixelRatio = 3.0;
@@ -244,24 +213,12 @@ Future<void> pumpForGolden(
 ///
 /// To update baselines:
 ///   flutter test --update-goldens test/golden/
-Future<void> expectGoldenMatches(
-  WidgetTester tester,
-  String goldenName, {
-  String? reason,
-}) async {
-  await expectLater(
-    find.byType(MaterialApp),
-    matchesGoldenFile('goldens/$goldenName.png'),
-    reason: reason,
-  );
+Future<void> expectGoldenMatches(WidgetTester tester, String goldenName, {String? reason}) async {
+  await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$goldenName.png'), reason: reason);
 }
 
 /// Test a screen at multiple device sizes
-Future<void> testScreenAtSizes(
-  WidgetTester tester,
-  String screenName,
-  Widget Function() screenBuilder,
-) async {
+Future<void> testScreenAtSizes(WidgetTester tester, String screenName, Widget Function() screenBuilder) async {
   final sizes = {
     'iphone14pro': GoldenDevices.iPhone14Pro,
     'iphonese': GoldenDevices.iPhoneSE,
@@ -274,10 +231,7 @@ Future<void> testScreenAtSizes(
 
     await pumpForGolden(
       tester,
-      createGoldenTestApp(
-        child: screenBuilder(),
-        size: size,
-      ),
+      createGoldenTestApp(child: screenBuilder(), size: size),
       size: size,
     );
 

@@ -18,13 +18,7 @@ class AppearanceSelector extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Theme',
-            style: TextStyle(
-              fontSize: 16,
-              color: context.colors.textPrimary,
-            ),
-          ),
+          Text('Theme', style: TextStyle(fontSize: 16, color: context.colors.textPrimary)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -81,21 +75,9 @@ class ZenModeToggle extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Zen Mode',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colors.textPrimary,
-                ),
-              ),
+              Text('Zen Mode', style: TextStyle(fontSize: 14, color: colors.textPrimary)),
               const SizedBox(height: 2),
-              Text(
-                'Minimal UI, just the pointing',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.textMuted,
-                ),
-              ),
+              Text('Minimal UI, just the pointing', style: TextStyle(fontSize: 12, color: colors.textMuted)),
             ],
           ),
         ),
@@ -133,21 +115,9 @@ class AnimationToggle extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Background Animation',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colors.textPrimary,
-                ),
-              ),
+              Text('Background Animation', style: TextStyle(fontSize: 14, color: colors.textPrimary)),
               const SizedBox(height: 2),
-              Text(
-                'Animated gradient and floating particles',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.textMuted,
-                ),
-              ),
+              Text('Animated gradient and floating particles', style: TextStyle(fontSize: 12, color: colors.textMuted)),
             ],
           ),
         ),
@@ -195,13 +165,9 @@ class ThemeOption extends StatelessWidget {
     // - Thicker border (2px selected vs 1px unselected)
     // - Stronger background fill
     // - High contrast border color
-    final borderColor = isSelected
-        ? accentColor
-        : colors.glassBorder;
+    final borderColor = isSelected ? accentColor : colors.glassBorder;
     final borderWidth = isSelected ? 2.0 : 1.0;
-    final bgColor = isSelected
-        ? accentColor.withValues(alpha: isDark ? 0.25 : 0.15)
-        : Colors.transparent;
+    final bgColor = isSelected ? accentColor.withValues(alpha: isDark ? 0.25 : 0.15) : Colors.transparent;
 
     return Expanded(
       child: Semantics(
@@ -227,11 +193,7 @@ class ThemeOption extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    Icon(
-                      icon,
-                      size: 24,
-                      color: isSelected ? accentColor : unselectedColor,
-                    ),
+                    Icon(icon, size: 24, color: isSelected ? accentColor : unselectedColor),
                     // Checkmark indicator in bottom-right corner
                     if (isSelected)
                       Positioned(
@@ -240,15 +202,8 @@ class ThemeOption extends StatelessWidget {
                         child: Container(
                           width: 14,
                           height: 14,
-                          decoration: BoxDecoration(
-                            color: accentColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            size: 10,
-                            color: Colors.white,
-                          ),
+                          decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
+                          child: const Icon(Icons.check, size: 10, color: Colors.white),
                         ),
                       ),
                   ],

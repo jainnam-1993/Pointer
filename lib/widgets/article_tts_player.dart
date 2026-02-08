@@ -11,11 +11,7 @@ class ArticleTTSPlayer extends ConsumerStatefulWidget {
   final String articleId;
   final VoidCallback? onClose;
 
-  const ArticleTTSPlayer({
-    super.key,
-    required this.articleId,
-    this.onClose,
-  });
+  const ArticleTTSPlayer({super.key, required this.articleId, this.onClose});
 
   @override
   ConsumerState<ArticleTTSPlayer> createState() => _ArticleTTSPlayerState();
@@ -35,8 +31,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
         final state = stateSnapshot.data ?? TTSPlaybackState.idle;
 
         // Don't show if not playing this article
-        if (_ttsService.currentArticleId != widget.articleId &&
-            state == TTSPlaybackState.idle) {
+        if (_ttsService.currentArticleId != widget.articleId && state == TTSPlaybackState.idle) {
           return const SizedBox.shrink();
         }
 
@@ -53,8 +48,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                     stream: _ttsService.durationStream,
                     builder: (context, durationSnapshot) {
                       final position = positionSnapshot.data ?? Duration.zero;
-                      final duration =
-                          durationSnapshot.data ?? const Duration(seconds: 1);
+                      final duration = durationSnapshot.data ?? const Duration(seconds: 1);
 
                       final progress = duration.inMilliseconds > 0
                           ? position.inMilliseconds / duration.inMilliseconds
@@ -66,22 +60,16 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               activeTrackColor: colors.accent,
-                              inactiveTrackColor:
-                                  colors.accent.withValues(alpha: 0.2),
+                              inactiveTrackColor: colors.accent.withValues(alpha: 0.2),
                               thumbColor: colors.accent,
                               overlayColor: colors.accent.withValues(alpha: 0.1),
                               trackHeight: 3,
-                              thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 6,
-                              ),
+                              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                             ),
                             child: Slider(
                               value: progress.clamp(0.0, 1.0),
                               onChanged: (value) {
-                                final newPosition = Duration(
-                                  milliseconds:
-                                      (value * duration.inMilliseconds).round(),
-                                );
+                                final newPosition = Duration(milliseconds: (value * duration.inMilliseconds).round());
                                 _ttsService.seek(newPosition);
                               },
                             ),
@@ -95,17 +83,11 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                               children: [
                                 Text(
                                   _formatDuration(position),
-                                  style: TextStyle(
-                                    color: colors.textMuted,
-                                    fontSize: 11,
-                                  ),
+                                  style: TextStyle(color: colors.textMuted, fontSize: 11),
                                 ),
                                 Text(
                                   _formatDuration(duration),
-                                  style: TextStyle(
-                                    color: colors.textMuted,
-                                    fontSize: 11,
-                                  ),
+                                  style: TextStyle(color: colors.textMuted, fontSize: 11),
                                 ),
                               ],
                             ),
@@ -144,8 +126,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
 
                           // Seek backward
                           IconButton(
-                            icon: Icon(Icons.replay_10,
-                                color: colors.textPrimary, size: 24),
+                            icon: Icon(Icons.replay_10, color: colors.textPrimary, size: 24),
                             onPressed: () => _ttsService.seekBackward(seconds: 10),
                             tooltip: 'Back 10s',
                           ),
@@ -163,8 +144,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
 
                           // Seek forward
                           IconButton(
-                            icon: Icon(Icons.forward_10,
-                                color: colors.textPrimary, size: 24),
+                            icon: Icon(Icons.forward_10, color: colors.textPrimary, size: 24),
                             onPressed: () => _ttsService.seekForward(seconds: 10),
                             tooltip: 'Forward 10s',
                           ),
@@ -173,8 +153,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
 
                           // Voice selection (placeholder)
                           IconButton(
-                            icon: Icon(Icons.record_voice_over,
-                                color: colors.textMuted, size: 20),
+                            icon: Icon(Icons.record_voice_over, color: colors.textMuted, size: 20),
                             onPressed: () => _showVoiceSelector(context),
                             tooltip: 'Voice',
                           ),
@@ -194,10 +173,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
                         errorSnapshot.data!,
-                        style: TextStyle(
-                          color: Colors.red.shade300,
-                          fontSize: 12,
-                        ),
+                        style: TextStyle(color: Colors.red.shade300, fontSize: 12),
                         textAlign: TextAlign.center,
                       ),
                     );
@@ -236,20 +212,13 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
           children: [
             Text(
               'Voice',
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             ...PollyVoice.values.map((voice) {
               final isSelected = _ttsService.selectedVoice == voice;
               return ListTile(
-                leading: Icon(
-                  Icons.record_voice_over,
-                  color: isSelected ? colors.accent : colors.textMuted,
-                ),
+                leading: Icon(Icons.record_voice_over, color: isSelected ? colors.accent : colors.textMuted),
                 title: Text(
                   voice.id,
                   style: TextStyle(
@@ -257,13 +226,8 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
-                subtitle: Text(
-                  voice.description,
-                  style: TextStyle(color: colors.textSecondary, fontSize: 13),
-                ),
-                trailing: isSelected
-                    ? Icon(Icons.check, color: colors.accent)
-                    : null,
+                subtitle: Text(voice.description, style: TextStyle(color: colors.textSecondary, fontSize: 13)),
+                trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                 onTap: () {
                   _ttsService.setVoice(voice);
                   Navigator.pop(context);
@@ -283,11 +247,7 @@ class _PlayPauseButton extends StatelessWidget {
   final VoidCallback onPlay;
   final VoidCallback onPause;
 
-  const _PlayPauseButton({
-    required this.state,
-    required this.onPlay,
-    required this.onPause,
-  });
+  const _PlayPauseButton({required this.state, required this.onPlay, required this.onPause});
 
   @override
   Widget build(BuildContext context) {
@@ -297,16 +257,10 @@ class _PlayPauseButton extends StatelessWidget {
       return Container(
         width: 52,
         height: 52,
-        decoration: BoxDecoration(
-          color: colors.accent.withValues(alpha: 0.2),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.2), shape: BoxShape.circle),
         child: Padding(
           padding: const EdgeInsets.all(14),
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation(colors.accent),
-          ),
+          child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(colors.accent)),
         ),
       );
     }
@@ -323,11 +277,7 @@ class _PlayPauseButton extends StatelessWidget {
           width: 52,
           height: 52,
           decoration: const BoxDecoration(shape: BoxShape.circle),
-          child: Icon(
-            isPlaying ? Icons.pause : Icons.play_arrow,
-            color: Colors.white,
-            size: 28,
-          ),
+          child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 28),
         ),
       ),
     );

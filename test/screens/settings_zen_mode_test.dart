@@ -47,9 +47,7 @@ Widget wrapWithProviderScope(Widget child, {bool initialZenMode = false}) {
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       zenModeProvider.overrideWith((ref) => initialZenMode),
       donationServiceProvider.overrideWithValue(_mockDonationService),
-      donationProvider.overrideWith(
-        (ref) => _TestDonationNotifier(_mockDonationService),
-      ),
+      donationProvider.overrideWith((ref) => _TestDonationNotifier(_mockDonationService)),
     ],
     child: child,
   );
@@ -57,9 +55,7 @@ Widget wrapWithProviderScope(Widget child, {bool initialZenMode = false}) {
 
 void main() {
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({
-      'pointer_onboarding_completed': true,
-    });
+    SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
   });
 
@@ -75,9 +71,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: SettingsScreen(),
-            ),
+            home: const Scaffold(body: SettingsScreen()),
           ),
         ),
       );
@@ -85,11 +79,7 @@ void main() {
 
       // Scroll to find the Zen Mode toggle
       final scrollable = find.byType(Scrollable).first;
-      await tester.scrollUntilVisible(
-        find.text('Zen Mode'),
-        100,
-        scrollable: scrollable,
-      );
+      await tester.scrollUntilVisible(find.text('Zen Mode'), 100, scrollable: scrollable);
       await tester.pumpAndSettle();
 
       expect(find.text('Zen Mode'), findsOneWidget);
@@ -107,9 +97,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: SettingsScreen(),
-            ),
+            home: const Scaffold(body: SettingsScreen()),
           ),
           initialZenMode: false,
         ),
@@ -118,11 +106,7 @@ void main() {
 
       // Find the Zen Mode switch
       final scrollable = find.byType(Scrollable).first;
-      await tester.scrollUntilVisible(
-        find.text('Zen Mode'),
-        100,
-        scrollable: scrollable,
-      );
+      await tester.scrollUntilVisible(find.text('Zen Mode'), 100, scrollable: scrollable);
       await tester.pumpAndSettle();
 
       // Find the Switch associated with Zen Mode by looking for Switches
@@ -142,9 +126,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: SettingsScreen(),
-            ),
+            home: const Scaffold(body: SettingsScreen()),
           ),
           initialZenMode: false,
         ),
@@ -153,23 +135,13 @@ void main() {
 
       // Scroll to find the Zen Mode toggle
       final scrollable = find.byType(Scrollable).first;
-      await tester.scrollUntilVisible(
-        find.text('Zen Mode'),
-        100,
-        scrollable: scrollable,
-      );
+      await tester.scrollUntilVisible(find.text('Zen Mode'), 100, scrollable: scrollable);
       await tester.pumpAndSettle();
 
       // Find the row containing Zen Mode text and tap its switch
-      final zenModeRow = find.ancestor(
-        of: find.text('Zen Mode'),
-        matching: find.byType(Row),
-      ).first;
+      final zenModeRow = find.ancestor(of: find.text('Zen Mode'), matching: find.byType(Row)).first;
 
-      final zenModeSwitch = find.descendant(
-        of: zenModeRow,
-        matching: find.byType(Switch),
-      );
+      final zenModeSwitch = find.descendant(of: zenModeRow, matching: find.byType(Switch));
 
       expect(zenModeSwitch, findsOneWidget);
 

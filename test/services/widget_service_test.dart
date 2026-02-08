@@ -27,10 +27,7 @@ void main() {
 
   group('WidgetPointing', () {
     test('creates with required fields', () {
-      const pointing = WidgetPointing(
-        content: 'Test content',
-        tradition: 'Zen',
-      );
+      const pointing = WidgetPointing(content: 'Test content', tradition: 'Zen');
 
       expect(pointing.content, 'Test content');
       expect(pointing.tradition, 'Zen');
@@ -54,11 +51,7 @@ void main() {
     });
 
     test('teacher can be empty string', () {
-      const pointing = WidgetPointing(
-        content: 'Test content',
-        teacher: '',
-        tradition: 'Zen',
-      );
+      const pointing = WidgetPointing(content: 'Test content', teacher: '', tradition: 'Zen');
 
       expect(pointing.teacher, '');
     });
@@ -71,18 +64,8 @@ void main() {
     test('pointings cache stores correct structure', () {
       // Verify the expected JSON format for widget pointings
       final testPointings = [
-        {
-          'id': 'test1',
-          'content': 'Test content 1',
-          'tradition': 'Zen',
-          'teacher': 'Teacher 1',
-        },
-        {
-          'id': 'test2',
-          'content': 'Test content 2',
-          'tradition': 'Advaita',
-          'teacher': '',
-        },
+        {'id': 'test1', 'content': 'Test content 1', 'tradition': 'Zen', 'teacher': 'Teacher 1'},
+        {'id': 'test2', 'content': 'Test content 2', 'tradition': 'Advaita', 'teacher': ''},
       ];
 
       final jsonString = jsonEncode(testPointings);
@@ -157,9 +140,7 @@ void main() {
           interleaved.add(favorites[favIndex]);
           favIndex++;
         }
-        for (int i = 0;
-            i < othersBetweenFavorites && otherIndex < others.length;
-            i++) {
+        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
           interleaved.add(others[otherIndex]);
           otherIndex++;
         }
@@ -187,9 +168,7 @@ void main() {
           interleaved.add(favorites[favIndex]);
           favIndex++;
         }
-        for (int i = 0;
-            i < othersBetweenFavorites && otherIndex < others.length;
-            i++) {
+        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
           interleaved.add(others[otherIndex]);
           otherIndex++;
         }
@@ -212,9 +191,7 @@ void main() {
           interleaved.add(favorites[favIndex]);
           favIndex++;
         }
-        for (int i = 0;
-            i < othersBetweenFavorites && otherIndex < others.length;
-            i++) {
+        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
           interleaved.add(others[otherIndex]);
           otherIndex++;
         }

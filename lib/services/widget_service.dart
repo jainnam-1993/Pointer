@@ -120,9 +120,7 @@ class WidgetService {
       // Load favorites list first
       final prefs = await SharedPreferences.getInstance();
       final stored = prefs.getString('pointer_favorites');
-      final favoriteIds = stored != null
-          ? Set<String>.from(jsonDecode(stored))
-          : <String>{};
+      final favoriteIds = stored != null ? Set<String>.from(jsonDecode(stored)) : <String>{};
 
       // Separate favorites from non-favorites
       final favoritePointings = <Pointing>[];
@@ -175,11 +173,10 @@ class WidgetService {
 
       // Save as JSON string
       final jsonString = jsonEncode(pointingsJson);
-      debugPrint('[WidgetService] Saving ${pointingsJson.length} pointings to widget cache (${jsonString.length} bytes)');
-      await HomeWidget.saveWidgetData<String>(
-        _WidgetKeys.pointingsCache,
-        jsonString,
+      debugPrint(
+        '[WidgetService] Saving ${pointingsJson.length} pointings to widget cache (${jsonString.length} bytes)',
       );
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.pointingsCache, jsonString);
 
       // Verify the data was saved correctly
       final verifyData = await HomeWidget.getWidgetData<String>(_WidgetKeys.pointingsCache);
@@ -189,8 +186,10 @@ class WidgetService {
         debugPrint('[WidgetService] ERROR: Failed to verify cache save - data is null!');
       }
 
-      debugPrint('[WidgetService] Widget cache populated: ${favoritePointings.length} favorites, '
-          '${otherPointings.length} others, ${interleavedList.length} total');
+      debugPrint(
+        '[WidgetService] Widget cache populated: ${favoritePointings.length} favorites, '
+        '${otherPointings.length} others, ${interleavedList.length} total',
+      );
 
       // Also sync favorites from SharedPreferences
       await _syncFavoritesFromStorage();
@@ -211,14 +210,9 @@ class WidgetService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final stored = prefs.getString('pointer_favorites');
-      final favorites = stored != null
-          ? List<String>.from(jsonDecode(stored))
-          : <String>[];
+      final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
-      await HomeWidget.saveWidgetData<String>(
-        _WidgetKeys.favorites,
-        jsonEncode(favorites),
-      );
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.favorites, jsonEncode(favorites));
 
       debugPrint('Widget favorites synced: ${favorites.length} items');
     } catch (e) {
@@ -287,10 +281,7 @@ class WidgetService {
   /// the widget's refresh interval accordingly.
   static Future<void> syncScheduleWithNotifications(int intervalHours) async {
     try {
-      await HomeWidget.saveWidgetData<int>(
-        _WidgetKeys.updateIntervalHours,
-        intervalHours,
-      );
+      await HomeWidget.saveWidgetData<int>(_WidgetKeys.updateIntervalHours, intervalHours);
 
       // Force a widget refresh to apply new schedule
       await HomeWidget.updateWidget(
@@ -361,9 +352,7 @@ class WidgetService {
       final prefs = await SharedPreferences.getInstance();
       const favoritesKey = 'pointer_favorites';
       final stored = prefs.getString(favoritesKey);
-      final favorites = stored != null
-          ? List<String>.from(jsonDecode(stored))
-          : <String>[];
+      final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
       if (!favorites.contains(pointing.id)) {
         favorites.add(pointing.id);
@@ -406,10 +395,7 @@ class WidgetService {
 
       // Save favorites as JSON array
       final jsonString = jsonEncode(favoriteIds.toList());
-      await HomeWidget.saveWidgetData<String>(
-        _WidgetKeys.favorites,
-        jsonString,
-      );
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.favorites, jsonString);
 
       debugPrint('Widget favorites updated: ${favoriteIds.length} items');
 
@@ -432,12 +418,7 @@ class WidgetPointing {
   final String tradition;
   final DateTime? lastUpdated;
 
-  const WidgetPointing({
-    required this.content,
-    this.teacher,
-    required this.tradition,
-    this.lastUpdated,
-  });
+  const WidgetPointing({required this.content, this.teacher, required this.tradition, this.lastUpdated});
 }
 
 /// Background callback for widget interactions
@@ -493,9 +474,7 @@ Future<void> _saveCurrentWidgetPointing() async {
     final prefs = await SharedPreferences.getInstance();
     final favoritesKey = 'pointer_favorites';
     final stored = prefs.getString(favoritesKey);
-    final favorites = stored != null
-        ? List<String>.from(jsonDecode(stored))
-        : <String>[];
+    final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
     if (!favorites.contains(pointing.id)) {
       favorites.add(pointing.id);

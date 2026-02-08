@@ -49,9 +49,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
           builder: (context, setSheetState) {
             // Responsive height based on available space (accounts for safe areas/orientation)
             final mediaQuery = MediaQuery.of(context);
-            final availableHeight = mediaQuery.size.height -
-                mediaQuery.viewPadding.top -
-                mediaQuery.viewPadding.bottom;
+            final availableHeight = mediaQuery.size.height - mediaQuery.viewPadding.top - mediaQuery.viewPadding.bottom;
             final isLandscape = mediaQuery.orientation == Orientation.landscape;
             // In landscape: use 55% of available height, portrait: 40%
             // Clamp to reasonable bounds for each orientation
@@ -99,7 +97,10 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                 });
                                 await _saveSchedule();
                               },
-                              child: Text('Done', style: TextStyle(color: context.colors.accent, fontWeight: FontWeight.w600)),
+                              child: Text(
+                                'Done',
+                                style: TextStyle(color: context.colors.accent, fontWeight: FontWeight.w600),
+                              ),
                             ),
                           ],
                         ),
@@ -122,10 +123,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                   return Center(
                                     child: Text(
                                       '$displayHour $period',
-                                      style: TextStyle(
-                                        color: isDark ? Colors.white : Colors.black,
-                                        fontSize: 20,
-                                      ),
+                                      style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
                                     ),
                                   );
                                 }),
@@ -143,10 +141,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                   return Center(
                                     child: Text(
                                       index.toString().padLeft(2, '0'),
-                                      style: TextStyle(
-                                        color: isDark ? Colors.white : Colors.black,
-                                        fontSize: 20,
-                                      ),
+                                      style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
                                     ),
                                   );
                                 }),
@@ -189,9 +184,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     final mutedColor = colors.textSecondary;
 
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-      ),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(
@@ -204,149 +197,147 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    top: 24,
-                    bottom: bottomPadding + 24,
-                  ),
+                  padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: bottomPadding + 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text(
-                    'Notification Schedule',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _schedule.summary,
-                    style: TextStyle(color: mutedColor, fontSize: 14),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Quick Presets (Phase 5.3)
-                  Text('Quick Presets', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: NotificationPreset.values
-                        .where((preset) => widget.showTestPreset || preset != NotificationPreset.testEveryMinute)
-                        .map((preset) {
-                      final isSelected = _matchesPreset(preset);
-                      return ChoiceChip(
-                        label: Text(preset.label),
-                        selected: isSelected,
-                        onSelected: (_) => _applyPreset(preset),
-                        selectedColor: context.colors.accent.withValues(alpha: 0.3),
-                        labelStyle: TextStyle(
-                          color: isSelected ? context.colors.accent : textColor,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        ),
-                        side: BorderSide(
-                          color: isSelected ? context.colors.accent : context.colors.glassBorder,
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Time Window
-                  Text('Time Window', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(16),
-                          onTap: () => _pickTime(true),
-                          child: Column(
-                            children: [
-                              Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
-                              const SizedBox(height: 4),
-                              Text(
-                                NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
-                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
+                      Text(
+                        'Notification Schedule',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(16),
-                          onTap: () => _pickTime(false),
-                          child: Column(
-                            children: [
-                              Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
-                              const SizedBox(height: 4),
-                              Text(
-                                NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
-                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 8),
+                      Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
+                      const SizedBox(height: 20),
 
-                  // Frequency
-                  Text('Frequency', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _frequencyOptions.map((minutes) {
-                      final isSelected = _schedule.frequencyMinutes == minutes;
-                      return GestureDetector(
-                        onTap: () async {
-                          setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
-                          await _saveSchedule();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected
-                                  ? colors.primary
-                                  : colors.glassBorder,
+                      // Quick Presets (Phase 5.3)
+                      Text(
+                        'Quick Presets',
+                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: NotificationPreset.values
+                            .where((preset) => widget.showTestPreset || preset != NotificationPreset.testEveryMinute)
+                            .map((preset) {
+                              final isSelected = _matchesPreset(preset);
+                              return ChoiceChip(
+                                label: Text(preset.label),
+                                selected: isSelected,
+                                onSelected: (_) => _applyPreset(preset),
+                                selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                                labelStyle: TextStyle(
+                                  color: isSelected ? context.colors.accent : textColor,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                ),
+                                side: BorderSide(
+                                  color: isSelected ? context.colors.accent : context.colors.glassBorder,
+                                ),
+                              );
+                            })
+                            .toList(),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Time Window
+                      Text(
+                        'Time Window',
+                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GlassCard(
+                              padding: const EdgeInsets.all(16),
+                              onTap: () => _pickTime(true),
+                              child: Column(
+                                children: [
+                                  Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
+                                    style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          child: Text(
-                            minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
-                            style: TextStyle(
-                              color: isSelected ? textColor : mutedColor,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GlassCard(
+                              padding: const EdgeInsets.all(16),
+                              onTap: () => _pickTime(false),
+                              child: Column(
+                                children: [
+                                  Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
+                                    style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Frequency
+                      Text(
+                        'Frequency',
+                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _frequencyOptions.map((minutes) {
+                          final isSelected = _schedule.frequencyMinutes == minutes;
+                          return GestureDetector(
+                            onTap: () async {
+                              setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
+                              await _saveSchedule();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                              ),
+                              child: Text(
+                                minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
+                                style: TextStyle(
+                                  color: isSelected ? textColor : mutedColor,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Close button
+                      SizedBox(
+                        width: double.infinity,
+                        child: GlassCard(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Center(
+                            child: Text(
+                              'Done',
+                              style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Close button
-                  SizedBox(
-                    width: double.infinity,
-                    child: GlassCard(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Center(
-                        child: Text(
-                          'Done',
-                          style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
                       ),
-                    ),
-                  ),
                     ],
                   ),
                 ),

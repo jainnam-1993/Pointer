@@ -3,14 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
 /// Audio playback state
-enum AudioPlaybackState {
-  idle,
-  loading,
-  playing,
-  paused,
-  completed,
-  error,
-}
+enum AudioPlaybackState { idle, loading, playing, paused, completed, error }
 
 /// Service for playing audio pointings (guided readings, teachings).
 ///
@@ -50,8 +43,7 @@ class AudioPointingService {
   /// Current playback state
   AudioPlaybackState get currentState {
     if (_player == null) return AudioPlaybackState.idle;
-    if (_player!.processingState == ProcessingState.loading ||
-        _player!.processingState == ProcessingState.buffering) {
+    if (_player!.processingState == ProcessingState.loading || _player!.processingState == ProcessingState.buffering) {
       return AudioPlaybackState.loading;
     }
     if (_player!.playing) return AudioPlaybackState.playing;

@@ -17,11 +17,7 @@ import '../theme/app_theme.dart';
 /// - App-level override (reduceMotionOverrideProvider)
 /// - [disableAnimations] flag for testing
 class InquiryVisual extends ConsumerWidget {
-  const InquiryVisual({
-    super.key,
-    this.size = 120,
-    this.color,
-  });
+  const InquiryVisual({super.key, this.size = 120, this.color});
 
   /// Size of the visual element
   final double size;
@@ -64,17 +60,8 @@ class InquiryVisual extends ConsumerWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: visualColor.withValues(alpha: 0.15),
-            border: Border.all(
-              color: visualColor.withValues(alpha: 0.4),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: glowColor,
-                blurRadius: 20,
-                spreadRadius: 5,
-              ),
-            ],
+            border: Border.all(color: visualColor.withValues(alpha: 0.4), width: 2),
+            boxShadow: [BoxShadow(color: glowColor, blurRadius: 20, spreadRadius: 5)],
           ),
         ),
       ),
@@ -90,19 +77,14 @@ class InquiryVisual extends ConsumerWidget {
         children: [
           // Outer glow ring - slow pulse
           Container(
-            width: size * 0.8,
-            height: size * 0.8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: visualColor.withValues(alpha: 0.1),
-                width: 1,
-              ),
-            ),
-          )
-              .animate(
-                onPlay: (controller) => controller.repeat(reverse: true),
+                width: size * 0.8,
+                height: size * 0.8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: visualColor.withValues(alpha: 0.1), width: 1),
+                ),
               )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
               .scale(
                 begin: const Offset(0.9, 0.9),
                 end: const Offset(1.1, 1.1),
@@ -113,19 +95,14 @@ class InquiryVisual extends ConsumerWidget {
 
           // Middle ring
           Container(
-            width: size * 0.6,
-            height: size * 0.6,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: visualColor.withValues(alpha: 0.2),
-                width: 1.5,
-              ),
-            ),
-          )
-              .animate(
-                onPlay: (controller) => controller.repeat(reverse: true),
+                width: size * 0.6,
+                height: size * 0.6,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: visualColor.withValues(alpha: 0.2), width: 1.5),
+                ),
               )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
               .scale(
                 begin: const Offset(0.95, 0.95),
                 end: const Offset(1.05, 1.05),
@@ -136,27 +113,16 @@ class InquiryVisual extends ConsumerWidget {
 
           // Inner breathing circle
           Container(
-            width: size * 0.4,
-            height: size * 0.4,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: visualColor.withValues(alpha: 0.12),
-              border: Border.all(
-                color: visualColor.withValues(alpha: 0.35),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: glowColor,
-                  blurRadius: 25,
-                  spreadRadius: 8,
+                width: size * 0.4,
+                height: size * 0.4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: visualColor.withValues(alpha: 0.12),
+                  border: Border.all(color: visualColor.withValues(alpha: 0.35), width: 2),
+                  boxShadow: [BoxShadow(color: glowColor, blurRadius: 25, spreadRadius: 8)],
                 ),
-              ],
-            ),
-          )
-              .animate(
-                onPlay: (controller) => controller.repeat(reverse: true),
               )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
               .scale(
                 begin: const Offset(0.85, 0.85),
                 end: const Offset(1.15, 1.15),
@@ -167,22 +133,12 @@ class InquiryVisual extends ConsumerWidget {
 
           // Center dot
           Container(
-            width: size * 0.08,
-            height: size * 0.08,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: visualColor.withValues(alpha: 0.6),
-            ),
-          )
-              .animate(
-                onPlay: (controller) => controller.repeat(reverse: true),
+                width: size * 0.08,
+                height: size * 0.08,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: visualColor.withValues(alpha: 0.6)),
               )
-              .fade(
-                begin: 0.4,
-                end: 0.8,
-                duration: 2500.ms,
-                curve: Curves.easeInOut,
-              ),
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .fade(begin: 0.4, end: 0.8, duration: 2500.ms, curve: Curves.easeInOut),
         ],
       ),
     );

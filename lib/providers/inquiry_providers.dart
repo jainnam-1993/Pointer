@@ -12,10 +12,7 @@ final inquirySelectorProvider = Provider.family<Inquiry, InquiryFilter?>((ref, f
     return getRandomInquiry();
   }
 
-  return getRandomInquiry(
-    type: filter.type,
-    tradition: filter.tradition,
-  );
+  return getRandomInquiry(type: filter.type, tradition: filter.tradition);
 });
 
 /// Filter options for inquiry selection
@@ -28,10 +25,7 @@ class InquiryFilter {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is InquiryFilter &&
-          runtimeType == other.runtimeType &&
-          type == other.type &&
-          tradition == other.tradition;
+      other is InquiryFilter && runtimeType == other.runtimeType && type == other.type && tradition == other.tradition;
 
   @override
   int get hashCode => type.hashCode ^ tradition.hashCode;

@@ -32,8 +32,7 @@ final usageTrackingServiceProvider = Provider<UsageTrackingService>((ref) {
 });
 
 /// Daily usage state provider
-final dailyUsageProvider =
-    StateNotifierProvider<DailyUsageNotifier, DailyUsage>((ref) {
+final dailyUsageProvider = StateNotifierProvider<DailyUsageNotifier, DailyUsage>((ref) {
   final service = ref.watch(usageTrackingServiceProvider);
   return DailyUsageNotifier(service);
 });
@@ -72,25 +71,13 @@ class SubscriptionState {
   final bool isLoading;
   final String? error;
 
-  const SubscriptionState({
-    this.tier = SubscriptionTier.premium,
-    this.isLoading = false,
-    this.error,
-  });
+  const SubscriptionState({this.tier = SubscriptionTier.premium, this.isLoading = false, this.error});
 
   bool get isPremium => true; // Always premium
   List<SubscriptionProduct> get products => const []; // No products
 
-  SubscriptionState copyWith({
-    SubscriptionTier? tier,
-    bool? isLoading,
-    String? error,
-  }) {
-    return SubscriptionState(
-      tier: tier ?? this.tier,
-      isLoading: isLoading ?? this.isLoading,
-      error: error,
-    );
+  SubscriptionState copyWith({SubscriptionTier? tier, bool? isLoading, String? error}) {
+    return SubscriptionState(tier: tier ?? this.tier, isLoading: isLoading ?? this.isLoading, error: error);
   }
 }
 
@@ -101,12 +88,7 @@ class SubscriptionProduct {
   final String price;
   final dynamic package; // RevenueCat Package type
 
-  const SubscriptionProduct({
-    required this.identifier,
-    required this.title,
-    required this.price,
-    this.package,
-  });
+  const SubscriptionProduct({required this.identifier, required this.title, required this.price, this.package});
 }
 
 /// Stub purchase result (API compatibility)
@@ -115,11 +97,7 @@ class PurchaseResult {
   final bool isCancelled;
   final String? error;
 
-  const PurchaseResult({
-    this.success = true,
-    this.isCancelled = false,
-    this.error,
-  });
+  const PurchaseResult({this.success = true, this.isCancelled = false, this.error});
 }
 
 /// Stub restore result (API compatibility)
@@ -128,24 +106,18 @@ class RestoreResult {
   final bool hasPremium;
   final String? error;
 
-  const RestoreResult({
-    this.success = true,
-    this.hasPremium = true,
-    this.error,
-  });
+  const RestoreResult({this.success = true, this.hasPremium = true, this.error});
 }
 
 /// Subscription provider (always premium)
-final subscriptionProvider =
-    StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
+final subscriptionProvider = StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return SubscriptionNotifier(storage);
 });
 
 /// Subscription notifier (stub - all features free)
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
-  SubscriptionNotifier(StorageService storage)
-      : super(const SubscriptionState()) {
+  SubscriptionNotifier(StorageService storage) : super(const SubscriptionState()) {
     _initialize();
   }
 

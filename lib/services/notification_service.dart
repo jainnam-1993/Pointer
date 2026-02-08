@@ -14,19 +14,9 @@ class NotificationTime {
   final int minute;
   final bool isEnabled;
 
-  const NotificationTime({
-    required this.id,
-    required this.hour,
-    required this.minute,
-    this.isEnabled = true,
-  });
+  const NotificationTime({required this.id, required this.hour, required this.minute, this.isEnabled = true});
 
-  NotificationTime copyWith({
-    String? id,
-    int? hour,
-    int? minute,
-    bool? isEnabled,
-  }) {
+  NotificationTime copyWith({String? id, int? hour, int? minute, bool? isEnabled}) {
     return NotificationTime(
       id: id ?? this.id,
       hour: hour ?? this.hour,
@@ -35,12 +25,7 @@ class NotificationTime {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'hour': hour,
-        'minute': minute,
-        'isEnabled': isEnabled,
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'hour': hour, 'minute': minute, 'isEnabled': isEnabled};
 
   factory NotificationTime.fromJson(Map<String, dynamic> json) {
     return NotificationTime(
@@ -101,7 +86,14 @@ enum NotificationPreset {
       case NotificationPreset.minimal:
         return const NotificationSchedule(startHour: 8, endHour: 20, frequencyMinutes: 360);
       case NotificationPreset.testEveryMinute:
-        return const NotificationSchedule(startHour: 0, endHour: 23, endMinute: 59, frequencyMinutes: 1, quietStartHour: 24, quietEndHour: 24);
+        return const NotificationSchedule(
+          startHour: 0,
+          endHour: 23,
+          endMinute: 59,
+          frequencyMinutes: 1,
+          quietStartHour: 24,
+          quietEndHour: 24,
+        );
     }
   }
 }
@@ -189,8 +181,7 @@ class NotificationSchedule {
 
   factory NotificationSchedule.fromJson(Map<String, dynamic> json) {
     // Backward compatibility: convert old frequencyHours to minutes
-    final frequencyMinutes = json['frequencyMinutes'] ??
-        ((json['frequencyHours'] as int? ?? 3) * 60);
+    final frequencyMinutes = json['frequencyMinutes'] ?? ((json['frequencyHours'] as int? ?? 3) * 60);
 
     return NotificationSchedule(
       startHour: json['startHour'] ?? 8,
@@ -243,7 +234,7 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications;
 
   NotificationService(this._prefs, [FlutterLocalNotificationsPlugin? plugin])
-      : _localNotifications = plugin ?? FlutterLocalNotificationsPlugin();
+    : _localNotifications = plugin ?? FlutterLocalNotificationsPlugin();
 
   /// Android notification channel with custom chime sound.
   ///
@@ -255,8 +246,8 @@ class NotificationService {
     'pointings_v6',
     'Daily Pointings',
     description: 'Gentle reminders for your daily pointing',
-    importance: Importance.max,  // Try MAX importance
-    enableVibration: true,  // Enable vibration to trigger audio
+    importance: Importance.max, // Try MAX importance
+    enableVibration: true, // Enable vibration to trigger audio
     playSound: true,
     sound: RawResourceAndroidNotificationSound('bell_chime'),
   );
@@ -288,18 +279,8 @@ class NotificationService {
     sound: RawResourceAndroidNotificationSound('bell_chime'),
     styleInformation: BigTextStyleInformation(''),
     actions: <AndroidNotificationAction>[
-      AndroidNotificationAction(
-        'save',
-        'Save',
-        showsUserInterface: false,
-        cancelNotification: false,
-      ),
-      AndroidNotificationAction(
-        'another',
-        'Another',
-        showsUserInterface: false,
-        cancelNotification: true,
-      ),
+      AndroidNotificationAction('save', 'Save', showsUserInterface: false, cancelNotification: false),
+      AndroidNotificationAction('another', 'Another', showsUserInterface: false, cancelNotification: true),
     ],
   );
 
@@ -314,8 +295,7 @@ class NotificationService {
   // ============================================================
 
   /// Whether notifications are enabled.
-  bool get isNotificationsEnabled =>
-      _prefs.getBool(_NotificationStorageKeys.notificationsEnabled) ?? false;
+  bool get isNotificationsEnabled => _prefs.getBool(_NotificationStorageKeys.notificationsEnabled) ?? false;
 
   /// Enable or disable notifications.
   Future<void> setNotificationsEnabled(bool enabled) async {
@@ -336,50 +316,37 @@ class NotificationService {
   Future<void> cachePointingsForBackground() async {
     // Group pointings by time context for smart selection
     final morningPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.morning) ||
-                      p.contexts.contains(PointingContext.general))
+        .where((p) => p.contexts.contains(PointingContext.morning) || p.contexts.contains(PointingContext.general))
         .take(20)
         .toList();
 
     final middayPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.midday) ||
-                      p.contexts.contains(PointingContext.general))
+        .where((p) => p.contexts.contains(PointingContext.midday) || p.contexts.contains(PointingContext.general))
         .take(20)
         .toList();
 
     final eveningPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.evening) ||
-                      p.contexts.contains(PointingContext.general))
+        .where((p) => p.contexts.contains(PointingContext.evening) || p.contexts.contains(PointingContext.general))
         .take(20)
         .toList();
 
     // Serialize for background access
     final cache = {
-      'morning': morningPointings.map((p) => {
-        'id': p.id,
-        'content': p.content,
-        'tradition': p.tradition.name,
-        'teacher': p.teacher,
-      }).toList(),
-      'midday': middayPointings.map((p) => {
-        'id': p.id,
-        'content': p.content,
-        'tradition': p.tradition.name,
-        'teacher': p.teacher,
-      }).toList(),
-      'evening': eveningPointings.map((p) => {
-        'id': p.id,
-        'content': p.content,
-        'tradition': p.tradition.name,
-        'teacher': p.teacher,
-      }).toList(),
+      'morning': morningPointings
+          .map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher})
+          .toList(),
+      'midday': middayPointings
+          .map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher})
+          .toList(),
+      'evening': eveningPointings
+          .map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher})
+          .toList(),
     };
 
-    await _prefs.setString(
-      _NotificationStorageKeys.pointingsCache,
-      jsonEncode(cache),
+    await _prefs.setString(_NotificationStorageKeys.pointingsCache, jsonEncode(cache));
+    debugPrint(
+      '[NotificationService] Cached ${morningPointings.length + middayPointings.length + eveningPointings.length} pointings for background',
     );
-    debugPrint('[NotificationService] Cached ${morningPointings.length + middayPointings.length + eveningPointings.length} pointings for background');
   }
 
   /// Get configured notification times.
@@ -387,9 +354,7 @@ class NotificationService {
     final stored = _prefs.getString(_NotificationStorageKeys.notificationTimes);
     if (stored == null) return [];
     final List<dynamic> decoded = jsonDecode(stored);
-    return decoded
-        .map((e) => NotificationTime.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return decoded.map((e) => NotificationTime.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   /// Save notification times configuration (legacy).
@@ -429,9 +394,7 @@ class NotificationService {
     void Function(NotificationResponse)? onBackgroundNotificationResponse,
   }) async {
     // Use dedicated notification icon (white-only for Android status bar)
-    const initSettingsAndroid = AndroidInitializationSettings(
-      '@drawable/ic_notification',
-    );
+    const initSettingsAndroid = AndroidInitializationSettings('@drawable/ic_notification');
 
     const initSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -445,10 +408,7 @@ class NotificationService {
       defaultPresentList: true,
     );
 
-    const initSettings = InitializationSettings(
-      android: initSettingsAndroid,
-      iOS: initSettingsIOS,
-    );
+    const initSettings = InitializationSettings(android: initSettingsAndroid, iOS: initSettingsIOS);
 
     await _localNotifications.initialize(
       initSettings,
@@ -463,8 +423,7 @@ class NotificationService {
   /// Configure the Android notification channel.
   Future<void> _configureAndroidChannel() async {
     final androidPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
     await androidPlugin?.createNotificationChannel(androidChannel);
   }
@@ -472,9 +431,7 @@ class NotificationService {
   /// Request notification permissions from the user.
   Future<bool> requestPermissions() async {
     // iOS permissions
-    final iosPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>();
+    final iosPlugin = _localNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
     final iosGranted = await iosPlugin?.requestPermissions(
       alert: true,
@@ -484,8 +441,7 @@ class NotificationService {
 
     // Android 13+ permissions
     final androidPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
     final androidGranted = await androidPlugin?.requestNotificationsPermission();
 
@@ -499,17 +455,14 @@ class NotificationService {
   Future<bool> checkPermissions() async {
     try {
       // iOS: check current permission status
-      final iosPlugin = _localNotifications
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>();
+      final iosPlugin = _localNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
       final iosSettings = await iosPlugin?.checkPermissions();
       final iosGranted = iosSettings?.isEnabled ?? true;
 
       // Android: check if notifications are enabled
       final androidPlugin = _localNotifications
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
       final androidGranted = await androidPlugin?.areNotificationsEnabled() ?? true;
 
@@ -535,7 +488,9 @@ class NotificationService {
     final schedule = getSchedule();
     if (!schedule.isEnabled) return;
 
-    debugPrint('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
+    debugPrint(
+      '[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00',
+    );
 
     // Use WorkManager for periodic notifications
     await WorkManagerService.schedulePeriodicNotifications(
@@ -592,18 +547,8 @@ class NotificationService {
           htmlFormatSummaryText: false,
         ),
         actions: const <AndroidNotificationAction>[
-          AndroidNotificationAction(
-            'save',
-            'Save',
-            showsUserInterface: false,
-            cancelNotification: false,
-          ),
-          AndroidNotificationAction(
-            'another',
-            'Another',
-            showsUserInterface: false,
-            cancelNotification: true,
-          ),
+          AndroidNotificationAction('save', 'Save', showsUserInterface: false, cancelNotification: false),
+          AndroidNotificationAction('another', 'Another', showsUserInterface: false, cancelNotification: true),
         ],
       ),
     );
@@ -675,7 +620,9 @@ class NotificationService {
     debugPrint('[NotificationService] Mode: inexactAllowWhileIdle (no exact alarm permission needed)');
     for (final notification in pending) {
       debugPrint('[NotificationService]   ID: ${notification.id}, Title: ${notification.title}');
-      debugPrint('[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...');
+      debugPrint(
+        '[NotificationService]   Body: ${notification.body?.substring(0, (notification.body?.length ?? 0).clamp(0, 50))}...',
+      );
       debugPrint('[NotificationService]   Payload: ${notification.payload}');
     }
     debugPrint('[NotificationService] ================================');

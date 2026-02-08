@@ -41,14 +41,9 @@ void main() {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
         donationServiceProvider.overrideWithValue(_mockDonationService),
-        donationProvider.overrideWith(
-          (ref) => _TestDonationNotifier(_mockDonationService),
-        ),
+        donationProvider.overrideWith((ref) => _TestDonationNotifier(_mockDonationService)),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: child ?? const SettingsScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: child ?? const SettingsScreen()),
     );
   }
 

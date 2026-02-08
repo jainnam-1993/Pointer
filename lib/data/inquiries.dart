@@ -7,7 +7,6 @@ import 'pointings.dart'; // For Tradition enum
 
 const inquiries = <Inquiry>[
   // === SELF-INQUIRY (Advaita) - 7 inquiries ===
-
   Inquiry(
     id: 'si_001',
     question: 'Who is aware of this thought?',
@@ -79,7 +78,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === KOANS (Zen) - 7 inquiries ===
-
   Inquiry(
     id: 'koan_001',
     question: 'What was your face before your parents were born?',
@@ -151,7 +149,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === DIRECT POINTING (Direct Path) - 7 inquiries ===
-
   Inquiry(
     id: 'dp_001',
     setup: 'Close your eyes for a moment.',
@@ -226,7 +223,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === CONTEMPORARY CONTEMPLATION - 6 inquiries ===
-
   Inquiry(
     id: 'cont_001',
     question: 'Can you find the boundary between you and your experience?',

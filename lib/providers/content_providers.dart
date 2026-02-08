@@ -30,8 +30,7 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 // ============================================================
 
 /// Current pointing state - persists across app restarts with round-robin order
-final currentPointingProvider =
-    StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
+final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return CurrentPointingNotifier(storage);
 });
@@ -42,8 +41,8 @@ final currentPointingProvider =
 /// Guarantees seeing all pointings before any repeats.
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
-  late List<String> _order;  // Shuffled pointing IDs
-  late int _index;           // Current position in order
+  late List<String> _order; // Shuffled pointing IDs
+  late int _index; // Current position in order
 
   CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
     _initializeOrder();
@@ -178,8 +177,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 // ============================================================
 
 /// Favorites provider
-final favoritesProvider =
-    StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
+final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return FavoritesNotifier(storage);
 });
@@ -214,13 +212,7 @@ class TeachingFilterState {
   final String? teacher;
   final TeachingType? type;
 
-  const TeachingFilterState({
-    this.lineage,
-    this.topics = const {},
-    this.moods = const {},
-    this.teacher,
-    this.type,
-  });
+  const TeachingFilterState({this.lineage, this.topics = const {}, this.moods = const {}, this.teacher, this.type});
 
   TeachingFilterState copyWith({
     Tradition? lineage,
@@ -254,11 +246,7 @@ class TeachingFilterState {
 
   /// Check if any filters are active
   bool get hasActiveFilters =>
-      lineage != null ||
-      topics.isNotEmpty ||
-      moods.isNotEmpty ||
-      teacher != null ||
-      type != null;
+      lineage != null || topics.isNotEmpty || moods.isNotEmpty || teacher != null || type != null;
 }
 
 /// Teaching filter notifier
@@ -319,8 +307,7 @@ class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
 }
 
 /// Provider for teaching filter state
-final teachingFilterProvider =
-    StateNotifierProvider<TeachingFilterNotifier, TeachingFilterState>((ref) {
+final teachingFilterProvider = StateNotifierProvider<TeachingFilterNotifier, TeachingFilterState>((ref) {
   return TeachingFilterNotifier();
 });
 
@@ -333,8 +320,7 @@ final filteredTeachingsProvider = Provider<List<Teaching>>((ref) {
 /// Provider for unique teachers with teaching counts
 final teacherListProvider = Provider<List<MapEntry<String, int>>>((ref) {
   final counts = TeachingRepository.teacherCounts;
-  final entries = counts.entries.toList()
-    ..sort((a, b) => b.value.compareTo(a.value));
+  final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
   return entries;
 });
 
@@ -359,8 +345,7 @@ final lineageCountsProvider = Provider<Map<Tradition, int>>((ref) {
 
 /// Provider for user's preferred/enabled traditions
 /// By default, all traditions are enabled
-final preferredTraditionsProvider =
-    StateNotifierProvider<PreferredTraditionsNotifier, Set<Tradition>>((ref) {
+final preferredTraditionsProvider = StateNotifierProvider<PreferredTraditionsNotifier, Set<Tradition>>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return PreferredTraditionsNotifier(storage);
 });
@@ -369,8 +354,7 @@ final preferredTraditionsProvider =
 class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
   final StorageService _storage;
 
-  PreferredTraditionsNotifier(this._storage)
-      : super(_loadFromStorage(_storage));
+  PreferredTraditionsNotifier(this._storage) : super(_loadFromStorage(_storage));
 
   static Set<Tradition> _loadFromStorage(StorageService storage) {
     final stored = storage.preferredTraditions;
@@ -379,10 +363,7 @@ class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
       return Tradition.values.toSet();
     }
     return stored
-        .map((name) => Tradition.values.firstWhere(
-              (t) => t.name == name,
-              orElse: () => Tradition.advaita,
-            ))
+        .map((name) => Tradition.values.firstWhere((t) => t.name == name, orElse: () => Tradition.advaita))
         .toSet();
   }
 

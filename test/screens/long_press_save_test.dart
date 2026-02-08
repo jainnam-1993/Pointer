@@ -50,8 +50,7 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
       (MethodCall methodCall) async {
         if (methodCall.method == 'HapticFeedback.vibrate') {
@@ -63,8 +62,10 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    );
   });
 
   Widget createHomeScreen({Pointing? initialPointing}) {
@@ -81,17 +82,11 @@ void main() {
             return notifier;
           }),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: const HomeScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
     );
   }
 
-  Future<void> pumpHomeScreen(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
+  Future<void> pumpHomeScreen(WidgetTester tester, Widget widget) async {
     // Use a phone-sized surface to avoid overflow in tests
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 2.0;
@@ -118,16 +113,12 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
       expect(pointingCardGesture, findsOneWidget);
 
       // Perform long press
@@ -136,10 +127,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Verify favorite was saved
-      verify(() => mockPrefs.setString(
-            StorageKeys.favoritePointings,
-            any(that: contains('test-1')),
-          )).called(1);
+      verify(() => mockPrefs.setString(StorageKeys.favoritePointings, any(that: contains('test-1')))).called(1);
     });
 
     testWidgets('long press triggers haptic feedback', (tester) async {
@@ -153,16 +141,12 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
@@ -170,9 +154,9 @@ void main() {
 
       // Verify haptic feedback was triggered
       expect(
-        hapticCalls.where((call) =>
-            call.method == 'HapticFeedback.vibrate' &&
-            call.arguments == 'HapticFeedbackType.mediumImpact'),
+        hapticCalls.where(
+          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.mediumImpact',
+        ),
         isNotEmpty,
       );
     });
@@ -188,16 +172,12 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
@@ -248,22 +228,17 @@ void main() {
       );
 
       // Setup: pointing already in favorites
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings))
-          .thenReturn(jsonEncode(['already-fav']));
+      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['already-fav']));
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
@@ -271,10 +246,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Should not call setString since it's already a favorite
-      verifyNever(() => mockPrefs.setString(
-            StorageKeys.favoritePointings,
-            any(),
-          ));
+      verifyNever(() => mockPrefs.setString(StorageKeys.favoritePointings, any()));
     });
 
     testWidgets('confirmation shows heart icon', (tester) async {
@@ -288,16 +260,12 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
@@ -319,16 +287,12 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);
@@ -342,26 +306,14 @@ void main() {
 
   group('SaveConfirmation Widget', () {
     testWidgets('renders with heart icon and text', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: SaveConfirmation(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SaveConfirmation())));
 
       expect(find.byIcon(Icons.favorite), findsOneWidget);
       expect(find.text('Saved'), findsOneWidget);
     });
 
     testWidgets('has animated scale effect', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: SaveConfirmation(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SaveConfirmation())));
 
       // Find the AnimatedScale or ScaleTransition
       expect(
@@ -441,16 +393,12 @@ void main() {
       expect(capturedRef.read(favoritesProvider).contains('provider-test'), isFalse);
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      ).first;
+      final glassCardFinder = find
+          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
+          .first;
 
       // Find the GestureDetector wrapping this specific card
-      final pointingCardGesture = find.ancestor(
-        of: glassCardFinder,
-        matching: find.byType(GestureDetector),
-      ).first;
+      final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
 
       // Perform long press
       await tester.longPress(pointingCardGesture);

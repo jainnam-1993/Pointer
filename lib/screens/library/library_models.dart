@@ -11,7 +11,7 @@ extension TeachingListSorting on List<Teaching> {
     copy.sort((a, b) {
       final aViewed = viewedIds.contains(a.id);
       final bViewed = viewedIds.contains(b.id);
-      if (aViewed && !bViewed) return 1;  // viewed sinks down
+      if (aViewed && !bViewed) return 1; // viewed sinks down
       if (!aViewed && bViewed) return -1; // unviewed stays up
       return 0; // maintain relative order
     });
@@ -25,11 +25,7 @@ class CategoryInfo {
   final String icon;
   final String description;
 
-  const CategoryInfo({
-    required this.name,
-    required this.icon,
-    required this.description,
-  });
+  const CategoryInfo({required this.name, required this.icon, required this.description});
 }
 
 const categoryInfoMap = <ArticleCategory, CategoryInfo>{
@@ -61,13 +57,7 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
 };
 
 /// Browse mode for category navigation
-enum LibraryBrowseMode {
-  topics,
-  teachers,
-  lineages,
-  moods,
-  saved,
-}
+enum LibraryBrowseMode { topics, teachers, lineages, moods, saved }
 
 extension LibraryBrowseModeExt on LibraryBrowseMode {
   String get label {

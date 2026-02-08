@@ -9,9 +9,7 @@ void main() {
     testWidgets('renders Advaita tradition correctly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.advaita),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
         ),
       );
 
@@ -22,9 +20,7 @@ void main() {
     testWidgets('renders Zen tradition correctly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.zen),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.zen)),
         ),
       );
 
@@ -35,9 +31,7 @@ void main() {
     testWidgets('renders Direct Path tradition correctly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.direct),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.direct)),
         ),
       );
 
@@ -48,9 +42,7 @@ void main() {
     testWidgets('renders Contemporary tradition correctly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.contemporary),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.contemporary)),
         ),
       );
 
@@ -61,9 +53,7 @@ void main() {
     testWidgets('renders Original tradition correctly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.original),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.original)),
         ),
       );
 
@@ -74,9 +64,7 @@ void main() {
     testWidgets('uses pill shape (high borderRadius)', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.advaita),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
         ),
       );
 
@@ -88,17 +76,12 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: const Scaffold(
-            body: TraditionBadge(tradition: Tradition.zen),
-          ),
+          home: const Scaffold(body: TraditionBadge(tradition: Tradition.zen)),
         ),
       );
 
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(Container),
-        ),
+        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
       );
 
       final decoration = container.decoration as BoxDecoration;
@@ -110,17 +93,12 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: const Scaffold(
-            body: TraditionBadge(tradition: Tradition.direct),
-          ),
+          home: const Scaffold(body: TraditionBadge(tradition: Tradition.direct)),
         ),
       );
 
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(Container),
-        ),
+        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
       );
 
       final decoration = container.decoration as BoxDecoration;
@@ -131,88 +109,56 @@ void main() {
     testWidgets('has BackdropFilter for blur effect', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.contemporary),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.contemporary)),
         ),
       );
 
-      expect(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(BackdropFilter),
-        ),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(BackdropFilter)), findsOneWidget);
     });
 
     testWidgets('has correct padding', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.original),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.original)),
         ),
       );
 
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(Container),
-        ),
+        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
       );
 
-      expect(
-        container.padding,
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      );
+      expect(container.padding, const EdgeInsets.symmetric(horizontal: 16, vertical: 8));
     });
 
     testWidgets('uses Row for icon and text layout', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.advaita),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
         ),
       );
 
-      expect(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(Row),
-        ),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Row)), findsOneWidget);
     });
 
     testWidgets('icon has correct font size', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.zen),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.zen)),
         ),
       );
 
-      final iconText = tester.widget<Text>(
-        find.text(traditions[Tradition.zen]!.icon),
-      );
+      final iconText = tester.widget<Text>(find.text(traditions[Tradition.zen]!.icon));
       expect(iconText.style?.fontSize, 18);
     });
 
     testWidgets('name text has correct styling', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.direct),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.direct)),
         ),
       );
 
-      final nameText = tester.widget<Text>(
-        find.text('Direct Path'),
-      );
+      final nameText = tester.widget<Text>(find.text('Direct Path'));
       expect(nameText.style?.fontSize, 14);
       expect(nameText.style?.fontWeight, FontWeight.w500);
     });
@@ -221,9 +167,7 @@ void main() {
       for (final tradition in Tradition.values) {
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: TraditionBadge(tradition: tradition),
-            ),
+            home: Scaffold(body: TraditionBadge(tradition: tradition)),
           ),
         );
 
@@ -239,18 +183,11 @@ void main() {
     testWidgets('has mainAxisSize.min for minimal width', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TraditionBadge(tradition: Tradition.advaita),
-          ),
+          home: Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
         ),
       );
 
-      final row = tester.widget<Row>(
-        find.descendant(
-          of: find.byType(TraditionBadge),
-          matching: find.byType(Row),
-        ),
-      );
+      final row = tester.widget<Row>(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Row)));
       expect(row.mainAxisSize, MainAxisSize.min);
     });
   });

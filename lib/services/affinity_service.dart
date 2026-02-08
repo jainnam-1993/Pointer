@@ -73,12 +73,14 @@ class AffinityService {
     final affinities = <TraditionAffinity>[];
 
     for (final tradition in Tradition.values) {
-      affinities.add(TraditionAffinity(
-        tradition: tradition,
-        score: getAffinityScore(tradition),
-        viewCount: _getViewCounts()[tradition.name] ?? 0,
-        saveCount: _getSaveCounts()[tradition.name] ?? 0,
-      ));
+      affinities.add(
+        TraditionAffinity(
+          tradition: tradition,
+          score: getAffinityScore(tradition),
+          viewCount: _getViewCounts()[tradition.name] ?? 0,
+          saveCount: _getSaveCounts()[tradition.name] ?? 0,
+        ),
+      );
     }
 
     // Sort by score descending

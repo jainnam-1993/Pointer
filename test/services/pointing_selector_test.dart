@@ -130,11 +130,7 @@ void main() {
     group('selectPointing', () {
       test('returns a pointing from the list', () {
         final selector = PointingSelector(random: Random(42));
-        final pointing = selector.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
         expect(testPointings, contains(pointing));
       });
@@ -159,11 +155,7 @@ void main() {
         final selector = PointingSelector(random: Random(42));
         final allIds = testPointings.map((p) => p.id).toSet();
 
-        final pointing = selector.selectPointing(
-          all: testPointings,
-          viewedToday: allIds,
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: testPointings, viewedToday: allIds, respectTimeContext: false);
 
         expect(testPointings, contains(pointing));
       });
@@ -172,17 +164,9 @@ void main() {
         final selector1 = PointingSelector(random: Random(42));
         final selector2 = PointingSelector(random: Random(42));
 
-        final pointing1 = selector1.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing1 = selector1.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
-        final pointing2 = selector2.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing2 = selector2.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
         expect(pointing1.id, equals(pointing2.id));
       });
@@ -196,16 +180,8 @@ void main() {
 
         // Collect multiple selections to ensure different distributions
         for (var i = 0; i < 20; i++) {
-          final p1 = selector1.selectPointing(
-            all: testPointings,
-            viewedToday: {},
-            respectTimeContext: false,
-          );
-          final p2 = selector2.selectPointing(
-            all: testPointings,
-            viewedToday: {},
-            respectTimeContext: false,
-          );
+          final p1 = selector1.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
+          final p2 = selector2.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
           results1.add(p1.id);
           results2.add(p2.id);
         }
@@ -230,8 +206,7 @@ void main() {
 
           // Should be morning or general pointing
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.morning || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.morning || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have morning or general context',
           );
@@ -249,8 +224,7 @@ void main() {
           );
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.midday || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.midday || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have midday or general context',
           );
@@ -268,8 +242,7 @@ void main() {
           );
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.evening || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.evening || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have evening or general context',
           );
@@ -287,8 +260,7 @@ void main() {
           );
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.evening || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.evening || c == PointingContext.general),
             isTrue,
             reason: 'Night pointing ${pointing.id} should use evening or general context',
           );

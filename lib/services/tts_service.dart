@@ -8,14 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'aws_credential_service.dart';
 
 /// TTS playback state
-enum TTSPlaybackState {
-  idle,
-  loading,
-  playing,
-  paused,
-  completed,
-  error,
-}
+enum TTSPlaybackState { idle, loading, playing, paused, completed, error }
 
 /// Available Polly neural voices
 enum PollyVoice {
@@ -84,8 +77,7 @@ class TTSService {
   /// Current playback state
   TTSPlaybackState get currentState {
     if (_player == null) return TTSPlaybackState.idle;
-    if (_player!.processingState == ProcessingState.loading ||
-        _player!.processingState == ProcessingState.buffering) {
+    if (_player!.processingState == ProcessingState.loading || _player!.processingState == ProcessingState.buffering) {
       return TTSPlaybackState.loading;
     }
     if (_player!.playing) return TTSPlaybackState.playing;
@@ -147,10 +139,7 @@ class TTSService {
   }
 
   /// Call AWS Polly SynthesizeSpeech API
-  Future<Uint8List> _synthesizeSpeech(
-    String text,
-    AWSCredentials credentials,
-  ) async {
+  Future<Uint8List> _synthesizeSpeech(String text, AWSCredentials credentials) async {
     final uri = Uri.parse('$_endpoint/v1/speech');
     final body = jsonEncode({
       'OutputFormat': 'mp3',
@@ -160,12 +149,7 @@ class TTSService {
       'Engine': 'neural',
     });
 
-    final headers = await _signRequest(
-      method: 'POST',
-      uri: uri,
-      body: body,
-      credentials: credentials,
-    );
+    final headers = await _signRequest(method: 'POST', uri: uri, body: body, credentials: credentials);
 
     final client = HttpClient();
     try {
@@ -188,10 +172,7 @@ class TTSService {
       }
 
       // Read audio bytes
-      final bytes = await response.fold<List<int>>(
-        [],
-        (previous, element) => previous..addAll(element),
-      );
+      final bytes = await response.fold<List<int>>([], (previous, element) => previous..addAll(element));
 
       return Uint8List.fromList(bytes);
     } finally {
@@ -218,16 +199,17 @@ class TTSService {
     final payloadHash = sha256.convert(utf8.encode(body)).toString();
 
     // Canonical headers
-    final canonicalHeaders = 'content-type:application/json\n'
+    final canonicalHeaders =
+        'content-type:application/json\n'
         'host:$host\n'
         'x-amz-date:$amzDate\n'
         'x-amz-security-token:${credentials.sessionToken}\n';
 
-    final signedHeaders =
-        'content-type;host;x-amz-date;x-amz-security-token';
+    final signedHeaders = 'content-type;host;x-amz-date;x-amz-security-token';
 
     // Canonical request
-    final canonicalRequest = '$method\n'
+    final canonicalRequest =
+        '$method\n'
         '$canonicalUri\n'
         '$canonicalQuerystring\n'
         '$canonicalHeaders\n'
@@ -237,24 +219,19 @@ class TTSService {
     // String to sign
     final algorithm = 'AWS4-HMAC-SHA256';
     final credentialScope = '$dateStamp/$_region/$_service/aws4_request';
-    final stringToSign = '$algorithm\n'
+    final stringToSign =
+        '$algorithm\n'
         '$amzDate\n'
         '$credentialScope\n'
         '${sha256.convert(utf8.encode(canonicalRequest))}';
 
     // Calculate signature
-    final signingKey = _getSignatureKey(
-      credentials.secretAccessKey,
-      dateStamp,
-      _region,
-      _service,
-    );
-    final signature = Hmac(sha256, signingKey)
-        .convert(utf8.encode(stringToSign))
-        .toString();
+    final signingKey = _getSignatureKey(credentials.secretAccessKey, dateStamp, _region, _service);
+    final signature = Hmac(sha256, signingKey).convert(utf8.encode(stringToSign)).toString();
 
     // Authorization header
-    final authorization = '$algorithm '
+    final authorization =
+        '$algorithm '
         'Credential=${credentials.accessKeyId}/$credentialScope, '
         'SignedHeaders=$signedHeaders, '
         'Signature=$signature';
@@ -267,21 +244,11 @@ class TTSService {
     };
   }
 
-  List<int> _getSignatureKey(
-    String key,
-    String dateStamp,
-    String regionName,
-    String serviceName,
-  ) {
-    final kDate = Hmac(sha256, utf8.encode('AWS4$key'))
-        .convert(utf8.encode(dateStamp))
-        .bytes;
-    final kRegion =
-        Hmac(sha256, kDate).convert(utf8.encode(regionName)).bytes;
-    final kService =
-        Hmac(sha256, kRegion).convert(utf8.encode(serviceName)).bytes;
-    final kSigning =
-        Hmac(sha256, kService).convert(utf8.encode('aws4_request')).bytes;
+  List<int> _getSignatureKey(String key, String dateStamp, String regionName, String serviceName) {
+    final kDate = Hmac(sha256, utf8.encode('AWS4$key')).convert(utf8.encode(dateStamp)).bytes;
+    final kRegion = Hmac(sha256, kDate).convert(utf8.encode(regionName)).bytes;
+    final kService = Hmac(sha256, kRegion).convert(utf8.encode(serviceName)).bytes;
+    final kSigning = Hmac(sha256, kService).convert(utf8.encode('aws4_request')).bytes;
     return kSigning;
   }
 
@@ -309,28 +276,13 @@ class TTSService {
     text = text.replaceAll(RegExp(r'!\[.*?\]\(.+?\)'), '');
 
     // Remove bold/italic - use replaceAllMapped for capture groups
-    text = text.replaceAllMapped(
-      RegExp(r'\*\*(.+?)\*\*'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'\*(.+?)\*'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'__(.+?)__'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'_(.+?)_'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'\*\*(.+?)\*\*'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'\*(.+?)\*'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'__(.+?)__'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'_(.+?)_'), (m) => m.group(1) ?? '');
 
     // Remove links but keep text
-    text = text.replaceAllMapped(
-      RegExp(r'\[(.+?)\]\(.+?\)'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'\[(.+?)\]\(.+?\)'), (m) => m.group(1) ?? '');
 
     // Remove blockquote markers
     text = text.replaceAll(RegExp(r'^>\s*', multiLine: true), '');
@@ -340,10 +292,7 @@ class TTSService {
 
     // Remove code blocks
     text = text.replaceAll(RegExp(r'```[\s\S]*?```'), '');
-    text = text.replaceAllMapped(
-      RegExp(r'`(.+?)`'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'`(.+?)`'), (m) => m.group(1) ?? '');
 
     // Remove list markers
     text = text.replaceAll(RegExp(r'^\s*[-*+]\s+', multiLine: true), '');

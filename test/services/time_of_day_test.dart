@@ -112,10 +112,7 @@ void main() {
 
     group('selectPointing', () {
       test('returns a valid pointing', () {
-        final pointing = selector.selectPointing(
-          all: pointings,
-          viewedToday: {},
-        );
+        final pointing = selector.selectPointing(all: pointings, viewedToday: {});
         expect(pointing, isNotNull);
         expect(pointing.id, isNotEmpty);
       });
@@ -123,21 +120,14 @@ void main() {
       test('excludes viewed pointings', () {
         final viewedIds = {'adv-1', 'zen-1', 'dir-1'};
         for (int i = 0; i < 20; i++) {
-          final pointing = selector.selectPointing(
-            all: pointings,
-            viewedToday: viewedIds,
-          );
-          expect(viewedIds.contains(pointing.id), false,
-              reason: 'Should not return viewed pointing ${pointing.id}');
+          final pointing = selector.selectPointing(all: pointings, viewedToday: viewedIds);
+          expect(viewedIds.contains(pointing.id), false, reason: 'Should not return viewed pointing ${pointing.id}');
         }
       });
 
       test('returns any pointing when all have been viewed', () {
         final allIds = pointings.map((p) => p.id).toSet();
-        final pointing = selector.selectPointing(
-          all: pointings,
-          viewedToday: allIds,
-        );
+        final pointing = selector.selectPointing(all: pointings, viewedToday: allIds);
         // When all viewed, resets and picks from all
         expect(pointing, isNotNull);
       });
@@ -154,23 +144,16 @@ void main() {
             viewedToday: {},
             timeContext: TimeContext.morning,
           );
-          final hasMatchingContext = pointing.contexts.any(
-            (c) => morningContexts.contains(c),
-          );
+          final hasMatchingContext = pointing.contexts.any((c) => morningContexts.contains(c));
           if (hasMatchingContext) matchCount++;
         }
 
         // Should have high match rate when respecting context
-        expect(matchCount, greaterThan(40),
-            reason: 'Most pointings should match time context');
+        expect(matchCount, greaterThan(40), reason: 'Most pointings should match time context');
       });
 
       test('ignores time context when disabled', () {
-        final pointing = selector.selectPointing(
-          all: pointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: pointings, viewedToday: {}, respectTimeContext: false);
         expect(pointing, isNotNull);
         // Just verifies it doesn't crash - selection is random
       });
@@ -186,8 +169,7 @@ void main() {
           );
           final validContexts = [PointingContext.morning, PointingContext.general];
           final hasValid = pointing.contexts.any((c) => validContexts.contains(c));
-          expect(hasValid, true,
-              reason: 'Pointing ${pointing.id} should have morning or general context');
+          expect(hasValid, true, reason: 'Pointing ${pointing.id} should have morning or general context');
         }
       });
 
@@ -200,28 +182,20 @@ void main() {
           );
           final validContexts = [PointingContext.evening, PointingContext.general];
           final hasValid = pointing.contexts.any((c) => validContexts.contains(c));
-          expect(hasValid, true,
-              reason: 'Pointing ${pointing.id} should have evening or general context');
+          expect(hasValid, true, reason: 'Pointing ${pointing.id} should have evening or general context');
         }
       });
 
       test('override returns any pointing regardless of time', () {
-        final pointing = selector.selectPointing(
-          all: pointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: pointings, viewedToday: {}, respectTimeContext: false);
         expect(pointing, isNotNull);
       });
 
       test('general pointings are always available', () {
         // General context should be included in all time selections
-        final generalPointings = pointings.where(
-          (p) => p.contexts.contains(PointingContext.general),
-        ).toList();
+        final generalPointings = pointings.where((p) => p.contexts.contains(PointingContext.general)).toList();
 
-        expect(generalPointings, isNotEmpty,
-            reason: 'Should have general pointings available');
+        expect(generalPointings, isNotEmpty, reason: 'Should have general pointings available');
       });
 
       test('viewed pointings excluded even with time filter', () {
@@ -269,8 +243,7 @@ void main() {
         // Time-specific should have ~30% preference per spec
         // But since we only have 2 options, it should be roughly 30% time-specific
         // Actually with the algorithm, time-specific gets 30% boost, so expect ~30-50%
-        expect(morningCount, greaterThan(15),
-            reason: 'Time-specific pointings should appear with preference');
+        expect(morningCount, greaterThan(15), reason: 'Time-specific pointings should appear with preference');
       });
     });
   });
@@ -282,26 +255,18 @@ void main() {
       for (final timeContext in TimeContext.values) {
         if (timeContext == TimeContext.general) continue;
 
-        final pointing = selector.selectPointingForTime(
-          all: pointings,
-          viewedToday: {},
-          timeContext: timeContext,
-        );
-        expect(pointing, isNotNull,
-            reason: 'Should find pointing for ${timeContext.name}');
+        final pointing = selector.selectPointingForTime(all: pointings, viewedToday: {}, timeContext: timeContext);
+        expect(pointing, isNotNull, reason: 'Should find pointing for ${timeContext.name}');
       }
     });
 
     test('all existing PointingContext values have coverage', () {
       for (final context in PointingContext.values) {
-        final withContext = pointings.where(
-          (p) => p.contexts.contains(context),
-        ).toList();
+        final withContext = pointings.where((p) => p.contexts.contains(context)).toList();
 
         // midday might be empty, which is fine - it falls back to general
         if (context != PointingContext.midday) {
-          expect(withContext, isNotEmpty,
-              reason: '${context.name} should have pointings');
+          expect(withContext, isNotEmpty, reason: '${context.name} should have pointings');
         }
       }
     });

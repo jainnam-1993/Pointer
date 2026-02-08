@@ -26,11 +26,7 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: colors.textPrimary,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
           ),
           const SizedBox(width: 8),
           Container(
@@ -41,11 +37,7 @@ class SectionHeader extends StatelessWidget {
             ),
             child: Text(
               count.toString(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colors.accent,
-              ),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.accent),
             ),
           ),
         ],
@@ -60,12 +52,7 @@ class ArticleListItem extends StatelessWidget {
   final bool isLocked;
   final VoidCallback onTap;
 
-  const ArticleListItem({
-    super.key,
-    required this.article,
-    required this.isLocked,
-    required this.onTap,
-  });
+  const ArticleListItem({super.key, required this.article, required this.isLocked, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -95,21 +82,13 @@ class ArticleListItem extends StatelessWidget {
                             article.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textPrimary,
-                            ),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                           ),
                         ),
                         // Hide premium badge when kFreeAccessEnabled (all content free)
                         if (!kFreeAccessEnabled && article.isPremium) ...[
                           const SizedBox(width: 8),
-                          Icon(
-                            isLocked ? Icons.lock_outline : Icons.auto_awesome,
-                            size: 14,
-                            color: colors.accent,
-                          ),
+                          Icon(isLocked ? Icons.lock_outline : Icons.auto_awesome, size: 14, color: colors.accent),
                         ],
                       ],
                     ),
@@ -119,10 +98,7 @@ class ArticleListItem extends StatelessWidget {
                         article.subtitle!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.textSecondary,
-                        ),
+                        style: TextStyle(fontSize: 13, color: colors.textSecondary),
                       ),
                     ],
                     const SizedBox(height: 8),
@@ -130,28 +106,16 @@ class ArticleListItem extends StatelessWidget {
                       children: [
                         Text(
                           '${article.readingTimeMinutes} min',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colors.textMuted,
-                          ),
+                          style: TextStyle(fontSize: 12, color: colors.textMuted),
                         ),
                         if (article.teacher != null) ...[
-                          Text(
-                            ' · ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.textMuted,
-                            ),
-                          ),
+                          Text(' · ', style: TextStyle(fontSize: 12, color: colors.textMuted)),
                           Flexible(
                             child: Text(
                               article.teacher!,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: colors.textMuted,
-                              ),
+                              style: TextStyle(fontSize: 12, color: colors.textMuted),
                             ),
                           ),
                         ],
@@ -162,11 +126,7 @@ class ArticleListItem extends StatelessWidget {
               ),
 
               // Arrow
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: colors.textMuted,
-              ),
+              Icon(Icons.arrow_forward_ios, size: 14, color: colors.textMuted),
             ],
           ),
         ),
@@ -182,13 +142,7 @@ class TeachingCard extends StatelessWidget {
   final VoidCallback? onShare;
   final bool isViewed;
 
-  const TeachingCard({
-    super.key,
-    required this.teaching,
-    this.onTap,
-    this.onShare,
-    this.isViewed = false,
-  });
+  const TeachingCard({super.key, required this.teaching, this.onTap, this.onShare, this.isViewed = false});
 
   @override
   Widget build(BuildContext context) {
@@ -196,109 +150,83 @@ class TeachingCard extends StatelessWidget {
     final traditionInfo = traditions[teaching.lineage]!;
 
     return Semantics(
-      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
+      label:
+          '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
       child: GlassCard(
-      padding: const EdgeInsets.all(16),
-      onTap: onTap,
-      child: Opacity(
-        opacity: isViewed ? 0.7 : 1.0,
-        child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Content
-          Text(
-            teaching.content,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 15,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Footer: Teacher, share, and lineage
-          Row(
+        padding: const EdgeInsets.all(16),
+        onTap: onTap,
+        child: Opacity(
+          opacity: isViewed ? 0.7 : 1.0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  '— ${teaching.teacher}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: colors.textMuted,
-                    fontSize: 13,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-              if (onShare != null) ...[
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: onShare,
-                  child: Icon(
-                    Icons.share_outlined,
-                    size: 18,
-                    color: colors.textMuted,
-                  ),
-                ),
-              ],
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colors.accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      traditionInfo.icon,
-                      style: const TextStyle(fontSize: 11),
+              // Content
+              Text(teaching.content, style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5)),
+              const SizedBox(height: 12),
+
+              // Footer: Teacher, share, and lineage
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '— ${teaching.teacher}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
                     ),
+                  ),
+                  if (onShare != null) ...[
                     const SizedBox(width: 4),
-                    Text(
-                      traditionInfo.name,
-                      style: TextStyle(
-                        color: colors.textMuted,
-                        fontSize: 11,
-                      ),
+                    GestureDetector(
+                      onTap: onShare,
+                      child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
                     ),
                   ],
-                ),
-              ),
-            ],
-          ),
-
-          // Topic tags
-          if (teaching.topicTags.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: teaching.topicTags.take(3).map((tag) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colors.glassBackground,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: colors.glassBorder),
-                  ),
-                  child: Text(
-                    TopicTags.displayName(tag),
-                    style: TextStyle(
-                      color: colors.textSecondary,
-                      fontSize: 11,
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colors.accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(traditionInfo.icon, style: const TextStyle(fontSize: 11)),
+                        const SizedBox(width: 4),
+                        Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 11)),
+                      ],
                     ),
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ],
-      ),
-      ),  // Opacity
-      ),  // GlassCard
+                ],
+              ),
+
+              // Topic tags
+              if (teaching.topicTags.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: teaching.topicTags.take(3).map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: colors.glassBackground,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: colors.glassBorder),
+                      ),
+                      child: Text(
+                        TopicTags.displayName(tag),
+                        style: TextStyle(color: colors.textSecondary, fontSize: 11),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ],
+          ),
+        ), // Opacity
+      ), // GlassCard
     );
   }
 }
@@ -358,42 +286,26 @@ class FilterSheet<T> extends StatelessWidget {
                   : Colors.white.withValues(alpha: 0.92),
               gradient: isDark
                   ? LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.08),
-                        Colors.white.withValues(alpha: 0.02),
-                      ],
+                      colors: [Colors.white.withValues(alpha: 0.08), Colors.white.withValues(alpha: 0.02)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     )
                   : null,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              border: isDark
-                  ? Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
-                      width: 0.5,
-                    )
-                  : null,
+              border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.1), width: 0.5) : null,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colors.textPrimary,
-                  ),
-                ),
+                Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colors.textPrimary)),
                 const SizedBox(height: 16),
                 ...options.map((option) {
                   final isSelected = option.value == currentValue;
                   return ListTile(
                     dense: true,
                     visualDensity: VisualDensity.compact,
-                    leading: Icon(
-                      option.icon,
-                      color: isSelected ? colors.accent : colors.textMuted,
-                    ),
+                    leading: Icon(option.icon, color: isSelected ? colors.accent : colors.textMuted),
                     title: Text(
                       option.label,
                       style: TextStyle(
@@ -401,9 +313,7 @@ class FilterSheet<T> extends StatelessWidget {
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
-                    trailing: isSelected
-                        ? Icon(Icons.check, color: colors.accent)
-                        : null,
+                    trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                     onTap: () {
                       HapticFeedback.lightImpact();
                       onSelected(option.value);
@@ -427,11 +337,7 @@ class FilterOption<T> {
   final String label;
   final IconData icon;
 
-  const FilterOption({
-    required this.value,
-    required this.label,
-    required this.icon,
-  });
+  const FilterOption({required this.value, required this.label, required this.icon});
 }
 
 /// Premium upgrade prompt for free users trying to access the library
@@ -455,26 +361,15 @@ class LibraryPremiumUpgrade extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
-                color: goldColor.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.auto_awesome,
-                size: 40,
-                color: goldColor,
-              ),
+              decoration: BoxDecoration(color: goldColor.withValues(alpha: 0.15), shape: BoxShape.circle),
+              child: Icon(Icons.auto_awesome, size: 40, color: goldColor),
             ),
             const SizedBox(height: 24),
 
             // Title
             Text(
               'Unlock the Full Library',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: colors.textPrimary,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: colors.textPrimary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -483,11 +378,7 @@ class LibraryPremiumUpgrade extends StatelessWidget {
             Text(
               'Browse teachings by topic, teacher, lineage, and mood. '
               'Access featured articles and extended commentary.',
-              style: TextStyle(
-                fontSize: 15,
-                color: colors.textSecondary,
-                height: 1.5,
-              ),
+              style: TextStyle(fontSize: 15, color: colors.textSecondary, height: 1.5),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -525,10 +416,7 @@ class LibraryPremiumUpgrade extends StatelessWidget {
             // Free features reminder
             Text(
               'Free forever: Unlimited pointings & saved favorites',
-              style: TextStyle(
-                fontSize: 12,
-                color: colors.textMuted,
-              ),
+              style: TextStyle(fontSize: 12, color: colors.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -551,13 +439,7 @@ class FeatureRow extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: colors.gold),
         const SizedBox(width: 12),
-        Text(
-          text,
-          style: TextStyle(
-            color: colors.textPrimary,
-            fontSize: 14,
-          ),
-        ),
+        Text(text, style: TextStyle(color: colors.textPrimary, fontSize: 14)),
       ],
     );
   }

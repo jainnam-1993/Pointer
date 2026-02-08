@@ -7,11 +7,7 @@ import '../providers/providers.dart';
 import 'animated_gradient.dart';
 
 /// Glass effect intensity levels - matches iOS Control Center aesthetic
-enum GlassIntensity {
-  light,
-  standard,
-  heavy,
-}
+enum GlassIntensity { light, standard, heavy }
 
 /// Glassmorphic card widget with iOS-style frosted glass effects
 class GlassCard extends ConsumerWidget {
@@ -65,10 +61,7 @@ class GlassCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: highContrastColors.cardBackground,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: highContrastColors.glassBorder,
-          width: 2,
-        ),
+        border: Border.all(color: highContrastColors.glassBorder, width: 2),
       ),
       child: child,
     );
@@ -100,37 +93,25 @@ class GlassCard extends ConsumerWidget {
     final effectiveBorderColor = borderColor ?? colors.glassBorder;
     final borderGradient = isDark
         ? LinearGradient(
-            colors: [
-              effectiveBorderColor,
-              effectiveBorderColor.withValues(alpha: 0.3),
-            ],
+            colors: [effectiveBorderColor, effectiveBorderColor.withValues(alpha: 0.3)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
-            colors: [
-              Colors.black.withValues(alpha: 0.08),
-              Colors.black.withValues(alpha: 0.03),
-            ],
+            colors: [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
 
     Widget innerContent = child;
     if (maxHeight != null && enableScrolling) {
-      innerContent = SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: child,
-      );
+      innerContent = SingleChildScrollView(physics: const BouncingScrollPhysics(), child: child);
     }
 
     Widget constrainedContent = innerContent;
     if (minHeight != null || maxHeight != null) {
       constrainedContent = ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: minHeight ?? 0,
-          maxHeight: maxHeight ?? double.infinity,
-        ),
+        constraints: BoxConstraints(minHeight: minHeight ?? 0, maxHeight: maxHeight ?? double.infinity),
         child: innerContent,
       );
     }
@@ -140,7 +121,8 @@ class GlassCard extends ConsumerWidget {
     // and whether background gradient shimmer is already running
     final appOverride = ref.watch(reduceMotionOverrideProvider);
     final reduceMotion = shouldReduceMotion(context, appOverride);
-    var shouldAnimate = enableBreathingAnimation &&
+    var shouldAnimate =
+        enableBreathingAnimation &&
         !reduceMotion &&
         !AnimatedGradient.disableAnimations &&
         !AnimatedGradient.isTestEnvironment();
@@ -156,10 +138,7 @@ class GlassCard extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: glassGradient,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: GradientBoxBorder(
-          gradient: borderGradient,
-          width: isDark ? 1.5 : 1,
-        ),
+        border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.5 : 1),
       ),
       child: constrainedContent,
     );
@@ -181,14 +160,8 @@ class GlassCard extends ConsumerWidget {
               child: IgnorePointer(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(borderRadius),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(borderRadius),
-                    ),
-                  )
-                      .animate(
-                        onPlay: (controller) => controller.repeat(reverse: true),
-                      )
+                  child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius)))
+                      .animate(onPlay: (controller) => controller.repeat(reverse: true))
                       .shimmer(
                         duration: 8000.ms, // Slower than 4s background for layered feel
                         color: shimmerColor,
@@ -278,10 +251,7 @@ class GlassButton extends ConsumerWidget {
             decoration: BoxDecoration(
               color: highContrastColors.cardBackground,
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(
-                color: highContrastColors.glassBorder,
-                width: 2,
-              ),
+              border: Border.all(color: highContrastColors.glassBorder, width: 2),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -291,24 +261,14 @@ class GlassButton extends ConsumerWidget {
                   SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: highContrastColors.textPrimary,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: highContrastColors.textPrimary),
                   )
                 else ...[
                   Text(
                     label,
-                    style: TextStyle(
-                      color: highContrastColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: highContrastColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
                   ),
-                  if (icon != null) ...[
-                    const SizedBox(width: 8),
-                    icon!,
-                  ],
+                  if (icon != null) ...[const SizedBox(width: 8), icon!],
                 ],
               ],
             ),
@@ -358,38 +318,34 @@ class GlassButton extends ConsumerWidget {
               filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              decoration: BoxDecoration(
-                gradient: glassGradient,
-                borderRadius: BorderRadius.circular(32),
-                border: GradientBoxBorder(gradient: borderGradient, width: 1),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (isLoading)
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor),
-                    )
-                  else ...[
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: colors.textPrimary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                decoration: BoxDecoration(
+                  gradient: glassGradient,
+                  borderRadius: BorderRadius.circular(32),
+                  border: GradientBoxBorder(gradient: borderGradient, width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (isLoading)
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor),
+                      )
+                    else ...[
+                      Text(
+                        label,
+                        style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
                       ),
-                    ),
-                    if (icon != null) ...[const SizedBox(width: 8), icon!],
+                      if (icon != null) ...[const SizedBox(width: 8), icon!],
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -402,13 +358,7 @@ class GlassContainer extends StatelessWidget {
   final double opacity;
   final BorderRadius? borderRadius;
 
-  const GlassContainer({
-    super.key,
-    required this.child,
-    this.blur = 40,
-    this.opacity = 0.25,
-    this.borderRadius,
-  });
+  const GlassContainer({super.key, required this.child, this.blur = 40, this.opacity = 0.25, this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -438,12 +388,7 @@ class GlassBottomSheet extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool showHandle;
 
-  const GlassBottomSheet({
-    super.key,
-    required this.child,
-    this.padding,
-    this.showHandle = true,
-  });
+  const GlassBottomSheet({super.key, required this.child, this.padding, this.showHandle = true});
 
   @override
   Widget build(BuildContext context) {
@@ -462,12 +407,7 @@ class GlassBottomSheet extends StatelessWidget {
           ),
           child: SafeArea(
             child: Padding(
-              padding: padding ?? EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 16,
-                bottom: bottomPadding + 24,
-              ),
+              padding: padding ?? EdgeInsets.only(left: 24, right: 24, top: 16, bottom: bottomPadding + 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -499,12 +439,7 @@ class GlassDialog extends StatelessWidget {
   final Widget? content;
   final List<Widget>? actions;
 
-  const GlassDialog({
-    super.key,
-    this.title,
-    this.content,
-    this.actions,
-  });
+  const GlassDialog({super.key, this.title, this.content, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -531,11 +466,7 @@ class GlassDialog extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Text(
                       title!,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textPrimary,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -545,10 +476,7 @@ class GlassDialog extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: actions!
-                        .map((action) => Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: action,
-                            ))
+                        .map((action) => Padding(padding: const EdgeInsets.only(left: 8), child: action))
                         .toList(),
                   ),
                 ],

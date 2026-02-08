@@ -7,8 +7,7 @@ import '../pointings.dart';
 
 const String _teacher = 'Adyashanti';
 const Tradition _lineage = Tradition.contemporary;
-const String _sourceBase =
-    'https://adyashanti.opengatesangha.org/teachings/library/writing';
+const String _sourceBase = 'https://adyashanti.opengatesangha.org/teachings/library/writing';
 
 /// Adyashanti's teachings indexed from Open Gate Sangha
 final List<Teaching> adyashantiTeachings = [
@@ -235,8 +234,7 @@ final List<Teaching> adyashantiTeachings = [
   // === LETTING GO ===
   Teaching(
     id: 'adya-let-everything-go',
-    content:
-        'Let everything go. Let all of it fall away. What remains is what you truly are.',
+    content: 'Let everything go. Let all of it fall away. What remains is what you truly are.',
     teacher: _teacher,
     source: 'Falling into Grace',
     lineage: _lineage,

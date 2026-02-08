@@ -1,4 +1,3 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,8 +48,7 @@ void main() {
     });
 
     test('defaults to none for invalid stored value', () {
-      when(() => mockPrefs.getString('ambient_sound'))
-          .thenReturn('invalid_sound');
+      when(() => mockPrefs.getString('ambient_sound')).thenReturn('invalid_sound');
 
       final notifier = AmbientSoundNotifier(mockPrefs);
 
@@ -59,8 +57,7 @@ void main() {
 
     test('setSound updates state and persists', () {
       when(() => mockPrefs.getString('ambient_sound')).thenReturn(null);
-      when(() => mockPrefs.setString(any(), any()))
-          .thenAnswer((_) async => true);
+      when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       final notifier = AmbientSoundNotifier(mockPrefs);
       expect(notifier.state, AmbientSound.none);

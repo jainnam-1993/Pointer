@@ -22,8 +22,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   // Mock home_widget plugin to prevent MissingPluginException
   // The home_widget plugin requires native iOS/Android implementation
   // which isn't available in unit tests
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('home_widget'),
     (MethodCall methodCall) async {
       // Return appropriate mock responses for home_widget methods

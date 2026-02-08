@@ -30,7 +30,7 @@ class AppSettings {
 
   const AppSettings({
     this.hapticFeedback = true,
-    this.autoAdvance = true,  // Default ON (opt-out)
+    this.autoAdvance = true, // Default ON (opt-out)
     this.autoAdvanceDelay = 60, // 1 minute default
     this.theme = 'system',
     this.highContrast = false,
@@ -62,20 +62,20 @@ class AppSettings {
   }
 
   Map<String, dynamic> toJson() => {
-        'hapticFeedback': hapticFeedback,
-        'autoAdvance': autoAdvance,
-        'autoAdvanceDelay': autoAdvanceDelay,
-        'theme': theme,
-        'highContrast': highContrast,
-        'oledMode': oledMode,
-        'zenMode': zenMode,
-        'animationsEnabled': animationsEnabled,
-      };
+    'hapticFeedback': hapticFeedback,
+    'autoAdvance': autoAdvance,
+    'autoAdvanceDelay': autoAdvanceDelay,
+    'theme': theme,
+    'highContrast': highContrast,
+    'oledMode': oledMode,
+    'zenMode': zenMode,
+    'animationsEnabled': animationsEnabled,
+  };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       hapticFeedback: json['hapticFeedback'] ?? true,
-      autoAdvance: json['autoAdvance'] ?? true,  // Default ON
+      autoAdvance: json['autoAdvance'] ?? true, // Default ON
       autoAdvanceDelay: json['autoAdvanceDelay'] ?? 60, // 1 minute
       theme: json['theme'] ?? 'system',
       highContrast: json['highContrast'] ?? false,
@@ -96,18 +96,14 @@ class StorageService {
   StorageService(this._prefs);
 
   // Onboarding
-  bool get hasCompletedOnboarding =>
-      _prefs.getBool(StorageKeys.onboardingCompleted) ?? false;
+  bool get hasCompletedOnboarding => _prefs.getBool(StorageKeys.onboardingCompleted) ?? false;
 
-  Future<void> setOnboardingCompleted(bool completed) =>
-      _prefs.setBool(StorageKeys.onboardingCompleted, completed);
+  Future<void> setOnboardingCompleted(bool completed) => _prefs.setBool(StorageKeys.onboardingCompleted, completed);
 
   // First save milestone tracking
-  bool get hasEverSaved =>
-      _prefs.getBool(StorageKeys.hasEverSaved) ?? false;
+  bool get hasEverSaved => _prefs.getBool(StorageKeys.hasEverSaved) ?? false;
 
-  Future<void> markFirstSaveCompleted() =>
-      _prefs.setBool(StorageKeys.hasEverSaved, true);
+  Future<void> markFirstSaveCompleted() => _prefs.setBool(StorageKeys.hasEverSaved, true);
 
   // Favorites
   List<String> get favorites {
@@ -210,15 +206,12 @@ class StorageService {
       _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
 
   // Subscription
-  String get subscriptionTier =>
-      _prefs.getString(StorageKeys.subscriptionTier) ?? 'free';
+  String get subscriptionTier => _prefs.getString(StorageKeys.subscriptionTier) ?? 'free';
 
-  Future<void> setSubscriptionTier(String tier) =>
-      _prefs.setString(StorageKeys.subscriptionTier, tier);
+  Future<void> setSubscriptionTier(String tier) => _prefs.setString(StorageKeys.subscriptionTier, tier);
 
   // Current pointing persistence (for restoring state after app restart)
-  String? get currentPointingId =>
-      _prefs.getString(StorageKeys.currentPointingId);
+  String? get currentPointingId => _prefs.getString(StorageKeys.currentPointingId);
 
   Future<void> setCurrentPointingId(String? id) async {
     if (id == null) {
@@ -235,14 +228,12 @@ class StorageService {
     return List<String>.from(jsonDecode(stored));
   }
 
-  Future<void> setPointingOrder(List<String> order) =>
-      _prefs.setString(StorageKeys.pointingOrder, jsonEncode(order));
+  Future<void> setPointingOrder(List<String> order) => _prefs.setString(StorageKeys.pointingOrder, jsonEncode(order));
 
   // Current index in the pointing order
   int get pointingIndex => _prefs.getInt(StorageKeys.pointingIndex) ?? 0;
 
-  Future<void> setPointingIndex(int index) =>
-      _prefs.setInt(StorageKeys.pointingIndex, index);
+  Future<void> setPointingIndex(int index) => _prefs.setInt(StorageKeys.pointingIndex, index);
 
   // Clear all
   Future<void> clearAll() async {

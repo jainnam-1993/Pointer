@@ -12,28 +12,13 @@ String stripMarkdown(String markdown) {
   text = text.replaceAll(RegExp(r'!\[.*?\]\(.+?\)'), '');
 
   // Remove bold/italic - use replaceAllMapped for capture groups
-  text = text.replaceAllMapped(
-    RegExp(r'\*\*(.+?)\*\*'),
-    (m) => m.group(1) ?? '',
-  );
-  text = text.replaceAllMapped(
-    RegExp(r'\*(.+?)\*'),
-    (m) => m.group(1) ?? '',
-  );
-  text = text.replaceAllMapped(
-    RegExp(r'__(.+?)__'),
-    (m) => m.group(1) ?? '',
-  );
-  text = text.replaceAllMapped(
-    RegExp(r'_(.+?)_'),
-    (m) => m.group(1) ?? '',
-  );
+  text = text.replaceAllMapped(RegExp(r'\*\*(.+?)\*\*'), (m) => m.group(1) ?? '');
+  text = text.replaceAllMapped(RegExp(r'\*(.+?)\*'), (m) => m.group(1) ?? '');
+  text = text.replaceAllMapped(RegExp(r'__(.+?)__'), (m) => m.group(1) ?? '');
+  text = text.replaceAllMapped(RegExp(r'_(.+?)_'), (m) => m.group(1) ?? '');
 
   // Remove links but keep text
-  text = text.replaceAllMapped(
-    RegExp(r'\[(.+?)\]\(.+?\)'),
-    (m) => m.group(1) ?? '',
-  );
+  text = text.replaceAllMapped(RegExp(r'\[(.+?)\]\(.+?\)'), (m) => m.group(1) ?? '');
 
   // Remove blockquote markers
   text = text.replaceAll(RegExp(r'^>\s*', multiLine: true), '');
@@ -43,10 +28,7 @@ String stripMarkdown(String markdown) {
 
   // Remove code blocks
   text = text.replaceAll(RegExp(r'```[\s\S]*?```'), '');
-  text = text.replaceAllMapped(
-    RegExp(r'`(.+?)`'),
-    (m) => m.group(1) ?? '',
-  );
+  text = text.replaceAllMapped(RegExp(r'`(.+?)`'), (m) => m.group(1) ?? '');
 
   // Remove list markers
   text = text.replaceAll(RegExp(r'^\s*[-*+]\s+', multiLine: true), '');
@@ -89,17 +71,11 @@ void main() {
     });
 
     test('extracts link text and removes URL', () {
-      expect(
-        stripMarkdown('Check out [this link](https://example.com)'),
-        'Check out this link',
-      );
+      expect(stripMarkdown('Check out [this link](https://example.com)'), 'Check out this link');
     });
 
     test('removes images completely', () {
-      expect(
-        stripMarkdown('Here is an image ![alt text](image.png) in text'),
-        'Here is an image  in text',
-      );
+      expect(stripMarkdown('Here is an image ![alt text](image.png) in text'), 'Here is an image  in text');
     });
 
     test('removes blockquote markers', () {
@@ -111,17 +87,11 @@ void main() {
     });
 
     test('removes code blocks', () {
-      expect(
-        stripMarkdown('Before\n```dart\ncode here\n```\nAfter'),
-        'Before\n\nAfter',
-      );
+      expect(stripMarkdown('Before\n```dart\ncode here\n```\nAfter'), 'Before\n\nAfter');
     });
 
     test('removes inline code backticks', () {
-      expect(
-        stripMarkdown('Use the `print()` function'),
-        'Use the print() function',
-      );
+      expect(stripMarkdown('Use the `print()` function'), 'Use the print() function');
     });
 
     test('removes unordered list markers with -', () {
@@ -186,10 +156,7 @@ The end.
     });
 
     test('handles plain text with no markdown', () {
-      expect(
-        stripMarkdown('Just plain text here.'),
-        'Just plain text here.',
-      );
+      expect(stripMarkdown('Just plain text here.'), 'Just plain text here.');
     });
 
     test('preserves paragraph structure', () {
@@ -200,24 +167,15 @@ The end.
 
   group('TTS Text Preparation - Edge Cases', () {
     test('handles nested formatting', () {
-      expect(
-        stripMarkdown('This is ***bold and italic*** text'),
-        'This is bold and italic text',
-      );
+      expect(stripMarkdown('This is ***bold and italic*** text'), 'This is bold and italic text');
     });
 
     test('handles multiple links in one line', () {
-      expect(
-        stripMarkdown('[Link1](url1) and [Link2](url2)'),
-        'Link1 and Link2',
-      );
+      expect(stripMarkdown('[Link1](url1) and [Link2](url2)'), 'Link1 and Link2');
     });
 
     test('handles mixed content line', () {
-      expect(
-        stripMarkdown('# **Bold Header** with *italic*'),
-        'Bold Header with italic',
-      );
+      expect(stripMarkdown('# **Bold Header** with *italic*'), 'Bold Header with italic');
     });
   });
 }

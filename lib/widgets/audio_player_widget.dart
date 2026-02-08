@@ -18,12 +18,7 @@ class AudioPlayerWidget extends ConsumerStatefulWidget {
   final String? audioUrl;
   final bool isPremium;
 
-  const AudioPlayerWidget({
-    super.key,
-    required this.pointingId,
-    required this.audioUrl,
-    required this.isPremium,
-  });
+  const AudioPlayerWidget({super.key, required this.pointingId, required this.audioUrl, required this.isPremium});
 
   @override
   ConsumerState<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
@@ -40,8 +35,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<Duration?>? _durationSubscription;
 
-  bool get _isCurrentPointing =>
-      _audioService.currentPointingId == widget.pointingId;
+  bool get _isCurrentPointing => _audioService.currentPointingId == widget.pointingId;
 
   @override
   void initState() {
@@ -87,8 +81,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
 
     if (_state == AudioPlaybackState.playing) {
       await _audioService.pause();
-    } else if (_state == AudioPlaybackState.paused ||
-        _state == AudioPlaybackState.completed) {
+    } else if (_state == AudioPlaybackState.paused || _state == AudioPlaybackState.completed) {
       await _audioService.resume();
     } else {
       await _audioService.play(widget.pointingId, widget.audioUrl!);
@@ -101,9 +94,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
     showModalBottomSheet(
       context: context,
       backgroundColor: colors.cardBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -111,11 +102,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
           children: [
             Icon(Icons.headphones, color: colors.gold, size: 48),
             const SizedBox(height: 16),
-            Text(
-              'Audio Pointings',
-              style: AppTextStyles.heading(context),
-              textAlign: TextAlign.center,
-            ),
+            Text('Audio Pointings', style: AppTextStyles.heading(context), textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
               'Listen to guided readings and teachings from masters. Premium feature.',
@@ -180,52 +167,43 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                // Lock icon for non-premium
-                if (!widget.isPremium)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Icon(Icons.lock_outline, color: colors.gold, size: 18),
-                  ),
+                      // Lock icon for non-premium
+                      if (!widget.isPremium)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Icon(Icons.lock_outline, color: colors.gold, size: 18),
+                        ),
 
-                // Skip backward
-                IconButton(
-                  icon: Icon(Icons.replay_10, color: colors.iconColor, size: 24),
-                  onPressed:
-                      widget.isPremium ? () => _audioService.seekBackward() : null,
-                ),
+                      // Skip backward
+                      IconButton(
+                        icon: Icon(Icons.replay_10, color: colors.iconColor, size: 24),
+                        onPressed: widget.isPremium ? () => _audioService.seekBackward() : null,
+                      ),
 
-                // Play/Pause button
-                GestureDetector(
-                  onTap: _togglePlayback,
-                  child: Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: widget.isPremium ? colors.accent : colors.gold,
-                    ),
-                    child: isLoading
-                        ? const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Icon(
-                            isPlaying ? Icons.pause : Icons.play_arrow,
-                            color: Colors.white,
-                            size: 32,
+                      // Play/Pause button
+                      GestureDetector(
+                        onTap: _togglePlayback,
+                        child: Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: widget.isPremium ? colors.accent : colors.gold,
                           ),
-                  ),
-                ),
+                          child: isLoading
+                              ? const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 32),
+                        ),
+                      ),
 
-                // Skip forward
-                IconButton(
-                  icon: Icon(Icons.forward_10, color: colors.iconColor, size: 24),
-                  onPressed:
-                      widget.isPremium ? () => _audioService.seekForward() : null,
-                ),
+                      // Skip forward
+                      IconButton(
+                        icon: Icon(Icons.forward_10, color: colors.iconColor, size: 24),
+                        onPressed: widget.isPremium ? () => _audioService.seekForward() : null,
+                      ),
                     ],
                   ),
                 ),
@@ -259,14 +237,8 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _formatDuration(_position),
-                    style: AppTextStyles.footerText(context),
-                  ),
-                  Text(
-                    _formatDuration(_duration!),
-                    style: AppTextStyles.footerText(context),
-                  ),
+                  Text(_formatDuration(_position), style: AppTextStyles.footerText(context)),
+                  Text(_formatDuration(_duration!), style: AppTextStyles.footerText(context)),
                 ],
               ),
             ),

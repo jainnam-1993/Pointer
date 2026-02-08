@@ -62,10 +62,7 @@ class TeacherProfile {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TeacherProfile &&
-          runtimeType == other.runtimeType &&
-          name == other.name;
+      identical(this, other) || other is TeacherProfile && runtimeType == other.runtimeType && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

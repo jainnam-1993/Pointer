@@ -170,16 +170,7 @@ class MoodTags {
   static const uplifting = 'uplifting';
   static const challenging = 'challenging';
 
-  static const all = [
-    morning,
-    midday,
-    evening,
-    stress,
-    general,
-    contemplative,
-    uplifting,
-    challenging,
-  ];
+  static const all = [morning, midday, evening, stress, general, contemplative, uplifting, challenging];
 
   /// Human-readable display names for moods
   static String displayName(String tag) {
@@ -335,23 +326,16 @@ class Teaching {
     if (lower.contains('practice') || lower.contains('technique')) {
       topics.add(TopicTags.practice);
     }
-    if (lower.contains('love') ||
-        lower.contains('bhakti') ||
-        lower.contains('prayer') ||
-        lower.contains('devoti')) {
+    if (lower.contains('love') || lower.contains('bhakti') || lower.contains('prayer') || lower.contains('devoti')) {
       topics.add(TopicTags.devotion);
     }
     if (lower.contains('relat') || lower.contains('togeth')) {
       topics.add(TopicTags.relationship);
     }
-    if (lower.contains('death') ||
-        lower.contains('dying') ||
-        lower.contains('mortal')) {
+    if (lower.contains('death') || lower.contains('dying') || lower.contains('mortal')) {
       topics.add(TopicTags.death);
     }
-    if (lower.contains('rebirth') ||
-        lower.contains('renewal') ||
-        lower.contains('reincarn')) {
+    if (lower.contains('rebirth') || lower.contains('renewal') || lower.contains('reincarn')) {
       topics.add(TopicTags.rebirth);
     }
     if (lower.contains('daily') ||
@@ -372,19 +356,16 @@ class Teaching {
 
   /// Convert Teaching back to Pointing for sharing
   Pointing toPointing() => Pointing(
-        id: id.startsWith('pointing_') ? id.substring(9) : id,
-        content: content,
-        instruction: instruction,
-        tradition: lineage,
-        contexts: moodTags
-            .map((m) => PointingContext.values.firstWhere(
-                  (c) => c.name == m,
-                  orElse: () => PointingContext.general,
-                ))
-            .toList(),
-        teacher: teacher == 'Unknown' ? null : teacher,
-        source: source,
-      );
+    id: id.startsWith('pointing_') ? id.substring(9) : id,
+    content: content,
+    instruction: instruction,
+    tradition: lineage,
+    contexts: moodTags
+        .map((m) => PointingContext.values.firstWhere((c) => c.name == m, orElse: () => PointingContext.general))
+        .toList(),
+    teacher: teacher == 'Unknown' ? null : teacher,
+    source: source,
+  );
 
   /// Check if teaching matches the given filters
   bool matchesFilters({
@@ -395,18 +376,13 @@ class Teaching {
     TeachingType? type,
   }) {
     if (lineage != null && this.lineage != lineage) return false;
-    if (topics != null &&
-        topics.isNotEmpty &&
-        topicTags.intersection(topics).isEmpty) {
+    if (topics != null && topics.isNotEmpty && topicTags.intersection(topics).isEmpty) {
       return false;
     }
-    if (moods != null &&
-        moods.isNotEmpty &&
-        moodTags.intersection(moods).isEmpty) {
+    if (moods != null && moods.isNotEmpty && moodTags.intersection(moods).isEmpty) {
       return false;
     }
-    if (teacher != null &&
-        this.teacher.toLowerCase() != teacher.toLowerCase()) {
+    if (teacher != null && this.teacher.toLowerCase() != teacher.toLowerCase()) {
       return false;
     }
     if (type != null && this.type != type) return false;
@@ -421,8 +397,7 @@ class Teaching {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Teaching && runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) || other is Teaching && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -450,10 +425,7 @@ class TeachingRepository {
   }
 
   /// Initialize the repository (call once at app startup)
-  static void initialize({
-    List<Pointing>? pointings,
-    List<Teaching>? additionalTeachings,
-  }) {
+  static void initialize({List<Pointing>? pointings, List<Teaching>? additionalTeachings}) {
     if (_initialized) return;
 
     // Convert existing pointings
@@ -484,22 +456,12 @@ class TeachingRepository {
     TeachingType? type,
   }) {
     return _allTeachings
-        .where((t) => t.matchesFilters(
-              lineage: lineage,
-              topics: topics,
-              moods: moods,
-              teacher: teacher,
-              type: type,
-            ))
+        .where((t) => t.matchesFilters(lineage: lineage, topics: topics, moods: moods, teacher: teacher, type: type))
         .toList();
   }
 
   /// Get a random teaching, optionally filtered
-  static Teaching? getRandom({
-    Tradition? lineage,
-    Set<String>? topics,
-    Set<String>? moods,
-  }) {
+  static Teaching? getRandom({Tradition? lineage, Set<String>? topics, Set<String>? moods}) {
     final filtered = filter(lineage: lineage, topics: topics, moods: moods);
     if (filtered.isEmpty) return null;
     filtered.shuffle();
@@ -553,9 +515,7 @@ class TeachingRepository {
 
   /// Get teachings by a specific teacher
   static List<Teaching> byTeacher(String teacher) {
-    return _allTeachings
-        .where((t) => t.teacher.toLowerCase() == teacher.toLowerCase())
-        .toList();
+    return _allTeachings.where((t) => t.teacher.toLowerCase() == teacher.toLowerCase()).toList();
   }
 
   /// Get teachings by lineage

@@ -10,18 +10,13 @@ class CommentarySection extends ConsumerStatefulWidget {
   final String? commentary;
   final String pointingId;
 
-  const CommentarySection({
-    super.key,
-    required this.commentary,
-    required this.pointingId,
-  });
+  const CommentarySection({super.key, required this.commentary, required this.pointingId});
 
   @override
   ConsumerState<CommentarySection> createState() => _CommentarySectionState();
 }
 
-class _CommentarySectionState extends ConsumerState<CommentarySection>
-    with SingleTickerProviderStateMixin {
+class _CommentarySectionState extends ConsumerState<CommentarySection> with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _heightFactor;
@@ -30,14 +25,9 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _heightFactor = _controller.drive(CurveTween(curve: Curves.easeInOut));
-    _iconTurns = _controller.drive(
-      Tween<double>(begin: 0.0, end: 0.5).chain(CurveTween(curve: Curves.easeInOut)),
-    );
+    _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5).chain(CurveTween(curve: Curves.easeInOut)));
   }
 
   @override
@@ -71,25 +61,15 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
     showModalBottomSheet(
       context: context,
       backgroundColor: colors.cardBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.lock_outline,
-              color: colors.gold,
-              size: 48,
-            ),
+            Icon(Icons.lock_outline, color: colors.gold, size: 48),
             const SizedBox(height: 16),
-            Text(
-              'Premium Feature',
-              style: AppTextStyles.heading(context),
-              textAlign: TextAlign.center,
-            ),
+            Text('Premium Feature', style: AppTextStyles.heading(context), textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
               'Extended commentary provides deeper context and practice suggestions for each pointing.',
@@ -148,18 +128,13 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
                 if (!isPremium)
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
-                    child: Icon(
-                      Icons.lock_outline,
-                      size: 16,
-                      color: colors.gold,
-                    ),
+                    child: Icon(Icons.lock_outline, size: 16, color: colors.gold),
                   ),
                 Text(
                   'Extended Commentary',
-                  style: AppTextStyles.footerText(context).copyWith(
-                    color: isPremium ? colors.textSecondary : colors.gold,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: AppTextStyles.footerText(
+                    context,
+                  ).copyWith(color: isPremium ? colors.textSecondary : colors.gold, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(width: 8),
                 RotationTransition(
@@ -180,20 +155,14 @@ class _CommentarySectionState extends ConsumerState<CommentarySection>
           animation: _controller,
           builder: (context, child) {
             return ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: _heightFactor.value,
-                child: child,
-              ),
+              child: Align(alignment: Alignment.topCenter, heightFactor: _heightFactor.value, child: child),
             );
           },
           child: Container(
             padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: Text(
               widget.commentary!,
-              style: AppTextStyles.instructionText(context).copyWith(
-                fontStyle: FontStyle.normal,
-              ),
+              style: AppTextStyles.instructionText(context).copyWith(fontStyle: FontStyle.normal),
               textAlign: TextAlign.center,
             ),
           ),

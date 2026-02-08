@@ -92,8 +92,7 @@ void main() {
       mockService = MockDonationService();
       purchaseController = StreamController<List<PurchaseDetails>>.broadcast();
 
-      when(() => mockService.purchaseUpdates)
-          .thenAnswer((_) => purchaseController.stream);
+      when(() => mockService.purchaseUpdates).thenAnswer((_) => purchaseController.stream);
       when(() => mockService.dispose()).thenReturn(null);
     });
 
@@ -102,10 +101,7 @@ void main() {
     });
 
     test('initializes and loads products when available', () async {
-      final products = [
-        _createMockProduct('tip_small', 0.99),
-        _createMockProduct('tip_medium', 4.99),
-      ];
+      final products = [_createMockProduct('tip_small', 0.99), _createMockProduct('tip_medium', 4.99)];
 
       when(() => mockService.isAvailable()).thenAnswer((_) async => true);
       when(() => mockService.loadProducts()).thenAnswer((_) async => products);
@@ -135,8 +131,7 @@ void main() {
     });
 
     test('handles initialization error gracefully', () async {
-      when(() => mockService.isAvailable())
-          .thenThrow(Exception('Init failed'));
+      when(() => mockService.isAvailable()).thenThrow(Exception('Init failed'));
 
       notifier = DonationNotifier(mockService);
 
@@ -152,8 +147,7 @@ void main() {
 
       when(() => mockService.isAvailable()).thenAnswer((_) async => true);
       when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product))
-          .thenAnswer((_) async {});
+      when(() => mockService.purchaseProduct(product)).thenAnswer((_) async {});
 
       notifier = DonationNotifier(mockService);
       await Future.delayed(const Duration(milliseconds: 50));
@@ -169,8 +163,7 @@ void main() {
 
       when(() => mockService.isAvailable()).thenAnswer((_) async => true);
       when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product))
-          .thenAnswer((_) => completer.future);
+      when(() => mockService.purchaseProduct(product)).thenAnswer((_) => completer.future);
 
       notifier = DonationNotifier(mockService);
       await Future.delayed(const Duration(milliseconds: 50));
@@ -190,8 +183,7 @@ void main() {
 
       when(() => mockService.isAvailable()).thenAnswer((_) async => true);
       when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product))
-          .thenThrow(Exception('Purchase failed'));
+      when(() => mockService.purchaseProduct(product)).thenThrow(Exception('Purchase failed'));
 
       notifier = DonationNotifier(mockService);
       await Future.delayed(const Duration(milliseconds: 50));
@@ -210,8 +202,7 @@ void main() {
 
       when(() => mockService.isAvailable()).thenAnswer((_) async => true);
       when(() => mockService.loadProducts()).thenAnswer((_) async => []);
-      when(() => mockService.completePurchase(purchase))
-          .thenAnswer((_) async {});
+      when(() => mockService.completePurchase(purchase)).thenAnswer((_) async {});
 
       notifier = DonationNotifier(mockService);
       await Future.delayed(const Duration(milliseconds: 50));
@@ -244,11 +235,7 @@ void main() {
 
     test('processes error purchase from stream', () async {
       final purchase = MockPurchaseDetails();
-      final error = IAPError(
-        source: 'test',
-        code: 'error',
-        message: 'Something went wrong',
-      );
+      final error = IAPError(source: 'test', code: 'error', message: 'Something went wrong');
       when(() => purchase.status).thenReturn(PurchaseStatus.error);
       when(() => purchase.error).thenReturn(error);
 
@@ -303,8 +290,7 @@ void main() {
     });
 
     test('clearError clears error state', () async {
-      when(() => mockService.isAvailable())
-          .thenThrow(Exception('Test error'));
+      when(() => mockService.isAvailable()).thenThrow(Exception('Test error'));
 
       notifier = DonationNotifier(mockService);
       await Future.delayed(const Duration(milliseconds: 50));

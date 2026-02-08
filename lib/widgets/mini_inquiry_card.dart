@@ -41,13 +41,7 @@ class MiniInquiryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: Text(
-                  '◇',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: colors.accent,
-                  ),
-                ),
+                child: Text('◇', style: TextStyle(fontSize: 16, color: colors.accent)),
               ),
             ),
             const SizedBox(width: 12),
@@ -55,17 +49,11 @@ class MiniInquiryCard extends StatelessWidget {
             // Text only - no question preview for cleaner look
             Text(
               'Take a moment',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: colors.accent,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: colors.accent),
             ),
           ],
         ),
       ),
-    )
-        .animate()
-        .fadeIn(duration: 400.ms, delay: 200.ms);
+    ).animate().fadeIn(duration: 400.ms, delay: 200.ms);
   }
 }

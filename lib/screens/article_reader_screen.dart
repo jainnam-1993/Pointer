@@ -13,10 +13,7 @@ import 'share_preview_screen.dart';
 class ArticleReaderScreen extends ConsumerStatefulWidget {
   final Article article;
 
-  const ArticleReaderScreen({
-    super.key,
-    required this.article,
-  });
+  const ArticleReaderScreen({super.key, required this.article});
 
   @override
   ConsumerState<ArticleReaderScreen> createState() => _ArticleReaderScreenState();
@@ -89,20 +86,13 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: colors.glassBackground,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(color: colors.glassBorder),
                           ),
-                          child: Text(
-                            traditionInfo.name,
-                            style: TextStyle(
-                              color: colors.textMuted,
-                              fontSize: 12,
-                            ),
-                          ),
+                          child: Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 12)),
                         ),
                       ],
                     ),
@@ -131,47 +121,27 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         ),
                         if (widget.article.subtitle != null) ...[
                           const SizedBox(height: 8),
-                          Text(
-                            widget.article.subtitle!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: colors.textSecondary,
-                            ),
-                          ),
+                          Text(widget.article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
                         ],
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
-                              Icons.schedule,
-                              size: 14,
-                              color: colors.textMuted,
-                            ),
+                            Icon(Icons.schedule, size: 14, color: colors.textMuted),
                             const SizedBox(width: 4),
                             Text(
                               '${widget.article.readingTimeMinutes} min read',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: colors.textMuted,
-                              ),
+                              style: TextStyle(fontSize: 13, color: colors.textMuted),
                             ),
                             if (widget.article.teacher != null) ...[
                               const SizedBox(width: 16),
-                              Icon(
-                                Icons.person_outline,
-                                size: 14,
-                                color: colors.textMuted,
-                              ),
+                              Icon(Icons.person_outline, size: 14, color: colors.textMuted),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
                                   widget.article.teacher!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: colors.textMuted,
-                                  ),
+                                  style: TextStyle(fontSize: 13, color: colors.textMuted),
                                 ),
                               ),
                             ],
@@ -187,16 +157,8 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 // Article content
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 24,
-                      right: 24,
-                      top: 16,
-                      bottom: 32 + bottomPadding,
-                    ),
-                    child: _MarkdownContent(
-                      content: widget.article.content,
-                      colors: colors,
-                    ),
+                    padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 32 + bottomPadding),
+                    child: _MarkdownContent(content: widget.article.content, colors: colors),
                   ),
                 ),
               ],
@@ -213,10 +175,7 @@ class _MarkdownContent extends StatelessWidget {
   final String content;
   final PointerColors colors;
 
-  const _MarkdownContent({
-    required this.content,
-    required this.colors,
-  });
+  const _MarkdownContent({required this.content, required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -224,52 +183,20 @@ class _MarkdownContent extends StatelessWidget {
       data: content,
       selectable: true,
       styleSheet: MarkdownStyleSheet(
-        h1: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: colors.textPrimary,
-        ),
-        h2: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        h3: TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        p: TextStyle(
-          fontSize: 16,
-          color: colors.textPrimary,
-          height: 1.6,
-        ),
-        blockquote: TextStyle(
-          fontSize: 16,
-          fontStyle: FontStyle.italic,
-          color: colors.textPrimary,
-          height: 1.5,
-        ),
+        h1: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: colors.textPrimary),
+        h2: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        h3: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        p: TextStyle(fontSize: 16, color: colors.textPrimary, height: 1.6),
+        blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: colors.textPrimary, height: 1.5),
         blockquoteDecoration: BoxDecoration(
           color: colors.accent.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(8),
-          border: Border(
-            left: BorderSide(
-              color: colors.accent.withValues(alpha: 0.5),
-              width: 3,
-            ),
-          ),
+          border: Border(left: BorderSide(color: colors.accent.withValues(alpha: 0.5), width: 3)),
         ),
         blockquotePadding: const EdgeInsets.all(16),
         listBullet: TextStyle(color: colors.accent),
-        strong: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        em: TextStyle(
-          fontStyle: FontStyle.italic,
-          color: colors.textPrimary,
-        ),
+        strong: TextStyle(fontWeight: FontWeight.w600, color: colors.textPrimary),
+        em: TextStyle(fontStyle: FontStyle.italic, color: colors.textPrimary),
       ),
     );
   }

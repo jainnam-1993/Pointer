@@ -93,11 +93,7 @@ void main() {
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
-              home: Scaffold(
-                body: GlassCard(
-                  child: Text('Test'),
-                ),
-              ),
+              home: Scaffold(body: GlassCard(child: Text('Test'))),
             ),
           ),
         );
@@ -119,11 +115,7 @@ void main() {
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
-              home: Scaffold(
-                body: GlassCard(
-                  child: Text('Test'),
-                ),
-              ),
+              home: Scaffold(body: GlassCard(child: Text('Test'))),
             ),
           ),
         );
@@ -142,11 +134,7 @@ void main() {
             ],
             child: MaterialApp(
               theme: AppTheme.dark,
-              home: Scaffold(
-                body: GlassCard(
-                  child: Text('Test'),
-                ),
-              ),
+              home: Scaffold(body: GlassCard(child: Text('Test'))),
             ),
           ),
         );
@@ -178,9 +166,7 @@ void main() {
                 builder: (context) {
                   // MediaQuery.highContrast is accessible
                   final systemHighContrast = MediaQuery.of(context).highContrast;
-                  return Scaffold(
-                    body: Text('High contrast: $systemHighContrast'),
-                  );
+                  return Scaffold(body: Text('High contrast: $systemHighContrast'));
                 },
               ),
             ),
@@ -206,9 +192,7 @@ void main() {
                 home: Builder(
                   builder: (context) {
                     final systemHighContrast = MediaQuery.of(context).highContrast;
-                    return Scaffold(
-                      body: Text('System high contrast: $systemHighContrast'),
-                    );
+                    return Scaffold(body: Text('System high contrast: $systemHighContrast'));
                   },
                 ),
               ),
@@ -232,10 +216,7 @@ void main() {
             child: MaterialApp(
               theme: AppTheme.dark,
               home: Scaffold(
-                body: GlassButton(
-                  label: 'Test Button',
-                  onPressed: () {},
-                ),
+                body: GlassButton(label: 'Test Button', onPressed: () {}),
               ),
             ),
           ),

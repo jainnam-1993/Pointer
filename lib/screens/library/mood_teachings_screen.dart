@@ -65,10 +65,7 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    MoodTags.icon(widget.mood),
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
+                                  Text(MoodTags.icon(widget.mood), style: const TextStyle(fontSize: 18)),
                                   const SizedBox(width: 8),
                                   Text(
                                     MoodTags.displayName(widget.mood),
@@ -82,10 +79,7 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                               ),
                               Text(
                                 '${articles.length} articles, ${teachings.length} quotes',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
+                                style: TextStyle(fontSize: 14, color: colors.textSecondary),
                               ),
                             ],
                           ),
@@ -100,53 +94,45 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: SectionHeader(
-                        title: 'Articles',
-                        count: articles.length,
-                      ),
+                      child: SectionHeader(title: 'Articles', count: articles.length),
                     ),
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final article = articles[index];
+                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: ArticleListItem(
-                                article: article,
-                                isLocked: isLocked,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    // Show paywall
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
+                        return StaggeredFadeIn(
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: ArticleListItem(
+                              article: article,
+                              isLocked: isLocked,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                if (isLocked) {
+                                  // Show paywall
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Premium article - unlock with subscription'),
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: colors.glassBackground,
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
+                                  );
+                                }
+                              },
                             ),
-                          );
-                        },
-                        childCount: articles.length,
-                      ),
+                          ),
+                        );
+                      }, childCount: articles.length),
                     ),
                   ),
                 ],
@@ -155,42 +141,32 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: SectionHeader(
-                      title: 'Quotes',
-                      count: teachings.length,
-                    ),
+                    child: SectionHeader(title: 'Quotes', count: teachings.length),
                   ),
                 ),
                 SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
+                  padding: EdgeInsets.only(left: 24, right: 24, bottom: 32 + bottomPadding),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final teaching = teachings[index];
-                        final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                              onShare: () => showLibraryShareSheet(context, teaching),
-                            ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final teaching = teachings[index];
+                      final isViewed = viewedIds.contains(teaching.id);
+                      return StaggeredFadeIn(
+                        index: index,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: TeachingCard(
+                            teaching: teaching,
+                            isViewed: isViewed,
+                            onTap: () async {
+                              HapticFeedback.lightImpact();
+                              await storage.markTeachingAsViewed(teaching.id);
+                              if (context.mounted) setState(() {});
+                            },
+                            onShare: () => showLibraryShareSheet(context, teaching),
                           ),
-                        );
-                      },
-                      childCount: teachings.length,
-                    ),
+                        ),
+                      );
+                    }, childCount: teachings.length),
                   ),
                 ),
               ],

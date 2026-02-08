@@ -17,12 +17,7 @@ class CategoryArticlesScreen extends StatelessWidget {
   final CategoryInfo info;
   final bool isPremium;
 
-  const CategoryArticlesScreen({
-    super.key,
-    required this.category,
-    required this.info,
-    required this.isPremium,
-  });
+  const CategoryArticlesScreen({super.key, required this.category, required this.info, required this.isPremium});
 
   @override
   Widget build(BuildContext context) {
@@ -54,18 +49,11 @@ class CategoryArticlesScreen extends StatelessWidget {
                             children: [
                               Text(
                                 info.name,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: colors.textPrimary,
-                                ),
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                               ),
                               Text(
                                 '${categoryArticles.length} articles',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
+                                style: TextStyle(fontSize: 14, color: colors.textSecondary),
                               ),
                             ],
                           ),
@@ -77,51 +65,41 @@ class CategoryArticlesScreen extends StatelessWidget {
 
                 // Articles list
                 SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
+                  padding: EdgeInsets.only(left: 24, right: 24, bottom: 32 + bottomPadding),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final article = categoryArticles[index];
-                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final article = categoryArticles[index];
+                      final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: ArticleListItem(
-                              article: article,
-                              isLocked: isLocked,
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                if (isLocked) {
-                                  // Show paywall
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Premium article - unlock with subscription'),
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: colors.glassBackground,
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
+                      return StaggeredFadeIn(
+                        index: index,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: ArticleListItem(
+                            article: article,
+                            isLocked: isLocked,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              if (isLocked) {
+                                // Show paywall
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Premium article - unlock with subscription'),
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: colors.glassBackground,
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
+                                );
+                              }
+                            },
                           ),
-                        );
-                      },
-                      childCount: categoryArticles.length,
-                    ),
+                        ),
+                      );
+                    }, childCount: categoryArticles.length),
                   ),
                 ),
               ],

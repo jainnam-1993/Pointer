@@ -126,8 +126,7 @@ bool isHighContrastEnabled(BuildContext context, WidgetRef ref) {
 // ============================================================
 
 /// Settings provider - manages AppSettings state
-final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
+final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return SettingsNotifier(storage);
 });
@@ -204,17 +203,9 @@ class NotificationSettingsState {
   final List<NotificationTime> times;
   final bool isLoading;
 
-  const NotificationSettingsState({
-    this.isEnabled = false,
-    this.times = const [],
-    this.isLoading = false,
-  });
+  const NotificationSettingsState({this.isEnabled = false, this.times = const [], this.isLoading = false});
 
-  NotificationSettingsState copyWith({
-    bool? isEnabled,
-    List<NotificationTime>? times,
-    bool? isLoading,
-  }) {
+  NotificationSettingsState copyWith({bool? isEnabled, List<NotificationTime>? times, bool? isLoading}) {
     return NotificationSettingsState(
       isEnabled: isEnabled ?? this.isEnabled,
       times: times ?? this.times,
@@ -224,19 +215,17 @@ class NotificationSettingsState {
 }
 
 /// Notification settings provider
-final notificationSettingsProvider =
-    StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>(
-        (ref) {
+final notificationSettingsProvider = StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>((
+  ref,
+) {
   final notificationService = ref.watch(notificationServiceProvider);
   return NotificationSettingsNotifier(notificationService);
 });
 
-class NotificationSettingsNotifier
-    extends StateNotifier<NotificationSettingsState> {
+class NotificationSettingsNotifier extends StateNotifier<NotificationSettingsState> {
   final NotificationService _service;
 
-  NotificationSettingsNotifier(this._service)
-      : super(const NotificationSettingsState()) {
+  NotificationSettingsNotifier(this._service) : super(const NotificationSettingsState()) {
     _loadSettings();
   }
 
@@ -259,8 +248,7 @@ class NotificationSettingsNotifier
 
   /// Update a specific notification time
   Future<void> updateTime(NotificationTime updated) async {
-    final newTimes =
-        state.times.map((t) => t.id == updated.id ? updated : t).toList();
+    final newTimes = state.times.map((t) => t.id == updated.id ? updated : t).toList();
     state = state.copyWith(times: newTimes, isLoading: true);
     try {
       await _service.saveNotificationTimes(newTimes);

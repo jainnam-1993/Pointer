@@ -3,12 +3,7 @@
 
 import '../data/pointings.dart';
 
-enum InquiryType {
-  koan,
-  selfInquiry,
-  directPointing,
-  contemplation,
-}
+enum InquiryType { koan, selfInquiry, directPointing, contemplation }
 
 class Inquiry {
   final String id;

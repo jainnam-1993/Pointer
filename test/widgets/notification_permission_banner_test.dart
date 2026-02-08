@@ -18,7 +18,7 @@ void main() {
           ),
         ),
       );
-      
+
       // Verify banner content
       expect(find.text('Notifications Disabled'), findsOneWidget);
       expect(find.text('Enable in system settings to receive daily pointings'), findsOneWidget);
@@ -28,21 +28,17 @@ void main() {
 
     testWidgets('calls onOpenSettings when button tapped', (tester) async {
       bool settingsOpened = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: Scaffold(
-            body: _TestPermissionBanner(
-              onOpenSettings: () => settingsOpened = true,
-            ),
-          ),
+          home: Scaffold(body: _TestPermissionBanner(onOpenSettings: () => settingsOpened = true)),
         ),
       );
-      
+
       await tester.tap(find.text('Open Settings'));
       await tester.pump();
-      
+
       expect(settingsOpened, isTrue);
     });
 
@@ -50,19 +46,15 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: Scaffold(
-            body: _TestPermissionBanner(
-              onOpenSettings: () {},
-            ),
-          ),
+          home: Scaffold(body: _TestPermissionBanner(onOpenSettings: () {})),
         ),
       );
-      
+
       // Verify container styling
       final container = tester.widget<Container>(find.byType(Container));
       expect(container.margin, const EdgeInsets.only(bottom: 12));
       expect(container.padding, const EdgeInsets.all(16));
-      
+
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.borderRadius, BorderRadius.circular(12));
       expect(decoration.border, isNotNull);
@@ -94,10 +86,7 @@ class _TestPermissionBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Notifications Disabled',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                ),
+                const Text('Notifications Disabled', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 const SizedBox(height: 2),
                 Text(
                   'Enable in system settings to receive daily pointings',
@@ -107,10 +96,7 @@ class _TestPermissionBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          TextButton(
-            onPressed: onOpenSettings,
-            child: const Text('Open Settings'),
-          ),
+          TextButton(onPressed: onOpenSettings, child: const Text('Open Settings')),
         ],
       ),
     );

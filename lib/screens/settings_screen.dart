@@ -31,11 +31,10 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen>
-    with WidgetsBindingObserver {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBindingObserver {
   static const _settingsChannel = MethodChannel('com.dailypointer/settings');
 
-  bool _notificationsEnabled = false;  // Match service default, loaded in _checkPermissions
+  bool _notificationsEnabled = false; // Match service default, loaded in _checkPermissions
   bool _permissionGranted = true;
 
   // Developer options (hidden by default)
@@ -112,11 +111,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
           'Each pointing is a direct invitation to recognize what you already are.\n\n'
           'Version 1.0.0',
-          style: TextStyle(
-            color: context.colors.textSecondary,
-            fontSize: 14,
-            height: 1.5,
-          ),
+          style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
         ),
         actions: [
           TextButton(
@@ -168,11 +163,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         content: Text(
           'Notification permission is required to receive daily pointings. '
           'Tap Open Settings, then enable Notifications.',
-          style: TextStyle(
-            color: context.colors.textSecondary,
-            fontSize: 14,
-            height: 1.5,
-          ),
+          style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
         ),
         actions: [
           TextButton(
@@ -254,20 +245,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 20,
-                bottom: 8,
-              ),
+              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 8),
               children: [
-                StaggeredFadeIn(
-                  index: 0,
-                  child: Text(
-                    'Settings',
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                ),
+                StaggeredFadeIn(index: 0, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
                 const SizedBox(height: 24),
 
                 // Notifications section (Premium feature when IAP enabled)
@@ -275,15 +255,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 const SizedBox(height: 12),
                 // Premium badge for notifications - hidden when kFreeAccessEnabled
                 if (!kFreeAccessEnabled && !subscription.isPremium)
-                  PremiumFeatureBanner(
-                    feature: 'Notifications',
-                    onUpgrade: () => context.push('/paywall'),
-                  ),
+                  PremiumFeatureBanner(feature: 'Notifications', onUpgrade: () => context.push('/paywall')),
                 // Add permission banner when disabled (show if premium OR free access mode)
                 if ((kFreeAccessEnabled || subscription.isPremium) && !_permissionGranted)
-                  NotificationPermissionBanner(
-                    onOpenSettings: () => _openAppNotificationSettings(),
-                  ),
+                  NotificationPermissionBanner(onOpenSettings: () => _openAppNotificationSettings()),
                 GlassCard(
                   padding: EdgeInsets.zero,
                   borderColor: !kFreeAccessEnabled && !subscription.isPremium ? goldColor.withValues(alpha: 0.3) : null,
@@ -295,15 +270,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         subtitle: !kFreeAccessEnabled && !subscription.isPremium
                             ? 'Premium feature'
                             : _permissionGranted
-                                ? _getNotificationCountSummary()
-                                : 'Permission required',
+                            ? _getNotificationCountSummary()
+                            : 'Permission required',
                         // Hide lock icon when kFreeAccessEnabled
                         leading: !kFreeAccessEnabled && !subscription.isPremium
                             ? Icon(Icons.lock_outline, color: goldColor, size: 18)
                             : null,
                         trailing: Switch(
                           // Allow toggle when kFreeAccessEnabled OR premium
-                          value: (kFreeAccessEnabled || subscription.isPremium) && _notificationsEnabled && _permissionGranted,
+                          value:
+                              (kFreeAccessEnabled || subscription.isPremium) &&
+                              _notificationsEnabled &&
+                              _permissionGranted,
                           onChanged: (kFreeAccessEnabled || subscription.isPremium)
                               ? (value) async {
                                   HapticFeedback.mediumImpact();
@@ -341,19 +319,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             if (!kFreeAccessEnabled && !subscription.isPremium)
                               Icon(Icons.lock_outline, color: goldColor, size: 14)
                             else
-                              Text(
-                                _getScheduleTimeSummary(),
-                                style: TextStyle(
-                                  color: textColorMuted,
-                                  fontSize: 14,
-                                ),
-                              ),
+                              Text(_getScheduleTimeSummary(), style: TextStyle(color: textColorMuted, fontSize: 14)),
                             const SizedBox(width: 8),
-                            Icon(
-                              Icons.chevron_right,
-                              color: textColorSubtle,
-                              size: 20,
-                            ),
+                            Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                           ],
                         ),
                         // Allow access when kFreeAccessEnabled OR premium
@@ -382,11 +350,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   padding: EdgeInsets.zero,
                   child: SettingsRow(
                     title: 'Manage Lineages',
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      color: textColorSubtle,
-                      size: 20,
-                    ),
+                    trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                     onTap: () async {
                       HapticFeedback.mediumImpact();
                       // Navigate to lineages management screen
@@ -405,11 +369,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   padding: EdgeInsets.zero,
                   child: SettingsRow(
                     title: 'Past Pointings',
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      color: textColorSubtle,
-                      size: 20,
-                    ),
+                    trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                     onTap: () async {
                       HapticFeedback.mediumImpact();
                       if (context.mounted) {
@@ -420,13 +380,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 ),
                 const SizedBox(height: 8),
                 Center(
-                  child: Text(
-                    'No streaks. Just recognition.',
-                    style: TextStyle(
-                      color: textColorSubtle,
-                      fontSize: 12,
-                    ),
-                  ),
+                  child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
                 ),
 
                 // Experience section (ambient sounds, auto-advance)
@@ -447,31 +401,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     children: [
                       SettingsRow(
                         title: 'About Here Now',
-                        trailing: Icon(
-                          Icons.chevron_right,
-                          color: textColorSubtle,
-                          size: 20,
-                        ),
+                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                         onTap: _showAboutDialog,
                       ),
                       const SettingsDivider(),
                       SettingsRow(
                         title: 'Privacy Policy',
-                        trailing: Icon(
-                          Icons.chevron_right,
-                          color: textColorSubtle,
-                          size: 20,
-                        ),
+                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                         onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
                       ),
                       const SettingsDivider(),
                       SettingsRow(
                         title: 'Terms of Service',
-                        trailing: Icon(
-                          Icons.chevron_right,
-                          color: textColorSubtle,
-                          size: 20,
-                        ),
+                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                         onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
                       ),
                     ],
@@ -492,20 +434,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         SettingsRow(
                           title: 'Test Notification',
                           subtitle: 'Send a test pointing notification',
-                          trailing: Icon(
-                            Icons.notifications_active,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
+                          trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
                           onTap: () async {
                             final notificationService = ref.read(notificationServiceProvider);
                             await notificationService.sendTestNotification();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Test notification sent'),
-                                  duration: Duration(seconds: 2),
-                                ),
+                                const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)),
                               );
                             }
                           },
@@ -514,11 +449,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         SettingsRow(
                           title: 'Test Background Notification',
                           subtitle: 'Schedule via WorkManager (1 min delay)',
-                          trailing: Icon(
-                            Icons.schedule_send,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
+                          trailing: Icon(Icons.schedule_send, color: textColorSubtle, size: 20),
                           onTap: () async {
                             await WorkManagerService.scheduleOneTimeNotification(
                               delay: const Duration(minutes: 1),
@@ -527,7 +458,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Background notification scheduled in 1 minute. You can close the app.'),
+                                  content: Text(
+                                    'Background notification scheduled in 1 minute. You can close the app.',
+                                  ),
                                   duration: Duration(seconds: 4),
                                 ),
                               );
@@ -538,11 +471,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         SettingsRow(
                           title: 'Debug Pending Notifications',
                           subtitle: 'Check scheduled notifications (inexact mode)',
-                          trailing: Icon(
-                            Icons.bug_report,
-                            color: textColorSubtle,
-                            size: 20,
-                          ),
+                          trailing: Icon(Icons.bug_report, color: textColorSubtle, size: 20),
                           onTap: () async {
                             final notificationService = ref.read(notificationServiceProvider);
                             await notificationService.debugPrintPendingNotifications();
@@ -550,9 +479,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(
-                                    'Pending notifications: ${pending.length}',
-                                  ),
+                                  content: Text('Pending notifications: ${pending.length}'),
                                   duration: const Duration(seconds: 4),
                                 ),
                               );
@@ -575,13 +502,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 GestureDetector(
                   onTap: _onVersionTap,
                   child: Center(
-                    child: Text(
-                      'Here Now v1.0.0',
-                      style: TextStyle(
-                        color: textColorVersion,
-                        fontSize: 12,
-                      ),
-                    ),
+                    child: Text('Here Now v1.0.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
                   ),
                 ),
               ],

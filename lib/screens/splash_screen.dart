@@ -43,15 +43,17 @@ class _SplashScreenState extends State<SplashScreen> {
     final asset = 'assets/videos/nonduality_${isDark ? 'black' : 'white'}.mp4';
 
     _controller = VideoPlayerController.asset(asset)
-      ..initialize().then((_) {
-        if (!mounted) return;
-        setState(() {});
-        _controller!.play();
-        _controller!.addListener(_onVideoProgress);
-      }).catchError((_) {
-        // Video failed to load — skip to destination
-        _navigateAway();
-      });
+      ..initialize()
+          .then((_) {
+            if (!mounted) return;
+            setState(() {});
+            _controller!.play();
+            _controller!.addListener(_onVideoProgress);
+          })
+          .catchError((_) {
+            // Video failed to load — skip to destination
+            _navigateAway();
+          });
   }
 
   void _onVideoProgress() {

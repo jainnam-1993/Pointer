@@ -44,8 +44,7 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
       (MethodCall methodCall) async {
         if (methodCall.method == 'HapticFeedback.vibrate') {
@@ -56,8 +55,7 @@ void main() {
     );
 
     // Mock home_widget channel to prevent MissingPluginException
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('home_widget'),
       (MethodCall methodCall) async {
         // Return success for all home_widget method calls
@@ -72,16 +70,17 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, null);
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(const MethodChannel('home_widget'), null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('home_widget'),
+      null,
+    );
   });
 
-  Widget createHomeScreen({
-    Pointing? initialPointing,
-    bool initialZenMode = false,
-  }) {
+  Widget createHomeScreen({Pointing? initialPointing, bool initialZenMode = false}) {
     return ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
@@ -97,17 +96,11 @@ void main() {
           }),
         zenModeProvider.overrideWith((ref) => initialZenMode),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: const HomeScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
     );
   }
 
-  Future<void> pumpHomeScreen(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
+  Future<void> pumpHomeScreen(WidgetTester tester, Widget widget) async {
     // Use a phone-sized surface to avoid overflow in tests
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 2.0;
@@ -146,8 +139,7 @@ void main() {
       expect(capturedRef.read(zenModeProvider), isFalse);
     });
 
-    testWidgets('toggling zenModeProvider updates state from false to true',
-        (tester) async {
+    testWidgets('toggling zenModeProvider updates state from false to true', (tester) async {
       late WidgetRef capturedRef;
 
       await tester.pumpWidget(
@@ -177,8 +169,7 @@ void main() {
       expect(capturedRef.read(zenModeProvider), isTrue);
     });
 
-    testWidgets('toggling zenModeProvider updates state from true to false',
-        (tester) async {
+    testWidgets('toggling zenModeProvider updates state from true to false', (tester) async {
       late WidgetRef capturedRef;
 
       await tester.pumpWidget(
@@ -220,13 +211,7 @@ void main() {
     );
 
     testWidgets('shows full UI when zen mode is off', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: false,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: false));
 
       // Verify full UI elements are present (Phase 5.11: TraditionBadge is inline, Share is icon)
       expect(find.byType(GlassCard), findsNWidgets(2)); // Pointing card + mini-inquiry card
@@ -243,22 +228,13 @@ void main() {
     });
 
     testWidgets('hides non-essential UI when zen mode is on', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: true,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Verify non-essential UI elements are hidden (Phase 5.11: TraditionBadge inline, Share is icon)
       expect(find.byType(GlassCard), findsNothing);
       expect(find.byIcon(Icons.ios_share), findsNothing);
       expect(find.text('Next'), findsNothing);
-      expect(
-        find.text('Tap for another invitation to look'),
-        findsNothing,
-      );
+      expect(find.text('Tap for another invitation to look'), findsNothing);
 
       // Verify only pointing content is visible
       expect(find.text(testPointing.content), findsOneWidget);
@@ -272,19 +248,10 @@ void main() {
     });
 
     testWidgets('zen mode view is centered', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: true,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Find the Center widget that contains zen mode view
-      final centerFinder = find.descendant(
-        of: find.byType(GestureDetector),
-        matching: find.byType(Center),
-      );
+      final centerFinder = find.descendant(of: find.byType(GestureDetector), matching: find.byType(Center));
 
       expect(centerFinder, findsAtLeastNWidgets(1));
     });
@@ -302,20 +269,11 @@ void main() {
         contexts: [PointingContext.general],
       );
 
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: longPointing,
-          initialZenMode: true,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: longPointing, initialZenMode: true));
 
       // Verify SingleChildScrollView is present
       expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('zen-mode')),
-          matching: find.byType(SingleChildScrollView),
-        ),
+        find.descendant(of: find.byKey(const ValueKey('zen-mode')), matching: find.byType(SingleChildScrollView)),
         findsOneWidget,
       );
     });
@@ -329,8 +287,7 @@ void main() {
       contexts: [PointingContext.general],
     );
 
-    testWidgets('double-tap on pointing card toggles zen mode on',
-        (tester) async {
+    testWidgets('double-tap on pointing card toggles zen mode on', (tester) async {
       late WidgetRef capturedRef;
 
       await tester.pumpWidget(
@@ -364,10 +321,7 @@ void main() {
       expect(find.byType(GlassCard), findsWidgets);
 
       // Find the pointing card (the GlassCard with the pointing content) and double-tap it
-      final pointingCard = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      );
+      final pointingCard = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard));
       expect(pointingCard, findsOneWidget);
 
       // Perform double-tap using the pointing card finder
@@ -420,10 +374,7 @@ void main() {
       expect(find.byType(GlassCard), findsWidgets);
 
       // Enable zen mode via double-tap on pointing card
-      final pointingCard = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      );
+      final pointingCard = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard));
       await tester.tap(pointingCard);
       await tester.pump(const Duration(milliseconds: 100));
       await tester.tap(pointingCard);
@@ -444,21 +395,12 @@ void main() {
     });
 
     testWidgets('entering zen mode triggers haptic feedback', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: false,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: false));
 
       hapticCalls.clear();
 
       // Find the pointing card (the GlassCard with the pointing content)
-      final pointingCard = find.ancestor(
-        of: find.text(testPointing.content),
-        matching: find.byType(GlassCard),
-      );
+      final pointingCard = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard));
 
       // Double-tap to enter zen mode
       await tester.tap(pointingCard);
@@ -468,22 +410,15 @@ void main() {
 
       // Verify haptic feedback was triggered
       expect(
-        hapticCalls.where((call) =>
-            call.method == 'HapticFeedback.vibrate' &&
-            call.arguments == 'HapticFeedbackType.lightImpact'),
+        hapticCalls.where(
+          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact',
+        ),
         isNotEmpty,
       );
     });
 
-    testWidgets('exiting zen mode does not trigger haptic feedback',
-        (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: true,
-        ),
-      );
+    testWidgets('exiting zen mode does not trigger haptic feedback', (tester) async {
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       hapticCalls.clear();
 
@@ -493,9 +428,9 @@ void main() {
 
       // Verify no haptic feedback when exiting
       expect(
-        hapticCalls.where((call) =>
-            call.method == 'HapticFeedback.vibrate' &&
-            call.arguments == 'HapticFeedbackType.lightImpact'),
+        hapticCalls.where(
+          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact',
+        ),
         isEmpty,
       );
     });
@@ -510,13 +445,7 @@ void main() {
     );
 
     testWidgets('zen mode view has fade-in animation', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: true,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Find AnimatedOpacity wrapping zen mode view
       final animatedOpacityFinder = find.ancestor(
@@ -527,19 +456,12 @@ void main() {
       expect(animatedOpacityFinder, findsOneWidget);
 
       // Verify opacity is set to 1.0 (fully visible)
-      final animatedOpacity =
-          tester.widget<AnimatedOpacity>(animatedOpacityFinder);
+      final animatedOpacity = tester.widget<AnimatedOpacity>(animatedOpacityFinder);
       expect(animatedOpacity.opacity, 1.0);
     });
 
     testWidgets('animation duration is 500ms', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreen(
-          initialPointing: testPointing,
-          initialZenMode: true,
-        ),
-      );
+      await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Find AnimatedOpacity
       final animatedOpacityFinder = find.ancestor(
@@ -547,12 +469,8 @@ void main() {
         matching: find.byType(AnimatedOpacity),
       );
 
-      final animatedOpacity =
-          tester.widget<AnimatedOpacity>(animatedOpacityFinder);
-      expect(
-        animatedOpacity.duration,
-        const Duration(milliseconds: 500),
-      );
+      final animatedOpacity = tester.widget<AnimatedOpacity>(animatedOpacityFinder);
+      expect(animatedOpacity.duration, const Duration(milliseconds: 500));
     });
   });
 
@@ -608,8 +526,7 @@ void main() {
       expect(find.byKey(const ValueKey('zen-mode')), findsOneWidget);
     });
 
-    testWidgets('can toggle between zen and normal mode multiple times',
-        (tester) async {
+    testWidgets('can toggle between zen and normal mode multiple times', (tester) async {
       late WidgetRef capturedRef;
 
       await tester.pumpWidget(

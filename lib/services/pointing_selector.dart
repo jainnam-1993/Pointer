@@ -14,10 +14,10 @@ import '../data/pointings.dart';
 /// - Evening: 5pm - 10pm (reflection, release themes)
 /// - Night: 10pm - 5am (rest, surrender themes)
 class TimeContextBoundaries {
-  static const int morningStart = 5;   // 5:00 AM
-  static const int middayStart = 11;   // 11:00 AM
-  static const int eveningStart = 17;  // 5:00 PM
-  static const int nightStart = 22;    // 10:00 PM
+  static const int morningStart = 5; // 5:00 AM
+  static const int middayStart = 11; // 11:00 AM
+  static const int eveningStart = 17; // 5:00 PM
+  static const int nightStart = 22; // 10:00 PM
 
   // Prevent instantiation
   TimeContextBoundaries._();
@@ -41,16 +41,13 @@ TimeContext getCurrentTimeContext() {
 /// Returns the TimeContext for a given hour (0-23).
 /// Exposed for testing.
 TimeContext getTimeContextForHour(int hour) {
-  if (hour >= TimeContextBoundaries.morningStart &&
-      hour < TimeContextBoundaries.middayStart) {
+  if (hour >= TimeContextBoundaries.morningStart && hour < TimeContextBoundaries.middayStart) {
     return TimeContext.morning;
   }
-  if (hour >= TimeContextBoundaries.middayStart &&
-      hour < TimeContextBoundaries.eveningStart) {
+  if (hour >= TimeContextBoundaries.middayStart && hour < TimeContextBoundaries.eveningStart) {
     return TimeContext.midday;
   }
-  if (hour >= TimeContextBoundaries.eveningStart &&
-      hour < TimeContextBoundaries.nightStart) {
+  if (hour >= TimeContextBoundaries.eveningStart && hour < TimeContextBoundaries.nightStart) {
     return TimeContext.evening;
   }
   return TimeContext.night; // nightStart onwards until morningStart
@@ -97,11 +94,7 @@ class PointingSelector {
     bool respectTimeContext = true,
   }) {
     if (respectTimeContext) {
-      return selectPointingForTime(
-        all: all,
-        viewedToday: viewedToday,
-        timeContext: getCurrentTimeContext(),
-      );
+      return selectPointingForTime(all: all, viewedToday: viewedToday, timeContext: getCurrentTimeContext());
     }
 
     // No time context - simple random selection excluding viewed

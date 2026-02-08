@@ -13,12 +13,7 @@ class VideoPlayerWidget extends ConsumerStatefulWidget {
   final String? videoUrl;
   final bool isPremium;
 
-  const VideoPlayerWidget({
-    super.key,
-    required this.pointingId,
-    required this.videoUrl,
-    required this.isPremium,
-  });
+  const VideoPlayerWidget({super.key, required this.pointingId, required this.videoUrl, required this.isPremium});
 
   @override
   ConsumerState<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
@@ -43,9 +38,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (widget.videoUrl == null) return;
 
     if (_controller == null) {
-      _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.videoUrl!),
-      );
+      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl!));
       await _controller!.initialize();
       setState(() => _isInitialized = true);
     }
@@ -54,9 +47,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (mounted) {
       await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => _FullScreenVideoPlayer(controller: _controller!),
-        ),
+        MaterialPageRoute(builder: (context) => _FullScreenVideoPlayer(controller: _controller!)),
       );
     }
   }
@@ -67,9 +58,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     showModalBottomSheet(
       context: context,
       backgroundColor: colors.cardBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -77,11 +66,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
           children: [
             Icon(Icons.play_circle_outline, color: colors.gold, size: 48),
             const SizedBox(height: 16),
-            Text(
-              'Video Transmissions',
-              style: AppTextStyles.heading(context),
-              textAlign: TextAlign.center,
-            ),
+            Text('Video Transmissions', style: AppTextStyles.heading(context), textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
               'Watch video teachings from realized masters. Premium feature.',
@@ -133,26 +118,16 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             if (_isInitialized && _controller != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: AspectRatio(
-                  aspectRatio: _controller!.value.aspectRatio,
-                  child: VideoPlayer(_controller!),
-                ),
+                child: AspectRatio(aspectRatio: _controller!.value.aspectRatio, child: VideoPlayer(_controller!)),
               )
             else
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.videocam,
-                      color: colors.textSecondary,
-                      size: 32,
-                    ),
+                    Icon(Icons.videocam, color: colors.textSecondary, size: 32),
                     const SizedBox(height: 8),
-                    Text(
-                      'Video Transmission',
-                      style: AppTextStyles.footerText(context),
-                    ),
+                    Text('Video Transmission', style: AppTextStyles.footerText(context)),
                   ],
                 ),
               ),
@@ -163,15 +138,9 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.isPremium
-                    ? colors.accent.withValues(alpha: 0.9)
-                    : colors.gold.withValues(alpha: 0.9),
+                color: widget.isPremium ? colors.accent.withValues(alpha: 0.9) : colors.gold.withValues(alpha: 0.9),
               ),
-              child: Icon(
-                widget.isPremium ? Icons.play_arrow : Icons.lock,
-                color: Colors.white,
-                size: 36,
-              ),
+              child: Icon(widget.isPremium ? Icons.play_arrow : Icons.lock, color: Colors.white, size: 36),
             ),
           ],
         ),
@@ -261,22 +230,15 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
-                      widget.controller.value.isPlaying
-                          ? widget.controller.pause()
-                          : widget.controller.play();
+                      widget.controller.value.isPlaying ? widget.controller.pause() : widget.controller.play();
                     });
                   },
                   child: Container(
                     width: 72,
                     height: 72,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.3),
-                    ),
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.3)),
                     child: Icon(
-                      widget.controller.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
+                      widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                       color: Colors.white,
                       size: 48,
                     ),

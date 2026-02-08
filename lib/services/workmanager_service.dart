@@ -95,10 +95,7 @@ Future<void> _showNotificationFromBackground() async {
           summaryText: pointing['tradition'],
         ),
       ),
-      iOS: const DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-      ),
+      iOS: const DarwinNotificationDetails(presentAlert: true, presentBadge: true),
     ),
     payload: pointing['id'],
   );
@@ -147,9 +144,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     final recentIds = prefs.getStringList(_recentNotificationIdsKey) ?? [];
 
     // Filter out recently shown pointings
-    var candidates = contextPointings
-        .where((p) => !recentIds.contains(p['id']))
-        .toList();
+    var candidates = contextPointings.where((p) => !recentIds.contains(p['id'])).toList();
 
     // If all have been shown, reset and use all
     if (candidates.isEmpty) {
@@ -192,11 +187,7 @@ Map<String, String> _getFallbackPointing() {
       'content': 'What is it that is aware right now? Look directly, without thinking.',
       'tradition': 'Direct Path',
     },
-    {
-      'id': 'fallback_3',
-      'content': 'Before thought arises, what are you?',
-      'tradition': 'Zen',
-    },
+    {'id': 'fallback_3', 'content': 'Before thought arises, what are you?', 'tradition': 'Zen'},
   ];
   return fallbacks[Random().nextInt(fallbacks.length)];
 }
@@ -209,9 +200,7 @@ class WorkManagerService {
   static Future<void> initialize() async {
     if (_isInitialized) return;
 
-    await Workmanager().initialize(
-      callbackDispatcher,
-    );
+    await Workmanager().initialize(callbackDispatcher);
 
     _isInitialized = true;
     debugPrint('[WorkManagerService] Initialized');
@@ -256,10 +245,7 @@ class WorkManagerService {
   }
 
   /// Schedule a one-time notification after a delay.
-  static Future<void> scheduleOneTimeNotification({
-    required Duration delay,
-    String? uniqueName,
-  }) async {
+  static Future<void> scheduleOneTimeNotification({required Duration delay, String? uniqueName}) async {
     final taskName = uniqueName ?? 'oneTime_${DateTime.now().millisecondsSinceEpoch}';
 
     await Workmanager().registerOneOffTask(

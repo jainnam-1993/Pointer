@@ -99,9 +99,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                child: _isExpanded
-                    ? _buildExpandedContent(state, colors)
-                    : const SizedBox.shrink(),
+                child: _isExpanded ? _buildExpandedContent(state, colors) : const SizedBox.shrink(),
               ),
             ),
           ],
@@ -116,40 +114,21 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       behavior: HitTestBehavior.opaque,
       child: Row(
         children: [
-          Icon(
-            Icons.favorite_outline,
-            color: colors.accent,
-            size: 20,
-          ),
+          Icon(Icons.favorite_outline, color: colors.accent, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Support Development',
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
           if (state.isLoading && !_isExpanded)
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: colors.accent,
-              ),
-            )
+            SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: colors.accent))
           else
             AnimatedRotation(
               turns: _isExpanded ? 0.5 : 0.0,
               duration: const Duration(milliseconds: 200),
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: colors.textMuted,
-                size: 24,
-              ),
+              child: Icon(Icons.keyboard_arrow_down, color: colors.textMuted, size: 24),
             ),
         ],
       ),
@@ -163,11 +142,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
         const SizedBox(height: 12),
         Text(
           'Here Now is free forever. If you find value, consider supporting development.',
-          style: TextStyle(
-            color: colors.textSecondary,
-            fontSize: 13,
-            height: 1.4,
-          ),
+          style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.4),
         ),
         const SizedBox(height: 16),
         _buildProductGrid(state, colors),
@@ -181,9 +156,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: CircularProgressIndicator(
-            color: colors.accent,
-          ),
+          child: CircularProgressIndicator(color: colors.accent),
         ),
       );
     }
@@ -198,13 +171,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text(
-            'No donation options available',
-            style: TextStyle(
-              color: colors.textMuted,
-              fontSize: 14,
-            ),
-          ),
+          child: Text('No donation options available', style: TextStyle(color: colors.textMuted, fontSize: 14)),
         ),
       );
     }
@@ -218,10 +185,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       children: [
         Text(
           state.error ?? 'An error occurred',
-          style: TextStyle(
-            color: Colors.red.shade300,
-            fontSize: 13,
-          ),
+          style: TextStyle(color: Colors.red.shade300, fontSize: 13),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
@@ -235,11 +199,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
             ),
             child: Text(
               'Retry',
-              style: TextStyle(
-                color: colors.accent,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -303,39 +263,21 @@ class _TipOptionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.white.withValues(alpha: 0.6),
+            color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: colors.glassBorder,
-            ),
+            border: Border.all(color: colors.glassBorder),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: colors.accent,
-                size: 24,
-              ),
+              Icon(icon, color: colors.accent, size: 24),
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  color: colors.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: colors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 2),
-              Text(
-                product.price,
-                style: TextStyle(
-                  color: colors.textMuted,
-                  fontSize: 12,
-                ),
-              ),
+              Text(product.price, style: TextStyle(color: colors.textMuted, fontSize: 12)),
             ],
           ),
         ),

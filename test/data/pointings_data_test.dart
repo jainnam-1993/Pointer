@@ -15,8 +15,7 @@ void main() {
     test('has pointings for each tradition', () {
       for (final tradition in Tradition.values) {
         final traditionPointings = getPointingsByTradition(tradition);
-        expect(traditionPointings.isNotEmpty, true,
-            reason: '${tradition.name} should have pointings');
+        expect(traditionPointings.isNotEmpty, true, reason: '${tradition.name} should have pointings');
       }
     });
 
@@ -30,8 +29,7 @@ void main() {
     test('traditions map has all traditions', () {
       expect(traditions.length, 5);
       for (final tradition in Tradition.values) {
-        expect(traditions.containsKey(tradition), true,
-            reason: '${tradition.name} should be in traditions map');
+        expect(traditions.containsKey(tradition), true, reason: '${tradition.name} should be in traditions map');
       }
     });
   });

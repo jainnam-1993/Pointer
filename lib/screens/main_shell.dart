@@ -10,10 +10,7 @@ import '../widgets/glass_card.dart';
 class MainShell extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
-  const MainShell({
-    super.key,
-    required this.navigationShell,
-  });
+  const MainShell({super.key, required this.navigationShell});
 
   @override
   ConsumerState<MainShell> createState() => _MainShellState();
@@ -70,10 +67,7 @@ class _MainShellState extends ConsumerState<MainShell> {
       extendBody: true,
       bottomNavigationBar: _BottomNavBar(
         currentIndex: currentIndex,
-        onTap: (index) => widget.navigationShell.goBranch(
-          index,
-          initialLocation: index == currentIndex,
-        ),
+        onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
       ),
     );
   }
@@ -83,10 +77,7 @@ class _BottomNavBar extends StatefulWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const _BottomNavBar({
-    required this.currentIndex,
-    required this.onTap,
-  });
+  const _BottomNavBar({required this.currentIndex, required this.onTap});
 
   @override
   State<_BottomNavBar> createState() => _BottomNavBarState();
@@ -103,36 +94,24 @@ class _BottomNavBarState extends State<_BottomNavBar> {
     // Enhanced iOS-style glass gradient
     final glassGradient = isDark
         ? LinearGradient(
-            colors: [
-              Colors.white.withValues(alpha: 0.22),
-              Colors.white.withValues(alpha: 0.10),
-            ],
+            colors: [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
-            colors: [
-              Colors.white.withValues(alpha: 0.95),
-              Colors.white.withValues(alpha: 0.75),
-            ],
+            colors: [Colors.white.withValues(alpha: 0.95), Colors.white.withValues(alpha: 0.75)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
 
     final borderGradient = isDark
         ? LinearGradient(
-            colors: [
-              colors.glassBorder,
-              colors.glassBorder.withValues(alpha: 0.2),
-            ],
+            colors: [colors.glassBorder, colors.glassBorder.withValues(alpha: 0.2)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
-            colors: [
-              Colors.black.withValues(alpha: 0.08),
-              Colors.black.withValues(alpha: 0.03),
-            ],
+            colors: [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
@@ -152,7 +131,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
     // Constrain max width on large screens to prevent over-stretching
     final maxNavWidth = isLargeTablet ? 560.0 : (isTablet ? 480.0 : double.infinity);
     final horizontalMargin = isLargeTablet
-        ? (screenWidth - maxNavWidth) / 2  // Center with calculated margins
+        ? (screenWidth - maxNavWidth) /
+              2 // Center with calculated margins
         : (isTablet ? 48.0 : 24.0);
 
     // Responsive bottom margin:
@@ -163,7 +143,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
       margin: EdgeInsets.only(
         left: horizontalMargin,
         right: horizontalMargin,
-        top: 8.0,  // Top padding for separation from content (doubled from 4px)
+        top: 8.0, // Top padding for separation from content (doubled from 4px)
         bottom: bottomMargin,
       ),
       decoration: isDark
@@ -189,10 +169,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             decoration: BoxDecoration(
               gradient: glassGradient,
               borderRadius: BorderRadius.circular(borderRadius),
-              border: GradientBoxBorder(
-                gradient: borderGradient,
-                width: isDark ? 1.5 : 1,
-              ),
+              border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.5 : 1),
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -215,10 +192,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                       child: Container(
                         width: indicatorWidth,
                         height: 4,
-                        decoration: BoxDecoration(
-                          color: colors.accent,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                        decoration: BoxDecoration(color: colors.accent, borderRadius: BorderRadius.circular(2)),
                       ),
                     ),
                     // Nav items row - use Expanded for equal-width columns
@@ -316,11 +290,7 @@ class _NavItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isActive ? activeIcon : icon,
-                color: isActive ? activeColor : inactiveColor,
-                size: iconSize,
-              ),
+              Icon(isActive ? activeIcon : icon, color: isActive ? activeColor : inactiveColor, size: iconSize),
               const SizedBox(height: 4),
               Text(
                 label,

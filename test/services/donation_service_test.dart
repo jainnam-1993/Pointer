@@ -122,8 +122,7 @@ void main() {
         notFoundIDs: [],
       );
 
-      when(() => mockIap.queryProductDetails(any()))
-          .thenAnswer((_) async => response);
+      when(() => mockIap.queryProductDetails(any())).thenAnswer((_) async => response);
 
       final products = await donationService.loadProducts();
 
@@ -142,8 +141,7 @@ void main() {
         notFoundIDs: ['tip_medium', 'tip_large', 'tip_generous'],
       );
 
-      when(() => mockIap.queryProductDetails(any()))
-          .thenAnswer((_) async => response);
+      when(() => mockIap.queryProductDetails(any())).thenAnswer((_) async => response);
 
       final products = await donationService.loadProducts();
 
@@ -153,8 +151,7 @@ void main() {
 
     test('returns empty list on error (graceful degradation)', () async {
       when(() => mockIap.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockIap.queryProductDetails(any()))
-          .thenThrow(Exception('Query failed'));
+      when(() => mockIap.queryProductDetails(any())).thenThrow(Exception('Query failed'));
 
       final products = await donationService.loadProducts();
 
@@ -182,25 +179,21 @@ void main() {
     test('initiates consumable purchase', () async {
       final product = _createMockProduct('tip_small', 0.99);
 
-      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam')))
-          .thenAnswer((_) async => true);
+      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).thenAnswer((_) async => true);
 
       await donationService.purchaseProduct(product);
 
-      verify(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam')))
-          .called(1);
+      verify(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).called(1);
     });
 
     test('rethrows error on purchase failure', () async {
       final product = _createMockProduct('tip_small', 0.99);
 
-      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam')))
-          .thenThrow(Exception('Purchase failed'));
+      when(
+        () => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam')),
+      ).thenThrow(Exception('Purchase failed'));
 
-      expect(
-        () => donationService.purchaseProduct(product),
-        throwsException,
-      );
+      expect(() => donationService.purchaseProduct(product), throwsException);
     });
   });
 
@@ -224,8 +217,7 @@ void main() {
     test('completes purchase when pending', () async {
       final purchase = MockPurchaseDetails();
       when(() => purchase.pendingCompletePurchase).thenReturn(true);
-      when(() => mockIap.completePurchase(purchase))
-          .thenAnswer((_) async {});
+      when(() => mockIap.completePurchase(purchase)).thenAnswer((_) async {});
 
       await donationService.completePurchase(purchase);
 

@@ -85,8 +85,7 @@ class Article {
   bool hasCategory(ArticleCategory category) => categories.contains(category);
 
   /// Check if article is by a specific teacher
-  bool isBy(String teacherName) =>
-      teacher?.toLowerCase() == teacherName.toLowerCase();
+  bool isBy(String teacherName) => teacher?.toLowerCase() == teacherName.toLowerCase();
 
   /// Check if article has a specific topic tag
   bool hasTopic(String topic) => topicTags.contains(topic);
@@ -96,8 +95,7 @@ class Article {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Article && runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) || other is Article && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

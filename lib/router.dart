@@ -96,10 +96,7 @@ GoRouter _createRouter() {
       // Onboarding route (outside shell) - fade through for entry
       GoRoute(
         path: '/onboarding',
-        pageBuilder: (context, state) => FadeThroughPage(
-          key: state.pageKey,
-          child: const OnboardingScreen(),
-        ),
+        pageBuilder: (context, state) => FadeThroughPage(key: state.pageKey, child: const OnboardingScreen()),
       ),
 
       // Paywall route - redirect to home (IAP removed, all features free)
@@ -150,45 +147,25 @@ GoRouter _createRouter() {
           // Home tab
           StatefulShellBranch(
             navigatorKey: _homeNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
           ),
 
           // Inquiry tab
           StatefulShellBranch(
             navigatorKey: _inquiryNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/inquiry',
-                builder: (context, state) => const InquiryScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: '/inquiry', builder: (context, state) => const InquiryScreen())],
           ),
 
           // Library tab
           StatefulShellBranch(
             navigatorKey: _libraryNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/library',
-                builder: (context, state) => const LibraryScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: '/library', builder: (context, state) => const LibraryScreen())],
           ),
 
           // Settings tab
           StatefulShellBranch(
             navigatorKey: _settingsNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) => const SettingsScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen())],
           ),
         ],
       ),

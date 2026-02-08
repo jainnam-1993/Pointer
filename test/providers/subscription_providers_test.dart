@@ -35,17 +35,9 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      const original = SubscriptionState(
-        tier: SubscriptionTier.free,
-        isLoading: false,
-        error: 'original error',
-      );
+      const original = SubscriptionState(tier: SubscriptionTier.free, isLoading: false, error: 'original error');
 
-      final modified = original.copyWith(
-        tier: SubscriptionTier.premium,
-        isLoading: true,
-        error: 'new error',
-      );
+      final modified = original.copyWith(tier: SubscriptionTier.premium, isLoading: true, error: 'new error');
 
       expect(modified.tier, SubscriptionTier.premium);
       expect(modified.isLoading, true);
@@ -53,11 +45,7 @@ void main() {
     });
 
     test('copyWith preserves unmodified fields', () {
-      const original = SubscriptionState(
-        tier: SubscriptionTier.premium,
-        isLoading: false,
-        error: 'test error',
-      );
+      const original = SubscriptionState(tier: SubscriptionTier.premium, isLoading: false, error: 'test error');
 
       final modified = original.copyWith(isLoading: true);
 
@@ -119,18 +107,11 @@ void main() {
     });
 
     test('recordView increments count', () async {
-      final initial = DailyUsage(
-        viewCount: 1,
-        lastResetDate: _todayString(),
-      );
-      final updated = DailyUsage(
-        viewCount: 2,
-        lastResetDate: _todayString(),
-      );
+      final initial = DailyUsage(viewCount: 1, lastResetDate: _todayString());
+      final updated = DailyUsage(viewCount: 2, lastResetDate: _todayString());
 
       when(() => mockService.getUsage()).thenReturn(initial);
-      when(() => mockService.incrementViewCount())
-          .thenAnswer((_) async => updated);
+      when(() => mockService.incrementViewCount()).thenAnswer((_) async => updated);
 
       notifier = DailyUsageNotifier(mockService);
       expect(notifier.state.viewCount, 1);
@@ -141,14 +122,8 @@ void main() {
     });
 
     test('reset clears usage', () async {
-      final initial = DailyUsage(
-        viewCount: 2,
-        lastResetDate: _todayString(),
-      );
-      final resetUsage = DailyUsage(
-        viewCount: 0,
-        lastResetDate: _todayString(),
-      );
+      final initial = DailyUsage(viewCount: 2, lastResetDate: _todayString());
+      final resetUsage = DailyUsage(viewCount: 0, lastResetDate: _todayString());
 
       // First call (constructor) returns initial, subsequent calls return reset
       var callCount = 0;
@@ -167,10 +142,7 @@ void main() {
     });
 
     test('initializes with service usage on creation', () {
-      final usage = DailyUsage(
-        viewCount: 1,
-        lastResetDate: _todayString(),
-      );
+      final usage = DailyUsage(viewCount: 1, lastResetDate: _todayString());
       when(() => mockService.getUsage()).thenReturn(usage);
 
       notifier = DailyUsageNotifier(mockService);

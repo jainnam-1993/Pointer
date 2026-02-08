@@ -38,19 +38,10 @@ class HistoryScreen extends ConsumerWidget {
                           HapticFeedback.lightImpact();
                           context.pop();
                         },
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: colors.textPrimary,
-                          size: 20,
-                        ),
+                        icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Past Pointings',
-                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 28,
-                        ),
-                      ),
+                      Text('Past Pointings', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28)),
                     ],
                   ),
                 ),
@@ -59,8 +50,7 @@ class HistoryScreen extends ConsumerWidget {
                 Expanded(
                   child: viewedPointings.isEmpty
                       ? _buildEmptyState(context, colors)
-                      : _buildPointingsList(
-                          context, ref, viewedPointings, bottomPadding, colors),
+                      : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
                 ),
               ],
             ),
@@ -75,27 +65,16 @@ class HistoryScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.history,
-            size: 64,
-            color: colors.textSecondary.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.history, size: 64, color: colors.textSecondary.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
           Text(
             'No pointings yet',
-            style: TextStyle(
-              color: colors.textSecondary,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(color: colors.textSecondary, fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
           Text(
             'Your viewed pointings will appear here',
-            style: TextStyle(
-              color: colors.textSecondary.withValues(alpha: 0.7),
-              fontSize: 14,
-            ),
+            style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14),
           ),
         ],
       ),
@@ -110,12 +89,7 @@ class HistoryScreen extends ConsumerWidget {
     PointerColors colors,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 8,
-        bottom: 100 + bottomPadding,
-      ),
+      padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 100 + bottomPadding),
       itemCount: viewedPointings.length,
       itemBuilder: (context, index) {
         final viewed = viewedPointings[index];
@@ -123,10 +97,7 @@ class HistoryScreen extends ConsumerWidget {
         final viewedAt = DateTime.fromMillisecondsSinceEpoch(viewed['viewedAt'] as int);
 
         // Find the actual pointing data
-        final pointing = pointings.cast<Pointing?>().firstWhere(
-          (p) => p?.id == pointingId,
-          orElse: () => null,
-        );
+        final pointing = pointings.cast<Pointing?>().firstWhere((p) => p?.id == pointingId, orElse: () => null);
 
         if (pointing == null) return const SizedBox.shrink();
 
@@ -156,11 +127,7 @@ class _HistoryCard extends StatelessWidget {
   final DateTime viewedAt;
   final VoidCallback onTap;
 
-  const _HistoryCard({
-    required this.pointing,
-    required this.viewedAt,
-    required this.onTap,
-  });
+  const _HistoryCard({required this.pointing, required this.viewedAt, required this.onTap});
 
   String _formatDate(DateTime date) {
     final now = DateTime.now();
@@ -198,27 +165,17 @@ class _HistoryCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      traditionInfo.icon,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Text(traditionInfo.icon, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: 8),
                     Text(
                       traditionInfo.name,
-                      style: TextStyle(
-                        color: colors.accent,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
                 Text(
                   _formatDate(viewedAt),
-                  style: TextStyle(
-                    color: colors.textSecondary.withValues(alpha: 0.7),
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12),
                 ),
               ],
             ),
@@ -229,11 +186,7 @@ class _HistoryCard extends StatelessWidget {
               pointing.content,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.4),
             ),
 
             // Teacher attribution
@@ -241,11 +194,7 @@ class _HistoryCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '— ${pointing.teacher}',
-                style: TextStyle(
-                  color: colors.textSecondary,
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: TextStyle(color: colors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
               ),
             ],
           ],

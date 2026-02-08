@@ -52,8 +52,7 @@ class DonationService {
       }
 
       // Sort by price (assuming small < medium < large < generous)
-      final products = response.productDetails.toList()
-        ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+      final products = response.productDetails.toList()..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
 
       return products;
     } catch (e) {
@@ -89,9 +88,7 @@ class DonationService {
   /// Listen to purchase updates and handle completion
   ///
   /// Returns a subscription that should be cancelled when no longer needed.
-  StreamSubscription<List<PurchaseDetails>> listenToPurchases(
-    void Function(PurchaseDetails) onPurchase,
-  ) {
+  StreamSubscription<List<PurchaseDetails>> listenToPurchases(void Function(PurchaseDetails) onPurchase) {
     _subscription = _iap.purchaseStream.listen((purchases) {
       for (final purchase in purchases) {
         onPurchase(purchase);

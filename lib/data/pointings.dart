@@ -38,11 +38,7 @@ class TraditionInfo {
   final String icon;
   final String description;
 
-  const TraditionInfo({
-    required this.name,
-    required this.icon,
-    required this.description,
-  });
+  const TraditionInfo({required this.name, required this.icon, required this.description});
 }
 
 const traditions = <Tradition, TraditionInfo>{
@@ -51,11 +47,7 @@ const traditions = <Tradition, TraditionInfo>{
     icon: 'ॐ',
     description: 'The path of non-duality. You are already what you seek.',
   ),
-  Tradition.zen: TraditionInfo(
-    name: 'Zen Buddhism',
-    icon: '◯',
-    description: 'Direct pointing. No words, no concepts.',
-  ),
+  Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.'),
   Tradition.direct: TraditionInfo(
     name: 'Direct Path',
     icon: '◇',
@@ -298,7 +290,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-102',
-    content: 'God is not an object of any search; he remains the very subjectivity. You are not going to find him somewhere because he is everywhere.',
+    content:
+        'God is not an object of any search; he remains the very subjectivity. You are not going to find him somewhere because he is everywhere.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -307,7 +300,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-103',
-    content: 'Remember, untruth is not such a great hindrance as the belief in the truth. If you believe you stop seeking.',
+    content:
+        'Remember, untruth is not such a great hindrance as the belief in the truth. If you believe you stop seeking.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -316,7 +310,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-104',
-    content: 'With me this guilt feeling has to be dropped. You are not a sinner and you are not guilty. Whatsoever you are the existence accepts you.',
+    content:
+        'With me this guilt feeling has to be dropped. You are not a sinner and you are not guilty. Whatsoever you are the existence accepts you.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -325,7 +320,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-105',
-    content: 'If you love yourself, to me you have become religious. And a person who loves himself, only he can love others.',
+    content:
+        'If you love yourself, to me you have become religious. And a person who loves himself, only he can love others.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -334,7 +330,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-106',
-    content: 'Your life, all of your life, is your path to awakening. By resisting or not dealing with its challenges, you stay asleep to Reality.',
+    content:
+        'Your life, all of your life, is your path to awakening. By resisting or not dealing with its challenges, you stay asleep to Reality.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -352,7 +349,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-102',
-    content: "Jesus says, 'Only those who are like small children will be able to enter God's kingdom.' I will try to make you like small children.",
+    content:
+        "Jesus says, 'Only those who are like small children will be able to enter God's kingdom.' I will try to make you like small children.",
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
@@ -369,7 +367,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-104',
-    content: 'Life is poetic, illogical. It is not like work, it is like play. Look at the trees, the animals, the birds; look at the sky: the whole existence is playful.',
+    content:
+        'Life is poetic, illogical. It is not like work, it is like play. Look at the trees, the animals, the birds; look at the sky: the whole existence is playful.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -378,7 +377,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-101',
-    content: 'Truth is a pathless land, and you cannot approach it by any path whatsoever, by any religion, by any sect.',
+    content:
+        'Truth is a pathless land, and you cannot approach it by any path whatsoever, by any religion, by any sect.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -396,7 +396,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-103',
-    content: 'Forget all you know about yourself; forget all you have ever thought about yourself; start as if you know nothing.',
+    content:
+        'Forget all you know about yourself; forget all you have ever thought about yourself; start as if you know nothing.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -405,7 +406,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-104',
-    content: 'Intelligence is the capacity to perceive the essential, what is. To awaken this capacity, in oneself and in others, is education.',
+    content:
+        'Intelligence is the capacity to perceive the essential, what is. To awaken this capacity, in oneself and in others, is education.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -414,7 +416,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-105',
-    content: 'It is love alone that leads to right action. What brings order in the world is to love and let love do what it will.',
+    content:
+        'It is love alone that leads to right action. What brings order in the world is to love and let love do what it will.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -423,7 +426,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-107',
-    content: 'I, open, empty Awareness, am aware of thoughts, feelings, sensations and perceptions but am not made of any of these.',
+    content:
+        'I, open, empty Awareness, am aware of thoughts, feelings, sensations and perceptions but am not made of any of these.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -432,7 +436,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-108',
-    content: 'When the body dies, the whirlpool dissolves. But nothing disappears, because all there is to the whirlpool is water.',
+    content:
+        'When the body dies, the whirlpool dissolves. But nothing disappears, because all there is to the whirlpool is water.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -441,7 +446,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-110',
-    content: 'Allow your experience to appear exactly as it is from moment to moment, without trying to change it in any way.',
+    content:
+        'Allow your experience to appear exactly as it is from moment to moment, without trying to change it in any way.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -458,7 +464,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-112',
-    content: 'What am I when all of these have been removed from me? Only the experience of being aware, only awareness itself.',
+    content:
+        'What am I when all of these have been removed from me? Only the experience of being aware, only awareness itself.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -467,7 +474,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-113',
-    content: 'The direct path is really the path for our age. It requires no affiliation to any particular teacher or any tradition.',
+    content:
+        'The direct path is really the path for our age. It requires no affiliation to any particular teacher or any tradition.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -476,7 +484,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-117',
-    content: "The sense of 'being myself' is our most ordinary, intimate and familiar experience. It pervades all experience.",
+    content:
+        "The sense of 'being myself' is our most ordinary, intimate and familiar experience. It pervades all experience.",
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
@@ -502,7 +511,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-121',
-    content: 'The essential discovery of all the great spiritual traditions is the identity of Consciousness and Reality.',
+    content:
+        'The essential discovery of all the great spiritual traditions is the identity of Consciousness and Reality.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -511,7 +521,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-101',
-    content: 'The primary task of any good spiritual teaching is not to answer your questions, but to question your answers.',
+    content:
+        'The primary task of any good spiritual teaching is not to answer your questions, but to question your answers.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -520,7 +531,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-102',
-    content: 'Many spiritual seekers already live on a steady diet of spiritual junk food, those nice-sounding platitudes that have little or no transforming effect.',
+    content:
+        'Many spiritual seekers already live on a steady diet of spiritual junk food, those nice-sounding platitudes that have little or no transforming effect.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -538,7 +550,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-105',
-    content: "There is no such thing as an absolutely True thought. This doesn't mean that some thoughts are not truer than others.",
+    content:
+        "There is no such thing as an absolutely True thought. This doesn't mean that some thoughts are not truer than others.",
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
@@ -582,7 +595,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-109',
-    content: 'This Freedom, this Wisdom, this Beauty, this Love is always inviting you. You only have to turn your attention within.',
+    content:
+        'This Freedom, this Wisdom, this Beauty, this Love is always inviting you. You only have to turn your attention within.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -618,7 +632,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-109',
-    content: 'Yoga is not belief. It is an existential approach. You will come to the truth through your own experience.',
+    content:
+        'Yoga is not belief. It is an existential approach. You will come to the truth through your own experience.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -627,7 +642,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-111',
-    content: 'Yoga is the cessation of mind. When there is no mind, you are in yoga; when there is mind you are not in yoga.',
+    content:
+        'Yoga is the cessation of mind. When there is no mind, you are in yoga; when there is mind you are not in yoga.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -636,7 +652,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-113',
-    content: "The only true statement is 'I am'. All else is mere inference. By no effort can you change the 'I am' into 'I am-not'.",
+    content:
+        "The only true statement is 'I am'. All else is mere inference. By no effort can you change the 'I am' into 'I am-not'.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -652,7 +669,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-115',
-    content: 'Discover all that you are not -- body, feelings, thoughts, time, space. The very act of perceiving shows that you are not what you perceive.',
+    content:
+        'Discover all that you are not -- body, feelings, thoughts, time, space. The very act of perceiving shows that you are not what you perceive.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -661,7 +679,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-116',
-    content: 'The clearer you understand you can be described in negative terms only, the quicker will you come to the end of your search.',
+    content:
+        'The clearer you understand you can be described in negative terms only, the quicker will you come to the end of your search.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -670,7 +689,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-117',
-    content: "The sense of being, of 'I am' is the first to emerge. Ask yourself whence it comes, or just watch it quietly.",
+    content:
+        "The sense of being, of 'I am' is the first to emerge. Ask yourself whence it comes, or just watch it quietly.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -687,7 +707,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-119',
-    content: "When pure awareness is attained, no need exists any more, not even for 'I am', which is but a useful pointer.",
+    content:
+        "When pure awareness is attained, no need exists any more, not even for 'I am', which is but a useful pointer.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -695,7 +716,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-120',
-    content: "What you can point out as 'this' or 'that' cannot be yourself. You are nothing perceivable, or imaginable.",
+    content:
+        "What you can point out as 'this' or 'that' cannot be yourself. You are nothing perceivable, or imaginable.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -716,7 +738,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-122',
-    content: 'You are not what you take yourself to be. Find out what you are. Watch the sense "I am", find your real Self.',
+    content:
+        'You are not what you take yourself to be. Find out what you are. Watch the sense "I am", find your real Self.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -725,7 +748,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-123',
-    content: 'The Self is not something to be gained. You are already That. Just stop imagining yourself to be something else.',
+    content:
+        'The Self is not something to be gained. You are already That. Just stop imagining yourself to be something else.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -1076,7 +1100,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-162',
-    content: 'Once you realize that the road is the goal and that you are always on the road, there is nothing to reach.',
+    content:
+        'Once you realize that the road is the goal and that you are always on the road, there is nothing to reach.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -1436,7 +1461,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-202',
-    content: 'Give up all questions except one: Who am I? Eventually this question will destroy itself and the questioner.',
+    content:
+        'Give up all questions except one: Who am I? Eventually this question will destroy itself and the questioner.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -1496,7 +1522,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Mooji',
     source: 'Before I Am',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'adv-210',
     content: 'All spiritual practices are meant to quiet the mind. The Self needs no practice.',
 
@@ -4096,7 +4123,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Mooji',
     source: 'Before I Am',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'adv-520',
     content: 'When the illusion of doership ends, freedom begins.',
 
@@ -4109,7 +4137,8 @@ const pointings = <Pointing>[
   // --- zen_quotes.dart ---
   Pointing(
     id: 'zen-108',
-    content: 'The moon is the same old moon, the flowers exactly as they were, yet I\'ve become the thingness of things.',
+    content:
+        'The moon is the same old moon, the flowers exactly as they were, yet I\'ve become the thingness of things.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4199,7 +4228,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-118',
-    content: 'Spring comes with flowers, autumn with the moon, summer with breezes, winter with snow. When idle concerns don\'t fill your thoughts, that\'s your best season.',
+    content:
+        'Spring comes with flowers, autumn with the moon, summer with breezes, winter with snow. When idle concerns don\'t fill your thoughts, that\'s your best season.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4217,7 +4247,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-120',
-    content: 'Birth and death are the great matter. All things pass quickly away. Wake up, wake up! Do not waste this life.',
+    content:
+        'Birth and death are the great matter. All things pass quickly away. Wake up, wake up! Do not waste this life.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4334,7 +4365,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-133',
-    content: 'Not thinking about anything is Zen. Once you know this, walking, standing, sitting, or lying down, everything you do is Zen.',
+    content:
+        'Not thinking about anything is Zen. Once you know this, walking, standing, sitting, or lying down, everything you do is Zen.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4343,7 +4375,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-134',
-    content: 'If you would spend all your time walking, standing, sitting or lying down learning to halt the concept-forming activities of your own mind, you could be sure of ultimately attaining the goal.',
+    content:
+        'If you would spend all your time walking, standing, sitting or lying down learning to halt the concept-forming activities of your own mind, you could be sure of ultimately attaining the goal.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4361,7 +4394,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-136',
-    content: 'If you use your mind to study reality, you won\'t understand either your mind or reality. If you study reality without using your mind, you\'ll understand both.',
+    content:
+        'If you use your mind to study reality, you won\'t understand either your mind or reality. If you study reality without using your mind, you\'ll understand both.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4406,7 +4440,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-141',
-    content: 'The foolish reject what they see, not what they think; the wise reject what they think, not what they see.',
+    content:
+        'The foolish reject what they see, not what they think; the wise reject what they think, not what they see.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4469,7 +4504,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-148',
-    content: 'If you students of the Way do not awake to this Mind substance, you will overlay Mind with conceptual thought.',
+    content:
+        'If you students of the Way do not awake to this Mind substance, you will overlay Mind with conceptual thought.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4532,7 +4568,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-155',
-    content: 'If you want to get the plain truth, be not concerned with right and wrong. The conflict between right and wrong is the sickness of the mind.',
+    content:
+        'If you want to get the plain truth, be not concerned with right and wrong. The conflict between right and wrong is the sickness of the mind.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4595,7 +4632,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-162',
-    content: 'Simply let experience take place very freely, so that your open heart is suffused with the tenderness of true compassion.',
+    content:
+        'Simply let experience take place very freely, so that your open heart is suffused with the tenderness of true compassion.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4649,7 +4687,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-168',
-    content: 'When you do something, you should burn yourself completely, like a good bonfire, leaving no trace of yourself.',
+    content:
+        'When you do something, you should burn yourself completely, like a good bonfire, leaving no trace of yourself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4676,7 +4715,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-171',
-    content: 'When we have our body and mind in order, everything else will exist in the right place, in the right way.',
+    content:
+        'When we have our body and mind in order, everything else will exist in the right place, in the right way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4703,7 +4743,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-174',
-    content: 'The way of practice is just to concentrate on your breathing with the right posture and with great, pure effort.',
+    content:
+        'The way of practice is just to concentrate on your breathing with the right posture and with great, pure effort.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4757,7 +4798,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-180',
-    content: 'The true purpose of Zen is to see things as they are, to observe things as they are, and to let everything go as it goes.',
+    content:
+        'The true purpose of Zen is to see things as they are, to observe things as they are, and to let everything go as it goes.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4766,7 +4808,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-181',
-    content: 'Calmness of mind does not mean you should stop your activity. Real calmness should be found in activity itself.',
+    content:
+        'Calmness of mind does not mean you should stop your activity. Real calmness should be found in activity itself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4793,7 +4836,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-184',
-    content: 'The seed has no idea of being some particular plant, but it has its own form and is in perfect harmony with the ground.',
+    content:
+        'The seed has no idea of being some particular plant, but it has its own form and is in perfect harmony with the ground.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4892,7 +4936,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-195',
-    content: 'To be beautiful means to be yourself. You don\'t need to be accepted by others. You need to accept yourself.',
+    content:
+        'To be beautiful means to be yourself. You don\'t need to be accepted by others. You need to accept yourself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4901,7 +4946,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-196',
-    content: 'When we are mindful, deeply in touch with the present moment, our understanding of what is going on deepens.',
+    content:
+        'When we are mindful, deeply in touch with the present moment, our understanding of what is going on deepens.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4937,7 +4983,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-200',
-    content: 'The miracle is not to walk on water. The miracle is to walk on the green earth, dwelling deeply in the present moment.',
+    content:
+        'The miracle is not to walk on water. The miracle is to walk on the green earth, dwelling deeply in the present moment.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4955,7 +5002,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-202',
-    content: 'People have a hard time letting go of their suffering. Out of a fear of the unknown, they prefer suffering that is familiar.',
+    content:
+        'People have a hard time letting go of their suffering. Out of a fear of the unknown, they prefer suffering that is familiar.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5072,7 +5120,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-215',
-    content: 'What we have to discover is that there is no safety, that seeking is painful, and that when we imagine that we have found it, we don\'t like it.',
+    content:
+        'What we have to discover is that there is no safety, that seeking is painful, and that when we imagine that we have found it, we don\'t like it.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5099,7 +5148,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-218',
-    content: 'Things are as they are. Looking out into the universe at night, we make no comparisons between right and wrong stars.',
+    content:
+        'Things are as they are. Looking out into the universe at night, we make no comparisons between right and wrong stars.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5108,7 +5158,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-219',
-    content: 'To have faith is to trust yourself to the water. When you swim you don\'t grab hold of the water, because if you do you will sink.',
+    content:
+        'To have faith is to trust yourself to the water. When you swim you don\'t grab hold of the water, because if you do you will sink.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5117,7 +5168,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-220',
-    content: 'The art of living... is neither careless drifting on the one hand nor fearful clinging to the past on the other.',
+    content:
+        'The art of living... is neither careless drifting on the one hand nor fearful clinging to the past on the other.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5153,7 +5205,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-224',
-    content: 'A person who thinks all the time has nothing to think about except thoughts. So he loses touch with reality.',
+    content:
+        'A person who thinks all the time has nothing to think about except thoughts. So he loses touch with reality.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5171,7 +5224,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-226',
-    content: 'Through our eyes, the universe is perceiving itself. Through our ears, the universe is listening to its harmonies.',
+    content:
+        'Through our eyes, the universe is perceiving itself. Through our ears, the universe is listening to its harmonies.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5198,7 +5252,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-229',
-    content: 'We have to face the pain we have been running from. In fact, we need to learn to rest in it and let its searing power transform us.',
+    content:
+        'We have to face the pain we have been running from. In fact, we need to learn to rest in it and let its searing power transform us.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5252,7 +5307,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-235',
-    content: 'When we sit, we just sit. When we walk, we just walk. And when life falls apart, we just let it fall apart.',
+    content:
+        'When we sit, we just sit. When we walk, we just walk. And when life falls apart, we just let it fall apart.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5261,7 +5317,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-236',
-    content: 'Zen is not about blissing out or going into an alpha brain-wave trance. It\'s about seeing things as they are.',
+    content:
+        'Zen is not about blissing out or going into an alpha brain-wave trance. It\'s about seeing things as they are.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5360,7 +5417,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-247',
-    content: 'Chan is not about seeking enlightenment or trying to become a Buddha. It is about seeing your true nature.',
+    content:
+        'Chan is not about seeking enlightenment or trying to become a Buddha. It is about seeing your true nature.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5774,7 +5832,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-293',
-    content: 'Before I studied Zen, mountains were mountains and rivers were rivers. When I studied Zen, mountains were not mountains and rivers were not rivers. Now I understand Zen, and mountains are mountains and rivers are rivers.',
+    content:
+        'Before I studied Zen, mountains were mountains and rivers were rivers. When I studied Zen, mountains were not mountains and rivers were not rivers. Now I understand Zen, and mountains are mountains and rivers are rivers.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5837,7 +5896,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-300',
-    content: 'When it is time to get dressed, put on your clothes. When you must walk, then walk. When you must sit, then sit.',
+    content:
+        'When it is time to get dressed, put on your clothes. When you must walk, then walk. When you must sit, then sit.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5909,7 +5969,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-308',
-    content: 'Those who see worldly life as an obstacle to practice see no true path. Those who see it as the path itself enlighten the way.',
+    content:
+        'Those who see worldly life as an obstacle to practice see no true path. Those who see it as the path itself enlighten the way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5945,7 +6006,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-312',
-    content: 'Enlightenment is like the moon reflected on the water. The moon does not get wet, nor is the water broken.',
+    content:
+        'Enlightenment is like the moon reflected on the water. The moon does not get wet, nor is the water broken.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5999,7 +6061,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-318',
-    content: 'To carry yourself forward and experience myriad things is delusion. That myriad things come forth and experience themselves is awakening.',
+    content:
+        'To carry yourself forward and experience myriad things is delusion. That myriad things come forth and experience themselves is awakening.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6107,7 +6170,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-330',
-    content: 'Only when you have no thing in your mind and no mind in things are you vacant and spiritual, empty and marvelous.',
+    content:
+        'Only when you have no thing in your mind and no mind in things are you vacant and spiritual, empty and marvelous.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6368,7 +6432,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-359',
-    content: 'Sometimes we think that to practice is to figure something out, but actually, it\'s to let everything be as it is.',
+    content:
+        'Sometimes we think that to practice is to figure something out, but actually, it\'s to let everything be as it is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6377,7 +6442,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-360',
-    content: 'Around us, life bursts with miracles - a glass of water, a ray of sunshine, a leaf, a caterpillar, a flower, laughter, raindrops.',
+    content:
+        'Around us, life bursts with miracles - a glass of water, a ray of sunshine, a leaf, a caterpillar, a flower, laughter, raindrops.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6413,7 +6479,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-364',
-    content: 'The seed of suffering in you may be strong, but don\'t wait until you have no more suffering before allowing yourself to be happy.',
+    content:
+        'The seed of suffering in you may be strong, but don\'t wait until you have no more suffering before allowing yourself to be happy.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6431,7 +6498,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-366',
-    content: 'When we recognize the virtues, the talent, the beauty of Mother Earth, something is born in us, some kind of connection, love is born.',
+    content:
+        'When we recognize the virtues, the talent, the beauty of Mother Earth, something is born in us, some kind of connection, love is born.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6467,7 +6535,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-370',
-    content: 'To think in terms of either pessimism or optimism oversimplifies the truth. The problem is to see reality as it is.',
+    content:
+        'To think in terms of either pessimism or optimism oversimplifies the truth. The problem is to see reality as it is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6476,7 +6545,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-371',
-    content: 'Silence is something more than just a pause; it is that enchanted place where space is cleared and time is stayed.',
+    content:
+        'Silence is something more than just a pause; it is that enchanted place where space is cleared and time is stayed.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6647,7 +6717,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-390',
-    content: 'Better to have a short life that is full of what you like doing than a long life spent in a miserable way.',
+    content:
+        'Better to have a short life that is full of what you like doing than a long life spent in a miserable way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6665,7 +6736,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-392',
-    content: 'Zen is a way of liberation, concerned not with discovering what is good or bad or advantageous, but what is.',
+    content:
+        'Zen is a way of liberation, concerned not with discovering what is good or bad or advantageous, but what is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6674,7 +6746,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-393',
-    content: 'The past and future are real illusions, that they exist in the present, which is what there is and all there is.',
+    content:
+        'The past and future are real illusions, that they exist in the present, which is what there is and all there is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6683,7 +6756,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-394',
-    content: 'If you say that getting the money is the most important thing, you\'ll spend your life completely wasting your time.',
+    content:
+        'If you say that getting the money is the most important thing, you\'ll spend your life completely wasting your time.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6692,7 +6766,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-395',
-    content: 'Technology is destructive only in the hands of people who do not realize that they are one and the same process as the universe.',
+    content:
+        'Technology is destructive only in the hands of people who do not realize that they are one and the same process as the universe.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6710,7 +6785,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-397',
-    content: 'The more we think about it, the less there is to think about. Finally, we might give up thinking altogether.',
+    content:
+        'The more we think about it, the less there is to think about. Finally, we might give up thinking altogether.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -7511,7 +7587,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-486',
-    content: 'Seeing forms with the whole body and mind, hearing sounds with the whole body and mind, one understands them intimately.',
+    content:
+        'Seeing forms with the whole body and mind, hearing sounds with the whole body and mind, one understands them intimately.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -7756,7 +7833,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-118',
-    content: 'Compassion is not a relationship between the healer and the wounded. It is a relationship between equals.',
+    content:
+        'Compassion is not a relationship between the healer and the wounded. It is a relationship between equals.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -8422,7 +8500,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-192',
-    content: 'The only thing standing between you and truth is the belief that there is something standing between you and truth.',
+    content:
+        'The only thing standing between you and truth is the belief that there is something standing between you and truth.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -8995,7 +9074,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
     source: 'Loving What Is',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-257',
     content: 'The next message you need is always right where you are.',
 
@@ -9345,7 +9425,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
     source: 'Loving What Is',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-297',
     content: 'Everything changes once we identify with being the witness to the story.',
 
@@ -9497,9 +9578,11 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
     source: 'The End of Your World',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-315',
-    content: 'I discovered that when I believed my thoughts, I suffered. When I did not believe them, I did not suffer.',
+    content:
+        'I discovered that when I believed my thoughts, I suffered. When I did not believe them, I did not suffer.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9625,7 +9708,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-329',
-    content: 'In the end, just three things matter: how well we have lived, how well we have loved, how well we have learned to let go.',
+    content:
+        'In the end, just three things matter: how well we have lived, how well we have loved, how well we have learned to let go.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9634,7 +9718,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-330',
-    content: 'Perhaps the biggest tragedy of our lives is that freedom is possible, yet we pass our years trapped in the same old patterns.',
+    content:
+        'Perhaps the biggest tragedy of our lives is that freedom is possible, yet we pass our years trapped in the same old patterns.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9643,7 +9728,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-331',
-    content: 'The day you decide that you are more interested in being aware than in being in control, your life will begin to unfold.',
+    content:
+        'The day you decide that you are more interested in being aware than in being in control, your life will begin to unfold.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9706,7 +9792,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-338',
-    content: 'Only to the extent that we expose ourselves over and over to annihilation can that which is indestructible be found in us.',
+    content:
+        'Only to the extent that we expose ourselves over and over to annihilation can that which is indestructible be found in us.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9724,7 +9811,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-340',
-    content: 'The intimacy that arises in listening and speaking truth is only possible if we can open to the vulnerability of our own hearts.',
+    content:
+        'The intimacy that arises in listening and speaking truth is only possible if we can open to the vulnerability of our own hearts.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9733,7 +9821,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-341',
-    content: 'Do not let anything that happens in life be important enough that you are willing to close your heart over it.',
+    content:
+        'Do not let anything that happens in life be important enough that you are willing to close your heart over it.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9796,7 +9885,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-348',
-    content: 'The root of suffering is resisting the certainty that no matter what the circumstances, uncertainty is all we truly have.',
+    content:
+        'The root of suffering is resisting the certainty that no matter what the circumstances, uncertainty is all we truly have.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9805,7 +9895,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-349',
-    content: 'Compassion grows from the understanding that we are all doing the best we can with the resources we have.',
+    content:
+        'Compassion grows from the understanding that we are all doing the best we can with the resources we have.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9904,7 +9995,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-360',
-    content: 'The recognition that who we are is not limited by our body or personality opens us to a mysterious universe.',
+    content:
+        'The recognition that who we are is not limited by our body or personality opens us to a mysterious universe.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9985,7 +10077,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-369',
-    content: 'When we get too caught up in the busyness of the world, we lose connection with one another and ourselves.',
+    content:
+        'When we get too caught up in the busyness of the world, we lose connection with one another and ourselves.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10021,7 +10114,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-373',
-    content: 'Presence is when you are no longer waiting for the next moment, believing it will be better than this one.',
+    content:
+        'Presence is when you are no longer waiting for the next moment, believing it will be better than this one.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10084,7 +10178,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-380',
-    content: 'The longing to be loved is so powerful, we will suffer greatly before we realize we are already love itself.',
+    content:
+        'The longing to be loved is so powerful, we will suffer greatly before we realize we are already love itself.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10129,7 +10224,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-385',
-    content: 'Once you realize that the road is the goal and that you are always on the road, not to reach a goal but to enjoy its beauty and wisdom, life ceases to be a task.',
+    content:
+        'Once you realize that the road is the goal and that you are always on the road, not to reach a goal but to enjoy its beauty and wisdom, life ceases to be a task.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10300,7 +10396,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-404',
-    content: 'Most humans are never fully present in the now, because unconsciously they believe that the next moment must be more important than this one.',
+    content:
+        'Most humans are never fully present in the now, because unconsciously they believe that the next moment must be more important than this one.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10426,7 +10523,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-418',
-    content: 'The most fundamental aggression to ourselves is remaining ignorant by not having the courage to look at ourselves.',
+    content:
+        'The most fundamental aggression to ourselves is remaining ignorant by not having the courage to look at ourselves.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10507,7 +10605,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-427',
-    content: 'The quieter the mind, the more powerful, the worthier, the deeper, the more telling and perfect our instinct.',
+    content:
+        'The quieter the mind, the more powerful, the worthier, the deeper, the more telling and perfect our instinct.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10516,7 +10615,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-428',
-    content: 'Compassion is not a relationship between the healer and the wounded. It is the recognition that we are all in this together.',
+    content:
+        'Compassion is not a relationship between the healer and the wounded. It is the recognition that we are all in this together.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10543,7 +10643,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-431',
-    content: 'There is nothing you can do to make the universe give you what you want, but you can let go of resisting what comes.',
+    content:
+        'There is nothing you can do to make the universe give you what you want, but you can let go of resisting what comes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10579,7 +10680,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-435',
-    content: 'Peace comes not from hoping for better circumstances but from knowing that you can handle whatever comes.',
+    content:
+        'Peace comes not from hoping for better circumstances but from knowing that you can handle whatever comes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10723,7 +10825,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-451',
-    content: 'When the energy is unable to pass through you, it disturbs you. When you can let it pass through, you are free.',
+    content:
+        'When the energy is unable to pass through you, it disturbs you. When you can let it pass through, you are free.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10786,7 +10889,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-458',
-    content: 'Without giving up hope that there is somewhere better to be, that there is someone better to be, we will never relax.',
+    content:
+        'Without giving up hope that there is somewhere better to be, that there is someone better to be, we will never relax.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -11197,7 +11301,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
     source: 'The End of Your World',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-505',
     content: 'You cannot hurt me with your love. You cannot hurt me with your hate. Only my thoughts can hurt me.',
 
@@ -11368,7 +11473,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-16',
     content: 'The light of awareness needs no lamp to see itself.',
 
@@ -13796,7 +13902,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-364',
     content: 'The stone does not wonder if it is being a stone correctly.',
 
@@ -14005,7 +14112,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-395',
     content: 'The leaf does not question its falling.',
 
@@ -14217,7 +14325,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-520',
     content: 'What if awareness is already complete?',
 
@@ -15164,7 +15273,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-471',
     content: 'The dream of separation ends when it is seen as a dream.',
 
@@ -15324,7 +15434,8 @@ const pointings = <Pointing>[
 
     tradition: Tradition.original,
     contexts: [PointingContext.general],
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'ori-497',
     content: 'There is no outside to this.',
 
@@ -15430,7 +15541,7 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
   ),
 
-// Helper functions
+  // Helper functions
 
   // --- generated_quotes.dart ---
   Pointing(
@@ -15450,9 +15561,11 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramana Maharshi',
     source: 'Talks with Sri Ramana Maharshi',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'adv-529',
-    content: 'Silence is the most potent form of work. However vast and emphatic the scriptures may be, they fail in their effect.',
+    content:
+        'Silence is the most potent form of work. However vast and emphatic the scriptures may be, they fail in their effect.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
@@ -15470,7 +15583,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-531',
-    content: 'Mind is consciousness which has put on limitations. You are originally unlimited and perfect. Later you take on limitations and become the mind.',
+    content:
+        'Mind is consciousness which has put on limitations. You are originally unlimited and perfect. Later you take on limitations and become the mind.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15479,7 +15593,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-532',
-    content: 'The degree of freedom from unwanted thoughts and the degree of concentration on a single thought are the measures of your progress.',
+    content:
+        'The degree of freedom from unwanted thoughts and the degree of concentration on a single thought are the measures of your progress.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -15488,7 +15603,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-533',
-    content: 'Wanting to reform the world without discovering one\'s true self is like trying to cover the world with leather to avoid the pain of walking on stones.',
+    content:
+        'Wanting to reform the world without discovering one\'s true self is like trying to cover the world with leather to avoid the pain of walking on stones.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15548,7 +15664,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
     source: 'I Am That',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'adv-541',
     content: 'Wisdom is knowing I am nothing, love is knowing I am everything, and between the two my life moves.',
 
@@ -15559,7 +15676,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-542',
-    content: 'It is the mind that tells you that the mind is there. Don\'t be deceived. All the endless arguments about the mind are produced by the mind itself.',
+    content:
+        'It is the mind that tells you that the mind is there. Don\'t be deceived. All the endless arguments about the mind are produced by the mind itself.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15568,7 +15686,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-543',
-    content: 'When I look inside and see that I am nothing, that is wisdom. When I look outside and see that I am everything, that is love.',
+    content:
+        'When I look inside and see that I am nothing, that is wisdom. When I look outside and see that I am everything, that is love.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -15577,7 +15696,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-544',
-    content: 'All suffering is born of desire. True love is never frustrated. How can the sense of unity be frustrated?',
+    content:
+        'All suffering is born of desire. True love is never frustrated. How can the sense of unity be frustrated?',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -15595,7 +15715,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-546',
-    content: 'Stop imagining yourself being or doing this or that and the realization that you are the source and heart of all will dawn upon you.',
+    content:
+        'Stop imagining yourself being or doing this or that and the realization that you are the source and heart of all will dawn upon you.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15631,7 +15752,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-550',
-    content: 'Do not be afraid of freedom from desire and fear. It enables you to live a life so different from all you know.',
+    content:
+        'Do not be afraid of freedom from desire and fear. It enables you to live a life so different from all you know.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15649,7 +15771,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-552',
-    content: 'If you just sit and observe, you will see how restless your mind is. When you try to calm it, it only makes it worse.',
+    content:
+        'If you just sit and observe, you will see how restless your mind is. When you try to calm it, it only makes it worse.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -15667,7 +15790,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-554',
-    content: 'The gnani does not live in a world different from yours. His world is the same as yours, but he does not make any mistake about it.',
+    content:
+        'The gnani does not live in a world different from yours. His world is the same as yours, but he does not make any mistake about it.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -16321,7 +16445,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-107',
     content: 'The perfect way is without difficulty, save that it avoids picking and choosing.',
 
@@ -16341,7 +16466,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-526',
-    content: 'The mind is the Buddha, and the Buddha is the mind. Beyond mind there is no Buddha, beyond Buddha there is no mind.',
+    content:
+        'The mind is the Buddha, and the Buddha is the mind. Beyond mind there is no Buddha, beyond Buddha there is no mind.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -16356,7 +16482,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Huang Po',
     source: 'The Zen Teaching of Huang Po',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-529',
     content: 'Your ordinary mind is the Way.',
 
@@ -16400,7 +16527,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-535',
     content: 'Do not follow the ideas of others, but learn to listen to the voice within yourself.',
 
@@ -16408,7 +16536,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shobogenzo',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-537',
     content: 'Think non-thinking. How do you think non-thinking? Beyond thinking.',
 
@@ -16462,7 +16591,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-543',
-    content: 'Not thinking about anything is Zen. Once you know this, walking, sitting, or lying down, everything you do is Zen.',
+    content:
+        'Not thinking about anything is Zen. Once you know this, walking, sitting, or lying down, everything you do is Zen.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -16593,7 +16723,8 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Zen saying',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-559',
     content: 'When walking, just walk. When sitting, just sit. Above all, don\'t wobble.',
 
@@ -16617,7 +16748,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general, PointingContext.morning],
     teacher: 'Shunryu Suzuki',
     source: 'Zen Mind, Beginner\'s Mind',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-563',
     content: 'When you do something, you should burn yourself completely, like a good bonfire, leaving no trace.',
 
@@ -16643,7 +16775,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Shunryu Suzuki',
     source: 'Zen Mind, Beginner\'s Mind',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-567',
     content: 'Zen is not some kind of excitement, but concentration on our usual everyday routine.',
 
@@ -16696,7 +16829,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Thich Nhat Hanh',
     source: 'The Heart of the Buddha\'s Teaching',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-579',
     content: 'You are a miracle, and everything you touch could be a miracle.',
 
@@ -16749,7 +16883,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Thich Nhat Hanh',
     source: 'The Heart of the Buddha\'s Teaching',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-586',
     content: 'Silence is essential. We need silence just as much as we need air, just as much as plants need light.',
 
@@ -16774,7 +16909,8 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.stress, PointingContext.general],
     source: 'Zen saying',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-590',
     content: 'If you meet a Buddha on the road, kill him.',
 
@@ -16805,7 +16941,8 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Zen koan',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-596',
     content: 'In the landscape of spring, there is neither better nor worse.',
 
@@ -16871,7 +17008,8 @@ const pointings = <Pointing>[
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Zen saying',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-605',
     content: 'The finger pointing to the moon is not the moon.',
 
@@ -16913,14 +17051,17 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-610',
-    content: 'Gate gate paragate parasamgate bodhi svaha. Gone, gone, gone beyond, gone altogether beyond. Oh what an awakening!',
+    content:
+        'Gate gate paragate parasamgate bodhi svaha. Gone, gone, gone beyond, gone altogether beyond. Oh what an awakening!',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Heart Sutra',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-612',
-    content: 'The foolish reject what they see, not what they think. The wise reject what they think, not what they see.',
+    content:
+        'The foolish reject what they see, not what they think. The wise reject what they think, not what they see.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -16992,7 +17133,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-620',
-    content: 'The marvelous illumination of the unborn Buddha-mind deals freely and spontaneously with anything it encounters.',
+    content:
+        'The marvelous illumination of the unborn Buddha-mind deals freely and spontaneously with anything it encounters.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -17718,7 +17860,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
     source: 'The Nature of Consciousness',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'dir-202',
     content: 'Experience doesn\'t happen to awareness. Experience is awareness.',
 
@@ -17936,7 +18079,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-541',
-    content: 'Your natural state is joy. Not the joy that comes from something, but the joy that is the ground of being.',
+    content:
+        'Your natural state is joy. Not the joy that comes from something, but the joy that is the ground of being.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -17996,7 +18140,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Eckhart Tolle',
     source: 'The Power of Now',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-549',
     content: 'You are not your thoughts. You are the awareness behind them.',
 
@@ -18070,7 +18215,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-557',
-    content: 'Nothing ever happened in the past; it happened in the now. Nothing will ever happen in the future; it will happen in the now.',
+    content:
+        'Nothing ever happened in the past; it happened in the now. Nothing will ever happen in the future; it will happen in the now.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18133,7 +18279,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-564',
-    content: 'Is there a difference between happiness and inner peace? Yes. Happiness depends on conditions being perceived as positive; inner peace does not.',
+    content:
+        'Is there a difference between happiness and inner peace? Yes. Happiness depends on conditions being perceived as positive; inner peace does not.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18151,7 +18298,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-566',
-    content: 'Being is the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.',
+    content:
+        'Being is the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18349,7 +18497,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-588',
-    content: 'The feeling of being hurried is not usually the result of living a full life. It is born of a vague fear.',
+    content:
+        'The feeling of being hurried is not usually the result of living a full life. It is born of a vague fear.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -18463,7 +18612,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
     source: 'Loving What Is',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-602',
     content: 'The worst that can happen has already happened. You are already free.',
 
@@ -18492,13 +18642,15 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-605',
-    content: 'I am a lover of what is, not because I\'m a spiritual person, but because it hurts when I argue with reality.',
+    content:
+        'I am a lover of what is, not because I\'m a spiritual person, but because it hurts when I argue with reality.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Byron Katie',
     source: 'Loving What Is',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-607',
     content: 'Nothing you believe is true.',
 
@@ -18596,9 +18748,11 @@ const pointings = <Pointing>[
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Eckhart Tolle',
     source: 'The Power of Now',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'con-619',
-    content: 'You find peace not by rearranging the circumstances of your life, but by realizing who you are at the deepest level.',
+    content:
+        'You find peace not by rearranging the circumstances of your life, but by realizing who you are at the deepest level.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18616,7 +18770,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-621',
-    content: 'When you make the present moment the focal point of your attention, the compulsion to label it diminishes.',
+    content:
+        'When you make the present moment the focal point of your attention, the compulsion to label it diminishes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -19472,7 +19627,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-507',
-    content: 'I am neither bound nor free. How can I say this body is mine? I am awareness itself — unchanging, infinite, like space.',
+    content:
+        'I am neither bound nor free. How can I say this body is mine? I am awareness itself — unchanging, infinite, like space.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Dattatreya',
@@ -19480,7 +19636,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-508',
-    content: 'I have no caste, no creed, no tradition. I am not what you see, nor what you think. I am awareness itself.',
+    content:
+        'I have no caste, no creed, no tradition. I am not what you see, nor what you think. I am awareness itself.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19504,7 +19661,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-511',
-    content: 'The final understanding is that there is no one to understand. Understanding happens in the dream, to a dream character.',
+    content:
+        'The final understanding is that there is no one to understand. Understanding happens in the dream, to a dream character.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramesh Balsekar',
@@ -19528,7 +19686,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-514',
-    content: 'Did this body-mind choose its genetics? Its conditioning? Its circumstances? Then how can you be the author of your actions?',
+    content:
+        'Did this body-mind choose its genetics? Its conditioning? Its circumstances? Then how can you be the author of your actions?',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramesh Balsekar',
@@ -19536,7 +19695,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-515',
-    content: 'When the understanding happens that you are not the doer, life continues. Actions happen. But there is no involvement, no guilt, no pride.',
+    content:
+        'When the understanding happens that you are not the doer, life continues. Actions happen. But there is no involvement, no guilt, no pride.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramesh Balsekar',
@@ -19560,7 +19720,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-518',
-    content: 'The world, like a dream, is true as long as one is ignorant. It becomes false when one awakens to the Self.',
+    content:
+        'The world, like a dream, is true as long as one is ignorant. It becomes false when one awakens to the Self.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19568,7 +19729,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-519',
-    content: 'Attachment to the body gives birth to fear. Even the learned who know this truth still tremble at the shadow of death.',
+    content:
+        'Attachment to the body gives birth to fear. Even the learned who know this truth still tremble at the shadow of death.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19576,7 +19738,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-626',
-    content: 'How can I tell you what I am? I am beyond mind and speech. The words you hear are not my teaching; truth cannot be spoken.',
+    content:
+        'How can I tell you what I am? I am beyond mind and speech. The words you hear are not my teaching; truth cannot be spoken.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19584,7 +19747,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-521',
-    content: 'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
+    content:
+        'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra',
@@ -19600,7 +19764,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-523',
-    content: 'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
+    content:
+        'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Ashtavakra',
@@ -19608,7 +19773,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-524',
-    content: 'The body is impermanent. Wealth is unstable. Death is ever near. Therefore be absorbed in contemplation of the Self.',
+    content:
+        'The body is impermanent. Wealth is unstable. Death is ever near. Therefore be absorbed in contemplation of the Self.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19616,7 +19782,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-525',
-    content: 'All practices were for the imaginary bound one. Now that bondage is seen as unreal, what remains to practice?',
+    content:
+        'All practices were for the imaginary bound one. Now that bondage is seen as unreal, what remains to practice?',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19631,9 +19798,11 @@ const pointings = <Pointing>[
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Sengcan',
     source: 'Xinxin Ming',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-512',
-    content: 'In the landscape of spring, there is neither better nor worse. The flowering branches grow naturally, some long, some short.',
+    content:
+        'In the landscape of spring, there is neither better nor worse. The flowering branches grow naturally, some long, some short.',
     tradition: Tradition.zen,
     contexts: [PointingContext.morning, PointingContext.general],
   ),
@@ -19674,7 +19843,8 @@ const pointings = <Pointing>[
     contexts: [PointingContext.general],
     teacher: 'Dogen',
     source: 'Shōbōgenzō',
-  ),  Pointing(
+  ),
+  Pointing(
     id: 'zen-519',
     content: 'When the mind is not disturbed, the ten thousand things offer no offense.',
     tradition: Tradition.zen,
@@ -19709,7 +19879,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-524',
-    content: 'The mind of the past is ungraspable. The mind of the present is ungraspable. The mind of the future is ungraspable.',
+    content:
+        'The mind of the past is ungraspable. The mind of the present is ungraspable. The mind of the future is ungraspable.',
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Diamond Sutra',
@@ -19822,7 +19993,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-235',
-    content: 'The eye cannot see itself, but it doesn\'t need to. It sees. You don\'t need to find awareness. You ARE it.',
+    content:
+        'The eye cannot see itself, but it doesn\'t need to. It sees. You don\'t need to find awareness. You ARE it.',
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
@@ -19880,7 +20052,8 @@ const pointings = <Pointing>[
   // --- Contemporary: Parsons, Foster, Katie, Gangaji, McKenna, Adyashanti ---
   Pointing(
     id: 'con-513',
-    content: 'What you\'re looking for is already here — you just won\'t recognize it because it\'s not what you expect.',
+    content:
+        'What you\'re looking for is already here — you just won\'t recognize it because it\'s not what you expect.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tony Parsons',
@@ -20000,7 +20173,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-528',
-    content: 'A thought is harmless unless we believe it. It\'s not our thoughts but our attachment to our thoughts that causes suffering.',
+    content:
+        'A thought is harmless unless we believe it. It\'s not our thoughts but our attachment to our thoughts that causes suffering.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
@@ -20056,7 +20230,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-535',
-    content: 'What remains when everything false is removed? That\'s what you are — not something, but the absence of the false.',
+    content:
+        'What remains when everything false is removed? That\'s what you are — not something, but the absence of the false.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
@@ -20064,7 +20239,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-536',
-    content: 'Belief is the most effective tool for not-knowing. As long as you believe something, you don\'t have to know it.',
+    content:
+        'Belief is the most effective tool for not-knowing. As long as you believe something, you don\'t have to know it.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
@@ -20072,7 +20248,8 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-537',
-    content: 'Enlightenment is a destructive process. It has nothing to do with becoming better or being happier. It is the crumbling away of untruth.',
+    content:
+        'Enlightenment is a destructive process. It has nothing to do with becoming better or being happier. It is the crumbling away of untruth.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',

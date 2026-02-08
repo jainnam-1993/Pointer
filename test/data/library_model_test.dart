@@ -139,10 +139,7 @@ void main() {
     });
 
     test('creates TeacherProfile with minimal required fields', () {
-      const teacher = TeacherProfile(
-        name: 'Minimal Teacher',
-        primaryTradition: Tradition.zen,
-      );
+      const teacher = TeacherProfile(name: 'Minimal Teacher', primaryTradition: Tradition.zen);
 
       expect(teacher.name, 'Minimal Teacher');
       expect(teacher.bio, isNull);
@@ -176,26 +173,16 @@ void main() {
     });
 
     test('isFromTradition returns correct result', () {
-      const teacher = TeacherProfile(
-        name: 'Tradition Teacher',
-        primaryTradition: Tradition.advaita,
-      );
+      const teacher = TeacherProfile(name: 'Tradition Teacher', primaryTradition: Tradition.advaita);
 
       expect(teacher.isFromTradition(Tradition.advaita), true);
       expect(teacher.isFromTradition(Tradition.zen), false);
     });
 
     test('equality works correctly', () {
-      const teacher1 = TeacherProfile(
-        name: 'Same Teacher',
-        primaryTradition: Tradition.zen,
-      );
+      const teacher1 = TeacherProfile(name: 'Same Teacher', primaryTradition: Tradition.zen);
 
-      const teacher2 = TeacherProfile(
-        name: 'Same Teacher',
-        primaryTradition: Tradition.advaita,
-        bio: 'Different bio',
-      );
+      const teacher2 = TeacherProfile(name: 'Same Teacher', primaryTradition: Tradition.advaita, bio: 'Different bio');
 
       expect(teacher1 == teacher2, true);
       expect(teacher1.hashCode, teacher2.hashCode);
@@ -236,8 +223,7 @@ void main() {
     });
 
     test('getArticlesByCategory returns correct articles', () {
-      final selfInquiryArticles =
-          getArticlesByCategory(ArticleCategory.selfInquiry);
+      final selfInquiryArticles = getArticlesByCategory(ArticleCategory.selfInquiry);
       expect(selfInquiryArticles, isNotEmpty);
       for (final article in selfInquiryArticles) {
         expect(article.hasCategory(ArticleCategory.selfInquiry), true);
@@ -279,8 +265,7 @@ void main() {
     });
 
     test('teacher profiles cover multiple traditions', () {
-      final traditions =
-          teacherProfiles.map((t) => t.primaryTradition).toSet();
+      final traditions = teacherProfiles.map((t) => t.primaryTradition).toSet();
       expect(traditions.length, greaterThanOrEqualTo(3));
     });
 
@@ -339,8 +324,7 @@ void main() {
     });
 
     test('articlesByTraditionProvider filters correctly', () {
-      final zenArticles =
-          container.read(articlesByTraditionProvider(Tradition.zen));
+      final zenArticles = container.read(articlesByTraditionProvider(Tradition.zen));
       expect(zenArticles, isNotEmpty);
       for (final article in zenArticles) {
         expect(article.tradition, Tradition.zen);
@@ -348,9 +332,7 @@ void main() {
     });
 
     test('articlesByCategoryProvider filters correctly', () {
-      final natureArticles = container.read(
-        articlesByCategoryProvider(ArticleCategory.natureOfAwareness),
-      );
+      final natureArticles = container.read(articlesByCategoryProvider(ArticleCategory.natureOfAwareness));
       expect(natureArticles, isNotEmpty);
       for (final article in natureArticles) {
         expect(article.hasCategory(ArticleCategory.natureOfAwareness), true);
@@ -358,8 +340,7 @@ void main() {
     });
 
     test('articlesByTeacherProvider filters correctly', () {
-      final rupertArticles =
-          container.read(articlesByTeacherProvider('Rupert Spira'));
+      final rupertArticles = container.read(articlesByTeacherProvider('Rupert Spira'));
       expect(rupertArticles, isNotEmpty);
       for (final article in rupertArticles) {
         expect(article.teacher?.toLowerCase(), 'rupert spira');
@@ -399,15 +380,13 @@ void main() {
     });
 
     test('teacherByNameProvider returns correct teacher', () {
-      final teacher =
-          container.read(teacherByNameProvider('Ramana Maharshi'));
+      final teacher = container.read(teacherByNameProvider('Ramana Maharshi'));
       expect(teacher, isNotNull);
       expect(teacher!.name, 'Ramana Maharshi');
     });
 
     test('teacherByNameProvider is case insensitive', () {
-      final teacher =
-          container.read(teacherByNameProvider('ramana maharshi'));
+      final teacher = container.read(teacherByNameProvider('ramana maharshi'));
       expect(teacher, isNotNull);
     });
 
@@ -417,8 +396,7 @@ void main() {
     });
 
     test('teachersByTraditionProvider filters correctly', () {
-      final directTeachers =
-          container.read(teachersByTraditionProvider(Tradition.direct));
+      final directTeachers = container.read(teachersByTraditionProvider(Tradition.direct));
       expect(directTeachers, isNotEmpty);
       for (final teacher in directTeachers) {
         expect(teacher.primaryTradition, Tradition.direct);
@@ -448,8 +426,7 @@ void main() {
     });
 
     test('filteredArticlesProvider respects tradition filter', () {
-      container.read(selectedTraditionFilterProvider.notifier).state =
-          Tradition.zen;
+      container.read(selectedTraditionFilterProvider.notifier).state = Tradition.zen;
       final filtered = container.read(filteredArticlesProvider);
 
       expect(filtered, isNotEmpty);
@@ -459,8 +436,7 @@ void main() {
     });
 
     test('filteredArticlesProvider respects category filter', () {
-      container.read(selectedCategoryFilterProvider.notifier).state =
-          ArticleCategory.selfInquiry;
+      container.read(selectedCategoryFilterProvider.notifier).state = ArticleCategory.selfInquiry;
       final filtered = container.read(filteredArticlesProvider);
 
       expect(filtered, isNotEmpty);
@@ -470,10 +446,8 @@ void main() {
     });
 
     test('filteredArticlesProvider respects both filters', () {
-      container.read(selectedTraditionFilterProvider.notifier).state =
-          Tradition.advaita;
-      container.read(selectedCategoryFilterProvider.notifier).state =
-          ArticleCategory.selfInquiry;
+      container.read(selectedTraditionFilterProvider.notifier).state = Tradition.advaita;
+      container.read(selectedCategoryFilterProvider.notifier).state = ArticleCategory.selfInquiry;
       final filtered = container.read(filteredArticlesProvider);
 
       for (final article in filtered) {
@@ -494,8 +468,7 @@ void main() {
 
     test('totalReadingTimeProvider calculates correctly', () {
       final total = container.read(totalReadingTimeProvider);
-      final expected =
-          articles.fold(0, (sum, a) => sum + a.readingTimeMinutes);
+      final expected = articles.fold(0, (sum, a) => sum + a.readingTimeMinutes);
       expect(total, expected);
     });
 

@@ -64,11 +64,7 @@ class TestDonationNotifier extends DonationNotifier {
 }
 
 /// Create mock ProductDetails for testing
-ProductDetails createMockProduct({
-  required String id,
-  required String title,
-  required String price,
-}) {
+ProductDetails createMockProduct({required String id, required String title, required String price}) {
   return ProductDetails(
     id: id,
     title: title,
@@ -80,11 +76,7 @@ ProductDetails createMockProduct({
 }
 
 /// Helper to wrap widget with providers for testing
-Widget wrapWithProviders(
-  Widget child, {
-  DonationState? donationState,
-  List<ProductDetails>? products,
-}) {
+Widget wrapWithProviders(Widget child, {DonationState? donationState, List<ProductDetails>? products}) {
   // Default mock products
   final defaultProducts = [
     createMockProduct(id: 'tip_small', title: 'Small Tip', price: '\$0.99'),
@@ -93,12 +85,8 @@ Widget wrapWithProviders(
     createMockProduct(id: 'tip_generous', title: 'Generous Tip', price: '\$9.99'),
   ];
 
-  final state = donationState ??
-      DonationState(
-        isAvailable: true,
-        isLoading: false,
-        products: products ?? defaultProducts,
-      );
+  final state =
+      donationState ?? DonationState(isAvailable: true, isLoading: false, products: products ?? defaultProducts);
 
   final mockService = MockDonationService();
 
@@ -108,15 +96,11 @@ Widget wrapWithProviders(
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       donationServiceProvider.overrideWithValue(mockService),
-      donationProvider.overrideWith(
-        (ref) => TestDonationNotifier(state, mockService),
-      ),
+      donationProvider.overrideWith((ref) => TestDonationNotifier(state, mockService)),
     ],
     child: MaterialApp(
       theme: AppTheme.dark,
-      home: Scaffold(
-        body: child,
-      ),
+      home: Scaffold(body: child),
     ),
   );
 }
@@ -132,9 +116,7 @@ void main() {
 
   group('DonationButton', () {
     testWidgets('renders collapsed state by default', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
       // Should show header
       expect(find.text('Support Development'), findsOneWidget);
@@ -144,10 +126,7 @@ void main() {
       expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
 
       // Should not show expanded content
-      expect(
-        find.text('Here Now is free forever. If you find value, consider supporting development.'),
-        findsNothing,
-      );
+      expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsNothing);
     });
 
     testWidgets('expands on tap', (tester) async {
@@ -156,9 +135,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
       // Tap to expand
       await tester.tap(find.text('Support Development'));
@@ -177,9 +154,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
       // Tap to expand
       await tester.tap(find.text('Support Development'));
@@ -204,9 +179,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
       // Tap to expand
       await tester.tap(find.text('Support Development'));
@@ -223,10 +196,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithProviders(
           const DonationButton(),
-          donationState: const DonationState(
-            isAvailable: false,
-            isLoading: false,
-          ),
+          donationState: const DonationState(isAvailable: false, isLoading: false),
         ),
       );
 
@@ -239,10 +209,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithProviders(
           const DonationButton(),
-          donationState: const DonationState(
-            isAvailable: true,
-            isLoading: true,
-          ),
+          donationState: const DonationState(isAvailable: true, isLoading: true),
         ),
       );
 
@@ -254,10 +221,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithProviders(
           const DonationButton(),
-          donationState: const DonationState(
-            isAvailable: true,
-            isLoading: true,
-          ),
+          donationState: const DonationState(isAvailable: true, isLoading: true),
         ),
       );
 
@@ -270,11 +234,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithProviders(
           const DonationButton(),
-          donationState: const DonationState(
-            isAvailable: true,
-            isLoading: false,
-            error: 'Failed to load products',
-          ),
+          donationState: const DonationState(isAvailable: true, isLoading: false, error: 'Failed to load products'),
         ),
       );
 
@@ -293,11 +253,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithProviders(
           const DonationButton(),
-          donationState: const DonationState(
-            isAvailable: true,
-            isLoading: false,
-            products: [],
-          ),
+          donationState: const DonationState(isAvailable: true, isLoading: false, products: []),
         ),
       );
 
@@ -315,9 +271,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
       // Tap to expand
       await tester.tap(find.text('Support Development'));
@@ -340,17 +294,9 @@ void main() {
     });
 
     testWidgets('uses GlassCard for styling', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton()),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton()));
 
-      expect(
-        find.descendant(
-          of: find.byType(DonationButton),
-          matching: find.byType(GlassCard),
-        ),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byType(DonationButton), matching: find.byType(GlassCard)), findsOneWidget);
     });
 
     testWidgets('disables product cards during purchase', (tester) async {
@@ -360,9 +306,7 @@ void main() {
           donationState: DonationState(
             isAvailable: true,
             isLoading: true, // Simulates purchase in progress
-            products: [
-              createMockProduct(id: 'tip_small', title: 'Small', price: '\$0.99'),
-            ],
+            products: [createMockProduct(id: 'tip_small', title: 'Small', price: '\$0.99')],
           ),
         ),
       );

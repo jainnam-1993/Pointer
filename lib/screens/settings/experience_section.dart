@@ -27,11 +27,7 @@ class AutoAdvanceToggle extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.auto_mode,
-                color: colors.textSecondary,
-                size: 18,
-              ),
+              Icon(Icons.auto_mode, color: colors.textSecondary, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -39,20 +35,10 @@ class AutoAdvanceToggle extends ConsumerWidget {
                   children: [
                     Text(
                       'Auto-Advance',
-                      style: TextStyle(
-                        color: colors.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      'New pointing every minute',
-                      style: TextStyle(
-                        color: colors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
+                    Text('New pointing every minute', style: TextStyle(color: colors.textMuted, fontSize: 12)),
                   ],
                 ),
               ),
@@ -92,30 +78,16 @@ class AmbientSoundPicker extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.music_note,
-                color: colors.textSecondary,
-                size: 18,
-              ),
+              Icon(Icons.music_note, color: colors.textSecondary, size: 18),
               const SizedBox(width: 8),
               Text(
                 'Opening Sound',
-                style: TextStyle(
-                  color: colors.textPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w600),
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            'Play a contemplative sound when app opens',
-            style: TextStyle(
-              color: colors.textMuted,
-              fontSize: 12,
-            ),
-          ),
+          Text('Play a contemplative sound when app opens', style: TextStyle(color: colors.textMuted, fontSize: 12)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -130,13 +102,9 @@ class AmbientSoundPicker extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
-                        : Colors.transparent,
+                    color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected ? colors.primary : colors.glassBorder,
-                    ),
+                    border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                   ),
                   child: Text(
                     sound.displayName,

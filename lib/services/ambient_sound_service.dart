@@ -36,10 +36,7 @@ class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
   void _loadFromStorage() {
     final saved = _prefs.getString(_storageKey);
     if (saved != null) {
-      state = AmbientSound.values.firstWhere(
-        (s) => s.name == saved,
-        orElse: () => AmbientSound.none,
-      );
+      state = AmbientSound.values.firstWhere((s) => s.name == saved, orElse: () => AmbientSound.none);
     }
   }
 

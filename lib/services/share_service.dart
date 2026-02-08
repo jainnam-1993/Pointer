@@ -53,10 +53,7 @@ class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
   void _loadFromStorage() {
     final saved = _prefs.getString(_storageKey);
     if (saved != null) {
-      state = ShareTemplate.values.firstWhere(
-        (t) => t.name == saved,
-        orElse: () => ShareTemplate.gradient,
-      );
+      state = ShareTemplate.values.firstWhere((t) => t.name == saved, orElse: () => ShareTemplate.gradient);
     }
   }
 
@@ -83,10 +80,7 @@ class ShareFormatNotifier extends StateNotifier<ShareFormat> {
   void _loadFromStorage() {
     final saved = _prefs.getString(_storageKey);
     if (saved != null) {
-      state = ShareFormat.values.firstWhere(
-        (f) => f.name == saved,
-        orElse: () => ShareFormat.square,
-      );
+      state = ShareFormat.values.firstWhere((f) => f.name == saved, orElse: () => ShareFormat.square);
     }
   }
 
@@ -116,28 +110,17 @@ class ShareService {
 
   /// Share captured image via system share sheet
   /// [sharePositionOrigin] is required for iPad popover positioning
-  Future<void> shareImage(
-    Uint8List imageBytes,
-    String text, {
-    Rect? sharePositionOrigin,
-  }) async {
+  Future<void> shareImage(Uint8List imageBytes, String text, {Rect? sharePositionOrigin}) async {
     final tempDir = await getTemporaryDirectory();
     final file = File('${tempDir.path}/pointer_card_${DateTime.now().millisecondsSinceEpoch}.png');
     await file.writeAsBytes(imageBytes);
 
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: text,
-      sharePositionOrigin: sharePositionOrigin,
-    );
+    await Share.shareXFiles([XFile(file.path)], text: text, sharePositionOrigin: sharePositionOrigin);
   }
 
   /// Share to Instagram Stories (iOS only)
   /// [sharePositionOrigin] is required for iPad popover positioning
-  Future<bool> shareToInstagramStories(
-    Uint8List imageBytes, {
-    Rect? sharePositionOrigin,
-  }) async {
+  Future<bool> shareToInstagramStories(Uint8List imageBytes, {Rect? sharePositionOrigin}) async {
     if (!Platform.isIOS) return false;
 
     try {
@@ -150,10 +133,7 @@ class ShareService {
       if (await canLaunchUrl(uri)) {
         // Note: For full Instagram Stories integration, would need
         // UIPasteboard on iOS. Using share sheet as fallback.
-        await Share.shareXFiles(
-          [XFile(file.path)],
-          sharePositionOrigin: sharePositionOrigin,
-        );
+        await Share.shareXFiles([XFile(file.path)], sharePositionOrigin: sharePositionOrigin);
         return true;
       }
     } catch (e) {
@@ -170,10 +150,7 @@ class ShareService {
 
   /// Share plain text (existing behavior)
   /// [sharePositionOrigin] is required for iPad popover positioning
-  Future<void> shareText(
-    Pointing pointing, {
-    Rect? sharePositionOrigin,
-  }) async {
+  Future<void> shareText(Pointing pointing, {Rect? sharePositionOrigin}) async {
     final text = _formatForShare(pointing);
     await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }
@@ -192,10 +169,7 @@ class ShareService {
 
   /// Export to Apple Notes via share sheet
   /// [sharePositionOrigin] is required for iPad popover positioning
-  Future<void> exportToNotes(
-    Pointing pointing, {
-    Rect? sharePositionOrigin,
-  }) async {
+  Future<void> exportToNotes(Pointing pointing, {Rect? sharePositionOrigin}) async {
     final text = _formatForJournal(pointing);
     await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }

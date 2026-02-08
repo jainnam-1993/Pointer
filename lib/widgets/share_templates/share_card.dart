@@ -71,20 +71,11 @@ class ShareCard extends StatelessWidget {
   final ShareTemplate template;
   final ShareFormat format;
 
-  const ShareCard({
-    super.key,
-    required this.pointing,
-    required this.template,
-    required this.format,
-  });
+  const ShareCard({super.key, required this.pointing, required this.template, required this.format});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: format.width.toDouble(),
-      height: format.height.toDouble(),
-      child: _buildTemplate(),
-    );
+    return SizedBox(width: format.width.toDouble(), height: format.height.toDouble(), child: _buildTemplate());
   }
 
   Widget _buildTemplate() {
@@ -113,10 +104,7 @@ class _MinimalTemplate extends StatelessWidget {
 
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: 80,
-        vertical: safePadding,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -149,11 +137,7 @@ class _MinimalTemplate extends StatelessWidget {
           if (pointing.source != null)
             Text(
               pointing.source!,
-              style: const TextStyle(
-                fontSize: 10,
-                fontStyle: FontStyle.italic,
-                color: Color(0xFF999999),
-              ),
+              style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: Color(0xFF999999)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -197,10 +181,7 @@ class _GradientTemplate extends StatelessWidget {
           ],
         ),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 80,
-        vertical: safePadding,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -281,19 +262,13 @@ class _TraditionTemplate extends StatelessWidget {
           colors: [colors.background, colors.backgroundEnd],
         ),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 80,
-        vertical: safePadding,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
           // Tradition badge
-          _TraditionBadge(
-            tradition: pointing.tradition,
-            color: colors.badge,
-          ),
+          _TraditionBadge(tradition: pointing.tradition, color: colors.badge),
           const SizedBox(height: 40),
           // Pointing text
           Text(
@@ -313,21 +288,12 @@ class _TraditionTemplate extends StatelessWidget {
           if (pointing.teacher != null)
             Text(
               '— ${pointing.teacher}',
-              style: TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 24,
-                fontStyle: FontStyle.italic,
-                color: colors.accent,
-              ),
+              style: TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: colors.accent),
             ),
           if (pointing.source != null)
             Text(
               pointing.source!,
-              style: TextStyle(
-                fontSize: 10,
-                fontStyle: FontStyle.italic,
-                color: colors.accent.withValues(alpha: 0.6),
-              ),
+              style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: colors.accent.withValues(alpha: 0.6)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -368,19 +334,11 @@ class _TraditionBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            info.icon,
-            style: TextStyle(fontSize: 20, color: badgeColor),
-          ),
+          Text(info.icon, style: TextStyle(fontSize: 20, color: badgeColor)),
           const SizedBox(width: 8),
           Text(
             info.name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: badgeColor,
-              letterSpacing: 0.5,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: badgeColor, letterSpacing: 0.5),
           ),
         ],
       ),
@@ -411,12 +369,7 @@ class _Watermark extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           'Here Now',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: color,
-            letterSpacing: 1,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: color, letterSpacing: 1),
         ),
       ],
     );

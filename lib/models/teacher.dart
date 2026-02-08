@@ -8,11 +8,5 @@ class Teacher {
   final Tradition tradition;
   final List<String> tags;
 
-  const Teacher({
-    required this.name,
-    this.bio,
-    this.dates,
-    required this.tradition,
-    this.tags = const [],
-  });
+  const Teacher({required this.name, this.bio, this.dates, required this.tradition, this.tags = const []});
 }

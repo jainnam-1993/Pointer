@@ -40,11 +40,7 @@ void main() {
   });
 
   /// Creates a widget with custom text scale factor
-  Widget createAppWithTextScale({
-    required Widget child,
-    required double textScaleFactor,
-    Pointing? initialPointing,
-  }) {
+  Widget createAppWithTextScale({required Widget child, required double textScaleFactor, Pointing? initialPointing}) {
     return ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
@@ -60,9 +56,7 @@ void main() {
         theme: AppTheme.dark,
         builder: (context, child) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.linear(textScaleFactor),
-            ),
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScaleFactor)),
             child: child!,
           );
         },
@@ -71,10 +65,7 @@ void main() {
     );
   }
 
-  Future<void> pumpWithTextScale(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
+  Future<void> pumpWithTextScale(WidgetTester tester, Widget widget) async {
     // Use a phone-sized surface
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 2.0;
@@ -99,9 +90,7 @@ void main() {
             theme: AppTheme.dark,
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(1.0),
-                ),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
                 child: child!,
               );
             },
@@ -127,9 +116,7 @@ void main() {
             theme: AppTheme.dark,
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(1.5),
-                ),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)),
                 child: child!,
               );
             },
@@ -208,9 +195,7 @@ void main() {
             theme: AppTheme.dark,
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(1.25),
-                ),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.25)),
                 child: child!,
               );
             },
@@ -235,9 +220,7 @@ void main() {
             theme: AppTheme.dark,
             builder: (context, child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(1.25),
-                ),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.25)),
                 child: child!,
               );
             },
@@ -267,11 +250,7 @@ void main() {
             child: MaterialApp(
               theme: AppTheme.dark,
               home: const Scaffold(
-                body: Center(
-                  child: GlassCard(
-                    child: Text('Test content'),
-                  ),
-                ),
+                body: Center(child: GlassCard(child: Text('Test content'))),
               ),
             ),
           ),
@@ -324,10 +303,7 @@ void main() {
 
         // Should have SingleChildScrollView for scrolling when maxHeight is set
         expect(
-          find.descendant(
-            of: find.byType(GlassCard),
-            matching: find.byType(SingleChildScrollView),
-          ),
+          find.descendant(of: find.byType(GlassCard), matching: find.byType(SingleChildScrollView)),
           findsOneWidget,
         );
       });
@@ -343,11 +319,7 @@ void main() {
             child: MaterialApp(
               theme: AppTheme.dark,
               home: const Scaffold(
-                body: Center(
-                  child: GlassCard(
-                    child: Text('Short'),
-                  ),
-                ),
+                body: Center(child: GlassCard(child: Text('Short'))),
               ),
             ),
           ),
@@ -371,11 +343,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 1.0,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.0, initialPointing: testPointing),
         );
 
         expect(find.text('What is aware of this moment?'), findsOneWidget);
@@ -396,11 +364,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 1.5,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
         );
 
         // Content should render without overflow
@@ -418,11 +382,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 2.0,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 2.0, initialPointing: testPointing),
         );
 
         // Content should render without overflow (clamped to 1.5x)
@@ -440,11 +400,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 0.8,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 0.8, initialPointing: testPointing),
         );
 
         expect(find.text('What is here before thought?'), findsOneWidget);
@@ -467,11 +423,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 1.5,
-            initialPointing: longPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: longPointing),
         );
 
         // Should render without overflow
@@ -489,11 +441,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 1.5,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
         );
 
         // Buttons should still be present and tappable
@@ -520,11 +468,7 @@ void main() {
 
         await pumpWithTextScale(
           tester,
-          createAppWithTextScale(
-            child: const HomeScreen(),
-            textScaleFactor: 1.5,
-            initialPointing: testPointing,
-          ),
+          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
         );
 
         // Find the GlassButton widgets
@@ -553,34 +497,23 @@ void main() {
         for (final scale in [0.8, 1.0, 1.25, 1.5]) {
           await pumpWithTextScale(
             tester,
-            createAppWithTextScale(
-              child: const HomeScreen(),
-              textScaleFactor: scale,
-              initialPointing: testPointing,
-            ),
+            createAppWithTextScale(child: const HomeScreen(), textScaleFactor: scale, initialPointing: testPointing),
           );
 
           // All text should be findable and rendered
           // Use descendant finder to target only text within the main pointing card (Expanded > Center > GlassCard),
           // not the MiniInquiryCard below it which may contain similar text
           expect(
-            find.descendant(
-              of: find.byType(GlassCard).first,
-              matching: find.textContaining('aware'),
-            ),
+            find.descendant(of: find.byType(GlassCard).first, matching: find.textContaining('aware')),
             findsOneWidget,
             reason: 'Content should be visible at ${scale}x scale',
           );
           expect(
-            find.descendant(
-              of: find.byType(GlassCard).first,
-              matching: find.textContaining('notice'),
-            ),
+            find.descendant(of: find.byType(GlassCard).first, matching: find.textContaining('notice')),
             findsOneWidget,
             reason: 'Instruction should be visible at ${scale}x scale',
           );
-          expect(tester.takeException(), isNull,
-              reason: 'No overflow at ${scale}x scale');
+          expect(tester.takeException(), isNull, reason: 'No overflow at ${scale}x scale');
         }
       });
     });

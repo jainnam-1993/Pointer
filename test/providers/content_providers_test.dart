@@ -59,10 +59,7 @@ void main() {
       expect(newPointing, isA<Pointing>());
       expect(newPointing.id, isNotEmpty);
       expect(newPointing.id, isNot(equals(initialPointing.id)));
-      expect(
-        notifier.currentIndex,
-        equals((initialIndex + 1) % notifier.totalPointings),
-      );
+      expect(notifier.currentIndex, equals((initialIndex + 1) % notifier.totalPointings));
     });
 
     test('previousPointing() returns to previous in round-robin order', () {
@@ -257,16 +254,9 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      const state = TeachingFilterState(
-        lineage: Tradition.advaita,
-        topics: {'awareness'},
-        teacher: 'Ramana Maharshi',
-      );
+      const state = TeachingFilterState(lineage: Tradition.advaita, topics: {'awareness'}, teacher: 'Ramana Maharshi');
 
-      final modified = state.copyWith(
-        lineage: Tradition.zen,
-        topics: {'meditation'},
-      );
+      final modified = state.copyWith(lineage: Tradition.zen, topics: {'meditation'});
 
       expect(modified.lineage, Tradition.zen);
       expect(modified.topics, {'meditation'});
@@ -465,11 +455,7 @@ void main() {
     });
 
     test('currentPointingProvider creates notifier', () {
-      final container = ProviderContainer(
-        overrides: [
-          storageServiceProvider.overrideWithValue(mockStorage),
-        ],
-      );
+      final container = ProviderContainer(overrides: [storageServiceProvider.overrideWithValue(mockStorage)]);
       addTearDown(container.dispose);
 
       final pointing = container.read(currentPointingProvider);
@@ -527,8 +513,7 @@ void main() {
     });
 
     test('initializes from stored traditions', () {
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['advaita', 'zen']);
+      when(() => mockStorage.preferredTraditions).thenReturn(['advaita', 'zen']);
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
 
@@ -540,8 +525,7 @@ void main() {
 
     test('toggle() disables an enabled tradition', () {
       when(() => mockStorage.preferredTraditions).thenReturn([]);
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
       expect(notifier.state, contains(Tradition.advaita));
@@ -553,10 +537,8 @@ void main() {
     });
 
     test('toggle() enables a disabled tradition', () {
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['zen']); // Only zen enabled
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.preferredTraditions).thenReturn(['zen']); // Only zen enabled
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
       expect(notifier.state, isNot(contains(Tradition.advaita)));
@@ -568,10 +550,8 @@ void main() {
     });
 
     test('toggle() keeps at least one tradition enabled', () {
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['advaita']); // Only one enabled
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.preferredTraditions).thenReturn(['advaita']); // Only one enabled
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
       expect(notifier.state.length, 1);
@@ -584,8 +564,7 @@ void main() {
     });
 
     test('isEnabled() returns correct status', () {
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['advaita', 'zen']);
+      when(() => mockStorage.preferredTraditions).thenReturn(['advaita', 'zen']);
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
 
@@ -597,10 +576,8 @@ void main() {
     });
 
     test('enableAll() enables all traditions', () {
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['advaita']); // Start with just one
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.preferredTraditions).thenReturn(['advaita']); // Start with just one
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
       expect(notifier.state.length, 1);
@@ -614,16 +591,13 @@ void main() {
 
     test('persists changes to storage', () {
       when(() => mockStorage.preferredTraditions).thenReturn([]);
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
 
       notifier.toggle(Tradition.advaita);
 
-      final captured = verify(
-        () => mockStorage.setPreferredTraditions(captureAny()),
-      ).captured.single as List<String>;
+      final captured = verify(() => mockStorage.setPreferredTraditions(captureAny())).captured.single as List<String>;
 
       expect(captured, isNot(contains('advaita')));
       expect(captured.length, 4); // 5 - 1 disabled
@@ -631,8 +605,7 @@ void main() {
 
     test('handles invalid stored tradition names gracefully', () {
       // Simulates corrupted or outdated storage data
-      when(() => mockStorage.preferredTraditions)
-          .thenReturn(['advaita', 'invalid_tradition', 'zen']);
+      when(() => mockStorage.preferredTraditions).thenReturn(['advaita', 'invalid_tradition', 'zen']);
 
       final notifier = PreferredTraditionsNotifier(mockStorage);
 
@@ -648,16 +621,11 @@ void main() {
     setUp(() {
       mockStorage = MockStorageService();
       when(() => mockStorage.preferredTraditions).thenReturn([]);
-      when(() => mockStorage.setPreferredTraditions(any()))
-          .thenAnswer((_) async {});
+      when(() => mockStorage.setPreferredTraditions(any())).thenAnswer((_) async {});
     });
 
     test('preferredTraditionsProvider creates notifier with storage', () {
-      final container = ProviderContainer(
-        overrides: [
-          storageServiceProvider.overrideWithValue(mockStorage),
-        ],
-      );
+      final container = ProviderContainer(overrides: [storageServiceProvider.overrideWithValue(mockStorage)]);
       addTearDown(container.dispose);
 
       final traditions = container.read(preferredTraditionsProvider);
@@ -669,20 +637,14 @@ void main() {
     test('provider state updates propagate correctly', () {
       when(() => mockStorage.preferredTraditions).thenReturn([]);
 
-      final container = ProviderContainer(
-        overrides: [
-          storageServiceProvider.overrideWithValue(mockStorage),
-        ],
-      );
+      final container = ProviderContainer(overrides: [storageServiceProvider.overrideWithValue(mockStorage)]);
       addTearDown(container.dispose);
 
       // Initial state
       expect(container.read(preferredTraditionsProvider).length, 5);
 
       // Toggle off one tradition
-      container
-          .read(preferredTraditionsProvider.notifier)
-          .toggle(Tradition.zen);
+      container.read(preferredTraditionsProvider.notifier).toggle(Tradition.zen);
 
       // Verify state updated
       final updatedState = container.read(preferredTraditionsProvider);
@@ -710,8 +672,7 @@ void main() {
       // Run multiple times to verify consistency
       for (int i = 0; i < 20; i++) {
         final pointing = getRandomPointing(tradition: Tradition.zen);
-        expect(pointing.tradition, Tradition.zen,
-            reason: 'Iteration $i should return zen tradition');
+        expect(pointing.tradition, Tradition.zen, reason: 'Iteration $i should return zen tradition');
       }
     });
 
@@ -720,48 +681,29 @@ void main() {
       final preferredTraditions = {Tradition.advaita, Tradition.zen};
 
       // Filter all pointings to only those in preferred traditions
-      final filteredPointings = pointings
-          .where((p) => preferredTraditions.contains(p.tradition))
-          .toList();
+      final filteredPointings = pointings.where((p) => preferredTraditions.contains(p.tradition)).toList();
 
       expect(filteredPointings, isNotEmpty);
-      expect(
-        filteredPointings.every((p) =>
-            p.tradition == Tradition.advaita || p.tradition == Tradition.zen),
-        true,
-      );
+      expect(filteredPointings.every((p) => p.tradition == Tradition.advaita || p.tradition == Tradition.zen), true);
 
       // Verify no pointings from other traditions
-      expect(
-        filteredPointings.any((p) => p.tradition == Tradition.direct),
-        false,
-      );
-      expect(
-        filteredPointings.any((p) => p.tradition == Tradition.contemporary),
-        false,
-      );
+      expect(filteredPointings.any((p) => p.tradition == Tradition.direct), false);
+      expect(filteredPointings.any((p) => p.tradition == Tradition.contemporary), false);
     });
 
     test('single tradition selection returns only that tradition pointings', () {
       final preferredTraditions = {Tradition.direct};
 
-      final filteredPointings = pointings
-          .where((p) => preferredTraditions.contains(p.tradition))
-          .toList();
+      final filteredPointings = pointings.where((p) => preferredTraditions.contains(p.tradition)).toList();
 
       expect(filteredPointings, isNotEmpty);
-      expect(
-        filteredPointings.every((p) => p.tradition == Tradition.direct),
-        true,
-      );
+      expect(filteredPointings.every((p) => p.tradition == Tradition.direct), true);
     });
 
     test('all traditions selected returns all pointings', () {
       final preferredTraditions = Tradition.values.toSet();
 
-      final filteredPointings = pointings
-          .where((p) => preferredTraditions.contains(p.tradition))
-          .toList();
+      final filteredPointings = pointings.where((p) => preferredTraditions.contains(p.tradition)).toList();
 
       expect(filteredPointings.length, pointings.length);
     });
@@ -770,9 +712,13 @@ void main() {
       // Ensure users can use any single tradition as their only selection
       for (final tradition in Tradition.values) {
         final count = getPointingsByTradition(tradition).length;
-        expect(count, greaterThanOrEqualTo(5),
-            reason: '${tradition.name} should have at least 5 pointings '
-                'to provide variety when selected alone');
+        expect(
+          count,
+          greaterThanOrEqualTo(5),
+          reason:
+              '${tradition.name} should have at least 5 pointings '
+              'to provide variety when selected alone',
+        );
       }
     });
   });
@@ -794,9 +740,7 @@ void main() {
     test('can deserialize preferred traditions from JSON', () {
       const json = '["advaita", "zen", "direct"]';
       final decoded = List<String>.from(jsonDecode(json));
-      final traditions = decoded
-          .map((name) => Tradition.values.firstWhere((t) => t.name == name))
-          .toSet();
+      final traditions = decoded.map((name) => Tradition.values.firstWhere((t) => t.name == name)).toSet();
 
       expect(traditions.length, 3);
       expect(traditions, contains(Tradition.advaita));
@@ -824,9 +768,7 @@ void main() {
       // Simulate widget cache population with filtered traditions
       final preferredTraditions = {Tradition.advaita, Tradition.contemporary};
 
-      final filteredForCache = pointings
-          .where((p) => preferredTraditions.contains(p.tradition))
-          .map((p) {
+      final filteredForCache = pointings.where((p) => preferredTraditions.contains(p.tradition)).map((p) {
         final traditionInfo = traditions[p.tradition];
         return {
           'id': p.id,
@@ -859,9 +801,7 @@ void main() {
       if (stored.isEmpty) {
         traditions = Tradition.values.toSet();
       } else {
-        traditions = stored
-            .map((name) => Tradition.values.firstWhere((t) => t.name == name))
-            .toSet();
+        traditions = stored.map((name) => Tradition.values.firstWhere((t) => t.name == name)).toSet();
       }
 
       expect(traditions.length, 5);
@@ -889,11 +829,7 @@ void main() {
       final zenPointing = getPointingsByTradition(Tradition.zen).first;
       final advaitaPointing = getPointingsByTradition(Tradition.advaita).first;
 
-      expect(
-        preferredTraditions.contains(zenPointing.tradition),
-        true,
-        reason: 'Zen pointing should pass filter',
-      );
+      expect(preferredTraditions.contains(zenPointing.tradition), true, reason: 'Zen pointing should pass filter');
       expect(
         preferredTraditions.contains(advaitaPointing.tradition),
         false,

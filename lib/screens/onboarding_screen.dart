@@ -47,11 +47,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _advanceToPage(int page) {
     if (!mounted || page > 3) return;
     HapticFeedback.lightImpact();
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutCubic,
-    );
+    _pageController.animateToPage(page, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
   }
 
   Future<void> _handleContinue() async {
@@ -65,8 +61,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _handleEnableNotifications() async {
     HapticFeedback.mediumImpact();
-    final granted =
-        await ref.read(notificationServiceProvider).requestPermissions();
+    final granted = await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
   }
 
@@ -103,30 +98,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       HapticFeedback.lightImpact();
                       setState(() => _currentPage = page);
                     },
-                    children: const [
-                      _InterruptionPage(),
-                      _ContrastPage(),
-                      _SimplicityPage(),
-                      _NotificationsPage(),
-                    ],
+                    children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
                   ),
                 ),
 
                 // Page indicators
-                _PageIndicators(
-                  currentPage: _currentPage,
-                  pageCount: 4,
-                ),
+                _PageIndicators(currentPage: _currentPage, pageCount: 4),
 
                 SizedBox(height: isLandscape ? 16 : 32),
 
                 // Buttons
                 Padding(
-                  padding: EdgeInsets.only(
-                    left: 32,
-                    right: 32,
-                    bottom: bottomPadding + (isLandscape ? 8 : 20),
-                  ),
+                  padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
                   child: Column(
                     children: [
                       if (isLastPage) ...[
@@ -146,10 +129,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               onPressed: () => _finishOnboarding(false),
                               child: Text(
                                 'Maybe Later',
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: _responsiveFontSize(context, 16),
-                                ),
+                                style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
                               ),
                             );
                           },
@@ -157,11 +137,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ] else
                         SizedBox(
                           width: double.infinity,
-                          child: _OnboardingButton(
-                            label: 'Continue',
-                            onPressed: _handleContinue,
-                            isPrimary: true,
-                          ),
+                          child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
                         ),
                     ],
                   ),
@@ -266,11 +242,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               glowColor: colors.accent,
               maxBlur: 15,
               maxSpread: 3,
-              child: Icon(
-                Icons.visibility_outlined,
-                size: 32,
-                color: colors.textMuted,
-              ),
+              child: Icon(Icons.visibility_outlined, size: 32, color: colors.textMuted),
             ),
           ),
         ],
@@ -302,11 +274,7 @@ class _ContrastPage extends StatelessWidget {
             firstChild: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.self_improvement_outlined,
-                  size: 48,
-                  color: colors.textMuted,
-                ),
+                Icon(Icons.self_improvement_outlined, size: 48, color: colors.textMuted),
                 const SizedBox(height: 24),
                 Text(
                   'Meditation apps teach you to become a better meditator.',
@@ -400,9 +368,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                 color: colors.textSecondary,
                 height: 1.4,
               ),
-              onComplete: reduceMotion
-                  ? () => setState(() => _showRemains = true)
-                  : _onStrikeComplete,
+              onComplete: reduceMotion ? () => setState(() => _showRemains = true) : _onStrikeComplete,
             ),
 
           // What remains
@@ -563,10 +529,7 @@ class _PageIndicators extends StatelessWidget {
   final int currentPage;
   final int pageCount;
 
-  const _PageIndicators({
-    required this.currentPage,
-    required this.pageCount,
-  });
+  const _PageIndicators({required this.currentPage, required this.pageCount});
 
   @override
   Widget build(BuildContext context) {
@@ -596,11 +559,7 @@ class _OnboardingButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isPrimary;
 
-  const _OnboardingButton({
-    required this.label,
-    required this.onPressed,
-    this.isPrimary = false,
-  });
+  const _OnboardingButton({required this.label, required this.onPressed, this.isPrimary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -614,11 +573,7 @@ class _OnboardingButton extends StatelessWidget {
       child: Center(
         child: Text(
           label,
-          style: TextStyle(
-            color: textColor,
-            fontSize: _responsiveFontSize(context, 16),
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w600),
         ),
       ),
     );

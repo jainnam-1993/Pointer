@@ -20,8 +20,7 @@ class AWSCredentials {
   bool get isExpired => DateTime.now().isAfter(expiration);
 
   /// Buffer of 5 minutes before actual expiry to avoid edge cases
-  bool get needsRefresh =>
-      DateTime.now().isAfter(expiration.subtract(const Duration(minutes: 5)));
+  bool get needsRefresh => DateTime.now().isAfter(expiration.subtract(const Duration(minutes: 5)));
 
   factory AWSCredentials.fromJson(Map<String, dynamic> json) {
     return AWSCredentials(
@@ -55,10 +54,8 @@ class AWSCredentialService {
   static const String _credentialsCacheKey = 'aws_credentials_cache';
 
   // API endpoints
-  static const String _secretEndpoint =
-      'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/setup';
-  static const String _credentialsEndpoint =
-      'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/auth';
+  static const String _secretEndpoint = 'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/setup';
+  static const String _credentialsEndpoint = 'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/auth';
 
   // In-memory credential cache
   AWSCredentials? _cachedCredentials;
@@ -84,10 +81,7 @@ class AWSCredentialService {
       );
 
       if (response.statusCode != 200) {
-        throw AWSCredentialException(
-          'Failed to validate OTP: ${response.statusCode}',
-          response.body,
-        );
+        throw AWSCredentialException('Failed to validate OTP: ${response.statusCode}', response.body);
       }
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -136,10 +130,7 @@ class AWSCredentialService {
     // Check for stored secret
     final secret = await _secureStorage.read(key: _secretKey);
     if (secret == null || secret.isEmpty) {
-      throw AWSCredentialException(
-        'TTS not configured',
-        'Please configure TTS access in Settings first.',
-      );
+      throw AWSCredentialException('TTS not configured', 'Please configure TTS access in Settings first.');
     }
 
     // Generate TOTP code
@@ -154,10 +145,7 @@ class AWSCredentialService {
       );
 
       if (response.statusCode != 200) {
-        throw AWSCredentialException(
-          'Failed to get credentials: ${response.statusCode}',
-          response.body,
-        );
+        throw AWSCredentialException('Failed to get credentials: ${response.statusCode}', response.body);
       }
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -183,14 +171,7 @@ class AWSCredentialService {
   /// Uses standard TOTP: SHA1, 30-second window, 6 digits.
   String _generateTOTP(String secret) {
     final now = DateTime.now().millisecondsSinceEpoch;
-    return OTP.generateTOTPCodeString(
-      secret,
-      now,
-      algorithm: Algorithm.SHA1,
-      interval: 30,
-      length: 6,
-      isGoogle: true,
-    );
+    return OTP.generateTOTPCodeString(secret, now, algorithm: Algorithm.SHA1, interval: 30, length: 6, isGoogle: true);
   }
 
   /// Cache credentials to secure storage for offline/backup use.

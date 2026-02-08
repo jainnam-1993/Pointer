@@ -11,11 +11,7 @@ class EnsoIcon extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const EnsoIcon({
-    super.key,
-    this.size = 24,
-    this.color,
-  });
+  const EnsoIcon({super.key, this.size = 24, this.color});
 
   @override
   Widget build(BuildContext context) {

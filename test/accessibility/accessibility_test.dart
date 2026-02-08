@@ -28,11 +28,7 @@ void main() {
               focusable: true,
               child: GestureDetector(
                 onTap: () {},
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  color: Colors.blue,
-                ),
+                child: Container(width: 40, height: 40, color: Colors.blue),
               ),
             ),
           ),
@@ -57,19 +53,13 @@ void main() {
                   button: true,
                   selected: true,
                   label: 'Home tab, selected',
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: const Text('Home'),
-                  ),
+                  child: GestureDetector(onTap: () {}, child: const Text('Home')),
                 ),
                 Semantics(
                   button: true,
                   selected: false,
                   label: 'Library tab',
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: const Text('Library'),
-                  ),
+                  child: GestureDetector(onTap: () {}, child: const Text('Library')),
                 ),
               ],
             ),
@@ -99,11 +89,7 @@ void main() {
             body: Semantics(
               label: 'Current pointing: Test content by Test Teacher',
               hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.purple,
-              ),
+              child: Container(width: 200, height: 200, color: Colors.purple),
             ),
           ),
         ),
@@ -122,11 +108,7 @@ void main() {
             body: Semantics(
               button: true,
               label: 'The Art of Letting Go. A guide to release. 5 minute read by Alan Watts. Featured article.',
-              child: Container(
-                width: 200,
-                height: 150,
-                color: Colors.teal,
-              ),
+              child: Container(width: 200, height: 150, color: Colors.teal),
             ),
           ),
         ),
@@ -145,11 +127,7 @@ void main() {
           home: Scaffold(
             body: Semantics(
               label: 'What is aware of this moment? By Nisargadatta Maharaj. Advaita tradition.',
-              child: Container(
-                width: 200,
-                height: 100,
-                color: Colors.deepPurple,
-              ),
+              child: Container(width: 200, height: 100, color: Colors.deepPurple),
             ),
           ),
         ),
@@ -167,10 +145,7 @@ void main() {
             body: Semantics(
               button: true,
               label: 'Close inquiry',
-              child: GestureDetector(
-                onTap: () {},
-                child: const Icon(Icons.close, size: 24),
-              ),
+              child: GestureDetector(onTap: () {}, child: const Icon(Icons.close, size: 24)),
             ),
           ),
         ),

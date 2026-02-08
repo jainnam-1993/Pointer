@@ -29,19 +29,12 @@ class NotificationPermissionBanner extends StatelessWidget {
               children: [
                 Text(
                   'Notifications Disabled',
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Enable in system settings to receive daily pointings',
-                  style: TextStyle(
-                    color: colors.textSecondary,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: colors.textSecondary, fontSize: 12),
                 ),
               ],
             ),
@@ -51,11 +44,7 @@ class NotificationPermissionBanner extends StatelessWidget {
             onPressed: onOpenSettings,
             child: Text(
               'Open Settings',
-              style: TextStyle(
-                color: colors.accent,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: colors.accent, fontWeight: FontWeight.w600, fontSize: 13),
             ),
           ),
         ],
@@ -69,11 +58,7 @@ class PremiumFeatureBanner extends StatelessWidget {
   final String feature;
   final VoidCallback onUpgrade;
 
-  const PremiumFeatureBanner({
-    super.key,
-    required this.feature,
-    required this.onUpgrade,
-  });
+  const PremiumFeatureBanner({super.key, required this.feature, required this.onUpgrade});
 
   @override
   Widget build(BuildContext context) {
@@ -98,19 +83,12 @@ class PremiumFeatureBanner extends StatelessWidget {
               children: [
                 Text(
                   '$feature is a Premium Feature',
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Upgrade to unlock $feature and more',
-                  style: TextStyle(
-                    color: colors.textSecondary,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: colors.textSecondary, fontSize: 12),
                 ),
               ],
             ),
@@ -120,11 +98,7 @@ class PremiumFeatureBanner extends StatelessWidget {
             onPressed: onUpgrade,
             child: Text(
               'Upgrade',
-              style: TextStyle(
-                color: goldColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: goldColor, fontWeight: FontWeight.w600, fontSize: 13),
             ),
           ),
         ],

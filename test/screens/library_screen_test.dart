@@ -13,15 +13,9 @@ import 'package:pointer/services/storage_service.dart';
 late SharedPreferences prefs;
 
 /// Premium subscription state for testing
-final _premiumState = SubscriptionState(
-  tier: SubscriptionTier.premium,
-  isLoading: false,
-);
+final _premiumState = SubscriptionState(tier: SubscriptionTier.premium, isLoading: false);
 
-final _freeState = SubscriptionState(
-  tier: SubscriptionTier.free,
-  isLoading: false,
-);
+final _freeState = SubscriptionState(tier: SubscriptionTier.free, isLoading: false);
 
 /// Helper to wrap widget with ProviderScope for testing
 Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
@@ -33,9 +27,7 @@ Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
       // Mock subscription state for testing
-      subscriptionProvider.overrideWith(
-        (ref) => _TestSubscriptionNotifier(isPremium ? _premiumState : _freeState),
-      ),
+      subscriptionProvider.overrideWith((ref) => _TestSubscriptionNotifier(isPremium ? _premiumState : _freeState)),
     ],
     child: child,
   );
@@ -58,9 +50,7 @@ class _MockStorageService extends StorageService {
 
 void main() {
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({
-      'pointer_onboarding_completed': true,
-    });
+    SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
   });
   group('LibraryScreen', () {
@@ -75,9 +65,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -97,9 +85,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -118,9 +104,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -140,9 +124,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -163,9 +145,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.light,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -184,9 +164,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
@@ -206,11 +184,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: false,
-            ),
+            home: CategoryArticlesScreen(category: category, info: info, isPremium: false),
           ),
         ),
       );
@@ -228,11 +202,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: false,
-            ),
+            home: CategoryArticlesScreen(category: category, info: info, isPremium: false),
           ),
         ),
       );
@@ -243,8 +213,7 @@ void main() {
 
     // Note: With kFreeAccessEnabled=true, premium gating is disabled.
     // These tests verify that no lock icons appear (all content is free).
-    testWidgets('does not show lock icons when kFreeAccessEnabled is true',
-        (tester) async {
+    testWidgets('does not show lock icons when kFreeAccessEnabled is true', (tester) async {
       // Use modernPointers category which has premium articles in data
       const category = ArticleCategory.modernPointers;
       final info = categoryInfoMap[category]!;
@@ -275,11 +244,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: true,
-            ),
+            home: CategoryArticlesScreen(category: category, info: info, isPremium: true),
           ),
         ),
       );
@@ -409,8 +374,7 @@ void main() {
   group('categoryInfoMap', () {
     test('contains all ArticleCategory values', () {
       for (final category in ArticleCategory.values) {
-        expect(categoryInfoMap.containsKey(category), isTrue,
-            reason: 'Missing category: $category');
+        expect(categoryInfoMap.containsKey(category), isTrue, reason: 'Missing category: $category');
       }
     });
 

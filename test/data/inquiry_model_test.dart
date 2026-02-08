@@ -95,83 +95,68 @@ void main() {
         expect(inquiry.question, isNotEmpty, reason: 'Inquiry ${inquiry.id} missing question');
         expect(inquiry.type, isNotNull, reason: 'Inquiry ${inquiry.id} missing type');
         expect(inquiry.tradition, isNotNull, reason: 'Inquiry ${inquiry.id} missing tradition');
-        expect(inquiry.pauseDuration.inSeconds, greaterThanOrEqualTo(8),
-            reason: 'Inquiry ${inquiry.id} pause duration too short');
-        expect(inquiry.pauseDuration.inSeconds, lessThanOrEqualTo(15),
-            reason: 'Inquiry ${inquiry.id} pause duration too long');
+        expect(
+          inquiry.pauseDuration.inSeconds,
+          greaterThanOrEqualTo(8),
+          reason: 'Inquiry ${inquiry.id} pause duration too short',
+        );
+        expect(
+          inquiry.pauseDuration.inSeconds,
+          lessThanOrEqualTo(15),
+          reason: 'Inquiry ${inquiry.id} pause duration too long',
+        );
       }
     });
 
     test('all inquiries have unique ids', () {
       final ids = inquiries.map((i) => i.id).toSet();
-      expect(ids.length, inquiries.length,
-          reason: 'Some inquiry IDs are duplicated');
+      expect(ids.length, inquiries.length, reason: 'Some inquiry IDs are duplicated');
     });
 
     test('has appropriate ID prefixes for inquiry types', () {
-      final selfInquiryIds = inquiries
-          .where((i) => i.type == InquiryType.selfInquiry)
-          .map((i) => i.id);
+      final selfInquiryIds = inquiries.where((i) => i.type == InquiryType.selfInquiry).map((i) => i.id);
       for (final id in selfInquiryIds) {
-        expect(id.startsWith('si_'), true,
-            reason: 'Self-inquiry ID $id should start with si_');
+        expect(id.startsWith('si_'), true, reason: 'Self-inquiry ID $id should start with si_');
       }
 
-      final koanIds = inquiries
-          .where((i) => i.type == InquiryType.koan)
-          .map((i) => i.id);
+      final koanIds = inquiries.where((i) => i.type == InquiryType.koan).map((i) => i.id);
       for (final id in koanIds) {
-        expect(id.startsWith('koan_'), true,
-            reason: 'Koan ID $id should start with koan_');
+        expect(id.startsWith('koan_'), true, reason: 'Koan ID $id should start with koan_');
       }
 
-      final directPointingIds = inquiries
-          .where((i) => i.type == InquiryType.directPointing)
-          .map((i) => i.id);
+      final directPointingIds = inquiries.where((i) => i.type == InquiryType.directPointing).map((i) => i.id);
       for (final id in directPointingIds) {
-        expect(id.startsWith('dp_'), true,
-            reason: 'Direct pointing ID $id should start with dp_');
+        expect(id.startsWith('dp_'), true, reason: 'Direct pointing ID $id should start with dp_');
       }
 
-      final contemplationIds = inquiries
-          .where((i) => i.type == InquiryType.contemplation)
-          .map((i) => i.id);
+      final contemplationIds = inquiries.where((i) => i.type == InquiryType.contemplation).map((i) => i.id);
       for (final id in contemplationIds) {
-        expect(id.startsWith('cont_'), true,
-            reason: 'Contemplation ID $id should start with cont_');
+        expect(id.startsWith('cont_'), true, reason: 'Contemplation ID $id should start with cont_');
       }
     });
   });
 
   group('Seed data - distribution by type', () {
     test('has 6-8 self-inquiry (Advaita)', () {
-      final count = inquiries
-          .where((i) => i.type == InquiryType.selfInquiry)
-          .length;
+      final count = inquiries.where((i) => i.type == InquiryType.selfInquiry).length;
       expect(count, greaterThanOrEqualTo(6));
       expect(count, lessThanOrEqualTo(8));
     });
 
     test('has 6-8 koans (Zen)', () {
-      final count = inquiries
-          .where((i) => i.type == InquiryType.koan)
-          .length;
+      final count = inquiries.where((i) => i.type == InquiryType.koan).length;
       expect(count, greaterThanOrEqualTo(6));
       expect(count, lessThanOrEqualTo(8));
     });
 
     test('has 6-8 direct pointing', () {
-      final count = inquiries
-          .where((i) => i.type == InquiryType.directPointing)
-          .length;
+      final count = inquiries.where((i) => i.type == InquiryType.directPointing).length;
       expect(count, greaterThanOrEqualTo(6));
       expect(count, lessThanOrEqualTo(8));
     });
 
     test('has 4-6 contemporary contemplations', () {
-      final count = inquiries
-          .where((i) => i.type == InquiryType.contemplation)
-          .length;
+      final count = inquiries.where((i) => i.type == InquiryType.contemplation).length;
       expect(count, greaterThanOrEqualTo(4));
       expect(count, lessThanOrEqualTo(6));
     });
@@ -179,14 +164,11 @@ void main() {
 
   group('Seed data - distribution by tradition', () {
     test('self-inquiry inquiries are primarily Advaita', () {
-      final selfInquiries = inquiries
-          .where((i) => i.type == InquiryType.selfInquiry);
+      final selfInquiries = inquiries.where((i) => i.type == InquiryType.selfInquiry);
       expect(selfInquiries.length, greaterThan(0));
 
       // Most should be Advaita (allow for some flexibility)
-      final advaitaCount = selfInquiries
-          .where((i) => i.tradition == Tradition.advaita)
-          .length;
+      final advaitaCount = selfInquiries.where((i) => i.tradition == Tradition.advaita).length;
       expect(advaitaCount, greaterThanOrEqualTo(selfInquiries.length - 2));
     });
 
@@ -195,30 +177,33 @@ void main() {
       expect(koans.length, greaterThan(0));
 
       for (final koan in koans) {
-        expect(koan.tradition, Tradition.zen,
-            reason: 'Koan ${koan.id} should be Zen tradition');
+        expect(koan.tradition, Tradition.zen, reason: 'Koan ${koan.id} should be Zen tradition');
       }
     });
 
     test('direct pointing are Direct Path tradition', () {
-      final directPointings = inquiries
-          .where((i) => i.type == InquiryType.directPointing);
+      final directPointings = inquiries.where((i) => i.type == InquiryType.directPointing);
       expect(directPointings.length, greaterThan(0));
 
       for (final pointing in directPointings) {
-        expect(pointing.tradition, Tradition.direct,
-            reason: 'Direct pointing ${pointing.id} should be Direct Path tradition');
+        expect(
+          pointing.tradition,
+          Tradition.direct,
+          reason: 'Direct pointing ${pointing.id} should be Direct Path tradition',
+        );
       }
     });
 
     test('contemplations are Contemporary tradition', () {
-      final contemplations = inquiries
-          .where((i) => i.type == InquiryType.contemplation);
+      final contemplations = inquiries.where((i) => i.type == InquiryType.contemplation);
       expect(contemplations.length, greaterThan(0));
 
       for (final contemplation in contemplations) {
-        expect(contemplation.tradition, Tradition.contemporary,
-            reason: 'Contemplation ${contemplation.id} should be Contemporary tradition');
+        expect(
+          contemplation.tradition,
+          Tradition.contemporary,
+          reason: 'Contemplation ${contemplation.id} should be Contemporary tradition',
+        );
       }
     });
   });
@@ -226,24 +211,25 @@ void main() {
   group('Seed data - content quality', () {
     test('questions are meaningful and not empty', () {
       for (final inquiry in inquiries) {
-        expect(inquiry.question.length, greaterThan(8),
-            reason: 'Inquiry ${inquiry.id} question too short: "${inquiry.question}"');
+        expect(
+          inquiry.question.length,
+          greaterThan(8),
+          reason: 'Inquiry ${inquiry.id} question too short: "${inquiry.question}"',
+        );
       }
     });
 
     test('setup text is meaningful when present', () {
       final withSetup = inquiries.where((i) => i.setup != null);
       for (final inquiry in withSetup) {
-        expect(inquiry.setup!.length, greaterThan(5),
-            reason: 'Inquiry ${inquiry.id} setup too short');
+        expect(inquiry.setup!.length, greaterThan(5), reason: 'Inquiry ${inquiry.id} setup too short');
       }
     });
 
     test('followUp text is meaningful when present', () {
       final withFollowUp = inquiries.where((i) => i.followUp != null);
       for (final inquiry in withFollowUp) {
-        expect(inquiry.followUp!.length, greaterThan(5),
-            reason: 'Inquiry ${inquiry.id} followUp too short');
+        expect(inquiry.followUp!.length, greaterThan(5), reason: 'Inquiry ${inquiry.id} followUp too short');
       }
     });
 
@@ -281,9 +267,7 @@ void main() {
 
     test('filter by type and tradition together', () {
       // Koans should all be Zen
-      final zenKoans = getInquiriesByType(InquiryType.koan)
-          .where((i) => i.tradition == Tradition.zen)
-          .toList();
+      final zenKoans = getInquiriesByType(InquiryType.koan).where((i) => i.tradition == Tradition.zen).toList();
 
       expect(zenKoans.length, getInquiriesByType(InquiryType.koan).length);
     });
@@ -311,10 +295,7 @@ void main() {
 
     test('getRandomInquiry with both filters returns matching inquiry', () {
       for (int i = 0; i < 10; i++) {
-        final inquiry = getRandomInquiry(
-          type: InquiryType.directPointing,
-          tradition: Tradition.direct,
-        );
+        final inquiry = getRandomInquiry(type: InquiryType.directPointing, tradition: Tradition.direct);
         expect(inquiry.type, InquiryType.directPointing);
         expect(inquiry.tradition, Tradition.direct);
       }

@@ -8,10 +8,7 @@ enum AppThemeMode {
   system;
 
   static AppThemeMode fromString(String value) {
-    return AppThemeMode.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => AppThemeMode.system,
-    );
+    return AppThemeMode.values.firstWhere((e) => e.name == value, orElse: () => AppThemeMode.system);
   }
 }
 
@@ -86,22 +83,22 @@ class PointerColors extends ThemeExtension<PointerColors> {
 
   /// Light theme colors - Subtle liquid glass aesthetic
   static const light = PointerColors(
-    background: Color(0xFFF5F5F7),    // Apple-style neutral gray
+    background: Color(0xFFF5F5F7), // Apple-style neutral gray
     surface: Color(0xFFFFFFFF),
-    primary: Color(0xFF5B5B5B),       // Neutral dark gray
-    secondary: Color(0xFF8E8E93),     // iOS gray
-    textPrimary: Color(0xFF1C1C1E),   // Near black
+    primary: Color(0xFF5B5B5B), // Neutral dark gray
+    secondary: Color(0xFF8E8E93), // iOS gray
+    textPrimary: Color(0xFF1C1C1E), // Near black
     textSecondary: Color(0xFF636366), // Medium gray
-    textMuted: Color(0xFF8E8E93),     // iOS gray
-    glassBorder: Color(0x15000000),   // Very subtle border
+    textMuted: Color(0xFF8E8E93), // iOS gray
+    glassBorder: Color(0x15000000), // Very subtle border
     glassBackground: Color(0x08FFFFFF), // Frosted glass fill
     glassBorderActive: Color(0x22000000),
-    gold: Color(0xFFB8860B),          // Darker gold
-    accent: Color(0xFF8B5CF6),        // Violet accent
-    iconColor: Color(0xFF3C3C43),     // Dark gray icons
+    gold: Color(0xFFB8860B), // Darker gold
+    accent: Color(0xFF8B5CF6), // Violet accent
+    iconColor: Color(0xFF3C3C43), // Dark gray icons
     glassHighlight: Color(0x60FFFFFF), // Soft white highlight
-    glassGlow: Color(0x088B5CF6),     // Subtle violet glow
-    shimmerColor: Color(0x108B5CF6),  // Violet shimmer
+    glassGlow: Color(0x088B5CF6), // Subtle violet glow
+    shimmerColor: Color(0x108B5CF6), // Violet shimmer
     cardBackground: Color(0xFFFFFFFF), // Pure white cards
   );
 
@@ -235,47 +232,31 @@ class AppGradients {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFFFAFAFA),  // Near white
-      Color(0xFFF5F5F7),  // Apple gray
-      Color(0xFFEFEFF1),  // Slightly darker edge
+      Color(0xFFFAFAFA), // Near white
+      Color(0xFFF5F5F7), // Apple gray
+      Color(0xFFEFEFF1), // Slightly darker edge
     ],
   );
 
   /// Dark mode animated colors for shimmer effects
-  static const animatedColors = [
-    Color(0xFF0D0D0D),
-    Color(0xFF1A1A1A),
-    Color(0xFF050505),
-    Color(0xFF0A0A0A),
-  ];
+  static const animatedColors = [Color(0xFF0D0D0D), Color(0xFF1A1A1A), Color(0xFF050505), Color(0xFF0A0A0A)];
 
   /// Light mode animated colors for shimmer effects - Subtle neutral
-  static const animatedColorsLight = [
-    Color(0xFFFAFAFA),
-    Color(0xFFF0F0F2),
-    Color(0xFFF5F5F7),
-    Color(0xFFEDEDEF),
-  ];
+  static const animatedColorsLight = [Color(0xFFFAFAFA), Color(0xFFF0F0F2), Color(0xFFF5F5F7), Color(0xFFEDEDEF)];
 
   /// Dark mode glass gradient for cards and overlays - Enhanced liquid glass
   static LinearGradient get glassDark => LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.18),
-          Colors.white.withValues(alpha: 0.08),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.08)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   /// Light mode glass gradient for cards and overlays
   static LinearGradient get glassLight => LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.7),
-          Colors.white.withValues(alpha: 0.4),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [Colors.white.withValues(alpha: 0.7), Colors.white.withValues(alpha: 0.4)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
 
 /// Scale-aware text styles for Dynamic Type / Accessibility support
@@ -481,9 +462,7 @@ class AppTheme {
         error: const Color(0xFFEF4444),
       ),
       extensions: const [PointerColors.dark],
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.dark().textTheme,
-      ).copyWith(
+      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
           fontWeight: FontWeight.w700,
@@ -496,19 +475,9 @@ class AppTheme {
           color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          color: colors.textPrimary,
-        ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
-          color: colors.textSecondary,
-        ),
+        titleLarge: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        bodyLarge: GoogleFonts.inter(fontSize: 16, color: colors.textPrimary),
+        bodyMedium: GoogleFonts.inter(fontSize: 14, color: colors.textSecondary),
         labelSmall: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: FontWeight.w600,
@@ -516,10 +485,7 @@ class AppTheme {
           letterSpacing: 1,
         ),
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.all(Colors.white),
         trackColor: WidgetStateProperty.resolveWith((states) {
@@ -545,9 +511,7 @@ class AppTheme {
         error: const Color(0xFFDC2626),
       ),
       extensions: const [PointerColors.light],
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.light().textTheme,
-      ).copyWith(
+      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).copyWith(
         displayLarge: GoogleFonts.inter(
           fontSize: 32,
           fontWeight: FontWeight.w700,
@@ -560,19 +524,9 @@ class AppTheme {
           color: colors.textPrimary,
           letterSpacing: -0.5,
         ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          color: colors.textPrimary,
-        ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
-          color: colors.textSecondary,
-        ),
+        titleLarge: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        bodyLarge: GoogleFonts.inter(fontSize: 16, color: colors.textPrimary),
+        bodyMedium: GoogleFonts.inter(fontSize: 14, color: colors.textSecondary),
         labelSmall: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: FontWeight.w600,
@@ -580,10 +534,7 @@ class AppTheme {
           letterSpacing: 1,
         ),
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.all(colors.primary),
         trackColor: WidgetStateProperty.resolveWith((states) {
@@ -647,34 +598,31 @@ class TraditionAccentColors {
 /// with semantic aliases for common use cases.
 class AppSpacing {
   // Base spacing scale (8pt grid system)
-  static const double xs = 4.0;    // Tight spacing, icon gaps
-  static const double sm = 8.0;    // Small spacing, list items
-  static const double md = 12.0;   // Medium spacing, card padding
-  static const double lg = 16.0;   // Large spacing, section gaps
-  static const double xl = 24.0;   // Extra large, screen padding
-  static const double xxl = 32.0;  // Maximum spacing, hero sections
+  static const double xs = 4.0; // Tight spacing, icon gaps
+  static const double sm = 8.0; // Small spacing, list items
+  static const double md = 12.0; // Medium spacing, card padding
+  static const double lg = 16.0; // Large spacing, section gaps
+  static const double xl = 24.0; // Extra large, screen padding
+  static const double xxl = 32.0; // Maximum spacing, hero sections
 
   // Semantic aliases for clarity
-  static const double screenPadding = xl;        // 24.0 - horizontal screen edges
-  static const double cardPadding = xl;          // 24.0 - inside cards/modals
-  static const double sectionGap = lg;           // 16.0 - between sections
-  static const double itemGap = md;              // 12.0 - between list items
-  static const double iconGap = sm;              // 8.0  - icon to text spacing
-  static const double navBarOffset = 120.0;      // Bottom nav clearance
+  static const double screenPadding = xl; // 24.0 - horizontal screen edges
+  static const double cardPadding = xl; // 24.0 - inside cards/modals
+  static const double sectionGap = lg; // 16.0 - between sections
+  static const double itemGap = md; // 12.0 - between list items
+  static const double iconGap = sm; // 8.0  - icon to text spacing
+  static const double navBarOffset = 120.0; // Bottom nav clearance
 
   // Border radius constants (matching spacing scale)
   static const double radiusSm = 8.0;
   static const double radiusMd = 12.0;
   static const double radiusLg = 16.0;
   static const double radiusXl = 24.0;
-  static const double radiusCard = 24.0;  // Default card radius
+  static const double radiusCard = 24.0; // Default card radius
 
   // Common EdgeInsets presets
   static const EdgeInsets screenH = EdgeInsets.symmetric(horizontal: xl);
   static const EdgeInsets screenAll = EdgeInsets.all(xl);
   static const EdgeInsets cardAll = EdgeInsets.all(xl);
-  static const EdgeInsets listItem = EdgeInsets.symmetric(
-    horizontal: xl,
-    vertical: md,
-  );
+  static const EdgeInsets listItem = EdgeInsets.symmetric(horizontal: xl, vertical: md);
 }

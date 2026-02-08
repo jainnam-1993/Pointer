@@ -39,18 +39,12 @@ void main() {
         oledModeProvider.overrideWith((ref) => false),
         reduceMotionOverrideProvider.overrideWith((ref) => null),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: const LineagesScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: const LineagesScreen()),
     );
   }
 
   // Helper for tests with animations - uses runAsync to avoid timer issues
-  Future<void> pumpLineagesScreen(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
+  Future<void> pumpLineagesScreen(WidgetTester tester, Widget widget) async {
     // Use a phone-sized surface to avoid overflow in tests
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 2.0;
@@ -337,7 +331,7 @@ void main() {
       // Each tradition card should have Semantics wrapper
       // We have 5 tradition cards, so we should find at least 5 Semantics widgets
       expect(find.byType(Semantics), findsWidgets);
-      
+
       // Verify at least 5 GlassCards exist (one per tradition)
       expect(find.byType(GlassCard), findsNWidgets(5));
     });
@@ -363,7 +357,7 @@ void main() {
       // Find all Semantics widgets - should have at least 5 for the tradition cards
       final semanticsWidgets = find.byType(Semantics);
       expect(semanticsWidgets, findsWidgets);
-      
+
       // Each tradition card should be present
       for (final entry in traditions.entries) {
         final info = entry.value;
@@ -393,10 +387,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Each card should be wrapped in Padding with bottom: 16
-      final paddingWidgets = find.descendant(
-        of: find.byType(ListView),
-        matching: find.byType(Padding),
-      );
+      final paddingWidgets = find.descendant(of: find.byType(ListView), matching: find.byType(Padding));
       expect(paddingWidgets, findsWidgets);
     });
   });

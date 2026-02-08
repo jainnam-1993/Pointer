@@ -44,113 +44,86 @@ class TeacherSheet extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               ),
               child: ListView(
-            controller: scrollController,
-            padding: const EdgeInsets.all(24),
-            children: [
-              // Handle bar
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 24),
-                  decoration: BoxDecoration(
-                    color: colors.textMuted.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-
-              // Teacher name
-              Text(
-                teacher.name,
-                style: AppTextStyles.heading(context),
-                textAlign: TextAlign.center,
-              ),
-
-              // Dates
-              if (teacher.dates != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  teacher.dates!,
-                  style: AppTextStyles.footerText(context),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-
-              // Tradition badge
-              const SizedBox(height: 16),
-              Center(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: colors.accent.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '${traditionInfo.icon} ${traditionInfo.name}',
-                    style: TextStyle(
-                      color: colors.accent,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                controller: scrollController,
+                padding: const EdgeInsets.all(24),
+                children: [
+                  // Handle bar
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 24),
+                      decoration: BoxDecoration(
+                        color: colors.textMuted.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
-                ),
-              ),
 
-              // Biography
-              if (teacher.bio != null) ...[
-                const SizedBox(height: 24),
-                Text(
-                  teacher.bio!,
-                  style: AppTextStyles.bodyText(context),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  // Teacher name
+                  Text(teacher.name, style: AppTextStyles.heading(context), textAlign: TextAlign.center),
 
-              // Tags
-              if (teacher.tags.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: teacher.tags
-                      .map((tag) => Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: colors.glassBackground,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              tag,
-                              style: TextStyle(
-                                color: colors.textSecondary,
-                                fontSize: 11,
+                  // Dates
+                  if (teacher.dates != null) ...[
+                    const SizedBox(height: 8),
+                    Text(teacher.dates!, style: AppTextStyles.footerText(context), textAlign: TextAlign.center),
+                  ],
+
+                  // Tradition badge
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: colors.accent.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        '${traditionInfo.icon} ${traditionInfo.name}',
+                        style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+
+                  // Biography
+                  if (teacher.bio != null) ...[
+                    const SizedBox(height: 24),
+                    Text(teacher.bio!, style: AppTextStyles.bodyText(context), textAlign: TextAlign.center),
+                  ],
+
+                  // Tags
+                  if (teacher.tags.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: teacher.tags
+                          .map(
+                            (tag) => Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: colors.glassBackground,
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Text(tag, style: TextStyle(color: colors.textSecondary, fontSize: 11)),
                             ),
-                          ))
-                      .toList(),
-                ),
-              ],
+                          )
+                          .toList(),
+                    ),
+                  ],
 
-              // More from this teacher
-              if (otherPointings.length > 1) ...[
-                const SizedBox(height: 32),
-                Text(
-                  'More from ${teacher.name}',
-                  style: AppTextStyles.sectionHeader(context),
-                ),
-                const SizedBox(height: 12),
-                ...otherPointings
-                    .take(5)
-                    .map((pointing) => _PointingTile(pointing: pointing)),
-              ],
+                  // More from this teacher
+                  if (otherPointings.length > 1) ...[
+                    const SizedBox(height: 32),
+                    Text('More from ${teacher.name}', style: AppTextStyles.sectionHeader(context)),
+                    const SizedBox(height: 12),
+                    ...otherPointings.take(5).map((pointing) => _PointingTile(pointing: pointing)),
+                  ],
 
-              const SizedBox(height: 24),
-            ],
-          ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
         );
@@ -178,14 +151,8 @@ class _PointingTile extends StatelessWidget {
           border: Border.all(color: colors.glassBorder),
         ),
         child: Text(
-          pointing.content.length > 120
-              ? '${pointing.content.substring(0, 120)}...'
-              : pointing.content,
-          style: TextStyle(
-            color: colors.textSecondary,
-            fontSize: 13,
-            height: 1.5,
-          ),
+          pointing.content.length > 120 ? '${pointing.content.substring(0, 120)}...' : pointing.content,
+          style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.5),
         ),
       ),
     );

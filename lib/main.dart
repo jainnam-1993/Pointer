@@ -89,18 +89,10 @@ void main() async {
   // Initialize teaching repository with all teachings
   TeachingRepository.initialize(
     pointings: pointings,
-    additionalTeachings: [
-      ...papajiTeachings,
-      ...adyashantiTeachings,
-    ],
+    additionalTeachings: [...papajiTeachings, ...adyashantiTeachings],
   );
 
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const PointerApp(),
-    ),
-  );
+  runApp(UncontrolledProviderScope(container: container, child: const PointerApp()));
 }
 
 /// Initialize notification plugin with action callbacks and create Android channel
