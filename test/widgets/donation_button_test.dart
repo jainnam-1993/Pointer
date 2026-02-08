@@ -15,8 +15,7 @@ import 'package:pointer/widgets/glass_card.dart';
 class MockDonationService extends DonationService {
   bool _isAvailable = true;
   List<ProductDetails> _products = [];
-  final StreamController<List<PurchaseDetails>> _purchaseController =
-      StreamController<List<PurchaseDetails>>.broadcast();
+  final StreamController<List<PurchaseDetails>> _purchaseController = StreamController<List<PurchaseDetails>>.broadcast();
 
   void setAvailable(bool available) => _isAvailable = available;
   void setProducts(List<ProductDetails> products) => _products = products;
@@ -65,14 +64,7 @@ class TestDonationNotifier extends DonationNotifier {
 
 /// Create mock ProductDetails for testing
 ProductDetails createMockProduct({required String id, required String title, required String price}) {
-  return ProductDetails(
-    id: id,
-    title: title,
-    description: 'Test product $id',
-    price: price,
-    rawPrice: 1.99,
-    currencyCode: 'USD',
-  );
+  return ProductDetails(id: id, title: title, description: 'Test product $id', price: price, rawPrice: 1.99, currencyCode: 'USD');
 }
 
 /// Helper to wrap widget with providers for testing
@@ -85,8 +77,7 @@ Widget wrapWithProviders(Widget child, {DonationState? donationState, List<Produ
     createMockProduct(id: 'tip_generous', title: 'Generous Tip', price: '\$9.99'),
   ];
 
-  final state =
-      donationState ?? DonationState(isAvailable: true, isLoading: false, products: products ?? defaultProducts);
+  final state = donationState ?? DonationState(isAvailable: true, isLoading: false, products: products ?? defaultProducts);
 
   final mockService = MockDonationService();
 
@@ -142,10 +133,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show expanded content
-      expect(
-        find.text('Here Now is free forever. If you find value, consider supporting development.'),
-        findsOneWidget,
-      );
+      expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsOneWidget);
     });
 
     testWidgets('shows product grid when expanded', (tester) async {
@@ -193,12 +181,7 @@ void main() {
     });
 
     testWidgets('hides when not available and not loading', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(
-          const DonationButton(),
-          donationState: const DonationState(isAvailable: false, isLoading: false),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: false, isLoading: false)));
 
       // Should not render anything
       expect(find.byType(DonationButton), findsOneWidget);
@@ -206,24 +189,14 @@ void main() {
     });
 
     testWidgets('shows loading indicator when loading in collapsed state', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(
-          const DonationButton(),
-          donationState: const DonationState(isAvailable: true, isLoading: true),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: true)));
 
       // Should show loading indicator
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
     testWidgets('shows loading indicator in expanded state when loading', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(
-          const DonationButton(),
-          donationState: const DonationState(isAvailable: true, isLoading: true),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: true)));
 
       // Manually expand (even during loading the header is visible)
       // The loading indicator should be in the header
@@ -251,10 +224,7 @@ void main() {
 
     testWidgets('shows message when no products available', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviders(
-          const DonationButton(),
-          donationState: const DonationState(isAvailable: true, isLoading: false, products: []),
-        ),
+        wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: false, products: [])),
       );
 
       // Tap to expand
@@ -278,10 +248,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify expanded
-      expect(
-        find.text('Here Now is free forever. If you find value, consider supporting development.'),
-        findsOneWidget,
-      );
+      expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsOneWidget);
 
       // Tap to collapse
       await tester.tap(find.text('Support Development'));

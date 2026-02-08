@@ -32,9 +32,7 @@ void main() {
 
       // The gradient container should exist
       final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.where(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
-      );
+      final gradientContainer = containers.where((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
       expect(gradientContainer.isNotEmpty, true, reason: 'Should have a container with gradient decoration');
     });
 
@@ -89,9 +87,7 @@ void main() {
       expect(find.byType(Container), findsWidgets);
 
       final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.where(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
-      );
+      final gradientContainer = containers.where((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
       expect(gradientContainer.isNotEmpty, true);
     });
 
@@ -123,11 +119,7 @@ void main() {
 
       // Verify it uses dark theme colors (very dark gray/black tones)
       expect(gradient.colors.isNotEmpty, true);
-      expect(
-        gradient.colors.first.toARGB32(),
-        lessThan(0xFF202020),
-        reason: 'Dark theme gradient should use very dark colors',
-      );
+      expect(gradient.colors.first.toARGB32(), lessThan(0xFF202020), reason: 'Dark theme gradient should use very dark colors');
     });
 
     testWidgets('static gradient uses correct colors for light theme', (tester) async {
@@ -158,11 +150,7 @@ void main() {
 
       // Verify it uses light theme colors (lavender/soft tones)
       expect(gradient.colors.isNotEmpty, true);
-      expect(
-        gradient.colors.first.toARGB32(),
-        greaterThan(0xFFE0E0E0),
-        reason: 'Light theme gradient should use light colors',
-      );
+      expect(gradient.colors.first.toARGB32(), greaterThan(0xFFE0E0E0), reason: 'Light theme gradient should use light colors');
     });
   });
 

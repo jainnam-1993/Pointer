@@ -53,13 +53,7 @@ void main() {
 
     test('copyWith preserves unmodified fields', () {
       final products = [_createMockProduct('test', 1.99)];
-      final original = DonationState(
-        isAvailable: true,
-        isLoading: false,
-        products: products,
-        error: 'Error',
-        lastResult: DonationResult.success,
-      );
+      final original = DonationState(isAvailable: true, isLoading: false, products: products, error: 'Error', lastResult: DonationResult.success);
 
       final modified = original.copyWith(isLoading: true);
 

@@ -118,10 +118,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                   // Uses GoRouter for redirect handling when kFreeAccessEnabled
                   context.push('/paywall');
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.accent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
+                style: FilledButton.styleFrom(backgroundColor: colors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
                 child: const Text('Upgrade to Premium'),
               ),
             ),
@@ -186,10 +183,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                         child: Container(
                           width: 56,
                           height: 56,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: widget.isPremium ? colors.accent : colors.gold,
-                          ),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: widget.isPremium ? colors.accent : colors.gold),
                           child: isLoading
                               ? const Padding(
                                   padding: EdgeInsets.all(16),

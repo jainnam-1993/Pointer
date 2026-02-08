@@ -69,11 +69,7 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                                   const SizedBox(width: 8),
                                   Text(
                                     TopicTags.displayName(widget.topic),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                                   ),
                                 ],
                               ),
@@ -121,10 +117,7 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                                     ),
                                   );
                                 } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
-                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                                 }
                               },
                             ),

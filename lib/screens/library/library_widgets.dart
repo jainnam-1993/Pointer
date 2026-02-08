@@ -31,10 +31,7 @@ class SectionHeader extends StatelessWidget {
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: colors.accent.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12)),
             child: Text(
               count.toString(),
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.accent),
@@ -60,8 +57,7 @@ class ArticleListItem extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label:
-          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${isLocked ? ". Premium content, locked" : ""}',
+      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${isLocked ? ". Premium content, locked" : ""}',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         onTap: onTap,
@@ -104,10 +100,7 @@ class ArticleListItem extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Text(
-                          '${article.readingTimeMinutes} min',
-                          style: TextStyle(fontSize: 12, color: colors.textMuted),
-                        ),
+                        Text('${article.readingTimeMinutes} min', style: TextStyle(fontSize: 12, color: colors.textMuted)),
                         if (article.teacher != null) ...[
                           Text(' · ', style: TextStyle(fontSize: 12, color: colors.textMuted)),
                           Flexible(
@@ -150,8 +143,7 @@ class TeachingCard extends StatelessWidget {
     final traditionInfo = traditions[teaching.lineage]!;
 
     return Semantics(
-      label:
-          '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
+      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         onTap: onTap,
@@ -185,10 +177,7 @@ class TeachingCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: colors.accent.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -215,10 +204,7 @@ class TeachingCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: colors.glassBorder),
                       ),
-                      child: Text(
-                        TopicTags.displayName(tag),
-                        style: TextStyle(color: colors.textSecondary, fontSize: 11),
-                      ),
+                      child: Text(TopicTags.displayName(tag), style: TextStyle(color: colors.textSecondary, fontSize: 11)),
                     );
                   }).toList(),
                 ),
@@ -257,13 +243,7 @@ class FilterSheet<T> extends StatelessWidget {
   final T currentValue;
   final ValueChanged<T> onSelected;
 
-  const FilterSheet({
-    super.key,
-    required this.title,
-    required this.options,
-    required this.currentValue,
-    required this.onSelected,
-  });
+  const FilterSheet({super.key, required this.title, required this.options, required this.currentValue, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {

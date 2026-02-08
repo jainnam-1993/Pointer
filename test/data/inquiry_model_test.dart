@@ -19,12 +19,7 @@ void main() {
 
   group('Inquiry model', () {
     test('creates valid inquiry with required fields', () {
-      const inquiry = Inquiry(
-        id: 'test_001',
-        question: 'Who am I?',
-        type: InquiryType.selfInquiry,
-        tradition: Tradition.advaita,
-      );
+      const inquiry = Inquiry(id: 'test_001', question: 'Who am I?', type: InquiryType.selfInquiry, tradition: Tradition.advaita);
 
       expect(inquiry.id, 'test_001');
       expect(inquiry.question, 'Who am I?');
@@ -62,23 +57,13 @@ void main() {
     });
 
     test('has default pause duration of 10 seconds', () {
-      const inquiry = Inquiry(
-        id: 'test_003',
-        question: 'Test question',
-        type: InquiryType.contemplation,
-        tradition: Tradition.contemporary,
-      );
+      const inquiry = Inquiry(id: 'test_003', question: 'Test question', type: InquiryType.contemplation, tradition: Tradition.contemporary);
 
       expect(inquiry.pauseDuration, const Duration(seconds: 10));
     });
 
     test('has default hasVisualElement of false', () {
-      const inquiry = Inquiry(
-        id: 'test_004',
-        question: 'Test question',
-        type: InquiryType.contemplation,
-        tradition: Tradition.contemporary,
-      );
+      const inquiry = Inquiry(id: 'test_004', question: 'Test question', type: InquiryType.contemplation, tradition: Tradition.contemporary);
 
       expect(inquiry.hasVisualElement, false);
     });
@@ -95,16 +80,8 @@ void main() {
         expect(inquiry.question, isNotEmpty, reason: 'Inquiry ${inquiry.id} missing question');
         expect(inquiry.type, isNotNull, reason: 'Inquiry ${inquiry.id} missing type');
         expect(inquiry.tradition, isNotNull, reason: 'Inquiry ${inquiry.id} missing tradition');
-        expect(
-          inquiry.pauseDuration.inSeconds,
-          greaterThanOrEqualTo(8),
-          reason: 'Inquiry ${inquiry.id} pause duration too short',
-        );
-        expect(
-          inquiry.pauseDuration.inSeconds,
-          lessThanOrEqualTo(15),
-          reason: 'Inquiry ${inquiry.id} pause duration too long',
-        );
+        expect(inquiry.pauseDuration.inSeconds, greaterThanOrEqualTo(8), reason: 'Inquiry ${inquiry.id} pause duration too short');
+        expect(inquiry.pauseDuration.inSeconds, lessThanOrEqualTo(15), reason: 'Inquiry ${inquiry.id} pause duration too long');
       }
     });
 
@@ -186,11 +163,7 @@ void main() {
       expect(directPointings.length, greaterThan(0));
 
       for (final pointing in directPointings) {
-        expect(
-          pointing.tradition,
-          Tradition.direct,
-          reason: 'Direct pointing ${pointing.id} should be Direct Path tradition',
-        );
+        expect(pointing.tradition, Tradition.direct, reason: 'Direct pointing ${pointing.id} should be Direct Path tradition');
       }
     });
 
@@ -199,11 +172,7 @@ void main() {
       expect(contemplations.length, greaterThan(0));
 
       for (final contemplation in contemplations) {
-        expect(
-          contemplation.tradition,
-          Tradition.contemporary,
-          reason: 'Contemplation ${contemplation.id} should be Contemporary tradition',
-        );
+        expect(contemplation.tradition, Tradition.contemporary, reason: 'Contemplation ${contemplation.id} should be Contemporary tradition');
       }
     });
   });
@@ -211,11 +180,7 @@ void main() {
   group('Seed data - content quality', () {
     test('questions are meaningful and not empty', () {
       for (final inquiry in inquiries) {
-        expect(
-          inquiry.question.length,
-          greaterThan(8),
-          reason: 'Inquiry ${inquiry.id} question too short: "${inquiry.question}"',
-        );
+        expect(inquiry.question.length, greaterThan(8), reason: 'Inquiry ${inquiry.id} question too short: "${inquiry.question}"');
       }
     });
 

@@ -61,8 +61,7 @@ class TeacherProfile {
   bool isFromTradition(Tradition tradition) => primaryTradition == tradition;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is TeacherProfile && runtimeType == other.runtimeType && name == other.name;
+  bool operator ==(Object other) => identical(this, other) || other is TeacherProfile && runtimeType == other.runtimeType && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

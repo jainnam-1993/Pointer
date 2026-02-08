@@ -21,11 +21,7 @@ void main() {
     test('all IDs are unique', () {
       final ids = pointings.map((p) => p.id).toList();
       final uniqueIds = ids.toSet();
-      expect(
-        ids.length,
-        uniqueIds.length,
-        reason: 'Duplicate pointing IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}',
-      );
+      expect(ids.length, uniqueIds.length, reason: 'Duplicate pointing IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}');
     });
 
     test('all traditions are valid enum members', () {
@@ -91,11 +87,7 @@ void main() {
 
     test('content length > 10 chars (not truncated)', () {
       for (final p in pointings) {
-        expect(
-          p.content.length,
-          greaterThan(10),
-          reason: 'Pointing ${p.id} has suspiciously short content: "${p.content}"',
-        );
+        expect(p.content.length, greaterThan(10), reason: 'Pointing ${p.id} has suspiciously short content: "${p.content}"');
       }
     });
   });
@@ -104,11 +96,7 @@ void main() {
     test('all IDs are unique', () {
       final ids = articles.map((a) => a.id).toList();
       final uniqueIds = ids.toSet();
-      expect(
-        ids.length,
-        uniqueIds.length,
-        reason: 'Duplicate article IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}',
-      );
+      expect(ids.length, uniqueIds.length, reason: 'Duplicate article IDs: ${ids.where((id) => ids.where((i) => i == id).length > 1).toSet()}');
     });
 
     test('readingTimeMinutes > 0', () {
@@ -121,11 +109,7 @@ void main() {
       // Some articles use alternate name forms (e.g., "Papaji (H.W.L. Poonja)")
       final articlesWithTeacher = articles.where((a) => a.teacher != null);
       final matched = articlesWithTeacher.where((a) => teachers.containsKey(a.teacher)).length;
-      expect(
-        matched,
-        greaterThan(articlesWithTeacher.length * 0.8),
-        reason: 'Only $matched/${articlesWithTeacher.length} article teachers in map',
-      );
+      expect(matched, greaterThan(articlesWithTeacher.length * 0.8), reason: 'Only $matched/${articlesWithTeacher.length} article teachers in map');
     });
 
     test('no encoding artifacts in content', () {
@@ -192,11 +176,7 @@ void main() {
 
     test('map keys match teacher names', () {
       for (final entry in teachers.entries) {
-        expect(
-          entry.key,
-          entry.value.name,
-          reason: 'Teacher key "${entry.key}" does not match name "${entry.value.name}"',
-        );
+        expect(entry.key, entry.value.name, reason: 'Teacher key "${entry.key}" does not match name "${entry.value.name}"');
       }
     });
   });
@@ -220,11 +200,7 @@ void main() {
     test('most traditions have articles', () {
       // "original" tradition has no articles yet (only pointings)
       final traditionsWithArticles = Tradition.values.where((t) => articles.any((a) => a.tradition == t)).toList();
-      expect(
-        traditionsWithArticles.length,
-        greaterThanOrEqualTo(4),
-        reason: 'Expected at least 4 traditions with articles',
-      );
+      expect(traditionsWithArticles.length, greaterThanOrEqualTo(4), reason: 'Expected at least 4 traditions with articles');
     });
   });
 }

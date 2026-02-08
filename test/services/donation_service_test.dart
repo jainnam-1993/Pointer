@@ -117,10 +117,7 @@ void main() {
       final cheapProduct = _createMockProduct('tip_small', 0.99);
       final mediumProduct = _createMockProduct('tip_medium', 4.99);
 
-      final response = ProductDetailsResponse(
-        productDetails: [expensiveProduct, cheapProduct, mediumProduct],
-        notFoundIDs: [],
-      );
+      final response = ProductDetailsResponse(productDetails: [expensiveProduct, cheapProduct, mediumProduct], notFoundIDs: []);
 
       when(() => mockIap.queryProductDetails(any())).thenAnswer((_) async => response);
 
@@ -136,10 +133,7 @@ void main() {
       when(() => mockIap.isAvailable()).thenAnswer((_) async => true);
 
       final product = _createMockProduct('tip_small', 0.99);
-      final response = ProductDetailsResponse(
-        productDetails: [product],
-        notFoundIDs: ['tip_medium', 'tip_large', 'tip_generous'],
-      );
+      final response = ProductDetailsResponse(productDetails: [product], notFoundIDs: ['tip_medium', 'tip_large', 'tip_generous']);
 
       when(() => mockIap.queryProductDetails(any())).thenAnswer((_) async => response);
 
@@ -189,9 +183,7 @@ void main() {
     test('rethrows error on purchase failure', () async {
       final product = _createMockProduct('tip_small', 0.99);
 
-      when(
-        () => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam')),
-      ).thenThrow(Exception('Purchase failed'));
+      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).thenThrow(Exception('Purchase failed'));
 
       expect(() => donationService.purchaseProduct(product), throwsException);
     });

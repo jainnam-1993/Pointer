@@ -91,12 +91,7 @@ void main() {
     });
 
     testWidgets('shows tradition badge', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Test content',
-        tradition: Tradition.zen,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Test content', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 

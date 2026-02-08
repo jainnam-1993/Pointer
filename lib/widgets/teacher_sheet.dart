@@ -53,10 +53,7 @@ class TeacherSheet extends StatelessWidget {
                       width: 40,
                       height: 4,
                       margin: const EdgeInsets.only(bottom: 24),
-                      decoration: BoxDecoration(
-                        color: colors.textMuted.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                      decoration: BoxDecoration(color: colors.textMuted.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
                     ),
                   ),
 
@@ -74,10 +71,7 @@ class TeacherSheet extends StatelessWidget {
                   Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: colors.accent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
                       child: Text(
                         '${traditionInfo.icon} ${traditionInfo.name}',
                         style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
@@ -102,10 +96,7 @@ class TeacherSheet extends StatelessWidget {
                           .map(
                             (tag) => Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: colors.glassBackground,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                              decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(12)),
                               child: Text(tag, style: TextStyle(color: colors.textSecondary, fontSize: 11)),
                             ),
                           )

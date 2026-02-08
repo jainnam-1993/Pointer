@@ -64,8 +64,7 @@ final List<Teaching> papajiTeachings = [
   // === MIND & CONSCIOUSNESS ===
   Teaching(
     id: 'papaji-mind-darkness',
-    content:
-        'The mind keeps you in darkness. It creates the illusion of separation. When mind is still, there is light.',
+    content: 'The mind keeps you in darkness. It creates the illusion of separation. When mind is still, there is light.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -77,8 +76,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-what-is-self',
-    content:
-        'What is the Self? It is not the body, not the mind, not the intellect. It is that which is aware of all these.',
+    content: 'What is the Self? It is not the body, not the mind, not the intellect. It is that which is aware of all these.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -91,8 +89,7 @@ final List<Teaching> papajiTeachings = [
   // === PRACTICE & INQUIRY ===
   Teaching(
     id: 'papaji-keep-quiet',
-    content:
-        'Keep Quiet! Keep Quiet! Keep Quiet! This is the highest teaching. In this Quietness, you will find what you have been looking for.',
+    content: 'Keep Quiet! Keep Quiet! Keep Quiet! This is the highest teaching. In this Quietness, you will find what you have been looking for.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -104,8 +101,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-no-practice',
-    content:
-        'No practice is needed. What is needed is the understanding that you are already That which you are seeking.',
+    content: 'No practice is needed. What is needed is the understanding that you are already That which you are seeking.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -129,8 +125,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-how-to-inquire',
-    content:
-        'Ask yourself "Who am I?" and remain as the answer. The answer is not a thought. It is the Silence from which thoughts arise.',
+    content: 'Ask yourself "Who am I?" and remain as the answer. The answer is not a thought. It is the Silence from which thoughts arise.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -155,8 +150,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-freedom-here',
-    content:
-        'Freedom is always here. It does not come and go. What comes and goes is the thought that you are not free.',
+    content: 'Freedom is always here. It does not come and go. What comes and goes is the thought that you are not free.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -217,8 +211,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-this-moment',
-    content:
-        'This moment is your home. You don\'t need to go anywhere. You don\'t need to become anything. This moment is complete.',
+    content: 'This moment is your home. You don\'t need to go anywhere. You don\'t need to become anything. This moment is complete.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,

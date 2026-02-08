@@ -72,10 +72,7 @@ class HistoryScreen extends ConsumerWidget {
             style: TextStyle(color: colors.textSecondary, fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Your viewed pointings will appear here',
-            style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14),
-          ),
+          Text('Your viewed pointings will appear here', style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14)),
         ],
       ),
     );
@@ -173,10 +170,7 @@ class _HistoryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  _formatDate(viewedAt),
-                  style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12),
-                ),
+                Text(_formatDate(viewedAt), style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12)),
               ],
             ),
             const SizedBox(height: 12),

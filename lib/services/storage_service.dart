@@ -151,10 +151,7 @@ class StorageService {
     final todayStart = DateTime(now.year, now.month, now.day);
     final todayStartMs = todayStart.millisecondsSinceEpoch;
 
-    return viewedPointings
-        .where((v) => (v['viewedAt'] as int?) != null && v['viewedAt'] >= todayStartMs)
-        .map((v) => v['id'] as String)
-        .toSet();
+    return viewedPointings.where((v) => (v['viewedAt'] as int?) != null && v['viewedAt'] >= todayStartMs).map((v) => v['id'] as String).toSet();
   }
 
   // Viewed teachings (for library rotation - read items sink down)
@@ -192,8 +189,7 @@ class StorageService {
     return List<String>.from(jsonDecode(stored));
   }
 
-  Future<void> setPreferredTraditions(List<String> traditions) =>
-      _prefs.setString(StorageKeys.preferredTraditions, jsonEncode(traditions));
+  Future<void> setPreferredTraditions(List<String> traditions) => _prefs.setString(StorageKeys.preferredTraditions, jsonEncode(traditions));
 
   // Settings
   AppSettings get settings {
@@ -202,8 +198,7 @@ class StorageService {
     return AppSettings.fromJson(jsonDecode(stored));
   }
 
-  Future<void> updateSettings(AppSettings newSettings) =>
-      _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
+  Future<void> updateSettings(AppSettings newSettings) => _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
 
   // Subscription
   String get subscriptionTier => _prefs.getString(StorageKeys.subscriptionTier) ?? 'free';

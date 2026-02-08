@@ -85,12 +85,7 @@ class InquiryVisual extends ConsumerWidget {
                 ),
               )
               .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .scale(
-                begin: const Offset(0.9, 0.9),
-                end: const Offset(1.1, 1.1),
-                duration: 4000.ms,
-                curve: Curves.easeInOut,
-              )
+              .scale(begin: const Offset(0.9, 0.9), end: const Offset(1.1, 1.1), duration: 4000.ms, curve: Curves.easeInOut)
               .fadeIn(duration: 1000.ms),
 
           // Middle ring
@@ -103,12 +98,7 @@ class InquiryVisual extends ConsumerWidget {
                 ),
               )
               .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .scale(
-                begin: const Offset(0.95, 0.95),
-                end: const Offset(1.05, 1.05),
-                duration: 3500.ms,
-                curve: Curves.easeInOut,
-              )
+              .scale(begin: const Offset(0.95, 0.95), end: const Offset(1.05, 1.05), duration: 3500.ms, curve: Curves.easeInOut)
               .fadeIn(duration: 800.ms),
 
           // Inner breathing circle
@@ -123,22 +113,15 @@ class InquiryVisual extends ConsumerWidget {
                 ),
               )
               .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .scale(
-                begin: const Offset(0.85, 0.85),
-                end: const Offset(1.15, 1.15),
-                duration: 3000.ms,
-                curve: Curves.easeInOut,
-              )
+              .scale(begin: const Offset(0.85, 0.85), end: const Offset(1.15, 1.15), duration: 3000.ms, curve: Curves.easeInOut)
               .fadeIn(duration: 600.ms),
 
           // Center dot
           Container(
-                width: size * 0.08,
-                height: size * 0.08,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: visualColor.withValues(alpha: 0.6)),
-              )
-              .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .fade(begin: 0.4, end: 0.8, duration: 2500.ms, curve: Curves.easeInOut),
+            width: size * 0.08,
+            height: size * 0.08,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: visualColor.withValues(alpha: 0.6)),
+          ).animate(onPlay: (controller) => controller.repeat(reverse: true)).fade(begin: 0.4, end: 0.8, duration: 2500.ms, curve: Curves.easeInOut),
         ],
       ),
     );

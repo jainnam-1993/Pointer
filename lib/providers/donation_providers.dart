@@ -40,13 +40,7 @@ class DonationState {
   /// Result of the last purchase attempt (null if no attempt yet)
   final DonationResult? lastResult;
 
-  const DonationState({
-    this.isAvailable = false,
-    this.isLoading = true,
-    this.products = const [],
-    this.error,
-    this.lastResult,
-  });
+  const DonationState({this.isAvailable = false, this.isLoading = true, this.products = const [], this.error, this.lastResult});
 
   DonationState copyWith({
     bool? isAvailable,
@@ -130,11 +124,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
       // Result will come through the purchase stream
     } catch (e) {
       if (!mounted) return;
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Failed to initiate purchase: $e',
-        lastResult: DonationResult.error,
-      );
+      state = state.copyWith(isLoading: false, error: 'Failed to initiate purchase: $e', lastResult: DonationResult.error);
     }
   }
 
@@ -185,11 +175,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
 
       case PurchaseStatus.error:
         if (!mounted) return;
-        state = state.copyWith(
-          isLoading: false,
-          error: purchase.error?.message ?? 'Purchase failed',
-          lastResult: DonationResult.error,
-        );
+        state = state.copyWith(isLoading: false, error: purchase.error?.message ?? 'Purchase failed', lastResult: DonationResult.error);
         break;
 
       case PurchaseStatus.canceled:

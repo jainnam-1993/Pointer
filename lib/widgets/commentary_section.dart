@@ -90,10 +90,7 @@ class _CommentarySectionState extends ConsumerState<CommentarySection> with Sing
                     }
                   });
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.accent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
+                style: FilledButton.styleFrom(backgroundColor: colors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
                 child: const Text('Upgrade to Premium'),
               ),
             ),
@@ -139,11 +136,7 @@ class _CommentarySectionState extends ConsumerState<CommentarySection> with Sing
                 const SizedBox(width: 8),
                 RotationTransition(
                   turns: _iconTurns,
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 20,
-                    color: isPremium ? colors.textSecondary : colors.gold,
-                  ),
+                  child: Icon(Icons.keyboard_arrow_down, size: 20, color: isPremium ? colors.textSecondary : colors.gold),
                 ),
               ],
             ),

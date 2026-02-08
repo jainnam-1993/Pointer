@@ -112,12 +112,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         if (_showTTSPlayer) const SizedBox(height: 16),
                         Text(
                           widget.article.title,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            color: colors.textPrimary,
-                            height: 1.2,
-                          ),
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),
                         ),
                         if (widget.article.subtitle != null) ...[
                           const SizedBox(height: 8),
@@ -128,10 +123,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           children: [
                             Icon(Icons.schedule, size: 14, color: colors.textMuted),
                             const SizedBox(width: 4),
-                            Text(
-                              '${widget.article.readingTimeMinutes} min read',
-                              style: TextStyle(fontSize: 13, color: colors.textMuted),
-                            ),
+                            Text('${widget.article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
                             if (widget.article.teacher != null) ...[
                               const SizedBox(width: 16),
                               Icon(Icons.person_outline, size: 14, color: colors.textMuted),

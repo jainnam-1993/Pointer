@@ -88,11 +88,7 @@ class PointingSelector {
   /// Returns a pointing that:
   /// 1. Has not been viewed today (if possible)
   /// 2. Matches the current time context (if respectTimeContext is true)
-  Pointing selectPointing({
-    required List<Pointing> all,
-    required Set<String> viewedToday,
-    bool respectTimeContext = true,
-  }) {
+  Pointing selectPointing({required List<Pointing> all, required Set<String> viewedToday, bool respectTimeContext = true}) {
     if (respectTimeContext) {
       return selectPointingForTime(all: all, viewedToday: viewedToday, timeContext: getCurrentTimeContext());
     }
@@ -109,11 +105,7 @@ class PointingSelector {
   /// 3. 30% chance to prefer time-specific pointings over general
   /// 4. If no matches, fall back to any unviewed pointing
   /// 5. If all viewed, reset and select from all
-  Pointing selectPointingForTime({
-    required List<Pointing> all,
-    required Set<String> viewedToday,
-    required TimeContext timeContext,
-  }) {
+  Pointing selectPointingForTime({required List<Pointing> all, required Set<String> viewedToday, required TimeContext timeContext}) {
     // Get valid PointingContext values for this TimeContext
     final validContexts = timeContextToPointingContexts(timeContext);
 

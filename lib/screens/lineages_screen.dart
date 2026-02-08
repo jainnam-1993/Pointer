@@ -63,10 +63,7 @@ class LineagesScreen extends ConsumerWidget {
                     children: [
                       Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
                       const SizedBox(height: 8),
-                      Text(
-                        'Select the traditions you want to receive pointings from',
-                        style: TextStyle(color: colors.textSecondary, fontSize: 16),
-                      ),
+                      Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
                       const SizedBox(height: 24),
 
                       // Traditions list with selection
@@ -95,8 +92,7 @@ class LineagesScreen extends ConsumerWidget {
                                 showModalBottomSheet(
                                   context: context,
                                   backgroundColor: Colors.transparent,
-                                  builder: (context) =>
-                                      _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
+                                  builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
                                 );
                               },
                             ),
@@ -222,13 +218,7 @@ class _TraditionCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 2,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 2, offset: const Offset(0, 1))],
                         ),
                       ),
                     ),
@@ -286,10 +276,7 @@ class _TraditionDetailSheet extends StatelessWidget {
                       width: 40,
                       height: 4,
                       margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(
-                        color: textColorSecondary.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                      decoration: BoxDecoration(color: textColorSecondary.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
                     ),
                   ),
                   Row(
@@ -301,10 +288,7 @@ class _TraditionDetailSheet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(info.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
-                            Text(
-                              '$pointingsCount pointings available',
-                              style: TextStyle(color: textColorSecondary, fontSize: 14),
-                            ),
+                            Text('$pointingsCount pointings available', style: TextStyle(color: textColorSecondary, fontSize: 14)),
                           ],
                         ),
                       ),

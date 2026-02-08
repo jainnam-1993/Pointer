@@ -139,11 +139,7 @@ void main() {
         // Run multiple times to verify pattern (probabilistic, so test tendency)
         int matchCount = 0;
         for (int i = 0; i < 50; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: pointings,
-            viewedToday: {},
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: pointings, viewedToday: {}, timeContext: TimeContext.morning);
           final hasMatchingContext = pointing.contexts.any((c) => morningContexts.contains(c));
           if (hasMatchingContext) matchCount++;
         }
@@ -162,11 +158,7 @@ void main() {
     group('selectPointingForTime', () {
       test('morning selects morning or general pointings', () {
         for (int i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: pointings,
-            viewedToday: {},
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: pointings, viewedToday: {}, timeContext: TimeContext.morning);
           final validContexts = [PointingContext.morning, PointingContext.general];
           final hasValid = pointing.contexts.any((c) => validContexts.contains(c));
           expect(hasValid, true, reason: 'Pointing ${pointing.id} should have morning or general context');
@@ -175,11 +167,7 @@ void main() {
 
       test('evening selects evening or general pointings', () {
         for (int i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: pointings,
-            viewedToday: {},
-            timeContext: TimeContext.evening,
-          );
+          final pointing = selector.selectPointingForTime(all: pointings, viewedToday: {}, timeContext: TimeContext.evening);
           final validContexts = [PointingContext.evening, PointingContext.general];
           final hasValid = pointing.contexts.any((c) => validContexts.contains(c));
           expect(hasValid, true, reason: 'Pointing ${pointing.id} should have evening or general context');
@@ -201,11 +189,7 @@ void main() {
       test('viewed pointings excluded even with time filter', () {
         final viewedIds = {'adv-1', 'zen-1'};
         for (int i = 0; i < 20; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: pointings,
-            viewedToday: viewedIds,
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: pointings, viewedToday: viewedIds, timeContext: TimeContext.morning);
           expect(viewedIds.contains(pointing.id), false);
         }
       });
@@ -215,28 +199,14 @@ void main() {
       test('prefers time-specific over general when available', () {
         // Create test data with clear time-specific and general pointings
         final testPointings = [
-          const Pointing(
-            id: 'test-morning',
-            content: 'Morning specific',
-            tradition: Tradition.original,
-            contexts: [PointingContext.morning],
-          ),
-          const Pointing(
-            id: 'test-general',
-            content: 'General',
-            tradition: Tradition.original,
-            contexts: [PointingContext.general],
-          ),
+          const Pointing(id: 'test-morning', content: 'Morning specific', tradition: Tradition.original, contexts: [PointingContext.morning]),
+          const Pointing(id: 'test-general', content: 'General', tradition: Tradition.original, contexts: [PointingContext.general]),
         ];
 
         // Run many selections to verify preference pattern
         int morningCount = 0;
         for (int i = 0; i < 100; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.morning);
           if (pointing.id == 'test-morning') morningCount++;
         }
 

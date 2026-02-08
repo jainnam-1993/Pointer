@@ -53,9 +53,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
             final isLandscape = mediaQuery.orientation == Orientation.landscape;
             // In landscape: use 55% of available height, portrait: 40%
             // Clamp to reasonable bounds for each orientation
-            final pickerHeight = isLandscape
-                ? (availableHeight * 0.55).clamp(180.0, 280.0)
-                : (availableHeight * 0.40).clamp(250.0, 350.0);
+            final pickerHeight = isLandscape ? (availableHeight * 0.55).clamp(180.0, 280.0) : (availableHeight * 0.40).clamp(250.0, 350.0);
 
             return ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -81,11 +79,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                             ),
                             Text(
                               isStart ? 'Start Time' : 'End Time',
-                              style: TextStyle(
-                                color: isDark ? Colors.white : Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                             TextButton(
                               onPressed: () async {
@@ -121,10 +115,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                   final displayHour = index == 0 ? 12 : (index > 12 ? index - 12 : index);
                                   final period = index < 12 ? 'AM' : 'PM';
                                   return Center(
-                                    child: Text(
-                                      '$displayHour $period',
-                                      style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
-                                    ),
+                                    child: Text('$displayHour $period', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20)),
                                   );
                                 }),
                               ),
@@ -202,10 +193,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Notification Schedule',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor),
-                      ),
+                      Text('Notification Schedule', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
                       const SizedBox(height: 8),
                       Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
                       const SizedBox(height: 20),
@@ -232,9 +220,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                   color: isSelected ? context.colors.accent : textColor,
                                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                                 ),
-                                side: BorderSide(
-                                  color: isSelected ? context.colors.accent : context.colors.glassBorder,
-                                ),
+                                side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
                               );
                             })
                             .toList(),
@@ -305,9 +291,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                               decoration: BoxDecoration(
-                                color: isSelected
-                                    ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2)
-                                    : Colors.transparent,
+                                color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                               ),

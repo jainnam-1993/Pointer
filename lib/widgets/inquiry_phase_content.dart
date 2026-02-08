@@ -79,9 +79,7 @@ class InquiryPhaseContent extends StatelessWidget {
         children: [
           Text(
             inquiry.setup!,
-            style: AppTextStyles.pointingText(
-              context,
-            ).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
+            style: AppTextStyles.pointingText(context).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
         ],
@@ -104,11 +102,7 @@ class InquiryPhaseContent extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32, vertical: 40),
             child: Column(
               children: [
-                Text(
-                  inquiry.question,
-                  style: AppTextStyles.pointingText(context).copyWith(height: 1.6),
-                  textAlign: TextAlign.center,
-                ),
+                Text(inquiry.question, style: AppTextStyles.pointingText(context).copyWith(height: 1.6), textAlign: TextAlign.center),
                 if (inquiry.teacher != null) ...[
                   const SizedBox(height: 20),
                   Text('- ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
@@ -137,9 +131,7 @@ class InquiryPhaseContent extends StatelessWidget {
         children: [
           Text(
             inquiry.followUp!,
-            style: AppTextStyles.pointingText(
-              context,
-            ).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
+            style: AppTextStyles.pointingText(context).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 48),
@@ -190,13 +182,7 @@ class InquiryPhaseContent extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.label,
-    required this.onTap,
-    required this.isPrimary,
-    required this.isDark,
-    required this.colors,
-  });
+  const _ActionButton({required this.label, required this.onTap, required this.isPrimary, required this.isDark, required this.colors});
 
   final String label;
   final VoidCallback? onTap;
@@ -224,11 +210,7 @@ class _ActionButton extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: TextStyle(
-              color: isPrimary ? colors.accent : colors.textSecondary,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
+            style: TextStyle(color: isPrimary ? colors.accent : colors.textSecondary, fontWeight: FontWeight.w600, fontSize: 16),
           ),
         ),
       ),

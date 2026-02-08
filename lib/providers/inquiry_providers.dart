@@ -24,8 +24,7 @@ class InquiryFilter {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is InquiryFilter && runtimeType == other.runtimeType && type == other.type && tradition == other.tradition;
+      identical(this, other) || other is InquiryFilter && runtimeType == other.runtimeType && type == other.type && tradition == other.tradition;
 
   @override
   int get hashCode => type.hashCode ^ tradition.hashCode;

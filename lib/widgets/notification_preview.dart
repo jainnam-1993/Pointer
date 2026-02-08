@@ -113,10 +113,7 @@ class NotificationPreview extends StatelessWidget {
             Text(body, style: TextStyle(color: bodyColor, fontSize: 14, height: 1.3)),
 
             // Attribution: Tradition — Teacher
-            if (attribution != null) ...[
-              const SizedBox(height: 2),
-              Text(attribution!, style: TextStyle(color: headerColor, fontSize: 12)),
-            ],
+            if (attribution != null) ...[const SizedBox(height: 2), Text(attribution!, style: TextStyle(color: headerColor, fontSize: 12))],
 
             // Action buttons: Save and Another (left-aligned, pill style)
             if (showActions) ...[

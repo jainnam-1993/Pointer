@@ -32,10 +32,7 @@ class NotificationPermissionBanner extends StatelessWidget {
                   style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  'Enable in system settings to receive daily pointings',
-                  style: TextStyle(color: colors.textSecondary, fontSize: 12),
-                ),
+                Text('Enable in system settings to receive daily pointings', style: TextStyle(color: colors.textSecondary, fontSize: 12)),
               ],
             ),
           ),
@@ -86,10 +83,7 @@ class PremiumFeatureBanner extends StatelessWidget {
                   style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  'Upgrade to unlock $feature and more',
-                  style: TextStyle(color: colors.textSecondary, fontSize: 12),
-                ),
+                Text('Upgrade to unlock $feature and more', style: TextStyle(color: colors.textSecondary, fontSize: 12)),
               ],
             ),
           ),

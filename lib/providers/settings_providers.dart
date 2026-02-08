@@ -206,18 +206,12 @@ class NotificationSettingsState {
   const NotificationSettingsState({this.isEnabled = false, this.times = const [], this.isLoading = false});
 
   NotificationSettingsState copyWith({bool? isEnabled, List<NotificationTime>? times, bool? isLoading}) {
-    return NotificationSettingsState(
-      isEnabled: isEnabled ?? this.isEnabled,
-      times: times ?? this.times,
-      isLoading: isLoading ?? this.isLoading,
-    );
+    return NotificationSettingsState(isEnabled: isEnabled ?? this.isEnabled, times: times ?? this.times, isLoading: isLoading ?? this.isLoading);
   }
 }
 
 /// Notification settings provider
-final notificationSettingsProvider = StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>((
-  ref,
-) {
+final notificationSettingsProvider = StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>((ref) {
   final notificationService = ref.watch(notificationServiceProvider);
   return NotificationSettingsNotifier(notificationService);
 });

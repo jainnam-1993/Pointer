@@ -51,10 +51,7 @@ class CategoryArticlesScreen extends StatelessWidget {
                                 info.name,
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                               ),
-                              Text(
-                                '${categoryArticles.length} articles',
-                                style: TextStyle(fontSize: 14, color: colors.textSecondary),
-                              ),
+                              Text('${categoryArticles.length} articles', style: TextStyle(fontSize: 14, color: colors.textSecondary)),
                             ],
                           ),
                         ),
@@ -90,10 +87,7 @@ class CategoryArticlesScreen extends StatelessWidget {
                                   ),
                                 );
                               } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
-                                );
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                               }
                             },
                           ),

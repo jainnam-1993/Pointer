@@ -121,11 +121,7 @@ class GlassCard extends ConsumerWidget {
     // and whether background gradient shimmer is already running
     final appOverride = ref.watch(reduceMotionOverrideProvider);
     final reduceMotion = shouldReduceMotion(context, appOverride);
-    var shouldAnimate =
-        enableBreathingAnimation &&
-        !reduceMotion &&
-        !AnimatedGradient.disableAnimations &&
-        !AnimatedGradient.isTestEnvironment();
+    var shouldAnimate = enableBreathingAnimation && !reduceMotion && !AnimatedGradient.disableAnimations && !AnimatedGradient.isTestEnvironment();
     // Only check background shimmer when animation would otherwise be enabled.
     // Deferred watch avoids settingsProvider dependency chain in tests/disabled states.
     if (shouldAnimate) {
@@ -180,14 +176,7 @@ class GlassCard extends ConsumerWidget {
           ? null
           : BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 4))],
             ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -213,14 +202,7 @@ class GlassButton extends ConsumerWidget {
   final Widget? icon;
   final bool isLoading;
 
-  const GlassButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    this.isPrimary = true,
-    this.icon,
-    this.isLoading = false,
-  });
+  const GlassButton({super.key, required this.label, required this.onPressed, this.isPrimary = true, this.icon, this.isLoading = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -258,11 +240,7 @@ class GlassButton extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (isLoading)
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: highContrastColors.textPrimary),
-                  )
+                  SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: highContrastColors.textPrimary))
                 else ...[
                   Text(
                     label,
@@ -328,11 +306,7 @@ class GlassButton extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (isLoading)
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor),
-                      )
+                      SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor))
                     else ...[
                       Text(
                         label,
@@ -416,10 +390,7 @@ class GlassBottomSheet extends StatelessWidget {
                       width: 40,
                       height: 4,
                       margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(
-                        color: colors.textMuted.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                      decoration: BoxDecoration(color: colors.textMuted.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2)),
                     ),
                   ],
                   Flexible(child: child),
@@ -475,9 +446,7 @@ class GlassDialog extends StatelessWidget {
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: actions!
-                        .map((action) => Padding(padding: const EdgeInsets.only(left: 8), child: action))
-                        .toList(),
+                    children: actions!.map((action) => Padding(padding: const EdgeInsets.only(left: 8), child: action)).toList(),
                   ),
                 ],
               ],
@@ -509,13 +478,7 @@ class GradientBoxBorder extends BoxBorder {
   bool get isUniform => true;
 
   @override
-  void paint(
-    Canvas canvas,
-    Rect rect, {
-    TextDirection? textDirection,
-    BoxShape shape = BoxShape.rectangle,
-    BorderRadius? borderRadius,
-  }) {
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius}) {
     final paint = Paint()
       ..shader = gradient.createShader(rect)
       ..strokeWidth = width

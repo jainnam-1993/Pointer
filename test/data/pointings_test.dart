@@ -32,12 +32,7 @@ void main() {
 
   group('Pointing model', () {
     test('can be created with required fields', () {
-      const pointing = Pointing(
-        id: 'test-1',
-        content: 'Test content',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const pointing = Pointing(id: 'test-1', content: 'Test content', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       expect(pointing.id, 'test-1');
       expect(pointing.content, 'Test content');
@@ -70,13 +65,7 @@ void main() {
         id: 'test-3',
         content: 'Test',
         tradition: Tradition.direct,
-        contexts: [
-          PointingContext.morning,
-          PointingContext.midday,
-          PointingContext.evening,
-          PointingContext.stress,
-          PointingContext.general,
-        ],
+        contexts: [PointingContext.morning, PointingContext.midday, PointingContext.evening, PointingContext.stress, PointingContext.general],
       );
 
       expect(pointing.contexts.length, 5);
@@ -205,21 +194,13 @@ void main() {
 
     test('content is not too short', () {
       for (final pointing in pointings) {
-        expect(
-          pointing.content.length,
-          greaterThan(10),
-          reason: 'Pointing ${pointing.id} content should be meaningful',
-        );
+        expect(pointing.content.length, greaterThan(10), reason: 'Pointing ${pointing.id} content should be meaningful');
       }
     });
 
     test('content is not too long for mobile display', () {
       for (final pointing in pointings) {
-        expect(
-          pointing.content.length,
-          lessThan(500),
-          reason: 'Pointing ${pointing.id} content should fit mobile screen',
-        );
+        expect(pointing.content.length, lessThan(500), reason: 'Pointing ${pointing.id} content should fit mobile screen');
       }
     });
   });
@@ -243,12 +224,7 @@ void main() {
     test('returns pointing with specified context', () {
       // Test contexts that have pointings in the data
       // Note: midday context has no pointings, so it falls back to first pointing
-      final contextsWithData = [
-        PointingContext.morning,
-        PointingContext.evening,
-        PointingContext.stress,
-        PointingContext.general,
-      ];
+      final contextsWithData = [PointingContext.morning, PointingContext.evening, PointingContext.stress, PointingContext.general];
       for (final context in contextsWithData) {
         final pointing = getRandomPointing(context: context);
         expect(pointing.contexts, contains(context), reason: 'Should return pointing with ${context.name} context');

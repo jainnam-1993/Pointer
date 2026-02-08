@@ -32,10 +32,7 @@ void main() {
     testWidgets('home screen with pointing', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing));
 
       await expectGoldenMatches(tester, 'home_screen_with_pointing');
     });
@@ -43,10 +40,7 @@ void main() {
     testWidgets('home screen with minimal pointing', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing2),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing2));
 
       await expectGoldenMatches(tester, 'home_screen_minimal_pointing');
     });

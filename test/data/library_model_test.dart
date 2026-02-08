@@ -151,22 +151,14 @@ void main() {
     });
 
     test('hasArticle returns correct result', () {
-      const teacher = TeacherProfile(
-        name: 'Article Teacher',
-        primaryTradition: Tradition.direct,
-        articleIds: ['art_001', 'art_002'],
-      );
+      const teacher = TeacherProfile(name: 'Article Teacher', primaryTradition: Tradition.direct, articleIds: ['art_001', 'art_002']);
 
       expect(teacher.hasArticle('art_001'), true);
       expect(teacher.hasArticle('art_003'), false);
     });
 
     test('hasPointing returns correct result', () {
-      const teacher = TeacherProfile(
-        name: 'Pointing Teacher',
-        primaryTradition: Tradition.contemporary,
-        pointingIds: ['p_001'],
-      );
+      const teacher = TeacherProfile(name: 'Pointing Teacher', primaryTradition: Tradition.contemporary, pointingIds: ['p_001']);
 
       expect(teacher.hasPointing('p_001'), true);
       expect(teacher.hasPointing('p_002'), false);

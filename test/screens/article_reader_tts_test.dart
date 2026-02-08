@@ -137,10 +137,7 @@ Final thoughts.
             home: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: testArticle)),
-                  ).then((_) => popped = true);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: testArticle))).then((_) => popped = true);
                 },
                 child: const Text('Open'),
               ),

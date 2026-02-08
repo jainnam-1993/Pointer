@@ -3983,8 +3983,7 @@ Don't use awakening to avoid growth. Don't use growth to avoid awakening.
 We are called to both: to recognize our nature AND to develop our humanity.
 
 This is the full path.''',
-    excerpt:
-        'Understanding the difference between spiritual awakening and psychological development - and why we need both.',
+    excerpt: 'Understanding the difference between spiritual awakening and psychological development - and why we need both.',
     tradition: Tradition.contemporary,
     categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 3,

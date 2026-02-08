@@ -26,10 +26,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          reduceMotionOverrideProvider.overrideWith((ref) => null),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
       );
       addTearDown(container.dispose);
 
@@ -46,10 +43,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          reduceMotionOverrideProvider.overrideWith((ref) => null),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
       );
       addTearDown(container.dispose);
 
@@ -70,10 +64,7 @@ void main() {
       // Build widget with OLED mode enabled
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(prefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(body: AnimatedGradient()),
@@ -103,10 +94,7 @@ void main() {
       // Build widget with OLED mode disabled
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(prefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(body: AnimatedGradient()),
@@ -155,10 +143,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          reduceMotionOverrideProvider.overrideWith((ref) => null),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
       );
       addTearDown(container.dispose);
 
@@ -195,10 +180,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
 
       final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          reduceMotionOverrideProvider.overrideWith((ref) => null),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
       );
       addTearDown(container.dispose);
 
@@ -253,10 +235,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(prefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
@@ -282,9 +261,7 @@ void main() {
       );
 
       // Initially should have gradient (OLED mode off)
-      Container container = tester.widget(
-        find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)),
-      );
+      Container container = tester.widget(find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)));
       expect(container.decoration, isA<BoxDecoration>());
 
       // Tap button to enable OLED mode

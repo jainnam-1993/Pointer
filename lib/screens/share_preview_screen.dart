@@ -144,10 +144,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
                           )
                         : const Row(
                             mainAxisSize: MainAxisSize.min,
@@ -197,20 +194,13 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
           height: previewHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10)),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
           ),
           clipBehavior: Clip.antiAlias,
           child: _isGeneratingPreview || _previewImage == null
               ? Container(
                   color: colors.glassBackground,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(colors.textMuted),
-                    ),
-                  ),
+                  child: Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(colors.textMuted))),
                 )
               : Image.memory(
                   _previewImage!,
@@ -382,11 +372,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                       end: Alignment.bottomRight,
                     )
                   : null,
-              border: Border(
-                top: BorderSide(
-                  color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
-                ),
-              ),
+              border: Border(top: BorderSide(color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05))),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

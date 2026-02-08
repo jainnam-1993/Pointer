@@ -131,10 +131,7 @@ class InquiryScreen extends ConsumerWidget {
                               style: TextStyle(color: textColor, fontSize: 16, height: 1.5),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              'Each session is 5-15 minutes. No experience required.',
-                              style: TextStyle(color: textColorSecondary, fontSize: 14),
-                            ),
+                            Text('Each session is 5-15 minutes. No experience required.', style: TextStyle(color: textColorSecondary, fontSize: 14)),
                           ],
                         ),
                       );
@@ -242,33 +239,19 @@ class _SessionCard extends StatelessWidget {
                       children: [
                         Text(
                           session.title,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: isLocked ? textColor.withValues(alpha: 0.5) : textColor,
-                          ),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isLocked ? textColor.withValues(alpha: 0.5) : textColor),
                         ),
                         // Hide premium badge when kFreeAccessEnabled (all content free)
                         if (!kFreeAccessEnabled && session.isPremium) ...[
                           const SizedBox(width: 8),
-                          Icon(
-                            Icons.auto_awesome,
-                            size: 14,
-                            color: isLocked ? goldColor.withValues(alpha: 0.5) : goldColor,
-                          ),
+                          Icon(Icons.auto_awesome, size: 14, color: isLocked ? goldColor.withValues(alpha: 0.5) : goldColor),
                         ],
                       ],
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      session.description,
-                      style: TextStyle(fontSize: 14, color: isLocked ? textColorMuted : textColorSecondary),
-                    ),
+                    Text(session.description, style: TextStyle(fontSize: 14, color: isLocked ? textColorMuted : textColorSecondary)),
                     const SizedBox(height: 4),
-                    Text(
-                      '${session.duration} • ${session.level}',
-                      style: TextStyle(fontSize: 12, color: textColorMuted),
-                    ),
+                    Text('${session.duration} • ${session.level}', style: TextStyle(fontSize: 12, color: textColorMuted)),
                   ],
                 ),
               ),

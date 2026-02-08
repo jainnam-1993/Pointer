@@ -88,10 +88,7 @@ class _TestPermissionBanner extends StatelessWidget {
               children: [
                 const Text('Notifications Disabled', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 const SizedBox(height: 2),
-                Text(
-                  'Enable in system settings to receive daily pointings',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
+                Text('Enable in system settings to receive daily pointings', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
               ],
             ),
           ),

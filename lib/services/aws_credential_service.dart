@@ -10,12 +10,7 @@ class AWSCredentials {
   final String sessionToken;
   final DateTime expiration;
 
-  AWSCredentials({
-    required this.accessKeyId,
-    required this.secretAccessKey,
-    required this.sessionToken,
-    required this.expiration,
-  });
+  AWSCredentials({required this.accessKeyId, required this.secretAccessKey, required this.sessionToken, required this.expiration});
 
   bool get isExpired => DateTime.now().isAfter(expiration);
 
@@ -74,11 +69,7 @@ class AWSCredentialService {
   /// Returns true if setup was successful, throws on error.
   Future<bool> setupWithOTP(String otp) async {
     try {
-      final response = await http.post(
-        Uri.parse(_secretEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'code': otp}),
-      );
+      final response = await http.post(Uri.parse(_secretEndpoint), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'code': otp}));
 
       if (response.statusCode != 200) {
         throw AWSCredentialException('Failed to validate OTP: ${response.statusCode}', response.body);

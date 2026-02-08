@@ -70,11 +70,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: GlassCard(
-        padding: EdgeInsets.zero,
-        intensity: GlassIntensity.standard,
-        child: _buildContent(state, colors),
-      ),
+      child: GlassCard(padding: EdgeInsets.zero, intensity: GlassIntensity.standard, child: _buildContent(state, colors)),
     );
   }
 
@@ -242,14 +238,7 @@ class _TipOptionCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isDisabled;
 
-  const _TipOptionCard({
-    required this.product,
-    required this.label,
-    required this.icon,
-    required this.colors,
-    this.onTap,
-    this.isDisabled = false,
-  });
+  const _TipOptionCard({required this.product, required this.label, required this.icon, required this.colors, this.onTap, this.isDisabled = false});
 
   @override
   Widget build(BuildContext context) {

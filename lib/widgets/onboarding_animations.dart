@@ -126,8 +126,7 @@ class _TypewriterTextState extends State<TypewriterText> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final defaultStyle =
-        widget.style ?? TextStyle(fontSize: 20, height: 1.7, fontWeight: FontWeight.w400, color: colors.textPrimary);
+    final defaultStyle = widget.style ?? TextStyle(fontSize: 20, height: 1.7, fontWeight: FontWeight.w400, color: colors.textPrimary);
 
     // If reduced motion, show all text immediately
     if (_shouldReduceMotion || _isComplete && _visibleWordCount == _words.length) {
@@ -302,8 +301,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
                 ),
               ),
             // Second child emerging
-            if (_emergeAnimation.value > 0 || _hasStarted)
-              Opacity(opacity: _emergeAnimation.value, child: widget.secondChild),
+            if (_emergeAnimation.value > 0 || _hasStarted) Opacity(opacity: _emergeAnimation.value, child: widget.secondChild),
           ],
         );
       },
@@ -457,8 +455,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     }
 
     final colors = context.colors;
-    final defaultStyle =
-        widget.style ?? TextStyle(fontSize: 28, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.4);
+    final defaultStyle = widget.style ?? TextStyle(fontSize: 28, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.4);
 
     final currentItem = widget.items[_currentIndex];
 
@@ -646,12 +643,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
         opacity: _opacityAnimation,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: NotificationPreview(
-            title: widget.title,
-            body: widget.message,
-            attribution: widget.attribution,
-            showActions: widget.showActions,
-          ),
+          child: NotificationPreview(title: widget.title, body: widget.message, attribution: widget.attribution, showActions: widget.showActions),
         ),
       ),
     );
@@ -764,16 +756,16 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
 extension OnboardingAnimateExtensions on Widget {
   /// Applies a contemplative fade-in with subtle upward drift.
   Widget contemplativeFadeIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
-    return animate(delay: delay)
-        .fadeIn(duration: duration, curve: Curves.easeOut)
-        .slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
+    return animate(
+      delay: delay,
+    ).fadeIn(duration: duration, curve: Curves.easeOut).slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
   }
 
   /// Applies a gentle scale-in effect for emphasis.
   Widget gentleScaleIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 600)}) {
-    return animate(delay: delay)
-        .scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut)
-        .fadeIn(duration: duration, curve: Curves.easeOut);
+    return animate(
+      delay: delay,
+    ).scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
   }
 
   /// Applies a soft blur-in effect (from blurred to clear).

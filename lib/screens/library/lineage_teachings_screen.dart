@@ -20,12 +20,7 @@ class LineageTeachingsScreen extends ConsumerStatefulWidget {
   final TraditionInfo info;
   final ContentFilter filter;
 
-  const LineageTeachingsScreen({
-    super.key,
-    required this.tradition,
-    required this.info,
-    this.filter = ContentFilter.all,
-  });
+  const LineageTeachingsScreen({super.key, required this.tradition, required this.info, this.filter = ContentFilter.all});
 
   @override
   ConsumerState<LineageTeachingsScreen> createState() => _LineageTeachingsScreenState();
@@ -76,11 +71,7 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                                   const SizedBox(width: 8),
                                   Text(
                                     widget.info.name,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                                   ),
                                 ],
                               ),
@@ -136,10 +127,7 @@ class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen>
                                     ),
                                   );
                                 } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
-                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                                 }
                               },
                             ),

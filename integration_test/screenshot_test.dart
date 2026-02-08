@@ -25,10 +25,7 @@ void main() {
   /// Creates a fresh ProviderContainer for each test
   ProviderContainer createContainer() {
     return ProviderContainer(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        onboardingCompletedProvider.overrideWith((ref) => true),
-      ],
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs), onboardingCompletedProvider.overrideWith((ref) => true)],
     );
   }
 

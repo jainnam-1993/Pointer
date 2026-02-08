@@ -77,22 +77,11 @@ class _MockStorageService extends StorageService {
 
 /// Create mock ProductDetails for testing
 ProductDetails createMockProduct({required String id, required String title, required String price}) {
-  return ProductDetails(
-    id: id,
-    title: title,
-    description: 'Test product $id',
-    price: price,
-    rawPrice: 1.99,
-    currencyCode: 'USD',
-  );
+  return ProductDetails(id: id, title: title, description: 'Test product $id', price: price, rawPrice: 1.99, currencyCode: 'USD');
 }
 
 /// Helper to wrap widget with ProviderScope for testing
-Widget wrapWithProviderScope(
-  Widget child, {
-  DonationState? donationState,
-  MockNotificationService? notificationService,
-}) {
+Widget wrapWithProviderScope(Widget child, {DonationState? donationState, MockNotificationService? notificationService}) {
   final mockNotificationService = notificationService ?? MockNotificationService();
 
   // Setup default mock behavior
@@ -258,10 +247,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show expanded content
-      expect(
-        find.text('Here Now is free forever. If you find value, consider supporting development.'),
-        findsOneWidget,
-      );
+      expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsOneWidget);
     });
 
     testWidgets('shows tip options when DonationButton expanded', (tester) async {

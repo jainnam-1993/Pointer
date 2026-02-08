@@ -10,13 +10,7 @@ class TraditionColors {
   final Color accent;
   final Color badge;
 
-  const TraditionColors({
-    required this.background,
-    required this.backgroundEnd,
-    required this.text,
-    required this.accent,
-    required this.badge,
-  });
+  const TraditionColors({required this.background, required this.backgroundEnd, required this.text, required this.accent, required this.badge});
 
   /// Get colors for a tradition
   static TraditionColors forTradition(Tradition tradition) {
@@ -127,12 +121,7 @@ class _MinimalTemplate extends StatelessWidget {
           if (pointing.teacher != null)
             Text(
               '— ${pointing.teacher}',
-              style: const TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 24,
-                fontStyle: FontStyle.italic,
-                color: Color(0xFF666666),
-              ),
+              style: const TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: Color(0xFF666666)),
             ),
           if (pointing.source != null)
             Text(
@@ -207,21 +196,12 @@ class _GradientTemplate extends StatelessWidget {
           if (pointing.teacher != null)
             Text(
               '— ${pointing.teacher}',
-              style: const TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 24,
-                fontStyle: FontStyle.italic,
-                color: Color(0xFFA78BFA),
-              ),
+              style: const TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: Color(0xFFA78BFA)),
             ),
           if (pointing.source != null)
             Text(
               pointing.source!,
-              style: TextStyle(
-                fontSize: 10,
-                fontStyle: FontStyle.italic,
-                color: const Color(0xFFA78BFA).withValues(alpha: 0.6),
-              ),
+              style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: const Color(0xFFA78BFA).withValues(alpha: 0.6)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -256,11 +236,7 @@ class _TraditionTemplate extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [colors.background, colors.backgroundEnd],
-        ),
+        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [colors.background, colors.backgroundEnd]),
       ),
       padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
       child: Column(

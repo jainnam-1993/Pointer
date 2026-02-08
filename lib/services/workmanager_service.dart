@@ -89,11 +89,7 @@ Future<void> _showNotificationFromBackground() async {
         channelDescription: 'Gentle reminders for your daily pointing',
         importance: Importance.high,
         priority: Priority.high,
-        styleInformation: BigTextStyleInformation(
-          pointing['content']!,
-          contentTitle: "Today's Pointing",
-          summaryText: pointing['tradition'],
-        ),
+        styleInformation: BigTextStyleInformation(pointing['content']!, contentTitle: "Today's Pointing", summaryText: pointing['tradition']),
       ),
       iOS: const DarwinNotificationDetails(presentAlert: true, presentBadge: true),
     ),
@@ -163,11 +159,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     await prefs.setStringList(_recentNotificationIdsKey, updatedRecent);
 
     debugPrint('[WorkManager] Selected $timeContext pointing: ${selected['id']}');
-    return {
-      'id': selected['id'] as String,
-      'content': selected['content'] as String,
-      'tradition': selected['tradition'] as String,
-    };
+    return {'id': selected['id'] as String, 'content': selected['content'] as String, 'tradition': selected['tradition'] as String};
   } catch (e) {
     debugPrint('[WorkManager] Error parsing cache: $e');
     return _getFallbackPointing();
@@ -177,16 +169,8 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
 /// Fallback pointing if cache is unavailable.
 Map<String, String> _getFallbackPointing() {
   final fallbacks = [
-    {
-      'id': 'fallback_1',
-      'content': 'You are not the body, not the mind. You are the awareness in which both appear.',
-      'tradition': 'Advaita',
-    },
-    {
-      'id': 'fallback_2',
-      'content': 'What is it that is aware right now? Look directly, without thinking.',
-      'tradition': 'Direct Path',
-    },
+    {'id': 'fallback_1', 'content': 'You are not the body, not the mind. You are the awareness in which both appear.', 'tradition': 'Advaita'},
+    {'id': 'fallback_2', 'content': 'What is it that is aware right now? Look directly, without thinking.', 'tradition': 'Direct Path'},
     {'id': 'fallback_3', 'content': 'Before thought arises, what are you?', 'tradition': 'Zen'},
   ];
   return fallbacks[Random().nextInt(fallbacks.length)];
@@ -208,11 +192,7 @@ class WorkManagerService {
 
   /// Schedule periodic notifications.
   /// [frequencyMinutes] - How often to show notifications (minimum 15 minutes on Android)
-  static Future<void> schedulePeriodicNotifications({
-    required int frequencyMinutes,
-    required int startHour,
-    required int endHour,
-  }) async {
+  static Future<void> schedulePeriodicNotifications({required int frequencyMinutes, required int startHour, required int endHour}) async {
     // Save preferences for background access
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_NotificationKeys.enabled, true);

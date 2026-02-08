@@ -288,10 +288,7 @@ void main() {
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(
                         20,
-                        (i) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Line $i of many lines of content'),
-                        ),
+                        (i) => Padding(padding: const EdgeInsets.all(8.0), child: Text('Line $i of many lines of content')),
                       ),
                     ),
                   ),
@@ -302,10 +299,7 @@ void main() {
         );
 
         // Should have SingleChildScrollView for scrolling when maxHeight is set
-        expect(
-          find.descendant(of: find.byType(GlassCard), matching: find.byType(SingleChildScrollView)),
-          findsOneWidget,
-        );
+        expect(find.descendant(of: find.byType(GlassCard), matching: find.byType(SingleChildScrollView)), findsOneWidget);
       });
 
       testWidgets('GlassCard has minimum height constraint', (tester) async {
@@ -341,10 +335,7 @@ void main() {
           teacher: 'Ramana Maharshi',
         );
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.0, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.0, initialPointing: testPointing));
 
         expect(find.text('What is aware of this moment?'), findsOneWidget);
         expect(find.text('Simply notice.'), findsOneWidget);
@@ -362,10 +353,7 @@ void main() {
           teacher: 'Teacher',
         );
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing));
 
         // Content should render without overflow
         expect(find.text('What is aware?'), findsOneWidget);
@@ -380,10 +368,7 @@ void main() {
           contexts: [PointingContext.general],
         );
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 2.0, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 2.0, initialPointing: testPointing));
 
         // Content should render without overflow (clamped to 1.5x)
         expect(find.text('Notice.'), findsOneWidget);
@@ -398,10 +383,7 @@ void main() {
           contexts: [PointingContext.general],
         );
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 0.8, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 0.8, initialPointing: testPointing));
 
         expect(find.text('What is here before thought?'), findsOneWidget);
         expect(tester.takeException(), isNull);
@@ -421,10 +403,7 @@ void main() {
           teacher: 'A Teacher With A Long Name',
         );
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: longPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: longPointing));
 
         // Should render without overflow
         expect(find.textContaining('very long pointing'), findsOneWidget);
@@ -432,17 +411,9 @@ void main() {
       });
 
       testWidgets('buttons remain tappable at large text scale', (tester) async {
-        const testPointing = Pointing(
-          id: 'test-buttons',
-          content: 'Test content',
-          tradition: Tradition.zen,
-          contexts: [PointingContext.general],
-        );
+        const testPointing = Pointing(id: 'test-buttons', content: 'Test content', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing));
 
         // Buttons should still be present and tappable
         // Phase 5.11: Share button is now an icon in card header
@@ -459,17 +430,9 @@ void main() {
 
     group('Accessibility Compliance', () {
       testWidgets('maintains minimum touch target size at all scales', (tester) async {
-        const testPointing = Pointing(
-          id: 'test-touch-target',
-          content: 'Test',
-          tradition: Tradition.zen,
-          contexts: [PointingContext.general],
-        );
+        const testPointing = Pointing(id: 'test-touch-target', content: 'Test', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
-        await pumpWithTextScale(
-          tester,
-          createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing),
-        );
+        await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing));
 
         // Find the GlassButton widgets
         // Phase 5.11: Only Next button is GlassButton now
@@ -495,10 +458,7 @@ void main() {
 
         // Test at various scales
         for (final scale in [0.8, 1.0, 1.25, 1.5]) {
-          await pumpWithTextScale(
-            tester,
-            createAppWithTextScale(child: const HomeScreen(), textScaleFactor: scale, initialPointing: testPointing),
-          );
+          await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: scale, initialPointing: testPointing));
 
           // All text should be findable and rendered
           // Use descendant finder to target only text within the main pointing card (Expanded > Center > GlassCard),

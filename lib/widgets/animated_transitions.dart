@@ -50,10 +50,7 @@ class _StaggeredFadeInState extends State<StaggeredFadeIn> with SingleTickerProv
 
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     // Stagger the animation start based on index
     Future.delayed(widget.delay * widget.index, () {
@@ -118,12 +115,7 @@ class ScaleFadeTransition extends StatelessWidget {
   final bool visible;
   final Duration duration;
 
-  const ScaleFadeTransition({
-    super.key,
-    required this.child,
-    this.visible = true,
-    this.duration = const Duration(milliseconds: 200),
-  });
+  const ScaleFadeTransition({super.key, required this.child, this.visible = true, this.duration = const Duration(milliseconds: 200)});
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +123,7 @@ class ScaleFadeTransition extends StatelessWidget {
       scale: visible ? 1.0 : 0.8,
       duration: duration,
       curve: AnimationCurves.standard,
-      child: AnimatedOpacity(
-        opacity: visible ? 1.0 : 0.0,
-        duration: duration,
-        curve: AnimationCurves.standard,
-        child: child,
-      ),
+      child: AnimatedOpacity(opacity: visible ? 1.0 : 0.0, duration: duration, curve: AnimationCurves.standard, child: child),
     );
   }
 }
@@ -152,10 +139,7 @@ class CalmPageTransition extends CustomTransitionPage<void> {
           // Pure fade - calm and unhurried
           final fadeIn = CurvedAnimation(parent: animation, curve: Curves.easeOut);
 
-          final fadeOut = Tween<double>(
-            begin: 1,
-            end: 0,
-          ).animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn));
+          final fadeOut = Tween<double>(begin: 1, end: 0).animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn));
 
           return FadeTransition(
             opacity: fadeIn,
@@ -220,8 +204,7 @@ class OpenContainerCard extends StatelessWidget {
       transitionType: transitionType,
       transitionDuration: AnimationDurations.slow,
       openBuilder: (context, action) => openBuilder(context, action),
-      closedBuilder: (context, action) =>
-          InkWell(onTap: action, borderRadius: closedBorderRadius, child: closedBuilder),
+      closedBuilder: (context, action) => InkWell(onTap: action, borderRadius: closedBorderRadius, child: closedBuilder),
       closedColor: closedColor ?? Colors.transparent,
       openColor: openColor ?? Theme.of(context).scaffoldBackgroundColor,
       closedShape: RoundedRectangleBorder(borderRadius: closedBorderRadius),
@@ -304,12 +287,7 @@ class SharedAxisPage extends CustomTransitionPage<void> {
          transitionDuration: AnimationDurations.normal,
          reverseTransitionDuration: AnimationDurations.normal,
          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-           return SharedAxisTransition(
-             animation: animation,
-             secondaryAnimation: secondaryAnimation,
-             transitionType: transitionType,
-             child: child,
-           );
+           return SharedAxisTransition(animation: animation, secondaryAnimation: secondaryAnimation, transitionType: transitionType, child: child);
          },
        );
 }

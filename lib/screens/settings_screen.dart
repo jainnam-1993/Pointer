@@ -131,13 +131,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Could not open link'),
-          backgroundColor: Colors.red.shade700,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: const Text('Could not open link'), backgroundColor: Colors.red.shade700, behavior: SnackBarBehavior.floating));
     }
   }
 
@@ -189,11 +185,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         _showDeveloperOptions = true;
         HapticFeedback.heavyImpact();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Developer options enabled'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
+          SnackBar(content: const Text('Developer options enabled'), behavior: SnackBarBehavior.floating, duration: const Duration(seconds: 2)),
         );
       }
     });
@@ -210,9 +202,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
   /// Get schedule summary (e.g., "Every 3h, 8am - 9pm")
   String _getScheduleTimeSummary() {
     final schedule = ref.read(notificationServiceProvider).getSchedule();
-    final freq = schedule.frequencyMinutes < 60
-        ? '${schedule.frequencyMinutes}m'
-        : '${schedule.frequencyMinutes ~/ 60}h';
+    final freq = schedule.frequencyMinutes < 60 ? '${schedule.frequencyMinutes}m' : '${schedule.frequencyMinutes ~/ 60}h';
     return 'Every $freq, ${_formatHourShort(schedule.startHour)} - ${_formatHourShort(schedule.endHour)}';
   }
 
@@ -273,15 +263,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             ? _getNotificationCountSummary()
                             : 'Permission required',
                         // Hide lock icon when kFreeAccessEnabled
-                        leading: !kFreeAccessEnabled && !subscription.isPremium
-                            ? Icon(Icons.lock_outline, color: goldColor, size: 18)
-                            : null,
+                        leading: !kFreeAccessEnabled && !subscription.isPremium ? Icon(Icons.lock_outline, color: goldColor, size: 18) : null,
                         trailing: Switch(
                           // Allow toggle when kFreeAccessEnabled OR premium
-                          value:
-                              (kFreeAccessEnabled || subscription.isPremium) &&
-                              _notificationsEnabled &&
-                              _permissionGranted,
+                          value: (kFreeAccessEnabled || subscription.isPremium) && _notificationsEnabled && _permissionGranted,
                           onChanged: (kFreeAccessEnabled || subscription.isPremium)
                               ? (value) async {
                                   HapticFeedback.mediumImpact();
@@ -439,9 +424,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             final notificationService = ref.read(notificationServiceProvider);
                             await notificationService.sendTestNotification();
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)),
-                              );
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
                             }
                           },
                         ),
@@ -458,9 +443,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                    'Background notification scheduled in 1 minute. You can close the app.',
-                                  ),
+                                  content: Text('Background notification scheduled in 1 minute. You can close the app.'),
                                   duration: Duration(seconds: 4),
                                 ),
                               );
@@ -478,10 +461,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             final pending = await notificationService.getPendingNotifications();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Pending notifications: ${pending.length}'),
-                                  duration: const Duration(seconds: 4),
-                                ),
+                                SnackBar(content: Text('Pending notifications: ${pending.length}'), duration: const Duration(seconds: 4)),
                               );
                             }
                           },

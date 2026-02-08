@@ -63,10 +63,7 @@ void main() async {
   // the default provider results in uninitialized FlutterLocalNotificationsPlugin
   // instances that cannot show notifications on iOS.
   final container = ProviderContainer(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-      notificationServiceProvider.overrideWithValue(notificationService),
-    ],
+    overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences), notificationServiceProvider.overrideWithValue(notificationService)],
   );
   _globalContainer = container;
 
@@ -87,10 +84,7 @@ void main() async {
   await WidgetService.processPendingWidgetActions();
 
   // Initialize teaching repository with all teachings
-  TeachingRepository.initialize(
-    pointings: pointings,
-    additionalTeachings: [...papajiTeachings, ...adyashantiTeachings],
-  );
+  TeachingRepository.initialize(pointings: pointings, additionalTeachings: [...papajiTeachings, ...adyashantiTeachings]);
 
   runApp(UncontrolledProviderScope(container: container, child: const PointerApp()));
 }
@@ -99,10 +93,7 @@ void main() async {
 Future<void> _initializeNotifications(NotificationService service) async {
   // Initialize the service with callbacks for notification actions (Save, Another buttons)
   // This uses a single FlutterLocalNotificationsPlugin instance throughout the app
-  await service.initialize(
-    onNotificationResponse: notificationActionCallback,
-    onBackgroundNotificationResponse: notificationActionCallback,
-  );
+  await service.initialize(onNotificationResponse: notificationActionCallback, onBackgroundNotificationResponse: notificationActionCallback);
 }
 
 class PointerApp extends ConsumerStatefulWidget {

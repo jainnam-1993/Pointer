@@ -164,8 +164,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   Widget _buildGradient(BuildContext context, AppThemeMode themeMode) {
     // Derive isDark from provider value (not Theme.of) for proper rebuild
     final isDark =
-        themeMode == AppThemeMode.dark ||
-        (themeMode == AppThemeMode.system && MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+        themeMode == AppThemeMode.dark || (themeMode == AppThemeMode.system && MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     // Check OLED mode - pure black background, no gradient animation
     final isOledMode = ref.watch(oledModeProvider);
@@ -191,9 +190,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     // 1. Static flag is set (for testing)
     // 2. In test environment
     // 3. Reduce motion is enabled (accessibility)
-    if (AnimatedGradient.disableAnimations ||
-        reduceMotion ||
-        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
+    if (AnimatedGradient.disableAnimations || reduceMotion || kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return container;
     }
 
@@ -206,9 +203,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     };
 
     return RepaintBoundary(
-      child: container
-          .animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .shimmer(duration: shimmerDuration, color: shimmerColor),
+      child: container.animate(onPlay: (controller) => controller.repeat(reverse: true)).shimmer(duration: shimmerDuration, color: shimmerColor),
     );
   }
 }
@@ -234,9 +229,7 @@ class FloatingParticles extends ConsumerWidget {
     // 1. Static flag is set (for testing)
     // 2. In test environment
     // 3. Reduce motion is enabled (accessibility)
-    if (AnimatedGradient.disableAnimations ||
-        reduceMotion ||
-        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
+    if (AnimatedGradient.disableAnimations || reduceMotion || kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return const SizedBox.shrink();
     }
 

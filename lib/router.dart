@@ -109,11 +109,8 @@ GoRouter _createRouter() {
       // History route (outside shell) - horizontal for related content
       GoRoute(
         path: '/history',
-        pageBuilder: (context, state) => SharedAxisPage(
-          key: state.pageKey,
-          transitionType: SharedAxisTransitionType.horizontal,
-          child: const HistoryScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            SharedAxisPage(key: state.pageKey, transitionType: SharedAxisTransitionType.horizontal, child: const HistoryScreen()),
       ),
 
       // Inquiry player route (outside shell - full screen experience)
@@ -131,11 +128,8 @@ GoRouter _createRouter() {
       // Lineages route (outside shell - preferences screen)
       GoRoute(
         path: '/lineages',
-        pageBuilder: (context, state) => SharedAxisPage(
-          key: state.pageKey,
-          transitionType: SharedAxisTransitionType.horizontal,
-          child: const LineagesScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            SharedAxisPage(key: state.pageKey, transitionType: SharedAxisTransitionType.horizontal, child: const LineagesScreen()),
       ),
 
       // Main app with bottom navigation

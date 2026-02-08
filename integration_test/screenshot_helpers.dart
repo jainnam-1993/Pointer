@@ -54,9 +54,7 @@ class ScreenshotCapture {
       // Capture screenshot
       await binding.takeScreenshot(fileName);
 
-      records.add(
-        ScreenshotRecord(fileName: fileName, stepName: stepName, description: description, timestamp: DateTime.now()),
-      );
+      records.add(ScreenshotRecord(fileName: fileName, stepName: stepName, description: description, timestamp: DateTime.now()));
 
       // ignore: avoid_print
       print('📸 Screenshot: $fileName');
@@ -73,9 +71,7 @@ class ScreenshotCapture {
     buffer.writeln('<html><head>');
     buffer.writeln('<title>Screenshot Report - ${ScreenshotConfig._currentFlow}</title>');
     buffer.writeln('<style>');
-    buffer.writeln(
-      'body { font-family: system-ui; max-width: 1200px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }',
-    );
+    buffer.writeln('body { font-family: system-ui; max-width: 1200px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }');
     buffer.writeln('h1 { color: #8b5cf6; }');
     buffer.writeln('.screenshot { margin: 20px 0; padding: 20px; background: #16213e; border-radius: 12px; }');
     buffer.writeln('.screenshot img { max-width: 300px; border-radius: 8px; }');
@@ -120,21 +116,8 @@ class UXIssueTracker {
   static final List<UXIssue> issues = [];
 
   /// Record a UX issue discovered during testing
-  static void record({
-    required String title,
-    required String description,
-    required String screenshotRef,
-    UXSeverity severity = UXSeverity.medium,
-  }) {
-    issues.add(
-      UXIssue(
-        title: title,
-        description: description,
-        screenshotRef: screenshotRef,
-        severity: severity,
-        timestamp: DateTime.now(),
-      ),
-    );
+  static void record({required String title, required String description, required String screenshotRef, UXSeverity severity = UXSeverity.medium}) {
+    issues.add(UXIssue(title: title, description: description, screenshotRef: screenshotRef, severity: severity, timestamp: DateTime.now()));
     // ignore: avoid_print
     print('🚨 UX Issue [${severity.name}]: $title');
   }
@@ -169,13 +152,7 @@ class UXIssue {
   final UXSeverity severity;
   final DateTime timestamp;
 
-  UXIssue({
-    required this.title,
-    required this.description,
-    required this.screenshotRef,
-    required this.severity,
-    required this.timestamp,
-  });
+  UXIssue({required this.title, required this.description, required this.screenshotRef, required this.severity, required this.timestamp});
 }
 
 /// UX Issue severity levels

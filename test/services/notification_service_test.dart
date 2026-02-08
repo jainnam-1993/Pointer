@@ -338,13 +338,7 @@ void main() {
     });
 
     test('summary formats correctly for minute intervals', () {
-      const schedule = NotificationSchedule(
-        startHour: 8,
-        startMinute: 0,
-        endHour: 20,
-        endMinute: 0,
-        frequencyMinutes: 30,
-      );
+      const schedule = NotificationSchedule(startHour: 8, startMinute: 0, endHour: 20, endMinute: 0, frequencyMinutes: 30);
 
       expect(schedule.summary, contains('Every 30 min'));
       expect(schedule.summary, contains('8:00 AM'));

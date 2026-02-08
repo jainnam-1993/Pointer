@@ -42,27 +42,11 @@ class TraditionInfo {
 }
 
 const traditions = <Tradition, TraditionInfo>{
-  Tradition.advaita: TraditionInfo(
-    name: 'Advaita Vedanta',
-    icon: 'ॐ',
-    description: 'The path of non-duality. You are already what you seek.',
-  ),
+  Tradition.advaita: TraditionInfo(name: 'Advaita Vedanta', icon: 'ॐ', description: 'The path of non-duality. You are already what you seek.'),
   Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.'),
-  Tradition.direct: TraditionInfo(
-    name: 'Direct Path',
-    icon: '◇',
-    description: 'Contemporary clarity. Awareness recognizing itself.',
-  ),
-  Tradition.contemporary: TraditionInfo(
-    name: 'Contemporary',
-    icon: '✦',
-    description: 'Modern teachers. Ancient truth, fresh words.',
-  ),
-  Tradition.original: TraditionInfo(
-    name: 'Original',
-    icon: '∞',
-    description: 'Written for now. This moment, this life.',
-  ),
+  Tradition.direct: TraditionInfo(name: 'Direct Path', icon: '◇', description: 'Contemporary clarity. Awareness recognizing itself.'),
+  Tradition.contemporary: TraditionInfo(name: 'Contemporary', icon: '✦', description: 'Modern teachers. Ancient truth, fresh words.'),
+  Tradition.original: TraditionInfo(name: 'Original', icon: '∞', description: 'Written for now. This moment, this life.'),
 };
 
 const pointings = <Pointing>[
@@ -300,8 +284,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-103',
-    content:
-        'Remember, untruth is not such a great hindrance as the belief in the truth. If you believe you stop seeking.',
+    content: 'Remember, untruth is not such a great hindrance as the belief in the truth. If you believe you stop seeking.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -320,8 +303,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-105',
-    content:
-        'If you love yourself, to me you have become religious. And a person who loves himself, only he can love others.',
+    content: 'If you love yourself, to me you have become religious. And a person who loves himself, only he can love others.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -330,8 +312,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-106',
-    content:
-        'Your life, all of your life, is your path to awakening. By resisting or not dealing with its challenges, you stay asleep to Reality.',
+    content: 'Your life, all of your life, is your path to awakening. By resisting or not dealing with its challenges, you stay asleep to Reality.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -349,8 +330,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-102',
-    content:
-        "Jesus says, 'Only those who are like small children will be able to enter God's kingdom.' I will try to make you like small children.",
+    content: "Jesus says, 'Only those who are like small children will be able to enter God's kingdom.' I will try to make you like small children.",
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     teacher: 'Osho',
@@ -377,8 +357,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-101',
-    content:
-        'Truth is a pathless land, and you cannot approach it by any path whatsoever, by any religion, by any sect.',
+    content: 'Truth is a pathless land, and you cannot approach it by any path whatsoever, by any religion, by any sect.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -396,8 +375,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-103',
-    content:
-        'Forget all you know about yourself; forget all you have ever thought about yourself; start as if you know nothing.',
+    content: 'Forget all you know about yourself; forget all you have ever thought about yourself; start as if you know nothing.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -406,8 +384,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-104',
-    content:
-        'Intelligence is the capacity to perceive the essential, what is. To awaken this capacity, in oneself and in others, is education.',
+    content: 'Intelligence is the capacity to perceive the essential, what is. To awaken this capacity, in oneself and in others, is education.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -416,8 +393,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-105',
-    content:
-        'It is love alone that leads to right action. What brings order in the world is to love and let love do what it will.',
+    content: 'It is love alone that leads to right action. What brings order in the world is to love and let love do what it will.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -426,8 +402,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-107',
-    content:
-        'I, open, empty Awareness, am aware of thoughts, feelings, sensations and perceptions but am not made of any of these.',
+    content: 'I, open, empty Awareness, am aware of thoughts, feelings, sensations and perceptions but am not made of any of these.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -436,8 +411,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-108',
-    content:
-        'When the body dies, the whirlpool dissolves. But nothing disappears, because all there is to the whirlpool is water.',
+    content: 'When the body dies, the whirlpool dissolves. But nothing disappears, because all there is to the whirlpool is water.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -446,8 +420,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-110',
-    content:
-        'Allow your experience to appear exactly as it is from moment to moment, without trying to change it in any way.',
+    content: 'Allow your experience to appear exactly as it is from moment to moment, without trying to change it in any way.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -464,8 +437,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-112',
-    content:
-        'What am I when all of these have been removed from me? Only the experience of being aware, only awareness itself.',
+    content: 'What am I when all of these have been removed from me? Only the experience of being aware, only awareness itself.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -474,8 +446,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-113',
-    content:
-        'The direct path is really the path for our age. It requires no affiliation to any particular teacher or any tradition.',
+    content: 'The direct path is really the path for our age. It requires no affiliation to any particular teacher or any tradition.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -484,8 +455,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-117',
-    content:
-        "The sense of 'being myself' is our most ordinary, intimate and familiar experience. It pervades all experience.",
+    content: "The sense of 'being myself' is our most ordinary, intimate and familiar experience. It pervades all experience.",
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Rupert Spira',
@@ -511,8 +481,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-121',
-    content:
-        'The essential discovery of all the great spiritual traditions is the identity of Consciousness and Reality.',
+    content: 'The essential discovery of all the great spiritual traditions is the identity of Consciousness and Reality.',
 
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
@@ -521,8 +490,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-101',
-    content:
-        'The primary task of any good spiritual teaching is not to answer your questions, but to question your answers.',
+    content: 'The primary task of any good spiritual teaching is not to answer your questions, but to question your answers.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -550,8 +518,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-105',
-    content:
-        "There is no such thing as an absolutely True thought. This doesn't mean that some thoughts are not truer than others.",
+    content: "There is no such thing as an absolutely True thought. This doesn't mean that some thoughts are not truer than others.",
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Adyashanti',
@@ -595,8 +562,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-109',
-    content:
-        'This Freedom, this Wisdom, this Beauty, this Love is always inviting you. You only have to turn your attention within.',
+    content: 'This Freedom, this Wisdom, this Beauty, this Love is always inviting you. You only have to turn your attention within.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -632,8 +598,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-109',
-    content:
-        'Yoga is not belief. It is an existential approach. You will come to the truth through your own experience.',
+    content: 'Yoga is not belief. It is an existential approach. You will come to the truth through your own experience.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -642,8 +607,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-111',
-    content:
-        'Yoga is the cessation of mind. When there is no mind, you are in yoga; when there is mind you are not in yoga.',
+    content: 'Yoga is the cessation of mind. When there is no mind, you are in yoga; when there is mind you are not in yoga.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -652,8 +616,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-113',
-    content:
-        "The only true statement is 'I am'. All else is mere inference. By no effort can you change the 'I am' into 'I am-not'.",
+    content: "The only true statement is 'I am'. All else is mere inference. By no effort can you change the 'I am' into 'I am-not'.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -679,8 +642,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-116',
-    content:
-        'The clearer you understand you can be described in negative terms only, the quicker will you come to the end of your search.',
+    content: 'The clearer you understand you can be described in negative terms only, the quicker will you come to the end of your search.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -689,8 +651,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-117',
-    content:
-        "The sense of being, of 'I am' is the first to emerge. Ask yourself whence it comes, or just watch it quietly.",
+    content: "The sense of being, of 'I am' is the first to emerge. Ask yourself whence it comes, or just watch it quietly.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -707,8 +668,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-119',
-    content:
-        "When pure awareness is attained, no need exists any more, not even for 'I am', which is but a useful pointer.",
+    content: "When pure awareness is attained, no need exists any more, not even for 'I am', which is but a useful pointer.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -716,8 +676,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-120',
-    content:
-        "What you can point out as 'this' or 'that' cannot be yourself. You are nothing perceivable, or imaginable.",
+    content: "What you can point out as 'this' or 'that' cannot be yourself. You are nothing perceivable, or imaginable.",
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Nisargadatta Maharaj',
@@ -738,8 +697,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-122',
-    content:
-        'You are not what you take yourself to be. Find out what you are. Watch the sense "I am", find your real Self.',
+    content: 'You are not what you take yourself to be. Find out what you are. Watch the sense "I am", find your real Self.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -748,8 +706,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-123',
-    content:
-        'The Self is not something to be gained. You are already That. Just stop imagining yourself to be something else.',
+    content: 'The Self is not something to be gained. You are already That. Just stop imagining yourself to be something else.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -1100,8 +1057,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-162',
-    content:
-        'Once you realize that the road is the goal and that you are always on the road, there is nothing to reach.',
+    content: 'Once you realize that the road is the goal and that you are always on the road, there is nothing to reach.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -1461,8 +1417,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-202',
-    content:
-        'Give up all questions except one: Who am I? Eventually this question will destroy itself and the questioner.',
+    content: 'Give up all questions except one: Who am I? Eventually this question will destroy itself and the questioner.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -4137,8 +4092,7 @@ const pointings = <Pointing>[
   // --- zen_quotes.dart ---
   Pointing(
     id: 'zen-108',
-    content:
-        'The moon is the same old moon, the flowers exactly as they were, yet I\'ve become the thingness of things.',
+    content: 'The moon is the same old moon, the flowers exactly as they were, yet I\'ve become the thingness of things.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4247,8 +4201,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-120',
-    content:
-        'Birth and death are the great matter. All things pass quickly away. Wake up, wake up! Do not waste this life.',
+    content: 'Birth and death are the great matter. All things pass quickly away. Wake up, wake up! Do not waste this life.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4365,8 +4318,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-133',
-    content:
-        'Not thinking about anything is Zen. Once you know this, walking, standing, sitting, or lying down, everything you do is Zen.',
+    content: 'Not thinking about anything is Zen. Once you know this, walking, standing, sitting, or lying down, everything you do is Zen.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4440,8 +4392,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-141',
-    content:
-        'The foolish reject what they see, not what they think; the wise reject what they think, not what they see.',
+    content: 'The foolish reject what they see, not what they think; the wise reject what they think, not what they see.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4504,8 +4455,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-148',
-    content:
-        'If you students of the Way do not awake to this Mind substance, you will overlay Mind with conceptual thought.',
+    content: 'If you students of the Way do not awake to this Mind substance, you will overlay Mind with conceptual thought.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4632,8 +4582,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-162',
-    content:
-        'Simply let experience take place very freely, so that your open heart is suffused with the tenderness of true compassion.',
+    content: 'Simply let experience take place very freely, so that your open heart is suffused with the tenderness of true compassion.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4687,8 +4636,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-168',
-    content:
-        'When you do something, you should burn yourself completely, like a good bonfire, leaving no trace of yourself.',
+    content: 'When you do something, you should burn yourself completely, like a good bonfire, leaving no trace of yourself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4715,8 +4663,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-171',
-    content:
-        'When we have our body and mind in order, everything else will exist in the right place, in the right way.',
+    content: 'When we have our body and mind in order, everything else will exist in the right place, in the right way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4743,8 +4690,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-174',
-    content:
-        'The way of practice is just to concentrate on your breathing with the right posture and with great, pure effort.',
+    content: 'The way of practice is just to concentrate on your breathing with the right posture and with great, pure effort.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4798,8 +4744,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-180',
-    content:
-        'The true purpose of Zen is to see things as they are, to observe things as they are, and to let everything go as it goes.',
+    content: 'The true purpose of Zen is to see things as they are, to observe things as they are, and to let everything go as it goes.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4808,8 +4753,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-181',
-    content:
-        'Calmness of mind does not mean you should stop your activity. Real calmness should be found in activity itself.',
+    content: 'Calmness of mind does not mean you should stop your activity. Real calmness should be found in activity itself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4836,8 +4780,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-184',
-    content:
-        'The seed has no idea of being some particular plant, but it has its own form and is in perfect harmony with the ground.',
+    content: 'The seed has no idea of being some particular plant, but it has its own form and is in perfect harmony with the ground.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4936,8 +4879,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-195',
-    content:
-        'To be beautiful means to be yourself. You don\'t need to be accepted by others. You need to accept yourself.',
+    content: 'To be beautiful means to be yourself. You don\'t need to be accepted by others. You need to accept yourself.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4946,8 +4888,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-196',
-    content:
-        'When we are mindful, deeply in touch with the present moment, our understanding of what is going on deepens.',
+    content: 'When we are mindful, deeply in touch with the present moment, our understanding of what is going on deepens.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -4983,8 +4924,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-200',
-    content:
-        'The miracle is not to walk on water. The miracle is to walk on the green earth, dwelling deeply in the present moment.',
+    content: 'The miracle is not to walk on water. The miracle is to walk on the green earth, dwelling deeply in the present moment.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5002,8 +4942,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-202',
-    content:
-        'People have a hard time letting go of their suffering. Out of a fear of the unknown, they prefer suffering that is familiar.',
+    content: 'People have a hard time letting go of their suffering. Out of a fear of the unknown, they prefer suffering that is familiar.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5148,8 +5087,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-218',
-    content:
-        'Things are as they are. Looking out into the universe at night, we make no comparisons between right and wrong stars.',
+    content: 'Things are as they are. Looking out into the universe at night, we make no comparisons between right and wrong stars.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5158,8 +5096,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-219',
-    content:
-        'To have faith is to trust yourself to the water. When you swim you don\'t grab hold of the water, because if you do you will sink.',
+    content: 'To have faith is to trust yourself to the water. When you swim you don\'t grab hold of the water, because if you do you will sink.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5168,8 +5105,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-220',
-    content:
-        'The art of living... is neither careless drifting on the one hand nor fearful clinging to the past on the other.',
+    content: 'The art of living... is neither careless drifting on the one hand nor fearful clinging to the past on the other.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5205,8 +5141,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-224',
-    content:
-        'A person who thinks all the time has nothing to think about except thoughts. So he loses touch with reality.',
+    content: 'A person who thinks all the time has nothing to think about except thoughts. So he loses touch with reality.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5224,8 +5159,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-226',
-    content:
-        'Through our eyes, the universe is perceiving itself. Through our ears, the universe is listening to its harmonies.',
+    content: 'Through our eyes, the universe is perceiving itself. Through our ears, the universe is listening to its harmonies.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5252,8 +5186,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-229',
-    content:
-        'We have to face the pain we have been running from. In fact, we need to learn to rest in it and let its searing power transform us.',
+    content: 'We have to face the pain we have been running from. In fact, we need to learn to rest in it and let its searing power transform us.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5307,8 +5240,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-235',
-    content:
-        'When we sit, we just sit. When we walk, we just walk. And when life falls apart, we just let it fall apart.',
+    content: 'When we sit, we just sit. When we walk, we just walk. And when life falls apart, we just let it fall apart.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5317,8 +5249,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-236',
-    content:
-        'Zen is not about blissing out or going into an alpha brain-wave trance. It\'s about seeing things as they are.',
+    content: 'Zen is not about blissing out or going into an alpha brain-wave trance. It\'s about seeing things as they are.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5417,8 +5348,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-247',
-    content:
-        'Chan is not about seeking enlightenment or trying to become a Buddha. It is about seeing your true nature.',
+    content: 'Chan is not about seeking enlightenment or trying to become a Buddha. It is about seeing your true nature.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5896,8 +5826,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-300',
-    content:
-        'When it is time to get dressed, put on your clothes. When you must walk, then walk. When you must sit, then sit.',
+    content: 'When it is time to get dressed, put on your clothes. When you must walk, then walk. When you must sit, then sit.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -5969,8 +5898,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-308',
-    content:
-        'Those who see worldly life as an obstacle to practice see no true path. Those who see it as the path itself enlighten the way.',
+    content: 'Those who see worldly life as an obstacle to practice see no true path. Those who see it as the path itself enlighten the way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6006,8 +5934,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-312',
-    content:
-        'Enlightenment is like the moon reflected on the water. The moon does not get wet, nor is the water broken.',
+    content: 'Enlightenment is like the moon reflected on the water. The moon does not get wet, nor is the water broken.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6170,8 +6097,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-330',
-    content:
-        'Only when you have no thing in your mind and no mind in things are you vacant and spiritual, empty and marvelous.',
+    content: 'Only when you have no thing in your mind and no mind in things are you vacant and spiritual, empty and marvelous.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6432,8 +6358,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-359',
-    content:
-        'Sometimes we think that to practice is to figure something out, but actually, it\'s to let everything be as it is.',
+    content: 'Sometimes we think that to practice is to figure something out, but actually, it\'s to let everything be as it is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6442,8 +6367,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-360',
-    content:
-        'Around us, life bursts with miracles - a glass of water, a ray of sunshine, a leaf, a caterpillar, a flower, laughter, raindrops.',
+    content: 'Around us, life bursts with miracles - a glass of water, a ray of sunshine, a leaf, a caterpillar, a flower, laughter, raindrops.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6479,8 +6403,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-364',
-    content:
-        'The seed of suffering in you may be strong, but don\'t wait until you have no more suffering before allowing yourself to be happy.',
+    content: 'The seed of suffering in you may be strong, but don\'t wait until you have no more suffering before allowing yourself to be happy.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6498,8 +6421,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-366',
-    content:
-        'When we recognize the virtues, the talent, the beauty of Mother Earth, something is born in us, some kind of connection, love is born.',
+    content: 'When we recognize the virtues, the talent, the beauty of Mother Earth, something is born in us, some kind of connection, love is born.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6535,8 +6457,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-370',
-    content:
-        'To think in terms of either pessimism or optimism oversimplifies the truth. The problem is to see reality as it is.',
+    content: 'To think in terms of either pessimism or optimism oversimplifies the truth. The problem is to see reality as it is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6545,8 +6466,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-371',
-    content:
-        'Silence is something more than just a pause; it is that enchanted place where space is cleared and time is stayed.',
+    content: 'Silence is something more than just a pause; it is that enchanted place where space is cleared and time is stayed.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6717,8 +6637,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-390',
-    content:
-        'Better to have a short life that is full of what you like doing than a long life spent in a miserable way.',
+    content: 'Better to have a short life that is full of what you like doing than a long life spent in a miserable way.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6736,8 +6655,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-392',
-    content:
-        'Zen is a way of liberation, concerned not with discovering what is good or bad or advantageous, but what is.',
+    content: 'Zen is a way of liberation, concerned not with discovering what is good or bad or advantageous, but what is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6746,8 +6664,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-393',
-    content:
-        'The past and future are real illusions, that they exist in the present, which is what there is and all there is.',
+    content: 'The past and future are real illusions, that they exist in the present, which is what there is and all there is.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6756,8 +6673,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-394',
-    content:
-        'If you say that getting the money is the most important thing, you\'ll spend your life completely wasting your time.',
+    content: 'If you say that getting the money is the most important thing, you\'ll spend your life completely wasting your time.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6766,8 +6682,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-395',
-    content:
-        'Technology is destructive only in the hands of people who do not realize that they are one and the same process as the universe.',
+    content: 'Technology is destructive only in the hands of people who do not realize that they are one and the same process as the universe.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -6785,8 +6700,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-397',
-    content:
-        'The more we think about it, the less there is to think about. Finally, we might give up thinking altogether.',
+    content: 'The more we think about it, the less there is to think about. Finally, we might give up thinking altogether.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -7587,8 +7501,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-486',
-    content:
-        'Seeing forms with the whole body and mind, hearing sounds with the whole body and mind, one understands them intimately.',
+    content: 'Seeing forms with the whole body and mind, hearing sounds with the whole body and mind, one understands them intimately.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -7833,8 +7746,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-118',
-    content:
-        'Compassion is not a relationship between the healer and the wounded. It is a relationship between equals.',
+    content: 'Compassion is not a relationship between the healer and the wounded. It is a relationship between equals.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -8500,8 +8412,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-192',
-    content:
-        'The only thing standing between you and truth is the belief that there is something standing between you and truth.',
+    content: 'The only thing standing between you and truth is the belief that there is something standing between you and truth.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9581,8 +9492,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-315',
-    content:
-        'I discovered that when I believed my thoughts, I suffered. When I did not believe them, I did not suffer.',
+    content: 'I discovered that when I believed my thoughts, I suffered. When I did not believe them, I did not suffer.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9708,8 +9618,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-329',
-    content:
-        'In the end, just three things matter: how well we have lived, how well we have loved, how well we have learned to let go.',
+    content: 'In the end, just three things matter: how well we have lived, how well we have loved, how well we have learned to let go.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9718,8 +9627,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-330',
-    content:
-        'Perhaps the biggest tragedy of our lives is that freedom is possible, yet we pass our years trapped in the same old patterns.',
+    content: 'Perhaps the biggest tragedy of our lives is that freedom is possible, yet we pass our years trapped in the same old patterns.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9728,8 +9636,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-331',
-    content:
-        'The day you decide that you are more interested in being aware than in being in control, your life will begin to unfold.',
+    content: 'The day you decide that you are more interested in being aware than in being in control, your life will begin to unfold.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9792,8 +9699,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-338',
-    content:
-        'Only to the extent that we expose ourselves over and over to annihilation can that which is indestructible be found in us.',
+    content: 'Only to the extent that we expose ourselves over and over to annihilation can that which is indestructible be found in us.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9811,8 +9717,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-340',
-    content:
-        'The intimacy that arises in listening and speaking truth is only possible if we can open to the vulnerability of our own hearts.',
+    content: 'The intimacy that arises in listening and speaking truth is only possible if we can open to the vulnerability of our own hearts.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9821,8 +9726,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-341',
-    content:
-        'Do not let anything that happens in life be important enough that you are willing to close your heart over it.',
+    content: 'Do not let anything that happens in life be important enough that you are willing to close your heart over it.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9885,8 +9789,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-348',
-    content:
-        'The root of suffering is resisting the certainty that no matter what the circumstances, uncertainty is all we truly have.',
+    content: 'The root of suffering is resisting the certainty that no matter what the circumstances, uncertainty is all we truly have.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9895,8 +9798,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-349',
-    content:
-        'Compassion grows from the understanding that we are all doing the best we can with the resources we have.',
+    content: 'Compassion grows from the understanding that we are all doing the best we can with the resources we have.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -9995,8 +9897,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-360',
-    content:
-        'The recognition that who we are is not limited by our body or personality opens us to a mysterious universe.',
+    content: 'The recognition that who we are is not limited by our body or personality opens us to a mysterious universe.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10077,8 +9978,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-369',
-    content:
-        'When we get too caught up in the busyness of the world, we lose connection with one another and ourselves.',
+    content: 'When we get too caught up in the busyness of the world, we lose connection with one another and ourselves.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10114,8 +10014,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-373',
-    content:
-        'Presence is when you are no longer waiting for the next moment, believing it will be better than this one.',
+    content: 'Presence is when you are no longer waiting for the next moment, believing it will be better than this one.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10178,8 +10077,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-380',
-    content:
-        'The longing to be loved is so powerful, we will suffer greatly before we realize we are already love itself.',
+    content: 'The longing to be loved is so powerful, we will suffer greatly before we realize we are already love itself.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10523,8 +10421,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-418',
-    content:
-        'The most fundamental aggression to ourselves is remaining ignorant by not having the courage to look at ourselves.',
+    content: 'The most fundamental aggression to ourselves is remaining ignorant by not having the courage to look at ourselves.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10605,8 +10502,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-427',
-    content:
-        'The quieter the mind, the more powerful, the worthier, the deeper, the more telling and perfect our instinct.',
+    content: 'The quieter the mind, the more powerful, the worthier, the deeper, the more telling and perfect our instinct.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10615,8 +10511,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-428',
-    content:
-        'Compassion is not a relationship between the healer and the wounded. It is the recognition that we are all in this together.',
+    content: 'Compassion is not a relationship between the healer and the wounded. It is the recognition that we are all in this together.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10643,8 +10538,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-431',
-    content:
-        'There is nothing you can do to make the universe give you what you want, but you can let go of resisting what comes.',
+    content: 'There is nothing you can do to make the universe give you what you want, but you can let go of resisting what comes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10680,8 +10574,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-435',
-    content:
-        'Peace comes not from hoping for better circumstances but from knowing that you can handle whatever comes.',
+    content: 'Peace comes not from hoping for better circumstances but from knowing that you can handle whatever comes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10825,8 +10718,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-451',
-    content:
-        'When the energy is unable to pass through you, it disturbs you. When you can let it pass through, you are free.',
+    content: 'When the energy is unable to pass through you, it disturbs you. When you can let it pass through, you are free.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -10889,8 +10781,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-458',
-    content:
-        'Without giving up hope that there is somewhere better to be, that there is someone better to be, we will never relax.',
+    content: 'Without giving up hope that there is somewhere better to be, that there is someone better to be, we will never relax.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -11656,13 +11547,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-42',
-    content: 'The path home is zero steps long.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-42', content: 'The path home is zero steps long.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-43',
     content: 'What is here when you stop adding to this moment?',
@@ -11698,13 +11583,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-48',
-    content: 'Let the day unfold without your narration.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-48', content: 'Let the day unfold without your narration.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-49',
     content: 'The candle does not chase the darkness. It simply is.',
@@ -11740,13 +11619,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-54',
-    content: 'Stop. Notice. This is it.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-54', content: 'Stop. Notice. This is it.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-55',
     content: 'The me is a thought appearing to you. Who are you?',
@@ -11775,13 +11648,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-59',
-    content: 'Freedom is not earned. It is remembered.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-59', content: 'Freedom is not earned. It is remembered.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-60',
     content: 'The ordinary cup of tea contains the entire teaching when you are fully here.',
@@ -11852,13 +11719,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-70',
-    content: 'This simple being needs no improvement.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-70', content: 'This simple being needs no improvement.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-71',
     content: 'The universe is not happening to you. It is happening as you.',
@@ -12146,13 +12007,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-112',
-    content: 'Before the word "peace," there is peace.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-112', content: 'Before the word "peace," there is peace.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-113',
     content: 'The sunset does not ask permission to be beautiful.',
@@ -12167,13 +12022,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-115',
-    content: 'The watcher of dreams is never dreaming.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-115', content: 'The watcher of dreams is never dreaming.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-116',
     content: 'This simple knowing—have you earned it or struggled for it?',
@@ -12244,13 +12093,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-126',
-    content: 'In this moment, nothing is incomplete.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-126', content: 'In this moment, nothing is incomplete.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-127',
     content: 'The moon reflects in ten thousand lakes, yet remains one moon.',
@@ -12307,13 +12150,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-135',
-    content: 'The ocean does not cling to any wave.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-135', content: 'The ocean does not cling to any wave.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-136',
     content: 'You are not limited by the body. The body appears within your limitless nature.',
@@ -12356,13 +12193,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-142',
-    content: 'What remains when the seeker disappears?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-142', content: 'What remains when the seeker disappears?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-143',
     content: 'The stars shine without announcing their light.',
@@ -12384,13 +12215,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-146',
-    content: 'Awareness needs no practice to be aware.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-146', content: 'Awareness needs no practice to be aware.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-147',
     content: 'In the center of the storm, there is perfect stillness.',
@@ -12419,13 +12244,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-151',
-    content: 'The dance of life requires no dancer.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-151', content: 'The dance of life requires no dancer.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-152',
     content: 'In the absence of time, there is only presence.',
@@ -12447,13 +12266,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-155',
-    content: 'The grass grows without consulting manuals.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-155', content: 'The grass grows without consulting manuals.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-156',
     content: 'You are the peaceful background to every restless thought.',
@@ -12594,13 +12407,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-176',
-    content: 'The mountain does not climb itself.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-176', content: 'The mountain does not climb itself.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-177',
     content: 'Before the concept of time, there is timeless being.',
@@ -12657,13 +12464,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-185',
-    content: 'The fire does not try to be warm.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-185', content: 'The fire does not try to be warm.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-186',
     content: 'You are the eternal yes to whatever appears.',
@@ -12713,13 +12514,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-193',
-    content: 'The shadow proves the light.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-193', content: 'The shadow proves the light.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-194',
     content: 'Before memory tells you who you were, notice who you are.',
@@ -12776,13 +12571,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-202',
-    content: 'You are not the footnote. You are the page.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-202', content: 'You are not the footnote. You are the page.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-203',
     content: 'Before you name this as breath, there is breathing itself.',
@@ -12832,13 +12621,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-210',
-    content: 'The rain does not apologize for falling.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-210', content: 'The rain does not apologize for falling.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-211',
     content: 'You are the witnessing that remains when all witnessing ceases.',
@@ -12860,13 +12643,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-214',
-    content: 'The dewdrop contains the ocean.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-214', content: 'The dewdrop contains the ocean.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-215',
     content: 'In the gap between doing and being done, there is pure presence.',
@@ -12923,13 +12700,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-223',
-    content: 'The now is not thin—it has infinite depth.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-223', content: 'The now is not thin—it has infinite depth.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-224',
     content: 'You are not the story being told. You are the listening.',
@@ -12937,13 +12708,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-225',
-    content: 'The winter tree stands bare yet complete.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-225', content: 'The winter tree stands bare yet complete.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-226',
     content: 'In the surrender of effort, effortlessness is revealed.',
@@ -12986,13 +12751,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-232',
-    content: 'The light does not fear the darkness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-232', content: 'The light does not fear the darkness.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-233',
     content: 'In the absence of yesterday and tomorrow, what time is it?',
@@ -13028,13 +12787,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-238',
-    content: 'The pathless path begins where you stand.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-238', content: 'The pathless path begins where you stand.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-239',
     content: 'In the stillness between words, the whole truth resides.',
@@ -13056,13 +12809,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-242',
-    content: 'The spider weaves without self-doubt.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-242', content: 'The spider weaves without self-doubt.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-243',
     content: 'Before the naming of enlightenment, there is only wakefulness.',
@@ -13098,13 +12845,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-248',
-    content: 'The autumn leaf does not resist falling.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-248', content: 'The autumn leaf does not resist falling.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-249',
     content: 'What is here when the need to become someone dissolves?',
@@ -13126,13 +12867,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-252',
-    content: 'The snow falls equally on all rooftops.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-252', content: 'The snow falls equally on all rooftops.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-253',
     content: 'Before the interpreter speaks, raw experience is complete.',
@@ -13189,20 +12924,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-261',
-    content: 'You are the context, not the content.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-262',
-    content: 'The clouds pass. The sky remains.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-261', content: 'You are the context, not the content.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-262', content: 'The clouds pass. The sky remains.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-263',
     content: 'Before the thought "I am awake," there is wakefulness.',
@@ -13343,13 +13066,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-283',
-    content: 'The flower opens without seeking approval.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-283', content: 'The flower opens without seeking approval.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-284',
     content: 'Before the concept of progress, there is simply presence.',
@@ -13371,13 +13088,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-287',
-    content: 'In the heart of noise, silence is unshaken.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-287', content: 'In the heart of noise, silence is unshaken.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-288',
     content: 'You are the space that has room for everything.',
@@ -13385,13 +13096,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-289',
-    content: 'The candle cannot light itself yet shines.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-289', content: 'The candle cannot light itself yet shines.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-290',
     content: 'What remains when the one who is not enough disappears?',
@@ -13448,13 +13153,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-298',
-    content: 'The dewdrop reflects the dawn.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-298', content: 'The dewdrop reflects the dawn.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-299',
     content: 'In the collapse of seeking, being reveals itself.',
@@ -13462,13 +13161,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-300',
-    content: 'The tree does not try to be rooted.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-300', content: 'The tree does not try to be rooted.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-301',
     content: 'You are the silence that makes sound possible.',
@@ -13490,13 +13183,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-304',
-    content: 'The valley makes no effort to be low.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-304', content: 'The valley makes no effort to be low.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-305',
     content: 'In the surrender of control, the controller is revealed as illusion.',
@@ -13560,13 +13247,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-314',
-    content: 'The wave cannot fall from the ocean.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-314', content: 'The wave cannot fall from the ocean.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-315',
     content: 'You are the pristine awareness in which all stains appear.',
@@ -13574,13 +13255,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-316',
-    content: 'The clay takes form yet remains clay.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-316', content: 'The clay takes form yet remains clay.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-317',
     content: 'Before the first word of the day, what is already speaking?',
@@ -13609,13 +13284,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-321',
-    content: 'The moon needs no mirror to know itself.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-321', content: 'The moon needs no mirror to know itself.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-322',
     content: 'In the space of acceptance, resistance dissolves like morning mist.',
@@ -13665,13 +13334,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-329',
-    content: 'The fish does not study swimming.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-329', content: 'The fish does not study swimming.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-330',
     content: 'In the absence of striving, arrival is always now.',
@@ -13686,13 +13349,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-332',
-    content: 'The seed trusts the darkness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-332', content: 'The seed trusts the darkness.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-333',
     content: 'Before memory and anticipation, there is raw aliveness.',
@@ -13721,13 +13378,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-337',
-    content: 'The frost forms without instruction.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-337', content: 'The frost forms without instruction.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-338',
     content: 'In the letting be, being lets itself be known.',
@@ -13742,13 +13393,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-340',
-    content: 'Before the words "I am," there is the I AM.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-340', content: 'Before the words "I am," there is the I AM.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-341',
     content: 'What remains when the mask slips for a moment?',
@@ -13756,27 +13401,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-342',
-    content: 'The mountain does not know it is tall.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-343',
-    content: 'In the now, nothing is ever missing.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-344',
-    content: 'You are the formless taking infinite forms.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-342', content: 'The mountain does not know it is tall.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-343', content: 'In the now, nothing is ever missing.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-344', content: 'You are the formless taking infinite forms.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-345',
     content: 'The spider\'s web glistens with morning dew, neither clinging to nor rejecting.',
@@ -13812,13 +13439,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-350',
-    content: 'The tide does not apologize for its rhythm.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-350', content: 'The tide does not apologize for its rhythm.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-351',
     content: 'In the absence of the doer, doing continues effortlessly.',
@@ -13833,13 +13454,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-353',
-    content: 'The pebble sinks without resistance.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-353', content: 'The pebble sinks without resistance.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-354',
     content: 'Before the interpretation, there is pure perception.',
@@ -13931,20 +13546,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-368',
-    content: 'Before the word "now," there is nowness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-369',
-    content: 'What remains when all roles are set aside?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-368', content: 'Before the word "now," there is nowness.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-369', content: 'What remains when all roles are set aside?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-370',
     content: 'The canyon is carved by water that never tries.',
@@ -13980,13 +13583,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-375',
-    content: 'The shadow confirms the substance.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-375', content: 'The shadow confirms the substance.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-376',
     content: 'Before the seeker arose, what was already here?',
@@ -13994,20 +13591,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-377',
-    content: 'What is aware of time is timeless.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-378',
-    content: 'The branch does not fear the autumn.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-377', content: 'What is aware of time is timeless.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-378', content: 'The branch does not fear the autumn.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-379',
     content: 'In the surrender of knowing, the unknown reveals itself as home.',
@@ -14022,13 +13607,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-381',
-    content: 'The sand does not resist the wind.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-381', content: 'The sand does not resist the wind.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-382',
     content: 'Before division into inner and outer, there is seamless being.',
@@ -14036,20 +13615,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-383',
-    content: 'What remains when the struggle ceases?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-384',
-    content: 'The snow melts without mourning winter.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-383', content: 'What remains when the struggle ceases?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-384', content: 'The snow melts without mourning winter.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-385',
     content: 'You are the silence that listens to all sound.',
@@ -14113,13 +13680,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-395',
-    content: 'The leaf does not question its falling.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-395', content: 'The leaf does not question its falling.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-396',
     content: 'Before the thought of home, you have never left.',
@@ -14134,13 +13695,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-398',
-    content: 'The moon does not practice fullness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-398', content: 'The moon does not practice fullness.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-399',
     content: 'In this breath, the entire universe appears and disappears.',
@@ -14207,20 +13762,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-579',
-    content: 'Home is not a place. It is this.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-590',
-    content: 'The search ends where it began—here.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-579', content: 'Home is not a place. It is this.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-590', content: 'The search ends where it began—here.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-402',
     content: 'What remains when you stop trying to be someone?',
@@ -14270,13 +13813,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-479',
-    content: 'What you are cannot be lost or found.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-479', content: 'What you are cannot be lost or found.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-490',
     content: 'The witness of confusion is not confused.',
@@ -14312,13 +13849,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-517',
-    content: 'Nothing is closer to you than this.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-517', content: 'Nothing is closer to you than this.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-518',
     content: 'The extraordinary is hidden in plain sight—as the ordinary.',
@@ -14326,20 +13857,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-520',
-    content: 'What if awareness is already complete?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-521',
-    content: 'The ocean doesn\'t need to find water.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-520', content: 'What if awareness is already complete?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-521', content: 'The ocean doesn\'t need to find water.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-522',
     content: 'Suffering is resistance. What happens when resistance is seen?',
@@ -14354,20 +13873,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.morning],
   ),
-  Pointing(
-    id: 'ori-525',
-    content: 'The seeker and the sought are one movement.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-526',
-    content: 'What knows this moment? Be that.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-525', content: 'The seeker and the sought are one movement.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-526', content: 'What knows this moment? Be that.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-527',
     content: 'Presence doesn\'t come and go. Only attention wanders.',
@@ -14375,13 +13882,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-528',
-    content: 'The mind creates time. You create the mind.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-528', content: 'The mind creates time. You create the mind.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-529',
     content: 'Between stimulus and response, there is space. That space is you.',
@@ -14389,13 +13890,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.stress],
   ),
-  Pointing(
-    id: 'ori-530',
-    content: 'Awakening is not a change. It is a seeing.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-530', content: 'Awakening is not a change. It is a seeing.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-531',
     content: 'The sun doesn\'t struggle to shine. Neither do you.',
@@ -14410,20 +13905,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-533',
-    content: 'Thoughts are clouds. You are the sky.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-534',
-    content: 'The deepest truth is the simplest one.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-533', content: 'Thoughts are clouds. You are the sky.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-534', content: 'The deepest truth is the simplest one.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-536',
     content: 'Nothing needs to happen for you to be whole.',
@@ -14438,27 +13921,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-538',
-    content: 'The present moment has no opposite.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-539',
-    content: 'Who you think you are is not who you are.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-540',
-    content: 'Rest in not knowing. Certainty is a prison.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-538', content: 'The present moment has no opposite.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-539', content: 'Who you think you are is not who you are.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-540', content: 'Rest in not knowing. Certainty is a prison.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-541',
     content: 'The answer to every question is the same: presence.',
@@ -14487,13 +13952,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-545',
-    content: 'You cannot be separate from what is.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-545', content: 'You cannot be separate from what is.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-547',
     content: 'The door is already open. Notice who keeps closing it.',
@@ -14515,13 +13974,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-550',
-    content: 'The mind complicates. Being is simple.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-550', content: 'The mind complicates. Being is simple.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-551',
     content: 'You are the space in which experience unfolds.',
@@ -14550,13 +14003,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-555',
-    content: 'Before you labeled it, what was it?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-555', content: 'Before you labeled it, what was it?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-556',
     content: 'Peace is not the absence of disturbance. It is the presence that holds disturbance.',
@@ -14585,27 +14032,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.morning],
   ),
-  Pointing(
-    id: 'ori-561',
-    content: 'The infinite appears as the intimate.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-562',
-    content: 'You have never been other than this.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-563',
-    content: 'Notice what notices.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-561', content: 'The infinite appears as the intimate.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-562', content: 'You have never been other than this.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-563', content: 'Notice what notices.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-564',
     content: 'The miracle is not in what happens. It is in the happening itself.',
@@ -14627,13 +14056,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-567',
-    content: 'You cannot step outside of now.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-567', content: 'You cannot step outside of now.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-569',
     content: 'The ground beneath seeking is already found.',
@@ -14641,13 +14064,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-570',
-    content: 'What is aware of awareness?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-570', content: 'What is aware of awareness?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-571',
     content: 'This very dissatisfaction points to what is already satisfied.',
@@ -14662,13 +14079,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-573',
-    content: 'The self you are protecting doesn\'t exist.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-573', content: 'The self you are protecting doesn\'t exist.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-574',
     content: 'What would change if you stopped imagining yourself into existence?',
@@ -14676,27 +14087,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-575',
-    content: 'The world appears. You are the appearing.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-576',
-    content: 'Every sensation is a doorway home.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-577',
-    content: 'What is there before you think about it?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-575', content: 'The world appears. You are the appearing.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-576', content: 'Every sensation is a doorway home.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-577', content: 'What is there before you think about it?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-578',
     content: 'The observer is not separate from what is observed.',
@@ -14718,20 +14111,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-582',
-    content: 'The path ends where the pathless begins.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-583',
-    content: 'All boundaries are imagined.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-582', content: 'The path ends where the pathless begins.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-583', content: 'All boundaries are imagined.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-584',
     content: 'Stillness moves. Movement rests in stillness.',
@@ -14739,13 +14120,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-585',
-    content: 'The mind asks "Why?" Being is the answer.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-585', content: 'The mind asks "Why?" Being is the answer.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-586',
     content: 'What you resist persists. What you allow, transforms.',
@@ -14760,13 +14135,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-588',
-    content: 'Nothing is missing from this moment.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-588', content: 'Nothing is missing from this moment.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-589',
     content: 'The thought "I am not awake" appears in awareness.',
@@ -14781,20 +14150,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-592',
-    content: 'Life is not a rehearsal. This is it.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-593',
-    content: 'Who you are has no history.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-592', content: 'Life is not a rehearsal. This is it.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-593', content: 'Who you are has no history.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-594',
     content: 'Every ending reveals the beginning that was never lost.',
@@ -14861,27 +14218,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-405',
-    content: 'What is looking when no one is looking?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-406',
-    content: 'Thoughts appear and disappear. You remain.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-407',
-    content: 'The cage was never locked.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-405', content: 'What is looking when no one is looking?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-406', content: 'Thoughts appear and disappear. You remain.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-407', content: 'The cage was never locked.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-408',
     content: 'Surrender is not giving up. It is waking up.',
@@ -14896,41 +14235,11 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-410',
-    content: 'The gap between breaths is not empty.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-411',
-    content: 'Being needs no practice.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-412',
-    content: 'Every wave is the whole ocean waving.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-414',
-    content: 'The question dissolves in the asking.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-415',
-    content: 'What remains when preference ends?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-410', content: 'The gap between breaths is not empty.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-411', content: 'Being needs no practice.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-412', content: 'Every wave is the whole ocean waving.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-414', content: 'The question dissolves in the asking.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-415', content: 'What remains when preference ends?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-416',
     content: 'You are not behind your eyes. You are everything appearing.',
@@ -14938,13 +14247,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-417',
-    content: 'The mind divides. Awareness includes.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-417', content: 'The mind divides. Awareness includes.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-418',
     content: 'What you truly are has never suffered.',
@@ -14959,13 +14262,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-420',
-    content: 'The witness has no location.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-420', content: 'The witness has no location.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-421',
     content: 'Every experience confirms awareness. Nothing contradicts it.',
@@ -14973,13 +14270,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-422',
-    content: 'What is aware of reading these words?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-422', content: 'What is aware of reading these words?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-423',
     content: 'The river doesn\'t know it\'s going home to the sea.',
@@ -14987,27 +14278,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-425',
-    content: 'Stop. What is already here?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-426',
-    content: 'The knower cannot be known as an object.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-427',
-    content: 'Life is living you. Let it.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-425', content: 'Stop. What is already here?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-426', content: 'The knower cannot be known as an object.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-427', content: 'Life is living you. Let it.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-428',
     content: 'The space that holds this moment has no edges.',
@@ -15029,20 +14302,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.stress],
   ),
-  Pointing(
-    id: 'ori-431',
-    content: 'The separate self exists only in thought.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-432',
-    content: 'Before memory, what were you?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-431', content: 'The separate self exists only in thought.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-432', content: 'Before memory, what were you?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-433',
     content: 'Nothing is personal. Everything is intimate.',
@@ -15050,13 +14311,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-434',
-    content: 'The mind that seeks is the mind that hides.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-434', content: 'The mind that seeks is the mind that hides.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-436',
     content: 'Awareness is the constant in all experience.',
@@ -15071,20 +14326,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-438',
-    content: 'You are the knowing, not the known.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-439',
-    content: 'What sees the thought as thought?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-438', content: 'You are the knowing, not the known.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-439', content: 'What sees the thought as thought?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-440',
     content: 'The one looking for enlightenment is the obstacle to it.',
@@ -15092,20 +14335,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-441',
-    content: 'Relaxation is not lazy. It is trusting.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-442',
-    content: 'No moment has ever been ordinary.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-441', content: 'Relaxation is not lazy. It is trusting.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-442', content: 'No moment has ever been ordinary.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-443',
     content: 'What would be left if you subtracted all concepts?',
@@ -15113,13 +14344,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-444',
-    content: 'Consciousness doesn\'t have a boundary.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-444', content: 'Consciousness doesn\'t have a boundary.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-445',
     content: 'The end of seeking is not finding. It is seeing.',
@@ -15127,27 +14352,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-447',
-    content: 'This moment lacks nothing.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-448',
-    content: 'Who you are is not a work in progress.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-449',
-    content: 'The simplest things are the hardest to see.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-447', content: 'This moment lacks nothing.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-448', content: 'Who you are is not a work in progress.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-449', content: 'The simplest things are the hardest to see.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-450',
     content: 'What is aware of the sense of being a person?',
@@ -15155,13 +14362,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-451',
-    content: 'Everything changes. Awareness doesn\'t.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-451', content: 'Everything changes. Awareness doesn\'t.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-452',
     content: 'The peace you seek is the peace you are.',
@@ -15190,13 +14391,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-456',
-    content: 'Eternity is not long. It is deep.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-456', content: 'Eternity is not long. It is deep.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-458',
     content: 'What hears this silence right now?',
@@ -15204,13 +14399,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-459',
-    content: 'The world is appearing to no one.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-459', content: 'The world is appearing to no one.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-460',
     content: 'Each breath is a beginning.',
@@ -15218,13 +14407,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.morning],
   ),
-  Pointing(
-    id: 'ori-461',
-    content: 'The problem is the search for the solution.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-461', content: 'The problem is the search for the solution.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-462',
     content: 'Being is not a state. States come and go in being.',
@@ -15232,13 +14415,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-463',
-    content: 'What knows itself without thought?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-463', content: 'What knows itself without thought?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-464',
     content: 'The I that seeks liberation is itself bondage.',
@@ -15260,20 +14437,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-467',
-    content: 'The background of all experience is you.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-469',
-    content: 'Where does awareness end and content begin?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-467', content: 'The background of all experience is you.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-469', content: 'Where does awareness end and content begin?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-471',
     content: 'The dream of separation ends when it is seen as a dream.',
@@ -15281,13 +14446,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-472',
-    content: 'Grace is always falling. Open your hands.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-472', content: 'Grace is always falling. Open your hands.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-473',
     content: 'What is the taste of being before you name it?',
@@ -15295,27 +14454,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-474',
-    content: 'There is no path to the present.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-475',
-    content: 'The only real meditation is what is.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-476',
-    content: 'Acceptance is not passive. It is spacious.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-474', content: 'There is no path to the present.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-475', content: 'The only real meditation is what is.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-476', content: 'Acceptance is not passive. It is spacious.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-477',
     content: 'You don\'t need more time. You need more now.',
@@ -15323,13 +14464,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-478',
-    content: 'The teacher is your own being.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-478', content: 'The teacher is your own being.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-480',
     content: 'What you resist owns you.',
@@ -15337,27 +14472,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.stress],
   ),
-  Pointing(
-    id: 'ori-481',
-    content: 'Thinking about awareness is not awareness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-482',
-    content: 'The gateless gate is always open.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-483',
-    content: 'What is the shape of now?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-481', content: 'Thinking about awareness is not awareness.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-482', content: 'The gateless gate is always open.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-483', content: 'What is the shape of now?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-484',
     content: 'Liberation is the recognition that nothing was ever bound.',
@@ -15372,13 +14489,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-486',
-    content: 'What remains when you stop pretending?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-486', content: 'What remains when you stop pretending?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-487',
     content: 'Truth is not a conclusion. It is an opening.',
@@ -15386,62 +14497,14 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-488',
-    content: 'The seeker is a ghost.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-489',
-    content: 'What you are cannot be improved.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-491',
-    content: 'The destination is the journey recognized.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-492',
-    content: 'Don\'t seek. See.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-493',
-    content: 'Every phenomenon is empty and luminous.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-494',
-    content: 'The treasure is hidden in plain view.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-495',
-    content: 'What is the distance between you and now?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-497',
-    content: 'There is no outside to this.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-488', content: 'The seeker is a ghost.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-489', content: 'What you are cannot be improved.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-491', content: 'The destination is the journey recognized.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-492', content: 'Don\'t seek. See.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-493', content: 'Every phenomenon is empty and luminous.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-494', content: 'The treasure is hidden in plain view.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-495', content: 'What is the distance between you and now?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-497', content: 'There is no outside to this.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-498',
     content: 'The mind says: "Not this." Being says: "Yes, this."',
@@ -15456,20 +14519,8 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-500',
-    content: 'Every moment is complete.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-502',
-    content: 'The I-thought is just another thought.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-500', content: 'Every moment is complete.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-502', content: 'The I-thought is just another thought.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-503',
     content: 'Enlightenment is the absence of the one who wants it.',
@@ -15477,13 +14528,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-504',
-    content: 'What knows doesn\'t come and go.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-504', content: 'What knows doesn\'t come and go.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-505',
     content: 'The one who arrives is not the one who left.',
@@ -15498,48 +14543,12 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-507',
-    content: 'What feels like you is what you seek.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-508',
-    content: 'The center is everywhere.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-509',
-    content: 'Nothing is happening to anyone.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-510',
-    content: 'The now doesn\'t last. It doesn\'t need to.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-511',
-    content: 'What is there when you let go completely?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-514',
-    content: 'This is it. There is no other.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-507', content: 'What feels like you is what you seek.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-508', content: 'The center is everywhere.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-509', content: 'Nothing is happening to anyone.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-510', content: 'The now doesn\'t last. It doesn\'t need to.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-511', content: 'What is there when you let go completely?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-514', content: 'This is it. There is no other.', tradition: Tradition.original, contexts: [PointingContext.general]),
 
   // Helper functions
 
@@ -15564,8 +14573,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-529',
-    content:
-        'Silence is the most potent form of work. However vast and emphatic the scriptures may be, they fail in their effect.',
+    content: 'Silence is the most potent form of work. However vast and emphatic the scriptures may be, they fail in their effect.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
@@ -15593,8 +14601,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-532',
-    content:
-        'The degree of freedom from unwanted thoughts and the degree of concentration on a single thought are the measures of your progress.',
+    content: 'The degree of freedom from unwanted thoughts and the degree of concentration on a single thought are the measures of your progress.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -15686,8 +14693,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-543',
-    content:
-        'When I look inside and see that I am nothing, that is wisdom. When I look outside and see that I am everything, that is love.',
+    content: 'When I look inside and see that I am nothing, that is wisdom. When I look outside and see that I am everything, that is love.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -15696,8 +14702,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-544',
-    content:
-        'All suffering is born of desire. True love is never frustrated. How can the sense of unity be frustrated?',
+    content: 'All suffering is born of desire. True love is never frustrated. How can the sense of unity be frustrated?',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -15715,8 +14720,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-546',
-    content:
-        'Stop imagining yourself being or doing this or that and the realization that you are the source and heart of all will dawn upon you.',
+    content: 'Stop imagining yourself being or doing this or that and the realization that you are the source and heart of all will dawn upon you.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15752,8 +14756,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-550',
-    content:
-        'Do not be afraid of freedom from desire and fear. It enables you to live a life so different from all you know.',
+    content: 'Do not be afraid of freedom from desire and fear. It enables you to live a life so different from all you know.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -15771,8 +14774,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-552',
-    content:
-        'If you just sit and observe, you will see how restless your mind is. When you try to calm it, it only makes it worse.',
+    content: 'If you just sit and observe, you will see how restless your mind is. When you try to calm it, it only makes it worse.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -15790,8 +14792,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-554',
-    content:
-        'The gnani does not live in a world different from yours. His world is the same as yours, but he does not make any mistake about it.',
+    content: 'The gnani does not live in a world different from yours. His world is the same as yours, but he does not make any mistake about it.',
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
@@ -16466,8 +15467,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-526',
-    content:
-        'The mind is the Buddha, and the Buddha is the mind. Beyond mind there is no Buddha, beyond Buddha there is no mind.',
+    content: 'The mind is the Buddha, and the Buddha is the mind. Beyond mind there is no Buddha, beyond Buddha there is no mind.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -16591,8 +15591,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-543',
-    content:
-        'Not thinking about anything is Zen. Once you know this, walking, sitting, or lying down, everything you do is Zen.',
+    content: 'Not thinking about anything is Zen. Once you know this, walking, sitting, or lying down, everything you do is Zen.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -16716,14 +15715,7 @@ const pointings = <Pointing>[
     teacher: 'Bankei',
     source: 'The Unborn',
   ),
-  Pointing(
-    id: 'zen-557',
-    content: 'No dualism, no separation.',
-
-    tradition: Tradition.zen,
-    contexts: [PointingContext.general],
-    source: 'Zen saying',
-  ),
+  Pointing(id: 'zen-557', content: 'No dualism, no separation.', tradition: Tradition.zen, contexts: [PointingContext.general], source: 'Zen saying'),
   Pointing(
     id: 'zen-559',
     content: 'When walking, just walk. When sitting, just sit. Above all, don\'t wobble.',
@@ -17051,8 +16043,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-610',
-    content:
-        'Gate gate paragate parasamgate bodhi svaha. Gone, gone, gone beyond, gone altogether beyond. Oh what an awakening!',
+    content: 'Gate gate paragate parasamgate bodhi svaha. Gone, gone, gone beyond, gone altogether beyond. Oh what an awakening!',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -17060,8 +16051,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-612',
-    content:
-        'The foolish reject what they see, not what they think. The wise reject what they think, not what they see.',
+    content: 'The foolish reject what they see, not what they think. The wise reject what they think, not what they see.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -17133,8 +16123,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-620',
-    content:
-        'The marvelous illumination of the unborn Buddha-mind deals freely and spontaneously with anything it encounters.',
+    content: 'The marvelous illumination of the unborn Buddha-mind deals freely and spontaneously with anything it encounters.',
 
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
@@ -18079,8 +17068,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-541',
-    content:
-        'Your natural state is joy. Not the joy that comes from something, but the joy that is the ground of being.',
+    content: 'Your natural state is joy. Not the joy that comes from something, but the joy that is the ground of being.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18215,8 +17203,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-557',
-    content:
-        'Nothing ever happened in the past; it happened in the now. Nothing will ever happen in the future; it will happen in the now.',
+    content: 'Nothing ever happened in the past; it happened in the now. Nothing will ever happen in the future; it will happen in the now.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18298,8 +17285,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-566',
-    content:
-        'Being is the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.',
+    content: 'Being is the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18497,8 +17483,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-588',
-    content:
-        'The feeling of being hurried is not usually the result of living a full life. It is born of a vague fear.',
+    content: 'The feeling of being hurried is not usually the result of living a full life. It is born of a vague fear.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
@@ -18642,8 +17627,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-605',
-    content:
-        'I am a lover of what is, not because I\'m a spiritual person, but because it hurts when I argue with reality.',
+    content: 'I am a lover of what is, not because I\'m a spiritual person, but because it hurts when I argue with reality.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18751,8 +17735,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-619',
-    content:
-        'You find peace not by rearranging the circumstances of your life, but by realizing who you are at the deepest level.',
+    content: 'You find peace not by rearranging the circumstances of your life, but by realizing who you are at the deepest level.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
@@ -18770,8 +17753,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-621',
-    content:
-        'When you make the present moment the focal point of your attention, the compulsion to label it diminishes.',
+    content: 'When you make the present moment the focal point of your attention, the compulsion to label it diminishes.',
 
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general, PointingContext.morning],
@@ -18983,27 +17965,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-619',
-    content: 'The day is ending. What never started?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.evening],
-  ),
-  Pointing(
-    id: 'ori-620',
-    content: 'Look at your hands typing. Who\'s looking?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-621',
-    content: 'Coffee\'s ready. You\'re already awake.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.morning],
-  ),
+  Pointing(id: 'ori-619', content: 'The day is ending. What never started?', tradition: Tradition.original, contexts: [PointingContext.evening]),
+  Pointing(id: 'ori-620', content: 'Look at your hands typing. Who\'s looking?', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-621', content: 'Coffee\'s ready. You\'re already awake.', tradition: Tradition.original, contexts: [PointingContext.morning]),
   Pointing(
     id: 'ori-622',
     content: 'The problem feels heavy. What\'s holding it feels nothing.',
@@ -19011,13 +17975,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress],
   ),
-  Pointing(
-    id: 'ori-623',
-    content: 'In between two thoughts: this.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-623', content: 'In between two thoughts: this.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-624',
     content: 'The sun set an hour ago. Something else is still shining.',
@@ -19039,13 +17997,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-627',
-    content: 'Notifications: many. Awareness: one.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-627', content: 'Notifications: many. Awareness: one.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-628',
     content: 'You can lose your job. Can you lose what\'s aware of having a job?',
@@ -19179,13 +18131,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-647',
-    content: 'Midnight thoughts. Dawn awareness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.evening],
-  ),
+  Pointing(id: 'ori-647', content: 'Midnight thoughts. Dawn awareness.', tradition: Tradition.original, contexts: [PointingContext.evening]),
   Pointing(
     id: 'ori-648',
     content: 'Status: busy. Being: still.',
@@ -19256,13 +18202,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-658',
-    content: 'Clock says 3 PM. Presence says now.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.midday],
-  ),
+  Pointing(id: 'ori-658', content: 'Clock says 3 PM. Presence says now.', tradition: Tradition.original, contexts: [PointingContext.midday]),
   Pointing(
     id: 'ori-659',
     content: 'Fighting for inner peace. Already surrounded by it.',
@@ -19326,13 +18266,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.morning, PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-668',
-    content: 'Life goals: many. This moment: enough.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-668', content: 'Life goals: many. This moment: enough.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-669',
     content: 'Inbox: chaos. Inner space: clear.',
@@ -19354,13 +18288,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-672',
-    content: 'Battery: 5%. Awareness: fully charged.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-672', content: 'Battery: 5%. Awareness: fully charged.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-673',
     content: 'Zoom fatigue is real. The one on Zoom never tires.',
@@ -19382,27 +18310,9 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-676',
-    content: 'Loading... But awareness never buffers.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-677',
-    content: 'New year, same awareness.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
-  Pointing(
-    id: 'ori-678',
-    content: 'Algorithm knows you. Awareness is you.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-676', content: 'Loading... But awareness never buffers.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-677', content: 'New year, same awareness.', tradition: Tradition.original, contexts: [PointingContext.general]),
+  Pointing(id: 'ori-678', content: 'Algorithm knows you. Awareness is you.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-679',
     content: 'The dream was vivid. The dreamer is here now.',
@@ -19424,13 +18334,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.morning, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-682',
-    content: 'Happy hour. Awareness doesn\'t drink.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.evening],
-  ),
+  Pointing(id: 'ori-682', content: 'Happy hour. Awareness doesn\'t drink.', tradition: Tradition.original, contexts: [PointingContext.evening]),
   Pointing(
     id: 'ori-683',
     content: 'They say be present. You already are. Just notice.',
@@ -19438,13 +18342,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-684',
-    content: 'Flight delayed. Presence right on time.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.stress],
-  ),
+  Pointing(id: 'ori-684', content: 'Flight delayed. Presence right on time.', tradition: Tradition.original, contexts: [PointingContext.stress]),
   Pointing(
     id: 'ori-685',
     content: 'Identity crisis. Who\'s having it?',
@@ -19459,13 +18357,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.evening, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-687',
-    content: 'The like count matters. To whom?',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-687', content: 'The like count matters. To whom?', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-688',
     content: 'You updated your status. Awareness has none.',
@@ -19494,13 +18386,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-692',
-    content: 'Therapy is Thursday. Awareness is now.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-692', content: 'Therapy is Thursday. Awareness is now.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-693',
     content: 'Sunday scaries. Monday is a thought. This is what is.',
@@ -19508,13 +18394,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.evening, PointingContext.stress],
   ),
-  Pointing(
-    id: 'ori-694',
-    content: 'Five-year plan. One eternal now.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-694', content: 'Five-year plan. One eternal now.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-695',
     content: 'Swipe left, swipe right. Awareness doesn\'t judge.',
@@ -19529,13 +18409,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.stress, PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-697',
-    content: 'Track your habits. Notice the tracker.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-697', content: 'Track your habits. Notice the tracker.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-698',
     content: 'Mercury retrograde. Awareness in direct motion.',
@@ -19592,13 +18466,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.general],
   ),
-  Pointing(
-    id: 'ori-706',
-    content: 'AirPods in. Awareness has no earbuds.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-706', content: 'AirPods in. Awareness has no earbuds.', tradition: Tradition.original, contexts: [PointingContext.general]),
   Pointing(
     id: 'ori-707',
     content: 'Time to unplug. From what? This was never plugged in.',
@@ -19606,13 +18474,7 @@ const pointings = <Pointing>[
     tradition: Tradition.original,
     contexts: [PointingContext.evening],
   ),
-  Pointing(
-    id: 'ori-708',
-    content: 'Out of office. Awareness never clocked in.',
-
-    tradition: Tradition.original,
-    contexts: [PointingContext.general],
-  ),
+  Pointing(id: 'ori-708', content: 'Out of office. Awareness never clocked in.', tradition: Tradition.original, contexts: [PointingContext.general]),
 
   // === NEW IMPORTS FROM TEACHINGS-DB (2026-02) ===
 
@@ -19627,8 +18489,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-507',
-    content:
-        'I am neither bound nor free. How can I say this body is mine? I am awareness itself — unchanging, infinite, like space.',
+    content: 'I am neither bound nor free. How can I say this body is mine? I am awareness itself — unchanging, infinite, like space.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Dattatreya',
@@ -19636,8 +18497,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-508',
-    content:
-        'I have no caste, no creed, no tradition. I am not what you see, nor what you think. I am awareness itself.',
+    content: 'I have no caste, no creed, no tradition. I am not what you see, nor what you think. I am awareness itself.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19661,8 +18521,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-511',
-    content:
-        'The final understanding is that there is no one to understand. Understanding happens in the dream, to a dream character.',
+    content: 'The final understanding is that there is no one to understand. Understanding happens in the dream, to a dream character.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Ramesh Balsekar',
@@ -19686,8 +18545,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-514',
-    content:
-        'Did this body-mind choose its genetics? Its conditioning? Its circumstances? Then how can you be the author of your actions?',
+    content: 'Did this body-mind choose its genetics? Its conditioning? Its circumstances? Then how can you be the author of your actions?',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ramesh Balsekar',
@@ -19720,8 +18578,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-518',
-    content:
-        'The world, like a dream, is true as long as one is ignorant. It becomes false when one awakens to the Self.',
+    content: 'The world, like a dream, is true as long as one is ignorant. It becomes false when one awakens to the Self.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19729,8 +18586,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-519',
-    content:
-        'Attachment to the body gives birth to fear. Even the learned who know this truth still tremble at the shadow of death.',
+    content: 'Attachment to the body gives birth to fear. Even the learned who know this truth still tremble at the shadow of death.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19738,8 +18594,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-626',
-    content:
-        'How can I tell you what I am? I am beyond mind and speech. The words you hear are not my teaching; truth cannot be spoken.',
+    content: 'How can I tell you what I am? I am beyond mind and speech. The words you hear are not my teaching; truth cannot be spoken.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19747,8 +18602,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-521',
-    content:
-        'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
+    content: 'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Ashtavakra',
@@ -19764,8 +18618,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-523',
-    content:
-        'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
+    content: 'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
     teacher: 'Ashtavakra',
@@ -19773,8 +18626,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-524',
-    content:
-        'The body is impermanent. Wealth is unstable. Death is ever near. Therefore be absorbed in contemplation of the Self.',
+    content: 'The body is impermanent. Wealth is unstable. Death is ever near. Therefore be absorbed in contemplation of the Self.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.evening, PointingContext.general],
     teacher: 'Adi Shankara',
@@ -19782,8 +18634,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'adv-525',
-    content:
-        'All practices were for the imaginary bound one. Now that bondage is seen as unreal, what remains to practice?',
+    content: 'All practices were for the imaginary bound one. Now that bondage is seen as unreal, what remains to practice?',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
     teacher: 'Dattatreya',
@@ -19801,8 +18652,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-512',
-    content:
-        'In the landscape of spring, there is neither better nor worse. The flowering branches grow naturally, some long, some short.',
+    content: 'In the landscape of spring, there is neither better nor worse. The flowering branches grow naturally, some long, some short.',
     tradition: Tradition.zen,
     contexts: [PointingContext.morning, PointingContext.general],
   ),
@@ -19879,8 +18729,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'zen-524',
-    content:
-        'The mind of the past is ungraspable. The mind of the present is ungraspable. The mind of the future is ungraspable.',
+    content: 'The mind of the past is ungraspable. The mind of the present is ungraspable. The mind of the future is ungraspable.',
     tradition: Tradition.zen,
     contexts: [PointingContext.general],
     source: 'Diamond Sutra',
@@ -19993,8 +18842,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'dir-235',
-    content:
-        'The eye cannot see itself, but it doesn\'t need to. It sees. You don\'t need to find awareness. You ARE it.',
+    content: 'The eye cannot see itself, but it doesn\'t need to. It sees. You don\'t need to find awareness. You ARE it.',
     tradition: Tradition.direct,
     contexts: [PointingContext.general],
     teacher: 'Francis Lucille',
@@ -20052,8 +18900,7 @@ const pointings = <Pointing>[
   // --- Contemporary: Parsons, Foster, Katie, Gangaji, McKenna, Adyashanti ---
   Pointing(
     id: 'con-513',
-    content:
-        'What you\'re looking for is already here — you just won\'t recognize it because it\'s not what you expect.',
+    content: 'What you\'re looking for is already here — you just won\'t recognize it because it\'s not what you expect.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Tony Parsons',
@@ -20173,8 +19020,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-528',
-    content:
-        'A thought is harmless unless we believe it. It\'s not our thoughts but our attachment to our thoughts that causes suffering.',
+    content: 'A thought is harmless unless we believe it. It\'s not our thoughts but our attachment to our thoughts that causes suffering.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.stress, PointingContext.general],
     teacher: 'Byron Katie',
@@ -20230,8 +19076,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-535',
-    content:
-        'What remains when everything false is removed? That\'s what you are — not something, but the absence of the false.',
+    content: 'What remains when everything false is removed? That\'s what you are — not something, but the absence of the false.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',
@@ -20239,8 +19084,7 @@ const pointings = <Pointing>[
   ),
   Pointing(
     id: 'con-536',
-    content:
-        'Belief is the most effective tool for not-knowing. As long as you believe something, you don\'t have to know it.',
+    content: 'Belief is the most effective tool for not-knowing. As long as you believe something, you don\'t have to know it.',
     tradition: Tradition.contemporary,
     contexts: [PointingContext.general],
     teacher: 'Jed McKenna',

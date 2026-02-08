@@ -245,8 +245,7 @@ class TeachingFilterState {
   }
 
   /// Check if any filters are active
-  bool get hasActiveFilters =>
-      lineage != null || topics.isNotEmpty || moods.isNotEmpty || teacher != null || type != null;
+  bool get hasActiveFilters => lineage != null || topics.isNotEmpty || moods.isNotEmpty || teacher != null || type != null;
 }
 
 /// Teaching filter notifier
@@ -362,9 +361,7 @@ class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
       // Default: all traditions enabled
       return Tradition.values.toSet();
     }
-    return stored
-        .map((name) => Tradition.values.firstWhere((t) => t.name == name, orElse: () => Tradition.advaita))
-        .toSet();
+    return stored.map((name) => Tradition.values.firstWhere((t) => t.name == name, orElse: () => Tradition.advaita)).toSet();
   }
 
   /// Toggle a tradition's enabled state

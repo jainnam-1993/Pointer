@@ -23,8 +23,7 @@ void main() {
 
       await affinityService.recordView(Tradition.advaita);
 
-      final captured =
-          verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['advaita'], 1);
     });
@@ -36,8 +35,7 @@ void main() {
 
       await affinityService.recordView(Tradition.advaita);
 
-      final captured =
-          verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['advaita'], 3);
       expect(decoded['zen'], 1);
@@ -60,8 +58,7 @@ void main() {
 
       await affinityService.recordSave(Tradition.zen);
 
-      final captured =
-          verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['zen'], 1);
     });
@@ -73,8 +70,7 @@ void main() {
 
       await affinityService.recordSave(Tradition.zen);
 
-      final captured =
-          verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['zen'], 4);
       expect(decoded['advaita'], 1);
@@ -155,11 +151,7 @@ void main() {
 
       // Check that scores are in descending order
       for (int i = 0; i < affinities.length - 1; i++) {
-        expect(
-          affinities[i].score >= affinities[i + 1].score,
-          true,
-          reason: 'Affinities should be sorted by score descending',
-        );
+        expect(affinities[i].score >= affinities[i + 1].score, true, reason: 'Affinities should be sorted by score descending');
       }
 
       // Check top traditions
@@ -316,8 +308,7 @@ void main() {
       await firstService.recordView(Tradition.advaita);
 
       // Capture what was saved
-      final capturedViews =
-          verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final capturedViews = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
 
       // Second instance reads the same data
       final secondService = AffinityService(mockPrefs);
@@ -339,8 +330,7 @@ void main() {
       await affinityService.recordView(Tradition.advaita);
 
       // Update mock to return saved data
-      var capturedViews =
-          verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.last as String;
+      var capturedViews = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.last as String;
       when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(capturedViews);
 
       await affinityService.recordView(Tradition.advaita);
@@ -351,8 +341,7 @@ void main() {
       // Record a save
       await affinityService.recordSave(Tradition.advaita);
 
-      final capturedSaves =
-          verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.last as String;
+      final capturedSaves = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.last as String;
       when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(capturedSaves);
 
       // Verify accumulated data

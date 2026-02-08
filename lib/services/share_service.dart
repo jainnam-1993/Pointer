@@ -101,11 +101,7 @@ class ShareService {
 
   /// Capture a widget as an image
   Future<Uint8List?> captureWidget(Widget widget, {double pixelRatio = 3.0}) async {
-    return await screenshotController.captureFromWidget(
-      widget,
-      pixelRatio: pixelRatio,
-      delay: const Duration(milliseconds: 100),
-    );
+    return await screenshotController.captureFromWidget(widget, pixelRatio: pixelRatio, delay: const Duration(milliseconds: 100));
   }
 
   /// Share captured image via system share sheet

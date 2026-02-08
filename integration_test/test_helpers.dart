@@ -40,10 +40,7 @@ Future<Widget> createTestApp({bool onboardingCompleted = true, bool isPremium = 
   SharedPreferences.setMockInitialValues(prefs);
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  return ProviderScope(
-    overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences)],
-    child: const PointerApp(),
-  );
+  return ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences)], child: const PointerApp());
 }
 
 /// Clears all app state by resetting SharedPreferences

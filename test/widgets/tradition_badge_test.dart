@@ -80,9 +80,7 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
-      );
+      final container = tester.widget<Container>(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)));
 
       final decoration = container.decoration as BoxDecoration;
       // Check that background color is set (uses theme-aware color)
@@ -97,9 +95,7 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
-      );
+      final container = tester.widget<Container>(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)));
 
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.border, isNotNull);
@@ -123,9 +119,7 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)),
-      );
+      final container = tester.widget<Container>(find.descendant(of: find.byType(TraditionBadge), matching: find.byType(Container)));
 
       expect(container.padding, const EdgeInsets.symmetric(horizontal: 16, vertical: 8));
     });

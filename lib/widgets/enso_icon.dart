@@ -17,11 +17,6 @@ class EnsoIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconColor = color ?? Theme.of(context).iconTheme.color ?? Colors.white;
 
-    return SvgPicture.asset(
-      'assets/enso.svg',
-      width: size,
-      height: size,
-      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-    );
+    return SvgPicture.asset('assets/enso.svg', width: size, height: size, colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn));
   }
 }

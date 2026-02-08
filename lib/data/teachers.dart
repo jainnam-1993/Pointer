@@ -61,16 +61,14 @@ const teachers = <String, Teacher>{
   ),
   'Bashō': Teacher(
     name: 'Bashō',
-    bio:
-        'Japanese poet and master of haiku. His poems capture the essence of Zen - direct perception without conceptual elaboration.',
+    bio: 'Japanese poet and master of haiku. His poems capture the essence of Zen - direct perception without conceptual elaboration.',
     dates: '1644-1694',
     tradition: Tradition.zen,
     tags: ['Haiku', 'Zen', 'Japan'],
   ),
   'Francis of Assisi / Advaita': Teacher(
     name: 'Francis of Assisi / Advaita',
-    bio:
-        'Pointing that bridges the Christian mystical tradition with non-dual awareness. The recognition of the divine in all things.',
+    bio: 'Pointing that bridges the Christian mystical tradition with non-dual awareness. The recognition of the divine in all things.',
     dates: null,
     tradition: Tradition.original,
     tags: ['Christian mysticism', 'Unity'],

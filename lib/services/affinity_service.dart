@@ -119,12 +119,7 @@ class TraditionAffinity {
   final int viewCount;
   final int saveCount;
 
-  const TraditionAffinity({
-    required this.tradition,
-    required this.score,
-    required this.viewCount,
-    required this.saveCount,
-  });
+  const TraditionAffinity({required this.tradition, required this.score, required this.viewCount, required this.saveCount});
 
   /// Human-readable preference level
   String get preferenceLevel {

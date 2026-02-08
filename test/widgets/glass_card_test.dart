@@ -47,9 +47,7 @@ void main() {
       );
 
       // Find the container with padding (the innermost one)
-      final containers = tester.widgetList<Container>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)),
-      );
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
 
       final containerWithPadding = containers.firstWhere((c) => c.padding != null);
       expect(containerWithPadding.padding, const EdgeInsets.all(24));
@@ -67,9 +65,7 @@ void main() {
       );
 
       // Find the container with padding (the innermost one)
-      final containers = tester.widgetList<Container>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)),
-      );
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
 
       final containerWithPadding = containers.firstWhere((c) => c.padding != null);
       expect(containerWithPadding.padding, const EdgeInsets.all(16));
@@ -128,13 +124,9 @@ void main() {
       );
 
       // Find all containers within GlassCard and check if any has gradient
-      final containers = tester.widgetList<Container>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)),
-      );
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
 
-      final containerWithGradient = containers.firstWhere(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
-      );
+      final containerWithGradient = containers.firstWhere((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
       expect((containerWithGradient.decoration as BoxDecoration).gradient, isA<LinearGradient>());
     });
 
@@ -149,9 +141,7 @@ void main() {
       );
 
       // Find all containers within GlassCard and check if any has GradientBoxBorder
-      final containers = tester.widgetList<Container>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)),
-      );
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
 
       final containerWithBorder = containers.firstWhere(
         (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).border is GradientBoxBorder,
@@ -199,10 +189,7 @@ void main() {
           const MaterialApp(
             home: Scaffold(
               body: GlassCard(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [Text('Title'), SizedBox(height: 8), Text('Subtitle'), Icon(Icons.star)],
-                ),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [Text('Title'), SizedBox(height: 8), Text('Subtitle'), Icon(Icons.star)]),
               ),
             ),
           ),
@@ -298,12 +285,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             home: Scaffold(
-              body: GlassButton(
-                label: 'Test',
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_forward),
-                isLoading: true,
-              ),
+              body: GlassButton(label: 'Test', onPressed: () {}, icon: const Icon(Icons.arrow_forward), isLoading: true),
             ),
           ),
         ),
@@ -337,9 +319,7 @@ void main() {
         ),
       );
 
-      final clipRRect = tester.widget<ClipRRect>(
-        find.descendant(of: find.byType(GlassButton), matching: find.byType(ClipRRect)),
-      );
+      final clipRRect = tester.widget<ClipRRect>(find.descendant(of: find.byType(GlassButton), matching: find.byType(ClipRRect)));
       expect(clipRRect.borderRadius, BorderRadius.circular(32));
     });
 
@@ -369,9 +349,7 @@ void main() {
         ),
       );
 
-      final container = tester.widget<Container>(
-        find.descendant(of: find.byType(GlassButton), matching: find.byType(Container)),
-      );
+      final container = tester.widget<Container>(find.descendant(of: find.byType(GlassButton), matching: find.byType(Container)));
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.border, isA<GradientBoxBorder>());
     });
@@ -421,9 +399,7 @@ void main() {
       );
 
       // By default, animation is disabled, so no Stack overlay
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       // Should not find a Stack (animation overlay not added)
       expect(stacks.length, 0);
     });
@@ -439,9 +415,7 @@ void main() {
       );
 
       // Even with enableBreathingAnimation: true, no Stack because disableAnimations is true
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       expect(stacks.length, 0);
     });
 
@@ -464,9 +438,7 @@ void main() {
       );
 
       // reduceMotion is enabled, so animation should not render Stack overlay
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       expect(stacks.length, 0);
 
       // Restore

@@ -141,13 +141,7 @@ class TTSService {
   /// Call AWS Polly SynthesizeSpeech API
   Future<Uint8List> _synthesizeSpeech(String text, AWSCredentials credentials) async {
     final uri = Uri.parse('$_endpoint/v1/speech');
-    final body = jsonEncode({
-      'OutputFormat': 'mp3',
-      'Text': text,
-      'TextType': 'text',
-      'VoiceId': _selectedVoice.id,
-      'Engine': 'neural',
-    });
+    final body = jsonEncode({'OutputFormat': 'mp3', 'Text': text, 'TextType': 'text', 'VoiceId': _selectedVoice.id, 'Engine': 'neural'});
 
     final headers = await _signRequest(method: 'POST', uri: uri, body: body, credentials: credentials);
 

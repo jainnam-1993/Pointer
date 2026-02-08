@@ -37,12 +37,7 @@ void main() {
 
     test('creates with all fields', () {
       final now = DateTime.now();
-      final pointing = WidgetPointing(
-        content: 'Test content',
-        teacher: 'Papaji',
-        tradition: 'Advaita',
-        lastUpdated: now,
-      );
+      final pointing = WidgetPointing(content: 'Test content', teacher: 'Papaji', tradition: 'Advaita', lastUpdated: now);
 
       expect(pointing.content, 'Test content');
       expect(pointing.teacher, 'Papaji');
@@ -106,11 +101,7 @@ void main() {
     test('traditions map contains all referenced traditions', () {
       // Verify that all traditions used by pointings exist in the map
       for (final pointing in pointings) {
-        expect(
-          traditions.containsKey(pointing.tradition),
-          true,
-          reason: 'Tradition ${pointing.tradition} should exist in traditions map',
-        );
+        expect(traditions.containsKey(pointing.tradition), true, reason: 'Tradition ${pointing.tradition} should exist in traditions map');
       }
     });
 

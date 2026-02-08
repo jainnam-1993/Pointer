@@ -61,9 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (controller == null || _navigated) return;
 
     // Auto-advance when video reaches the end
-    if (controller.value.isInitialized &&
-        controller.value.position >= controller.value.duration &&
-        controller.value.duration > Duration.zero) {
+    if (controller.value.isInitialized && controller.value.position >= controller.value.duration && controller.value.duration > Duration.zero) {
       _navigateAway();
     }
   }
@@ -104,11 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: _controller != null && _controller!.value.isInitialized
                 ? FittedBox(
                     fit: BoxFit.cover,
-                    child: SizedBox(
-                      width: _controller!.value.size.width,
-                      height: _controller!.value.size.height,
-                      child: VideoPlayer(_controller!),
-                    ),
+                    child: SizedBox(width: _controller!.value.size.width, height: _controller!.value.size.height, child: VideoPlayer(_controller!)),
                   )
                 : const SizedBox.shrink(),
           ),

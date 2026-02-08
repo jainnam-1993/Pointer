@@ -87,12 +87,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                       padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
                       child: Text(
                         'ARTICLES (${articles.length})',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: colors.textMuted,
-                          letterSpacing: 1,
-                        ),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                       ),
                     ),
                   ),
@@ -122,10 +117,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                                     ),
                                   );
                                 } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: article)),
-                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: article)));
                                 }
                               },
                             ),
@@ -142,12 +134,7 @@ class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen>
                     padding: EdgeInsets.fromLTRB(24, articles.isNotEmpty ? 24 : 16, 24, 12),
                     child: Text(
                       'QUOTES (${teachings.length})',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
-                        letterSpacing: 1,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                     ),
                   ),
                 ),

@@ -145,13 +145,7 @@ class ThemeOption extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const ThemeOption({
-    super.key,
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
+  const ThemeOption({super.key, required this.label, required this.icon, required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

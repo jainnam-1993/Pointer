@@ -150,14 +150,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
           ? null
           : BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 4))],
             ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -254,13 +247,7 @@ class _NavItem extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const _NavItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
+  const _NavItem({required this.icon, required this.activeIcon, required this.label, required this.isActive, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

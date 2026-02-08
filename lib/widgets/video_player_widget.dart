@@ -45,10 +45,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
 
     // Show fullscreen video
     if (mounted) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => _FullScreenVideoPlayer(controller: _controller!)),
-      );
+      await Navigator.push(context, MaterialPageRoute(builder: (context) => _FullScreenVideoPlayer(controller: _controller!)));
     }
   }
 
@@ -82,10 +79,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
                   // Uses GoRouter for redirect handling when kFreeAccessEnabled
                   context.push('/paywall');
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.accent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
+                style: FilledButton.styleFrom(backgroundColor: colors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
                 child: const Text('Upgrade to Premium'),
               ),
             ),
@@ -204,10 +198,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
           children: [
             // Video
             Center(
-              child: AspectRatio(
-                aspectRatio: widget.controller.value.aspectRatio,
-                child: VideoPlayer(widget.controller),
-              ),
+              child: AspectRatio(aspectRatio: widget.controller.value.aspectRatio, child: VideoPlayer(widget.controller)),
             ),
 
             // Controls overlay
@@ -237,11 +228,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.3)),
-                    child: Icon(
-                      widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 48,
-                    ),
+                    child: Icon(widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 48),
                   ),
                 ),
               ),
@@ -253,10 +240,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                 right: 16,
                 child: Row(
                   children: [
-                    Text(
-                      _formatDuration(widget.controller.value.position),
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                    Text(_formatDuration(widget.controller.value.position), style: const TextStyle(color: Colors.white)),
                     const SizedBox(width: 8),
                     Expanded(
                       child: VideoProgressIndicator(
@@ -270,10 +254,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      _formatDuration(widget.controller.value.duration),
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                    Text(_formatDuration(widget.controller.value.duration), style: const TextStyle(color: Colors.white)),
                   ],
                 ),
               ),

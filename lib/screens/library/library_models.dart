@@ -29,31 +29,11 @@ class CategoryInfo {
 }
 
 const categoryInfoMap = <ArticleCategory, CategoryInfo>{
-  ArticleCategory.natureOfAwareness: CategoryInfo(
-    name: 'Nature of Awareness',
-    icon: '◯',
-    description: 'Understanding consciousness itself',
-  ),
-  ArticleCategory.selfInquiry: CategoryInfo(
-    name: 'Self-Inquiry',
-    icon: '?',
-    description: 'The investigation into "Who am I?"',
-  ),
-  ArticleCategory.everydayAwakening: CategoryInfo(
-    name: 'Everyday Awakening',
-    icon: '☀',
-    description: 'Living wisdom in daily life',
-  ),
-  ArticleCategory.traditionalTeachings: CategoryInfo(
-    name: 'Traditional Teachings',
-    icon: '◇',
-    description: 'Classic texts and ancient wisdom',
-  ),
-  ArticleCategory.modernPointers: CategoryInfo(
-    name: 'Modern Pointers',
-    icon: '✦',
-    description: 'Contemporary teachers, fresh words',
-  ),
+  ArticleCategory.natureOfAwareness: CategoryInfo(name: 'Nature of Awareness', icon: '◯', description: 'Understanding consciousness itself'),
+  ArticleCategory.selfInquiry: CategoryInfo(name: 'Self-Inquiry', icon: '?', description: 'The investigation into "Who am I?"'),
+  ArticleCategory.everydayAwakening: CategoryInfo(name: 'Everyday Awakening', icon: '☀', description: 'Living wisdom in daily life'),
+  ArticleCategory.traditionalTeachings: CategoryInfo(name: 'Traditional Teachings', icon: '◇', description: 'Classic texts and ancient wisdom'),
+  ArticleCategory.modernPointers: CategoryInfo(name: 'Modern Pointers', icon: '✦', description: 'Contemporary teachers, fresh words'),
 };
 
 /// Browse mode for category navigation

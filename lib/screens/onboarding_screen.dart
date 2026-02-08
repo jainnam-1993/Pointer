@@ -115,11 +115,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       if (isLastPage) ...[
                         SizedBox(
                           width: double.infinity,
-                          child: _OnboardingButton(
-                            label: 'Enable Notifications',
-                            onPressed: _handleEnableNotifications,
-                            isPrimary: true,
-                          ),
+                          child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
                         ),
                         const SizedBox(height: 16),
                         Builder(
@@ -278,12 +274,7 @@ class _ContrastPage extends StatelessWidget {
                 const SizedBox(height: 24),
                 Text(
                   'Meditation apps teach you to become a better meditator.',
-                  style: TextStyle(
-                    fontSize: _responsiveFontSize(context, 22),
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: colors.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: _responsiveFontSize(context, 22), height: 1.5, fontWeight: FontWeight.w400, color: colors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -306,12 +297,7 @@ class _ContrastPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     'Who is meditating?',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 28),
-                      height: 1.4,
-                      fontWeight: FontWeight.w300,
-                      color: colors.textPrimary,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 28), height: 1.4, fontWeight: FontWeight.w300, color: colors.textPrimary),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -362,12 +348,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
               items: const ['Progress', 'Streaks', 'Becoming'],
               itemDelay: const Duration(milliseconds: 400),
               strikeDelay: const Duration(milliseconds: 600),
-              style: TextStyle(
-                fontSize: _responsiveFontSize(context, 32),
-                fontWeight: FontWeight.w400,
-                color: colors.textSecondary,
-                height: 1.4,
-              ),
+              style: TextStyle(fontSize: _responsiveFontSize(context, 32), fontWeight: FontWeight.w400, color: colors.textSecondary, height: 1.4),
               onComplete: reduceMotion ? () => setState(() => _showRemains = true) : _onStrikeComplete,
             ),
 
@@ -385,12 +366,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                 children: [
                   Text(
                     'Just recognition.',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 32),
-                      fontWeight: FontWeight.w300,
-                      color: colors.textPrimary,
-                      height: 1.4,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 32), fontWeight: FontWeight.w300, color: colors.textPrimary, height: 1.4),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -476,12 +452,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               curve: Curves.easeOut,
               child: Text(
                 'A notification arrives.\nYou pause. You look.',
-                style: TextStyle(
-                  fontSize: _responsiveFontSize(context, 20),
-                  height: 1.6,
-                  fontWeight: FontWeight.w400,
-                  color: colors.textSecondary,
-                ),
+                style: TextStyle(fontSize: _responsiveFontSize(context, 20), height: 1.6, fontWeight: FontWeight.w400, color: colors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -501,12 +472,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
                 intensity: GlassIntensity.light,
                 child: Text(
                   "That's the entire practice.",
-                  style: TextStyle(
-                    fontSize: _responsiveFontSize(context, 18),
-                    height: 1.5,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: _responsiveFontSize(context, 18), height: 1.5, fontWeight: FontWeight.w500, color: colors.textPrimary),
                   textAlign: TextAlign.center,
                 ),
               ),

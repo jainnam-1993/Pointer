@@ -94,8 +94,7 @@ class Article {
   bool hasMood(String mood) => moodTags.contains(mood);
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is Article && runtimeType == other.runtimeType && id == other.id;
+  bool operator ==(Object other) => identical(this, other) || other is Article && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

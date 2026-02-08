@@ -23,12 +23,7 @@ class SaveConfirmation extends StatefulWidget {
   /// Set to true in tests to disable auto-dismiss timers.
   static bool disableAutoDismiss = false;
 
-  const SaveConfirmation({
-    super.key,
-    this.onDismiss,
-    this.autoDismissDuration = const Duration(seconds: 2),
-    this.isFirstSave = false,
-  });
+  const SaveConfirmation({super.key, this.onDismiss, this.autoDismissDuration = const Duration(seconds: 2), this.isFirstSave = false});
 
   @override
   State<SaveConfirmation> createState() => _SaveConfirmationState();
@@ -56,10 +51,7 @@ class _SaveConfirmationState extends State<SaveConfirmation> with SingleTickerPr
 
     _controller = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -69,9 +61,7 @@ class _SaveConfirmationState extends State<SaveConfirmation> with SingleTickerPr
     );
 
     // Initialize confetti controller (longer duration for first save)
-    _confettiController = ConfettiController(
-      duration: widget.isFirstSave ? const Duration(milliseconds: 1500) : const Duration(milliseconds: 500),
-    );
+    _confettiController = ConfettiController(duration: widget.isFirstSave ? const Duration(milliseconds: 1500) : const Duration(milliseconds: 500));
 
     // Start animation
     _controller.forward();
@@ -160,9 +150,7 @@ class _SaveConfirmationState extends State<SaveConfirmation> with SingleTickerPr
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.isFirstSave
-                        ? colors.accent.withValues(alpha: 0.3)
-                        : Colors.black.withValues(alpha: 0.3),
+                    color: widget.isFirstSave ? colors.accent.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.3),
                     blurRadius: widget.isFirstSave ? 30 : 20,
                     spreadRadius: widget.isFirstSave ? 8 : 5,
                   ),

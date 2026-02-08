@@ -50,22 +50,18 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      SystemChannels.platform,
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'HapticFeedback.vibrate') {
-          hapticCalls.add(methodCall);
-        }
-        return null;
-      },
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+      MethodCall methodCall,
+    ) async {
+      if (methodCall.method == 'HapticFeedback.vibrate') {
+        hapticCalls.add(methodCall);
+      }
+      return null;
+    });
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      SystemChannels.platform,
-      null,
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null);
   });
 
   Widget createHomeScreen({Pointing? initialPointing}) {
@@ -113,9 +109,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -141,9 +135,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -153,12 +145,7 @@ void main() {
       await tester.pump();
 
       // Verify haptic feedback was triggered
-      expect(
-        hapticCalls.where(
-          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.mediumImpact',
-        ),
-        isNotEmpty,
-      );
+      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.mediumImpact'), isNotEmpty);
     });
 
     testWidgets('long press shows save confirmation overlay', (tester) async {
@@ -172,9 +159,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -197,10 +182,7 @@ void main() {
         MaterialApp(
           theme: ThemeData.dark(),
           home: Scaffold(
-            body: SaveConfirmation(
-              autoDismissDuration: const Duration(milliseconds: 100),
-              onDismiss: () => wasDismissed = true,
-            ),
+            body: SaveConfirmation(autoDismissDuration: const Duration(milliseconds: 100), onDismiss: () => wasDismissed = true),
           ),
         ),
       );
@@ -233,9 +215,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -250,19 +230,12 @@ void main() {
     });
 
     testWidgets('confirmation shows heart icon', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-heart',
-        content: 'Test heart icon',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-heart', content: 'Test heart icon', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -277,19 +250,12 @@ void main() {
     });
 
     testWidgets('confirmation shows "Saved" text', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-saved-text',
-        content: 'Test saved text',
-        tradition: Tradition.zen,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-saved-text', content: 'Test saved text', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;
@@ -332,10 +298,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SaveConfirmation(
-              autoDismissDuration: const Duration(milliseconds: 100),
-              onDismiss: () => wasDismissed = true,
-            ),
+            body: SaveConfirmation(autoDismissDuration: const Duration(milliseconds: 100), onDismiss: () => wasDismissed = true),
           ),
         ),
       );
@@ -393,9 +356,7 @@ void main() {
       expect(capturedRef.read(favoritesProvider).contains('provider-test'), isFalse);
 
       // Find the GlassCard containing the pointing text
-      final glassCardFinder = find
-          .ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard))
-          .first;
+      final glassCardFinder = find.ancestor(of: find.text(testPointing.content), matching: find.byType(GlassCard)).first;
 
       // Find the GestureDetector wrapping this specific card
       final pointingCardGesture = find.ancestor(of: glassCardFinder, matching: find.byType(GestureDetector)).first;

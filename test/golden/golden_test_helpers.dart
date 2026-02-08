@@ -54,13 +54,12 @@ Future<void> setupGoldenTests() async {
   when(() => _mockNotificationService.getSchedule()).thenReturn(const NotificationSchedule());
 
   // Mock home_widget plugin to prevent MissingPluginException
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('home_widget'),
-    (MethodCall methodCall) async {
-      // Return null for all home_widget calls - they're no-ops in tests
-      return null;
-    },
-  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), (
+    MethodCall methodCall,
+  ) async {
+    // Return null for all home_widget calls - they're no-ops in tests
+    return null;
+  });
 
   // Mock flutter_local_notifications plugin
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -98,26 +97,11 @@ ThemeData get goldenTestTheme {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: colors.background,
     fontFamily: 'Roboto', // Flutter's default font, always available
-    colorScheme: ColorScheme.dark(
-      primary: colors.primary,
-      secondary: colors.secondary,
-      surface: colors.surface,
-      error: const Color(0xFFEF4444),
-    ),
+    colorScheme: ColorScheme.dark(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFEF4444)),
     extensions: const [PointerColors.dark],
     textTheme: TextTheme(
-      displayLarge: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w700,
-        color: colors.textPrimary,
-        letterSpacing: -0.5,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
-        color: colors.textPrimary,
-        letterSpacing: -0.5,
-      ),
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
+      headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
       titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
       bodyLarge: TextStyle(fontSize: 16, color: colors.textPrimary),
       bodyMedium: TextStyle(fontSize: 14, color: colors.textSecondary),
@@ -219,11 +203,7 @@ Future<void> expectGoldenMatches(WidgetTester tester, String goldenName, {String
 
 /// Test a screen at multiple device sizes
 Future<void> testScreenAtSizes(WidgetTester tester, String screenName, Widget Function() screenBuilder) async {
-  final sizes = {
-    'iphone14pro': GoldenDevices.iPhone14Pro,
-    'iphonese': GoldenDevices.iPhoneSE,
-    'pixel7': GoldenDevices.pixel7,
-  };
+  final sizes = {'iphone14pro': GoldenDevices.iPhone14Pro, 'iphonese': GoldenDevices.iPhoneSE, 'pixel7': GoldenDevices.pixel7};
 
   for (final entry in sizes.entries) {
     final deviceName = entry.key;
@@ -235,11 +215,7 @@ Future<void> testScreenAtSizes(WidgetTester tester, String screenName, Widget Fu
       size: size,
     );
 
-    await expectGoldenMatches(
-      tester,
-      '${screenName}_$deviceName',
-      reason: '$screenName on $deviceName should match golden',
-    );
+    await expectGoldenMatches(tester, '${screenName}_$deviceName', reason: '$screenName on $deviceName should match golden');
   }
 }
 
@@ -268,11 +244,7 @@ Future<SharedPreferences> createMockPrefs({
 
 /// Creates a simple widget wrapper for component-level golden tests
 /// that don't need full screen setup but need ProviderScope
-Widget createComponentTestWrapper({
-  required Widget child,
-  Size size = const Size(400, 200),
-  Color backgroundColor = const Color(0xFF0F0524),
-}) {
+Widget createComponentTestWrapper({required Widget child, Size size = const Size(400, 200), Color backgroundColor = const Color(0xFF0F0524)}) {
   return ProviderScope(
     overrides: [
       highContrastProvider.overrideWith((ref) => false),

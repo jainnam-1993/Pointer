@@ -46,9 +46,7 @@ class UsageTrackingService {
     }
 
     try {
-      final usage = DailyUsage.fromJson(
-        Map<String, dynamic>.from(Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v)))),
-      );
+      final usage = DailyUsage.fromJson(Map<String, dynamic>.from(Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v)))));
 
       // Check if we need to reset for a new day
       final today = DailyUsage._todayString();

@@ -382,11 +382,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Content - switches between zen mode and full view
           if (isZenMode)
             SafeArea(
-              child: AnimatedOpacity(
-                opacity: 1.0,
-                duration: const Duration(milliseconds: 500),
-                child: _buildZenModeView(pointing),
-              ),
+              child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
             )
           else
             // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
@@ -454,8 +450,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 onDoubleTap: _toggleZenMode,
                                 child: Semantics(
                                   sortKey: const OrdinalSortKey(1.0),
-                                  label:
-                                      'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
+                                  label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
                                   hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
                                   customSemanticsActions: {
                                     CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
@@ -492,11 +487,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     child: ScaleTransition(scale: animation, child: child),
                                                   );
                                                 },
-                                                child: _buildInlineTraditionBadge(
-                                                  pointing.tradition,
-                                                  colors,
-                                                  key: ValueKey('${pointing.id}-badge'),
-                                                ),
+                                                child: _buildInlineTraditionBadge(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
                                               ),
                                               // Share icon - separate focusable element
                                               Semantics(
@@ -538,11 +529,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ),
                                         if (pointing.instruction != null) ...[
                                           const SizedBox(height: 24),
-                                          Text(
-                                            pointing.instruction!,
-                                            style: AppTextStyles.instructionText(context),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                          Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
                                         ],
                                         if (pointing.teacher != null) ...[
                                           const SizedBox(height: 16),
@@ -565,17 +552,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                 '- ${pointing.teacher}',
                                                 style: AppTextStyles.teacherText(context).copyWith(
                                                   decoration: TextDecoration.underline,
-                                                  decorationColor: AppTextStyles.teacherText(
-                                                    context,
-                                                  ).color?.withValues(alpha: 0.5),
+                                                  decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
                                                 ),
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),
                                           ),
                                         ],
-                                        if (pointing.source != null)
-                                          _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
+                                        if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
                                         // Extended commentary (premium feature)
                                         if (pointing.commentary != null) ...[
                                           const SizedBox(height: 16),
@@ -629,9 +613,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       // Footer - decorative hint text (hide in landscape)
                       if (!isSquareAspect) ...[
                         const SizedBox(height: 24),
-                        ExcludeSemantics(
-                          child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context)),
-                        ),
+                        ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
                       ],
                     ],
                   ),
@@ -695,10 +677,7 @@ class _SourceCitation extends StatelessWidget {
   _SourceMatch? _resolveSource() {
     // Tier 1: direct article title match
     final lowerSource = source.toLowerCase();
-    final directMatch = articles.cast<Article?>().firstWhere(
-      (a) => a!.title.toLowerCase() == lowerSource,
-      orElse: () => null,
-    );
+    final directMatch = articles.cast<Article?>().firstWhere((a) => a!.title.toLowerCase() == lowerSource, orElse: () => null);
     if (directMatch != null) {
       return _ArticleMatch(directMatch);
     }

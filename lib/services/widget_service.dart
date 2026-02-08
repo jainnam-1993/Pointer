@@ -163,19 +163,12 @@ class WidgetService {
       // Convert to JSON format expected by widget
       final pointingsJson = interleavedList.map((p) {
         final traditionInfo = traditions[p.tradition];
-        return {
-          'id': p.id,
-          'content': p.content,
-          'tradition': traditionInfo?.name ?? p.tradition.name,
-          'teacher': p.teacher ?? '',
-        };
+        return {'id': p.id, 'content': p.content, 'tradition': traditionInfo?.name ?? p.tradition.name, 'teacher': p.teacher ?? ''};
       }).toList();
 
       // Save as JSON string
       final jsonString = jsonEncode(pointingsJson);
-      debugPrint(
-        '[WidgetService] Saving ${pointingsJson.length} pointings to widget cache (${jsonString.length} bytes)',
-      );
+      debugPrint('[WidgetService] Saving ${pointingsJson.length} pointings to widget cache (${jsonString.length} bytes)');
       await HomeWidget.saveWidgetData<String>(_WidgetKeys.pointingsCache, jsonString);
 
       // Verify the data was saved correctly

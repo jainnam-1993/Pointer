@@ -37,12 +37,7 @@ void main() {
     });
 
     test('copyWith preserves values when not specified', () {
-      final settings = const AppSettings(
-        hapticFeedback: false,
-        autoAdvance: true,
-        autoAdvanceDelay: 45,
-        theme: 'cosmic',
-      );
+      final settings = const AppSettings(hapticFeedback: false, autoAdvance: true, autoAdvanceDelay: 45, theme: 'cosmic');
       final updated = settings.copyWith(theme: 'midnight');
 
       expect(updated.hapticFeedback, false);
@@ -133,8 +128,7 @@ void main() {
 
       await storageService.addFavorite('zen-1');
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.favoritePointings, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.favoritePointings, captureAny())).captured.single as String;
       expect(jsonDecode(captured), ['adv-1', 'zen-1']);
     });
 
@@ -152,8 +146,7 @@ void main() {
 
       await storageService.removeFavorite('adv-1');
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.favoritePointings, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.favoritePointings, captureAny())).captured.single as String;
       expect(jsonDecode(captured), ['zen-1']);
     });
 
@@ -194,8 +187,7 @@ void main() {
 
       await storageService.markPointingAsViewed('zen-1');
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
       final decoded = List<Map<String, dynamic>>.from(jsonDecode(captured));
       expect(decoded.length, 2);
       expect(decoded[0]['id'], 'zen-1'); // New one at front
@@ -213,8 +205,7 @@ void main() {
 
       await storageService.markPointingAsViewed('zen-1');
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
       final decoded = List<Map<String, dynamic>>.from(jsonDecode(captured));
       expect(decoded.length, 2);
       expect(decoded[0]['id'], 'zen-1'); // Moved to front
@@ -228,8 +219,7 @@ void main() {
 
       await storageService.markPointingAsViewed('new-pointing');
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.viewedPointings, captureAny())).captured.single as String;
       final decoded = List<Map<String, dynamic>>.from(jsonDecode(captured));
       expect(decoded.length, 100);
       expect(decoded[0]['id'], 'new-pointing');
@@ -255,8 +245,7 @@ void main() {
 
       await storageService.setPreferredTraditions(['advaita', 'zen', 'direct']);
 
-      final captured =
-          verify(() => mockPrefs.setString(StorageKeys.preferredTraditions, captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString(StorageKeys.preferredTraditions, captureAny())).captured.single as String;
       expect(jsonDecode(captured), ['advaita', 'zen', 'direct']);
     });
   });
@@ -273,12 +262,7 @@ void main() {
     });
 
     test('settings returns stored settings', () {
-      final stored = jsonEncode({
-        'hapticFeedback': false,
-        'autoAdvance': true,
-        'autoAdvanceDelay': 60,
-        'theme': 'cosmic',
-      });
+      final stored = jsonEncode({'hapticFeedback': false, 'autoAdvance': true, 'autoAdvanceDelay': 60, 'theme': 'cosmic'});
       when(() => mockPrefs.getString(StorageKeys.settings)).thenReturn(stored);
 
       final settings = storageService.settings;
@@ -291,12 +275,7 @@ void main() {
     test('updateSettings saves settings', () async {
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
-      const newSettings = AppSettings(
-        hapticFeedback: false,
-        autoAdvance: true,
-        autoAdvanceDelay: 45,
-        theme: 'midnight',
-      );
+      const newSettings = AppSettings(hapticFeedback: false, autoAdvance: true, autoAdvanceDelay: 45, theme: 'midnight');
       await storageService.updateSettings(newSettings);
 
       final captured = verify(() => mockPrefs.setString(StorageKeys.settings, captureAny())).captured.single as String;
@@ -388,14 +367,7 @@ void main() {
       // This tests the edge case: 11:59 PM yesterday vs 12:01 AM today
       final now = DateTime.now();
       final todayMidnight = DateTime(now.year, now.month, now.day, 0, 0, 1); // 12:00:01 AM today
-      final yesterdayLate = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        0,
-        0,
-        0,
-      ).subtract(const Duration(seconds: 1)); // 11:59:59 PM yesterday
+      final yesterdayLate = DateTime(now.year, now.month, now.day, 0, 0, 0).subtract(const Duration(seconds: 1)); // 11:59:59 PM yesterday
 
       final stored = jsonEncode([
         {'id': 'just-after-midnight', 'viewedAt': timestampFor(todayMidnight)},

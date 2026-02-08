@@ -50,9 +50,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                       final position = positionSnapshot.data ?? Duration.zero;
                       final duration = durationSnapshot.data ?? const Duration(seconds: 1);
 
-                      final progress = duration.inMilliseconds > 0
-                          ? position.inMilliseconds / duration.inMilliseconds
-                          : 0.0;
+                      final progress = duration.inMilliseconds > 0 ? position.inMilliseconds / duration.inMilliseconds : 0.0;
 
                       return Column(
                         children: [
@@ -81,14 +79,8 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  _formatDuration(position),
-                                  style: TextStyle(color: colors.textMuted, fontSize: 11),
-                                ),
-                                Text(
-                                  _formatDuration(duration),
-                                  style: TextStyle(color: colors.textMuted, fontSize: 11),
-                                ),
+                                Text(_formatDuration(position), style: TextStyle(color: colors.textMuted, fontSize: 11)),
+                                Text(_formatDuration(duration), style: TextStyle(color: colors.textMuted, fontSize: 11)),
                               ],
                             ),
                           ),
@@ -134,11 +126,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                           const SizedBox(width: 4),
 
                           // Play/Pause button
-                          _PlayPauseButton(
-                            state: state,
-                            onPlay: () => _ttsService.resume(),
-                            onPause: () => _ttsService.pause(),
-                          ),
+                          _PlayPauseButton(state: state, onPlay: () => _ttsService.resume(), onPause: () => _ttsService.pause()),
 
                           const SizedBox(width: 4),
 
@@ -221,10 +209,7 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                 leading: Icon(Icons.record_voice_over, color: isSelected ? colors.accent : colors.textMuted),
                 title: Text(
                   voice.id,
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  ),
+                  style: TextStyle(color: colors.textPrimary, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
                 ),
                 subtitle: Text(voice.description, style: TextStyle(color: colors.textSecondary, fontSize: 13)),
                 trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,

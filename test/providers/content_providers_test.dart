@@ -770,12 +770,7 @@ void main() {
 
       final filteredForCache = pointings.where((p) => preferredTraditions.contains(p.tradition)).map((p) {
         final traditionInfo = traditions[p.tradition];
-        return {
-          'id': p.id,
-          'content': p.content,
-          'tradition': traditionInfo?.name ?? p.tradition.name,
-          'teacher': p.teacher ?? '',
-        };
+        return {'id': p.id, 'content': p.content, 'tradition': traditionInfo?.name ?? p.tradition.name, 'teacher': p.teacher ?? ''};
       }).toList();
 
       expect(filteredForCache, isNotEmpty);
@@ -830,11 +825,7 @@ void main() {
       final advaitaPointing = getPointingsByTradition(Tradition.advaita).first;
 
       expect(preferredTraditions.contains(zenPointing.tradition), true, reason: 'Zen pointing should pass filter');
-      expect(
-        preferredTraditions.contains(advaitaPointing.tradition),
-        false,
-        reason: 'Advaita pointing should not pass filter',
-      );
+      expect(preferredTraditions.contains(advaitaPointing.tradition), false, reason: 'Advaita pointing should not pass filter');
     });
   });
 }

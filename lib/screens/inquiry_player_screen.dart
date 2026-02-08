@@ -224,12 +224,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
                 // Phase content
                 Expanded(
                   child: Center(
-                    child: InquiryPhaseContent(
-                      inquiry: _currentInquiry!,
-                      phase: _phase,
-                      onAnother: _onAnother,
-                      onDone: _onDone,
-                    ),
+                    child: InquiryPhaseContent(inquiry: _currentInquiry!, phase: _phase, onAnother: _onAnother, onDone: _onDone),
                   ),
                 ),
 
@@ -302,23 +297,11 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.setup,
-                isPast: _phase.index > InquiryPhase.setup.index,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.setup, isPast: _phase.index > InquiryPhase.setup.index, colors: colors),
               const SizedBox(width: 8),
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.question,
-                isPast: _phase.index > InquiryPhase.question.index,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.question, isPast: _phase.index > InquiryPhase.question.index, colors: colors),
               const SizedBox(width: 8),
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete,
-                isPast: false,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete, isPast: false, colors: colors),
             ],
           ),
         ],
@@ -390,12 +373,7 @@ class _BreathingProgressRing extends StatelessWidget {
         width: 44,
         height: 44,
         child: CustomPaint(
-          painter: _ProgressRingPainter(
-            progress: progress,
-            color: ringColor,
-            backgroundColor: bgColor,
-            strokeWidth: isDark ? 2.5 : 2.0,
-          ),
+          painter: _ProgressRingPainter(progress: progress, color: ringColor, backgroundColor: bgColor, strokeWidth: isDark ? 2.5 : 2.0),
         ),
       ),
     );
@@ -404,12 +382,7 @@ class _BreathingProgressRing extends StatelessWidget {
 
 /// Custom painter for the progress ring
 class _ProgressRingPainter extends CustomPainter {
-  _ProgressRingPainter({
-    required this.progress,
-    required this.color,
-    required this.backgroundColor,
-    this.strokeWidth = 2.5,
-  });
+  _ProgressRingPainter({required this.progress, required this.color, required this.backgroundColor, this.strokeWidth = 2.5});
 
   final double progress;
   final Color color;
@@ -450,8 +423,6 @@ class _ProgressRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ProgressRingPainter oldDelegate) {
-    return progress != oldDelegate.progress ||
-        color != oldDelegate.color ||
-        backgroundColor != oldDelegate.backgroundColor;
+    return progress != oldDelegate.progress || color != oldDelegate.color || backgroundColor != oldDelegate.backgroundColor;
   }
 }

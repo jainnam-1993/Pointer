@@ -69,11 +69,7 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                                   const SizedBox(width: 8),
                                   Text(
                                     MoodTags.displayName(widget.mood),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                                   ),
                                 ],
                               ),
@@ -123,10 +119,7 @@ class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
                                     ),
                                   );
                                 } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)),
-                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                                 }
                               },
                             ),

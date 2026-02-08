@@ -44,40 +44,32 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      SystemChannels.platform,
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'HapticFeedback.vibrate') {
-          hapticCalls.add(methodCall);
-        }
-        return null;
-      },
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+      MethodCall methodCall,
+    ) async {
+      if (methodCall.method == 'HapticFeedback.vibrate') {
+        hapticCalls.add(methodCall);
+      }
+      return null;
+    });
 
     // Mock home_widget channel to prevent MissingPluginException
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('home_widget'),
-      (MethodCall methodCall) async {
-        // Return success for all home_widget method calls
-        if (methodCall.method == 'saveWidgetData') {
-          return true;
-        } else if (methodCall.method == 'updateWidget') {
-          return true;
-        }
-        return null;
-      },
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), (
+      MethodCall methodCall,
+    ) async {
+      // Return success for all home_widget method calls
+      if (methodCall.method == 'saveWidgetData') {
+        return true;
+      } else if (methodCall.method == 'updateWidget') {
+        return true;
+      }
+      return null;
+    });
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      SystemChannels.platform,
-      null,
-    );
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('home_widget'),
-      null,
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), null);
   });
 
   Widget createHomeScreen({Pointing? initialPointing, bool initialZenMode = false}) {
@@ -272,10 +264,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: longPointing, initialZenMode: true));
 
       // Verify SingleChildScrollView is present
-      expect(
-        find.descendant(of: find.byKey(const ValueKey('zen-mode')), matching: find.byType(SingleChildScrollView)),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byKey(const ValueKey('zen-mode')), matching: find.byType(SingleChildScrollView)), findsOneWidget);
     });
   });
 
@@ -409,12 +398,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify haptic feedback was triggered
-      expect(
-        hapticCalls.where(
-          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact',
-        ),
-        isNotEmpty,
-      );
+      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact'), isNotEmpty);
     });
 
     testWidgets('exiting zen mode does not trigger haptic feedback', (tester) async {
@@ -427,12 +411,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify no haptic feedback when exiting
-      expect(
-        hapticCalls.where(
-          (call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact',
-        ),
-        isEmpty,
-      );
+      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact'), isEmpty);
     });
   });
 
@@ -448,10 +427,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Find AnimatedOpacity wrapping zen mode view
-      final animatedOpacityFinder = find.ancestor(
-        of: find.byKey(const ValueKey('zen-mode')),
-        matching: find.byType(AnimatedOpacity),
-      );
+      final animatedOpacityFinder = find.ancestor(of: find.byKey(const ValueKey('zen-mode')), matching: find.byType(AnimatedOpacity));
 
       expect(animatedOpacityFinder, findsOneWidget);
 
@@ -464,10 +440,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
 
       // Find AnimatedOpacity
-      final animatedOpacityFinder = find.ancestor(
-        of: find.byKey(const ValueKey('zen-mode')),
-        matching: find.byType(AnimatedOpacity),
-      );
+      final animatedOpacityFinder = find.ancestor(of: find.byKey(const ValueKey('zen-mode')), matching: find.byType(AnimatedOpacity));
 
       final animatedOpacity = tester.widget<AnimatedOpacity>(animatedOpacityFinder);
       expect(animatedOpacity.duration, const Duration(milliseconds: 500));

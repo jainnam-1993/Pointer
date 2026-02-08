@@ -22,27 +22,26 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   // Mock home_widget plugin to prevent MissingPluginException
   // The home_widget plugin requires native iOS/Android implementation
   // which isn't available in unit tests
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('home_widget'),
-    (MethodCall methodCall) async {
-      // Return appropriate mock responses for home_widget methods
-      switch (methodCall.method) {
-        case 'saveWidgetData':
-        case 'updateWidget':
-        case 'setAppGroupId':
-        case 'registerBackgroundCallback':
-          return true;
-        case 'getWidgetData':
-          return null;
-        case 'initiallyLaunchedFromHomeWidget':
-          return null;
-        case 'isRequestPinWidgetSupported':
-          return false;
-        default:
-          return null;
-      }
-    },
-  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), (
+    MethodCall methodCall,
+  ) async {
+    // Return appropriate mock responses for home_widget methods
+    switch (methodCall.method) {
+      case 'saveWidgetData':
+      case 'updateWidget':
+      case 'setAppGroupId':
+      case 'registerBackgroundCallback':
+        return true;
+      case 'getWidgetData':
+        return null;
+      case 'initiallyLaunchedFromHomeWidget':
+        return null;
+      case 'isRequestPinWidgetSupported':
+        return false;
+      default:
+        return null;
+    }
+  });
 
   await testMain();
 }

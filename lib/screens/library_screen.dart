@@ -67,9 +67,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                         Text('Library', style: Theme.of(context).textTheme.displayLarge),
                         const SizedBox(height: 4),
                         Text(
-                          _browseMode == LibraryBrowseMode.saved
-                              ? 'Your saved pointings'
-                              : 'Explore teachings and articles',
+                          _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
                           style: TextStyle(color: colors.textSecondary, fontSize: 16),
                         ),
                       ],
@@ -91,10 +89,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                               const SizedBox(height: 16),
                               Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
                               const SizedBox(height: 8),
-                              Text(
-                                'Long-press a pointing to save it',
-                                style: TextStyle(color: colors.textMuted, fontSize: 14),
-                              ),
+                              Text('Long-press a pointing to save it', style: TextStyle(color: colors.textMuted, fontSize: 14)),
                             ],
                           ),
                         ),
@@ -106,10 +101,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
                           final pointingId = favorites[index];
-                          final pointing = pointings.firstWhere(
-                            (p) => p.id == pointingId,
-                            orElse: () => pointings.first,
-                          );
+                          final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: GlassCard(
@@ -125,10 +117,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                   ),
                                   if (pointing.teacher != null) ...[
                                     const SizedBox(height: 8),
-                                    Text(
-                                      '— ${pointing.teacher}',
-                                      style: TextStyle(color: colors.textMuted, fontSize: 13),
-                                    ),
+                                    Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
                                   ],
                                 ],
                               ),
@@ -156,12 +145,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                         padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
                         child: Text(
                           'FEATURED',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textMuted,
-                            letterSpacing: 1,
-                          ),
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                         ),
                       ),
                     ),
@@ -195,10 +179,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                     padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
                                     child: SizedBox(
                                       width: cardWidth,
-                                      child: _FeaturedArticleCard(
-                                        article: article,
-                                        onTap: () => _openArticle(context, article),
-                                      ),
+                                      child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
                                     ),
                                   ),
                                 );
@@ -222,23 +203,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                             children: [
                               Text(
                                 'BROWSE BY',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: colors.textMuted,
-                                  letterSpacing: 1,
-                                ),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                               ),
                               const SizedBox(width: 12),
-                              _BrowseModeDropdown(
-                                currentMode: _browseMode,
-                                onChanged: (mode) => setState(() => _browseMode = mode),
-                              ),
+                              _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
                               const SizedBox(width: 8),
-                              _ContentTypeDropdown(
-                                currentFilter: _contentFilter,
-                                onChanged: (filter) => setState(() => _contentFilter = filter),
-                              ),
+                              _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
                             ],
                           ),
                         ),
@@ -688,9 +658,7 @@ class _BrowseModeSheet extends StatelessWidget {
       title: 'Browse by',
       currentValue: currentMode,
       onSelected: onSelected,
-      options: LibraryBrowseMode.values
-          .map((mode) => FilterOption(value: mode, label: mode.label, icon: mode.icon))
-          .toList(),
+      options: LibraryBrowseMode.values.map((mode) => FilterOption(value: mode, label: mode.label, icon: mode.icon)).toList(),
     );
   }
 }
@@ -703,13 +671,7 @@ class _BrowseCard extends StatelessWidget {
   final int count;
   final VoidCallback onTap;
 
-  const _BrowseCard({
-    required this.icon,
-    required this.name,
-    required this.description,
-    required this.count,
-    required this.onTap,
-  });
+  const _BrowseCard({required this.icon, required this.name, required this.description, required this.count, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -727,10 +689,7 @@ class _BrowseCard extends StatelessWidget {
             Container(
               width: 44,
               height: 44,
-              decoration: BoxDecoration(
-                color: colors.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
               child: Center(
                 child: Text(icon, style: TextStyle(fontSize: 20, color: colors.accent)),
               ),
@@ -802,10 +761,7 @@ class _FeaturedArticleCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colors.accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
                   child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
                 ),
                 const SizedBox(width: 8),

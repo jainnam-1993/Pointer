@@ -36,10 +36,7 @@ class MiniInquiryCard extends StatelessWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
-                color: colors.accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
               child: Center(
                 child: Text('◇', style: TextStyle(fontSize: 16, color: colors.accent)),
               ),
