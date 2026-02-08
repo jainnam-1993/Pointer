@@ -23,6 +23,8 @@
  */
 library;
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -37,6 +39,7 @@ import '../providers/core_providers.dart';
 import '../router.dart';
 import 'notification_service.dart';
 import 'widget_service.dart';
+import 'workmanager_service.dart';
 
 /**
  * Result of [AppInitializer.initialize], carrying the configured
@@ -125,8 +128,10 @@ class AppInitializer {
       debugPrint('[AppInitializer] Notification init failed (non-fatal): $e');
     }
 
-    // TEMP: WorkManager disabled to diagnose iOS 26 beta crash
-    // await WorkManagerService.initialize();
+    // WorkManager for background notifications (Android only — iOS 26 beta crashes)
+    if (Platform.isAndroid) {
+      await WorkManagerService.initialize();
+    }
 
     return service;
   }

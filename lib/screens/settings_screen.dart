@@ -312,6 +312,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                         ),
                         onTap: _showNotificationTimesSheet,
                       ),
+                      const SettingsDivider(),
+                      SettingsRow(
+                        title: 'Send Test Notification',
+                        subtitle: 'Verify notifications are working',
+                        trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
+                        onTap: () async {
+                          HapticFeedback.mediumImpact();
+                          final notificationService = ref.read(notificationServiceProvider);
+                          await notificationService.sendTestNotification();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
