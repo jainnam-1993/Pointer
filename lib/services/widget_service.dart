@@ -5,6 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
+import '../providers/subscription_providers.dart' show kFreeAccessEnabled;
 
 /// Keys for widget data storage
 class _WidgetKeys {
@@ -15,6 +16,8 @@ class _WidgetKeys {
   static const updateIntervalHours = 'update_interval_hours';
   // Multi-pointing widget cache (JSON array)
   static const pointingsCache = 'pointings_cache';
+  // Premium status for widget gating
+  static const isPremium = 'widget_is_premium';
   // Favorites list (JSON array of pointing IDs)
   static const favorites = 'widget_favorites';
 }
@@ -34,6 +37,9 @@ class WidgetService {
   static const defaultUpdateIntervalHours = 3;
 
   /// Initialize widget service and register background callback
+  ///
+  /// NOTE: Widget is a PREMIUM feature. The widget will only show content
+  /// for premium users. Call [setPremiumStatus] when subscription status changes.
   static Future<void> initialize() async {
     // Set iOS App Group for shared storage
     await HomeWidget.setAppGroupId(iosAppGroup);
@@ -43,13 +49,74 @@ class WidgetService {
     debugPrint('[WidgetService] Initialized');
   }
 
+  /// Set premium status for widget gating.
+  /// Call this when subscription status changes.
+  static Future<void> setPremiumStatus(bool isPremium) async {
+    try {
+      await HomeWidget.saveWidgetData<bool>(_WidgetKeys.isPremium, isPremium);
+      if (isPremium) {
+        // Premium user - populate widget with data
+        await populatePointingsCache();
+      } else {
+        // Free user - clear widget data
+        await clearWidgetData();
+      }
+    } catch (e) {
+      debugPrint('Failed to set widget premium status: $e');
+    }
+  }
+
+  /// Check if widget is enabled for premium user
+  /// Also respects kFreeAccessEnabled flag for free release mode
+  static Future<bool> isPremiumEnabled() async {
+    // Free access mode - all users get premium features
+    if (kFreeAccessEnabled) {
+      return true;
+    }
+    try {
+      final isPremium = await HomeWidget.getWidgetData<bool>(_WidgetKeys.isPremium);
+      return isPremium ?? false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Clear widget data (for free users)
+  static Future<void> clearWidgetData() async {
+    try {
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.pointingsCache, '[]');
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.content, '');
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.teacher, '');
+      await HomeWidget.saveWidgetData<String>(_WidgetKeys.tradition, '');
+
+      // Trigger widget update to show empty state
+      await HomeWidget.updateWidget(
+        iOSName: 'PointerWidget',
+        androidName: androidWidgetName,
+        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
+      );
+      debugPrint('Widget data cleared (free user)');
+    } catch (e) {
+      debugPrint('Failed to clear widget data: $e');
+    }
+  }
+
   /// Populate the pointings cache for the multi-pointing widget.
   /// Stores all pointings as a JSON array for the Android StackView widget.
   /// Randomizes order and prioritizes favorites for better discovery.
   /// Also syncs favorites list for save button state.
+  /// Only works for premium users.
   static Future<void> populatePointingsCache() async {
     debugPrint('[WidgetService] populatePointingsCache called');
     try {
+      // Check premium status first
+      final isPremium = await isPremiumEnabled();
+      debugPrint('[WidgetService] isPremiumEnabled: $isPremium, kFreeAccessEnabled: $kFreeAccessEnabled');
+      if (!isPremium) {
+        debugPrint('[WidgetService] Widget cache not populated - not premium');
+        return;
+      }
+
       // Load favorites list first
       final prefs = await SharedPreferences.getInstance();
       final stored = prefs.getString('pointer_favorites');
@@ -160,7 +227,15 @@ class WidgetService {
   }
 
   /// Update widget with the given pointing data.
+  /// Only updates for premium users.
   static Future<void> updateWidget(Pointing pointing) async {
+    // Check premium status first
+    final isPremium = await isPremiumEnabled();
+    if (!isPremium) {
+      debugPrint('Widget not updated - not premium');
+      return;
+    }
+
     final traditionInfo = traditions[pointing.tradition];
 
     // Save data to shared storage
@@ -180,7 +255,11 @@ class WidgetService {
   }
 
   /// Update widget with a random pointing (for background refresh).
+  /// Only updates for premium users.
   static Future<void> updateWithRandomPointing() async {
+    final isPremium = await isPremiumEnabled();
+    if (!isPremium) return;
+
     final pointing = getRandomPointing();
     await updateWidget(pointing);
   }
@@ -318,6 +397,13 @@ class WidgetService {
   /// Widget shows filled heart for favorited pointings.
   static Future<void> updateFavorites(Set<String> favoriteIds) async {
     try {
+      // Check premium status first
+      final isPremium = await isPremiumEnabled();
+      if (!isPremium) {
+        debugPrint('Widget favorites not updated - not premium');
+        return;
+      }
+
       // Save favorites as JSON array
       final jsonString = jsonEncode(favoriteIds.toList());
       await HomeWidget.saveWidgetData<String>(

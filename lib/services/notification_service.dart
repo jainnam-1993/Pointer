@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
+import 'workmanager_service.dart';
 
 /// Notification time configuration (legacy - kept for migration).
 class NotificationTime {
@@ -520,19 +521,30 @@ class NotificationService {
   }
 
   // ============================================================
-  // Scheduling
+  // Scheduling (via WorkManager)
   // ============================================================
 
-  /// Schedule all configured notifications via flutter_local_notifications.
+  /// Schedule all configured notifications using WorkManager.
+  /// WorkManager survives app kills and is more reliable than AlarmManager.
   Future<void> scheduleAllNotifications() async {
-    await _localNotifications.cancelAll();
+    // Cancel any existing WorkManager tasks
+    await WorkManagerService.cancelAll();
 
     if (!isNotificationsEnabled) return;
 
     final schedule = getSchedule();
     if (!schedule.isEnabled) return;
 
-    debugPrint('[NotificationService] Scheduling notifications: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
+    debugPrint('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
+
+    // Use WorkManager for periodic notifications
+    await WorkManagerService.schedulePeriodicNotifications(
+      frequencyMinutes: schedule.frequencyMinutes,
+      startHour: schedule.startHour,
+      endHour: schedule.endHour,
+    );
+
+    debugPrint('[NotificationService] WorkManager scheduled successfully');
   }
 
   /// Show an immediate notification for a pointing.
@@ -644,9 +656,10 @@ class NotificationService {
     await _localNotifications.cancel(id);
   }
 
-  /// Cancel all scheduled notifications.
+  /// Cancel all scheduled notifications (both local and WorkManager).
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
+    await WorkManagerService.cancelAll();
   }
 
   /// Get list of pending notifications for debugging.

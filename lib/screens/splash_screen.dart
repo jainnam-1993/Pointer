@@ -1,18 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
-/// Full-screen video splash screen.
+/// Full-screen branded video splash screen.
 ///
-/// Plays the nonduality_black.mp4 video (3.5s enso animation on black),
-/// then navigates to the destination. Tap anywhere to skip.
+/// Plays a theme-aware nonduality animation (dark/light variant)
+/// then auto-advances to the next screen. Tap anywhere to skip.
 /// Respects system reduce-motion accessibility setting.
-///
-/// The video controller is explicitly paused and disposed BEFORE navigation
-/// to ensure the system media codec process shuts down immediately.
 class SplashScreen extends StatefulWidget {
+  /// Where to navigate after splash completes.
   final String destination;
 
   const SplashScreen({super.key, required this.destination});
@@ -22,15 +18,14 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  static const _initTimeout = Duration(seconds: 4);
-
   VideoPlayerController? _controller;
   bool _navigated = false;
-  Timer? _timeoutTimer;
+  double _opacity = 1.0;
 
   @override
   void initState() {
     super.initState();
+    // Defer initialization to after first frame so we have access to theme
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _initializeVideo();
@@ -38,79 +33,83 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _initializeVideo() {
+    // Respect system reduce-motion accessibility setting
     if (MediaQuery.of(context).disableAnimations) {
       _navigateAway();
       return;
     }
 
-    _controller = VideoPlayerController.asset(
-      'assets/videos/nonduality_black.mp4',
-    );
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final asset = 'assets/videos/nonduality_${isDark ? 'black' : 'white'}.mp4';
 
-    _timeoutTimer = Timer(_initTimeout, () {
-      if (!_navigated && mounted) _navigateAway();
-    });
+    _controller = VideoPlayerController.asset(asset)
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() {});
+        _controller!.play();
+        _controller!.addListener(_onVideoProgress);
+      }).catchError((_) {
+        // Video failed to load — skip to destination
+        _navigateAway();
+      });
+  }
 
-    _controller!.initialize().then((_) {
-      _timeoutTimer?.cancel();
-      if (!mounted || _navigated) return;
-      setState(() {});
-      _controller!.play();
+  void _onVideoProgress() {
+    final controller = _controller;
+    if (controller == null || _navigated) return;
 
-      final duration = _controller!.value.duration;
-      Future.delayed(duration, _navigateAway);
-    }).catchError((_) {
-      _timeoutTimer?.cancel();
+    // Auto-advance when video reaches the end
+    if (controller.value.isInitialized &&
+        controller.value.position >= controller.value.duration &&
+        controller.value.duration > Duration.zero) {
       _navigateAway();
-    });
+    }
   }
 
   void _navigateAway() {
     if (_navigated || !mounted) return;
     _navigated = true;
-    _timeoutTimer?.cancel();
 
-    // Kill the video codec BEFORE navigating — pause stops decoding,
-    // dispose releases the system media codec process immediately.
-    final controller = _controller;
-    _controller = null;
-    if (controller != null) {
-      controller.pause();
-      controller.dispose();
-    }
-
-    context.go(widget.destination);
+    // Fade out, then navigate
+    setState(() => _opacity = 0.0);
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      context.go(widget.destination);
+    });
   }
 
   @override
   void dispose() {
-    _timeoutTimer?.cancel();
-    // Controller already disposed in _navigateAway, but guard against
-    // widget being removed without navigation (e.g. hot reload).
-    _controller?.pause();
+    _controller?.removeListener(_onVideoProgress);
     _controller?.dispose();
-    _controller = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: isDark ? Colors.black : Colors.white,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _navigateAway,
-        child: SizedBox.expand(
-          child: _controller != null && _controller!.value.isInitialized
-              ? FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: _controller!.value.size.width,
-                    height: _controller!.value.size.height,
-                    child: VideoPlayer(_controller!),
-                  ),
-                )
-              : const SizedBox.shrink(),
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+          child: SizedBox.expand(
+            child: _controller != null && _controller!.value.isInitialized
+                ? FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: _controller!.value.size.width,
+                      height: _controller!.value.size.height,
+                      child: VideoPlayer(_controller!),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ),
       ),
     );

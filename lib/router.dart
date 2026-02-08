@@ -102,6 +102,13 @@ GoRouter _createRouter() {
         ),
       ),
 
+      // Paywall route - redirect to home (IAP removed, all features free)
+      GoRoute(
+        path: '/paywall',
+        redirect: (context, state) => '/',
+        builder: (context, state) => const SizedBox.shrink(), // Never reached
+      ),
+
       // History route (outside shell) - horizontal for related content
       GoRoute(
         path: '/history',

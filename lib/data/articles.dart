@@ -10868,68 +10868,14 @@ Robert taught three foundational understandings:
 
 ];
 
-// --- Lazy caches for article lookups ---
-Map<Tradition, List<Article>>? _articlesByTraditionCache;
-Map<ArticleCategory, List<Article>>? _articlesByCategoryCache;
-Map<String, List<Article>>? _articlesByTopicCache;
-Map<String, List<Article>>? _articlesByMoodCache;
-Map<String, int>? _articleTopicCountsCache;
-Map<String, int>? _articleMoodCountsCache;
-
-Map<Tradition, List<Article>> get _articlesByTradition {
-  return _articlesByTraditionCache ??= () {
-    final index = <Tradition, List<Article>>{};
-    for (final a in articles) {
-      (index[a.tradition] ??= []).add(a);
-    }
-    return index;
-  }();
-}
-
-Map<ArticleCategory, List<Article>> get _articlesByCategory {
-  return _articlesByCategoryCache ??= () {
-    final index = <ArticleCategory, List<Article>>{};
-    for (final a in articles) {
-      for (final cat in a.categories) {
-        (index[cat] ??= []).add(a);
-      }
-    }
-    return index;
-  }();
-}
-
-Map<String, List<Article>> get _articlesByTopic {
-  return _articlesByTopicCache ??= () {
-    final index = <String, List<Article>>{};
-    for (final a in articles) {
-      for (final topic in a.topicTags) {
-        (index[topic] ??= []).add(a);
-      }
-    }
-    return index;
-  }();
-}
-
-Map<String, List<Article>> get _articlesByMood {
-  return _articlesByMoodCache ??= () {
-    final index = <String, List<Article>>{};
-    for (final a in articles) {
-      for (final mood in a.moodTags) {
-        (index[mood] ??= []).add(a);
-      }
-    }
-    return index;
-  }();
-}
-
-/// Get articles filtered by tradition (cached)
+/// Get articles filtered by tradition
 List<Article> getArticlesByTradition(Tradition tradition) {
-  return _articlesByTradition[tradition] ?? const [];
+  return articles.where((a) => a.tradition == tradition).toList();
 }
 
-/// Get articles filtered by category (cached)
+/// Get articles filtered by category
 List<Article> getArticlesByCategory(ArticleCategory category) {
-  return _articlesByCategory[category] ?? const [];
+  return articles.where((a) => a.hasCategory(category)).toList();
 }
 
 /// Get articles filtered by teacher
@@ -10952,75 +10898,34 @@ List<Article> searchArticles(String query) {
   }).toList();
 }
 
-/// Get articles by topic tag (cached)
+/// Get articles by topic tag
 List<Article> getArticlesByTopic(String topic) {
-  return _articlesByTopic[topic] ?? const [];
+  return articles.where((a) => a.hasTopic(topic)).toList();
 }
 
-/// Get articles by mood tag (cached)
+/// Get articles by mood tag
 List<Article> getArticlesByMood(String mood) {
-  return _articlesByMood[mood] ?? const [];
+  return articles.where((a) => a.hasMood(mood)).toList();
 }
 
-/// Get count of articles per topic tag (cached)
+/// Get count of articles per topic tag
 Map<String, int> getArticleTopicCounts() {
-  return _articleTopicCountsCache ??= () {
-    final counts = <String, int>{};
-    for (final article in articles) {
-      for (final topic in article.topicTags) {
-        counts[topic] = (counts[topic] ?? 0) + 1;
-      }
+  final counts = <String, int>{};
+  for (final article in articles) {
+    for (final topic in article.topicTags) {
+      counts[topic] = (counts[topic] ?? 0) + 1;
     }
-    return counts;
-  }();
+  }
+  return counts;
 }
 
-/// Get count of articles per mood tag (cached)
+/// Get count of articles per mood tag
 Map<String, int> getArticleMoodCounts() {
-  return _articleMoodCountsCache ??= () {
-    final counts = <String, int>{};
-    for (final article in articles) {
-      for (final mood in article.moodTags) {
-        counts[mood] = (counts[mood] ?? 0) + 1;
-      }
-    }
-    return counts;
-  }();
-}
-
-// --- Article lookup for pointing source links ---
-
-Map<String, Article>? _articleByTitleIndex;
-Map<String, Article>? _articleByTeacherIndex;
-
-void _ensureArticleIndex() {
-  if (_articleByTitleIndex != null) return;
-  _articleByTitleIndex = {};
-  _articleByTeacherIndex = {};
-  for (final a in articles) {
-    _articleByTitleIndex![a.title.toLowerCase()] = a;
-    // First article per teacher wins (most relevant)
-    if (a.teacher != null && !_articleByTeacherIndex!.containsKey(a.teacher)) {
-      _articleByTeacherIndex![a.teacher!] = a;
+  final counts = <String, int>{};
+  for (final article in articles) {
+    for (final mood in article.moodTags) {
+      counts[mood] = (counts[mood] ?? 0) + 1;
     }
   }
-}
-
-/// Find the best matching library article for a pointing.
-/// Returns null if no match found.
-///
-/// Priority: source title match → teacher match.
-Article? findArticleForPointing(Pointing p) {
-  _ensureArticleIndex();
-  // 1. Exact source → article title match
-  if (p.source != null) {
-    final match = _articleByTitleIndex![p.source!.toLowerCase()];
-    if (match != null) return match;
-  }
-  // 2. Teacher match
-  if (p.teacher != null) {
-    final match = _articleByTeacherIndex![p.teacher!];
-    if (match != null) return match;
-  }
-  return null;
+  return counts;
 }

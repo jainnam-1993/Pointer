@@ -113,7 +113,6 @@ class LineagesScreen extends ConsumerWidget {
                                 showModalBottomSheet(
                                   context: context,
                                   backgroundColor: Colors.transparent,
-                                  useRootNavigator: true,
                                   builder: (context) => _TraditionDetailSheet(
                                     tradition: tradition,
                                     info: info,

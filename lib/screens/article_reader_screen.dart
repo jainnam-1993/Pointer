@@ -7,7 +7,7 @@ import '../models/article.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 
-/// Full article reader screen with markdown rendering
+/// Full article reader screen with TTS support
 class ArticleReaderScreen extends ConsumerStatefulWidget {
   final Article article;
 
@@ -21,11 +21,19 @@ class ArticleReaderScreen extends ConsumerStatefulWidget {
 }
 
 class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
+  // TTS feature disabled - keeping state vars for future re-enablement
+  // ignore: unused_field
+  final bool _showTTSPlayer = false;
+  // ignore: unused_field
+  final bool _ttsConfigured = false;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionInfo = traditions[widget.article.tradition]!;
+    // TTS disabled - isPremium check no longer needed here
+
     return Scaffold(
       body: Stack(
         children: [
@@ -46,6 +54,8 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           },
                         ),
                         const Spacer(),
+                        // TTS button disabled - feature temporarily removed
+                        // TODO: Re-enable when TTS feature is ready
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -68,6 +78,9 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                   ),
                 ),
 
+                // TTS Player disabled - feature temporarily removed
+                // TODO: Re-enable when TTS feature is ready
+
                 // Article header
                 SliverToBoxAdapter(
                   child: Padding(
@@ -75,6 +88,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (_showTTSPlayer) const SizedBox(height: 16),
                         Text(
                           widget.article.title,
                           style: TextStyle(

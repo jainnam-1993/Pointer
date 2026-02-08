@@ -36,16 +36,17 @@ dependencies:
 
   # Notifications
   flutter_local_notifications: ^18.0.0
+  workmanager: ^0.9.0   # Background task scheduling (survives app kill, replaces AlarmManager)
 
   # Home Screen Widget
   home_widget: ^0.7.0
 
-  # Video Playback (splash screen)
-  video_player: ^2.9.0
-
   # Audio Playback
   just_audio: ^0.9.40
   audio_service: ^0.18.15
+
+  # Video Playback
+  video_player: ^2.9.0
 
   # URL Launching (for privacy/terms links)
   url_launcher: ^6.3.0

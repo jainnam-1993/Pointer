@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../data/pointings.dart';
+import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
@@ -45,7 +48,7 @@ class InquirySession {
 
 const inquirySessions = [
   InquirySession(
-    id: 'si_003',
+    id: '1',
     title: 'Who Am I?',
     description: 'The fundamental inquiry',
     duration: '5 min',
@@ -54,7 +57,7 @@ const inquirySessions = [
     tradition: Tradition.advaita,
   ),
   InquirySession(
-    id: 'dp_001',
+    id: '2',
     title: 'Finding the Looker',
     description: 'Turn attention to its source',
     duration: '7 min',
@@ -63,7 +66,7 @@ const inquirySessions = [
     tradition: Tradition.direct,
   ),
   InquirySession(
-    id: 'dp_005',
+    id: '3',
     title: 'The Space of Awareness',
     description: "Recognizing what doesn't change",
     duration: '10 min',
@@ -72,7 +75,7 @@ const inquirySessions = [
     tradition: Tradition.direct,
   ),
   InquirySession(
-    id: 'koan_001',
+    id: '4',
     title: 'Investigating Thoughts',
     description: 'What are thoughts made of?',
     duration: '8 min',
@@ -81,7 +84,7 @@ const inquirySessions = [
     tradition: Tradition.zen,
   ),
   InquirySession(
-    id: 'cont_001',
+    id: '5',
     title: 'Resting as Awareness',
     description: 'Beyond the practice',
     duration: '12 min',
@@ -91,11 +94,12 @@ const inquirySessions = [
   ),
 ];
 
-class InquiryScreen extends StatelessWidget {
+class InquiryScreen extends ConsumerWidget {
   const InquiryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final subscription = ref.watch(subscriptionProvider);
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -165,6 +169,8 @@ class InquiryScreen extends StatelessWidget {
                 ...inquirySessions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final session = entry.value;
+                    // When kFreeAccessEnabled, all sessions are unlocked
+                  final isLocked = !kFreeAccessEnabled && session.isPremium && !subscription.isPremium;
 
                   return StaggeredFadeIn(
                     index: index + 1, // Offset by 1 for intro card
@@ -173,10 +179,16 @@ class InquiryScreen extends StatelessWidget {
                       child: _SessionCard(
                         session: session,
                         index: index,
+                        isLocked: isLocked,
                         onTap: () async {
                           HapticFeedback.mediumImpact();
-                          if (context.mounted) {
-                            context.push('/inquiry/${session.id}');
+                          if (isLocked) {
+                            if (context.mounted) context.push('/paywall');
+                          } else {
+                            // Navigate to inquiry session
+                            if (context.mounted) {
+                              context.push('/inquiry/${session.id}');
+                            }
                           }
                         },
                       ),
@@ -195,11 +207,13 @@ class InquiryScreen extends StatelessWidget {
 class _SessionCard extends StatelessWidget {
   final InquirySession session;
   final int index;
+  final bool isLocked;
   final VoidCallback onTap;
 
   const _SessionCard({
     required this.session,
     required this.index,
+    required this.isLocked,
     required this.onTap,
   });
 
@@ -212,16 +226,22 @@ class _SessionCard extends StatelessWidget {
     // Use tradition-specific accent color for the circle
     final traditionAccent = session.accentColor;
     final circleColor = traditionAccent.withValues(alpha: 0.15);
+    final goldColor = colors.gold;
 
     return Semantics(
       button: true,
-      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
+      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition${isLocked ? '. Locked, premium required' : ''}',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
+        borderColor: isLocked
+            ? context.colors.glassBorder.withValues(alpha: 0.5)
+            : null,
         onTap: onTap,
+        child: Opacity(
+        opacity: isLocked ? 0.6 : 1,
         child: Row(
           children: [
-            // Number with tradition-specific accent color
+            // Number or lock with tradition-specific accent color
             Container(
               width: 40,
               height: 40,
@@ -230,14 +250,20 @@ class _SessionCard extends StatelessWidget {
                 color: circleColor,
               ),
               child: Center(
-                child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: traditionAccent,
-                  ),
-                ),
+                child: isLocked
+                    ? Icon(
+                        Icons.lock_outline,
+                        size: 20,
+                        color: textColor.withValues(alpha: 0.5),
+                      )
+                    : Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: traditionAccent,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(width: 16),
@@ -247,20 +273,35 @@ class _SessionCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    session.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: textColor,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        session.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: isLocked ? textColor.withValues(alpha: 0.5) : textColor,
+                        ),
+                      ),
+                      // Hide premium badge when kFreeAccessEnabled (all content free)
+                      if (!kFreeAccessEnabled && session.isPremium) ...[
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.auto_awesome,
+                          size: 14,
+                          color: isLocked
+                              ? goldColor.withValues(alpha: 0.5)
+                              : goldColor,
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 2),
                   Text(
                     session.description,
                     style: TextStyle(
                       fontSize: 14,
-                      color: textColorSecondary,
+                      color: isLocked ? textColorMuted : textColorSecondary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -275,6 +316,7 @@ class _SessionCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
