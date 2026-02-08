@@ -16,6 +16,9 @@
     native <methods>;
 }
 
+# media_kit (mpv-based video player)
+-keep class com.alexmercerind.** { *; }
+
 # Google Play Core (deferred components - not used but referenced by Flutter)
 -dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
 -dontwarn com.google.android.play.core.splitinstall.SplitInstallException

@@ -2,28 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:video_player/video_player.dart';
 import 'package:pointer/widgets/video_player_widget.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
 
 // Mock classes
-class MockVideoPlayerController extends Mock implements VideoPlayerController {}
-
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
-
-class MockVideoPlayerValue extends Mock implements VideoPlayerValue {}
 
 // Fake classes for fallback values
 class FakeRoute extends Fake implements Route<dynamic> {}
-
-class FakeUri extends Fake implements Uri {}
 
 void main() {
   // Register fallback values for mocktail
   setUpAll(() {
     registerFallbackValue(FakeRoute());
-    registerFallbackValue(FakeUri());
     AppTextStyles.useSystemFonts = true; // Use system fonts to avoid Google Fonts loading
   });
 

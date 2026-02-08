@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 /// Full-screen branded video splash screen.
 ///
@@ -18,7 +21,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  VideoPlayerController? _controller;
+  Player? _player;
+  VideoController? _videoController;
+  StreamSubscription<bool>? _completedSub;
   bool _navigated = false;
   double _opacity = 1.0;
 
@@ -40,30 +45,25 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final asset = 'assets/videos/nonduality_${isDark ? 'black' : 'white'}.mp4';
+    final asset = 'asset:///assets/videos/nonduality_${isDark ? 'black' : 'white'}.mp4';
 
-    _controller = VideoPlayerController.asset(asset)
-      ..initialize()
-          .then((_) {
-            if (!mounted) return;
-            setState(() {});
-            _controller!.play();
-            _controller!.addListener(_onVideoProgress);
-          })
-          .catchError((_) {
-            // Video failed to load — skip to destination
-            _navigateAway();
-          });
-  }
+    _player = Player();
+    _videoController = VideoController(_player!);
 
-  void _onVideoProgress() {
-    final controller = _controller;
-    if (controller == null || _navigated) return;
+    // Listen for video completion before opening media
+    _completedSub = _player!.stream.completed.listen((completed) {
+      if (completed && !_navigated) {
+        _navigateAway();
+      }
+    });
 
-    // Auto-advance when video reaches the end
-    if (controller.value.isInitialized && controller.value.position >= controller.value.duration && controller.value.duration > Duration.zero) {
+    // open() auto-plays by default
+    _player!.open(Media(asset)).catchError((_) {
+      // Video failed to load — skip to destination
       _navigateAway();
-    }
+    });
+
+    setState(() {});
   }
 
   void _navigateAway() {
@@ -80,8 +80,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
-    _controller?.removeListener(_onVideoProgress);
-    _controller?.dispose();
+    _completedSub?.cancel();
+    _player?.dispose();
     super.dispose();
   }
 
@@ -99,12 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOut,
           child: SizedBox.expand(
-            child: _controller != null && _controller!.value.isInitialized
-                ? FittedBox(
-                    fit: BoxFit.cover,
-                    child: SizedBox(width: _controller!.value.size.width, height: _controller!.value.size.height, child: VideoPlayer(_controller!)),
-                  )
-                : const SizedBox.shrink(),
+            child: _videoController != null ? Video(controller: _videoController!, fit: BoxFit.cover, controls: NoVideoControls) : const SizedBox.shrink(),
           ),
         ),
       ),
