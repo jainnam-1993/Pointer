@@ -6,16 +6,27 @@ import 'package:go_router/go_router.dart';
 import '../services/audio_pointing_service.dart';
 import '../theme/app_theme.dart';
 
-/// Compact audio player for pointing audio (guided readings, teachings).
-///
-/// Features:
-/// - Play/pause control
-/// - Seek slider with position/duration
-/// - Skip forward/backward buttons
-/// - Premium gating (audio is premium feature)
+/**
+ * Compact audio player for pointing audio (guided readings, teachings).
+ *
+ * Features:
+ * - Play/pause control with loading indicator
+ * - Seek slider with position/duration labels
+ * - Skip forward/backward (10s) buttons
+ * - Premium gating: non-premium users see a lock icon and tapping opens
+ *   a paywall prompt
+ *
+ * Integrates with [AudioPointingService] for playback state management.
+ * Renders nothing when [audioUrl] is null.
+ */
 class AudioPlayerWidget extends ConsumerStatefulWidget {
+  /// Identifier of the pointing this player is associated with.
   final String pointingId;
+
+  /// Network URL of the audio file; widget renders empty when null.
   final String? audioUrl;
+
+  /// Whether the user has premium access; controls playback vs lock display.
   final bool isPremium;
 
   const AudioPlayerWidget({super.key, required this.pointingId, required this.audioUrl, required this.isPremium});

@@ -7,24 +7,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/core_providers.dart';
 
-/// Available ambient sounds for app opening
+/// Ambient sound option played once on cold start to set a contemplative tone.
 enum AmbientSound {
+  /// No sound on app open.
   none('None', null),
+
+  /// Single meditation bell strike.
   bell('Bell', 'assets/sounds/bell.wav');
   // Future: singingBowl('Singing Bowl', 'assets/sounds/singing_bowl.wav'),
   // Future: softChime('Soft Chime', 'assets/sounds/soft_chime.wav');
 
   const AmbientSound(this.displayName, this.assetPath);
+
+  /// Human-readable name shown in the settings picker.
   final String displayName;
+
+  /// Asset bundle path to the audio file, or `null` for [none].
   final String? assetPath;
 }
 
-/// Provider for ambient sound selection (persisted)
+/// Riverpod provider for the user's persisted [AmbientSound] preference.
 final ambientSoundProvider = StateNotifierProvider<AmbientSoundNotifier, AmbientSound>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return AmbientSoundNotifier(prefs);
 });
 
+/**
+ * Manages the user's selected [AmbientSound], persisting it to [SharedPreferences].
+ */
 class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
   final SharedPreferences _prefs;
   static const _storageKey = 'ambient_sound';
@@ -40,26 +50,37 @@ class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
     }
   }
 
+  /// Update the selected sound and persist the choice.
   void setSound(AmbientSound sound) {
     state = sound;
     _prefs.setString(_storageKey, sound.name);
   }
 }
 
-/// Provider for ambient sound service (singleton)
+/// Riverpod provider exposing the [AmbientSoundService] singleton.
 final ambientSoundServiceProvider = Provider<AmbientSoundService>((ref) {
   return AmbientSoundService.instance;
 });
 
-/// Service for playing ambient sounds on app cold start (singleton)
+/**
+ * Singleton service for playing an ambient sound once on app cold start.
+ *
+ * Uses static state ([_staticPlayer], [_isPlayingSound]) so the playback
+ * guard survives widget rebuilds and provider re-creations. Only one
+ * sound plays per app lifecycle — duplicate calls are ignored.
+ */
 class AmbientSoundService {
-  // Static singleton instance
+  /// Singleton instance, accessed via [ambientSoundServiceProvider].
   static final AmbientSoundService instance = AmbientSoundService._();
   AmbientSoundService._();
 
-  // Static player and guard to survive widget rebuilds
+  /// Persistent audio player that survives widget rebuilds.
   static AudioPlayer? _staticPlayer;
+
+  /// Guard flag preventing duplicate playback within the same app lifecycle.
   static bool _isPlayingSound = false;
+
+  /// Subscription to the player state stream, cancelled on cleanup.
   static StreamSubscription<PlayerState>? _playerStateSubscription;
 
   /// Play the opening sound (only on cold start)

@@ -8,8 +8,16 @@ import '../services/share_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/share_templates/share_card.dart';
 
-/// Share preview screen with template and format selection
+/**
+ * Share preview screen with template style and format selection.
+ *
+ * Generates a shareable image card from the given [Pointing] using [ShareService].
+ * Users can choose between [ShareTemplate] styles (minimal, gradient, tradition)
+ * and [ShareFormat] sizes (square, story). Also supports text sharing, clipboard
+ * copy, and Day One journal export via the export options sheet.
+ */
 class SharePreviewScreen extends ConsumerStatefulWidget {
+  /// The pointing to generate a share card for.
   final Pointing pointing;
 
   const SharePreviewScreen({super.key, required this.pointing});
@@ -19,12 +27,19 @@ class SharePreviewScreen extends ConsumerStatefulWidget {
 }
 
 class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
+  /// Whether the share action is currently in progress.
   bool _isSharing = false;
+
+  /// Cached preview image bytes for display (regenerated when template/format changes).
   Uint8List? _previewImage;
+
+  /// Whether a preview is currently being generated.
   bool _isGeneratingPreview = false;
 
-  // Track current template/format to detect changes
+  /// Last template used for preview (used to detect changes and trigger regeneration).
   ShareTemplate? _lastTemplate;
+
+  /// Last format used for preview (used to detect changes and trigger regeneration).
   ShareFormat? _lastFormat;
 
   @override
@@ -36,6 +51,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     });
   }
 
+  /// Generates a preview image using [ShareService.captureWidget] at 1x pixel ratio.
   Future<void> _generatePreview() async {
     final template = ref.read(shareTemplateProvider);
     final format = ref.read(shareFormatProvider);
@@ -165,6 +181,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     );
   }
 
+  /// Builds the preview image display with correct aspect ratio and shadow.
   Widget _buildPreview(ShareTemplate template, ShareFormat format) {
     final colors = context.colors;
     final aspectRatio = format.width / format.height;
@@ -212,6 +229,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     );
   }
 
+  /// Builds the horizontal template style selector (minimal/gradient/tradition).
   Widget _buildTemplateSelector(PointerColors colors, ShareTemplate selected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,6 +280,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     );
   }
 
+  /// Builds the horizontal format selector (square/story).
   Widget _buildFormatSelector(PointerColors colors, ShareFormat selected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,6 +342,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     );
   }
 
+  /// Captures the share card at full resolution and invokes the system share sheet.
   Future<void> _shareImage(ShareTemplate template, ShareFormat format) async {
     setState(() => _isSharing = true);
     HapticFeedback.mediumImpact();
@@ -349,6 +369,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     }
   }
 
+  /// Shows a glass bottom sheet with additional export options (clipboard, text, Day One).
   void _showExportSheet(BuildContext context) {
     HapticFeedback.lightImpact();
     final colors = context.colors;
@@ -415,6 +436,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     );
   }
 
+  /// Handles the selected export option (clipboard, text share, or Day One journal).
   Future<void> _handleExportOption(String option) async {
     final shareService = ref.read(shareServiceProvider);
     HapticFeedback.lightImpact();

@@ -27,6 +27,18 @@ double _responsiveFontSize(BuildContext context, double baseSize) {
   return textScaler.scale(baseSize * widthFactor);
 }
 
+/**
+ * Four-page contemplative onboarding experience.
+ *
+ * Guides first-time users through the app's philosophy using animated pages:
+ * 1. [_InterruptionPage] - word-by-word question reveal
+ * 2. [_ContrastPage] - dissolve transition between meditation concept and inquiry
+ * 3. [_SimplicityPage] - strike-through animation for concepts being let go
+ * 4. [_NotificationsPage] - simulated notification with explanation
+ *
+ * Supports horizontal swiping between pages and handles notification permission
+ * request on the final page. Marks onboarding complete in [StorageService].
+ */
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -44,12 +56,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
+  /// Animates to the specified page with haptic feedback. No-ops if [page] > 3.
   void _advanceToPage(int page) {
     if (!mounted || page > 3) return;
     HapticFeedback.lightImpact();
     _pageController.animateToPage(page, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
   }
 
+  /// Advances to the next page or finishes onboarding on the last page.
   Future<void> _handleContinue() async {
     HapticFeedback.lightImpact();
     if (_currentPage < 3) {
@@ -59,12 +73,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
+  /// Requests notification permission and finishes onboarding regardless of result.
   Future<void> _handleEnableNotifications() async {
     HapticFeedback.mediumImpact();
     final granted = await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
   }
 
+  /// Marks onboarding complete in storage and navigates to home screen.
   Future<void> _finishOnboarding(bool notificationsEnabled) async {
     final storage = ref.read(storageServiceProvider);
     await storage.setOnboardingCompleted(true);
@@ -491,8 +507,14 @@ class _NotificationsPageState extends State<_NotificationsPage> {
 // Shared Components
 // =============================================================================
 
+/// Animated dot indicators showing current page position.
+///
+/// The active dot expands to 24px width; inactive dots are 8px circles at 30% opacity.
 class _PageIndicators extends StatelessWidget {
+  /// Zero-based index of the current page.
   final int currentPage;
+
+  /// Total number of pages to display dots for.
   final int pageCount;
 
   const _PageIndicators({required this.currentPage, required this.pageCount});
@@ -520,6 +542,7 @@ class _PageIndicators extends StatelessWidget {
   }
 }
 
+/// Glass-styled button used on onboarding pages with optional primary highlight.
 class _OnboardingButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

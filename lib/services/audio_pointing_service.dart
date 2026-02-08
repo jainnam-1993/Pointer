@@ -2,8 +2,26 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
-/// Audio playback state
-enum AudioPlaybackState { idle, loading, playing, paused, completed, error }
+/// Lifecycle state of the [AudioPointingService] audio player.
+enum AudioPlaybackState {
+  /// No audio loaded or player reset.
+  idle,
+
+  /// Audio source is being loaded or buffered.
+  loading,
+
+  /// Audio is actively playing.
+  playing,
+
+  /// Playback is paused by the user.
+  paused,
+
+  /// Playback reached the end of the audio.
+  completed,
+
+  /// An error occurred during loading or playback.
+  error,
+}
 
 /// Service for playing audio pointings (guided readings, teachings).
 ///

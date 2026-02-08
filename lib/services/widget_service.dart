@@ -404,11 +404,23 @@ class WidgetService {
   }
 }
 
-/// Simplified pointing data for widget display
+/**
+ * Lightweight read-only model representing a [Pointing] as displayed
+ * in the home screen widget.
+ *
+ * Retrieved from shared widget storage by [WidgetService.getCurrentWidgetPointing].
+ */
 class WidgetPointing {
+  /// The pointing text content shown in the widget.
   final String content;
+
+  /// Attribution teacher name, or `null` if anonymous.
   final String? teacher;
+
+  /// Display name of the [Tradition] this pointing belongs to.
   final String tradition;
+
+  /// Timestamp of the last widget data update, used for staleness checks.
   final DateTime? lastUpdated;
 
   const WidgetPointing({required this.content, this.teacher, required this.tradition, this.lastUpdated});

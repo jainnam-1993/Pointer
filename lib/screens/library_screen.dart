@@ -1,4 +1,11 @@
-// Library Screen - Browse articles and teachings from non-dual traditions
+// Library screen for browsing articles and teachings from non-dual traditions.
+//
+// Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
+// ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
+// featured articles section with peek indicator, browse mode and content type
+// dropdowns, and premium gating via kFreeAccessEnabled.
+//
+// Re-exports all library/ subfiles for backward compatibility.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
@@ -31,6 +38,13 @@ export 'library/lineage_teachings_screen.dart';
 export 'library/mood_teachings_screen.dart';
 export 'library/topic_teachings_screen.dart';
 
+/**
+ * Main library screen with featured articles, browse-by navigation, and saved pointings.
+ *
+ * Premium content is gated behind [SubscriptionProvider] unless [kFreeAccessEnabled]
+ * is true. Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
+ * [LibraryBrowseMode.lineages], [LibraryBrowseMode.moods], and [LibraryBrowseMode.saved].
+ */
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
 
@@ -39,7 +53,10 @@ class LibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
+  /// Current browse mode controlling which category navigation is shown.
   LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
+
+  /// Current content type filter (all, articles only, or quotes only).
   ContentFilter _contentFilter = ContentFilter.all;
 
   @override
@@ -227,6 +244,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /// Navigates to the [ArticleReaderScreen] for the given article.
   void _openArticle(BuildContext context, Article article) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
@@ -249,6 +267,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
   }
 
+  /// Builds a sliver list of topics with merged counts based on the active [contentFilter].
+  ///
+  /// When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
+  /// uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
   Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
     // Always show TopicTags with merged counts based on filter
     final Map<String, int> topicCounts;
@@ -295,6 +317,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /// Navigates to [TopicTeachingsScreen] for the given topic with the active filter.
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
@@ -304,6 +327,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /// Builds a sliver list of teachers with counts based on the active [contentFilter].
   Widget _buildTeachersList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Get teachers based on content filter
     final Map<String, int> teacherCounts;
@@ -370,6 +394,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /// Builds a sliver list of tradition lineages with counts based on the active [contentFilter].
   Widget _buildLineagesList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build list of lineages with their counts based on filter
     final lineageData = <({Tradition tradition, TraditionInfo info, int count})>[];
@@ -419,6 +444,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /// Builds a sliver list of mood tags with counts based on the active [contentFilter].
   Widget _buildMoodsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build mood counts based on filter
     final Map<String, int> moodCounts;
@@ -625,6 +651,7 @@ class _ContentTypeDropdown extends StatelessWidget {
   }
 }
 
+/// Bottom sheet for selecting content type filter (All/Articles/Quotes).
 class _ContentTypeSheet extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onSelected;
@@ -646,6 +673,7 @@ class _ContentTypeSheet extends StatelessWidget {
   }
 }
 
+/// Bottom sheet for selecting browse mode (Topics/Teachers/Lineages/Moods/Saved).
 class _BrowseModeSheet extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onSelected;
@@ -734,6 +762,7 @@ class _BrowseCard extends StatelessWidget {
   }
 }
 
+/// Horizontal-scrolling card for a featured [Article] with tradition icon, reading time, and teacher.
 class _FeaturedArticleCard extends StatelessWidget {
   final Article article;
   final VoidCallback onTap;

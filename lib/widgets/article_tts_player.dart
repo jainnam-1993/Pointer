@@ -4,11 +4,24 @@ import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
-/// Mini TTS player widget for article reader.
-///
-/// Shows playback controls and progress when TTS is active.
+/**
+ * Mini TTS player widget for article reader.
+ *
+ * Shows playback controls (play/pause, seek +/-10s, voice selector) and a
+ * seek slider with position/duration labels when TTS is active for the
+ * given [articleId]. Hides itself when the [TTSService] is idle and not
+ * playing this article.
+ *
+ * Wrapped in a [GlassCard] for consistent glassmorphic appearance.
+ *
+ * **Note:** TTS is currently disabled (see [TTSService]); this widget
+ * remains for future re-enablement.
+ */
 class ArticleTTSPlayer extends ConsumerStatefulWidget {
+  /// Identifier of the article whose TTS playback this widget controls.
   final String articleId;
+
+  /// Optional callback invoked when the user taps the close button.
   final VoidCallback? onClose;
 
   const ArticleTTSPlayer({super.key, required this.articleId, this.onClose});

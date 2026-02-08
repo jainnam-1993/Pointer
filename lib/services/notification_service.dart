@@ -7,11 +7,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/pointings.dart';
 import 'workmanager_service.dart';
 
-/// Notification time configuration (legacy - kept for migration).
+/**
+ * Individual notification time entry (legacy model, kept for migration).
+ *
+ * Replaced by [NotificationSchedule] which uses a time-window + frequency
+ * approach rather than discrete time slots.
+ */
 class NotificationTime {
+  /// Unique identifier for this time slot.
   final String id;
+
+  /// Hour component (0-23) of the scheduled notification.
   final int hour;
+
+  /// Minute component (0-59) of the scheduled notification.
   final int minute;
+
+  /// Whether this individual time slot is active.
   final bool isEnabled;
 
   const NotificationTime({required this.id, required this.hour, required this.minute, this.isEnabled = true});
@@ -32,13 +44,27 @@ class NotificationTime {
   }
 }
 
-/// Quick schedule presets for one-tap configuration (Phase 5.3).
+/**
+ * Quick schedule presets for one-tap notification configuration.
+ *
+ * Each preset maps to a [NotificationSchedule] with predefined
+ * time window and frequency parameters.
+ */
 enum NotificationPreset {
+  /// 6am-10am, every 2 hours — for morning practice.
   morningOnly,
+
+  /// 8am-9pm, every 3 hours — gentle reminders throughout the day.
   throughoutDay,
+
+  /// 5pm-10pm, every 2 hours — for evening contemplation.
   eveningFocus,
+
+  /// 8am-8pm, every 6 hours — least intrusive schedule.
   minimal,
-  testEveryMinute; // Debug preset for testing
+
+  /// Every 1 minute, 24/7 — debug-only preset for testing notifications.
+  testEveryMinute;
 
   String get label {
     switch (this) {
@@ -86,15 +112,38 @@ enum NotificationPreset {
   }
 }
 
-/// Notification schedule with time window + frequency model (Phase 5.1).
+/**
+ * Notification schedule using a time-window + frequency model.
+ *
+ * Notifications fire at [frequencyMinutes] intervals between [startHour]:[startMinute]
+ * and [endHour]:[endMinute], skipping any times that fall within the quiet-hours
+ * window ([quietStartHour] to [quietEndHour]).
+ *
+ * Persisted as JSON via [NotificationService.saveSchedule].
+ */
 class NotificationSchedule {
+  /// Hour (0-23) when the notification window opens.
   final int startHour;
+
+  /// Minute (0-59) offset for the window start.
   final int startMinute;
+
+  /// Hour (0-23) when the notification window closes.
   final int endHour;
+
+  /// Minute (0-59) offset for the window end.
   final int endMinute;
+
+  /// Interval in minutes between consecutive notifications (30-720).
   final int frequencyMinutes;
+
+  /// Hour (0-23) when quiet hours begin (no notifications).
   final int quietStartHour;
+
+  /// Hour (0-23) when quiet hours end.
   final int quietEndHour;
+
+  /// Whether this schedule is currently active.
   final bool isEnabled;
 
   const NotificationSchedule({

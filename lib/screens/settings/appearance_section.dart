@@ -1,4 +1,4 @@
-// Appearance section - theme selector, zen mode, animation toggle
+// Appearance settings section: theme selector, zen mode toggle, and animation toggle.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +6,12 @@ import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 
+/**
+ * Appearance settings card containing theme selection, zen mode toggle, and animation toggle.
+ *
+ * Theme options: Light, Dark, System (via [AppThemeMode]). Contained within a [GlassCard]
+ * with [ThemeOption] buttons, [ZenModeToggle], and [AnimationToggle].
+ */
 class AppearanceSelector extends ConsumerWidget {
   const AppearanceSelector({super.key});
 
@@ -56,6 +62,7 @@ class AppearanceSelector extends ConsumerWidget {
   }
 }
 
+/// Toggle switch for zen mode (minimal UI with only the pointing text, no navigation bar).
 class ZenModeToggle extends ConsumerWidget {
   const ZenModeToggle({super.key});
 
@@ -96,6 +103,10 @@ class ZenModeToggle extends ConsumerWidget {
   }
 }
 
+/// Toggle switch for background animations (gradient and floating particles).
+///
+/// When disabled, bridges to [reduceMotionOverrideProvider] to suppress
+/// all motion throughout the app.
 class AnimationToggle extends ConsumerWidget {
   const AnimationToggle({super.key});
 
@@ -139,10 +150,23 @@ class AnimationToggle extends ConsumerWidget {
 // _OledModeToggle removed (Phase 5.5) - caused light mode to turn black
 // Provider and storage keys retained for backwards compatibility
 
+/**
+ * Selectable theme option button with icon, label, and animated selection state.
+ *
+ * When selected, shows a thicker accent-colored border, tinted background, and a
+ * small checkmark overlay on the icon. Designed for use in [AppearanceSelector].
+ */
 class ThemeOption extends StatelessWidget {
+  /// Display label (e.g., "Light", "Dark", "System").
   final String label;
+
+  /// Icon displayed above the label.
   final IconData icon;
+
+  /// Whether this option is currently selected.
   final bool isSelected;
+
+  /// Callback when this option is tapped.
   final VoidCallback onTap;
 
   const ThemeOption({super.key, required this.label, required this.icon, required this.isSelected, required this.onTap});

@@ -11,37 +11,60 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/pointings.dart';
 import '../providers/providers.dart';
 
-/// Available share card templates
+/// Visual template applied when generating a shareable [Pointing] card image.
 enum ShareTemplate {
+  /// Clean white/dark background with text only.
   minimal('Minimal', 'Clean, text-focused design'),
+
+  /// App's animated gradient rendered as a static background.
   gradient('Gradient', 'App gradient background'),
+
+  /// Tradition-specific colour palette (e.g. Zen blue, Advaita gold).
   tradition('Tradition', 'Colors matching the tradition');
 
   const ShareTemplate(this.displayName, this.description);
+
+  /// Human-readable name shown in the template picker.
   final String displayName;
+
+  /// Short description of this template's visual style.
   final String description;
 }
 
-/// Available share formats (aspect ratios)
+/// Aspect ratio format for the generated share card image.
 enum ShareFormat {
+  /// 1:1 (1080x1080) — optimal for Instagram/Facebook feeds.
   square('Square', '1:1 for feeds', 1080, 1080),
+
+  /// 9:16 (1080x1920) — optimal for Instagram/TikTok stories.
   story('Story', '9:16 for stories', 1080, 1920);
 
   const ShareFormat(this.displayName, this.description, this.width, this.height);
+  /// Human-readable name shown in the UI picker.
   final String displayName;
+
+  /// Short explanation of the format's intended use.
   final String description;
+
+  /// Pixel width of the generated image.
   final int width;
+
+  /// Pixel height of the generated image.
   final int height;
 
+  /// Width-to-height ratio derived from [width] and [height].
   double get aspectRatio => width / height;
 }
 
-/// Provider for share template preference (persisted)
+/// Riverpod provider for the user's persisted [ShareTemplate] preference.
 final shareTemplateProvider = StateNotifierProvider<ShareTemplateNotifier, ShareTemplate>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return ShareTemplateNotifier(prefs);
 });
 
+/**
+ * Manages the user's selected [ShareTemplate], persisting it to [SharedPreferences].
+ */
 class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
   final SharedPreferences _prefs;
   static const _storageKey = 'pointer_share_template';
@@ -57,18 +80,22 @@ class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
     }
   }
 
+  /// Update the selected template and persist the choice.
   void setTemplate(ShareTemplate template) {
     state = template;
     _prefs.setString(_storageKey, template.name);
   }
 }
 
-/// Provider for share format preference (persisted)
+/// Riverpod provider for the user's persisted [ShareFormat] preference.
 final shareFormatProvider = StateNotifierProvider<ShareFormatNotifier, ShareFormat>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return ShareFormatNotifier(prefs);
 });
 
+/**
+ * Manages the user's selected [ShareFormat], persisting it to [SharedPreferences].
+ */
 class ShareFormatNotifier extends StateNotifier<ShareFormat> {
   final SharedPreferences _prefs;
   static const _storageKey = 'pointer_share_format';
@@ -84,19 +111,27 @@ class ShareFormatNotifier extends StateNotifier<ShareFormat> {
     }
   }
 
+  /// Update the selected format and persist the choice.
   void setFormat(ShareFormat format) {
     state = format;
     _prefs.setString(_storageKey, format.name);
   }
 }
 
-/// Provider for share service
+/// Riverpod provider for the [ShareService] singleton.
 final shareServiceProvider = Provider<ShareService>((ref) {
   return ShareService();
 });
 
-/// Service for creating and sharing quote cards
+/**
+ * Service for creating and sharing [Pointing] quote cards.
+ *
+ * Supports multiple output channels: image share sheet, Instagram Stories,
+ * clipboard text, plain-text share, and Day One / Apple Notes journal export.
+ * Card images are rendered from Flutter widgets via [ScreenshotController].
+ */
 class ShareService {
+  /// Controller used to capture share card widgets as raster images.
   final ScreenshotController screenshotController = ScreenshotController();
 
   /// Capture a widget as an image

@@ -1,7 +1,18 @@
-// Library Providers
-// State management for the Library feature - articles and teacher profiles
-//
-// Provides filtering, searching, and access to library content.
+/**
+ * Library providers - Articles, teacher profiles, search, and filtering.
+ *
+ * Provides the data layer for the Library screen with ~15 providers covering:
+ * - [Article] access: all, by tradition/category/teacher/ID, featured, premium
+ * - [TeacherProfile] access: all, by name/tradition, with articles/pointings
+ * - Full-text search across articles and teachers via [librarySearchQueryProvider]
+ * - Tradition and category filter state for the filtered article list
+ * - Statistics: counts, reading time, per-tradition breakdowns
+ * - Cross-references between articles and teacher profiles
+ *
+ * All providers are read-only derivations from the static [articles] and
+ * [teacherProfiles] data sets. Search and filter state is ephemeral (not persisted).
+ */
+library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
@@ -104,7 +115,10 @@ final teacherNamesProvider = Provider<List<String>>((ref) {
 /// Current search query state
 final librarySearchQueryProvider = StateProvider<String>((ref) => '');
 
-/// Provides search results for articles
+/// Provides [Article] search results matching [librarySearchQueryProvider].
+///
+/// Searches across title, subtitle, excerpt, content, and teacher name.
+/// Returns an empty list when the query is empty.
 final articleSearchResultsProvider = Provider<List<Article>>((ref) {
   final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
 
@@ -121,7 +135,10 @@ final articleSearchResultsProvider = Provider<List<Article>>((ref) {
   }).toList();
 });
 
-/// Provides search results for teachers
+/// Provides [TeacherProfile] search results matching [librarySearchQueryProvider].
+///
+/// Searches across name, bio, and key teachings list.
+/// Returns an empty list when the query is empty.
 final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
   final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
 
@@ -146,7 +163,10 @@ final selectedTraditionFilterProvider = StateProvider<Tradition?>((ref) => null)
 /// Selected category filter for articles
 final selectedCategoryFilterProvider = StateProvider<ArticleCategory?>((ref) => null);
 
-/// Filtered articles based on current filters
+/// Articles filtered by the active [selectedTraditionFilterProvider] and [selectedCategoryFilterProvider].
+///
+/// Returns all articles when no filters are active. Filters are AND-composed
+/// (both tradition and category must match when both are set).
 final filteredArticlesProvider = Provider<List<Article>>((ref) {
   final tradition = ref.watch(selectedTraditionFilterProvider);
   final category = ref.watch(selectedCategoryFilterProvider);
@@ -201,12 +221,14 @@ final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
 // Cross-Reference Providers
 // ============================================================
 
-/// Get articles related to a teacher profile
+/// Returns [Article]s linked to a [TeacherProfile] via [TeacherProfile.articleIds].
 final articlesForTeacherProvider = Provider.family<List<Article>, TeacherProfile>((ref, teacher) {
   return articles.where((a) => teacher.articleIds.contains(a.id)).toList();
 });
 
-/// Get teacher for an article (if attributed)
+/// Returns the [TeacherProfile] for an [Article] by matching [Article.teacher] name.
+///
+/// Returns `null` if the article has no teacher attribution or the teacher is not found.
 final teacherForArticleProvider = Provider.family<TeacherProfile?, Article>((ref, article) {
   if (article.teacher == null) return null;
 

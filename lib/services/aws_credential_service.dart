@@ -3,18 +3,33 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:otp/otp.dart';
 
-/// AWS credentials returned from the auth endpoint
+/**
+ * Temporary AWS credentials returned from the TOTP auth endpoint.
+ *
+ * Used by [TTSService] to sign requests to the AWS Polly API.
+ * Credentials include a [sessionToken] for STS-based access and
+ * auto-expire after [expiration], with a 5-minute safety buffer
+ * via [needsRefresh].
+ */
 class AWSCredentials {
+  /// IAM access key ID for request signing.
   final String accessKeyId;
+
+  /// IAM secret access key for HMAC-based request signing.
   final String secretAccessKey;
+
+  /// STS session token included as an `X-Amz-Security-Token` header.
   final String sessionToken;
+
+  /// UTC timestamp after which these credentials are no longer valid.
   final DateTime expiration;
 
   AWSCredentials({required this.accessKeyId, required this.secretAccessKey, required this.sessionToken, required this.expiration});
 
+  /// Whether these credentials have passed their [expiration] time.
   bool get isExpired => DateTime.now().isAfter(expiration);
 
-  /// Buffer of 5 minutes before actual expiry to avoid edge cases
+  /// Whether these credentials should be refreshed (5-minute buffer before [expiration]).
   bool get needsRefresh => DateTime.now().isAfter(expiration.subtract(const Duration(minutes: 5)));
 
   factory AWSCredentials.fromJson(Map<String, dynamic> json) {
@@ -190,9 +205,12 @@ class AWSCredentialService {
   }
 }
 
-/// Exception for AWS credential operations.
+/// Exception thrown by [AWSCredentialService] for setup, auth, or network failures.
 class AWSCredentialException implements Exception {
+  /// User-facing error summary.
   final String message;
+
+  /// Optional technical details (e.g. HTTP response body).
   final String? details;
 
   AWSCredentialException(this.message, [this.details]);

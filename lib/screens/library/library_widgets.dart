@@ -1,4 +1,7 @@
-// Library shared widgets - section headers, list items, cards, sheets, premium upgrade
+// Shared widgets for library screens: SectionHeader, ArticleListItem, TeachingCard,
+// FilterSheet, FilterOption, LibraryPremiumUpgrade, and FeatureRow.
+//
+// Also provides showLibraryShareSheet for sharing teachings via SharePreviewScreen.
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -406,8 +409,12 @@ class LibraryPremiumUpgrade extends StatelessWidget {
   }
 }
 
+/// Single row in the premium upgrade feature list with a gold icon and label text.
 class FeatureRow extends StatelessWidget {
+  /// Icon displayed in gold color.
   final IconData icon;
+
+  /// Feature description text.
   final String text;
 
   const FeatureRow({super.key, required this.icon, required this.text});

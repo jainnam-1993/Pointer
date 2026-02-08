@@ -8,13 +8,29 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 import 'notification_preview.dart';
 
-/// Animation durations for onboarding - deliberately slower for contemplative feel
+/**
+ * Animation duration constants for onboarding -- deliberately slower for a contemplative feel.
+ *
+ * Used by [TypewriterText], [DissolveTransition], [StrikeThroughReveal],
+ * [NotificationSimulation], and [BreathingGlow].
+ */
 class OnboardingDurations {
+  /// Delay between each word appearing in [TypewriterText].
   static const Duration wordReveal = Duration(milliseconds: 200);
+
+  /// Fade duration for each word in [TypewriterText].
   static const Duration wordFade = Duration(milliseconds: 400);
+
+  /// Duration of the dissolve/blur animation in [DissolveTransition].
   static const Duration dissolve = Duration(milliseconds: 800);
+
+  /// Duration of the strike-through line animation in [StrikeThroughReveal].
   static const Duration strikethrough = Duration(milliseconds: 300);
+
+  /// One full breath cycle (inhale + exhale) for [BreathingGlow].
   static const Duration breathCycle = Duration(seconds: 3);
+
+  /// Slide-in duration for [NotificationSimulation] banner appearance.
   static const Duration notificationSlide = Duration(milliseconds: 400);
 }
 

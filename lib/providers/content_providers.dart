@@ -1,7 +1,14 @@
-/// Content providers - Pointings, favorites, affinity, and teaching filters
-///
-/// Manages spiritual content: daily pointings with round-robin navigation,
-/// user favorites, tradition affinity learning, and teaching library filters.
+/**
+ * Content providers - Pointings, favorites, affinity, and teaching filters.
+ *
+ * Manages spiritual content delivery: daily [Pointing] navigation via
+ * [CurrentPointingNotifier] (round-robin with persistent shuffle order),
+ * user favorites via [FavoritesNotifier], tradition affinity learning via
+ * [AffinityService], teaching library filters via [TeachingFilterNotifier],
+ * and preferred tradition selection via [PreferredTraditionsNotifier].
+ *
+ * All state is persisted through [StorageService] and survives app restarts.
+ */
 library;
 
 import 'dart:math';
@@ -176,17 +183,32 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 // Favorites
 // ============================================================
 
-/// Favorites provider
+/// Provider for saved/favorited [Pointing] IDs managed by [FavoritesNotifier].
+///
+/// State is a list of pointing ID strings, persisted via [StorageService].
+/// Favorites are interleaved into the home widget rotation by [WidgetService].
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return FavoritesNotifier(storage);
 });
 
+/**
+ * Manages the user's saved/favorited [Pointing] IDs.
+ *
+ * Persists favorites through [StorageService]. Supports toggle semantics
+ * (add if absent, remove if present) and lookup. The favorites list
+ * also feeds into [WidgetService] for home screen widget content and
+ * [AffinityService] for tradition preference learning (3x weight for saves).
+ */
 class FavoritesNotifier extends StateNotifier<List<String>> {
   final StorageService _storage;
 
   FavoritesNotifier(this._storage) : super(_storage.favorites);
 
+  /// Toggles the favorite state of a [Pointing] by [pointingId].
+  ///
+  /// Adds to favorites if not present, removes if already saved.
+  /// Persists the change immediately via [StorageService].
   Future<void> toggle(String pointingId) async {
     if (state.contains(pointingId)) {
       await _storage.removeFavorite(pointingId);
@@ -197,6 +219,7 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
     }
   }
 
+  /// Returns whether the [Pointing] with [pointingId] is currently favorited.
   bool isFavorite(String pointingId) => state.contains(pointingId);
 }
 
@@ -204,16 +227,35 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
 // Teaching Filter - Tag-based filtering for Library
 // ============================================================
 
-/// State for teaching filters
+/**
+ * Immutable state for tag-based [Teaching] filters in the library.
+ *
+ * Combines multiple filter dimensions ([lineage], [topics], [moods],
+ * [teacher], [type]) that are AND-composed when applied via [apply].
+ * Used by [TeachingFilterNotifier] and consumed by [filteredTeachingsProvider].
+ */
 class TeachingFilterState {
+  /// Filter by spiritual tradition/lineage (e.g., Advaita, Zen, Direct Path).
   final Tradition? lineage;
+
+  /// Active topic tag filters from [TopicTags] constants.
   final Set<String> topics;
+
+  /// Active mood tag filters from [MoodTags] constants.
   final Set<String> moods;
+
+  /// Filter by teacher name.
   final String? teacher;
+
+  /// Filter by teaching type (quote or article).
   final TeachingType? type;
 
   const TeachingFilterState({this.lineage, this.topics = const {}, this.moods = const {}, this.teacher, this.type});
 
+  /// Creates a copy with selectively overridden fields.
+  ///
+  /// Use `clearLineage`, `clearTeacher`, or `clearType` to explicitly
+  /// set those fields to `null` (since passing `null` preserves the current value).
   TeachingFilterState copyWith({
     Tradition? lineage,
     Set<String>? topics,
@@ -248,7 +290,13 @@ class TeachingFilterState {
   bool get hasActiveFilters => lineage != null || topics.isNotEmpty || moods.isNotEmpty || teacher != null || type != null;
 }
 
-/// Teaching filter notifier
+/**
+ * Manages [TeachingFilterState] with granular setters for each filter dimension.
+ *
+ * Provides toggle semantics for topics and moods (add/remove from set),
+ * direct setters for lineage, teacher, and type, and a [reset] to clear all filters.
+ * State changes reactively update [filteredTeachingsProvider].
+ */
 class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
   TeachingFilterNotifier() : super(const TeachingFilterState());
 
@@ -349,7 +397,13 @@ final preferredTraditionsProvider = StateNotifierProvider<PreferredTraditionsNot
   return PreferredTraditionsNotifier(storage);
 });
 
-/// Notifier for managing preferred traditions
+/**
+ * Manages the user's preferred/enabled [Tradition] set.
+ *
+ * All traditions are enabled by default. Users can toggle individual
+ * traditions on/off, with a minimum of one always remaining enabled.
+ * Persisted via [StorageService] as a list of tradition name strings.
+ */
 class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
   final StorageService _storage;
 

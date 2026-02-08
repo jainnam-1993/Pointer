@@ -1,4 +1,4 @@
-// Notification times sheet - schedule management bottom sheet
+// Notification schedule management bottom sheet with presets, time window, and frequency controls.
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +8,15 @@ import '../../services/notification_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 
-/// Bottom sheet for managing notification schedule (Phase 5.1)
+/**
+ * Bottom sheet for managing notification schedule with presets and custom time controls.
+ *
+ * Provides quick presets ([NotificationPreset]: Morning, All Day, Evening, Minimal),
+ * a start/end time window with [CupertinoPicker] wheels, and frequency selection
+ * (30m to 12h). Changes are saved immediately via [NotificationService.saveSchedule].
+ */
 class NotificationTimesSheet extends ConsumerStatefulWidget {
+  /// Whether to show the test preset (visible only in developer mode).
   final bool showTestPreset;
 
   const NotificationTimesSheet({super.key, this.showTestPreset = false});
@@ -19,7 +26,10 @@ class NotificationTimesSheet extends ConsumerStatefulWidget {
 }
 
 class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet> {
+  /// The current notification schedule being edited.
   late NotificationSchedule _schedule;
+
+  /// Available frequency options in minutes (30m, 1h, 2h, 3h, 4h, 6h, 8h, 12h).
   static const _frequencyOptions = [30, 60, 120, 180, 240, 360, 480, 720];
 
   @override
@@ -28,10 +38,14 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     _schedule = ref.read(notificationServiceProvider).getSchedule();
   }
 
+  /// Persists the current schedule to the notification service.
   Future<void> _saveSchedule() async {
     await ref.read(notificationServiceProvider).saveSchedule(_schedule);
   }
 
+  /// Opens a [CupertinoPicker] bottom sheet for selecting start or end time.
+  ///
+  /// Uses responsive height calculation based on orientation and safe area.
   Future<void> _pickTime(bool isStart) async {
     final hour = isStart ? _schedule.startHour : _schedule.endHour;
     final minute = isStart ? _schedule.startMinute : _schedule.endMinute;
@@ -152,6 +166,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     );
   }
 
+  /// Returns whether the current schedule matches the given [preset]'s configuration.
   bool _matchesPreset(NotificationPreset preset) {
     final presetSchedule = preset.schedule;
     return _schedule.startHour == presetSchedule.startHour &&
@@ -159,6 +174,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
         _schedule.frequencyMinutes == presetSchedule.frequencyMinutes;
   }
 
+  /// Applies a [NotificationPreset] and saves the resulting schedule.
   void _applyPreset(NotificationPreset preset) {
     setState(() {
       _schedule = preset.schedule;

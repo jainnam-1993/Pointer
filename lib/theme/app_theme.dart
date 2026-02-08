@@ -1,43 +1,110 @@
+/**
+ * Theme system for the Pointer app providing dark, light, high-contrast, and OLED color schemes.
+ *
+ * This file defines the complete visual identity: color palettes ([PointerColors]),
+ * gradient backgrounds ([AppGradients]), accessibility-aware text styles ([AppTextStyles]),
+ * Material [ThemeData] configurations ([AppTheme]), and layout spacing constants ([AppSpacing]).
+ *
+ * Access the active color scheme from any widget via the [ThemeCheck] extension:
+ * ```dart
+ * final bg = context.colors.background;
+ * final isDark = context.isDarkMode;
+ * ```
+ */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Theme mode options
+/**
+ * User-facing theme mode selection persisted in [SharedPreferences].
+ *
+ * Converted to Flutter's [ThemeMode] via [AppTheme.toThemeMode] for use in
+ * [MaterialApp.themeMode]. Serialized/deserialized by name with [fromString].
+ */
 enum AppThemeMode {
+  /// Forces the light color scheme regardless of system setting.
   light,
+
+  /// Forces the dark color scheme regardless of system setting.
   dark,
+
+  /// Follows the platform brightness (default).
   system;
 
+  /// Parses a persisted string back to an [AppThemeMode] value.
+  ///
+  /// Returns [AppThemeMode.system] if [value] does not match any variant name.
   static AppThemeMode fromString(String value) {
     return AppThemeMode.values.firstWhere((e) => e.name == value, orElse: () => AppThemeMode.system);
   }
 }
 
-/// Custom colors theme extension for Pointer app
-/// Access via: `Theme.of(context).extension&lt;PointerColors&gt;()!`
+/**
+ * Custom color palette registered as a [ThemeExtension] on [ThemeData].
+ *
+ * Four pre-built variants are available as static constants:
+ * - [dark] -- default dark mode with liquid glass morphism.
+ * - [light] -- subtle neutral tones inspired by Apple's design language.
+ * - [highContrast] -- WCAG AAA (7:1+) compliant, solid backgrounds.
+ * - [oled] -- pure-black surfaces for OLED battery savings.
+ *
+ * Prefer the [ThemeCheck.colors] shorthand (`context.colors`) over the
+ * verbose `Theme.of(context).extension<PointerColors>()!` accessor.
+ *
+ * All colors support animated transitions between themes via [lerp].
+ */
 @immutable
 class PointerColors extends ThemeExtension<PointerColors> {
-  // Core theme colors
+  /// Primary background color for scaffolds and full-screen surfaces.
   final Color background;
+
+  /// Elevated surface color for cards, bottom sheets, and dialogs.
   final Color surface;
+
+  /// Brand primary color used for interactive elements and focus indicators.
   final Color primary;
+
+  /// Secondary brand color used for gradients and complementary accents.
   final Color secondary;
-  // Text colors
+
+  /// Highest-emphasis text color for headings and body content.
   final Color textPrimary;
+
+  /// Medium-emphasis text color for descriptions and supporting content.
   final Color textSecondary;
+
+  /// Lowest-emphasis text color for hints, captions, and disabled labels.
   final Color textMuted;
-  // Glass morphism
+
+  /// Border color for [GlassCard] and other glassmorphism containers at rest.
   final Color glassBorder;
+
+  /// Semi-transparent fill color for glassmorphism container backgrounds.
   final Color glassBackground;
+
+  /// Border color for glassmorphism containers in pressed or focused state.
   final Color glassBorderActive;
-  // Accent colors
+
+  /// Decorative gold accent used for premium badges and tradition highlights.
   final Color gold;
+
+  /// General-purpose accent color (violet) for buttons and interactive states.
   final Color accent;
+
+  /// Default tint for icons throughout the app.
   final Color iconColor;
-  // Enhanced glass morphism properties
+
+  /// Top-left highlight gradient stop inside glassmorphism cards.
   final Color glassHighlight;
+
+  /// Subtle outer glow applied behind glassmorphism containers.
   final Color glassGlow;
+
+  /// Color of the traveling shimmer highlight on [GlassCard] surfaces.
   final Color shimmerColor;
-  // High contrast mode specific
+
+  /// Opaque card background used in high-contrast mode where transparency is avoided.
   final Color cardBackground;
 
   const PointerColors({
@@ -212,7 +279,12 @@ class PointerColors extends ThemeExtension<PointerColors> {
   }
 }
 
-/// App gradients - Enhanced for consistent liquid glass morphism feel
+/**
+ * Pre-defined [LinearGradient] backgrounds and animated color sets for the liquid glass aesthetic.
+ *
+ * Provides separate dark and light variants for both static backgrounds and shimmer animation
+ * color arrays used by [AnimatedGradient].
+ */
 class AppGradients {
   /// Dark mode background gradient - Deep black with subtle color hints
   static const background = LinearGradient(
@@ -411,8 +483,21 @@ class AppTextStyles {
   }
 }
 
-/// App theme configuration
+/**
+ * Factory for complete [ThemeData] instances wired with [PointerColors], [GoogleFonts], and
+ * Material 3 component overrides (switches, app bar transparency).
+ *
+ * Usage in `MaterialApp`:
+ * ```dart
+ * MaterialApp(
+ *   theme: AppTheme.light,
+ *   darkTheme: AppTheme.dark,
+ *   themeMode: AppTheme.toThemeMode(selectedMode),
+ * )
+ * ```
+ */
 class AppTheme {
+  /// Dark [ThemeData] using [PointerColors.dark] with Inter font family and transparent app bars.
   static ThemeData get dark {
     const colors = PointerColors.dark;
     return ThemeData(
@@ -442,6 +527,7 @@ class AppTheme {
     );
   }
 
+  /// Light [ThemeData] using [PointerColors.light] with Inter font family and transparent app bars.
   static ThemeData get light {
     const colors = PointerColors.light;
     return ThemeData(
@@ -471,7 +557,7 @@ class AppTheme {
     );
   }
 
-  /// Get ThemeMode for MaterialApp
+  /// Converts the app's [AppThemeMode] to Flutter's [ThemeMode] for [MaterialApp.themeMode].
   static ThemeMode toThemeMode(AppThemeMode mode) {
     switch (mode) {
       case AppThemeMode.light:
@@ -484,8 +570,14 @@ class AppTheme {
   }
 }
 
-/// Extension to check if current theme is dark and access custom colors
+/**
+ * Convenience extension on [BuildContext] for theme introspection.
+ *
+ * Provides [isDarkMode] for branching on brightness and [colors] for direct
+ * access to the active [PointerColors] palette without verbose `Theme.of` calls.
+ */
 extension ThemeCheck on BuildContext {
+  /// Whether the current [ThemeData.brightness] is [Brightness.dark].
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 
   /// Get PointerColors from current theme
@@ -493,8 +585,12 @@ extension ThemeCheck on BuildContext {
   PointerColors get colors => Theme.of(this).extension<PointerColors>() ?? PointerColors.dark;
 }
 
-/// Tradition-specific accent colors for visual consistency
-/// Maps each spiritual tradition to a distinctive color that aids recognition
+/**
+ * Tradition-specific accent colors for visual differentiation.
+ *
+ * Each spiritual tradition in the pointing database is mapped to a distinctive hue
+ * so users can quickly recognize the source lineage in cards, badges, and share templates.
+ */
 class TraditionAccentColors {
   /// Gold/Orange accent for Advaita Vedanta tradition
   static const Color advaita = Color(0xFFD4A574);
@@ -521,32 +617,74 @@ class TraditionAccentColors {
 /// Naming follows t-shirt sizing (xs, sm, md, lg, xl, xxl)
 /// with semantic aliases for common use cases.
 class AppSpacing {
-  // Base spacing scale (8pt grid system)
-  static const double xs = 4.0; // Tight spacing, icon gaps
-  static const double sm = 8.0; // Small spacing, list items
-  static const double md = 12.0; // Medium spacing, card padding
-  static const double lg = 16.0; // Large spacing, section gaps
-  static const double xl = 24.0; // Extra large, screen padding
-  static const double xxl = 32.0; // Maximum spacing, hero sections
+  // -- Base spacing scale (8pt grid system) --
 
-  // Semantic aliases for clarity
-  static const double screenPadding = xl; // 24.0 - horizontal screen edges
-  static const double cardPadding = xl; // 24.0 - inside cards/modals
-  static const double sectionGap = lg; // 16.0 - between sections
-  static const double itemGap = md; // 12.0 - between list items
-  static const double iconGap = sm; // 8.0  - icon to text spacing
-  static const double navBarOffset = 120.0; // Bottom nav clearance
+  /// 4.0 -- Tight spacing for icon gaps and inline elements.
+  static const double xs = 4.0;
 
-  // Border radius constants (matching spacing scale)
+  /// 8.0 -- Small spacing for compact list items and icon-to-text gaps.
+  static const double sm = 8.0;
+
+  /// 12.0 -- Medium spacing for card internal padding and list item separation.
+  static const double md = 12.0;
+
+  /// 16.0 -- Large spacing for section gaps and group separation.
+  static const double lg = 16.0;
+
+  /// 24.0 -- Extra-large spacing for screen-edge padding and hero margins.
+  static const double xl = 24.0;
+
+  /// 32.0 -- Maximum spacing for hero sections and prominent visual breaks.
+  static const double xxl = 32.0;
+
+  // -- Semantic aliases --
+
+  /// Horizontal padding at screen edges (24.0). Alias for [xl].
+  static const double screenPadding = xl;
+
+  /// Internal padding inside cards and modals (24.0). Alias for [xl].
+  static const double cardPadding = xl;
+
+  /// Vertical gap between content sections (16.0). Alias for [lg].
+  static const double sectionGap = lg;
+
+  /// Vertical gap between list items (12.0). Alias for [md].
+  static const double itemGap = md;
+
+  /// Horizontal gap between an icon and its label (8.0). Alias for [sm].
+  static const double iconGap = sm;
+
+  /// Bottom inset to clear the floating navigation bar (120.0).
+  static const double navBarOffset = 120.0;
+
+  // -- Border radius constants --
+
+  /// Small border radius (8.0) for chips and tags.
   static const double radiusSm = 8.0;
-  static const double radiusMd = 12.0;
-  static const double radiusLg = 16.0;
-  static const double radiusXl = 24.0;
-  static const double radiusCard = 24.0; // Default card radius
 
-  // Common EdgeInsets presets
+  /// Medium border radius (12.0) for buttons and small cards.
+  static const double radiusMd = 12.0;
+
+  /// Large border radius (16.0) for modals and bottom sheets.
+  static const double radiusLg = 16.0;
+
+  /// Extra-large border radius (24.0) for prominent containers.
+  static const double radiusXl = 24.0;
+
+  /// Default border radius for [GlassCard] and similar card widgets (24.0).
+  static const double radiusCard = 24.0;
+
+  // -- Common EdgeInsets presets --
+
+  /// Symmetric horizontal screen padding ([xl] on left and right).
   static const EdgeInsets screenH = EdgeInsets.symmetric(horizontal: xl);
+
+  /// Uniform screen padding ([xl] on all sides).
   static const EdgeInsets screenAll = EdgeInsets.all(xl);
+
+  /// Uniform card internal padding ([xl] on all sides).
   static const EdgeInsets cardAll = EdgeInsets.all(xl);
+
+  /// Standard list item padding (horizontal [xl], vertical [md]).
   static const EdgeInsets listItem = EdgeInsets.symmetric(horizontal: xl, vertical: md);
 }

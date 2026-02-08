@@ -1,5 +1,14 @@
-// Inquiry Providers
-// State management for inquiry selection, filtering, and mini-inquiry triggers
+/**
+ * Inquiry providers - Selection, filtering, and mini-inquiry triggers.
+ *
+ * Manages guided [Inquiry] selection via [inquirySelectorProvider] with
+ * optional [InquiryFilter] by type or tradition. Tracks daily view counts
+ * for mini-inquiry trigger logic (every N pointings based on tier).
+ *
+ * Mini-inquiries surface short contemplative prompts between pointing
+ * rotations to deepen engagement without requiring explicit navigation.
+ */
+library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/inquiries.dart';
@@ -15,9 +24,18 @@ final inquirySelectorProvider = Provider.family<Inquiry, InquiryFilter?>((ref, f
   return getRandomInquiry(type: filter.type, tradition: filter.tradition);
 });
 
-/// Filter options for inquiry selection
+/**
+ * Filter options for [Inquiry] selection.
+ *
+ * Passed to [inquirySelectorProvider] to narrow random inquiry selection
+ * by [InquiryType] (e.g., self-inquiry, koan) and/or [Tradition].
+ * Implements value equality for Riverpod `.family` key deduplication.
+ */
 class InquiryFilter {
+  /// Optional inquiry type filter (e.g., self-inquiry, contemplation, koan).
   final InquiryType? type;
+
+  /// Optional spiritual tradition filter.
   final Tradition? tradition;
 
   const InquiryFilter({this.type, this.tradition});

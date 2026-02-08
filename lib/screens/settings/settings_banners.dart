@@ -1,8 +1,15 @@
-// Settings banners - notification permission and premium feature banners
+// Banners for the settings screen: notification permission and premium feature alerts.
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 
+/**
+ * Orange warning banner shown when notification permission is denied at the system level.
+ *
+ * Prompts the user to open system settings to re-enable notifications.
+ * Displayed above the notification settings card when permission is not granted.
+ */
 class NotificationPermissionBanner extends StatelessWidget {
+  /// Callback to open the system notification settings.
   final VoidCallback onOpenSettings;
 
   const NotificationPermissionBanner({super.key, required this.onOpenSettings});

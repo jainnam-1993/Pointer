@@ -1,4 +1,4 @@
-// Lineage teachings screen - shows articles and quotes by tradition/lineage
+// Screen showing articles and quotes filtered by tradition/lineage.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,10 +14,21 @@ import '../article_reader_screen.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
-/// Screen showing teachings by lineage/tradition
+/**
+ * Screen showing articles and quotes filtered by spiritual tradition/lineage.
+ *
+ * Displays the tradition description, an articles section with [ArticleListItem],
+ * and a quotes section with [TeachingCard]. Quotes sorted with unviewed first.
+ * Respects [ContentFilter] from the parent library screen.
+ */
 class LineageTeachingsScreen extends ConsumerStatefulWidget {
+  /// The tradition to filter content by.
   final Tradition tradition;
+
+  /// Display metadata (name, icon, description) for this tradition.
   final TraditionInfo info;
+
+  /// Content type filter propagated from the parent library screen.
   final ContentFilter filter;
 
   const LineageTeachingsScreen({super.key, required this.tradition, required this.info, this.filter = ContentFilter.all});

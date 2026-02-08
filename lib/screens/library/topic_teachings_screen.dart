@@ -1,4 +1,4 @@
-// Topic teachings screen - shows articles and quotes filtered by topic tag
+// Screen showing articles and quotes filtered by topic tag.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +13,19 @@ import '../article_reader_screen.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
-/// Screen showing teachings by topic tag
+/**
+ * Screen showing articles and quotes filtered by a [TopicTags] value.
+ *
+ * Displays the topic icon and display name in the header, with articles
+ * (via [ArticleListItem]) and quotes (via [TeachingCard]) sections.
+ * Quotes sorted with unviewed first. Shows an empty state when no content
+ * matches the topic. Respects [ContentFilter] from parent.
+ */
 class TopicTeachingsScreen extends ConsumerStatefulWidget {
+  /// The topic tag string (from [TopicTags] constants) to filter by.
   final String topic;
+
+  /// Content type filter propagated from the parent library screen.
   final ContentFilter filter;
 
   const TopicTeachingsScreen({super.key, required this.topic, this.filter = ContentFilter.all});

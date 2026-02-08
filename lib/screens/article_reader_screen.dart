@@ -1,4 +1,5 @@
-// Article Reader Screen - Full article display with markdown rendering
+// Full article reading screen with markdown rendering, share functionality,
+// and tradition-tagged header. TTS playback is currently disabled.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -9,8 +10,16 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import 'share_preview_screen.dart';
 
-/// Full article reader screen with TTS support
+/**
+ * Full article reader screen with markdown rendering and share support.
+ *
+ * Displays the [Article] title, subtitle, reading time, teacher attribution,
+ * and markdown-rendered body. Includes a share button that creates a [Pointing]
+ * from the article excerpt for [SharePreviewScreen]. TTS playback is currently
+ * disabled but state variables are retained for future re-enablement.
+ */
 class ArticleReaderScreen extends ConsumerStatefulWidget {
+  /// The article to display in the reader.
   final Article article;
 
   const ArticleReaderScreen({super.key, required this.article});
@@ -26,6 +35,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   // ignore: unused_field
   final bool _ttsConfigured = false;
 
+  /// Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen].
   void _shareArticle(BuildContext context) {
     HapticFeedback.mediumImpact();
     final article = widget.article;
@@ -162,9 +172,15 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   }
 }
 
-/// Markdown content renderer using flutter_markdown
+/// Markdown content renderer using `flutter_markdown_plus`.
+///
+/// Applies [PointerColors]-themed typography with styled blockquotes,
+/// accent-colored bullet points, and selectable text.
 class _MarkdownContent extends StatelessWidget {
+  /// Raw markdown content to render.
   final String content;
+
+  /// Theme colors for styling markdown elements.
   final PointerColors colors;
 
   const _MarkdownContent({required this.content, required this.colors});

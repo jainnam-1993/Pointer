@@ -7,17 +7,45 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'aws_credential_service.dart';
 
-/// TTS playback state
-enum TTSPlaybackState { idle, loading, playing, paused, completed, error }
+/// Lifecycle state of the [TTSService] audio player.
+enum TTSPlaybackState {
+  /// No audio loaded or player reset.
+  idle,
 
-/// Available Polly neural voices
+  /// Synthesising speech or buffering audio data.
+  loading,
+
+  /// Audio is actively playing.
+  playing,
+
+  /// Playback is paused by the user.
+  paused,
+
+  /// Playback reached the end of the audio.
+  completed,
+
+  /// An error occurred during synthesis or playback.
+  error,
+}
+
+/// AWS Polly neural voice used for text-to-speech synthesis.
 enum PollyVoice {
+  /// US English female neural voice.
   joanna('Joanna', 'US English, Female'),
+
+  /// US English male neural voice.
   matthew('Matthew', 'US English, Male'),
+
+  /// British English female neural voice.
   amy('Amy', 'British English, Female'),
+
+  /// British English male neural voice.
   brian('Brian', 'British English, Male');
 
+  /// Polly voice ID sent in the API request.
   final String id;
+
+  /// Human-readable description shown in the voice picker UI.
   final String description;
 
   const PollyVoice(this.id, this.description);

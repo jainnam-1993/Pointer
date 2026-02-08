@@ -7,7 +7,19 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
+/**
+ * Root shell widget providing bottom navigation and tab management.
+ *
+ * Wraps the [StatefulNavigationShell] from GoRouter with horizontal swipe
+ * gestures for tab switching, [FloatingParticles] background, and a
+ * glassmorphic [_BottomNavBar]. Hides the nav bar in zen mode.
+ *
+ * The [navigationShell] must NOT be wrapped in [AnimatedSwitcher] or
+ * [KeyedSubtree] as it contains internal GlobalKeys that conflict
+ * when the widget tree changes.
+ */
 class MainShell extends ConsumerStatefulWidget {
+  /// The GoRouter navigation shell managing tab state and branch navigation.
   final StatefulNavigationShell navigationShell;
 
   const MainShell({super.key, required this.navigationShell});
@@ -73,8 +85,18 @@ class _MainShellState extends ConsumerState<MainShell> {
   }
 }
 
+/**
+ * iOS Control Center-style glassmorphic bottom navigation bar.
+ *
+ * Features a backdrop blur, gradient glass effect, animated sliding indicator,
+ * and 3-tier responsive breakpoints (phone <600, tablet 600-900, large tablet >900).
+ * Constrained to [maxNavWidth] on large screens to prevent over-stretching.
+ */
 class _BottomNavBar extends StatefulWidget {
+  /// Index of the currently selected tab (0-3).
   final int currentIndex;
+
+  /// Callback when a tab is tapped.
   final ValueChanged<int> onTap;
 
   const _BottomNavBar({required this.currentIndex, required this.onTap});
@@ -240,11 +262,23 @@ class _BottomNavBarState extends State<_BottomNavBar> {
   }
 }
 
+/// A single navigation item with icon, label, and active/inactive states.
+///
+/// Responsive sizing adapts across 3-tier breakpoints (phone/tablet/large tablet).
 class _NavItem extends StatelessWidget {
+  /// Icon shown when this tab is not selected.
   final IconData icon;
+
+  /// Icon shown when this tab is selected (typically a filled variant).
   final IconData activeIcon;
+
+  /// Text label displayed below the icon.
   final String label;
+
+  /// Whether this tab is currently selected.
   final bool isActive;
+
+  /// Callback when this nav item is tapped.
   final VoidCallback onTap;
 
   const _NavItem({required this.icon, required this.activeIcon, required this.label, required this.isActive, required this.onTap});

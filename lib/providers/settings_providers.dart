@@ -1,7 +1,14 @@
-/// Settings providers - User preferences, accessibility, and appearance
-///
-/// Includes: Zen mode, OLED mode, typography, accessibility (reduced motion,
-/// high contrast), theme mode, and notification settings.
+/**
+ * Settings providers - User preferences, accessibility, and appearance.
+ *
+ * Manages all user-configurable settings via [SettingsNotifier], persisted
+ * through [StorageService]. Includes zen mode, OLED mode, typography,
+ * accessibility (reduced motion, high contrast), theme mode, auto-advance,
+ * and notification scheduling via [NotificationSettingsNotifier].
+ *
+ * Settings are backed by [AppSettings] from [StorageService] and automatically
+ * sync to derived providers (e.g., [themeModeProvider], [zenModeProvider]).
+ */
 library;
 
 import 'package:flutter/material.dart';
@@ -125,22 +132,36 @@ bool isHighContrastEnabled(BuildContext context, WidgetRef ref) {
 // App Settings State
 // ============================================================
 
-/// Settings provider - manages AppSettings state
+/// Root settings provider managing [AppSettings] state via [SettingsNotifier].
+///
+/// Depends on [storageServiceProvider] for persistence. All derived setting
+/// providers (zen mode, OLED, theme, etc.) watch this provider.
 final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return SettingsNotifier(storage);
 });
 
+/**
+ * Manages [AppSettings] state with persistence through [StorageService].
+ *
+ * Provides granular setters for individual settings (theme, zen mode, OLED,
+ * auto-advance, animations, high contrast) that each persist via [update]
+ * and trigger reactive rebuilds in downstream providers.
+ */
 class SettingsNotifier extends StateNotifier<AppSettings> {
   final StorageService _storage;
 
   SettingsNotifier(this._storage) : super(_storage.settings);
 
+  /// Persists [newSettings] to [StorageService] and updates state.
+  ///
+  /// All individual setters delegate to this method for atomic persistence.
   Future<void> update(AppSettings newSettings) async {
     await _storage.updateSettings(newSettings);
     state = newSettings;
   }
 
+  /// Sets the app color theme to [mode] (dark, light, high contrast, or OLED).
   Future<void> setTheme(AppThemeMode mode) async {
     final newSettings = state.copyWith(theme: mode.name);
     await update(newSettings);
@@ -197,25 +218,46 @@ final flutterThemeModeProvider = Provider<ThemeMode>((ref) {
 // Notification Settings
 // ============================================================
 
-/// Notification settings state
+/**
+ * Immutable state for notification scheduling configuration.
+ *
+ * Tracks whether notifications are globally enabled, the list of scheduled
+ * [NotificationTime] entries, and an async loading flag for UI feedback.
+ */
 class NotificationSettingsState {
+  /// Whether daily pointing notifications are globally enabled.
   final bool isEnabled;
+
+  /// Scheduled notification times (presets or custom).
   final List<NotificationTime> times;
+
+  /// Whether an async operation (enable/disable, save, delete) is in progress.
   final bool isLoading;
 
   const NotificationSettingsState({this.isEnabled = false, this.times = const [], this.isLoading = false});
 
+  /// Creates a copy with selectively overridden fields.
   NotificationSettingsState copyWith({bool? isEnabled, List<NotificationTime>? times, bool? isLoading}) {
     return NotificationSettingsState(isEnabled: isEnabled ?? this.isEnabled, times: times ?? this.times, isLoading: isLoading ?? this.isLoading);
   }
 }
 
-/// Notification settings provider
+/// Provider for [NotificationSettingsState] managed by [NotificationSettingsNotifier].
+///
+/// Depends on [notificationServiceProvider] for scheduling and persistence.
 final notificationSettingsProvider = StateNotifierProvider<NotificationSettingsNotifier, NotificationSettingsState>((ref) {
   final notificationService = ref.watch(notificationServiceProvider);
   return NotificationSettingsNotifier(notificationService);
 });
 
+/**
+ * Manages notification scheduling state via [NotificationService].
+ *
+ * Loads initial settings on construction, then provides CRUD operations
+ * for [NotificationTime] entries and global enable/disable toggling.
+ * All mutations persist through [NotificationService] and update the
+ * reactive [NotificationSettingsState].
+ */
 class NotificationSettingsNotifier extends StateNotifier<NotificationSettingsState> {
   final NotificationService _service;
 

@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
 
-/// Badge showing the tradition of a pointing
-///
-/// Includes semantic label for screen reader accessibility.
+/**
+ * Pill-shaped badge displaying the [Tradition] of a pointing.
+ *
+ * Renders the tradition icon and name inside a frosted-glass pill with
+ * backdrop blur. Includes a semantic label for screen reader accessibility
+ * (e.g., "Tradition: Advaita Vedanta").
+ *
+ * Uses [PointerColors] from `context.colors` for theming.
+ */
 class TraditionBadge extends StatelessWidget {
+  /// The tradition to display (determines icon and label text).
   final Tradition tradition;
 
   const TraditionBadge({super.key, required this.tradition});

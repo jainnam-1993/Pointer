@@ -1,7 +1,13 @@
-/// TTS providers - Text-to-speech service and playback state
-///
-/// Manages AWS Polly TTS integration including credential management
-/// and audio playback state.
+/**
+ * TTS providers - Text-to-speech service and playback state.
+ *
+ * Manages AWS Polly TTS integration including credential management
+ * via [AWSCredentialService] and audio playback state via [TTSService].
+ *
+ * **STATUS: DISABLED** - TTS functionality is currently disabled but
+ * providers are retained for future re-enablement. See [TTSService]
+ * for implementation details.
+ */
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

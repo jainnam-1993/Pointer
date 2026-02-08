@@ -4,10 +4,21 @@ import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
-/// Expandable commentary section for premium users.
-/// Shows extended context and guidance for pointings.
+/**
+ * Expandable commentary section for premium users.
+ *
+ * Shows extended context and guidance for pointings. Non-premium users
+ * see a lock icon and tapping opens a premium upgrade prompt via the
+ * paywall route. Premium users can toggle the commentary open/closed
+ * with a smooth height-factor animation.
+ *
+ * Renders nothing when [commentary] is null.
+ */
 class CommentarySection extends ConsumerStatefulWidget {
+  /// The extended commentary text; when null, the widget renders empty.
   final String? commentary;
+
+  /// Identifier of the associated pointing (reserved for analytics/tracking).
   final String pointingId;
 
   const CommentarySection({super.key, required this.commentary, required this.pointingId});

@@ -1,4 +1,4 @@
-// Teacher teachings screen - shows articles and quotes by a specific teacher
+// Screen showing articles and quotes by a specific teacher.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +13,19 @@ import '../article_reader_screen.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
-/// Screen showing teachings by a specific teacher
+/**
+ * Screen showing articles and quotes by a specific teacher.
+ *
+ * Displays an articles section (using [ArticleListItem]) and a quotes section
+ * (using [TeachingCard]). Quotes are sorted with unviewed items first via
+ * [TeachingListSorting]. Respects [ContentFilter] to show only articles,
+ * only quotes, or both. Premium articles are locked unless [kFreeAccessEnabled].
+ */
 class TeacherTeachingsScreen extends ConsumerStatefulWidget {
+  /// The teacher name to filter content by.
   final String teacher;
+
+  /// Content type filter propagated from the parent library screen.
   final ContentFilter filter;
 
   const TeacherTeachingsScreen({super.key, required this.teacher, this.filter = ContentFilter.all});

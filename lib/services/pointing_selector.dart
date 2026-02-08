@@ -23,14 +23,27 @@ class TimeContextBoundaries {
   TimeContextBoundaries._();
 }
 
-/// Time context for pointing selection based on clock time.
-/// Separate from PointingContext to allow mapping flexibility.
+/**
+ * Time context for [Pointing] selection based on clock time.
+ *
+ * Separate from [PointingContext] to allow mapping flexibility
+ * (e.g. [night] falls back to [PointingContext.evening] themes).
+ */
 enum TimeContext {
-  morning, // 5am - 11am
-  midday, // 11am - 5pm
-  evening, // 5pm - 10pm
-  night, // 10pm - 5am
-  general, // Any time (override mode)
+  /// 5am - 11am: awakening, presence themes.
+  morning,
+
+  /// 11am - 5pm: action, engagement themes.
+  midday,
+
+  /// 5pm - 10pm: reflection, release themes.
+  evening,
+
+  /// 10pm - 5am: rest, surrender themes (maps to evening [PointingContext]).
+  night,
+
+  /// Override mode: all [PointingContext] values are valid candidates.
+  general,
 }
 
 /// Returns the TimeContext for the current time.

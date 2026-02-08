@@ -2,13 +2,26 @@ import 'dart:async';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-/// Product IDs for tip jar donations (consumable)
+/**
+ * App Store / Play Store product identifiers for tip jar consumable purchases.
+ *
+ * Each tier corresponds to a different donation amount configured in
+ * App Store Connect and Google Play Console.
+ */
 class DonationProductIds {
+  /// Smallest donation tier (e.g. "Buy me a tea").
   static const tipSmall = 'com.dailypointer.tip_small';
+
+  /// Medium donation tier (e.g. "Buy me a cushion").
   static const tipMedium = 'com.dailypointer.tip_medium';
+
+  /// Large donation tier (e.g. "Buy me incense").
   static const tipLarge = 'com.dailypointer.tip_large';
+
+  /// Largest donation tier (e.g. "Fund a retreat").
   static const tipGenerous = 'com.dailypointer.tip_generous';
 
+  /// Set of all product IDs, passed to [InAppPurchase.queryProductDetails].
   static const all = {tipSmall, tipMedium, tipLarge, tipGenerous};
 }
 

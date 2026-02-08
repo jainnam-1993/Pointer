@@ -6,15 +6,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
-/// Time period for 24h gradient cycle
+/**
+ * Time-of-day period for the 24-hour gradient cycle.
+ *
+ * Each period maps to a distinct dark-mode background gradient palette
+ * in [AnimatedGradient], creating a subtle ambient awareness of real-world time.
+ */
 enum TimeOfDayPeriod {
-  dawn, // 5-7am - soft warm colors
-  morning, // 7-12pm - bright, energizing
-  midday, // 12-2pm - warm, golden
-  afternoon, // 2-5pm - calming transition
-  dusk, // 5-8pm - warm oranges and purples
-  evening, // 8-10pm - deep purples and blues
-  night, // 10pm-5am - deep, restful
+  /// 5-7 AM: soft warm tones for early morning.
+  dawn,
+
+  /// 7 AM-12 PM: bright, energizing tones.
+  morning,
+
+  /// 12-2 PM: warm, golden mid-day tones.
+  midday,
+
+  /// 2-5 PM: calming transitional tones.
+  afternoon,
+
+  /// 5-8 PM: warm oranges and purples for sunset.
+  dusk,
+
+  /// 8-10 PM: deep purples and blues for the evening.
+  evening,
+
+  /// 10 PM-5 AM: deep, restful near-black tones.
+  night,
 }
 
 /// Get current time period for gradient selection

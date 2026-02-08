@@ -8,7 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 ///
 /// Uses SVG for crisp rendering at any size with color tinting support.
 class EnsoIcon extends StatelessWidget {
+  /// Display size (width and height) in logical pixels.
   final double size;
+
+  /// Tint color applied via [ColorFilter.mode]; defaults to the theme icon color.
   final Color? color;
 
   const EnsoIcon({super.key, this.size = 24, this.color});

@@ -1,7 +1,14 @@
-/// Donation providers - Tip jar via in-app purchases
-///
-/// Provides state management for donation/tip functionality.
-/// All donations are consumable products (can be purchased multiple times).
+/**
+ * Donation providers - Tip jar via in-app purchases.
+ *
+ * Provides state management for the donation/tip jar feature via
+ * [DonationNotifier]. All donations are consumable products (can be
+ * purchased multiple times) using the [in_app_purchase] package directly
+ * (not RevenueCat). Four tiers: Tea, Cushion, Incense, and Retreat.
+ *
+ * [DonationState] tracks product availability, loading state, and
+ * purchase results. [DonationService] handles platform IAP communication.
+ */
 library;
 
 import 'dart:async';
@@ -23,7 +30,13 @@ enum DonationResult {
   error,
 }
 
-/// State for the donation/tip jar feature
+/**
+ * Immutable state for the donation/tip jar feature.
+ *
+ * Tracks IAP availability, loading state during product fetch or purchase,
+ * available [ProductDetails] sorted by price, and the result of the last
+ * purchase attempt for UI feedback (success toast, cancellation, or error).
+ */
 class DonationState {
   /// Whether in-app purchases are available on this device
   final bool isAvailable;
@@ -42,6 +55,10 @@ class DonationState {
 
   const DonationState({this.isAvailable = false, this.isLoading = true, this.products = const [], this.error, this.lastResult});
 
+  /// Creates a copy with selectively overridden fields.
+  ///
+  /// Use [clearError] to explicitly set [error] to `null`, and [clearResult]
+  /// to reset [lastResult] to `null` (since passing `null` preserves the current value).
   DonationState copyWith({
     bool? isAvailable,
     bool? isLoading,
@@ -74,7 +91,16 @@ final donationProvider = StateNotifierProvider<DonationNotifier, DonationState>(
   return DonationNotifier(service);
 });
 
-/// Notifier for managing donation state
+/**
+ * Manages [DonationState] and coordinates with [DonationService] for IAP.
+ *
+ * On construction, subscribes to the platform purchase update stream and
+ * calls [initialize] to check availability and load products. Purchase
+ * results flow through the stream listener and update state reactively.
+ *
+ * Consumable purchases must be explicitly completed via
+ * [DonationService.completePurchase] to acknowledge receipt with the store.
+ */
 class DonationNotifier extends StateNotifier<DonationState> {
   final DonationService _service;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
@@ -140,16 +166,23 @@ class DonationNotifier extends StateNotifier<DonationState> {
     state = state.copyWith(clearError: true);
   }
 
+  /// Subscribes to the platform IAP purchase update stream.
   void _listenToPurchases() {
     _purchaseSubscription = _service.purchaseUpdates.listen(_handlePurchase);
   }
 
+  /// Processes each [PurchaseDetails] in a batch of purchase updates.
   Future<void> _handlePurchase(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
       await _processPurchase(purchase);
     }
   }
 
+  /// Handles a single purchase update based on its [PurchaseStatus].
+  ///
+  /// Completed purchases are acknowledged via [DonationService.completePurchase]
+  /// (critical for consumable products). Cancelled and error states update
+  /// [DonationState.lastResult] for UI feedback.
   Future<void> _processPurchase(PurchaseDetails purchase) async {
     if (!mounted) return;
 

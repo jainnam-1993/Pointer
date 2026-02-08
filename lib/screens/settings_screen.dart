@@ -24,6 +24,16 @@ export 'settings/appearance_section.dart';
 export 'settings/experience_section.dart';
 export 'settings/notification_times_sheet.dart';
 
+/**
+ * Main settings screen with notifications, appearance, traditions, history, and experience sections.
+ *
+ * Manages notification permissions via platform channel, theme selection via
+ * [AppearanceSelector], tradition filtering via lineages screen, and experience
+ * controls (ambient sound, auto-advance). Includes hidden developer options
+ * (7 taps on version number) for notification debugging.
+ *
+ * Re-exports all `settings/` subfiles for backward compatibility.
+ */
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -32,13 +42,19 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBindingObserver {
+  /// Platform channel for opening system notification settings (Android/iOS).
   static const _settingsChannel = MethodChannel('com.dailypointer/settings');
 
-  bool _notificationsEnabled = false; // Match service default, loaded in _checkPermissions
+  /// Whether notifications are currently enabled in the app (loaded from service).
+  bool _notificationsEnabled = false;
+
+  /// Whether system-level notification permission is granted.
   bool _permissionGranted = true;
 
-  // Developer options (hidden by default)
+  /// Counter for version label taps (7 taps reveals developer options).
   int _versionTapCount = 0;
+
+  /// Whether hidden developer options are visible.
   bool _showDeveloperOptions = false;
 
   @override
@@ -62,6 +78,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
+  /// Checks current notification permission and enabled state from the service.
+  ///
+  /// Called on init and when app resumes (user may have changed permissions in system settings).
   Future<void> _checkPermissions() async {
     try {
       // Check if notification permissions are currently granted
@@ -85,6 +104,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
+  /// Opens the [NotificationTimesSheet] for schedule management.
   Future<void> _showNotificationTimesSheet() async {
     HapticFeedback.mediumImpact();
 
@@ -98,6 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
+  /// Shows the "About Here Now" dialog with app description and version.
   Future<void> _showAboutDialog() async {
     HapticFeedback.mediumImpact();
 
@@ -123,6 +144,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
+  /// Launches an external URL in the system browser via [url_launcher].
   Future<void> _launchUrl(String urlString) async {
     HapticFeedback.mediumImpact();
 
@@ -149,6 +171,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
+  /// Shows a dialog prompting the user to enable notifications in system settings.
   Future<void> _showPermissionDeniedDialog() async {
     if (!mounted) return;
 
@@ -178,6 +201,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
+  /// Increments version tap counter; reveals developer options after 7 taps.
   void _onVersionTap() {
     setState(() {
       _versionTapCount++;

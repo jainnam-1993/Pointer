@@ -2,12 +2,27 @@ import 'package:flutter/material.dart';
 import '../../data/pointings.dart';
 import '../../services/share_service.dart';
 
-/// Tradition-specific color palettes for share cards
+/**
+ * Tradition-specific color palette for share card templates.
+ *
+ * Each [Tradition] (Advaita, Zen, Direct Path, Contemporary, Original) has
+ * a bespoke gradient, text, and accent color scheme used by
+ * [ShareCard] when rendering the tradition template variant.
+ */
 class TraditionColors {
+  /// Gradient start color for the card background.
   final Color background;
+
+  /// Gradient end color for the card background.
   final Color backgroundEnd;
+
+  /// Primary text color for pointing content.
   final Color text;
+
+  /// Accent color for teacher attribution and watermark.
   final Color accent;
+
+  /// Color for the tradition badge border and text.
   final Color badge;
 
   const TraditionColors({required this.background, required this.backgroundEnd, required this.text, required this.accent, required this.badge});
@@ -59,10 +74,28 @@ class TraditionColors {
   }
 }
 
-/// Shareable card widget for export
+/**
+ * Shareable card widget rendered for image export.
+ *
+ * Generates a fixed-size card (determined by [ShareFormat]) containing a
+ * [Pointing] styled according to one of three [ShareTemplate] variants:
+ * minimal (clean white), gradient (dark purple), or tradition (tradition-specific colors).
+ *
+ * Captured as an image by [ShareService.captureWidget] for sharing via
+ * social media or clipboard.
+ *
+ * See also:
+ * - [TraditionColors] for tradition-specific palettes
+ * - [ShareService] for the capture and share workflow
+ */
 class ShareCard extends StatelessWidget {
+  /// The pointing content to render on the card.
   final Pointing pointing;
+
+  /// Visual template variant (minimal, gradient, or tradition).
   final ShareTemplate template;
+
+  /// Output dimensions (square for posts, tall for stories).
   final ShareFormat format;
 
   const ShareCard({super.key, required this.pointing, required this.template, required this.format});

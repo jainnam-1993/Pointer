@@ -9,7 +9,14 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
-/// Screen showing history of viewed pointings
+/**
+ * Screen showing chronological history of previously viewed pointings.
+ *
+ * Displays [_HistoryCard] items with tradition badge, content preview, teacher
+ * attribution, and relative timestamp. Tapping a card sets it as the current
+ * pointing and navigates back to the home screen. Shows an empty state
+ * when no pointings have been viewed yet.
+ */
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
 
@@ -60,6 +67,7 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 
+  /// Builds the empty state shown when no pointings have been viewed yet.
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
     return Center(
       child: Column(
@@ -78,6 +86,7 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 
+  /// Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations.
   Widget _buildPointingsList(
     BuildContext context,
     WidgetRef ref,
@@ -119,13 +128,20 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
+/// Card displaying a previously viewed [Pointing] with tradition badge and relative timestamp.
 class _HistoryCard extends StatelessWidget {
+  /// The pointing to display.
   final Pointing pointing;
+
+  /// When this pointing was last viewed.
   final DateTime viewedAt;
+
+  /// Callback when the card is tapped (sets as current pointing and navigates home).
   final VoidCallback onTap;
 
   const _HistoryCard({required this.pointing, required this.viewedAt, required this.onTap});
 
+  /// Formats a [DateTime] as a relative time string (e.g., "5m ago", "Yesterday", "3/15").
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);

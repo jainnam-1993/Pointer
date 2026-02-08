@@ -1,4 +1,4 @@
-// Mood teachings screen - shows articles and quotes filtered by mood tag
+// Screen showing articles and quotes filtered by mood tag.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +13,18 @@ import '../article_reader_screen.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
-/// Screen showing teachings by mood
+/**
+ * Screen showing articles and quotes filtered by a [MoodTags] value.
+ *
+ * Displays the mood icon and display name in the header, with articles
+ * (via [ArticleListItem]) and quotes (via [TeachingCard]) sections.
+ * Quotes sorted with unviewed first. Respects [ContentFilter] from parent.
+ */
 class MoodTeachingsScreen extends ConsumerStatefulWidget {
+  /// The mood tag string (from [MoodTags] constants) to filter by.
   final String mood;
+
+  /// Content type filter propagated from the parent library screen.
   final ContentFilter filter;
 
   const MoodTeachingsScreen({super.key, required this.mood, this.filter = ContentFilter.all});

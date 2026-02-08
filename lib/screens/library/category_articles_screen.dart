@@ -1,4 +1,4 @@
-// Category articles screen - shows articles filtered by category
+// Screen showing articles filtered by a specific ArticleCategory.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../data/articles.dart';
@@ -11,10 +11,21 @@ import '../article_reader_screen.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
-/// Screen showing articles in a specific category
+/**
+ * Screen showing articles filtered by a specific [ArticleCategory].
+ *
+ * Displays the category name and article count in the header, with a scrollable
+ * list of [ArticleListItem] widgets. Premium articles are locked behind
+ * subscription unless [kFreeAccessEnabled] is true.
+ */
 class CategoryArticlesScreen extends StatelessWidget {
+  /// The article category to filter by.
   final ArticleCategory category;
+
+  /// Display metadata (name, icon, description) for this category.
   final CategoryInfo info;
+
+  /// Whether the current user has premium access.
   final bool isPremium;
 
   const CategoryArticlesScreen({super.key, required this.category, required this.info, required this.isPremium});

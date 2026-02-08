@@ -112,11 +112,21 @@ class AffinityService {
   }
 }
 
-/// Affinity data for a single tradition
+/**
+ * Computed affinity data for a single [Tradition], combining raw
+ * interaction counts with a normalised score for ranking.
+ */
 class TraditionAffinity {
+  /// The tradition this affinity relates to.
   final Tradition tradition;
+
+  /// Normalised affinity score (0.0 - 1.0), weighted: views 1x, saves 3x.
   final double score;
+
+  /// Total number of times the user viewed pointings from this tradition.
   final int viewCount;
+
+  /// Total number of times the user saved pointings from this tradition.
   final int saveCount;
 
   const TraditionAffinity({required this.tradition, required this.score, required this.viewCount, required this.saveCount});

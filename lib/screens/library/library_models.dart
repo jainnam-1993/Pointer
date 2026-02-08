@@ -1,4 +1,8 @@
-// Library models - enums, data classes, and extensions for the library screen
+// Library data models, enums, and extensions for the LibraryScreen.
+//
+// Defines ContentFilter for article/quote filtering, LibraryBrowseMode
+// for category navigation, CategoryInfo for article category metadata,
+// and TeachingListSorting for viewed/unviewed ordering.
 import 'package:flutter/material.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
@@ -28,6 +32,7 @@ class CategoryInfo {
   const CategoryInfo({required this.name, required this.icon, required this.description});
 }
 
+/// Display metadata for each [ArticleCategory], keyed by category enum value.
 const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ArticleCategory.natureOfAwareness: CategoryInfo(name: 'Nature of Awareness', icon: '◯', description: 'Understanding consciousness itself'),
   ArticleCategory.selfInquiry: CategoryInfo(name: 'Self-Inquiry', icon: '?', description: 'The investigation into "Who am I?"'),
@@ -36,9 +41,12 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ArticleCategory.modernPointers: CategoryInfo(name: 'Modern Pointers', icon: '✦', description: 'Contemporary teachers, fresh words'),
 };
 
-/// Browse mode for category navigation
+/// Browse mode for library category navigation.
+///
+/// Each mode presents a different organizational axis for content discovery.
 enum LibraryBrowseMode { topics, teachers, lineages, moods, saved }
 
+/// Provides display [label] and [icon] for each [LibraryBrowseMode] value.
 extension LibraryBrowseModeExt on LibraryBrowseMode {
   String get label {
     switch (this) {
@@ -71,5 +79,9 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
   }
 }
 
-/// Filter mode for content display
+/// Filter mode for content display in the library and detail screens.
+///
+/// - [all] shows both articles and quotes
+/// - [articles] shows only long-form articles
+/// - [quotes] shows only short teachings/quotes
 enum ContentFilter { all, articles, quotes }

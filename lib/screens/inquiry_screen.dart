@@ -10,13 +10,32 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
+/**
+ * Data model for a guided self-inquiry session.
+ *
+ * Each session belongs to a [Tradition] and has a difficulty level.
+ * Premium sessions require a subscription unless [kFreeAccessEnabled] is true.
+ */
 class InquirySession {
+  /// Unique identifier for the session.
   final String id;
+
+  /// Display title (e.g., "Who Am I?").
   final String title;
+
+  /// Short description of the inquiry approach.
   final String description;
+
+  /// Human-readable duration string (e.g., "5 min").
   final String duration;
+
+  /// Difficulty level: Beginner, Intermediate, or Advanced.
   final String level;
+
+  /// Whether this session requires premium access.
   final bool isPremium;
+
+  /// The spiritual tradition this inquiry belongs to.
   final Tradition tradition;
 
   const InquirySession({
@@ -46,6 +65,7 @@ class InquirySession {
   }
 }
 
+/// All available inquiry sessions, ordered from beginner to advanced.
 const inquirySessions = [
   InquirySession(
     id: '1',
@@ -94,6 +114,13 @@ const inquirySessions = [
   ),
 ];
 
+/**
+ * Self-inquiry session selection screen.
+ *
+ * Displays an intro card explaining the practice followed by [_SessionCard] items
+ * for each [InquirySession]. Premium sessions show a lock icon and navigate to the
+ * paywall when tapped by free users. Uses [StaggeredFadeIn] for entry animations.
+ */
 class InquiryScreen extends ConsumerWidget {
   const InquiryScreen({super.key});
 
@@ -183,10 +210,18 @@ class InquiryScreen extends ConsumerWidget {
   }
 }
 
+/// Card displaying an [InquirySession] with tradition-colored circle, lock state, and premium badge.
 class _SessionCard extends StatelessWidget {
+  /// The inquiry session to display.
   final InquirySession session;
+
+  /// Zero-based index (shown as session number in the circle).
   final int index;
+
+  /// Whether this session is locked behind premium (shows lock icon and reduced opacity).
   final bool isLocked;
+
+  /// Callback when the card is tapped (navigates to player or paywall).
   final VoidCallback onTap;
 
   const _SessionCard({required this.session, required this.index, required this.isLocked, required this.onTap});

@@ -1,4 +1,4 @@
-// Experience section - auto-advance toggle, ambient sound picker
+// Experience settings section: auto-advance toggle and ambient sound picker.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,7 +61,12 @@ class AutoAdvanceToggle extends ConsumerWidget {
   }
 }
 
-/// Sound picker for ambient opening sound
+/**
+ * Picker for the ambient opening sound played when the app launches.
+ *
+ * Displays all [AmbientSound] options in a [Wrap] layout with selectable
+ * chips. The selected sound is persisted via [ambientSoundProvider].
+ */
 class AmbientSoundPicker extends ConsumerWidget {
   const AmbientSoundPicker({super.key});
 

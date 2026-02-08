@@ -2,27 +2,64 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Animation constants for consistent timing across the app
+/**
+ * Animation duration constants for consistent timing across the app.
+ *
+ * Used by transition widgets ([CalmPageTransition], [FadeThroughPage],
+ * [SharedAxisPage]) and reusable components for uniform motion feel.
+ */
 class AnimationDurations {
+  /// Quick interactions (200ms): toggles, micro-feedback.
   static const Duration fast = Duration(milliseconds: 200);
+
+  /// Standard transitions (300ms): page switches, content swaps.
   static const Duration normal = Duration(milliseconds: 300);
+
+  /// Deliberate transitions (450ms): contemplative page navigation.
   static const Duration slow = Duration(milliseconds: 450);
+
+  /// Per-item stagger offset (50ms) for sequential list animations.
   static const Duration stagger = Duration(milliseconds: 50);
 }
 
-/// Animation curves for consistent feel
+/**
+ * Animation curve constants for consistent motion feel across the app.
+ *
+ * Provides named semantic curves used by [StaggeredFadeIn],
+ * [AnimatedTextSwitcher], [ScaleFadeTransition], and other widgets.
+ */
 class AnimationCurves {
+  /// Default ease-in-out cubic for most transitions.
   static const Curve standard = Curves.easeInOutCubic;
+
+  /// Material Design emphasized curve: fast start, slow finish.
   static const Curve emphasized = Curves.fastOutSlowIn;
+
+  /// Gradual deceleration for elements coming to rest.
   static const Curve decelerate = Curves.decelerate;
 }
 
-/// Staggered fade-in animation for list items
+/**
+ * Staggered fade-in animation for list items.
+ *
+ * Each item fades in with a slight upward slide, delayed by [delay] * [index]
+ * to create a cascading reveal effect. Commonly used in library grids and
+ * settings lists.
+ */
 class StaggeredFadeIn extends StatefulWidget {
+  /// Zero-based position in the list, used to calculate stagger delay.
   final int index;
+
+  /// The widget to animate in.
   final Widget child;
+
+  /// Base delay between each item's animation start.
   final Duration delay;
+
+  /// Duration of the fade + slide animation.
   final Duration duration;
+
+  /// Easing curve for the animation.
   final Curve curve;
 
   const StaggeredFadeIn({
@@ -73,12 +110,27 @@ class _StaggeredFadeInState extends State<StaggeredFadeIn> with SingleTickerProv
   }
 }
 
-/// Animated text switcher with fade and optional slide
+/**
+ * Animated text switcher with fade and optional slide.
+ *
+ * Wraps [AnimatedSwitcher] to crossfade between text values with a
+ * combined fade + slide transition. The text is keyed by its value
+ * so identical strings do not re-animate.
+ */
 class AnimatedTextSwitcher extends StatelessWidget {
+  /// The current text to display; changes trigger crossfade animation.
   final String text;
+
+  /// Optional text style override.
   final TextStyle? style;
+
+  /// Alignment for the text widget.
   final TextAlign textAlign;
+
+  /// Duration of the crossfade transition.
   final Duration duration;
+
+  /// Starting offset for the incoming text slide (relative to widget size).
   final Offset slideOffset;
 
   const AnimatedTextSwitcher({
@@ -109,10 +161,21 @@ class AnimatedTextSwitcher extends StatelessWidget {
   }
 }
 
-/// Scale and fade transition for badges and small elements
+/**
+ * Scale and fade transition for badges and small elements.
+ *
+ * Animates the child between visible (full size, full opacity) and hidden
+ * (scaled down to 0.8, fully transparent) states. Useful for toggle badges,
+ * status indicators, and contextual action buttons.
+ */
 class ScaleFadeTransition extends StatelessWidget {
+  /// The widget to show or hide with the transition.
   final Widget child;
+
+  /// Whether the child is currently visible.
   final bool visible;
+
+  /// Duration of the scale + fade animation.
   final Duration duration;
 
   const ScaleFadeTransition({super.key, required this.child, this.visible = true, this.duration = const Duration(milliseconds: 200)});
@@ -128,8 +191,13 @@ class ScaleFadeTransition extends StatelessWidget {
   }
 }
 
-/// Calm-style page transition for GoRouter
-/// Uses pure fade - no slides for a contemplative, peaceful experience
+/**
+ * Calm-style page transition for [GoRouter].
+ *
+ * Uses a pure crossfade with no slide movement, creating a contemplative
+ * and peaceful navigation experience. Forward transition uses [AnimationDurations.slow];
+ * reverse uses [AnimationDurations.normal] for a slightly quicker back-navigation.
+ */
 class CalmPageTransition extends CustomTransitionPage<void> {
   CalmPageTransition({required super.child, super.name, super.arguments, super.restorationId, super.key})
     : super(
@@ -149,11 +217,24 @@ class CalmPageTransition extends CustomTransitionPage<void> {
       );
 }
 
-/// Hero-compatible morphing card wrapper
+/**
+ * Hero-compatible morphing card wrapper.
+ *
+ * Wraps a child widget in a [Hero] with a transparent [Material] background,
+ * enabling smooth hero transitions between list items and detail screens.
+ * Includes an optional [InkWell] tap handler with custom border radius.
+ */
 class MorphingCard extends StatelessWidget {
+  /// Unique hero tag for matching source and destination widgets.
   final String heroTag;
+
+  /// The card content widget.
   final Widget child;
+
+  /// Optional tap callback; wraps child in [InkWell] when provided.
   final VoidCallback? onTap;
+
+  /// Corner radius for the ink splash bounds.
   final BorderRadius borderRadius;
 
   const MorphingCard({
@@ -176,15 +257,35 @@ class MorphingCard extends StatelessWidget {
   }
 }
 
-/// Container transform animation using animations package
-/// Opens a card into a full-screen page with material motion
+/**
+ * Container transform animation using the `animations` package.
+ *
+ * Opens a card into a full-screen page with Material Design container
+ * transform motion. The closed state renders [closedBuilder] as a tappable
+ * card; tapping triggers the container expand into [openBuilder].
+ *
+ * Transition duration defaults to [AnimationDurations.slow].
+ */
 class OpenContainerCard extends StatelessWidget {
+  /// Widget displayed in the closed (card) state.
   final Widget closedBuilder;
+
+  /// Builder for the open (full-screen) state; receives a close action callback.
   final Widget Function(BuildContext, VoidCallback) openBuilder;
+
+  /// Background color of the closed card; defaults to transparent.
   final Color? closedColor;
+
+  /// Background color of the open page; defaults to scaffold background.
   final Color? openColor;
+
+  /// Corner radius of the closed card.
   final BorderRadius closedBorderRadius;
+
+  /// Elevation of the closed card.
   final double closedElevation;
+
+  /// The container transform type (fade through or fade).
   final ContainerTransitionType transitionType;
 
   const OpenContainerCard({
@@ -213,9 +314,18 @@ class OpenContainerCard extends StatelessWidget {
   }
 }
 
-/// Fade through transition for switching between unrelated content
+/**
+ * Fade-through transition for switching between unrelated content.
+ *
+ * Uses Material Design fade-through motion where the outgoing child fades
+ * out completely before the incoming child fades in. Suitable for tab switches
+ * and content that has no spatial relationship.
+ */
 class FadeThroughSwitcher extends StatelessWidget {
+  /// The current child widget; changes trigger the fade-through animation.
   final Widget child;
+
+  /// Duration of the complete fade-out + fade-in cycle.
   final Duration duration;
 
   const FadeThroughSwitcher({super.key, required this.child, this.duration = const Duration(milliseconds: 300)});
@@ -232,10 +342,21 @@ class FadeThroughSwitcher extends StatelessWidget {
   }
 }
 
-/// Shared axis transition for navigating between related content
+/**
+ * Shared-axis transition for navigating between related content.
+ *
+ * Uses Material Design shared-axis motion where outgoing and incoming
+ * children move along the same axis (horizontal, vertical, or scaled).
+ * Suitable for sequential content like onboarding steps or pagination.
+ */
 class SharedAxisSwitcher extends StatelessWidget {
+  /// The current child widget; changes trigger the shared-axis animation.
   final Widget child;
+
+  /// The axis along which the transition occurs.
   final SharedAxisTransitionType transitionType;
+
+  /// Duration of the transition.
   final Duration duration;
 
   const SharedAxisSwitcher({
@@ -262,7 +383,7 @@ class SharedAxisSwitcher extends StatelessWidget {
   }
 }
 
-/// GoRouter page with fade through transition
+/// [GoRouter] page with Material Design fade-through transition.
 class FadeThroughPage extends CustomTransitionPage<void> {
   FadeThroughPage({required super.child, super.name, super.arguments, super.restorationId, super.key})
     : super(
@@ -274,7 +395,7 @@ class FadeThroughPage extends CustomTransitionPage<void> {
       );
 }
 
-/// GoRouter page with shared axis transition
+/// [GoRouter] page with Material Design shared-axis transition.
 class SharedAxisPage extends CustomTransitionPage<void> {
   SharedAxisPage({
     required super.child,
@@ -292,12 +413,27 @@ class SharedAxisPage extends CustomTransitionPage<void> {
        );
 }
 
-/// Pulse animation for subtle attention-drawing
+/**
+ * Pulse animation for subtle attention-drawing.
+ *
+ * Continuously scales the child between [minScale] and [maxScale] when
+ * [enabled] is true. Stops and resets when disabled. Useful for drawing
+ * attention to interactive elements or indicating ongoing activity.
+ */
 class PulseAnimation extends StatefulWidget {
+  /// The widget to pulse.
   final Widget child;
+
+  /// Whether the pulse animation is currently active.
   final bool enabled;
+
+  /// Duration of one complete pulse cycle (scale up + scale down).
   final Duration duration;
+
+  /// Scale factor at the smallest point of the pulse.
   final double minScale;
+
+  /// Scale factor at the largest point of the pulse.
   final double maxScale;
 
   const PulseAnimation({

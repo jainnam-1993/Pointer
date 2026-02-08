@@ -5,7 +5,12 @@ import '../data/teachers.dart';
 import '../models/teacher.dart';
 import '../theme/app_theme.dart';
 
-/// Shows a modal bottom sheet with teacher information
+/**
+ * Shows a modal bottom sheet with [Teacher] biography and related pointings.
+ *
+ * Presents a [DraggableScrollableSheet] containing the teacher's name, dates,
+ * tradition badge, biography, tags, and up to 5 related [Pointing]s.
+ */
 void showTeacherSheet(BuildContext context, Teacher teacher) {
   showModalBottomSheet(
     context: context,
@@ -15,8 +20,20 @@ void showTeacherSheet(BuildContext context, Teacher teacher) {
   );
 }
 
-/// Modal sheet showing teacher biography and other pointings
+/**
+ * Modal sheet showing teacher biography and other pointings.
+ *
+ * Displays a glassmorphic draggable sheet (60-90% of screen height) with:
+ * - Teacher name and dates
+ * - [Tradition] badge with icon
+ * - Full biography text
+ * - Tag chips for teacher topics
+ * - Up to 5 related pointings via [getPointingsByTeacher]
+ *
+ * Typically shown via [showTeacherSheet] helper function.
+ */
 class TeacherSheet extends StatelessWidget {
+  /// The teacher whose information is displayed in this sheet.
   final Teacher teacher;
 
   const TeacherSheet({super.key, required this.teacher});

@@ -6,17 +6,32 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
-/// Task names for WorkManager
+/**
+ * Task name constants registered with the [Workmanager] plugin.
+ *
+ * These identifiers are used both when scheduling tasks and inside
+ * [callbackDispatcher] to route execution to the correct handler.
+ */
 class WorkManagerTasks {
+  /// Repeating notification task, fires at the configured frequency.
   static const String periodicNotification = 'periodicNotification';
+
+  /// Single-fire notification task, used for one-off delayed reminders.
   static const String oneTimeNotification = 'oneTimeNotification';
 }
 
-/// Storage keys for notification preferences
+/// SharedPreferences keys for notification preferences accessed by background tasks.
 class _NotificationKeys {
+  /// Whether notifications are globally enabled.
   static const String enabled = 'pointer_notifications_enabled';
+
+  /// Notification interval in minutes.
   static const String frequencyMinutes = 'pointer_notification_frequency';
+
+  /// First hour (0-23) of the allowed notification window.
   static const String startHour = 'pointer_notification_start_hour';
+
+  /// Last hour (0-23) of the allowed notification window.
   static const String endHour = 'pointer_notification_end_hour';
 }
 
@@ -176,7 +191,16 @@ Map<String, String> _getFallbackPointing() {
   return fallbacks[Random().nextInt(fallbacks.length)];
 }
 
-/// Service for managing WorkManager-based notifications.
+/**
+ * Service for scheduling background notifications via the WorkManager plugin.
+ *
+ * WorkManager tasks survive app kills and device reboots, making them
+ * more reliable than `AlarmManager`-based scheduling. All methods are
+ * static — no instance state is required.
+ *
+ * Notification content is sourced from the [Pointing] cache written by
+ * [NotificationService.cachePointingsForBackground].
+ */
 class WorkManagerService {
   static bool _isInitialized = false;
 

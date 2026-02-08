@@ -29,11 +29,25 @@ import '../widgets/save_confirmation.dart';
 // import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
 
+/**
+ * Daily pointing home screen with auto-advance timer and swipe navigation.
+ *
+ * Displays the current [Pointing] inside a [GlassCard] with tradition badge,
+ * source citations, commentary, and optional audio/video players. Supports:
+ * - Vertical swipe navigation between pointings (with blur transition)
+ * - Auto-advance timer (default 60s, configurable via [autoAdvanceDelayProvider])
+ * - Long-press to save, double-tap for zen mode
+ * - Share via [SharePreviewScreen] modal
+ * - Responsive layout for foldables (aspect ratio < 1.3)
+ *
+ * Uses [CurrentPointingNotifier] for round-robin content delivery and
+ * [AffinityService] for tradition preference tracking.
+ */
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  /// Static flag to disable auto-advance in tests
-  /// Set to true in test setUp to prevent timer issues
+  /// Static flag to disable auto-advance in tests.
+  /// Set to `true` in test `setUp` to prevent timer issues.
   static bool disableAutoAdvanceForTesting = false;
 
   @override
@@ -41,15 +55,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// Whether a pointing transition animation is in progress.
   bool _isAnimating = false;
+
+  /// Whether the save confirmation overlay is visible.
   bool _showSaveConfirmation = false;
+
+  /// Whether the current save is the user's first-ever save (triggers celebration).
   bool _isFirstSave = false;
 
-  // Swipe-up blur animation state
+  /// Accumulated vertical drag offset for the swipe blur effect.
   double _swipeOffset = 0.0;
+
+  /// Whether the user is currently mid-swipe (suppresses auto-advance).
   bool _isSwipeInProgress = false;
 
-  // Auto-advance timer
+  /// Periodic timer that auto-advances to the next pointing.
   Timer? _autoAdvanceTimer;
 
   void _toggleZenMode() {
@@ -160,6 +181,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     SemanticsService.sendAnnouncement(View.of(context), announcement.toString(), TextDirection.ltr);
   }
 
+  /// Handles manual advance to the next pointing with haptic feedback.
+  ///
+  /// Checks freemium limits and navigates to paywall if exceeded.
+  /// Records view history and tradition affinity, then restarts auto-advance timer.
   Future<void> _handleNext() async {
     if (_isAnimating) return;
 
@@ -209,6 +234,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _startAutoAdvanceTimer();
   }
 
+  /// Handles navigation to the previous pointing with haptic feedback.
   Future<void> _handlePrevious() async {
     if (_isAnimating) return;
 
@@ -234,6 +260,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _startAutoAdvanceTimer();
   }
 
+  /// Opens the [SharePreviewScreen] as a modal bottom sheet for the current pointing.
   Future<void> _handleShare() async {
     final pointing = ref.read(currentPointingProvider);
     HapticFeedback.mediumImpact();
@@ -254,6 +281,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Saves the current pointing to favorites with affinity tracking.
+  ///
+  /// First saves trigger a celebration with heavy haptic feedback.
+  /// Updates the home screen widget and records tradition affinity
+  /// (saves are weighted 3x in the [AffinityService] algorithm).
   Future<void> _handleSave() async {
     final pointing = ref.read(currentPointingProvider);
     final favorites = ref.read(favoritesProvider);
@@ -296,6 +328,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  /// Dismisses the save confirmation overlay.
   void _hideSaveConfirmation() {
     if (mounted) {
       setState(() {
@@ -328,6 +361,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Builds the minimal zen mode view with only the pointing text.
+  ///
+  /// Tap exits zen mode, vertical swipes navigate between pointings.
   Widget _buildZenModeView(Pointing pointing) {
     return GestureDetector(
       onTap: _toggleZenMode,
@@ -694,10 +730,13 @@ class _SourceCitation extends StatelessWidget {
   }
 }
 
+/// Sealed class representing a resolved source citation target.
 sealed class _SourceMatch {
+  /// Navigates to the matched content (article or teacher screen).
   void navigate(BuildContext context);
 }
 
+/// Source citation that matched a specific [Article] by title.
 class _ArticleMatch extends _SourceMatch {
   final Article article;
   _ArticleMatch(this.article);
@@ -708,6 +747,7 @@ class _ArticleMatch extends _SourceMatch {
   }
 }
 
+/// Source citation that matched a teacher who has articles in the library.
 class _TeacherMatch extends _SourceMatch {
   final String teacher;
   _TeacherMatch(this.teacher);

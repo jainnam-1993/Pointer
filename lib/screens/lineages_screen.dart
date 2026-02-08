@@ -11,6 +11,14 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
+/**
+ * Tradition/lineage management screen for filtering which traditions appear.
+ *
+ * Displays all available [Tradition] values with toggle switches and info buttons.
+ * Each [_TraditionCard] shows the tradition icon, name, description, and pointings count.
+ * Users can enable/disable traditions (at least one must remain selected).
+ * The "Reset" button re-enables all traditions via [PreferredTraditionsNotifier.enableAll].
+ */
 class LineagesScreen extends ConsumerWidget {
   const LineagesScreen({super.key});
 
@@ -119,12 +127,24 @@ class LineagesScreen extends ConsumerWidget {
   }
 }
 
+/// Card displaying a [Tradition] with toggle switch, info button, and animated state transitions.
 class _TraditionCard extends StatelessWidget {
+  /// The tradition enum value.
   final Tradition tradition;
+
+  /// Display metadata (name, icon, description) for this tradition.
   final TraditionInfo info;
+
+  /// Number of pointings available for this tradition.
   final int pointingsCount;
+
+  /// Whether this tradition is currently enabled for content delivery.
   final bool isEnabled;
+
+  /// Callback to toggle this tradition's enabled state.
   final VoidCallback onToggle;
+
+  /// Callback to show the tradition detail bottom sheet.
   final VoidCallback onInfoTap;
 
   const _TraditionCard({

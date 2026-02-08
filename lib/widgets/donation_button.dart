@@ -1,3 +1,12 @@
+/// Expandable tip jar donation widget for the settings screen.
+///
+/// Provides a collapsible [GlassCard] that expands to reveal a 2x2 grid of
+/// consumable in-app purchase options (Tea, Cushion, Incense, Retreat).
+/// Integrates with [DonationNotifier] for IAP lifecycle management.
+///
+/// See also: [DonationState] for the underlying state model.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +16,7 @@ import '../providers/donation_providers.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
-/// Product display configuration
+/// Product display configuration pairing a product ID with its label and icon.
 class _TipProduct {
   final String label;
   final IconData icon;
