@@ -17,9 +17,6 @@ import 'data/teachings/adyashanti.dart';
 /// Global container reference for notification action handling
 ProviderContainer? _globalContainer;
 
-/// Global guard for ambient sound (prevents double-play during startup)
-bool _globalAmbientSoundPlayed = false;
-
 /// Handle notification action responses (Save, Another buttons)
 @pragma('vm:entry-point')
 void notificationActionCallback(NotificationResponse response) {
@@ -128,27 +125,8 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Play ambient sound on cold start (configurable in Settings)
-    _playAmbientSound();
-  }
-
-  void _playAmbientSound() {
-    // Guard against duplicate plays (can happen during debug mode rebuilds)
-    debugPrint('AmbientSound: _playAmbientSound called, global guard=$_globalAmbientSoundPlayed');
-    if (_globalAmbientSoundPlayed) {
-      debugPrint('AmbientSound: Skipping duplicate call (already played this launch)');
-      return;
-    }
-    _globalAmbientSoundPlayed = true;
-    debugPrint('AmbientSound: Global guard set to true');
-
-    // Delay until after splash video finishes (~4s) to avoid audio/video
-    // codec contention that causes the app to hang on cold start
-    Future.delayed(const Duration(seconds: 5), () {
-      if (!mounted) return;
-      final sound = ref.read(ambientSoundProvider);
-      ref.read(ambientSoundServiceProvider).playOpeningSound(sound);
-    });
+    // Opening bell sound is embedded in the splash video asset —
+    // no separate just_audio playback needed (avoids codec contention).
   }
 
   @override
