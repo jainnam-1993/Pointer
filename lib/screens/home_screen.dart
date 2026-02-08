@@ -8,9 +8,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../data/articles.dart';
 import '../data/pointings.dart';
+import '../models/article.dart';
+import 'article_reader_screen.dart';
 import 'share_preview_screen.dart';
 import '../data/teachers.dart';
+import 'library_screen.dart';
 import '../widgets/teacher_sheet.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -603,17 +607,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                 ],
                                 if (pointing.source != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      pointing.source!,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontStyle: FontStyle.italic,
-                                        color: colors.textSecondary.withValues(alpha: 0.6),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                  _SourceCitation(
+                                    source: pointing.source!,
+                                    teacher: pointing.teacher,
                                   ),
                                 // Extended commentary (premium feature)
                                 if (pointing.commentary != null) ...[
@@ -700,6 +696,108 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Two-tier citation link:
+/// 1. If an article title matches the source → open that article
+/// 2. Else if the teacher has articles → open teacher's teaching screen
+/// 3. Else → plain text (no tap affordance)
+class _SourceCitation extends StatelessWidget {
+  final String source;
+  final String? teacher;
+
+  const _SourceCitation({required this.source, this.teacher});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final match = _resolveSource();
+
+    final style = TextStyle(
+      fontSize: 12,
+      fontStyle: FontStyle.italic,
+      color: colors.textSecondary.withValues(alpha: 0.6),
+      decoration: match != null ? TextDecoration.underline : null,
+      decorationColor: match != null
+          ? colors.textSecondary.withValues(alpha: 0.3)
+          : null,
+    );
+
+    if (match == null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(source, style: style, textAlign: TextAlign.center),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          match.navigate(context);
+        },
+        child: Text(source, style: style, textAlign: TextAlign.center),
+      ),
+    );
+  }
+
+  _SourceMatch? _resolveSource() {
+    // Tier 1: direct article title match
+    final lowerSource = source.toLowerCase();
+    final directMatch = articles.cast<Article?>().firstWhere(
+      (a) => a!.title.toLowerCase() == lowerSource,
+      orElse: () => null,
+    );
+    if (directMatch != null) {
+      return _ArticleMatch(directMatch);
+    }
+
+    // Tier 2: teacher has articles
+    if (teacher != null) {
+      final teacherArticles = getArticlesByTeacher(teacher!);
+      if (teacherArticles.isNotEmpty) {
+        return _TeacherMatch(teacher!);
+      }
+    }
+
+    return null;
+  }
+}
+
+sealed class _SourceMatch {
+  void navigate(BuildContext context);
+}
+
+class _ArticleMatch extends _SourceMatch {
+  final Article article;
+  _ArticleMatch(this.article);
+
+  @override
+  void navigate(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ArticleReaderScreen(article: article),
+      ),
+    );
+  }
+}
+
+class _TeacherMatch extends _SourceMatch {
+  final String teacher;
+  _TeacherMatch(this.teacher);
+
+  @override
+  void navigate(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TeacherTeachingsScreen(
+          teacher: teacher,
+          filter: ContentFilter.articles,
+        ),
       ),
     );
   }
