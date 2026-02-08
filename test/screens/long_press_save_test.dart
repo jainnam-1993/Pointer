@@ -245,8 +245,8 @@ void main() {
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
 
-      // Verify heart icon is shown
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
+      // Verify heart icon is shown (card header heart + save confirmation heart)
+      expect(find.byIcon(Icons.favorite), findsAtLeastNWidgets(1));
     });
 
     testWidgets('confirmation shows "Saved" text', (tester) async {
