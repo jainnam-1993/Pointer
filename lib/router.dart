@@ -17,7 +17,6 @@
  * Route structure:
  * - `/splash` — [SplashScreen] (cold-start video, outside shell)
  * - `/onboarding` — [OnboardingScreen] (outside shell)
- * - `/paywall` — redirects to `/` (IAP removed, all features free)
  * - `/history` — [HistoryScreen] (outside shell)
  * - `/inquiry/:id` — [InquiryPlayerScreen] (full-screen, outside shell)
  * - `/lineages` — [LineagesScreen] (outside shell)
@@ -157,13 +156,6 @@ GoRouter _createRouter() {
       GoRoute(
         path: '/onboarding',
         pageBuilder: (context, state) => FadeThroughPage(key: state.pageKey, child: const OnboardingScreen()),
-      ),
-
-      // Paywall route - redirect to home (IAP removed, all features free)
-      GoRoute(
-        path: '/paywall',
-        redirect: (context, state) => '/',
-        builder: (context, state) => const SizedBox.shrink(), // Never reached
       ),
 
       // History route (outside shell) - horizontal for related content

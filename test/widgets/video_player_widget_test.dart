@@ -30,21 +30,21 @@ void main() {
       mockNavigatorObserver = MockNavigatorObserver();
     });
 
-    Widget createTestWidget({required String pointingId, String? videoUrl, required bool isPremium}) {
+    Widget createTestWidget({required String pointingId, String? videoUrl}) {
       return ProviderScope(
         overrides: [oledModeProvider.overrideWith((ref) => false), reduceMotionOverrideProvider.overrideWith((ref) => null)],
         child: MaterialApp(
           theme: AppTheme.dark,
           navigatorObservers: [mockNavigatorObserver],
           home: Scaffold(
-            body: VideoPlayerWidget(pointingId: pointingId, videoUrl: videoUrl, isPremium: isPremium),
+            body: VideoPlayerWidget(pointingId: pointingId, videoUrl: videoUrl),
           ),
         ),
       );
     }
 
     testWidgets('returns SizedBox.shrink when videoUrl is null', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: null, isPremium: true));
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: null));
 
       // Should render nothing
       expect(find.byType(VideoPlayerWidget), findsOneWidget);
@@ -52,79 +52,20 @@ void main() {
       expect(find.byIcon(Icons.play_arrow), findsNothing);
     });
 
-    testWidgets('displays video placeholder with lock icon for non-premium users', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false));
+    testWidgets('displays video placeholder with play icon', (tester) async {
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'));
 
       // Should show the container with placeholder
       expect(find.byType(GestureDetector), findsOneWidget);
       expect(find.byIcon(Icons.videocam), findsOneWidget);
       expect(find.text('Video Transmission'), findsOneWidget);
 
-      // Should show lock icon for non-premium
-      expect(find.byIcon(Icons.lock), findsOneWidget);
-      expect(find.byIcon(Icons.play_arrow), findsNothing);
-    });
-
-    testWidgets('displays video placeholder with play icon for premium users', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
-
-      // Should show the container with placeholder
-      expect(find.byType(GestureDetector), findsOneWidget);
-      expect(find.byIcon(Icons.videocam), findsOneWidget);
-      expect(find.text('Video Transmission'), findsOneWidget);
-
-      // Should show play icon for premium users
+      // Should show play icon
       expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsNothing);
-    });
-
-    testWidgets('shows premium prompt modal for non-premium users when tapped', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false));
-
-      // Tap on the video widget
-      await tester.tap(find.byType(GestureDetector));
-      await tester.pumpAndSettle();
-
-      // Should show modal bottom sheet with premium prompt
-      expect(find.text('Video Transmissions'), findsOneWidget);
-      expect(find.text('Watch video teachings from realized masters. Premium feature.'), findsOneWidget);
-      expect(find.text('Upgrade to Premium'), findsOneWidget);
-      expect(find.byIcon(Icons.play_circle_outline), findsOneWidget);
-    });
-
-    testWidgets('premium prompt shows upgrade button', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false));
-
-      // Tap on the video widget to show modal
-      await tester.tap(find.byType(GestureDetector));
-      await tester.pumpAndSettle();
-
-      // Verify upgrade button is present and tappable
-      final upgradeButton = find.text('Upgrade to Premium');
-      expect(upgradeButton, findsOneWidget);
-      expect(tester.widget<FilledButton>(find.ancestor(of: upgradeButton, matching: find.byType(FilledButton))), isNotNull);
-    });
-
-    testWidgets('premium prompt modal is dismissible', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false));
-
-      // Tap on the video widget to show modal
-      await tester.tap(find.byType(GestureDetector));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Video Transmissions'), findsOneWidget);
-
-      // Simulate back button press to dismiss modal
-      final NavigatorState navigator = tester.state(find.byType(Navigator));
-      navigator.pop();
-      await tester.pumpAndSettle();
-
-      // Modal should be dismissed
-      expect(find.text('Video Transmissions'), findsNothing);
     });
 
     testWidgets('uses correct colors from theme', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'));
 
       // Find the play button overlay container
       final containerFinder = find.descendant(
@@ -141,26 +82,13 @@ void main() {
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.shape, BoxShape.circle);
 
-      // The color should be accent with opacity for premium users
+      // The color should be accent with opacity
       // Note: We can't directly compare Color with opacity, so we check it exists
       expect(decoration.color, isNotNull);
     });
 
-    testWidgets('displays different overlay colors for premium vs non-premium', (tester) async {
-      // Test premium user overlay
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
-
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-
-      // Test non-premium user overlay
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false));
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.lock), findsOneWidget);
-    });
-
     testWidgets('widget structure matches expected layout', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'));
 
       // Verify the widget tree structure
       expect(find.byType(GestureDetector), findsOneWidget);
@@ -175,7 +103,7 @@ void main() {
     });
 
     testWidgets('has correct container dimensions', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'));
 
       // Find the main container by its decoration
       final containerFinder = find.descendant(
@@ -201,7 +129,7 @@ void main() {
     });
 
     testWidgets('play button overlay has correct size', (tester) async {
-      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true));
+      await tester.pumpWidget(createTestWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'));
 
       // Find the play button overlay container (circular overlay)
       final overlayContainerFinder = find.descendant(
@@ -228,7 +156,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),
@@ -245,7 +173,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),
@@ -256,39 +184,6 @@ void main() {
       expect(find.text('Video Transmission'), findsOneWidget);
     });
 
-    testWidgets('updates when isPremium changes', (tester) async {
-      // Start as non-premium
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [oledModeProvider.overrideWith((ref) => false), reduceMotionOverrideProvider.overrideWith((ref) => null)],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byIcon(Icons.lock), findsOneWidget);
-
-      // Change to premium
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [oledModeProvider.overrideWith((ref) => false), reduceMotionOverrideProvider.overrideWith((ref) => null)],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsNothing);
-    });
-
     testWidgets('updates when videoUrl changes from null to valid', (tester) async {
       // Start with null videoUrl
       await tester.pumpWidget(
@@ -296,7 +191,7 @@ void main() {
           overrides: [oledModeProvider.overrideWith((ref) => false), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: Scaffold(body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: null, isPremium: true)),
+            home: Scaffold(body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: null)),
           ),
         ),
       );
@@ -310,7 +205,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),
@@ -329,7 +224,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'invalid-url', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'invalid-url'),
             ),
           ),
         ),
@@ -348,7 +243,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: '', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: ''),
             ),
           ),
         ),
@@ -368,7 +263,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: longUrl, isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: longUrl),
             ),
           ),
         ),
@@ -388,7 +283,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),
@@ -397,30 +292,6 @@ void main() {
       final gestureDetector = tester.widget<GestureDetector>(find.byType(GestureDetector));
 
       expect(gestureDetector.onTap, isNotNull);
-    });
-
-    testWidgets('responds to tap events', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [oledModeProvider.overrideWith((ref) => false), reduceMotionOverrideProvider.overrideWith((ref) => null)],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: false),
-            ),
-          ),
-        ),
-      );
-
-      // Verify widget is present before tap
-      expect(find.byType(VideoPlayerWidget), findsOneWidget);
-
-      // Tap should trigger action
-      await tester.tap(find.byType(GestureDetector));
-      await tester.pumpAndSettle();
-
-      // Modal should appear
-      expect(find.text('Video Transmissions'), findsOneWidget);
     });
   });
 
@@ -432,7 +303,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),
@@ -453,7 +324,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.light,
             home: Scaffold(
-              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4', isPremium: true),
+              body: VideoPlayerWidget(pointingId: 'test-pointing', videoUrl: 'https://example.com/video.mp4'),
             ),
           ),
         ),

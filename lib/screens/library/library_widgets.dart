@@ -1,6 +1,6 @@
 /**
  * Shared widgets for library screens: SectionHeader, ArticleListItem, TeachingCard,
- * FilterSheet, FilterOption, LibraryPremiumUpgrade, and FeatureRow.
+ * FilterSheet, and FilterOption.
  *
  * Also provides showLibraryShareSheet for sharing teachings via SharePreviewScreen.
  */
@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import '../../data/pointings.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
-import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../share_preview_screen.dart';
@@ -78,22 +77,11 @@ class ArticleListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            article.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
-                          ),
-                        ),
-                        // Hide premium badge when kFreeAccessEnabled (all content free)
-                        if (!kFreeAccessEnabled && article.isPremium) ...[
-                          const SizedBox(width: 8),
-                          Icon(isLocked ? Icons.lock_outline : Icons.auto_awesome, size: 14, color: colors.accent),
-                        ],
-                      ],
+                    Text(
+                      article.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                     ),
                     if (article.subtitle != null) ...[
                       const SizedBox(height: 4),
@@ -327,111 +315,3 @@ class FilterOption<T> {
   const FilterOption({required this.value, required this.label, required this.icon});
 }
 
-/// Premium upgrade prompt for free users trying to access the library
-class LibraryPremiumUpgrade extends StatelessWidget {
-  final VoidCallback onUpgrade;
-
-  const LibraryPremiumUpgrade({super.key, required this.onUpgrade});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final goldColor = colors.gold;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Premium icon
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(color: goldColor.withValues(alpha: 0.15), shape: BoxShape.circle),
-              child: Icon(Icons.auto_awesome, size: 40, color: goldColor),
-            ),
-            const SizedBox(height: 24),
-
-            // Title
-            Text(
-              'Unlock the Full Library',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: colors.textPrimary),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-
-            // Description
-            Text(
-              'Browse teachings by topic, teacher, lineage, and mood. '
-              'Access featured articles and extended commentary.',
-              style: TextStyle(fontSize: 15, color: colors.textSecondary, height: 1.5),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-
-            // What's included
-            Container(
-              margin: const EdgeInsets.only(top: 16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colors.glassBackground,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: colors.glassBorder),
-              ),
-              child: Column(
-                children: [
-                  FeatureRow(icon: Icons.library_books, text: 'Full article library'),
-                  const SizedBox(height: 12),
-                  FeatureRow(icon: Icons.notifications_active, text: 'Daily notifications'),
-                  const SizedBox(height: 12),
-                  FeatureRow(icon: Icons.widgets, text: 'Home screen widget'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Upgrade button
-            GlassButton(
-              label: 'Upgrade to Premium',
-              onPressed: onUpgrade,
-              icon: Icon(Icons.auto_awesome, color: goldColor, size: 18),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Free features reminder
-            Text(
-              'Free forever: Unlimited pointings & saved favorites',
-              style: TextStyle(fontSize: 12, color: colors.textMuted),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Single row in the premium upgrade feature list with a gold icon and label text.
-class FeatureRow extends StatelessWidget {
-  /// Icon displayed in gold color.
-  final IconData icon;
-
-  /// Feature description text.
-  final String text;
-
-  const FeatureRow({super.key, required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: colors.gold),
-        const SizedBox(width: 12),
-        Text(text, style: TextStyle(color: colors.textPrimary, fontSize: 14)),
-      ],
-    );
-  }
-}

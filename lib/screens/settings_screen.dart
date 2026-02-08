@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -242,13 +241,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    final subscription = ref.watch(subscriptionProvider);
     final isDark = context.isDarkMode;
     final colors = context.colors;
     final textColorMuted = colors.textMuted;
     final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : colors.textMuted;
     final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : colors.textMuted;
-    final goldColor = colors.gold;
     final switchThumbColor = isDark ? Colors.white : colors.primary;
     final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
     final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
@@ -264,54 +261,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                 StaggeredFadeIn(index: 0, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
                 const SizedBox(height: 24),
 
-                // Notifications section (Premium feature when IAP enabled)
+                // Notifications section
                 SettingsSectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
-                // Premium badge for notifications - hidden when kFreeAccessEnabled
-                if (!kFreeAccessEnabled && !subscription.isPremium)
-                  PremiumFeatureBanner(feature: 'Notifications', onUpgrade: () => context.push('/paywall')),
-                // Add permission banner when disabled (show if premium OR free access mode)
-                if ((kFreeAccessEnabled || subscription.isPremium) && !_permissionGranted)
+                if (!_permissionGranted)
                   NotificationPermissionBanner(onOpenSettings: () => _openAppNotificationSettings()),
                 GlassCard(
                   padding: EdgeInsets.zero,
-                  borderColor: !kFreeAccessEnabled && !subscription.isPremium ? goldColor.withValues(alpha: 0.3) : null,
                   child: Column(
                     children: [
                       SettingsRow(
                         title: 'Daily Pointings',
-                        // When kFreeAccessEnabled, show normal subtitle (not "Premium feature")
-                        subtitle: !kFreeAccessEnabled && !subscription.isPremium
-                            ? 'Premium feature'
-                            : _permissionGranted
+                        subtitle: _permissionGranted
                             ? _getNotificationCountSummary()
                             : 'Permission required',
-                        // Hide lock icon when kFreeAccessEnabled
-                        leading: !kFreeAccessEnabled && !subscription.isPremium ? Icon(Icons.lock_outline, color: goldColor, size: 18) : null,
                         trailing: Switch(
-                          // Allow toggle when kFreeAccessEnabled OR premium
-                          value: (kFreeAccessEnabled || subscription.isPremium) && _notificationsEnabled && _permissionGranted,
-                          onChanged: (kFreeAccessEnabled || subscription.isPremium)
-                              ? (value) async {
-                                  HapticFeedback.mediumImpact();
+                          value: _notificationsEnabled && _permissionGranted,
+                          onChanged: (value) async {
+                            HapticFeedback.mediumImpact();
 
-                                  if (value && !_permissionGranted) {
-                                    final notificationService = ref.read(notificationServiceProvider);
-                                    final granted = await notificationService.requestPermissions();
-                                    if (!granted) {
-                                      _showPermissionDeniedDialog();
-                                      return;
-                                    }
-                                    setState(() => _permissionGranted = true);
-                                  }
+                            if (value && !_permissionGranted) {
+                              final notificationService = ref.read(notificationServiceProvider);
+                              final granted = await notificationService.requestPermissions();
+                              if (!granted) {
+                                _showPermissionDeniedDialog();
+                                return;
+                              }
+                              setState(() => _permissionGranted = true);
+                            }
 
-                                  setState(() => _notificationsEnabled = value);
-                                  await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
-                                }
-                              : (_) {
-                                  HapticFeedback.mediumImpact();
-                                  context.push('/paywall');
-                                },
+                            setState(() => _notificationsEnabled = value);
+                            await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
+                          },
                           activeThumbColor: switchThumbColor,
                           activeTrackColor: switchActiveTrackColor,
                           inactiveThumbColor: isDark ? Colors.white : Colors.grey,
@@ -324,22 +305,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Hide lock icon when kFreeAccessEnabled
-                            if (!kFreeAccessEnabled && !subscription.isPremium)
-                              Icon(Icons.lock_outline, color: goldColor, size: 14)
-                            else
-                              Text(_getScheduleTimeSummary(), style: TextStyle(color: textColorMuted, fontSize: 14)),
+                            Text(_getScheduleTimeSummary(), style: TextStyle(color: textColorMuted, fontSize: 14)),
                             const SizedBox(width: 8),
                             Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                           ],
                         ),
-                        // Allow access when kFreeAccessEnabled OR premium
-                        onTap: (kFreeAccessEnabled || subscription.isPremium)
-                            ? _showNotificationTimesSheet
-                            : () {
-                                HapticFeedback.mediumImpact();
-                                context.push('/paywall');
-                              },
+                        onTap: _showNotificationTimesSheet,
                       ),
                     ],
                   ),

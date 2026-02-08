@@ -133,11 +133,6 @@ Widget createGoldenTestApp({
           final settings = ref.watch(settingsProvider);
           return AppThemeMode.fromString(settings.theme);
         }),
-      if (prefs != null)
-        subscriptionProvider.overrideWith((ref) {
-          final storage = StorageService(prefs);
-          return SubscriptionNotifier(storage);
-        }),
       // Mock notification service to avoid platform plugin issues
       notificationServiceProvider.overrideWithValue(_mockNotificationService),
       highContrastProvider.overrideWith((ref) => highContrast),

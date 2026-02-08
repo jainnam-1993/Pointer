@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../data/articles.dart';
 import '../../models/article.dart';
-import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/animated_gradient.dart';
 import '../../widgets/animated_transitions.dart';
@@ -17,8 +16,7 @@ import 'library_widgets.dart';
  * Screen showing articles filtered by a specific [ArticleCategory].
  *
  * Displays the category name and article count in the header, with a scrollable
- * list of [ArticleListItem] widgets. Premium articles are locked behind
- * subscription unless [kFreeAccessEnabled] is true.
+ * list of [ArticleListItem] widgets.
  */
 class CategoryArticlesScreen extends StatelessWidget {
   /// The article category to filter by.
@@ -27,10 +25,7 @@ class CategoryArticlesScreen extends StatelessWidget {
   /// Display metadata (name, icon, description) for this category.
   final CategoryInfo info;
 
-  /// Whether the current user has premium access.
-  final bool isPremium;
-
-  const CategoryArticlesScreen({super.key, required this.category, required this.info, required this.isPremium});
+  const CategoryArticlesScreen({super.key, required this.category, required this.info});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +74,6 @@ class CategoryArticlesScreen extends StatelessWidget {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final article = categoryArticles[index];
-                      final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
 
                       return StaggeredFadeIn(
                         index: index,
@@ -87,21 +81,10 @@ class CategoryArticlesScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: ArticleListItem(
                             article: article,
-                            isLocked: isLocked,
+                            isLocked: false,
                             onTap: () {
                               HapticFeedback.lightImpact();
-                              if (isLocked) {
-                                // Show paywall
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Premium article - unlock with subscription'),
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor: colors.glassBackground,
-                                  ),
-                                );
-                              } else {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
-                              }
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                             },
                           ),
                         ),

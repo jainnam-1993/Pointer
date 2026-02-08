@@ -2,17 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import '../theme/app_theme.dart';
 
 /**
- * Video player for video transmissions (premium feature).
+ * Video player for video transmissions.
  *
  * Shows a placeholder card with a play button overlay. On tap, initializes
  * a media player (lazy, first-tap only) and opens a full-screen video player
- * page. Non-premium users see a lock icon and tapping opens a paywall prompt.
+ * page.
  *
  * Renders nothing when [videoUrl] is null.
  */
@@ -23,10 +22,7 @@ class VideoPlayerWidget extends ConsumerStatefulWidget {
   /// Network URL of the video file; widget renders empty when null.
   final String? videoUrl;
 
-  /// Whether the user has premium access; controls playback vs lock display.
-  final bool isPremium;
-
-  const VideoPlayerWidget({super.key, required this.pointingId, required this.videoUrl, required this.isPremium});
+  const VideoPlayerWidget({super.key, required this.pointingId, required this.videoUrl});
 
   @override
   ConsumerState<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
@@ -44,11 +40,6 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
   }
 
   Future<void> _initializeAndPlay() async {
-    if (!widget.isPremium) {
-      _showPremiumPrompt();
-      return;
-    }
-
     if (widget.videoUrl == null) return;
 
     if (_player == null) {
@@ -65,47 +56,6 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
         MaterialPageRoute(builder: (context) => _FullScreenVideoPlayer(player: _player!, videoController: _videoController!)),
       );
     }
-  }
-
-  void _showPremiumPrompt() {
-    final colors = context.colors;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colors.cardBackground,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.play_circle_outline, color: colors.gold, size: 48),
-            const SizedBox(height: 16),
-            Text('Video Transmissions', style: AppTextStyles.heading(context), textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            Text(
-              'Watch video teachings from realized masters. Premium feature.',
-              style: AppTextStyles.bodyText(context),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                  context.push('/paywall');
-                },
-                style: FilledButton.styleFrom(backgroundColor: colors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: const Text('Upgrade to Premium'),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -150,9 +100,9 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.isPremium ? colors.accent.withValues(alpha: 0.9) : colors.gold.withValues(alpha: 0.9),
+                color: colors.accent.withValues(alpha: 0.9),
               ),
-              child: Icon(widget.isPremium ? Icons.play_arrow : Icons.lock, color: Colors.white, size: 36),
+              child: const Icon(Icons.play_arrow, color: Colors.white, size: 36),
             ),
           ],
         ),

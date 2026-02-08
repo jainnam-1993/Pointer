@@ -8,7 +8,6 @@ import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/donation_service.dart';
-import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/donation_button.dart';
@@ -18,9 +17,6 @@ late SharedPreferences prefs;
 
 /// Mock notification service
 class MockNotificationService extends Mock implements NotificationService {}
-
-/// Premium subscription state for testing
-final _premiumState = SubscriptionState(tier: SubscriptionTier.premium, isLoading: false);
 
 /// Mock donation service for testing
 class MockDonationService extends DonationService {
@@ -60,21 +56,6 @@ class TestDonationNotifier extends DonationNotifier {
   }
 }
 
-/// Test subscription notifier that returns fixed state
-class _TestSubscriptionNotifier extends SubscriptionNotifier {
-  final SubscriptionState _fixedState;
-
-  _TestSubscriptionNotifier(this._fixedState) : super(_MockStorageService());
-
-  @override
-  SubscriptionState get state => _fixedState;
-}
-
-/// Minimal mock storage service for testing
-class _MockStorageService extends StorageService {
-  _MockStorageService() : super(prefs);
-}
-
 /// Create mock ProductDetails for testing
 ProductDetails createMockProduct({required String id, required String title, required String price}) {
   return ProductDetails(id: id, title: title, description: 'Test product $id', price: price, rawPrice: 1.99, currencyCode: 'USD');
@@ -111,7 +92,6 @@ Widget wrapWithProviderScope(Widget child, {DonationState? donationState, MockNo
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
       notificationServiceProvider.overrideWithValue(mockNotificationService),
-      subscriptionProvider.overrideWith((ref) => _TestSubscriptionNotifier(_premiumState)),
       backgroundShimmerActiveProvider.overrideWith((ref) => false),
       donationServiceProvider.overrideWithValue(mockDonationService),
       donationProvider.overrideWith((ref) => TestDonationNotifier(donation, mockDonationService)),

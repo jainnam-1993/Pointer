@@ -6,61 +6,6 @@ import 'package:pointer/services/usage_tracking_service.dart';
 class MockUsageTrackingService extends Mock implements UsageTrackingService {}
 
 void main() {
-  group('SubscriptionTier', () {
-    test('has free and premium values', () {
-      expect(SubscriptionTier.values.length, 2);
-      expect(SubscriptionTier.values, contains(SubscriptionTier.free));
-      expect(SubscriptionTier.values, contains(SubscriptionTier.premium));
-    });
-  });
-
-  group('SubscriptionState', () {
-    test('default values are correct (always premium in free mode)', () {
-      const state = SubscriptionState();
-      expect(state.tier, SubscriptionTier.premium); // Default is premium now
-      expect(state.isLoading, false);
-      expect(state.products, isEmpty); // Empty list - no IAP
-      expect(state.error, isNull);
-    });
-
-    test('isPremium always returns true (all features free)', () {
-      const state = SubscriptionState(tier: SubscriptionTier.premium);
-      expect(state.isPremium, true);
-    });
-
-    test('isPremium returns true even for free tier (override)', () {
-      // In the simplified model, isPremium always returns true
-      const state = SubscriptionState(tier: SubscriptionTier.free);
-      expect(state.isPremium, true); // Always true now
-    });
-
-    test('copyWith creates modified copy', () {
-      const original = SubscriptionState(tier: SubscriptionTier.free, isLoading: false, error: 'original error');
-
-      final modified = original.copyWith(tier: SubscriptionTier.premium, isLoading: true, error: 'new error');
-
-      expect(modified.tier, SubscriptionTier.premium);
-      expect(modified.isLoading, true);
-      expect(modified.error, 'new error');
-    });
-
-    test('copyWith preserves unmodified fields', () {
-      const original = SubscriptionState(tier: SubscriptionTier.premium, isLoading: false, error: 'test error');
-
-      final modified = original.copyWith(isLoading: true);
-
-      expect(modified.tier, SubscriptionTier.premium); // preserved
-      expect(modified.isLoading, true); // changed
-      expect(modified.error, isNull); // copyWith clears nullable fields if not provided
-    });
-
-    test('copyWith can clear error by passing null', () {
-      const original = SubscriptionState(error: 'some error');
-      final modified = original.copyWith(error: null);
-      expect(modified.error, isNull);
-    });
-  });
-
   group('DailyUsageNotifier', () {
     late MockUsageTrackingService mockService;
     late DailyUsageNotifier notifier;
@@ -69,63 +14,75 @@ void main() {
       mockService = MockUsageTrackingService();
     });
 
-    test('canViewPointing returns true for premium users', () {
-      final usage = DailyUsage(
-        viewCount: 10, // Over limit
-        lastResetDate: _todayString(),
-      );
+    test('initializes with current usage from service', () {
+      final usage = DailyUsage(viewCount: 3, lastResetDate: _todayString());
       when(() => mockService.getUsage()).thenReturn(usage);
 
       notifier = DailyUsageNotifier(mockService);
-      expect(notifier.canViewPointing(true), true);
+
+      expect(notifier.state.viewCount, 3);
+      expect(notifier.state.lastResetDate, _todayString());
+      verify(() => mockService.getUsage()).called(1);
     });
 
-    test('canViewPointing returns true when under limit', () {
-      final usage = DailyUsage(
-        viewCount: 1, // Under limit (2)
-        lastResetDate: _todayString(),
-      );
+    test('initializes with zero views when no prior usage', () {
+      final usage = DailyUsage(viewCount: 0, lastResetDate: _todayString());
       when(() => mockService.getUsage()).thenReturn(usage);
 
       notifier = DailyUsageNotifier(mockService);
-      expect(notifier.canViewPointing(false), true);
-      expect(notifier.state.limitReached, false);
+
+      expect(notifier.state.viewCount, 0);
+      expect(notifier.state.lastResetDate, _todayString());
     });
 
-    test('canViewPointing always returns true (freemium v2 model)', () {
-      // Under freemium v2 model, all pointings are free regardless of view count
-      final usage = DailyUsage(
-        viewCount: 2, // At limit, but still returns true
-        lastResetDate: _todayString(),
-      );
-      when(() => mockService.getUsage()).thenReturn(usage);
-
-      notifier = DailyUsageNotifier(mockService);
-      // Quotes are free for all users now
-      expect(notifier.canViewPointing(false), true);
-      expect(notifier.state.limitReached, true); // State still tracks limit
-    });
-
-    test('recordView increments count', () async {
-      final initial = DailyUsage(viewCount: 1, lastResetDate: _todayString());
-      final updated = DailyUsage(viewCount: 2, lastResetDate: _todayString());
+    test('recordView increments view count via service', () async {
+      final initial = DailyUsage(viewCount: 0, lastResetDate: _todayString());
+      final updated = DailyUsage(viewCount: 1, lastResetDate: _todayString());
 
       when(() => mockService.getUsage()).thenReturn(initial);
-      when(() => mockService.incrementViewCount()).thenAnswer((_) async => updated);
+      when(() => mockService.incrementViewCount())
+          .thenAnswer((_) async => updated);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.state.viewCount, 0);
+
+      await notifier.recordView();
+
+      expect(notifier.state.viewCount, 1);
+      verify(() => mockService.incrementViewCount()).called(1);
+    });
+
+    test('recordView updates state with each call', () async {
+      final initial = DailyUsage(viewCount: 1, lastResetDate: _todayString());
+      final afterSecond =
+          DailyUsage(viewCount: 2, lastResetDate: _todayString());
+      final afterThird =
+          DailyUsage(viewCount: 3, lastResetDate: _todayString());
+
+      when(() => mockService.getUsage()).thenReturn(initial);
+      var callCount = 0;
+      when(() => mockService.incrementViewCount()).thenAnswer((_) async {
+        callCount++;
+        return callCount == 1 ? afterSecond : afterThird;
+      });
 
       notifier = DailyUsageNotifier(mockService);
       expect(notifier.state.viewCount, 1);
 
       await notifier.recordView();
       expect(notifier.state.viewCount, 2);
-      verify(() => mockService.incrementViewCount()).called(1);
+
+      await notifier.recordView();
+      expect(notifier.state.viewCount, 3);
+
+      verify(() => mockService.incrementViewCount()).called(2);
     });
 
-    test('reset clears usage', () async {
-      final initial = DailyUsage(viewCount: 2, lastResetDate: _todayString());
-      final resetUsage = DailyUsage(viewCount: 0, lastResetDate: _todayString());
+    test('reset clears usage to zero', () async {
+      final initial = DailyUsage(viewCount: 5, lastResetDate: _todayString());
+      final resetUsage =
+          DailyUsage(viewCount: 0, lastResetDate: _todayString());
 
-      // First call (constructor) returns initial, subsequent calls return reset
       var callCount = 0;
       when(() => mockService.getUsage()).thenAnswer((_) {
         callCount++;
@@ -134,33 +91,98 @@ void main() {
       when(() => mockService.resetUsage()).thenAnswer((_) async {});
 
       notifier = DailyUsageNotifier(mockService);
-      expect(notifier.state.viewCount, 2);
+      expect(notifier.state.viewCount, 5);
 
       await notifier.reset();
+
       expect(notifier.state.viewCount, 0);
       verify(() => mockService.resetUsage()).called(1);
     });
 
-    test('initializes with service usage on creation', () {
-      final usage = DailyUsage(viewCount: 1, lastResetDate: _todayString());
+    test('reset then recordView starts from zero', () async {
+      final initial = DailyUsage(viewCount: 3, lastResetDate: _todayString());
+      final resetUsage =
+          DailyUsage(viewCount: 0, lastResetDate: _todayString());
+      final afterRecord =
+          DailyUsage(viewCount: 1, lastResetDate: _todayString());
+
+      var getCallCount = 0;
+      when(() => mockService.getUsage()).thenAnswer((_) {
+        getCallCount++;
+        // 1st call: constructor, 2nd call: after reset
+        return getCallCount == 1 ? initial : resetUsage;
+      });
+      when(() => mockService.resetUsage()).thenAnswer((_) async {});
+      when(() => mockService.incrementViewCount())
+          .thenAnswer((_) async => afterRecord);
+
+      notifier = DailyUsageNotifier(mockService);
+      expect(notifier.state.viewCount, 3);
+
+      await notifier.reset();
+      expect(notifier.state.viewCount, 0);
+
+      await notifier.recordView();
+      expect(notifier.state.viewCount, 1);
+    });
+
+    test('state reflects DailyUsage properties', () {
+      final usage = DailyUsage(viewCount: 2, lastResetDate: '2026-02-08');
       when(() => mockService.getUsage()).thenReturn(usage);
 
       notifier = DailyUsageNotifier(mockService);
-      expect(notifier.state.viewCount, 1);
-      expect(notifier.state.lastResetDate, _todayString());
+
+      expect(notifier.state.viewCount, 2);
+      expect(notifier.state.lastResetDate, '2026-02-08');
+      expect(notifier.state.limitReached, true);
+      expect(notifier.state.remaining, 0);
     });
   });
 
-  group('kFreeAccessEnabled', () {
-    test('is set to true for free release', () {
-      // IMPORTANT: Set to true for free app release (all features free, no IAP)
-      expect(kFreeAccessEnabled, true);
+  group('DailyUsage', () {
+    test('limitReached is false when under limit', () {
+      final usage = DailyUsage(viewCount: 1, lastResetDate: _todayString());
+      expect(usage.limitReached, false);
+      expect(usage.remaining, 1);
     });
 
-    test('is a compile-time constant', () {
-      // Verify it's a const (can be used in const expressions)
-      const value = kFreeAccessEnabled;
-      expect(value, isA<bool>());
+    test('limitReached is true when at limit', () {
+      final usage = DailyUsage(viewCount: 2, lastResetDate: _todayString());
+      expect(usage.limitReached, true);
+      expect(usage.remaining, 0);
+    });
+
+    test('limitReached is true when over limit', () {
+      final usage = DailyUsage(viewCount: 5, lastResetDate: _todayString());
+      expect(usage.limitReached, true);
+      expect(usage.remaining, -3);
+    });
+
+    test('initial factory creates zero-count usage for today', () {
+      final usage = DailyUsage.initial();
+      expect(usage.viewCount, 0);
+      expect(usage.lastResetDate, _todayString());
+      expect(usage.limitReached, false);
+    });
+
+    test('copyWith creates modified copy', () {
+      final original = DailyUsage(viewCount: 1, lastResetDate: '2026-01-01');
+      final modified = original.copyWith(viewCount: 5);
+
+      expect(modified.viewCount, 5);
+      expect(modified.lastResetDate, '2026-01-01');
+    });
+
+    test('copyWith preserves unmodified fields', () {
+      final original = DailyUsage(viewCount: 3, lastResetDate: '2026-02-08');
+      final modified = original.copyWith(lastResetDate: '2026-02-09');
+
+      expect(modified.viewCount, 3);
+      expect(modified.lastResetDate, '2026-02-09');
+    });
+
+    test('freeUserLimit is 2', () {
+      expect(DailyUsage.freeUserLimit, 2);
     });
   });
 }

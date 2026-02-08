@@ -4,7 +4,7 @@
  * Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
  * ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
  * featured articles section with peek indicator, browse mode and content type
- * dropdowns, and premium gating via kFreeAccessEnabled.
+ * dropdowns.
  *
  * Re-exports all library/ subfiles for backward compatibility.
  */
@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
@@ -45,8 +44,7 @@ export 'library/topic_teachings_screen.dart';
 /**
  * Main library screen with featured articles, browse-by navigation, and saved pointings.
  *
- * Premium content is gated behind [subscriptionProvider] unless [kFreeAccessEnabled]
- * is true. Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
+ * Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
  * [LibraryBrowseMode.lineages], [LibraryBrowseMode.moods], and [LibraryBrowseMode.saved].
  */
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -68,7 +66,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
-    final subscription = ref.watch(subscriptionProvider);
     final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
@@ -148,18 +145,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       ),
                     ),
                 ] else ...[
-                  // Full Library is PREMIUM - show upgrade prompt for free users
-                  // When kFreeAccessEnabled, skip this gate (all content free)
-                  if (!kFreeAccessEnabled && !subscription.isPremium) ...[
-                    SliverFillRemaining(
-                      child: LibraryPremiumUpgrade(
-                        // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                        onUpgrade: () => context.push('/paywall'),
-                      ),
-                    ),
-                  ] else ...[
-                    // PREMIUM CONTENT BELOW
-
                     // Featured Section
                     SliverToBoxAdapter(
                       child: Padding(
@@ -237,8 +222,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     ),
 
                     // Dynamic browse list based on mode
-                    _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
-                  ], // end premium content
+                    _buildBrowseList(colors, bottomPadding, _contentFilter),
                 ], // end else
               ],
             ),
@@ -255,10 +239,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /// Build dynamic browse list based on current mode
-  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+  Widget _buildBrowseList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
-        return _buildTopicsList(colors, bottomPadding, isPremium, contentFilter);
+        return _buildTopicsList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.teachers:
         return _buildTeachersList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.lineages:
@@ -275,7 +259,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   ///
   /// When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
   /// uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
-  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+  Widget _buildTopicsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Always show TopicTags with merged counts based on filter
     final Map<String, int> topicCounts;
 

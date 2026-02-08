@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/articles.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
-import '../../providers/providers.dart';
+import '../../providers/core_providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/animated_gradient.dart';
 import '../../widgets/animated_transitions.dart';
@@ -50,7 +50,6 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
     final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
     final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
 
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -110,27 +109,16 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final article = articles[index];
-                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
                         return StaggeredFadeIn(
                           index: index,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: ArticleListItem(
                               article: article,
-                              isLocked: isLocked,
+                              isLocked: false,
                               onTap: () {
                                 HapticFeedback.lightImpact();
-                                if (isLocked) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Premium article - unlock with subscription'),
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: colors.glassBackground,
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
-                                }
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
                               },
                             ),
                           ),

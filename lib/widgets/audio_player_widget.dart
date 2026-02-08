@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../services/audio_pointing_service.dart';
 import '../theme/app_theme.dart';
 
@@ -13,8 +12,6 @@ import '../theme/app_theme.dart';
  * - Play/pause control with loading indicator
  * - Seek slider with position/duration labels
  * - Skip forward/backward (10s) buttons
- * - Premium gating: non-premium users see a lock icon and tapping opens
- *   a paywall prompt
  *
  * Integrates with [AudioPointingService] for playback state management.
  * Renders nothing when [audioUrl] is null.
@@ -26,10 +23,7 @@ class AudioPlayerWidget extends ConsumerStatefulWidget {
   /// Network URL of the audio file; widget renders empty when null.
   final String? audioUrl;
 
-  /// Whether the user has premium access; controls playback vs lock display.
-  final bool isPremium;
-
-  const AudioPlayerWidget({super.key, required this.pointingId, required this.audioUrl, required this.isPremium});
+  const AudioPlayerWidget({super.key, required this.pointingId, required this.audioUrl});
 
   @override
   ConsumerState<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
@@ -83,11 +77,6 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   }
 
   Future<void> _togglePlayback() async {
-    if (!widget.isPremium) {
-      _showPremiumPrompt();
-      return;
-    }
-
     if (widget.audioUrl == null) return;
 
     if (_state == AudioPlaybackState.playing) {
@@ -97,47 +86,6 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
     } else {
       await _audioService.play(widget.pointingId, widget.audioUrl!);
     }
-  }
-
-  void _showPremiumPrompt() {
-    final colors = context.colors;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colors.cardBackground,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.headphones, color: colors.gold, size: 48),
-            const SizedBox(height: 16),
-            Text('Audio Pointings', style: AppTextStyles.heading(context), textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            Text(
-              'Listen to guided readings and teachings from masters. Premium feature.',
-              style: AppTextStyles.bodyText(context),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                  context.push('/paywall');
-                },
-                style: FilledButton.styleFrom(backgroundColor: colors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: const Text('Upgrade to Premium'),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
   }
 
   String _formatDuration(Duration duration) {
@@ -175,17 +123,10 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Lock icon for non-premium
-                      if (!widget.isPremium)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: Icon(Icons.lock_outline, color: colors.gold, size: 18),
-                        ),
-
                       // Skip backward
                       IconButton(
                         icon: Icon(Icons.replay_10, color: colors.iconColor, size: 24),
-                        onPressed: widget.isPremium ? () => _audioService.seekBackward() : null,
+                        onPressed: () => _audioService.seekBackward(),
                       ),
 
                       // Play/Pause button
@@ -194,7 +135,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                         child: Container(
                           width: 56,
                           height: 56,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: widget.isPremium ? colors.accent : colors.gold),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: colors.accent),
                           child: isLoading
                               ? const Padding(
                                   padding: EdgeInsets.all(16),
@@ -207,7 +148,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
                       // Skip forward
                       IconButton(
                         icon: Icon(Icons.forward_10, color: colors.iconColor, size: 24),
-                        onPressed: widget.isPremium ? () => _audioService.seekForward() : null,
+                        onPressed: () => _audioService.seekForward(),
                       ),
                     ],
                   ),
@@ -216,8 +157,8 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
             },
           ),
 
-          // Progress slider (only for premium)
-          if (widget.isPremium && _duration != null) ...[
+          // Progress slider
+          if (_duration != null) ...[
             const SizedBox(height: 8),
             SliderTheme(
               data: SliderThemeData(

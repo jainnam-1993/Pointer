@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
-import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
@@ -14,7 +12,7 @@ import '../widgets/glass_card.dart';
  * Data model for a guided self-inquiry session.
  *
  * Each session belongs to a [Tradition] and has a difficulty level.
- * Premium sessions require a subscription unless [kFreeAccessEnabled] is true.
+ * Each session has a difficulty level and belongs to a [Tradition].
  */
 class InquirySession {
   /// Unique identifier for the session.
@@ -121,12 +119,11 @@ const inquirySessions = [
  * for each [InquirySession]. Premium sessions show a lock icon and navigate to the
  * paywall when tapped by free users. Uses [StaggeredFadeIn] for entry animations.
  */
-class InquiryScreen extends ConsumerWidget {
+class InquiryScreen extends StatelessWidget {
   const InquiryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final subscription = ref.watch(subscriptionProvider);
+  Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -175,8 +172,6 @@ class InquiryScreen extends ConsumerWidget {
                 ...inquirySessions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final session = entry.value;
-                  // When kFreeAccessEnabled, all sessions are unlocked
-                  final isLocked = !kFreeAccessEnabled && session.isPremium && !subscription.isPremium;
 
                   return StaggeredFadeIn(
                     index: index + 1, // Offset by 1 for intro card
@@ -185,16 +180,11 @@ class InquiryScreen extends ConsumerWidget {
                       child: _SessionCard(
                         session: session,
                         index: index,
-                        isLocked: isLocked,
+                        isLocked: false,
                         onTap: () async {
                           HapticFeedback.mediumImpact();
-                          if (isLocked) {
-                            if (context.mounted) context.push('/paywall');
-                          } else {
-                            // Navigate to inquiry session
-                            if (context.mounted) {
-                              context.push('/inquiry/${session.id}');
-                            }
+                          if (context.mounted) {
+                            context.push('/inquiry/${session.id}');
                           }
                         },
                       ),
@@ -235,12 +225,10 @@ class _SessionCard extends StatelessWidget {
     // Use tradition-specific accent color for the circle
     final traditionAccent = session.accentColor;
     final circleColor = traditionAccent.withValues(alpha: 0.15);
-    final goldColor = colors.gold;
-
     return Semantics(
       button: true,
       label:
-          '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition${isLocked ? '. Locked, premium required' : ''}',
+          '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         borderColor: isLocked ? context.colors.glassBorder.withValues(alpha: 0.5) : null,
@@ -276,11 +264,6 @@ class _SessionCard extends StatelessWidget {
                           session.title,
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isLocked ? textColor.withValues(alpha: 0.5) : textColor),
                         ),
-                        // Hide premium badge when kFreeAccessEnabled (all content free)
-                        if (!kFreeAccessEnabled && session.isPremium) ...[
-                          const SizedBox(width: 8),
-                          Icon(Icons.auto_awesome, size: 14, color: isLocked ? goldColor.withValues(alpha: 0.5) : goldColor),
-                        ],
                       ],
                     ),
                     const SizedBox(height: 2),
