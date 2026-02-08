@@ -1,10 +1,20 @@
-// Inquiry Seed Data
-// Traditional non-dual teaching techniques: koans, self-inquiry, direct pointing
+/**
+ * Curated seed data for guided non-dual inquiries.
+ *
+ * Contains the master `inquiries` list and helper functions for
+ * random selection, type/tradition filtering, and ID lookup.
+ *
+ * See also:
+ * - [Inquiry] in `models/inquiry.dart` for the data model
+ * - [InquiryPlayerScreen] for the timed presentation UI
+ */
+library;
 
 import 'dart:math';
 import '../models/inquiry.dart';
 import 'pointings.dart'; // For Tradition enum
 
+/// Master list of all curated [Inquiry] records.
 const inquiries = <Inquiry>[
   // === SELF-INQUIRY (Advaita) - 7 inquiries ===
   Inquiry(

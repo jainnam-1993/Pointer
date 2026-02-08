@@ -1,22 +1,91 @@
-// Pointer - Curated Non-Dual Pointings
-// Data models and content
+/**
+ * Core data models and curated content for non-dual pointings.
+ *
+ * Defines [Tradition], [PointingContext], [Pointing], and [TraditionInfo],
+ * plus the master `pointings` list and helper query functions.
+ *
+ * This file is the single source of truth for all pointing content and
+ * is imported by nearly every other library in the app.
+ */
+library;
 
 import 'dart:math';
 
-enum Tradition { advaita, zen, direct, contemporary, original }
+/// Spiritual lineage/tradition a pointing originates from.
+enum Tradition {
+  /// Advaita Vedanta — the path of non-duality.
+  advaita,
 
-enum PointingContext { morning, midday, evening, stress, general }
+  /// Zen Buddhism — direct pointing, no concepts.
+  zen,
 
+  /// Direct Path — contemporary clarity (Spira, Lucille, Klein).
+  direct,
+
+  /// Contemporary — modern teachers, ancient truth.
+  contemporary,
+
+  /// Original — writings created specifically for this app.
+  original,
+}
+
+/// Time-of-day or situational context for delivering a pointing.
+enum PointingContext {
+  /// Best suited for morning contemplation.
+  morning,
+
+  /// Best suited for midday pause.
+  midday,
+
+  /// Best suited for evening reflection.
+  evening,
+
+  /// Helpful during stressful moments.
+  stress,
+
+  /// Appropriate at any time.
+  general,
+}
+
+/**
+ * A single non-dual pointing — the atomic unit of content in the app.
+ *
+ * Pointings are short spiritual pointers drawn from various [Tradition]s,
+ * displayed on the home screen and shared via [ShareService].
+ *
+ * See also:
+ * - [Teaching] for the extended model with topic/mood tags
+ * - [Article] for longer-form library content
+ */
 class Pointing {
+  /// Unique identifier (e.g., `'adv-1'`, `'zen-3'`).
   final String id;
+
+  /// The pointing text shown to the user.
   final String content;
+
+  /// Optional practice instruction (e.g., "Just look. Don't answer.").
   final String? instruction;
+
+  /// Source spiritual tradition. See [Tradition].
   final Tradition tradition;
+
+  /// Situational contexts where this pointing is relevant.
   final List<PointingContext> contexts;
+
+  /// Teacher or text attribution, if known.
   final String? teacher;
+
+  /// Source text or talk (e.g., `'I Am That'`).
   final String? source;
+
+  /// Optional explanatory commentary.
   final String? commentary;
+
+  /// Asset path for a pre-recorded audio reading.
   final String? audioUrl;
+
+  /// Asset path for an associated video.
   final String? videoUrl;
 
   const Pointing({
@@ -33,14 +102,21 @@ class Pointing {
   });
 }
 
+/// Display metadata for a [Tradition] — name, icon glyph, and description.
 class TraditionInfo {
+  /// Human-readable tradition name (e.g., `'Advaita Vedanta'`).
   final String name;
+
+  /// Single-character icon glyph (e.g., `'ॐ'`, `'◯'`).
   final String icon;
+
+  /// Short description of the tradition's essence.
   final String description;
 
   const TraditionInfo({required this.name, required this.icon, required this.description});
 }
 
+/// Map of [Tradition] to its [TraditionInfo] display metadata.
 const traditions = <Tradition, TraditionInfo>{
   Tradition.advaita: TraditionInfo(name: 'Advaita Vedanta', icon: 'ॐ', description: 'The path of non-duality. You are already what you seek.'),
   Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.'),
@@ -19101,10 +19177,15 @@ const pointings = <Pointing>[
   ),
 ];
 
+// ===========================================================================
 // Helper functions
+// ===========================================================================
 
 final _random = Random();
 
+/// Returns a random [Pointing], optionally filtered by [tradition] and/or [context].
+///
+/// Falls back to the first pointing if no matches are found.
 Pointing getRandomPointing({Tradition? tradition, PointingContext? context}) {
   var filtered = pointings.toList();
 
@@ -19119,10 +19200,12 @@ Pointing getRandomPointing({Tradition? tradition, PointingContext? context}) {
   return filtered[_random.nextInt(filtered.length)];
 }
 
+/// Returns all pointings belonging to the given [tradition].
 List<Pointing> getPointingsByTradition(Tradition tradition) {
   return pointings.where((p) => p.tradition == tradition).toList();
 }
 
+/// Returns all pointings tagged with the given situational [context].
 List<Pointing> getPointingsByContext(PointingContext context) {
   return pointings.where((p) => p.contexts.contains(context)).toList();
 }

@@ -1,8 +1,15 @@
-// Teaching Data Model
-// A unified content model with comprehensive tagging for Phase 6
-//
-// Supports multiple tag types (topics, moods) and can represent
-// various content types from different spiritual teachers.
+/**
+ * Unified teaching content model with comprehensive tagging.
+ *
+ * Provides [Teaching], [TeachingType], [TopicTags], [MoodTags], and the
+ * [TeachingRepository] singleton that aggregates teachings from all sources
+ * (converted [Pointing]s, teacher-specific collections, etc.).
+ *
+ * See also:
+ * - [Pointing] in `pointings.dart` for the atomic pointing model
+ * - [Article] in `models/article.dart` for longer-form library content
+ */
+library;
 
 import 'pointings.dart';
 
@@ -24,29 +31,70 @@ enum TeachingType {
   inquiry,
 }
 
-/// Predefined topic tags for consistency
+/**
+ * Predefined topic tag constants for consistent content classification.
+ *
+ * Used by [Teaching.topicTags] and [Article.topicTags] to enable
+ * topic-based browsing in [TopicTeachingsScreen].
+ */
 class TopicTags {
   TopicTags._();
 
+  /// "Who am I?" and related investigative practices.
   static const selfInquiry = 'self-inquiry';
+
+  /// Recognition of awareness as one's true nature.
   static const awareness = 'awareness';
+
+  /// Formal and informal meditation practices.
   static const meditation = 'meditation';
+
+  /// Awakening within interpersonal dynamics.
   static const relationship = 'relationship';
+
+  /// Nature and transcendence of the thinking mind.
   static const mind = 'mind';
+
+  /// Liberation from identification and suffering.
   static const freedom = 'freedom';
+
+  /// Bhakti, prayer, and devotional surrender.
   static const devotion = 'devotion';
+
+  /// The teaching power of stillness and quiet.
   static const silence = 'silence';
+
+  /// Confrontation with mortality and the deathless.
   static const death = 'death';
+
+  /// Spiritual renewal and cyclical transformation.
   static const rebirth = 'rebirth';
+
+  /// Concrete techniques and disciplines.
   static const practice = 'practice';
+
+  /// The nature and pursuit of awakening.
   static const enlightenment = 'enlightenment';
+
+  /// Applying realization in everyday circumstances.
   static const life = 'life';
+
+  /// The absolute reality underlying appearances.
   static const truth = 'truth';
+
+  /// Resting as the present moment.
   static const presence = 'presence';
+
+  /// Letting go of personal will and control.
   static const surrender = 'surrender';
+
+  /// The constructed self-image and its dissolution.
   static const ego = 'ego';
+
+  /// One's innate, original nature prior to conditioning.
   static const nature = 'nature';
 
+  /// All available topic tags.
   static const all = [
     selfInquiry,
     awareness,
@@ -157,19 +205,40 @@ class TopicTags {
   }
 }
 
-/// Predefined mood/context tags
+/**
+ * Predefined mood/context tag constants for situational content delivery.
+ *
+ * Used by [Teaching.moodTags] and [Article.moodTags] to enable
+ * mood-based browsing in [MoodTeachingsScreen].
+ */
 class MoodTags {
   MoodTags._();
 
+  /// Early-morning contemplation.
   static const morning = 'morning';
+
+  /// Midday pause or lunch-break reflection.
   static const midday = 'midday';
+
+  /// Evening wind-down reflection.
   static const evening = 'evening';
+
+  /// Helpful during stressful or anxious moments.
   static const stress = 'stress';
+
+  /// Appropriate at any time of day.
   static const general = 'general';
+
+  /// Deep, reflective, inward-looking tone.
   static const contemplative = 'contemplative';
+
+  /// Joyful, encouraging, or inspiring tone.
   static const uplifting = 'uplifting';
+
+  /// Provocative or destabilizing — questions assumptions.
   static const challenging = 'challenging';
 
+  /// All available mood tags.
   static const all = [morning, midday, evening, stress, general, contemplative, uplifting, challenging];
 
   /// Human-readable display names for moods

@@ -1,13 +1,20 @@
-// Teacher Profile Seed Data
-// Detailed profiles of non-dual teachers featured in the Library
-//
-// Includes biographical information, key teachings, and cross-references
-// to related articles and pointings.
+/**
+ * Detailed teacher profile seed data for the Library feature.
+ *
+ * Each [TeacherProfile] includes biography, key teachings, a representative
+ * quote, and cross-references to related [Article] and [Pointing] IDs.
+ *
+ * See also:
+ * - [TeacherProfile] in `models/teacher_profile.dart` for the data model
+ * - [TeacherTeachingsScreen] for the per-teacher browsing UI
+ * - [teachers] in `teachers.dart` for the lightweight teacher map
+ */
+library;
 
 import '../models/teacher_profile.dart';
 import 'pointings.dart';
 
-/// Teacher profiles for the Library
+/// Master list of all [TeacherProfile] records for the Library.
 const teacherProfiles = <TeacherProfile>[
   // === ADVAITA VEDANTA TEACHERS ===
   TeacherProfile(

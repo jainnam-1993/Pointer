@@ -1,6 +1,12 @@
-// Papaji Teachings
-// H.W.L. Poonja (Papaji) - Direct disciple of Ramana Maharshi
-// Source: https://avadhuta.com/category/read/
+/**
+ * Papaji (H.W.L. Poonja) teaching collection.
+ *
+ * Direct disciple of Ramana Maharshi, known for fierce, uncompromising
+ * pointings to instant awakening. Sourced from avadhuta.com.
+ *
+ * Registered with [TeachingRepository] at app startup via `main.dart`.
+ */
+library;
 
 import '../teaching.dart';
 import '../pointings.dart';
@@ -9,7 +15,7 @@ const String _teacher = 'Papaji';
 const Tradition _lineage = Tradition.advaita;
 const String _sourceBase = 'https://avadhuta.com';
 
-/// Papaji's teachings indexed from avadhuta.com
+/// Papaji's [Teaching] records indexed from avadhuta.com.
 final List<Teaching> papajiTeachings = [
   // === CORE TEACHINGS ===
   Teaching(

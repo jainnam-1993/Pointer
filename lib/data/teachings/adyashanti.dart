@@ -1,6 +1,13 @@
-// Adyashanti Teachings
-// Contemporary Zen-influenced teacher
-// Source: https://adyashanti.opengatesangha.org/teachings/library
+/**
+ * Adyashanti teaching collection.
+ *
+ * Contemporary Zen-influenced teacher emphasizing the end of seeking
+ * and the recognition of what is already present. Sourced from
+ * Open Gate Sangha.
+ *
+ * Registered with [TeachingRepository] at app startup via `main.dart`.
+ */
+library;
 
 import '../teaching.dart';
 import '../pointings.dart';
@@ -9,7 +16,7 @@ const String _teacher = 'Adyashanti';
 const Tradition _lineage = Tradition.contemporary;
 const String _sourceBase = 'https://adyashanti.opengatesangha.org/teachings/library/writing';
 
-/// Adyashanti's teachings indexed from Open Gate Sangha
+/// Adyashanti's [Teaching] records indexed from Open Gate Sangha.
 final List<Teaching> adyashantiTeachings = [
   // === SELF-INQUIRY / AWARENESS ===
   Teaching(

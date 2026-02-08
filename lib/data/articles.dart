@@ -1,13 +1,20 @@
-// Article Seed Data
-// Curated articles from classic non-dual teachings and contemporary teachers
-//
-// Content includes excerpts from classic texts, essays on key concepts,
-// and practical guides for self-inquiry and direct recognition.
+/**
+ * Curated article seed data for the Library feature.
+ *
+ * Contains the master `articles` list (166 articles) and helper functions
+ * for filtering by tradition, category, teacher, topic, and mood.
+ *
+ * See also:
+ * - [Article] in `models/article.dart` for the data model
+ * - [LibraryScreen] for the browsing UI
+ * - [ArticleReaderScreen] for the reading experience
+ */
+library;
 
 import '../models/article.dart';
 import 'pointings.dart';
 
-/// Curated articles for the Library
+/// Master list of all curated [Article] records.
 const articles = <Article>[
   // === ADVAITA VEDANTA ARTICLES ===
   Article(

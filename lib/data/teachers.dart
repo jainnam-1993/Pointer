@@ -1,7 +1,18 @@
+/**
+ * Teacher database — name-keyed map of [Teacher] records.
+ *
+ * Provides the `teachers` constant and helper functions [getTeacher] and
+ * [getPointingsByTeacher] used by [TeacherSheet] and the home screen.
+ *
+ * For richer biographical profiles used in the Library, see
+ * `teacher_profiles.dart` and [TeacherProfile].
+ */
+library;
+
 import '../models/teacher.dart';
 import 'pointings.dart';
 
-/// Database of teacher information for expandable teacher info feature
+/// Name-keyed map of all [Teacher] records (22 teachers across traditions).
 const teachers = <String, Teacher>{
   'Ramana Maharshi': Teacher(
     name: 'Ramana Maharshi',
