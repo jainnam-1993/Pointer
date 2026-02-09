@@ -10397,6 +10397,13 @@ Robert taught three foundational understandings:
   ),
 ];
 
+final Map<String, Article> _articlesById = {for (final article in articles) article.id: article};
+
+/** Get a single article by ID */
+Article? getArticleById(String id) {
+  return _articlesById[id];
+}
+
 /** Get articles filtered by tradition */
 List<Article> getArticlesByTradition(Tradition tradition) {
   return articles.where((a) => a.tradition == tradition).toList();

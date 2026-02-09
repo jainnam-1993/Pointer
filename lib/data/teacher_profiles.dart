@@ -181,26 +181,55 @@ const teacherProfiles = <TeacherProfile>[
   ),
 ];
 
+final Map<String, TeacherProfile> _teacherProfilesByLowerName = {for (final profile in teacherProfiles) profile.name.toLowerCase(): profile};
+
+final Map<Tradition, List<TeacherProfile>> _teachersByTradition = {
+  for (final tradition in Tradition.values)
+    tradition: List<TeacherProfile>.unmodifiable(teacherProfiles.where((profile) => profile.primaryTradition == tradition).toList(growable: false)),
+};
+
+final List<TeacherProfile> _teachersWithArticles = List<TeacherProfile>.unmodifiable(
+  teacherProfiles.where((profile) => profile.articleIds.isNotEmpty).toList(growable: false),
+);
+
+final List<TeacherProfile> _teachersWithPointings = List<TeacherProfile>.unmodifiable(
+  teacherProfiles.where((profile) => profile.pointingIds.isNotEmpty).toList(growable: false),
+);
+
+final List<String> _allTeacherNames = List<String>.unmodifiable(teacherProfiles.map((profile) => profile.name).toList(growable: false));
+
+final Map<String, String> _teacherSearchCorpus = {
+  for (final profile in teacherProfiles) profile.name: [profile.name, profile.bio ?? '', ...profile.keyTeachings].join('\n').toLowerCase(),
+};
+
 /** Get teacher profile by name */
 TeacherProfile? getTeacherProfile(String name) {
-  try {
-    return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == name.toLowerCase());
-  } catch (e) {
-    return null;
-  }
+  return _teacherProfilesByLowerName[name.toLowerCase()];
 }
 
 /** Get teachers by tradition */
 List<TeacherProfile> getTeachersByTradition(Tradition tradition) {
-  return teacherProfiles.where((t) => t.primaryTradition == tradition).toList();
+  return _teachersByTradition[tradition] ?? const <TeacherProfile>[];
 }
 
 /** Get all teacher names */
 List<String> getAllTeacherNames() {
-  return teacherProfiles.map((t) => t.name).toList();
+  return _allTeacherNames;
 }
 
 /** Get teachers who have articles */
 List<TeacherProfile> getTeachersWithArticles() {
-  return teacherProfiles.where((t) => t.articleIds.isNotEmpty).toList();
+  return _teachersWithArticles;
+}
+
+/** Get teachers who have related pointings */
+List<TeacherProfile> getTeachersWithPointings() {
+  return _teachersWithPointings;
+}
+
+/** Search teacher profiles by name, bio, and key teachings */
+List<TeacherProfile> searchTeacherProfiles(String query) {
+  final normalizedQuery = query.toLowerCase().trim();
+  if (normalizedQuery.isEmpty) return const <TeacherProfile>[];
+  return teacherProfiles.where((profile) => (_teacherSearchCorpus[profile.name] ?? '').contains(normalizedQuery)).toList(growable: false);
 }

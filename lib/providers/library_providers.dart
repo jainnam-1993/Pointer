@@ -30,41 +30,37 @@ final articlesProvider = Provider<List<Article>>((ref) => articles);
 
 /** Provides articles filtered by tradition */
 final articlesByTraditionProvider = Provider.family<List<Article>, Tradition>((ref, tradition) {
-  return articles.where((a) => a.tradition == tradition).toList();
+  return getArticlesByTradition(tradition);
 });
 
 /** Provides articles filtered by category */
 final articlesByCategoryProvider = Provider.family<List<Article>, ArticleCategory>((ref, category) {
-  return articles.where((a) => a.hasCategory(category)).toList();
+  return getArticlesByCategory(category);
 });
 
 /** Provides articles filtered by teacher */
 final articlesByTeacherProvider = Provider.family<List<Article>, String>((ref, teacherName) {
-  return articles.where((a) => a.isBy(teacherName)).toList();
+  return getArticlesByTeacher(teacherName);
 });
 
 /** Provides a single article by ID */
 final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
-  try {
-    return articles.firstWhere((a) => a.id == id);
-  } catch (e) {
-    return null;
-  }
+  return getArticleById(id);
 });
 
 /** Provides featured articles (top picks) */
 final featuredArticlesProvider = Provider<List<Article>>((ref) {
-  return articles.take(5).toList();
+  return getFeaturedArticles(limit: 5);
 });
 
 /** Provides article count by tradition */
 final articleCountByTraditionProvider = Provider.family<int, Tradition>((ref, tradition) {
-  return articles.where((a) => a.tradition == tradition).length;
+  return getArticlesByTradition(tradition).length;
 });
 
 /** Provides article count by category */
 final articleCountByCategoryProvider = Provider.family<int, ArticleCategory>((ref, category) {
-  return articles.where((a) => a.hasCategory(category)).length;
+  return getArticlesByCategory(category).length;
 });
 
 // ============================================================
@@ -76,31 +72,27 @@ final teacherProfilesProvider = Provider<List<TeacherProfile>>((ref) => teacherP
 
 /** Provides teacher profile by name */
 final teacherByNameProvider = Provider.family<TeacherProfile?, String>((ref, name) {
-  try {
-    return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == name.toLowerCase());
-  } catch (e) {
-    return null;
-  }
+  return getTeacherProfile(name);
 });
 
 /** Provides teachers filtered by tradition */
 final teachersByTraditionProvider = Provider.family<List<TeacherProfile>, Tradition>((ref, tradition) {
-  return teacherProfiles.where((t) => t.primaryTradition == tradition).toList();
+  return getTeachersByTradition(tradition);
 });
 
 /** Provides teachers who have related articles */
 final teachersWithArticlesProvider = Provider<List<TeacherProfile>>((ref) {
-  return teacherProfiles.where((t) => t.articleIds.isNotEmpty).toList();
+  return getTeachersWithArticles();
 });
 
 /** Provides teachers who have related pointings */
 final teachersWithPointingsProvider = Provider<List<TeacherProfile>>((ref) {
-  return teacherProfiles.where((t) => t.pointingIds.isNotEmpty).toList();
+  return getTeachersWithPointings();
 });
 
 /** Provides all teacher names */
 final teacherNamesProvider = Provider<List<String>>((ref) {
-  return teacherProfiles.map((t) => t.name).toList();
+  return getAllTeacherNames();
 });
 
 // ============================================================
@@ -117,19 +109,9 @@ final librarySearchQueryProvider = StateProvider<String>((ref) => '');
  * Returns an empty list when the query is empty.
  */
 final articleSearchResultsProvider = Provider<List<Article>>((ref) {
-  final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
-
-  if (query.isEmpty) {
-    return [];
-  }
-
-  return articles.where((a) {
-    return a.title.toLowerCase().contains(query) ||
-        (a.subtitle?.toLowerCase().contains(query) ?? false) ||
-        (a.excerpt?.toLowerCase().contains(query) ?? false) ||
-        a.content.toLowerCase().contains(query) ||
-        (a.teacher?.toLowerCase().contains(query) ?? false);
-  }).toList();
+  final query = ref.watch(librarySearchQueryProvider).trim();
+  if (query.isEmpty) return const [];
+  return searchArticles(query);
 });
 
 /**
@@ -139,17 +121,7 @@ final articleSearchResultsProvider = Provider<List<Article>>((ref) {
  * Returns an empty list when the query is empty.
  */
 final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
-  final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
-
-  if (query.isEmpty) {
-    return [];
-  }
-
-  return teacherProfiles.where((t) {
-    return t.name.toLowerCase().contains(query) ||
-        (t.bio?.toLowerCase().contains(query) ?? false) ||
-        t.keyTeachings.any((kt) => kt.toLowerCase().contains(query));
-  }).toList();
+  return searchTeacherProfiles(ref.watch(librarySearchQueryProvider));
 });
 
 // ============================================================
@@ -213,7 +185,7 @@ final articlesPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
 final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   final map = <Tradition, int>{};
   for (final tradition in Tradition.values) {
-    map[tradition] = teacherProfiles.where((t) => t.primaryTradition == tradition).length;
+    map[tradition] = getTeachersByTradition(tradition).length;
   }
   return map;
 });
@@ -234,10 +206,5 @@ final articlesForTeacherProvider = Provider.family<List<Article>, TeacherProfile
  */
 final teacherForArticleProvider = Provider.family<TeacherProfile?, Article>((ref, article) {
   if (article.teacher == null) return null;
-
-  try {
-    return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == article.teacher!.toLowerCase());
-  } catch (e) {
-    return null;
-  }
+  return getTeacherProfile(article.teacher!);
 });
