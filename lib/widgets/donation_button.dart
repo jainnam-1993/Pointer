@@ -1,10 +1,12 @@
-/// Expandable tip jar donation widget for the settings screen.
-///
-/// Provides a collapsible [GlassCard] that expands to reveal a 2x2 grid of
-/// consumable in-app purchase options (Tea, Cushion, Incense, Retreat).
-/// Integrates with [DonationNotifier] for IAP lifecycle management.
-///
-/// See also: [DonationState] for the underlying state model.
+/**
+ * Expandable tip jar donation widget for the settings screen.
+ *
+ * Provides a collapsible [GlassCard] that expands to reveal a 2x2 grid of
+ * consumable in-app purchase options (Tea, Cushion, Incense, Retreat).
+ * Integrates with [DonationNotifier] for IAP lifecycle management.
+ *
+ * See also: [DonationState] for the underlying state model.
+ */
 library;
 
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ import '../providers/donation_providers.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
-/// Product display configuration pairing a product ID with its label and icon.
+/** Product display configuration pairing a product ID with its label and icon. */
 class _TipProduct {
   final String label;
   final IconData icon;
@@ -24,7 +26,7 @@ class _TipProduct {
   const _TipProduct(this.label, this.icon);
 }
 
-/// Map product IDs to display labels and icons
+/** Map product IDs to display labels and icons */
 const _tipProducts = <String, _TipProduct>{
   'tip_small': _TipProduct('Tea', Icons.local_cafe_outlined),
   'tip_medium': _TipProduct('Cushion', Icons.self_improvement_outlined),
@@ -32,13 +34,15 @@ const _tipProducts = <String, _TipProduct>{
   'tip_generous': _TipProduct('Retreat', Icons.park_outlined),
 };
 
-/// Floating donation button with expandable tip options
-///
-/// Displays as a collapsed button that expands to show:
-/// - Description text
-/// - 2x2 grid of tip options
-///
-/// Integrates with [donationProvider] for IAP state management.
+/**
+ * Floating donation button with expandable tip options
+ *
+ * Displays as a collapsed button that expands to show:
+ * - Description text
+ * - 2x2 grid of tip options
+ *
+ * Integrates with [donationProvider] for IAP state management.
+ */
 class DonationButton extends ConsumerStatefulWidget {
   const DonationButton({super.key});
 
@@ -238,7 +242,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
   }
 }
 
-/// Individual tip option card
+/** Individual tip option card */
 class _TipOptionCard extends StatelessWidget {
   final ProductDetails product;
   final String label;

@@ -10,29 +10,31 @@ import '../theme/app_theme.dart';
 import 'glass_card.dart';
 import 'inquiry_visual.dart';
 
-/// Phases of an inquiry session
+/** Phases of an inquiry session */
 enum InquiryPhase { setup, question, followUp, complete }
 
-/// Content widget for each phase of an inquiry
-///
-/// Displays the appropriate content based on the current phase:
-/// - setup: Optional context before the main question
-/// - question: The main inquiry question with visual element
-/// - followUp: Optional follow-up after contemplation
-/// - complete: Completion state with action buttons
+/**
+ * Content widget for each phase of an inquiry
+ *
+ * Displays the appropriate content based on the current phase:
+ * - setup: Optional context before the main question
+ * - question: The main inquiry question with visual element
+ * - followUp: Optional follow-up after contemplation
+ * - complete: Completion state with action buttons
+ */
 class InquiryPhaseContent extends StatelessWidget {
   const InquiryPhaseContent({super.key, required this.inquiry, required this.phase, this.onAnother, this.onDone});
 
-  /// The current inquiry being displayed
+  /** The current inquiry being displayed */
   final Inquiry inquiry;
 
-  /// The current phase of the inquiry
+  /** The current phase of the inquiry */
   final InquiryPhase phase;
 
-  /// Callback when user wants another inquiry
+  /** Callback when user wants another inquiry */
   final VoidCallback? onAnother;
 
-  /// Callback when user is done
+  /** Callback when user is done */
   final VoidCallback? onDone;
 
   @override

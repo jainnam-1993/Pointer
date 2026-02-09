@@ -9,16 +9,16 @@ import 'package:go_router/go_router.dart';
  * [SharedAxisPage]) and reusable components for uniform motion feel.
  */
 class AnimationDurations {
-  /// Quick interactions (200ms): toggles, micro-feedback.
+  /** Quick interactions (200ms): toggles, micro-feedback. */
   static const Duration fast = Duration(milliseconds: 200);
 
-  /// Standard transitions (300ms): page switches, content swaps.
+  /** Standard transitions (300ms): page switches, content swaps. */
   static const Duration normal = Duration(milliseconds: 300);
 
-  /// Deliberate transitions (450ms): contemplative page navigation.
+  /** Deliberate transitions (450ms): contemplative page navigation. */
   static const Duration slow = Duration(milliseconds: 450);
 
-  /// Per-item stagger offset (50ms) for sequential list animations.
+  /** Per-item stagger offset (50ms) for sequential list animations. */
   static const Duration stagger = Duration(milliseconds: 50);
 }
 
@@ -29,13 +29,13 @@ class AnimationDurations {
  * [AnimatedTextSwitcher], [ScaleFadeTransition], and other widgets.
  */
 class AnimationCurves {
-  /// Default ease-in-out cubic for most transitions.
+  /** Default ease-in-out cubic for most transitions. */
   static const Curve standard = Curves.easeInOutCubic;
 
-  /// Material Design emphasized curve: fast start, slow finish.
+  /** Material Design emphasized curve: fast start, slow finish. */
   static const Curve emphasized = Curves.fastOutSlowIn;
 
-  /// Gradual deceleration for elements coming to rest.
+  /** Gradual deceleration for elements coming to rest. */
   static const Curve decelerate = Curves.decelerate;
 }
 
@@ -47,19 +47,19 @@ class AnimationCurves {
  * settings lists.
  */
 class StaggeredFadeIn extends StatefulWidget {
-  /// Zero-based position in the list, used to calculate stagger delay.
+  /** Zero-based position in the list, used to calculate stagger delay. */
   final int index;
 
-  /// The widget to animate in.
+  /** The widget to animate in. */
   final Widget child;
 
-  /// Base delay between each item's animation start.
+  /** Base delay between each item's animation start. */
   final Duration delay;
 
-  /// Duration of the fade + slide animation.
+  /** Duration of the fade + slide animation. */
   final Duration duration;
 
-  /// Easing curve for the animation.
+  /** Easing curve for the animation. */
   final Curve curve;
 
   const StaggeredFadeIn({
@@ -118,19 +118,19 @@ class _StaggeredFadeInState extends State<StaggeredFadeIn> with SingleTickerProv
  * so identical strings do not re-animate.
  */
 class AnimatedTextSwitcher extends StatelessWidget {
-  /// The current text to display; changes trigger crossfade animation.
+  /** The current text to display; changes trigger crossfade animation. */
   final String text;
 
-  /// Optional text style override.
+  /** Optional text style override. */
   final TextStyle? style;
 
-  /// Alignment for the text widget.
+  /** Alignment for the text widget. */
   final TextAlign textAlign;
 
-  /// Duration of the crossfade transition.
+  /** Duration of the crossfade transition. */
   final Duration duration;
 
-  /// Starting offset for the incoming text slide (relative to widget size).
+  /** Starting offset for the incoming text slide (relative to widget size). */
   final Offset slideOffset;
 
   const AnimatedTextSwitcher({
@@ -169,13 +169,13 @@ class AnimatedTextSwitcher extends StatelessWidget {
  * status indicators, and contextual action buttons.
  */
 class ScaleFadeTransition extends StatelessWidget {
-  /// The widget to show or hide with the transition.
+  /** The widget to show or hide with the transition. */
   final Widget child;
 
-  /// Whether the child is currently visible.
+  /** Whether the child is currently visible. */
   final bool visible;
 
-  /// Duration of the scale + fade animation.
+  /** Duration of the scale + fade animation. */
   final Duration duration;
 
   const ScaleFadeTransition({super.key, required this.child, this.visible = true, this.duration = const Duration(milliseconds: 200)});
@@ -225,16 +225,16 @@ class CalmPageTransition extends CustomTransitionPage<void> {
  * Includes an optional [InkWell] tap handler with custom border radius.
  */
 class MorphingCard extends StatelessWidget {
-  /// Unique hero tag for matching source and destination widgets.
+  /** Unique hero tag for matching source and destination widgets. */
   final String heroTag;
 
-  /// The card content widget.
+  /** The card content widget. */
   final Widget child;
 
-  /// Optional tap callback; wraps child in [InkWell] when provided.
+  /** Optional tap callback; wraps child in [InkWell] when provided. */
   final VoidCallback? onTap;
 
-  /// Corner radius for the ink splash bounds.
+  /** Corner radius for the ink splash bounds. */
   final BorderRadius borderRadius;
 
   const MorphingCard({
@@ -267,25 +267,25 @@ class MorphingCard extends StatelessWidget {
  * Transition duration defaults to [AnimationDurations.slow].
  */
 class OpenContainerCard extends StatelessWidget {
-  /// Widget displayed in the closed (card) state.
+  /** Widget displayed in the closed (card) state. */
   final Widget closedBuilder;
 
-  /// Builder for the open (full-screen) state; receives a close action callback.
+  /** Builder for the open (full-screen) state; receives a close action callback. */
   final Widget Function(BuildContext, VoidCallback) openBuilder;
 
-  /// Background color of the closed card; defaults to transparent.
+  /** Background color of the closed card; defaults to transparent. */
   final Color? closedColor;
 
-  /// Background color of the open page; defaults to scaffold background.
+  /** Background color of the open page; defaults to scaffold background. */
   final Color? openColor;
 
-  /// Corner radius of the closed card.
+  /** Corner radius of the closed card. */
   final BorderRadius closedBorderRadius;
 
-  /// Elevation of the closed card.
+  /** Elevation of the closed card. */
   final double closedElevation;
 
-  /// The container transform type (fade through or fade).
+  /** The container transform type (fade through or fade). */
   final ContainerTransitionType transitionType;
 
   const OpenContainerCard({
@@ -322,10 +322,10 @@ class OpenContainerCard extends StatelessWidget {
  * and content that has no spatial relationship.
  */
 class FadeThroughSwitcher extends StatelessWidget {
-  /// The current child widget; changes trigger the fade-through animation.
+  /** The current child widget; changes trigger the fade-through animation. */
   final Widget child;
 
-  /// Duration of the complete fade-out + fade-in cycle.
+  /** Duration of the complete fade-out + fade-in cycle. */
   final Duration duration;
 
   const FadeThroughSwitcher({super.key, required this.child, this.duration = const Duration(milliseconds: 300)});
@@ -350,13 +350,13 @@ class FadeThroughSwitcher extends StatelessWidget {
  * Suitable for sequential content like onboarding steps or pagination.
  */
 class SharedAxisSwitcher extends StatelessWidget {
-  /// The current child widget; changes trigger the shared-axis animation.
+  /** The current child widget; changes trigger the shared-axis animation. */
   final Widget child;
 
-  /// The axis along which the transition occurs.
+  /** The axis along which the transition occurs. */
   final SharedAxisTransitionType transitionType;
 
-  /// Duration of the transition.
+  /** Duration of the transition. */
   final Duration duration;
 
   const SharedAxisSwitcher({
@@ -383,7 +383,7 @@ class SharedAxisSwitcher extends StatelessWidget {
   }
 }
 
-/// [GoRouter] page with Material Design fade-through transition.
+/** [GoRouter] page with Material Design fade-through transition. */
 class FadeThroughPage extends CustomTransitionPage<void> {
   FadeThroughPage({required super.child, super.name, super.arguments, super.restorationId, super.key})
     : super(
@@ -395,7 +395,7 @@ class FadeThroughPage extends CustomTransitionPage<void> {
       );
 }
 
-/// [GoRouter] page with Material Design shared-axis transition.
+/** [GoRouter] page with Material Design shared-axis transition. */
 class SharedAxisPage extends CustomTransitionPage<void> {
   SharedAxisPage({
     required super.child,
@@ -421,19 +421,19 @@ class SharedAxisPage extends CustomTransitionPage<void> {
  * attention to interactive elements or indicating ongoing activity.
  */
 class PulseAnimation extends StatefulWidget {
-  /// The widget to pulse.
+  /** The widget to pulse. */
   final Widget child;
 
-  /// Whether the pulse animation is currently active.
+  /** Whether the pulse animation is currently active. */
   final bool enabled;
 
-  /// Duration of one complete pulse cycle (scale up + scale down).
+  /** Duration of one complete pulse cycle (scale up + scale down). */
   final Duration duration;
 
-  /// Scale factor at the smallest point of the pulse.
+  /** Scale factor at the smallest point of the pulse. */
   final double minScale;
 
-  /// Scale factor at the largest point of the pulse.
+  /** Scale factor at the largest point of the pulse. */
   final double maxScale;
 
   const PulseAnimation({

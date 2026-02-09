@@ -41,19 +41,19 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBindingObserver {
-  /// Platform channel for opening system notification settings (Android/iOS).
+  /** Platform channel for opening system notification settings (Android/iOS). */
   static const _settingsChannel = MethodChannel('com.dailypointer/settings');
 
-  /// Whether notifications are currently enabled in the app (loaded from service).
+  /** Whether notifications are currently enabled in the app (loaded from service). */
   bool _notificationsEnabled = false;
 
-  /// Whether system-level notification permission is granted.
+  /** Whether system-level notification permission is granted. */
   bool _permissionGranted = true;
 
-  /// Counter for version label taps (7 taps reveals developer options).
+  /** Counter for version label taps (7 taps reveals developer options). */
   int _versionTapCount = 0;
 
-  /// Whether hidden developer options are visible.
+  /** Whether hidden developer options are visible. */
   bool _showDeveloperOptions = false;
 
   @override
@@ -77,9 +77,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
-  /// Checks current notification permission and enabled state from the service.
-  ///
-  /// Called on init and when app resumes (user may have changed permissions in system settings).
+  /**
+   * Checks current notification permission and enabled state from the service.
+   *
+   * Called on init and when app resumes (user may have changed permissions in system settings).
+   */
   Future<void> _checkPermissions() async {
     try {
       // Check if notification permissions are currently granted
@@ -103,7 +105,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
-  /// Opens the [NotificationTimesSheet] for schedule management.
+  /** Opens the [NotificationTimesSheet] for schedule management. */
   Future<void> _showNotificationTimesSheet() async {
     HapticFeedback.mediumImpact();
 
@@ -117,7 +119,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
-  /// Shows the "About Here Now" dialog with app description and version.
+  /** Shows the "About Here Now" dialog with app description and version. */
   Future<void> _showAboutDialog() async {
     HapticFeedback.mediumImpact();
 
@@ -143,7 +145,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
-  /// Launches an external URL in the system browser via `url_launcher`.
+  /** Launches an external URL in the system browser via `url_launcher`. */
   Future<void> _launchUrl(String urlString) async {
     HapticFeedback.mediumImpact();
 
@@ -158,10 +160,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
-  /// Opens the app-specific notification settings via platform channel.
-  /// Android: Settings.ACTION_APP_NOTIFICATION_SETTINGS (API 26+)
-  /// iOS 16+: UIApplication.openNotificationSettingsURLString (direct to notifications)
-  /// iOS <16: UIApplication.openSettingsURLString (general app settings)
+  /**
+   * Opens the app-specific notification settings via platform channel.
+   * Android: Settings.ACTION_APP_NOTIFICATION_SETTINGS (API 26+)
+   * iOS 16+: UIApplication.openNotificationSettingsURLString (direct to notifications)
+   * iOS <16: UIApplication.openSettingsURLString (general app settings)
+   */
   Future<void> _openAppNotificationSettings() async {
     try {
       await _settingsChannel.invokeMethod('openNotificationSettings');
@@ -170,7 +174,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
-  /// Shows a dialog prompting the user to enable notifications in system settings.
+  /** Shows a dialog prompting the user to enable notifications in system settings. */
   Future<void> _showPermissionDeniedDialog() async {
     if (!mounted) return;
 
@@ -200,7 +204,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
-  /// Increments version tap counter; reveals developer options after 7 taps.
+  /** Increments version tap counter; reveals developer options after 7 taps. */
   void _onVersionTap() {
     setState(() {
       _versionTapCount++;
@@ -214,7 +218,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     });
   }
 
-  /// Get notification count summary based on current schedule
+  /** Get notification count summary based on current schedule */
   String _getNotificationCountSummary() {
     final schedule = ref.read(notificationServiceProvider).getSchedule();
     final count = schedule.getNotificationTimes(DateTime.now()).length;
@@ -222,14 +226,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     return '$count per day';
   }
 
-  /// Get schedule summary (e.g., "Every 3h, 8am - 9pm")
+  /** Get schedule summary (e.g., "Every 3h, 8am - 9pm") */
   String _getScheduleTimeSummary() {
     final schedule = ref.read(notificationServiceProvider).getSchedule();
     final freq = schedule.frequencyMinutes < 60 ? '${schedule.frequencyMinutes}m' : '${schedule.frequencyMinutes ~/ 60}h';
     return 'Every $freq, ${_formatHourShort(schedule.startHour)} - ${_formatHourShort(schedule.endHour)}';
   }
 
-  /// Format hour to short form (e.g., 8 -> "8am", 21 -> "9pm")
+  /** Format hour to short form (e.g., 8 -> "8am", 21 -> "9pm") */
   String _formatHourShort(int hour) {
     final period = hour >= 12 ? 'pm' : 'am';
     final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-/// A subtle heart animation overlay shown when a pointing is saved to favorites.
-///
-/// Features:
-/// - Heart icon with scale-in animation
-/// - "Saved" text below the heart
-/// - Auto-dismisses after 2 seconds
-/// - Semi-transparent glass background
+/**
+ * A subtle heart animation overlay shown when a pointing is saved to favorites.
+ *
+ * Features:
+ * - Heart icon with scale-in animation
+ * - "Saved" text below the heart
+ * - Auto-dismisses after 2 seconds
+ * - Semi-transparent glass background
+ */
 class SaveConfirmation extends StatefulWidget {
-  /// Callback when the confirmation is dismissed (auto or manual).
+  /** Callback when the confirmation is dismissed (auto or manual). */
   final VoidCallback? onDismiss;
 
-  /// Duration before auto-dismiss.
+  /** Duration before auto-dismiss. */
   final Duration autoDismissDuration;
 
-  /// Set to true in tests to disable auto-dismiss timers.
+  /** Set to true in tests to disable auto-dismiss timers. */
   static bool disableAutoDismiss = false;
 
   const SaveConfirmation({super.key, this.onDismiss, this.autoDismissDuration = const Duration(seconds: 2)});

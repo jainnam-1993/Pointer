@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
 
-/// Keys for widget data storage
+/** Keys for widget data storage */
 class _WidgetKeys {
   static const content = 'pointing_content';
   static const teacher = 'pointing_teacher';
@@ -19,21 +19,23 @@ class _WidgetKeys {
   static const favorites = 'widget_favorites';
 }
 
-/// Service for managing home screen widget updates.
-///
-/// Communicates with native iOS (WidgetKit) and Android (AppWidgetProvider)
-/// widgets through shared storage via the home_widget package.
+/**
+ * Service for managing home screen widget updates.
+ *
+ * Communicates with native iOS (WidgetKit) and Android (AppWidgetProvider)
+ * widgets through shared storage via the home_widget package.
+ */
 class WidgetService {
-  /// iOS App Group identifier for shared storage
+  /** iOS App Group identifier for shared storage */
   static const iosAppGroup = 'group.com.dailypointer.widget';
 
-  /// Android widget provider name
+  /** Android widget provider name */
   static const androidWidgetName = 'PointerWidgetProvider';
 
-  /// Default update interval in hours
+  /** Default update interval in hours */
   static const defaultUpdateIntervalHours = 3;
 
-  /// Initialize widget service and register background callback.
+  /** Initialize widget service and register background callback. */
   static Future<void> initialize() async {
     // Set iOS App Group for shared storage
     await HomeWidget.setAppGroupId(iosAppGroup);
@@ -43,10 +45,12 @@ class WidgetService {
     debugPrint('[WidgetService] Initialized');
   }
 
-  /// Populate the pointings cache for the multi-pointing widget.
-  /// Stores all pointings as a JSON array for the Android StackView widget.
-  /// Randomizes order and prioritizes favorites for better discovery.
-  /// Also syncs favorites list for save button state.
+  /**
+   * Populate the pointings cache for the multi-pointing widget.
+   * Stores all pointings as a JSON array for the Android StackView widget.
+   * Randomizes order and prioritizes favorites for better discovery.
+   * Also syncs favorites list for save button state.
+   */
   static Future<void> populatePointingsCache() async {
     debugPrint('[WidgetService] populatePointingsCache called');
     try {
@@ -131,7 +135,7 @@ class WidgetService {
     }
   }
 
-  /// Internal helper to sync favorites from SharedPreferences to widget.
+  /** Internal helper to sync favorites from SharedPreferences to widget. */
   static Future<void> _syncFavoritesFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -146,7 +150,7 @@ class WidgetService {
     }
   }
 
-  /// Update widget with the given pointing data.
+  /** Update widget with the given pointing data. */
   static Future<void> updateWidget(Pointing pointing) async {
     final traditionInfo = traditions[pointing.tradition];
 
@@ -166,13 +170,13 @@ class WidgetService {
     );
   }
 
-  /// Update widget with a random pointing (for background refresh).
+  /** Update widget with a random pointing (for background refresh). */
   static Future<void> updateWithRandomPointing() async {
     final pointing = getRandomPointing();
     await updateWidget(pointing);
   }
 
-  /// Get the current pointing data from widget storage
+  /** Get the current pointing data from widget storage */
   static Future<WidgetPointing?> getCurrentWidgetPointing() async {
     final content = await HomeWidget.getWidgetData<String>(_WidgetKeys.content);
     if (content == null) return null;
@@ -189,10 +193,12 @@ class WidgetService {
     );
   }
 
-  /// Sync widget update schedule with notification settings.
-  ///
-  /// When user changes notification frequency, call this to update
-  /// the widget's refresh interval accordingly.
+  /**
+   * Sync widget update schedule with notification settings.
+   *
+   * When user changes notification frequency, call this to update
+   * the widget's refresh interval accordingly.
+   */
   static Future<void> syncScheduleWithNotifications(int intervalHours) async {
     try {
       await HomeWidget.saveWidgetData<int>(_WidgetKeys.updateIntervalHours, intervalHours);
@@ -210,7 +216,7 @@ class WidgetService {
     }
   }
 
-  /// Check if any widgets are currently installed
+  /** Check if any widgets are currently installed */
   static Future<bool> hasActiveWidgets() async {
     try {
       // This is a best-effort check - may not be 100% accurate
@@ -221,9 +227,11 @@ class WidgetService {
     }
   }
 
-  /// Process any pending widget actions from iOS.
-  /// iOS widget intents store pending saves in UserDefaults via app groups.
-  /// Call this on app launch/resume to process queued actions.
+  /**
+   * Process any pending widget actions from iOS.
+   * iOS widget intents store pending saves in UserDefaults via app groups.
+   * Call this on app launch/resume to process queued actions.
+   */
   static Future<void> processPendingWidgetActions() async {
     try {
       // Check for pending saves (iOS widget save button stores content here)
@@ -251,8 +259,10 @@ class WidgetService {
     }
   }
 
-  /// Save a pointing by matching its content.
-  /// Used by iOS widget intent callback processing.
+  /**
+   * Save a pointing by matching its content.
+   * Used by iOS widget intent callback processing.
+   */
   static Future<void> _savePointingByContent(String content) async {
     try {
       // Find matching pointing by content
@@ -281,8 +291,10 @@ class WidgetService {
     }
   }
 
-  /// Refresh widget to pick up theme changes.
-  /// Call this when app resumes or user changes theme.
+  /**
+   * Refresh widget to pick up theme changes.
+   * Call this when app resumes or user changes theme.
+   */
   static Future<void> refreshWidget() async {
     try {
       await HomeWidget.updateWidget(
@@ -296,8 +308,10 @@ class WidgetService {
     }
   }
 
-  /// Update favorites list for widget display.
-  /// Widget shows filled heart for favorited pointings.
+  /**
+   * Update favorites list for widget display.
+   * Widget shows filled heart for favorited pointings.
+   */
   static Future<void> updateFavorites(Set<String> favoriteIds) async {
     try {
       // Save favorites as JSON array
@@ -325,27 +339,29 @@ class WidgetService {
  * Retrieved from shared widget storage by [WidgetService.getCurrentWidgetPointing].
  */
 class WidgetPointing {
-  /// The pointing text content shown in the widget.
+  /** The pointing text content shown in the widget. */
   final String content;
 
-  /// Attribution teacher name, or `null` if anonymous.
+  /** Attribution teacher name, or `null` if anonymous. */
   final String? teacher;
 
-  /// Display name of the [Tradition] this pointing belongs to.
+  /** Display name of the [Tradition] this pointing belongs to. */
   final String tradition;
 
-  /// Timestamp of the last widget data update, used for staleness checks.
+  /** Timestamp of the last widget data update, used for staleness checks. */
   final DateTime? lastUpdated;
 
   const WidgetPointing({required this.content, this.teacher, required this.tradition, this.lastUpdated});
 }
 
-/// Background callback for widget interactions
-///
-/// Handles URIs in format: pointer://widget/{action}
-/// Supported actions:
-/// - /refresh: Load a new random pointing
-/// - /save: Save current pointing to favorites
+/**
+ * Background callback for widget interactions
+ *
+ * Handles URIs in format: pointer://widget/{action}
+ * Supported actions:
+ * - /refresh: Load a new random pointing
+ * - /save: Save current pointing to favorites
+ */
 @pragma('vm:entry-point')
 Future<void> widgetBackgroundCallback(Uri? uri) async {
   if (uri == null) return;
@@ -369,10 +385,12 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   }
 }
 
-/// Save the current widget pointing to favorites.
-///
-/// Reads the pending pointing ID written by Kotlin's ACTION_SAVE handler,
-/// then toggles that pointing in the app's SharedPreferences favorites list.
+/**
+ * Save the current widget pointing to favorites.
+ *
+ * Reads the pending pointing ID written by Kotlin's ACTION_SAVE handler,
+ * then toggles that pointing in the app's SharedPreferences favorites list.
+ */
 Future<void> _saveCurrentWidgetPointing() async {
   try {
     // Read the pointing ID that Kotlin stored before sending the background intent

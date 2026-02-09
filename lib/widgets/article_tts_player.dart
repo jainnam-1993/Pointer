@@ -18,10 +18,10 @@ import 'glass_card.dart';
  * remains for future re-enablement.
  */
 class ArticleTTSPlayer extends ConsumerStatefulWidget {
-  /// Identifier of the article whose TTS playback this widget controls.
+  /** Identifier of the article whose TTS playback this widget controls. */
   final String articleId;
 
-  /// Optional callback invoked when the user taps the close button.
+  /** Optional callback invoked when the user taps the close button. */
   final VoidCallback? onClose;
 
   const ArticleTTSPlayer({super.key, required this.articleId, this.onClose});

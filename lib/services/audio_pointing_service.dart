@@ -2,33 +2,35 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
-/// Lifecycle state of the [AudioPointingService] audio player.
+/** Lifecycle state of the [AudioPointingService] audio player. */
 enum AudioPlaybackState {
-  /// No audio loaded or player reset.
+  /** No audio loaded or player reset. */
   idle,
 
-  /// Audio source is being loaded or buffered.
+  /** Audio source is being loaded or buffered. */
   loading,
 
-  /// Audio is actively playing.
+  /** Audio is actively playing. */
   playing,
 
-  /// Playback is paused by the user.
+  /** Playback is paused by the user. */
   paused,
 
-  /// Playback reached the end of the audio.
+  /** Playback reached the end of the audio. */
   completed,
 
-  /// An error occurred during loading or playback.
+  /** An error occurred during loading or playback. */
   error,
 }
 
-/// Service for playing audio pointings (guided readings, teachings).
-///
-/// Uses just_audio for cross-platform audio playback with:
-/// - Background playback support
-/// - Seek functionality
-/// - Progress tracking
+/**
+ * Service for playing audio pointings (guided readings, teachings).
+ *
+ * Uses just_audio for cross-platform audio playback with:
+ * - Background playback support
+ * - Seek functionality
+ * - Progress tracking
+ */
 class AudioPointingService {
   static AudioPointingService? _instance;
   AudioPlayer? _player;
@@ -46,19 +48,19 @@ class AudioPointingService {
     return _instance!;
   }
 
-  /// Stream of playback state changes
+  /** Stream of playback state changes */
   Stream<AudioPlaybackState> get stateStream => _stateController.stream;
 
-  /// Stream of playback position updates
+  /** Stream of playback position updates */
   Stream<Duration> get positionStream => _positionController.stream;
 
-  /// Stream of total duration (once known)
+  /** Stream of total duration (once known) */
   Stream<Duration?> get durationStream => _durationController.stream;
 
-  /// Currently playing pointing ID
+  /** Currently playing pointing ID */
   String? get currentPointingId => _currentPointingId;
 
-  /// Current playback state
+  /** Current playback state */
   AudioPlaybackState get currentState {
     if (_player == null) return AudioPlaybackState.idle;
     if (_player!.processingState == ProcessingState.loading || _player!.processingState == ProcessingState.buffering) {
@@ -71,7 +73,7 @@ class AudioPointingService {
     return AudioPlaybackState.paused;
   }
 
-  /// Initialize audio player (call once at app start)
+  /** Initialize audio player (call once at app start) */
   Future<void> initialize() async {
     _player = AudioPlayer();
 
@@ -93,7 +95,7 @@ class AudioPointingService {
     debugPrint('AudioPointingService: Initialized');
   }
 
-  /// Load and play audio for a pointing
+  /** Load and play audio for a pointing */
   Future<void> play(String pointingId, String audioUrl) async {
     if (_player == null) await initialize();
 
@@ -112,29 +114,29 @@ class AudioPointingService {
     }
   }
 
-  /// Pause playback
+  /** Pause playback */
   Future<void> pause() async {
     await _player?.pause();
   }
 
-  /// Resume playback
+  /** Resume playback */
   Future<void> resume() async {
     await _player?.play();
   }
 
-  /// Stop playback and release resources
+  /** Stop playback and release resources */
   Future<void> stop() async {
     await _player?.stop();
     _currentPointingId = null;
     _stateController.add(AudioPlaybackState.idle);
   }
 
-  /// Seek to position
+  /** Seek to position */
   Future<void> seek(Duration position) async {
     await _player?.seek(position);
   }
 
-  /// Seek forward by seconds
+  /** Seek forward by seconds */
   Future<void> seekForward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final duration = _player?.duration ?? Duration.zero;
@@ -142,23 +144,23 @@ class AudioPointingService {
     await seek(newPosition > duration ? duration : newPosition);
   }
 
-  /// Seek backward by seconds
+  /** Seek backward by seconds */
   Future<void> seekBackward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final newPosition = current - Duration(seconds: seconds);
     await seek(newPosition.isNegative ? Duration.zero : newPosition);
   }
 
-  /// Get current position
+  /** Get current position */
   Duration get position => _player?.position ?? Duration.zero;
 
-  /// Get total duration
+  /** Get total duration */
   Duration? get duration => _player?.duration;
 
-  /// Is currently playing
+  /** Is currently playing */
   bool get isPlaying => _player?.playing ?? false;
 
-  /// Dispose resources
+  /** Dispose resources */
   Future<void> dispose() async {
     await _player?.dispose();
     _player = null;

@@ -13,7 +13,7 @@ import '../theme/app_theme.dart';
  * Uses [PointerColors] from `context.colors` for theming.
  */
 class TraditionBadge extends StatelessWidget {
-  /// The tradition to display (determines icon and label text).
+  /** The tradition to display (determines icon and label text). */
   final Tradition tradition;
 
   const TraditionBadge({super.key, required this.tradition});

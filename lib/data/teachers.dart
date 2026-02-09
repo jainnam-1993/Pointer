@@ -12,7 +12,7 @@ library;
 import '../models/teacher.dart';
 import 'pointings.dart';
 
-/// Name-keyed map of all [Teacher] records (22 teachers across traditions).
+/** Name-keyed map of all [Teacher] records (22 teachers across traditions). */
 const teachers = <String, Teacher>{
   'Ramana Maharshi': Teacher(
     name: 'Ramana Maharshi',
@@ -190,13 +190,13 @@ const teachers = <String, Teacher>{
   ),
 };
 
-/// Get teacher by name, returns null if not found
+/** Get teacher by name, returns null if not found */
 Teacher? getTeacher(String? name) {
   if (name == null) return null;
   return teachers[name];
 }
 
-/// Get all pointings by a specific teacher
+/** Get all pointings by a specific teacher */
 List<Pointing> getPointingsByTeacher(String teacherName) {
   return pointings.where((p) => p.teacher == teacherName).toList();
 }

@@ -14,7 +14,7 @@ import 'dart:math';
 import '../models/inquiry.dart';
 import 'pointings.dart'; // For Tradition enum
 
-/// Master list of all curated [Inquiry] records.
+/** Master list of all curated [Inquiry] records. */
 const inquiries = <Inquiry>[
   // === SELF-INQUIRY (Advaita) - 7 inquiries ===
   Inquiry(
@@ -293,7 +293,7 @@ const inquiries = <Inquiry>[
 
 final _random = Random();
 
-/// Get a random inquiry, optionally filtered by type or tradition
+/** Get a random inquiry, optionally filtered by type or tradition */
 Inquiry getRandomInquiry({InquiryType? type, Tradition? tradition}) {
   var filtered = inquiries.toList();
 
@@ -308,17 +308,17 @@ Inquiry getRandomInquiry({InquiryType? type, Tradition? tradition}) {
   return filtered[_random.nextInt(filtered.length)];
 }
 
-/// Get all inquiries of a specific type
+/** Get all inquiries of a specific type */
 List<Inquiry> getInquiriesByType(InquiryType type) {
   return inquiries.where((i) => i.type == type).toList();
 }
 
-/// Get all inquiries from a specific tradition
+/** Get all inquiries from a specific tradition */
 List<Inquiry> getInquiriesByTradition(Tradition tradition) {
   return inquiries.where((i) => i.tradition == tradition).toList();
 }
 
-/// Get a specific inquiry by ID, returns null if not found
+/** Get a specific inquiry by ID, returns null if not found */
 Inquiry? getInquiryById(String id) {
   try {
     return inquiries.firstWhere((i) => i.id == id);

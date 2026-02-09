@@ -9,16 +9,20 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/onboarding_animations.dart';
 
-/// Contemplative onboarding experience for Pointer app.
-///
-/// Four screens that immerse the user in the app's philosophy:
-/// 1. The Interruption - immediate pointing question
-/// 2. The Contrast - meditation apps vs. direct inquiry
-/// 3. The Simplicity - letting go of progress/streaks/becoming
-/// 4. Notifications - the entire practice distilled
+/**
+ * Contemplative onboarding experience for Pointer app.
+ *
+ * Four screens that immerse the user in the app's philosophy:
+ * 1. The Interruption - immediate pointing question
+ * 2. The Contrast - meditation apps vs. direct inquiry
+ * 3. The Simplicity - letting go of progress/streaks/becoming
+ * 4. Notifications - the entire practice distilled
+ */
 
-/// Responsive font size that scales with screen width and respects text scaling.
-/// Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
+/**
+ * Responsive font size that scales with screen width and respects text scaling.
+ * Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
+ */
 double _responsiveFontSize(BuildContext context, double baseSize) {
   final screenWidth = MediaQuery.of(context).size.width;
   final textScaler = MediaQuery.textScalerOf(context);
@@ -56,14 +60,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
-  /// Animates to the specified page with haptic feedback. No-ops if [page] > 3.
+  /** Animates to the specified page with haptic feedback. No-ops if [page] > 3. */
   void _advanceToPage(int page) {
     if (!mounted || page > 3) return;
     HapticFeedback.lightImpact();
     _pageController.animateToPage(page, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
   }
 
-  /// Advances to the next page or finishes onboarding on the last page.
+  /** Advances to the next page or finishes onboarding on the last page. */
   Future<void> _handleContinue() async {
     HapticFeedback.lightImpact();
     if (_currentPage < 3) {
@@ -73,14 +77,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
-  /// Requests notification permission and finishes onboarding regardless of result.
+  /** Requests notification permission and finishes onboarding regardless of result. */
   Future<void> _handleEnableNotifications() async {
     HapticFeedback.mediumImpact();
     final granted = await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
   }
 
-  /// Marks onboarding complete in storage and navigates to home screen.
+  /** Marks onboarding complete in storage and navigates to home screen. */
   Future<void> _finishOnboarding(bool notificationsEnabled) async {
     final storage = ref.read(storageServiceProvider);
     await storage.setOnboardingCompleted(true);
@@ -167,9 +171,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 // Screen 1: The Interruption
 // =============================================================================
 
-/// Screen starts empty, then reveals question word-by-word.
-/// "What is looking through your eyes right now?"
-/// Followed by "Don't answer. Just look."
+/**
+ * Screen starts empty, then reveals question word-by-word.
+ * "What is looking through your eyes right now?"
+ * Followed by "Don't answer. Just look."
+ */
 class _InterruptionPage extends StatefulWidget {
   const _InterruptionPage();
 
@@ -267,7 +273,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
 // Screen 2: The Contrast
 // =============================================================================
 
-/// Shows meditation app concept, dissolves it away, reveals the question.
+/** Shows meditation app concept, dissolves it away, reveals the question. */
 class _ContrastPage extends StatelessWidget {
   const _ContrastPage();
 
@@ -330,7 +336,7 @@ class _ContrastPage extends StatelessWidget {
 // Screen 3: The Simplicity
 // =============================================================================
 
-/// Strike-through animation for concepts being let go.
+/** Strike-through animation for concepts being let go. */
 class _SimplicityPage extends StatefulWidget {
   const _SimplicityPage();
 
@@ -411,7 +417,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
 // Screen 4: Notifications
 // =============================================================================
 
-/// Simulates a notification banner, then explains the practice.
+/** Simulates a notification banner, then explains the practice. */
 class _NotificationsPage extends StatefulWidget {
   const _NotificationsPage();
 
@@ -507,14 +513,16 @@ class _NotificationsPageState extends State<_NotificationsPage> {
 // Shared Components
 // =============================================================================
 
-/// Animated dot indicators showing current page position.
-///
-/// The active dot expands to 24px width; inactive dots are 8px circles at 30% opacity.
+/**
+ * Animated dot indicators showing current page position.
+ *
+ * The active dot expands to 24px width; inactive dots are 8px circles at 30% opacity.
+ */
 class _PageIndicators extends StatelessWidget {
-  /// Zero-based index of the current page.
+  /** Zero-based index of the current page. */
   final int currentPage;
 
-  /// Total number of pages to display dots for.
+  /** Total number of pages to display dots for. */
   final int pageCount;
 
   const _PageIndicators({required this.currentPage, required this.pageCount});
@@ -542,7 +550,7 @@ class _PageIndicators extends StatelessWidget {
   }
 }
 
-/// Glass-styled button used on onboarding pages with optional primary highlight.
+/** Glass-styled button used on onboarding pages with optional primary highlight. */
 class _OnboardingButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

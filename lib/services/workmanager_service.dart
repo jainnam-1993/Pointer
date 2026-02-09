@@ -13,30 +13,32 @@ import 'package:workmanager/workmanager.dart';
  * [callbackDispatcher] to route execution to the correct handler.
  */
 class WorkManagerTasks {
-  /// Repeating notification task, fires at the configured frequency.
+  /** Repeating notification task, fires at the configured frequency. */
   static const String periodicNotification = 'periodicNotification';
 
-  /// Single-fire notification task, used for one-off delayed reminders.
+  /** Single-fire notification task, used for one-off delayed reminders. */
   static const String oneTimeNotification = 'oneTimeNotification';
 }
 
-/// SharedPreferences keys for notification preferences accessed by background tasks.
+/** SharedPreferences keys for notification preferences accessed by background tasks. */
 class _NotificationKeys {
-  /// Whether notifications are globally enabled.
+  /** Whether notifications are globally enabled. */
   static const String enabled = 'pointer_notifications_enabled';
 
-  /// Notification interval in minutes.
+  /** Notification interval in minutes. */
   static const String frequencyMinutes = 'pointer_notification_frequency';
 
-  /// First hour (0-23) of the allowed notification window.
+  /** First hour (0-23) of the allowed notification window. */
   static const String startHour = 'pointer_notification_start_hour';
 
-  /// Last hour (0-23) of the allowed notification window.
+  /** Last hour (0-23) of the allowed notification window. */
   static const String endHour = 'pointer_notification_end_hour';
 }
 
-/// Top-level callback dispatcher for WorkManager.
-/// This MUST be a top-level function (not a class method).
+/**
+ * Top-level callback dispatcher for WorkManager.
+ * This MUST be a top-level function (not a class method).
+ */
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
@@ -59,8 +61,10 @@ void callbackDispatcher() {
   });
 }
 
-/// Show a notification from background context.
-/// This runs without Flutter engine, so we use minimal dependencies.
+/**
+ * Show a notification from background context.
+ * This runs without Flutter engine, so we use minimal dependencies.
+ */
 Future<void> _showNotificationFromBackground() async {
   final prefs = await SharedPreferences.getInstance();
 
@@ -114,15 +118,17 @@ Future<void> _showNotificationFromBackground() async {
   debugPrint('[WorkManager] Notification shown successfully');
 }
 
-/// Storage keys matching notification_service.dart
+/** Storage keys matching notification_service.dart */
 const _pointingsCacheKey = 'pointer_notification_pointings_cache';
 const _recentNotificationIdsKey = 'pointer_recent_notification_ids';
 
-/// Get a time-aware pointing from the cached data.
-///
-/// Loads pointings cached by NotificationService and selects based on:
-/// - Current time of day (morning/midday/evening)
-/// - Recently shown IDs (avoids repeats within last 10)
+/**
+ * Get a time-aware pointing from the cached data.
+ *
+ * Loads pointings cached by NotificationService and selects based on:
+ * - Current time of day (morning/midday/evening)
+ * - Recently shown IDs (avoids repeats within last 10)
+ */
 Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async {
   // Determine time context
   final hour = DateTime.now().hour;
@@ -181,7 +187,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
   }
 }
 
-/// Fallback pointing if cache is unavailable.
+/** Fallback pointing if cache is unavailable. */
 Map<String, String> _getFallbackPointing() {
   final fallbacks = [
     {'id': 'fallback_1', 'content': 'You are not the body, not the mind. You are the awareness in which both appear.', 'tradition': 'Advaita'},
@@ -204,7 +210,7 @@ Map<String, String> _getFallbackPointing() {
 class WorkManagerService {
   static bool _isInitialized = false;
 
-  /// Initialize WorkManager. Call once at app startup.
+  /** Initialize WorkManager. Call once at app startup. */
   static Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -214,8 +220,10 @@ class WorkManagerService {
     debugPrint('[WorkManagerService] Initialized');
   }
 
-  /// Schedule periodic notifications.
-  /// [frequencyMinutes] - How often to show notifications (minimum 15 minutes on Android)
+  /**
+   * Schedule periodic notifications.
+   * [frequencyMinutes] - How often to show notifications (minimum 15 minutes on Android)
+   */
   static Future<void> schedulePeriodicNotifications({required int frequencyMinutes, required int startHour, required int endHour}) async {
     // Save preferences for background access
     final prefs = await SharedPreferences.getInstance();
@@ -248,7 +256,7 @@ class WorkManagerService {
     debugPrint('[WorkManagerService] Scheduled periodic notifications every $effectiveFrequency minutes');
   }
 
-  /// Schedule a one-time notification after a delay.
+  /** Schedule a one-time notification after a delay. */
   static Future<void> scheduleOneTimeNotification({required Duration delay, String? uniqueName}) async {
     final taskName = uniqueName ?? 'oneTime_${DateTime.now().millisecondsSinceEpoch}';
 
@@ -268,14 +276,16 @@ class WorkManagerService {
     debugPrint('[WorkManagerService] Scheduled one-time notification in ${delay.inMinutes} minutes');
   }
 
-  /// Cancel all scheduled WorkManager tasks.
-  /// Note: Does NOT modify the enabled preference - that's managed by NotificationService.
+  /**
+   * Cancel all scheduled WorkManager tasks.
+   * Note: Does NOT modify the enabled preference - that's managed by NotificationService.
+   */
   static Future<void> cancelAll() async {
     await Workmanager().cancelAll();
     debugPrint('[WorkManagerService] Cancelled all WorkManager tasks');
   }
 
-  /// Cancel periodic notifications only.
+  /** Cancel periodic notifications only. */
   static Future<void> cancelPeriodic() async {
     await Workmanager().cancelByUniqueName(WorkManagerTasks.periodicNotification);
     debugPrint('[WorkManagerService] Cancelled periodic notifications');

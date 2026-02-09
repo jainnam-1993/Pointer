@@ -64,7 +64,7 @@ class AppearanceSelector extends ConsumerWidget {
   }
 }
 
-/// Toggle switch for zen mode (minimal UI with only the pointing text, no navigation bar).
+/** Toggle switch for zen mode (minimal UI with only the pointing text, no navigation bar). */
 class ZenModeToggle extends ConsumerWidget {
   const ZenModeToggle({super.key});
 
@@ -105,10 +105,12 @@ class ZenModeToggle extends ConsumerWidget {
   }
 }
 
-/// Toggle switch for background animations (gradient and floating particles).
-///
-/// When disabled, bridges to [reduceMotionOverrideProvider] to suppress
-/// all motion throughout the app.
+/**
+ * Toggle switch for background animations (gradient and floating particles).
+ *
+ * When disabled, bridges to [reduceMotionOverrideProvider] to suppress
+ * all motion throughout the app.
+ */
 class AnimationToggle extends ConsumerWidget {
   const AnimationToggle({super.key});
 
@@ -159,16 +161,16 @@ class AnimationToggle extends ConsumerWidget {
  * small checkmark overlay on the icon. Designed for use in [AppearanceSelector].
  */
 class ThemeOption extends StatelessWidget {
-  /// Display label (e.g., "Light", "Dark", "System").
+  /** Display label (e.g., "Light", "Dark", "System"). */
   final String label;
 
-  /// Icon displayed above the label.
+  /** Icon displayed above the label. */
   final IconData icon;
 
-  /// Whether this option is currently selected.
+  /** Whether this option is currently selected. */
   final bool isSelected;
 
-  /// Callback when this option is tapped.
+  /** Callback when this option is tapped. */
   final VoidCallback onTap;
 
   const ThemeOption({super.key, required this.label, required this.icon, required this.isSelected, required this.onTap});

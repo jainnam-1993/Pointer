@@ -6,18 +6,20 @@ import '../theme/app_theme.dart';
 import '../providers/providers.dart';
 import 'animated_gradient.dart';
 
-/// Glass effect intensity levels matching iOS Control Center aesthetic.
-///
-/// Controls the blur radius and opacity of frosted glass effects
-/// in [GlassCard] and [GlassButton].
+/**
+ * Glass effect intensity levels matching iOS Control Center aesthetic.
+ *
+ * Controls the blur radius and opacity of frosted glass effects
+ * in [GlassCard] and [GlassButton].
+ */
 enum GlassIntensity {
-  /// Subtle frosted effect with low blur and opacity.
+  /** Subtle frosted effect with low blur and opacity. */
   light,
 
-  /// Default iOS Control Center-style frosted glass.
+  /** Default iOS Control Center-style frosted glass. */
   standard,
 
-  /// Strong frosted effect with maximum blur and opacity.
+  /** Strong frosted effect with maximum blur and opacity. */
   heavy,
 }
 
@@ -38,36 +40,38 @@ enum GlassIntensity {
  * - [GlassBottomSheet] for modal bottom sheet variant
  */
 class GlassCard extends ConsumerWidget {
-  /// The widget displayed inside the glass card.
+  /** The widget displayed inside the glass card. */
   final Widget child;
 
-  /// Inner padding of the card content.
+  /** Inner padding of the card content. */
   final EdgeInsetsGeometry padding;
 
-  /// Corner radius of the glass card.
+  /** Corner radius of the glass card. */
   final double borderRadius;
 
-  /// Custom border color override; defaults to [PointerColors.glassBorder].
+  /** Custom border color override; defaults to [PointerColors.glassBorder]. */
   final Color? borderColor;
 
-  /// Optional tap handler that wraps the card in a [GestureDetector].
+  /** Optional tap handler that wraps the card in a [GestureDetector]. */
   final VoidCallback? onTap;
 
-  /// Controls the blur and opacity intensity of the frosted glass effect.
+  /** Controls the blur and opacity intensity of the frosted glass effect. */
   final GlassIntensity intensity;
 
-  /// Minimum height constraint for the card content.
+  /** Minimum height constraint for the card content. */
   final double? minHeight;
 
-  /// Maximum height constraint; enables scrolling when [enableScrolling] is true.
+  /** Maximum height constraint; enables scrolling when [enableScrolling] is true. */
   final double? maxHeight;
 
-  /// Whether to wrap content in a [SingleChildScrollView] when [maxHeight] is set.
+  /** Whether to wrap content in a [SingleChildScrollView] when [maxHeight] is set. */
   final bool enableScrolling;
 
-  /// Enable subtle breathing gradient animation
-  /// When true, adds a slow shimmer effect that "breathes" with the background
-  /// Respects reduceMotion accessibility setting
+  /**
+   * Enable subtle breathing gradient animation
+   * When true, adds a slow shimmer effect that "breathes" with the background
+   * Respects reduceMotion accessibility setting
+   */
   final bool enableBreathingAnimation;
 
   const GlassCard({
@@ -251,19 +255,19 @@ class GlassCard extends ConsumerWidget {
  * - [GlassCard] for the non-interactive card variant
  */
 class GlassButton extends ConsumerWidget {
-  /// Button text label.
+  /** Button text label. */
   final String label;
 
-  /// Callback invoked on tap (disabled while [isLoading] is true).
+  /** Callback invoked on tap (disabled while [isLoading] is true). */
   final VoidCallback onPressed;
 
-  /// Whether to use primary (brighter) or secondary (subtler) glass styling.
+  /** Whether to use primary (brighter) or secondary (subtler) glass styling. */
   final bool isPrimary;
 
-  /// Optional trailing icon displayed after the label.
+  /** Optional trailing icon displayed after the label. */
   final Widget? icon;
 
-  /// When true, replaces the label and icon with a [CircularProgressIndicator].
+  /** When true, replaces the label and icon with a [CircularProgressIndicator]. */
   final bool isLoading;
 
   const GlassButton({super.key, required this.label, required this.onPressed, this.isPrimary = true, this.icon, this.isLoading = false});
@@ -397,16 +401,16 @@ class GlassButton extends ConsumerWidget {
  * and overlay regions that need basic frosted glass effect.
  */
 class GlassContainer extends StatelessWidget {
-  /// The widget displayed inside the container.
+  /** The widget displayed inside the container. */
   final Widget child;
 
-  /// Gaussian blur sigma for the backdrop filter.
+  /** Gaussian blur sigma for the backdrop filter. */
   final double blur;
 
-  /// Base white overlay opacity (increased by 0.5 in light mode).
+  /** Base white overlay opacity (increased by 0.5 in light mode). */
   final double opacity;
 
-  /// Corner radius; defaults to [BorderRadius.zero] if not specified.
+  /** Corner radius; defaults to [BorderRadius.zero] if not specified. */
   final BorderRadius? borderRadius;
 
   const GlassContainer({super.key, required this.child, this.blur = 40, this.opacity = 0.25, this.borderRadius});
@@ -443,13 +447,13 @@ class GlassContainer extends StatelessWidget {
  * - [GlassDialog] for centered dialog variant
  */
 class GlassBottomSheet extends StatelessWidget {
-  /// The content displayed inside the sheet.
+  /** The content displayed inside the sheet. */
   final Widget child;
 
-  /// Custom padding; defaults to horizontal 24px with safe-area-aware bottom.
+  /** Custom padding; defaults to horizontal 24px with safe-area-aware bottom. */
   final EdgeInsetsGeometry? padding;
 
-  /// Whether to show the drag handle indicator at the top.
+  /** Whether to show the drag handle indicator at the top. */
   final bool showHandle;
 
   const GlassBottomSheet({super.key, required this.child, this.padding, this.showHandle = true});
@@ -502,13 +506,13 @@ class GlassBottomSheet extends StatelessWidget {
  * action buttons aligned to the right.
  */
 class GlassDialog extends StatelessWidget {
-  /// Optional dialog title displayed at the top.
+  /** Optional dialog title displayed at the top. */
   final String? title;
 
-  /// Optional body content widget.
+  /** Optional body content widget. */
   final Widget? content;
 
-  /// Optional action buttons displayed in a right-aligned row at the bottom.
+  /** Optional action buttons displayed in a right-aligned row at the bottom. */
   final List<Widget>? actions;
 
   const GlassDialog({super.key, this.title, this.content, this.actions});
@@ -567,10 +571,10 @@ class GlassDialog extends StatelessWidget {
  * Used by [GlassCard] and [GlassButton] for their signature gradient borders.
  */
 class GradientBoxBorder extends BoxBorder {
-  /// The gradient used to paint the border stroke.
+  /** The gradient used to paint the border stroke. */
   final Gradient gradient;
 
-  /// Stroke width of the border in logical pixels.
+  /** Stroke width of the border in logical pixels. */
   final double width;
 
   const GradientBoxBorder({required this.gradient, this.width = 1.0});

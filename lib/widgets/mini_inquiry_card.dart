@@ -8,10 +8,12 @@ import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
-/// Compact card that invites users to try a guided self-inquiry session
-///
-/// Displays a preview of a random inquiry question and navigates to
-/// the inquiry player when tapped.
+/**
+ * Compact card that invites users to try a guided self-inquiry session
+ *
+ * Displays a preview of a random inquiry question and navigates to
+ * the inquiry player when tapped.
+ */
 class MiniInquiryCard extends StatelessWidget {
   const MiniInquiryCard({super.key});
 

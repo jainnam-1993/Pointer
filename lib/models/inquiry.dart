@@ -13,18 +13,18 @@ library;
 
 import '../data/pointings.dart';
 
-/// Category of non-dual inquiry practice.
+/** Category of non-dual inquiry practice. */
 enum InquiryType {
-  /// Traditional Zen paradox designed to short-circuit conceptual thinking.
+  /** Traditional Zen paradox designed to short-circuit conceptual thinking. */
   koan,
 
-  /// Advaita-style "Who am I?" investigation into the nature of the self.
+  /** Advaita-style "Who am I?" investigation into the nature of the self. */
   selfInquiry,
 
-  /// A teacher's direct indication of one's true nature.
+  /** A teacher's direct indication of one's true nature. */
   directPointing,
 
-  /// Open-ended reflection on a spiritual theme.
+  /** Open-ended reflection on a spiritual theme. */
   contemplation,
 }
 
@@ -35,31 +35,31 @@ enum InquiryType {
  * the core question, a pause for contemplation, and an optional follow-up.
  */
 class Inquiry {
-  /// Unique identifier (e.g., `'si_001'`, `'koan_003'`).
+  /** Unique identifier (e.g., `'si_001'`, `'koan_003'`). */
   final String id;
 
-  /// The core inquiry question presented to the user.
+  /** The core inquiry question presented to the user. */
   final String question;
 
-  /// Optional context or instruction shown before the question.
+  /** Optional context or instruction shown before the question. */
   final String? setup;
 
-  /// Optional follow-up prompt shown after the pause.
+  /** Optional follow-up prompt shown after the pause. */
   final String? followUp;
 
-  /// The category of this inquiry. See [InquiryType].
+  /** The category of this inquiry. See [InquiryType]. */
   final InquiryType type;
 
-  /// Source spiritual tradition. Reuses [Tradition] from `pointings.dart`.
+  /** Source spiritual tradition. Reuses [Tradition] from `pointings.dart`. */
   final Tradition tradition;
 
-  /// Teacher or text attribution (e.g., `'Ramana Maharshi'`).
+  /** Teacher or text attribution (e.g., `'Ramana Maharshi'`). */
   final String? teacher;
 
-  /// Duration of the contemplative pause after the question is shown.
+  /** Duration of the contemplative pause after the question is shown. */
   final Duration pauseDuration;
 
-  /// Whether to display an animated visual element during the pause phase.
+  /** Whether to display an animated visual element during the pause phase. */
   final bool hasVisualElement;
 
   const Inquiry({

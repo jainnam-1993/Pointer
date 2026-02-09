@@ -19,7 +19,7 @@ import '../services/tts_service.dart';
 // TTS Service
 // ============================================================
 
-/// TTS service singleton provider
+/** TTS service singleton provider */
 final ttsServiceProvider = Provider<TTSService>((ref) {
   return TTSService.instance;
 });
@@ -28,12 +28,12 @@ final ttsServiceProvider = Provider<TTSService>((ref) {
 // AWS Credentials
 // ============================================================
 
-/// AWS credential service singleton provider
+/** AWS credential service singleton provider */
 final awsCredentialServiceProvider = Provider<AWSCredentialService>((ref) {
   return AWSCredentialService.instance;
 });
 
-/// TTS configuration state (is configured?)
+/** TTS configuration state (is configured?) */
 final ttsConfiguredProvider = FutureProvider<bool>((ref) async {
   return AWSCredentialService.instance.isConfigured();
 });
@@ -42,7 +42,7 @@ final ttsConfiguredProvider = FutureProvider<bool>((ref) async {
 // Playback State
 // ============================================================
 
-/// TTS playback state stream provider
+/** TTS playback state stream provider */
 final ttsPlaybackStateProvider = StreamProvider<TTSPlaybackState>((ref) {
   return TTSService.instance.stateStream;
 });

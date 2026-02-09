@@ -23,7 +23,7 @@ import 'share_preview_screen.dart';
  * disabled but state variables are retained for future re-enablement.
  */
 class ArticleReaderScreen extends ConsumerStatefulWidget {
-  /// The article to display in the reader.
+  /** The article to display in the reader. */
   final Article article;
 
   const ArticleReaderScreen({super.key, required this.article});
@@ -39,7 +39,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   // ignore: unused_field
   final bool _ttsConfigured = false;
 
-  /// Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen].
+  /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
     HapticFeedback.mediumImpact();
     final article = widget.article;
@@ -176,15 +176,17 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   }
 }
 
-/// Markdown content renderer using `flutter_markdown_plus`.
-///
-/// Applies [PointerColors]-themed typography with styled blockquotes,
-/// accent-colored bullet points, and selectable text.
+/**
+ * Markdown content renderer using `flutter_markdown_plus`.
+ *
+ * Applies [PointerColors]-themed typography with styled blockquotes,
+ * accent-colored bullet points, and selectable text.
+ */
 class _MarkdownContent extends StatelessWidget {
-  /// Raw markdown content to render.
+  /** Raw markdown content to render. */
   final String content;
 
-  /// Theme colors for styling markdown elements.
+  /** Theme colors for styling markdown elements. */
   final PointerColors colors;
 
   const _MarkdownContent({required this.content, required this.colors});

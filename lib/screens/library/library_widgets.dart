@@ -16,7 +16,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../share_preview_screen.dart';
 
-/// Section header for separated content sections
+/** Section header for separated content sections */
 class SectionHeader extends StatelessWidget {
   final String title;
   final int count;
@@ -49,7 +49,7 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-/// Card for displaying an article in a list
+/** Card for displaying an article in a list */
 class ArticleListItem extends StatelessWidget {
   final Article article;
   final VoidCallback onTap;
@@ -119,7 +119,7 @@ class ArticleListItem extends StatelessWidget {
   }
 }
 
-/// Card for displaying a teaching/quote
+/** Card for displaying a teaching/quote */
 class TeachingCard extends StatelessWidget {
   final Teaching teaching;
   final VoidCallback? onTap;
@@ -208,7 +208,7 @@ class TeachingCard extends StatelessWidget {
   }
 }
 
-/// Show share sheet for a teaching
+/** Show share sheet for a teaching */
 void showLibraryShareSheet(BuildContext context, Teaching teaching) {
   HapticFeedback.mediumImpact();
   showModalBottomSheet(
@@ -227,7 +227,7 @@ void showLibraryShareSheet(BuildContext context, Teaching teaching) {
   );
 }
 
-/// Shared glassmorphism bottom sheet for filter options
+/** Shared glassmorphism bottom sheet for filter options */
 class FilterSheet<T> extends StatelessWidget {
   final String title;
   final List<FilterOption<T>> options;
@@ -302,7 +302,7 @@ class FilterSheet<T> extends StatelessWidget {
   }
 }
 
-/// Option for filter sheet
+/** Option for filter sheet */
 class FilterOption<T> {
   final T value;
   final String label;

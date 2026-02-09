@@ -3,40 +3,42 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'enso_icon.dart';
 
-/// A preview of the Pointer notification that matches the actual Android notification.
-///
-/// This widget renders a notification card identical to what users see in their
-/// notification shade. Use this for:
-/// - Onboarding notification preview
-/// - Settings notification preview
-/// - Any in-app notification representation
-///
-/// The layout matches Android's BigTextStyleInformation notification:
-/// - Header: Ensō icon + app name + timestamp
-/// - Title: Bold "Today's Pointing"
-/// - Body: The pointing content (expandable)
-/// - Attribution: Tradition — Teacher
-/// - Actions: Save and Another buttons (left-aligned)
+/**
+ * A preview of the Pointer notification that matches the actual Android notification.
+ *
+ * This widget renders a notification card identical to what users see in their
+ * notification shade. Use this for:
+ * - Onboarding notification preview
+ * - Settings notification preview
+ * - Any in-app notification representation
+ *
+ * The layout matches Android's BigTextStyleInformation notification:
+ * - Header: Ensō icon + app name + timestamp
+ * - Title: Bold "Today's Pointing"
+ * - Body: The pointing content (expandable)
+ * - Attribution: Tradition — Teacher
+ * - Actions: Save and Another buttons (left-aligned)
+ */
 class NotificationPreview extends StatelessWidget {
-  /// The notification title (defaults to "Today's Pointing").
+  /** The notification title (defaults to "Today's Pointing"). */
   final String title;
 
-  /// The notification body text (the pointing content).
+  /** The notification body text (the pointing content). */
   final String body;
 
-  /// Attribution line (e.g., "Advaita Vedanta — Nisargadatta Maharaj").
+  /** Attribution line (e.g., "Advaita Vedanta — Nisargadatta Maharaj"). */
   final String? attribution;
 
-  /// Whether to show action buttons.
+  /** Whether to show action buttons. */
   final bool showActions;
 
-  /// Timestamp text (defaults to "now").
+  /** Timestamp text (defaults to "now"). */
   final String timestamp;
 
-  /// Optional callback when Save is tapped.
+  /** Optional callback when Save is tapped. */
   final VoidCallback? onSave;
 
-  /// Optional callback when Another is tapped.
+  /** Optional callback when Another is tapped. */
   final VoidCallback? onAnother;
 
   const NotificationPreview({
@@ -133,7 +135,7 @@ class NotificationPreview extends StatelessWidget {
   }
 }
 
-/// Android notification action button (pill style).
+/** Android notification action button (pill style). */
 class _ActionButton extends StatelessWidget {
   final String label;
   final Color color;

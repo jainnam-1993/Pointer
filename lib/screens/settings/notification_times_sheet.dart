@@ -25,10 +25,10 @@ class NotificationTimesSheet extends ConsumerStatefulWidget {
 }
 
 class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet> {
-  /// The current notification schedule being edited.
+  /** The current notification schedule being edited. */
   late NotificationSchedule _schedule;
 
-  /// Available frequency options in minutes (30m, 1h, 2h, 3h, 4h, 6h, 8h, 12h).
+  /** Available frequency options in minutes (30m, 1h, 2h, 3h, 4h, 6h, 8h, 12h). */
   static const _frequencyOptions = [30, 60, 120, 180, 240, 360, 480, 720];
 
   @override
@@ -37,14 +37,16 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     _schedule = ref.read(notificationServiceProvider).getSchedule();
   }
 
-  /// Persists the current schedule to the notification service.
+  /** Persists the current schedule to the notification service. */
   Future<void> _saveSchedule() async {
     await ref.read(notificationServiceProvider).saveSchedule(_schedule);
   }
 
-  /// Opens a [CupertinoPicker] bottom sheet for selecting start or end time.
-  ///
-  /// Uses responsive height calculation based on orientation and safe area.
+  /**
+   * Opens a [CupertinoPicker] bottom sheet for selecting start or end time.
+   *
+   * Uses responsive height calculation based on orientation and safe area.
+   */
   Future<void> _pickTime(bool isStart) async {
     final hour = isStart ? _schedule.startHour : _schedule.endHour;
     final minute = isStart ? _schedule.startMinute : _schedule.endMinute;
@@ -165,7 +167,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     );
   }
 
-  /// Returns whether the current schedule matches the given [preset]'s configuration.
+  /** Returns whether the current schedule matches the given [preset]'s configuration. */
   bool _matchesPreset(NotificationPreset preset) {
     final presetSchedule = preset.schedule;
     return _schedule.startHour == presetSchedule.startHour &&
@@ -173,7 +175,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
         _schedule.frequencyMinutes == presetSchedule.frequencyMinutes;
   }
 
-  /// Applies a [NotificationPreset] and saves the resulting schedule.
+  /** Applies a [NotificationPreset] and saves the resulting schedule. */
   void _applyPreset(NotificationPreset preset) {
     setState(() {
       _schedule = preset.schedule;

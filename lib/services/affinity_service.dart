@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/pointings.dart';
 
-/// Service for learning user tradition affinity based on interactions.
-///
-/// Tracks:
-/// - View counts per tradition
-/// - Save counts per tradition
-/// - Time spent per tradition
-/// - Calculated affinity scores
+/**
+ * Service for learning user tradition affinity based on interactions.
+ *
+ * Tracks:
+ * - View counts per tradition
+ * - Save counts per tradition
+ * - Time spent per tradition
+ * - Calculated affinity scores
+ */
 class AffinityService {
   final SharedPreferences _prefs;
 
@@ -18,7 +20,7 @@ class AffinityService {
 
   AffinityService(this._prefs);
 
-  /// Record that user viewed a pointing from this tradition
+  /** Record that user viewed a pointing from this tradition */
   Future<void> recordView(Tradition tradition) async {
     final counts = _getViewCounts();
     counts[tradition.name] = (counts[tradition.name] ?? 0) + 1;
@@ -26,29 +28,31 @@ class AffinityService {
     await _prefs.setString(_lastUpdatedKey, DateTime.now().toIso8601String());
   }
 
-  /// Record that user saved/favorited a pointing from this tradition
+  /** Record that user saved/favorited a pointing from this tradition */
   Future<void> recordSave(Tradition tradition) async {
     final counts = _getSaveCounts();
     counts[tradition.name] = (counts[tradition.name] ?? 0) + 1;
     await _prefs.setString(_saveCountsKey, jsonEncode(counts));
   }
 
-  /// Get view counts for all traditions
+  /** Get view counts for all traditions */
   Map<String, int> _getViewCounts() {
     final stored = _prefs.getString(_viewCountsKey);
     if (stored == null) return {};
     return Map<String, int>.from(jsonDecode(stored));
   }
 
-  /// Get save counts for all traditions
+  /** Get save counts for all traditions */
   Map<String, int> _getSaveCounts() {
     final stored = _prefs.getString(_saveCountsKey);
     if (stored == null) return {};
     return Map<String, int>.from(jsonDecode(stored));
   }
 
-  /// Calculate affinity score for a tradition (0.0 - 1.0)
-  /// Weights: views = 1x, saves = 3x (saves indicate stronger preference)
+  /**
+   * Calculate affinity score for a tradition (0.0 - 1.0)
+   * Weights: views = 1x, saves = 3x (saves indicate stronger preference)
+   */
   double getAffinityScore(Tradition tradition) {
     final viewCounts = _getViewCounts();
     final saveCounts = _getSaveCounts();
@@ -68,7 +72,7 @@ class AffinityService {
     return score / totalScore;
   }
 
-  /// Get all tradition affinity scores sorted by preference
+  /** Get all tradition affinity scores sorted by preference */
   List<TraditionAffinity> getAllAffinities() {
     final affinities = <TraditionAffinity>[];
 
@@ -88,7 +92,7 @@ class AffinityService {
     return affinities;
   }
 
-  /// Get user's top preferred tradition (or null if no data)
+  /** Get user's top preferred tradition (or null if no data) */
   Tradition? getTopTradition() {
     final affinities = getAllAffinities();
     if (affinities.isEmpty) return null;
@@ -99,12 +103,12 @@ class AffinityService {
     return top.tradition;
   }
 
-  /// Get traditions ordered by user preference for smarter selection
+  /** Get traditions ordered by user preference for smarter selection */
   List<Tradition> getTraditionsByPreference() {
     return getAllAffinities().map((a) => a.tradition).toList();
   }
 
-  /// Reset all affinity data
+  /** Reset all affinity data */
   Future<void> reset() async {
     await _prefs.remove(_viewCountsKey);
     await _prefs.remove(_saveCountsKey);
@@ -117,21 +121,21 @@ class AffinityService {
  * interaction counts with a normalised score for ranking.
  */
 class TraditionAffinity {
-  /// The tradition this affinity relates to.
+  /** The tradition this affinity relates to. */
   final Tradition tradition;
 
-  /// Normalised affinity score (0.0 - 1.0), weighted: views 1x, saves 3x.
+  /** Normalised affinity score (0.0 - 1.0), weighted: views 1x, saves 3x. */
   final double score;
 
-  /// Total number of times the user viewed pointings from this tradition.
+  /** Total number of times the user viewed pointings from this tradition. */
   final int viewCount;
 
-  /// Total number of times the user saved pointings from this tradition.
+  /** Total number of times the user saved pointings from this tradition. */
   final int saveCount;
 
   const TraditionAffinity({required this.tradition, required this.score, required this.viewCount, required this.saveCount});
 
-  /// Human-readable preference level
+  /** Human-readable preference level */
   String get preferenceLevel {
     if (score >= 0.4) return 'High';
     if (score >= 0.25) return 'Medium';

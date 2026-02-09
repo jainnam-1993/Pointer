@@ -9,7 +9,7 @@ import '../../services/ambient_sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 
-/// Auto-advance toggle for automatic pointing rotation
+/** Auto-advance toggle for automatic pointing rotation */
 class AutoAdvanceToggle extends ConsumerWidget {
   const AutoAdvanceToggle({super.key});
 

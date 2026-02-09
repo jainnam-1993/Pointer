@@ -10,10 +10,10 @@ import '../theme/app_theme.dart';
  * Renders nothing when [commentary] is null.
  */
 class CommentarySection extends StatefulWidget {
-  /// The extended commentary text; when null, the widget renders empty.
+  /** The extended commentary text; when null, the widget renders empty. */
   final String? commentary;
 
-  /// Identifier of the associated pointing (reserved for analytics/tracking).
+  /** Identifier of the associated pointing (reserved for analytics/tracking). */
   final String pointingId;
 
   const CommentarySection({super.key, required this.commentary, required this.pointingId});

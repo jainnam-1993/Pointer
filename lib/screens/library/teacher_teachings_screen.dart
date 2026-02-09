@@ -24,10 +24,10 @@ import 'library_widgets.dart';
  * only quotes, or both.
  */
 class TeacherTeachingsScreen extends ConsumerStatefulWidget {
-  /// The teacher name to filter content by.
+  /** The teacher name to filter content by. */
   final String teacher;
 
-  /// Content type filter propagated from the parent library screen.
+  /** Content type filter propagated from the parent library screen. */
   final ContentFilter filter;
 
   const TeacherTeachingsScreen({super.key, required this.teacher, this.filter = ContentFilter.all});

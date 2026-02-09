@@ -14,22 +14,22 @@ import '../widgets/glass_card.dart';
  * Each session belongs to a [Tradition] and has a difficulty level.
  */
 class InquirySession {
-  /// Unique identifier for the session.
+  /** Unique identifier for the session. */
   final String id;
 
-  /// Display title (e.g., "Who Am I?").
+  /** Display title (e.g., "Who Am I?"). */
   final String title;
 
-  /// Short description of the inquiry approach.
+  /** Short description of the inquiry approach. */
   final String description;
 
-  /// Human-readable duration string (e.g., "5 min").
+  /** Human-readable duration string (e.g., "5 min"). */
   final String duration;
 
-  /// Difficulty level: Beginner, Intermediate, or Advanced.
+  /** Difficulty level: Beginner, Intermediate, or Advanced. */
   final String level;
 
-  /// The spiritual tradition this inquiry belongs to.
+  /** The spiritual tradition this inquiry belongs to. */
   final Tradition tradition;
 
   const InquirySession({
@@ -41,7 +41,7 @@ class InquirySession {
     required this.tradition,
   });
 
-  /// Get the accent color for this session's tradition
+  /** Get the accent color for this session's tradition */
   Color get accentColor {
     switch (tradition) {
       case Tradition.advaita:
@@ -58,7 +58,7 @@ class InquirySession {
   }
 }
 
-/// All available inquiry sessions, ordered from beginner to advanced.
+/** All available inquiry sessions, ordered from beginner to advanced. */
 const inquirySessions = [
   InquirySession(
     id: '1',
@@ -188,15 +188,15 @@ class InquiryScreen extends StatelessWidget {
   }
 }
 
-/// Card displaying an [InquirySession] with tradition-colored circle and session details.
+/** Card displaying an [InquirySession] with tradition-colored circle and session details. */
 class _SessionCard extends StatelessWidget {
-  /// The inquiry session to display.
+  /** The inquiry session to display. */
   final InquirySession session;
 
-  /// Zero-based index (shown as session number in the circle).
+  /** Zero-based index (shown as session number in the circle). */
   final int index;
 
-  /// Callback when the card is tapped (navigates to player).
+  /** Callback when the card is tapped (navigates to player). */
   final VoidCallback onTap;
 
   const _SessionCard({required this.session, required this.index, required this.onTap});

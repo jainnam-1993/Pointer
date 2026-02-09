@@ -15,7 +15,7 @@ const String _teacher = 'Papaji';
 const Tradition _lineage = Tradition.advaita;
 const String _sourceBase = 'https://avadhuta.com';
 
-/// Papaji's [Teaching] records indexed from avadhuta.com.
+/** Papaji's [Teaching] records indexed from avadhuta.com. */
 final List<Teaching> papajiTeachings = [
   // === CORE TEACHINGS ===
   Teaching(

@@ -24,10 +24,10 @@ import 'library_widgets.dart';
  * matches the topic. Respects [ContentFilter] from parent.
  */
 class TopicTeachingsScreen extends ConsumerStatefulWidget {
-  /// The topic tag string (from [TopicTags] constants) to filter by.
+  /** The topic tag string (from [TopicTags] constants) to filter by. */
   final String topic;
 
-  /// Content type filter propagated from the parent library screen.
+  /** Content type filter propagated from the parent library screen. */
   final ContentFilter filter;
 
   const TopicTeachingsScreen({super.key, required this.topic, this.filter = ContentFilter.all});

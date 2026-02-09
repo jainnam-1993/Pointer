@@ -4,9 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 
-/// Uppercase label header for a settings section (e.g., "NOTIFICATIONS", "APPEARANCE").
+/** Uppercase label header for a settings section (e.g., "NOTIFICATIONS", "APPEARANCE"). */
 class SettingsSectionHeader extends StatelessWidget {
-  /// The section title text, typically in uppercase.
+  /** The section title text, typically in uppercase. */
   final String title;
 
   const SettingsSectionHeader({super.key, required this.title});
@@ -24,19 +24,19 @@ class SettingsSectionHeader extends StatelessWidget {
  * semantic button. The leading widget (e.g., lock icon) appears before the title.
  */
 class SettingsRow extends StatelessWidget {
-  /// Primary label for the setting.
+  /** Primary label for the setting. */
   final String title;
 
-  /// Optional secondary text below the title (e.g., current value or status).
+  /** Optional secondary text below the title (e.g., current value or status). */
   final String? subtitle;
 
-  /// Optional widget before the title (e.g., icon).
+  /** Optional widget before the title (e.g., icon). */
   final Widget? leading;
 
-  /// Optional widget after the title (e.g., switch, chevron, or value text).
+  /** Optional widget after the title (e.g., switch, chevron, or value text). */
   final Widget? trailing;
 
-  /// Tap callback; when provided, the row becomes tappable.
+  /** Tap callback; when provided, the row becomes tappable. */
   final VoidCallback? onTap;
 
   const SettingsRow({super.key, required this.title, this.subtitle, this.leading, this.trailing, this.onTap});
@@ -79,7 +79,7 @@ class SettingsRow extends StatelessWidget {
   }
 }
 
-/// Thin horizontal divider between [SettingsRow] items within a [GlassCard].
+/** Thin horizontal divider between [SettingsRow] items within a [GlassCard]. */
 class SettingsDivider extends StatelessWidget {
   const SettingsDivider({super.key});
 

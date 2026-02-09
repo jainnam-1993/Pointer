@@ -127,24 +127,24 @@ class LineagesScreen extends ConsumerWidget {
   }
 }
 
-/// Card displaying a [Tradition] with toggle switch, info button, and animated state transitions.
+/** Card displaying a [Tradition] with toggle switch, info button, and animated state transitions. */
 class _TraditionCard extends StatelessWidget {
-  /// The tradition enum value.
+  /** The tradition enum value. */
   final Tradition tradition;
 
-  /// Display metadata (name, icon, description) for this tradition.
+  /** Display metadata (name, icon, description) for this tradition. */
   final TraditionInfo info;
 
-  /// Number of pointings available for this tradition.
+  /** Number of pointings available for this tradition. */
   final int pointingsCount;
 
-  /// Whether this tradition is currently enabled for content delivery.
+  /** Whether this tradition is currently enabled for content delivery. */
   final bool isEnabled;
 
-  /// Callback to toggle this tradition's enabled state.
+  /** Callback to toggle this tradition's enabled state. */
   final VoidCallback onToggle;
 
-  /// Callback to show the tradition detail bottom sheet.
+  /** Callback to show the tradition detail bottom sheet. */
   final VoidCallback onInfoTap;
 
   const _TraditionCard({
@@ -259,7 +259,7 @@ class _TraditionCard extends StatelessWidget {
   }
 }
 
-/// Bottom sheet showing tradition details with glass effect
+/** Bottom sheet showing tradition details with glass effect */
 class _TraditionDetailSheet extends StatelessWidget {
   final Tradition tradition;
   final TraditionInfo info;

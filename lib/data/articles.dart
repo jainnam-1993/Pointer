@@ -14,7 +14,7 @@ library;
 import '../models/article.dart';
 import 'pointings.dart';
 
-/// Master list of all curated [Article] records.
+/** Master list of all curated [Article] records. */
 const articles = <Article>[
   // === ADVAITA VEDANTA ARTICLES ===
   Article(
@@ -10397,27 +10397,27 @@ Robert taught three foundational understandings:
   ),
 ];
 
-/// Get articles filtered by tradition
+/** Get articles filtered by tradition */
 List<Article> getArticlesByTradition(Tradition tradition) {
   return articles.where((a) => a.tradition == tradition).toList();
 }
 
-/// Get articles filtered by category
+/** Get articles filtered by category */
 List<Article> getArticlesByCategory(ArticleCategory category) {
   return articles.where((a) => a.hasCategory(category)).toList();
 }
 
-/// Get articles filtered by teacher
+/** Get articles filtered by teacher */
 List<Article> getArticlesByTeacher(String teacherName) {
   return articles.where((a) => a.isBy(teacherName)).toList();
 }
 
-/// Get featured articles (top picks)
+/** Get featured articles (top picks) */
 List<Article> getFeaturedArticles({int limit = 5}) {
   return articles.take(limit).toList();
 }
 
-/// Search articles by title or content
+/** Search articles by title or content */
 List<Article> searchArticles(String query) {
   final lowerQuery = query.toLowerCase();
   return articles.where((a) {
@@ -10427,17 +10427,17 @@ List<Article> searchArticles(String query) {
   }).toList();
 }
 
-/// Get articles by topic tag
+/** Get articles by topic tag */
 List<Article> getArticlesByTopic(String topic) {
   return articles.where((a) => a.hasTopic(topic)).toList();
 }
 
-/// Get articles by mood tag
+/** Get articles by mood tag */
 List<Article> getArticlesByMood(String mood) {
   return articles.where((a) => a.hasMood(mood)).toList();
 }
 
-/// Get count of articles per topic tag
+/** Get count of articles per topic tag */
 Map<String, int> getArticleTopicCounts() {
   final counts = <String, int>{};
   for (final article in articles) {
@@ -10448,7 +10448,7 @@ Map<String, int> getArticleTopicCounts() {
   return counts;
 }
 
-/// Get count of articles per mood tag
+/** Get count of articles per mood tag */
 Map<String, int> getArticleMoodCounts() {
   final counts = <String, int>{};
   for (final article in articles) {

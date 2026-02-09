@@ -8,14 +8,16 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 import '../services/ambient_sound_service.dart';
 
-/// Full-screen branded video splash screen.
-///
-/// Plays a theme-aware nonduality animation (dark/light variant)
-/// then auto-advances to the next screen. Tap anywhere to skip.
-/// Respects system reduce-motion accessibility setting.
-/// Mutes video audio when the user has set Opening Sound to "None".
+/**
+ * Full-screen branded video splash screen.
+ *
+ * Plays a theme-aware nonduality animation (dark/light variant)
+ * then auto-advances to the next screen. Tap anywhere to skip.
+ * Respects system reduce-motion accessibility setting.
+ * Mutes video audio when the user has set Opening Sound to "None".
+ */
 class SplashScreen extends ConsumerStatefulWidget {
-  /// Where to navigate after splash completes.
+  /** Where to navigate after splash completes. */
   final String destination;
 
   const SplashScreen({super.key, required this.destination});

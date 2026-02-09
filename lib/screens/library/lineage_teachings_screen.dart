@@ -24,13 +24,13 @@ import 'library_widgets.dart';
  * Respects [ContentFilter] from the parent library screen.
  */
 class LineageTeachingsScreen extends ConsumerStatefulWidget {
-  /// The tradition to filter content by.
+  /** The tradition to filter content by. */
   final Tradition tradition;
 
-  /// Display metadata (name, icon, description) for this tradition.
+  /** Display metadata (name, icon, description) for this tradition. */
   final TraditionInfo info;
 
-  /// Content type filter propagated from the parent library screen.
+  /** Content type filter propagated from the parent library screen. */
   final ContentFilter filter;
 
   const LineageTeachingsScreen({super.key, required this.tradition, required this.info, this.filter = ContentFilter.all});

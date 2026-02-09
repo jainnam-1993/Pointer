@@ -16,7 +16,7 @@ const String _teacher = 'Adyashanti';
 const Tradition _lineage = Tradition.contemporary;
 const String _sourceBase = 'https://adyashanti.opengatesangha.org/teachings/library/writing';
 
-/// Adyashanti's [Teaching] records indexed from Open Gate Sangha.
+/** Adyashanti's [Teaching] records indexed from Open Gate Sangha. */
 final List<Teaching> adyashantiTeachings = [
   // === SELF-INQUIRY / AWARENESS ===
   Teaching(

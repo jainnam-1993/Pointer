@@ -11,7 +11,7 @@ import '../../theme/app_theme.dart';
  * Displayed above the notification settings card when permission is not granted.
  */
 class NotificationPermissionBanner extends StatelessWidget {
-  /// Callback to open the system notification settings.
+  /** Callback to open the system notification settings. */
   final VoidCallback onOpenSettings;
 
   const NotificationPermissionBanner({super.key, required this.onOpenSettings});

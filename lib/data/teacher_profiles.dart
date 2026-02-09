@@ -14,7 +14,7 @@ library;
 import '../models/teacher_profile.dart';
 import 'pointings.dart';
 
-/// Master list of all [TeacherProfile] records for the Library.
+/** Master list of all [TeacherProfile] records for the Library. */
 const teacherProfiles = <TeacherProfile>[
   // === ADVAITA VEDANTA TEACHERS ===
   TeacherProfile(
@@ -181,7 +181,7 @@ const teacherProfiles = <TeacherProfile>[
   ),
 ];
 
-/// Get teacher profile by name
+/** Get teacher profile by name */
 TeacherProfile? getTeacherProfile(String name) {
   try {
     return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == name.toLowerCase());
@@ -190,17 +190,17 @@ TeacherProfile? getTeacherProfile(String name) {
   }
 }
 
-/// Get teachers by tradition
+/** Get teachers by tradition */
 List<TeacherProfile> getTeachersByTradition(Tradition tradition) {
   return teacherProfiles.where((t) => t.primaryTradition == tradition).toList();
 }
 
-/// Get all teacher names
+/** Get all teacher names */
 List<String> getAllTeacherNames() {
   return teacherProfiles.map((t) => t.name).toList();
 }
 
-/// Get teachers who have articles
+/** Get teachers who have articles */
 List<TeacherProfile> getTeachersWithArticles() {
   return teacherProfiles.where((t) => t.articleIds.isNotEmpty).toList();
 }

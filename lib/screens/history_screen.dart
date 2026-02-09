@@ -67,7 +67,7 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 
-  /// Builds the empty state shown when no pointings have been viewed yet.
+  /** Builds the empty state shown when no pointings have been viewed yet. */
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
     return Center(
       child: Column(
@@ -86,7 +86,7 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 
-  /// Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations.
+  /** Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations. */
   Widget _buildPointingsList(
     BuildContext context,
     WidgetRef ref,
@@ -128,20 +128,20 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
-/// Card displaying a previously viewed [Pointing] with tradition badge and relative timestamp.
+/** Card displaying a previously viewed [Pointing] with tradition badge and relative timestamp. */
 class _HistoryCard extends StatelessWidget {
-  /// The pointing to display.
+  /** The pointing to display. */
   final Pointing pointing;
 
-  /// When this pointing was last viewed.
+  /** When this pointing was last viewed. */
   final DateTime viewedAt;
 
-  /// Callback when the card is tapped (sets as current pointing and navigates home).
+  /** Callback when the card is tapped (sets as current pointing and navigates home). */
   final VoidCallback onTap;
 
   const _HistoryCard({required this.pointing, required this.viewedAt, required this.onTap});
 
-  /// Formats a [DateTime] as a relative time string (e.g., "5m ago", "Yesterday", "3/15").
+  /** Formats a [DateTime] as a relative time string (e.g., "5m ago", "Yesterday", "3/15"). */
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);

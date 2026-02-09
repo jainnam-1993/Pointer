@@ -13,21 +13,21 @@ library;
 
 import 'pointings.dart';
 
-/// Type of teaching content
+/** Type of teaching content */
 enum TeachingType {
-  /// Short direct pointer
+  /** Short direct pointer */
   pointing,
 
-  /// Longer written piece
+  /** Longer written piece */
   article,
 
-  /// Transcribed talk
+  /** Transcribed talk */
   talk,
 
-  /// Book or satsang extract
+  /** Book or satsang extract */
   extract,
 
-  /// Self-inquiry practice
+  /** Self-inquiry practice */
   inquiry,
 }
 
@@ -40,61 +40,61 @@ enum TeachingType {
 class TopicTags {
   TopicTags._();
 
-  /// "Who am I?" and related investigative practices.
+  /** "Who am I?" and related investigative practices. */
   static const selfInquiry = 'self-inquiry';
 
-  /// Recognition of awareness as one's true nature.
+  /** Recognition of awareness as one's true nature. */
   static const awareness = 'awareness';
 
-  /// Formal and informal meditation practices.
+  /** Formal and informal meditation practices. */
   static const meditation = 'meditation';
 
-  /// Awakening within interpersonal dynamics.
+  /** Awakening within interpersonal dynamics. */
   static const relationship = 'relationship';
 
-  /// Nature and transcendence of the thinking mind.
+  /** Nature and transcendence of the thinking mind. */
   static const mind = 'mind';
 
-  /// Liberation from identification and suffering.
+  /** Liberation from identification and suffering. */
   static const freedom = 'freedom';
 
-  /// Bhakti, prayer, and devotional surrender.
+  /** Bhakti, prayer, and devotional surrender. */
   static const devotion = 'devotion';
 
-  /// The teaching power of stillness and quiet.
+  /** The teaching power of stillness and quiet. */
   static const silence = 'silence';
 
-  /// Confrontation with mortality and the deathless.
+  /** Confrontation with mortality and the deathless. */
   static const death = 'death';
 
-  /// Spiritual renewal and cyclical transformation.
+  /** Spiritual renewal and cyclical transformation. */
   static const rebirth = 'rebirth';
 
-  /// Concrete techniques and disciplines.
+  /** Concrete techniques and disciplines. */
   static const practice = 'practice';
 
-  /// The nature and pursuit of awakening.
+  /** The nature and pursuit of awakening. */
   static const enlightenment = 'enlightenment';
 
-  /// Applying realization in everyday circumstances.
+  /** Applying realization in everyday circumstances. */
   static const life = 'life';
 
-  /// The absolute reality underlying appearances.
+  /** The absolute reality underlying appearances. */
   static const truth = 'truth';
 
-  /// Resting as the present moment.
+  /** Resting as the present moment. */
   static const presence = 'presence';
 
-  /// Letting go of personal will and control.
+  /** Letting go of personal will and control. */
   static const surrender = 'surrender';
 
-  /// The constructed self-image and its dissolution.
+  /** The constructed self-image and its dissolution. */
   static const ego = 'ego';
 
-  /// One's innate, original nature prior to conditioning.
+  /** One's innate, original nature prior to conditioning. */
   static const nature = 'nature';
 
-  /// All available topic tags.
+  /** All available topic tags. */
   static const all = [
     selfInquiry,
     awareness,
@@ -116,7 +116,7 @@ class TopicTags {
     nature,
   ];
 
-  /// Human-readable display names for topics
+  /** Human-readable display names for topics */
   static String displayName(String tag) {
     switch (tag) {
       case selfInquiry:
@@ -160,7 +160,7 @@ class TopicTags {
     }
   }
 
-  /// Icon for topic
+  /** Icon for topic */
   static String icon(String tag) {
     switch (tag) {
       case selfInquiry:
@@ -214,34 +214,34 @@ class TopicTags {
 class MoodTags {
   MoodTags._();
 
-  /// Early-morning contemplation.
+  /** Early-morning contemplation. */
   static const morning = 'morning';
 
-  /// Midday pause or lunch-break reflection.
+  /** Midday pause or lunch-break reflection. */
   static const midday = 'midday';
 
-  /// Evening wind-down reflection.
+  /** Evening wind-down reflection. */
   static const evening = 'evening';
 
-  /// Helpful during stressful or anxious moments.
+  /** Helpful during stressful or anxious moments. */
   static const stress = 'stress';
 
-  /// Appropriate at any time of day.
+  /** Appropriate at any time of day. */
   static const general = 'general';
 
-  /// Deep, reflective, inward-looking tone.
+  /** Deep, reflective, inward-looking tone. */
   static const contemplative = 'contemplative';
 
-  /// Joyful, encouraging, or inspiring tone.
+  /** Joyful, encouraging, or inspiring tone. */
   static const uplifting = 'uplifting';
 
-  /// Provocative or destabilizing — questions assumptions.
+  /** Provocative or destabilizing — questions assumptions. */
   static const challenging = 'challenging';
 
-  /// All available mood tags.
+  /** All available mood tags. */
   static const all = [morning, midday, evening, stress, general, contemplative, uplifting, challenging];
 
-  /// Human-readable display names for moods
+  /** Human-readable display names for moods */
   static String displayName(String tag) {
     switch (tag) {
       case morning:
@@ -265,7 +265,7 @@ class MoodTags {
     }
   }
 
-  /// Icon for mood
+  /** Icon for mood */
   static String icon(String tag) {
     switch (tag) {
       case morning:
@@ -290,39 +290,39 @@ class MoodTags {
   }
 }
 
-/// Extended teaching model with comprehensive tagging
+/** Extended teaching model with comprehensive tagging */
 class Teaching {
-  /// Unique identifier
+  /** Unique identifier */
   final String id;
 
-  /// The teaching content (quote, excerpt, or short text)
+  /** The teaching content (quote, excerpt, or short text) */
   final String content;
 
-  /// Optional instruction or practice hint
+  /** Optional instruction or practice hint */
   final String? instruction;
 
-  /// Teacher name
+  /** Teacher name */
   final String teacher;
 
-  /// Source book, talk, or satsang
+  /** Source book, talk, or satsang */
   final String? source;
 
-  /// Spiritual tradition/lineage
+  /** Spiritual tradition/lineage */
   final Tradition lineage;
 
-  /// Topic tags (e.g., awareness, self-inquiry, freedom)
+  /** Topic tags (e.g., awareness, self-inquiry, freedom) */
   final Set<String> topicTags;
 
-  /// Mood/context tags (e.g., morning, stress, contemplative)
+  /** Mood/context tags (e.g., morning, stress, contemplative) */
   final Set<String> moodTags;
 
-  /// Content type
+  /** Content type */
   final TeachingType type;
 
-  /// URL to original source (if available)
+  /** URL to original source (if available) */
   final String? sourceUrl;
 
-  /// When this teaching was added
+  /** When this teaching was added */
   final DateTime? dateAdded;
 
   const Teaching({
@@ -339,7 +339,7 @@ class Teaching {
     this.dateAdded,
   });
 
-  /// Convert existing Pointing to Teaching
+  /** Convert existing Pointing to Teaching */
   factory Teaching.fromPointing(Pointing p) {
     return Teaching(
       id: 'pointing_${p.id}',
@@ -354,7 +354,7 @@ class Teaching {
     );
   }
 
-  /// Infer topic tags from content text
+  /** Infer topic tags from content text */
   static Set<String> _inferTopics(String content) {
     final topics = <String>{};
     final lower = content.toLowerCase();
@@ -417,7 +417,7 @@ class Teaching {
     return topics.isEmpty ? {TopicTags.awareness} : topics;
   }
 
-  /// Convert Teaching back to Pointing for sharing
+  /** Convert Teaching back to Pointing for sharing */
   Pointing toPointing() => Pointing(
     id: id.startsWith('pointing_') ? id.substring(9) : id,
     content: content,
@@ -428,7 +428,7 @@ class Teaching {
     source: source,
   );
 
-  /// Check if teaching matches the given filters
+  /** Check if teaching matches the given filters */
   bool matchesFilters({Tradition? lineage, Set<String>? topics, Set<String>? moods, String? teacher, TeachingType? type}) {
     if (lineage != null && this.lineage != lineage) return false;
     if (topics != null && topics.isNotEmpty && topicTags.intersection(topics).isEmpty) {
@@ -444,10 +444,10 @@ class Teaching {
     return true;
   }
 
-  /// Check if teaching has a specific topic
+  /** Check if teaching has a specific topic */
   bool hasTopic(String topic) => topicTags.contains(topic);
 
-  /// Check if teaching has a specific mood
+  /** Check if teaching has a specific mood */
   bool hasMood(String mood) => moodTags.contains(mood);
 
   @override
@@ -460,25 +460,25 @@ class Teaching {
   String toString() => 'Teaching(id: $id, teacher: $teacher)';
 }
 
-/// Global teaching repository for aggregating teachings from multiple sources
+/** Global teaching repository for aggregating teachings from multiple sources */
 class TeachingRepository {
   TeachingRepository._();
 
   static final List<Teaching> _allTeachings = [];
   static bool _initialized = false;
 
-  /// All teachings in the repository
+  /** All teachings in the repository */
   static List<Teaching> get all => List.unmodifiable(_allTeachings);
 
-  /// Whether the repository has been initialized
+  /** Whether the repository has been initialized */
   static bool get isInitialized => _initialized;
 
-  /// Add teachings to the repository
+  /** Add teachings to the repository */
   static void addTeachings(List<Teaching> teachings) {
     _allTeachings.addAll(teachings);
   }
 
-  /// Initialize the repository (call once at app startup)
+  /** Initialize the repository (call once at app startup) */
   static void initialize({List<Pointing>? pointings, List<Teaching>? additionalTeachings}) {
     if (_initialized) return;
 
@@ -495,18 +495,18 @@ class TeachingRepository {
     _initialized = true;
   }
 
-  /// Clear and reinitialize (for testing)
+  /** Clear and reinitialize (for testing) */
   static void reset() {
     _allTeachings.clear();
     _initialized = false;
   }
 
-  /// Filter teachings by various criteria
+  /** Filter teachings by various criteria */
   static List<Teaching> filter({Tradition? lineage, Set<String>? topics, Set<String>? moods, String? teacher, TeachingType? type}) {
     return _allTeachings.where((t) => t.matchesFilters(lineage: lineage, topics: topics, moods: moods, teacher: teacher, type: type)).toList();
   }
 
-  /// Get a random teaching, optionally filtered
+  /** Get a random teaching, optionally filtered */
   static Teaching? getRandom({Tradition? lineage, Set<String>? topics, Set<String>? moods}) {
     final filtered = filter(lineage: lineage, topics: topics, moods: moods);
     if (filtered.isEmpty) return null;
@@ -514,12 +514,12 @@ class TeachingRepository {
     return filtered.first;
   }
 
-  /// Get list of unique teachers
+  /** Get list of unique teachers */
   static List<String> get uniqueTeachers {
     return _allTeachings.map((t) => t.teacher).toSet().toList()..sort();
   }
 
-  /// Get count of teachings per topic
+  /** Get count of teachings per topic */
   static Map<String, int> get topicCounts {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
@@ -530,7 +530,7 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per mood
+  /** Get count of teachings per mood */
   static Map<String, int> get moodCounts {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
@@ -541,7 +541,7 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per lineage
+  /** Get count of teachings per lineage */
   static Map<Tradition, int> get lineageCounts {
     final counts = <Tradition, int>{};
     for (final t in _allTeachings) {
@@ -550,7 +550,7 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get count of teachings per teacher
+  /** Get count of teachings per teacher */
   static Map<String, int> get teacherCounts {
     final counts = <String, int>{};
     for (final t in _allTeachings) {
@@ -559,22 +559,22 @@ class TeachingRepository {
     return counts;
   }
 
-  /// Get teachings by a specific teacher
+  /** Get teachings by a specific teacher */
   static List<Teaching> byTeacher(String teacher) {
     return _allTeachings.where((t) => t.teacher.toLowerCase() == teacher.toLowerCase()).toList();
   }
 
-  /// Get teachings by lineage
+  /** Get teachings by lineage */
   static List<Teaching> byLineage(Tradition lineage) {
     return _allTeachings.where((t) => t.lineage == lineage).toList();
   }
 
-  /// Get teachings by topic
+  /** Get teachings by topic */
   static List<Teaching> byTopic(String topic) {
     return _allTeachings.where((t) => t.topicTags.contains(topic)).toList();
   }
 
-  /// Get teachings by mood
+  /** Get teachings by mood */
   static List<Teaching> byMood(String mood) {
     return _allTeachings.where((t) => t.moodTags.contains(mood)).toList();
   }

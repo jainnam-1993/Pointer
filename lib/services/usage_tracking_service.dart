@@ -7,10 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
  * Used for analytics tracking of daily engagement.
  */
 class DailyUsage {
-  /// Number of pointings viewed today.
+  /** Number of pointings viewed today. */
   final int viewCount;
 
-  /// ISO date string (`YYYY-MM-DD`) of the last reset, used to detect day rollover.
+  /** ISO date string (`YYYY-MM-DD`) of the last reset, used to detect day rollover. */
   final String lastResetDate;
 
   const DailyUsage({this.viewCount = 0, required this.lastResetDate});
@@ -47,7 +47,7 @@ class UsageTrackingService {
 
   UsageTrackingService(this._prefs);
 
-  /// Get current daily usage, resetting if new day
+  /** Get current daily usage, resetting if new day */
   DailyUsage getUsage() {
     final json = _prefs.getString(_usageKey);
     if (json == null) {
@@ -71,7 +71,7 @@ class UsageTrackingService {
     }
   }
 
-  /// Increment today's view count by one and return the updated [DailyUsage].
+  /** Increment today's view count by one and return the updated [DailyUsage]. */
   Future<DailyUsage> incrementViewCount() async {
     final current = getUsage();
     final updated = current.copyWith(viewCount: current.viewCount + 1);
@@ -79,7 +79,7 @@ class UsageTrackingService {
     return updated;
   }
 
-  /// Reset usage counters to zero. Used for testing.
+  /** Reset usage counters to zero. Used for testing. */
   Future<void> resetUsage() async {
     await _saveUsage(DailyUsage.initial());
   }

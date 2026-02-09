@@ -46,7 +46,7 @@ import 'workmanager_service.dart';
  * [ProviderContainer] for use in [UncontrolledProviderScope].
  */
 class InitResult {
-  /// The fully configured provider container with service overrides.
+  /** The fully configured provider container with service overrides. */
   final ProviderContainer container;
 
   const InitResult({required this.container});

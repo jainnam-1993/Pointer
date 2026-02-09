@@ -11,52 +11,52 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/pointings.dart';
 import '../providers/providers.dart';
 
-/// Visual template applied when generating a shareable [Pointing] card image.
+/** Visual template applied when generating a shareable [Pointing] card image. */
 enum ShareTemplate {
-  /// Clean white/dark background with text only.
+  /** Clean white/dark background with text only. */
   minimal('Minimal', 'Clean, text-focused design'),
 
-  /// App's animated gradient rendered as a static background.
+  /** App's animated gradient rendered as a static background. */
   gradient('Gradient', 'App gradient background'),
 
-  /// Tradition-specific colour palette (e.g. Zen blue, Advaita gold).
+  /** Tradition-specific colour palette (e.g. Zen blue, Advaita gold). */
   tradition('Tradition', 'Colors matching the tradition');
 
   const ShareTemplate(this.displayName, this.description);
 
-  /// Human-readable name shown in the template picker.
+  /** Human-readable name shown in the template picker. */
   final String displayName;
 
-  /// Short description of this template's visual style.
+  /** Short description of this template's visual style. */
   final String description;
 }
 
-/// Aspect ratio format for the generated share card image.
+/** Aspect ratio format for the generated share card image. */
 enum ShareFormat {
-  /// 1:1 (1080x1080) — optimal for Instagram/Facebook feeds.
+  /** 1:1 (1080x1080) — optimal for Instagram/Facebook feeds. */
   square('Square', '1:1 for feeds', 1080, 1080),
 
-  /// 9:16 (1080x1920) — optimal for Instagram/TikTok stories.
+  /** 9:16 (1080x1920) — optimal for Instagram/TikTok stories. */
   story('Story', '9:16 for stories', 1080, 1920);
 
   const ShareFormat(this.displayName, this.description, this.width, this.height);
-  /// Human-readable name shown in the UI picker.
+  /** Human-readable name shown in the UI picker. */
   final String displayName;
 
-  /// Short explanation of the format's intended use.
+  /** Short explanation of the format's intended use. */
   final String description;
 
-  /// Pixel width of the generated image.
+  /** Pixel width of the generated image. */
   final int width;
 
-  /// Pixel height of the generated image.
+  /** Pixel height of the generated image. */
   final int height;
 
-  /// Width-to-height ratio derived from [width] and [height].
+  /** Width-to-height ratio derived from [width] and [height]. */
   double get aspectRatio => width / height;
 }
 
-/// Riverpod provider for the user's persisted [ShareTemplate] preference.
+/** Riverpod provider for the user's persisted [ShareTemplate] preference. */
 final shareTemplateProvider = StateNotifierProvider<ShareTemplateNotifier, ShareTemplate>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return ShareTemplateNotifier(prefs);
@@ -80,14 +80,14 @@ class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
     }
   }
 
-  /// Update the selected template and persist the choice.
+  /** Update the selected template and persist the choice. */
   void setTemplate(ShareTemplate template) {
     state = template;
     _prefs.setString(_storageKey, template.name);
   }
 }
 
-/// Riverpod provider for the user's persisted [ShareFormat] preference.
+/** Riverpod provider for the user's persisted [ShareFormat] preference. */
 final shareFormatProvider = StateNotifierProvider<ShareFormatNotifier, ShareFormat>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return ShareFormatNotifier(prefs);
@@ -111,14 +111,14 @@ class ShareFormatNotifier extends StateNotifier<ShareFormat> {
     }
   }
 
-  /// Update the selected format and persist the choice.
+  /** Update the selected format and persist the choice. */
   void setFormat(ShareFormat format) {
     state = format;
     _prefs.setString(_storageKey, format.name);
   }
 }
 
-/// Riverpod provider for the [ShareService] singleton.
+/** Riverpod provider for the [ShareService] singleton. */
 final shareServiceProvider = Provider<ShareService>((ref) {
   return ShareService();
 });
@@ -131,16 +131,18 @@ final shareServiceProvider = Provider<ShareService>((ref) {
  * Card images are rendered from Flutter widgets via [ScreenshotController].
  */
 class ShareService {
-  /// Controller used to capture share card widgets as raster images.
+  /** Controller used to capture share card widgets as raster images. */
   final ScreenshotController screenshotController = ScreenshotController();
 
-  /// Capture a widget as an image
+  /** Capture a widget as an image */
   Future<Uint8List?> captureWidget(Widget widget, {double pixelRatio = 3.0}) async {
     return await screenshotController.captureFromWidget(widget, pixelRatio: pixelRatio, delay: const Duration(milliseconds: 100));
   }
 
-  /// Share captured image via system share sheet
-  /// [sharePositionOrigin] is required for iPad popover positioning
+  /**
+   * Share captured image via system share sheet
+   * [sharePositionOrigin] is required for iPad popover positioning
+   */
   Future<void> shareImage(Uint8List imageBytes, String text, {Rect? sharePositionOrigin}) async {
     final tempDir = await getTemporaryDirectory();
     final file = File('${tempDir.path}/pointer_card_${DateTime.now().millisecondsSinceEpoch}.png');
@@ -149,8 +151,10 @@ class ShareService {
     await Share.shareXFiles([XFile(file.path)], text: text, sharePositionOrigin: sharePositionOrigin);
   }
 
-  /// Share to Instagram Stories (iOS only)
-  /// [sharePositionOrigin] is required for iPad popover positioning
+  /**
+   * Share to Instagram Stories (iOS only)
+   * [sharePositionOrigin] is required for iPad popover positioning
+   */
   Future<bool> shareToInstagramStories(Uint8List imageBytes, {Rect? sharePositionOrigin}) async {
     if (!Platform.isIOS) return false;
 
@@ -173,20 +177,22 @@ class ShareService {
     return false;
   }
 
-  /// Copy pointing as formatted text to clipboard
+  /** Copy pointing as formatted text to clipboard */
   Future<void> copyToClipboard(Pointing pointing) async {
     final text = _formatForClipboard(pointing);
     await Clipboard.setData(ClipboardData(text: text));
   }
 
-  /// Share plain text (existing behavior)
-  /// [sharePositionOrigin] is required for iPad popover positioning
+  /**
+   * Share plain text (existing behavior)
+   * [sharePositionOrigin] is required for iPad popover positioning
+   */
   Future<void> shareText(Pointing pointing, {Rect? sharePositionOrigin}) async {
     final text = _formatForShare(pointing);
     await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }
 
-  /// Export to Day One journal (iOS)
+  /** Export to Day One journal (iOS) */
   Future<bool> exportToDayOne(Pointing pointing) async {
     final text = Uri.encodeComponent(_formatForJournal(pointing));
     final uri = Uri.parse('dayone://post?entry=$text');
@@ -198,19 +204,21 @@ class ShareService {
     return false;
   }
 
-  /// Export to Apple Notes via share sheet
-  /// [sharePositionOrigin] is required for iPad popover positioning
+  /**
+   * Export to Apple Notes via share sheet
+   * [sharePositionOrigin] is required for iPad popover positioning
+   */
   Future<void> exportToNotes(Pointing pointing, {Rect? sharePositionOrigin}) async {
     final text = _formatForJournal(pointing);
     await Share.share(text, sharePositionOrigin: sharePositionOrigin);
   }
 
-  /// Get tradition display name
+  /** Get tradition display name */
   String _getTraditionName(Tradition tradition) {
     return traditions[tradition]?.name ?? tradition.name;
   }
 
-  /// Format pointing for clipboard (plain text)
+  /** Format pointing for clipboard (plain text) */
   String _formatForClipboard(Pointing pointing) {
     final buffer = StringBuffer();
     buffer.writeln('"${pointing.content}"');
@@ -223,7 +231,7 @@ class ShareService {
     return buffer.toString();
   }
 
-  /// Format pointing for plain text share
+  /** Format pointing for plain text share */
   String _formatForShare(Pointing pointing) {
     final buffer = StringBuffer();
     buffer.writeln('"${pointing.content}"');
@@ -237,7 +245,7 @@ class ShareService {
     return buffer.toString();
   }
 
-  /// Format pointing for journal export
+  /** Format pointing for journal export */
   String _formatForJournal(Pointing pointing) {
     final buffer = StringBuffer();
     buffer.writeln('# ${_getTraditionName(pointing.tradition)} Pointing');

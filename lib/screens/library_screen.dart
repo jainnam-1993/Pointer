@@ -55,10 +55,10 @@ class LibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
-  /// Current browse mode controlling which category navigation is shown.
+  /** Current browse mode controlling which category navigation is shown. */
   LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
 
-  /// Current content type filter (all, articles only, or quotes only).
+  /** Current content type filter (all, articles only, or quotes only). */
   ContentFilter _contentFilter = ContentFilter.all;
 
   @override
@@ -232,13 +232,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  /// Navigates to the [ArticleReaderScreen] for the given article.
+  /** Navigates to the [ArticleReaderScreen] for the given article. */
   void _openArticle(BuildContext context, Article article) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
   }
 
-  /// Build dynamic browse list based on current mode
+  /** Build dynamic browse list based on current mode */
   Widget _buildBrowseList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
@@ -255,10 +255,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
   }
 
-  /// Builds a sliver list of topics with merged counts based on the active [contentFilter].
-  ///
-  /// When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
-  /// uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
+  /**
+   * Builds a sliver list of topics with merged counts based on the active [contentFilter].
+   *
+   * When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
+   * uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
+   */
   Widget _buildTopicsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Always show TopicTags with merged counts based on filter
     final Map<String, int> topicCounts;
@@ -305,7 +307,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  /// Navigates to [TopicTeachingsScreen] for the given topic with the active filter.
+  /** Navigates to [TopicTeachingsScreen] for the given topic with the active filter. */
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
@@ -315,7 +317,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  /// Builds a sliver list of teachers with counts based on the active [contentFilter].
+  /** Builds a sliver list of teachers with counts based on the active [contentFilter]. */
   Widget _buildTeachersList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Get teachers based on content filter
     final Map<String, int> teacherCounts;
@@ -382,7 +384,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  /// Builds a sliver list of tradition lineages with counts based on the active [contentFilter].
+  /** Builds a sliver list of tradition lineages with counts based on the active [contentFilter]. */
   Widget _buildLineagesList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build list of lineages with their counts based on filter
     final lineageData = <({Tradition tradition, TraditionInfo info, int count})>[];
@@ -432,7 +434,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
-  /// Builds a sliver list of mood tags with counts based on the active [contentFilter].
+  /** Builds a sliver list of mood tags with counts based on the active [contentFilter]. */
   Widget _buildMoodsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build mood counts based on filter
     final Map<String, int> moodCounts;
@@ -513,7 +515,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 }
 
-/// Dropdown for browse mode selection
+/** Dropdown for browse mode selection */
 class _BrowseModeDropdown extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onChanged;
@@ -565,7 +567,7 @@ class _BrowseModeDropdown extends StatelessWidget {
   }
 }
 
-/// Dropdown for content type filter (All/Articles/Quotes)
+/** Dropdown for content type filter (All/Articles/Quotes) */
 class _ContentTypeDropdown extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onChanged;
@@ -639,7 +641,7 @@ class _ContentTypeDropdown extends StatelessWidget {
   }
 }
 
-/// Bottom sheet for selecting content type filter (All/Articles/Quotes).
+/** Bottom sheet for selecting content type filter (All/Articles/Quotes). */
 class _ContentTypeSheet extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onSelected;
@@ -661,7 +663,7 @@ class _ContentTypeSheet extends StatelessWidget {
   }
 }
 
-/// Bottom sheet for selecting browse mode (Topics/Teachers/Lineages/Moods/Saved).
+/** Bottom sheet for selecting browse mode (Topics/Teachers/Lineages/Moods/Saved). */
 class _BrowseModeSheet extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onSelected;
@@ -679,7 +681,7 @@ class _BrowseModeSheet extends StatelessWidget {
   }
 }
 
-/// Generic browse card for teachers, lineages, moods
+/** Generic browse card for teachers, lineages, moods */
 class _BrowseCard extends StatelessWidget {
   final String icon;
   final String name;
@@ -750,7 +752,7 @@ class _BrowseCard extends StatelessWidget {
   }
 }
 
-/// Horizontal-scrolling card for a featured [Article] with tradition icon, reading time, and teacher.
+/** Horizontal-scrolling card for a featured [Article] with tradition icon, reading time, and teacher. */
 class _FeaturedArticleCard extends StatelessWidget {
   final Article article;
   final VoidCallback onTap;

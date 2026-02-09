@@ -8,19 +8,19 @@ import '../data/pointings.dart';
  * [TeacherProfile] in `models/teacher_profile.dart`.
  */
 class Teacher {
-  /// Display name (e.g., `'Ramana Maharshi'`).
+  /** Display name (e.g., `'Ramana Maharshi'`). */
   final String name;
 
-  /// Short biographical summary.
+  /** Short biographical summary. */
   final String? bio;
 
-  /// Life dates (e.g., `'1879-1950'` or `'born 1960'`).
+  /** Life dates (e.g., `'1879-1950'` or `'born 1960'`). */
   final String? dates;
 
-  /// Primary spiritual tradition. See [Tradition].
+  /** Primary spiritual tradition. See [Tradition]. */
   final Tradition tradition;
 
-  /// Descriptive tags for search and categorization.
+  /** Descriptive tags for search and categorization. */
   final List<String> tags;
 
   const Teacher({required this.name, this.bio, this.dates, required this.tradition, this.tags = const []});

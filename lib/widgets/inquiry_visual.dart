@@ -10,25 +10,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
-/// A breathing/pulsing visual element for inquiry pauses
-///
-/// Displays a subtle animated circle that expands and contracts
-/// to encourage mindful breathing during contemplation.
-///
-/// Respects accessibility settings:
-/// - System reduce motion (MediaQuery.disableAnimations)
-/// - App-level override (reduceMotionOverrideProvider)
-/// - [disableAnimations] flag for testing
+/**
+ * A breathing/pulsing visual element for inquiry pauses
+ *
+ * Displays a subtle animated circle that expands and contracts
+ * to encourage mindful breathing during contemplation.
+ *
+ * Respects accessibility settings:
+ * - System reduce motion (MediaQuery.disableAnimations)
+ * - App-level override (reduceMotionOverrideProvider)
+ * - [disableAnimations] flag for testing
+ */
 class InquiryVisual extends ConsumerWidget {
   const InquiryVisual({super.key, this.size = 120, this.color});
 
-  /// Size of the visual element
+  /** Size of the visual element */
   final double size;
 
-  /// Optional custom color (defaults to theme accent)
+  /** Optional custom color (defaults to theme accent) */
   final Color? color;
 
-  /// Disable animations globally (for testing)
+  /** Disable animations globally (for testing) */
   static bool disableAnimations = false;
 
   @override

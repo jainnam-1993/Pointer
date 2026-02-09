@@ -7,54 +7,56 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'aws_credential_service.dart';
 
-/// Lifecycle state of the [TTSService] audio player.
+/** Lifecycle state of the [TTSService] audio player. */
 enum TTSPlaybackState {
-  /// No audio loaded or player reset.
+  /** No audio loaded or player reset. */
   idle,
 
-  /// Synthesising speech or buffering audio data.
+  /** Synthesising speech or buffering audio data. */
   loading,
 
-  /// Audio is actively playing.
+  /** Audio is actively playing. */
   playing,
 
-  /// Playback is paused by the user.
+  /** Playback is paused by the user. */
   paused,
 
-  /// Playback reached the end of the audio.
+  /** Playback reached the end of the audio. */
   completed,
 
-  /// An error occurred during synthesis or playback.
+  /** An error occurred during synthesis or playback. */
   error,
 }
 
-/// AWS Polly neural voice used for text-to-speech synthesis.
+/** AWS Polly neural voice used for text-to-speech synthesis. */
 enum PollyVoice {
-  /// US English female neural voice.
+  /** US English female neural voice. */
   joanna('Joanna', 'US English, Female'),
 
-  /// US English male neural voice.
+  /** US English male neural voice. */
   matthew('Matthew', 'US English, Male'),
 
-  /// British English female neural voice.
+  /** British English female neural voice. */
   amy('Amy', 'British English, Female'),
 
-  /// British English male neural voice.
+  /** British English male neural voice. */
   brian('Brian', 'British English, Male');
 
-  /// Polly voice ID sent in the API request.
+  /** Polly voice ID sent in the API request. */
   final String id;
 
-  /// Human-readable description shown in the voice picker UI.
+  /** Human-readable description shown in the voice picker UI. */
   final String description;
 
   const PollyVoice(this.id, this.description);
 }
 
-/// Service for text-to-speech using AWS Polly.
-///
-/// Converts article text to speech via AWS Polly API and plays
-/// the resulting audio using just_audio.
+/**
+ * Service for text-to-speech using AWS Polly.
+ *
+ * Converts article text to speech via AWS Polly API and plays
+ * the resulting audio using just_audio.
+ */
 class TTSService {
   static TTSService? _instance;
   AudioPlayer? _player;
@@ -79,30 +81,30 @@ class TTSService {
     return _instance!;
   }
 
-  /// Stream of playback state changes
+  /** Stream of playback state changes */
   Stream<TTSPlaybackState> get stateStream => _stateController.stream;
 
-  /// Stream of playback position updates
+  /** Stream of playback position updates */
   Stream<Duration> get positionStream => _positionController.stream;
 
-  /// Stream of total duration (once known)
+  /** Stream of total duration (once known) */
   Stream<Duration?> get durationStream => _durationController.stream;
 
-  /// Stream of error messages
+  /** Stream of error messages */
   Stream<String> get errorStream => _errorController.stream;
 
-  /// Currently playing article ID
+  /** Currently playing article ID */
   String? get currentArticleId => _currentArticleId;
 
-  /// Selected voice
+  /** Selected voice */
   PollyVoice get selectedVoice => _selectedVoice;
 
-  /// Set voice preference
+  /** Set voice preference */
   void setVoice(PollyVoice voice) {
     _selectedVoice = voice;
   }
 
-  /// Current playback state
+  /** Current playback state */
   TTSPlaybackState get currentState {
     if (_player == null) return TTSPlaybackState.idle;
     if (_player!.processingState == ProcessingState.loading || _player!.processingState == ProcessingState.buffering) {
@@ -115,7 +117,7 @@ class TTSService {
     return TTSPlaybackState.paused;
   }
 
-  /// Initialize audio player
+  /** Initialize audio player */
   Future<void> initialize() async {
     _player = AudioPlayer();
 
@@ -134,7 +136,7 @@ class TTSService {
     debugPrint('TTSService: Initialized');
   }
 
-  /// Synthesize and play text for an article
+  /** Synthesize and play text for an article */
   Future<void> synthesizeAndPlay(String articleId, String text) async {
     if (_player == null) await initialize();
 
@@ -166,7 +168,7 @@ class TTSService {
     }
   }
 
-  /// Call AWS Polly SynthesizeSpeech API
+  /** Call AWS Polly SynthesizeSpeech API */
   Future<Uint8List> _synthesizeSpeech(String text, AWSCredentials credentials) async {
     final uri = Uri.parse('$_endpoint/v1/speech');
     final body = jsonEncode({'OutputFormat': 'mp3', 'Text': text, 'TextType': 'text', 'VoiceId': _selectedVoice.id, 'Engine': 'neural'});
@@ -202,7 +204,7 @@ class TTSService {
     }
   }
 
-  /// Sign request with AWS SigV4
+  /** Sign request with AWS SigV4 */
   Future<Map<String, String>> _signRequest({
     required String method,
     required Uri uri,
@@ -287,7 +289,7 @@ class TTSService {
         '${date.second.toString().padLeft(2, '0')}Z';
   }
 
-  /// Strip markdown formatting from text for TTS
+  /** Strip markdown formatting from text for TTS */
   String _stripMarkdown(String markdown) {
     var text = markdown;
 
@@ -326,29 +328,29 @@ class TTSService {
     return text.trim();
   }
 
-  /// Pause playback
+  /** Pause playback */
   Future<void> pause() async {
     await _player?.pause();
   }
 
-  /// Resume playback
+  /** Resume playback */
   Future<void> resume() async {
     await _player?.play();
   }
 
-  /// Stop playback
+  /** Stop playback */
   Future<void> stop() async {
     await _player?.stop();
     _currentArticleId = null;
     _stateController.add(TTSPlaybackState.idle);
   }
 
-  /// Seek to position
+  /** Seek to position */
   Future<void> seek(Duration position) async {
     await _player?.seek(position);
   }
 
-  /// Seek forward by seconds
+  /** Seek forward by seconds */
   Future<void> seekForward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final duration = _player?.duration ?? Duration.zero;
@@ -356,23 +358,23 @@ class TTSService {
     await seek(newPosition > duration ? duration : newPosition);
   }
 
-  /// Seek backward by seconds
+  /** Seek backward by seconds */
   Future<void> seekBackward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final newPosition = current - Duration(seconds: seconds);
     await seek(newPosition.isNegative ? Duration.zero : newPosition);
   }
 
-  /// Get current position
+  /** Get current position */
   Duration get position => _player?.position ?? Duration.zero;
 
-  /// Get total duration
+  /** Get total duration */
   Duration? get duration => _player?.duration;
 
-  /// Is currently playing
+  /** Is currently playing */
   bool get isPlaying => _player?.playing ?? false;
 
-  /// Dispose resources
+  /** Dispose resources */
   Future<void> dispose() async {
     await _player?.dispose();
     _player = null;

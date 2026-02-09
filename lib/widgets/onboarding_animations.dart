@@ -15,22 +15,22 @@ import 'notification_preview.dart';
  * [NotificationSimulation], and [BreathingGlow].
  */
 class OnboardingDurations {
-  /// Delay between each word appearing in [TypewriterText].
+  /** Delay between each word appearing in [TypewriterText]. */
   static const Duration wordReveal = Duration(milliseconds: 200);
 
-  /// Fade duration for each word in [TypewriterText].
+  /** Fade duration for each word in [TypewriterText]. */
   static const Duration wordFade = Duration(milliseconds: 400);
 
-  /// Duration of the dissolve/blur animation in [DissolveTransition].
+  /** Duration of the dissolve/blur animation in [DissolveTransition]. */
   static const Duration dissolve = Duration(milliseconds: 800);
 
-  /// Duration of the strike-through line animation in [StrikeThroughReveal].
+  /** Duration of the strike-through line animation in [StrikeThroughReveal]. */
   static const Duration strikethrough = Duration(milliseconds: 300);
 
-  /// One full breath cycle (inhale + exhale) for [BreathingGlow].
+  /** One full breath cycle (inhale + exhale) for [BreathingGlow]. */
   static const Duration breathCycle = Duration(seconds: 3);
 
-  /// Slide-in duration for [NotificationSimulation] banner appearance.
+  /** Slide-in duration for [NotificationSimulation] banner appearance. */
   static const Duration notificationSlide = Duration(milliseconds: 400);
 }
 
@@ -38,27 +38,29 @@ class OnboardingDurations {
 // TypewriterText
 // ============================================================================
 
-/// Word-by-word text reveal with configurable timing.
-///
-/// Each word fades in sequentially, creating a contemplative reading experience.
-/// Triggers a subtle haptic on the final word.
+/**
+ * Word-by-word text reveal with configurable timing.
+ *
+ * Each word fades in sequentially, creating a contemplative reading experience.
+ * Triggers a subtle haptic on the final word.
+ */
 class TypewriterText extends StatefulWidget {
-  /// The text to reveal word by word.
+  /** The text to reveal word by word. */
   final String text;
 
-  /// Style for the text. Falls back to theme's textPrimary color.
+  /** Style for the text. Falls back to theme's textPrimary color. */
   final TextStyle? style;
 
-  /// Delay between each word appearing.
+  /** Delay between each word appearing. */
   final Duration wordDelay;
 
-  /// Initial delay before the first word appears.
+  /** Initial delay before the first word appears. */
   final Duration startDelay;
 
-  /// Called when all words have been revealed.
+  /** Called when all words have been revealed. */
   final VoidCallback? onComplete;
 
-  /// Text alignment.
+  /** Text alignment. */
   final TextAlign textAlign;
 
   const TypewriterText({
@@ -185,24 +187,26 @@ class _TypewriterTextState extends State<TypewriterText> {
 // DissolveTransition
 // ============================================================================
 
-/// Shows first child, then dissolves/blurs it away as second child emerges.
-///
-/// Creates an ethereal transition effect where the first child becomes
-/// increasingly blurred and faded while the second child materializes.
+/**
+ * Shows first child, then dissolves/blurs it away as second child emerges.
+ *
+ * Creates an ethereal transition effect where the first child becomes
+ * increasingly blurred and faded while the second child materializes.
+ */
 class DissolveTransition extends StatefulWidget {
-  /// The initial widget to show.
+  /** The initial widget to show. */
   final Widget firstChild;
 
-  /// The widget that emerges as the first dissolves.
+  /** The widget that emerges as the first dissolves. */
   final Widget secondChild;
 
-  /// How long to hold the first child before dissolving.
+  /** How long to hold the first child before dissolving. */
   final Duration holdDuration;
 
-  /// Duration of the dissolve/emergence animation.
+  /** Duration of the dissolve/emergence animation. */
   final Duration dissolveDuration;
 
-  /// Called when the transition completes.
+  /** Called when the transition completes. */
   final VoidCallback? onComplete;
 
   const DissolveTransition({
@@ -329,24 +333,26 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
 // StrikeThroughReveal
 // ============================================================================
 
-/// Text that appears then gets struck through and fades.
-///
-/// Used to show concepts that are being "let go of" or transcended,
-/// such as "Progress", "Streaks", "Becoming".
+/**
+ * Text that appears then gets struck through and fades.
+ *
+ * Used to show concepts that are being "let go of" or transcended,
+ * such as "Progress", "Streaks", "Becoming".
+ */
 class StrikeThroughReveal extends StatefulWidget {
-  /// List of items to show and strike through sequentially.
+  /** List of items to show and strike through sequentially. */
   final List<String> items;
 
-  /// Delay before showing the next item after the previous fades.
+  /** Delay before showing the next item after the previous fades. */
   final Duration itemDelay;
 
-  /// Delay after item appears before strike-through begins.
+  /** Delay after item appears before strike-through begins. */
   final Duration strikeDelay;
 
-  /// Style for the text.
+  /** Style for the text. */
   final TextStyle? style;
 
-  /// Called when all items have been shown and struck through.
+  /** Called when all items have been shown and struck through. */
   final VoidCallback? onComplete;
 
   const StrikeThroughReveal({
@@ -541,30 +547,32 @@ class _StrikeThroughPainter extends CustomPainter {
 // NotificationSimulation
 // ============================================================================
 
-/// Simulates a notification banner sliding down from the top.
-///
-/// Creates an iOS/Android-style notification appearance matching the actual
-/// Pointer notification UI with Ensō icon, title, tradition badge, and actions.
+/**
+ * Simulates a notification banner sliding down from the top.
+ *
+ * Creates an iOS/Android-style notification appearance matching the actual
+ * Pointer notification UI with Ensō icon, title, tradition badge, and actions.
+ */
 class NotificationSimulation extends StatefulWidget {
-  /// App name shown in the notification header.
+  /** App name shown in the notification header. */
   final String appName;
 
-  /// The notification message body (the pointing content).
+  /** The notification message body (the pointing content). */
   final String message;
 
-  /// Title shown above the message (defaults to "Today's Pointing").
+  /** Title shown above the message (defaults to "Today's Pointing"). */
   final String title;
 
-  /// Tradition and teacher attribution (e.g., "Advaita Vedanta — Nisargadatta").
+  /** Tradition and teacher attribution (e.g., "Advaita Vedanta — Nisargadatta"). */
   final String? attribution;
 
-  /// Whether to show action buttons (Save, Another).
+  /** Whether to show action buttons (Save, Another). */
   final bool showActions;
 
-  /// Delay before the notification appears.
+  /** Delay before the notification appears. */
   final Duration delay;
 
-  /// Called when the notification has fully appeared.
+  /** Called when the notification has fully appeared. */
   final VoidCallback? onComplete;
 
   const NotificationSimulation({
@@ -670,24 +678,26 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 // BreathingGlow
 // ============================================================================
 
-/// Subtle pulsing glow effect for containers.
-///
-/// Wraps a child widget with an animated glow that pulses gently,
-/// like breathing. Uses a smooth sine-wave animation for natural feel.
+/**
+ * Subtle pulsing glow effect for containers.
+ *
+ * Wraps a child widget with an animated glow that pulses gently,
+ * like breathing. Uses a smooth sine-wave animation for natural feel.
+ */
 class BreathingGlow extends StatefulWidget {
-  /// The widget to wrap with the breathing glow effect.
+  /** The widget to wrap with the breathing glow effect. */
   final Widget child;
 
-  /// Color of the glow. Defaults to theme accent color.
+  /** Color of the glow. Defaults to theme accent color. */
   final Color? glowColor;
 
-  /// Duration of one full breath cycle (inhale + exhale).
+  /** Duration of one full breath cycle (inhale + exhale). */
   final Duration cycleDuration;
 
-  /// Maximum blur radius of the glow.
+  /** Maximum blur radius of the glow. */
   final double maxBlur;
 
-  /// Maximum spread radius of the glow.
+  /** Maximum spread radius of the glow. */
   final double maxSpread;
 
   const BreathingGlow({
@@ -768,23 +778,23 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
 // Utility Extensions
 // ============================================================================
 
-/// Extension to add onboarding-specific animations using flutter_animate
+/** Extension to add onboarding-specific animations using flutter_animate */
 extension OnboardingAnimateExtensions on Widget {
-  /// Applies a contemplative fade-in with subtle upward drift.
+  /** Applies a contemplative fade-in with subtle upward drift. */
   Widget contemplativeFadeIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
     return animate(
       delay: delay,
     ).fadeIn(duration: duration, curve: Curves.easeOut).slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
   }
 
-  /// Applies a gentle scale-in effect for emphasis.
+  /** Applies a gentle scale-in effect for emphasis. */
   Widget gentleScaleIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 600)}) {
     return animate(
       delay: delay,
     ).scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
   }
 
-  /// Applies a soft blur-in effect (from blurred to clear).
+  /** Applies a soft blur-in effect (from blurred to clear). */
   Widget blurIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
     return animate(delay: delay)
         .blur(begin: const Offset(10, 10), end: Offset.zero, duration: duration, curve: Curves.easeOut)

@@ -17,10 +17,10 @@ import '../theme/app_theme.dart';
  * Renders nothing when [audioUrl] is null.
  */
 class AudioPlayerWidget extends ConsumerStatefulWidget {
-  /// Identifier of the pointing this player is associated with.
+  /** Identifier of the pointing this player is associated with. */
   final String pointingId;
 
-  /// Network URL of the audio file; widget renders empty when null.
+  /** Network URL of the audio file; widget renders empty when null. */
   final String? audioUrl;
 
   const AudioPlayerWidget({super.key, required this.pointingId, required this.audioUrl});

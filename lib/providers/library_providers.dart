@@ -25,25 +25,25 @@ import '../models/teacher_profile.dart';
 // Article Providers
 // ============================================================
 
-/// Provides all articles
+/** Provides all articles */
 final articlesProvider = Provider<List<Article>>((ref) => articles);
 
-/// Provides articles filtered by tradition
+/** Provides articles filtered by tradition */
 final articlesByTraditionProvider = Provider.family<List<Article>, Tradition>((ref, tradition) {
   return articles.where((a) => a.tradition == tradition).toList();
 });
 
-/// Provides articles filtered by category
+/** Provides articles filtered by category */
 final articlesByCategoryProvider = Provider.family<List<Article>, ArticleCategory>((ref, category) {
   return articles.where((a) => a.hasCategory(category)).toList();
 });
 
-/// Provides articles filtered by teacher
+/** Provides articles filtered by teacher */
 final articlesByTeacherProvider = Provider.family<List<Article>, String>((ref, teacherName) {
   return articles.where((a) => a.isBy(teacherName)).toList();
 });
 
-/// Provides a single article by ID
+/** Provides a single article by ID */
 final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
   try {
     return articles.firstWhere((a) => a.id == id);
@@ -52,17 +52,17 @@ final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
   }
 });
 
-/// Provides featured articles (top picks)
+/** Provides featured articles (top picks) */
 final featuredArticlesProvider = Provider<List<Article>>((ref) {
   return articles.take(5).toList();
 });
 
-/// Provides article count by tradition
+/** Provides article count by tradition */
 final articleCountByTraditionProvider = Provider.family<int, Tradition>((ref, tradition) {
   return articles.where((a) => a.tradition == tradition).length;
 });
 
-/// Provides article count by category
+/** Provides article count by category */
 final articleCountByCategoryProvider = Provider.family<int, ArticleCategory>((ref, category) {
   return articles.where((a) => a.hasCategory(category)).length;
 });
@@ -71,10 +71,10 @@ final articleCountByCategoryProvider = Provider.family<int, ArticleCategory>((re
 // Teacher Profile Providers
 // ============================================================
 
-/// Provides all teacher profiles
+/** Provides all teacher profiles */
 final teacherProfilesProvider = Provider<List<TeacherProfile>>((ref) => teacherProfiles);
 
-/// Provides teacher profile by name
+/** Provides teacher profile by name */
 final teacherByNameProvider = Provider.family<TeacherProfile?, String>((ref, name) {
   try {
     return teacherProfiles.firstWhere((t) => t.name.toLowerCase() == name.toLowerCase());
@@ -83,22 +83,22 @@ final teacherByNameProvider = Provider.family<TeacherProfile?, String>((ref, nam
   }
 });
 
-/// Provides teachers filtered by tradition
+/** Provides teachers filtered by tradition */
 final teachersByTraditionProvider = Provider.family<List<TeacherProfile>, Tradition>((ref, tradition) {
   return teacherProfiles.where((t) => t.primaryTradition == tradition).toList();
 });
 
-/// Provides teachers who have related articles
+/** Provides teachers who have related articles */
 final teachersWithArticlesProvider = Provider<List<TeacherProfile>>((ref) {
   return teacherProfiles.where((t) => t.articleIds.isNotEmpty).toList();
 });
 
-/// Provides teachers who have related pointings
+/** Provides teachers who have related pointings */
 final teachersWithPointingsProvider = Provider<List<TeacherProfile>>((ref) {
   return teacherProfiles.where((t) => t.pointingIds.isNotEmpty).toList();
 });
 
-/// Provides all teacher names
+/** Provides all teacher names */
 final teacherNamesProvider = Provider<List<String>>((ref) {
   return teacherProfiles.map((t) => t.name).toList();
 });
@@ -107,13 +107,15 @@ final teacherNamesProvider = Provider<List<String>>((ref) {
 // Search Providers
 // ============================================================
 
-/// Current search query state
+/** Current search query state */
 final librarySearchQueryProvider = StateProvider<String>((ref) => '');
 
-/// Provides [Article] search results matching [librarySearchQueryProvider].
-///
-/// Searches across title, subtitle, excerpt, content, and teacher name.
-/// Returns an empty list when the query is empty.
+/**
+ * Provides [Article] search results matching [librarySearchQueryProvider].
+ *
+ * Searches across title, subtitle, excerpt, content, and teacher name.
+ * Returns an empty list when the query is empty.
+ */
 final articleSearchResultsProvider = Provider<List<Article>>((ref) {
   final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
 
@@ -130,10 +132,12 @@ final articleSearchResultsProvider = Provider<List<Article>>((ref) {
   }).toList();
 });
 
-/// Provides [TeacherProfile] search results matching [librarySearchQueryProvider].
-///
-/// Searches across name, bio, and key teachings list.
-/// Returns an empty list when the query is empty.
+/**
+ * Provides [TeacherProfile] search results matching [librarySearchQueryProvider].
+ *
+ * Searches across name, bio, and key teachings list.
+ * Returns an empty list when the query is empty.
+ */
 final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
   final query = ref.watch(librarySearchQueryProvider).toLowerCase().trim();
 
@@ -152,16 +156,18 @@ final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
 // Filter State Providers
 // ============================================================
 
-/// Selected tradition filter for articles
+/** Selected tradition filter for articles */
 final selectedTraditionFilterProvider = StateProvider<Tradition?>((ref) => null);
 
-/// Selected category filter for articles
+/** Selected category filter for articles */
 final selectedCategoryFilterProvider = StateProvider<ArticleCategory?>((ref) => null);
 
-/// Articles filtered by the active [selectedTraditionFilterProvider] and [selectedCategoryFilterProvider].
-///
-/// Returns all articles when no filters are active. Filters are AND-composed
-/// (both tradition and category must match when both are set).
+/**
+ * Articles filtered by the active [selectedTraditionFilterProvider] and [selectedCategoryFilterProvider].
+ *
+ * Returns all articles when no filters are active. Filters are AND-composed
+ * (both tradition and category must match when both are set).
+ */
 final filteredArticlesProvider = Provider<List<Article>>((ref) {
   final tradition = ref.watch(selectedTraditionFilterProvider);
   final category = ref.watch(selectedCategoryFilterProvider);
@@ -183,18 +189,18 @@ final filteredArticlesProvider = Provider<List<Article>>((ref) {
 // Statistics Providers
 // ============================================================
 
-/// Total article count
+/** Total article count */
 final totalArticleCountProvider = Provider<int>((ref) => articles.length);
 
-/// Total teacher count
+/** Total teacher count */
 final totalTeacherCountProvider = Provider<int>((ref) => teacherProfiles.length);
 
-/// Total reading time across all articles
+/** Total reading time across all articles */
 final totalReadingTimeProvider = Provider<int>((ref) {
   return articles.fold(0, (sum, a) => sum + a.readingTimeMinutes);
 });
 
-/// Articles per tradition statistics
+/** Articles per tradition statistics */
 final articlesPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   final map = <Tradition, int>{};
   for (final tradition in Tradition.values) {
@@ -203,7 +209,7 @@ final articlesPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   return map;
 });
 
-/// Teachers per tradition statistics
+/** Teachers per tradition statistics */
 final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
   final map = <Tradition, int>{};
   for (final tradition in Tradition.values) {
@@ -216,14 +222,16 @@ final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
 // Cross-Reference Providers
 // ============================================================
 
-/// Returns [Article]s linked to a [TeacherProfile] via [TeacherProfile.articleIds].
+/** Returns [Article]s linked to a [TeacherProfile] via [TeacherProfile.articleIds]. */
 final articlesForTeacherProvider = Provider.family<List<Article>, TeacherProfile>((ref, teacher) {
   return articles.where((a) => teacher.articleIds.contains(a.id)).toList();
 });
 
-/// Returns the [TeacherProfile] for an [Article] by matching [Article.teacher] name.
-///
-/// Returns `null` if the article has no teacher attribution or the teacher is not found.
+/**
+ * Returns the [TeacherProfile] for an [Article] by matching [Article.teacher] name.
+ *
+ * Returns `null` if the article has no teacher attribution or the teacher is not found.
+ */
 final teacherForArticleProvider = Provider.family<TeacherProfile?, Article>((ref, article) {
   if (article.teacher == null) return null;
 

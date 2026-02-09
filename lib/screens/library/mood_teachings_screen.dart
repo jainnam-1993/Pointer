@@ -23,10 +23,10 @@ import 'library_widgets.dart';
  * Quotes sorted with unviewed first. Respects [ContentFilter] from parent.
  */
 class MoodTeachingsScreen extends ConsumerStatefulWidget {
-  /// The mood tag string (from [MoodTags] constants) to filter by.
+  /** The mood tag string (from [MoodTags] constants) to filter by. */
   final String mood;
 
-  /// Content type filter propagated from the parent library screen.
+  /** Content type filter propagated from the parent library screen. */
   final ContentFilter filter;
 
   const MoodTeachingsScreen({super.key, required this.mood, this.filter = ContentFilter.all});

@@ -16,10 +16,10 @@ import '../theme/app_theme.dart';
  * Renders nothing when [videoUrl] is null.
  */
 class VideoPlayerWidget extends ConsumerStatefulWidget {
-  /// Identifier of the pointing this video belongs to.
+  /** Identifier of the pointing this video belongs to. */
   final String pointingId;
 
-  /// Network URL of the video file; widget renders empty when null.
+  /** Network URL of the video file; widget renders empty when null. */
   final String? videoUrl;
 
   const VideoPlayerWidget({super.key, required this.pointingId, required this.videoUrl});
@@ -111,10 +111,12 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
   }
 }
 
-/// Full-screen video player page.
-///
-/// Receives [Player] and [VideoController] from the parent widget — does NOT
-/// own or dispose them. Stream subscriptions are cancelled in [dispose].
+/**
+ * Full-screen video player page.
+ *
+ * Receives [Player] and [VideoController] from the parent widget — does NOT
+ * own or dispose them. Stream subscriptions are cancelled in [dispose].
+ */
 class _FullScreenVideoPlayer extends StatefulWidget {
   final Player player;
   final VideoController videoController;

@@ -10,24 +10,24 @@ import '../../services/share_service.dart';
  * [ShareCard] when rendering the tradition template variant.
  */
 class TraditionColors {
-  /// Gradient start color for the card background.
+  /** Gradient start color for the card background. */
   final Color background;
 
-  /// Gradient end color for the card background.
+  /** Gradient end color for the card background. */
   final Color backgroundEnd;
 
-  /// Primary text color for pointing content.
+  /** Primary text color for pointing content. */
   final Color text;
 
-  /// Accent color for teacher attribution and watermark.
+  /** Accent color for teacher attribution and watermark. */
   final Color accent;
 
-  /// Color for the tradition badge border and text.
+  /** Color for the tradition badge border and text. */
   final Color badge;
 
   const TraditionColors({required this.background, required this.backgroundEnd, required this.text, required this.accent, required this.badge});
 
-  /// Get colors for a tradition
+  /** Get colors for a tradition */
   static TraditionColors forTradition(Tradition tradition) {
     switch (tradition) {
       case Tradition.advaita:
@@ -89,13 +89,13 @@ class TraditionColors {
  * - [ShareService] for the capture and share workflow
  */
 class ShareCard extends StatelessWidget {
-  /// The pointing content to render on the card.
+  /** The pointing content to render on the card. */
   final Pointing pointing;
 
-  /// Visual template variant (minimal, gradient, or tradition).
+  /** Visual template variant (minimal, gradient, or tradition). */
   final ShareTemplate template;
 
-  /// Output dimensions (square for posts, tall for stories).
+  /** Output dimensions (square for posts, tall for stories). */
   final ShareFormat format;
 
   const ShareCard({super.key, required this.pointing, required this.template, required this.format});
@@ -117,7 +117,7 @@ class ShareCard extends StatelessWidget {
   }
 }
 
-/// Minimal template - clean, text-focused
+/** Minimal template - clean, text-focused */
 class _MinimalTemplate extends StatelessWidget {
   final Pointing pointing;
   final ShareFormat format;
@@ -179,7 +179,7 @@ class _MinimalTemplate extends StatelessWidget {
   }
 }
 
-/// Gradient template - app gradient background
+/** Gradient template - app gradient background */
 class _GradientTemplate extends StatelessWidget {
   final Pointing pointing;
   final ShareFormat format;
@@ -254,7 +254,7 @@ class _GradientTemplate extends StatelessWidget {
   }
 }
 
-/// Tradition template - colors matching the tradition
+/** Tradition template - colors matching the tradition */
 class _TraditionTemplate extends StatelessWidget {
   final Pointing pointing;
   final ShareFormat format;
@@ -322,7 +322,7 @@ class _TraditionTemplate extends StatelessWidget {
   }
 }
 
-/// Tradition badge for share cards
+/** Tradition badge for share cards */
 class _TraditionBadge extends StatelessWidget {
   final Tradition tradition;
   final Color? color;
@@ -355,7 +355,7 @@ class _TraditionBadge extends StatelessWidget {
   }
 }
 
-/// App watermark for share cards
+/** App watermark for share cards */
 class _Watermark extends StatelessWidget {
   final Color color;
 

@@ -11,39 +11,39 @@ library;
 
 import 'dart:math';
 
-/// Spiritual lineage/tradition a pointing originates from.
+/** Spiritual lineage/tradition a pointing originates from. */
 enum Tradition {
-  /// Advaita Vedanta — the path of non-duality.
+  /** Advaita Vedanta — the path of non-duality. */
   advaita,
 
-  /// Zen Buddhism — direct pointing, no concepts.
+  /** Zen Buddhism — direct pointing, no concepts. */
   zen,
 
-  /// Direct Path — contemporary clarity (Spira, Lucille, Klein).
+  /** Direct Path — contemporary clarity (Spira, Lucille, Klein). */
   direct,
 
-  /// Contemporary — modern teachers, ancient truth.
+  /** Contemporary — modern teachers, ancient truth. */
   contemporary,
 
-  /// Original — writings created specifically for this app.
+  /** Original — writings created specifically for this app. */
   original,
 }
 
-/// Time-of-day or situational context for delivering a pointing.
+/** Time-of-day or situational context for delivering a pointing. */
 enum PointingContext {
-  /// Best suited for morning contemplation.
+  /** Best suited for morning contemplation. */
   morning,
 
-  /// Best suited for midday pause.
+  /** Best suited for midday pause. */
   midday,
 
-  /// Best suited for evening reflection.
+  /** Best suited for evening reflection. */
   evening,
 
-  /// Helpful during stressful moments.
+  /** Helpful during stressful moments. */
   stress,
 
-  /// Appropriate at any time.
+  /** Appropriate at any time. */
   general,
 }
 
@@ -58,34 +58,34 @@ enum PointingContext {
  * - [Article] for longer-form library content
  */
 class Pointing {
-  /// Unique identifier (e.g., `'adv-1'`, `'zen-3'`).
+  /** Unique identifier (e.g., `'adv-1'`, `'zen-3'`). */
   final String id;
 
-  /// The pointing text shown to the user.
+  /** The pointing text shown to the user. */
   final String content;
 
-  /// Optional practice instruction (e.g., "Just look. Don't answer.").
+  /** Optional practice instruction (e.g., "Just look. Don't answer."). */
   final String? instruction;
 
-  /// Source spiritual tradition. See [Tradition].
+  /** Source spiritual tradition. See [Tradition]. */
   final Tradition tradition;
 
-  /// Situational contexts where this pointing is relevant.
+  /** Situational contexts where this pointing is relevant. */
   final List<PointingContext> contexts;
 
-  /// Teacher or text attribution, if known.
+  /** Teacher or text attribution, if known. */
   final String? teacher;
 
-  /// Source text or talk (e.g., `'I Am That'`).
+  /** Source text or talk (e.g., `'I Am That'`). */
   final String? source;
 
-  /// Optional explanatory commentary.
+  /** Optional explanatory commentary. */
   final String? commentary;
 
-  /// Asset path for a pre-recorded audio reading.
+  /** Asset path for a pre-recorded audio reading. */
   final String? audioUrl;
 
-  /// Asset path for an associated video.
+  /** Asset path for an associated video. */
   final String? videoUrl;
 
   const Pointing({
@@ -102,21 +102,21 @@ class Pointing {
   });
 }
 
-/// Display metadata for a [Tradition] — name, icon glyph, and description.
+/** Display metadata for a [Tradition] — name, icon glyph, and description. */
 class TraditionInfo {
-  /// Human-readable tradition name (e.g., `'Advaita Vedanta'`).
+  /** Human-readable tradition name (e.g., `'Advaita Vedanta'`). */
   final String name;
 
-  /// Single-character icon glyph (e.g., `'ॐ'`, `'◯'`).
+  /** Single-character icon glyph (e.g., `'ॐ'`, `'◯'`). */
   final String icon;
 
-  /// Short description of the tradition's essence.
+  /** Short description of the tradition's essence. */
   final String description;
 
   const TraditionInfo({required this.name, required this.icon, required this.description});
 }
 
-/// Map of [Tradition] to its [TraditionInfo] display metadata.
+/** Map of [Tradition] to its [TraditionInfo] display metadata. */
 const traditions = <Tradition, TraditionInfo>{
   Tradition.advaita: TraditionInfo(name: 'Advaita Vedanta', icon: 'ॐ', description: 'The path of non-duality. You are already what you seek.'),
   Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.'),
@@ -19183,9 +19183,11 @@ const pointings = <Pointing>[
 
 final _random = Random();
 
-/// Returns a random [Pointing], optionally filtered by [tradition] and/or [context].
-///
-/// Falls back to the first pointing if no matches are found.
+/**
+ * Returns a random [Pointing], optionally filtered by [tradition] and/or [context].
+ *
+ * Falls back to the first pointing if no matches are found.
+ */
 Pointing getRandomPointing({Tradition? tradition, PointingContext? context}) {
   var filtered = pointings.toList();
 
@@ -19200,17 +19202,17 @@ Pointing getRandomPointing({Tradition? tradition, PointingContext? context}) {
   return filtered[_random.nextInt(filtered.length)];
 }
 
-/// Returns all pointings belonging to the given [tradition].
+/** Returns all pointings belonging to the given [tradition]. */
 List<Pointing> getPointingsByTradition(Tradition tradition) {
   return pointings.where((p) => p.tradition == tradition).toList();
 }
 
-/// Returns all pointings tagged with the given situational [context].
+/** Returns all pointings tagged with the given situational [context]. */
 List<Pointing> getPointingsByContext(PointingContext context) {
   return pointings.where((p) => p.contexts.contains(context)).toList();
 }
 
-/// Get a pointing by its ID, or null if not found
+/** Get a pointing by its ID, or null if not found */
 Pointing? getPointingById(String id) {
   try {
     return pointings.firstWhere((p) => p.id == id);

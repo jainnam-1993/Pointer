@@ -19,10 +19,10 @@ import 'library_widgets.dart';
  * list of [ArticleListItem] widgets.
  */
 class CategoryArticlesScreen extends StatelessWidget {
-  /// The article category to filter by.
+  /** The article category to filter by. */
   final ArticleCategory category;
 
-  /// Display metadata (name, icon, description) for this category.
+  /** Display metadata (name, icon, description) for this category. */
   final CategoryInfo info;
 
   const CategoryArticlesScreen({super.key, required this.category, required this.info});

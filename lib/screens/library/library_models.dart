@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
 
-/// Extension to sort teachings with unviewed first (viewed items sink down)
+/** Extension to sort teachings with unviewed first (viewed items sink down) */
 extension TeachingListSorting on List<Teaching> {
-  /// Returns a new list sorted with unviewed teachings first, then viewed
+  /** Returns a new list sorted with unviewed teachings first, then viewed */
   List<Teaching> sortedByViewedStatus(Set<String> viewedIds) {
     final copy = List<Teaching>.from(this);
     copy.sort((a, b) {
@@ -27,7 +27,7 @@ extension TeachingListSorting on List<Teaching> {
   }
 }
 
-/// Category metadata for display
+/** Category metadata for display */
 class CategoryInfo {
   final String name;
   final String icon;
@@ -36,7 +36,7 @@ class CategoryInfo {
   const CategoryInfo({required this.name, required this.icon, required this.description});
 }
 
-/// Display metadata for each [ArticleCategory], keyed by category enum value.
+/** Display metadata for each [ArticleCategory], keyed by category enum value. */
 const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ArticleCategory.natureOfAwareness: CategoryInfo(name: 'Nature of Awareness', icon: '◯', description: 'Understanding consciousness itself'),
   ArticleCategory.selfInquiry: CategoryInfo(name: 'Self-Inquiry', icon: '?', description: 'The investigation into "Who am I?"'),
@@ -45,12 +45,14 @@ const categoryInfoMap = <ArticleCategory, CategoryInfo>{
   ArticleCategory.modernPointers: CategoryInfo(name: 'Modern Pointers', icon: '✦', description: 'Contemporary teachers, fresh words'),
 };
 
-/// Browse mode for library category navigation.
-///
-/// Each mode presents a different organizational axis for content discovery.
+/**
+ * Browse mode for library category navigation.
+ *
+ * Each mode presents a different organizational axis for content discovery.
+ */
 enum LibraryBrowseMode { topics, teachers, lineages, moods, saved }
 
-/// Provides display [label] and [icon] for each [LibraryBrowseMode] value.
+/** Provides display [label] and [icon] for each [LibraryBrowseMode] value. */
 extension LibraryBrowseModeExt on LibraryBrowseMode {
   String get label {
     switch (this) {
@@ -83,9 +85,11 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
   }
 }
 
-/// Filter mode for content display in the library and detail screens.
-///
-/// - [all] shows both articles and quotes
-/// - [articles] shows only long-form articles
-/// - [quotes] shows only short teachings/quotes
+/**
+ * Filter mode for content display in the library and detail screens.
+ *
+ * - [all] shows both articles and quotes
+ * - [articles] shows only long-form articles
+ * - [quotes] shows only short teachings/quotes
+ */
 enum ContentFilter { all, articles, quotes }

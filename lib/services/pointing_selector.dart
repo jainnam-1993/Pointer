@@ -9,13 +9,15 @@ library;
 import 'dart:math';
 import '../data/pointings.dart';
 
-/// Hour boundaries for time-of-day context detection.
-///
-/// Each constant represents the starting hour (inclusive) for that period:
-/// - Morning: 5am - 11am (awakening, presence themes)
-/// - Midday: 11am - 5pm (action, engagement themes)
-/// - Evening: 5pm - 10pm (reflection, release themes)
-/// - Night: 10pm - 5am (rest, surrender themes)
+/**
+ * Hour boundaries for time-of-day context detection.
+ *
+ * Each constant represents the starting hour (inclusive) for that period:
+ * - Morning: 5am - 11am (awakening, presence themes)
+ * - Midday: 11am - 5pm (action, engagement themes)
+ * - Evening: 5pm - 10pm (reflection, release themes)
+ * - Night: 10pm - 5am (rest, surrender themes)
+ */
 class TimeContextBoundaries {
   static const int morningStart = 5; // 5:00 AM
   static const int middayStart = 11; // 11:00 AM
@@ -33,29 +35,31 @@ class TimeContextBoundaries {
  * (e.g. [night] falls back to [PointingContext.evening] themes).
  */
 enum TimeContext {
-  /// 5am - 11am: awakening, presence themes.
+  /** 5am - 11am: awakening, presence themes. */
   morning,
 
-  /// 11am - 5pm: action, engagement themes.
+  /** 11am - 5pm: action, engagement themes. */
   midday,
 
-  /// 5pm - 10pm: reflection, release themes.
+  /** 5pm - 10pm: reflection, release themes. */
   evening,
 
-  /// 10pm - 5am: rest, surrender themes (maps to evening [PointingContext]).
+  /** 10pm - 5am: rest, surrender themes (maps to evening [PointingContext]). */
   night,
 
-  /// Override mode: all [PointingContext] values are valid candidates.
+  /** Override mode: all [PointingContext] values are valid candidates. */
   general,
 }
 
-/// Returns the TimeContext for the current time.
+/** Returns the TimeContext for the current time. */
 TimeContext getCurrentTimeContext() {
   return getTimeContextForHour(DateTime.now().hour);
 }
 
-/// Returns the TimeContext for a given hour (0-23).
-/// Exposed for testing.
+/**
+ * Returns the TimeContext for a given hour (0-23).
+ * Exposed for testing.
+ */
 TimeContext getTimeContextForHour(int hour) {
   if (hour >= TimeContextBoundaries.morningStart && hour < TimeContextBoundaries.middayStart) {
     return TimeContext.morning;
@@ -69,8 +73,10 @@ TimeContext getTimeContextForHour(int hour) {
   return TimeContext.night; // nightStart onwards until morningStart
 }
 
-/// Maps a TimeContext to the corresponding PointingContext values.
-/// Returns a list since night falls back to evening themes.
+/**
+ * Maps a TimeContext to the corresponding PointingContext values.
+ * Returns a list since night falls back to evening themes.
+ */
 List<PointingContext> timeContextToPointingContexts(TimeContext timeContext) {
   switch (timeContext) {
     case TimeContext.morning:
@@ -88,22 +94,24 @@ List<PointingContext> timeContextToPointingContexts(TimeContext timeContext) {
   }
 }
 
-/// Service for selecting pointings with time-of-day awareness.
+/** Service for selecting pointings with time-of-day awareness. */
 class PointingSelector {
   final Random _random;
 
   PointingSelector({Random? random}) : _random = random ?? Random();
 
-  /// Selects a pointing with optional time context awareness.
-  ///
-  /// Parameters:
-  /// - [all]: List of all available pointings
-  /// - [viewedToday]: Set of pointing IDs already viewed today
-  /// - [respectTimeContext]: If true (default), prefers contextually appropriate pointings
-  ///
-  /// Returns a pointing that:
-  /// 1. Has not been viewed today (if possible)
-  /// 2. Matches the current time context (if respectTimeContext is true)
+  /**
+   * Selects a pointing with optional time context awareness.
+   *
+   * Parameters:
+   * - [all]: List of all available pointings
+   * - [viewedToday]: Set of pointing IDs already viewed today
+   * - [respectTimeContext]: If true (default), prefers contextually appropriate pointings
+   *
+   * Returns a pointing that:
+   * 1. Has not been viewed today (if possible)
+   * 2. Matches the current time context (if respectTimeContext is true)
+   */
   Pointing selectPointing({required List<Pointing> all, required Set<String> viewedToday, bool respectTimeContext = true}) {
     if (respectTimeContext) {
       return selectPointingForTime(all: all, viewedToday: viewedToday, timeContext: getCurrentTimeContext());
@@ -113,14 +121,16 @@ class PointingSelector {
     return _selectFromCandidates(all, viewedToday);
   }
 
-  /// Selects a pointing for a specific time context.
-  ///
-  /// Selection algorithm:
-  /// 1. Filter out already viewed pointings
-  /// 2. Filter to matching time contexts
-  /// 3. 30% chance to prefer time-specific pointings over general
-  /// 4. If no matches, fall back to any unviewed pointing
-  /// 5. If all viewed, reset and select from all
+  /**
+   * Selects a pointing for a specific time context.
+   *
+   * Selection algorithm:
+   * 1. Filter out already viewed pointings
+   * 2. Filter to matching time contexts
+   * 3. 30% chance to prefer time-specific pointings over general
+   * 4. If no matches, fall back to any unviewed pointing
+   * 5. If all viewed, reset and select from all
+   */
   Pointing selectPointingForTime({required List<Pointing> all, required Set<String> viewedToday, required TimeContext timeContext}) {
     // Get valid PointingContext values for this TimeContext
     final validContexts = timeContextToPointingContexts(timeContext);
@@ -159,7 +169,7 @@ class PointingSelector {
     return contextual[_random.nextInt(contextual.length)];
   }
 
-  /// Gets the primary PointingContext for a TimeContext.
+  /** Gets the primary PointingContext for a TimeContext. */
   PointingContext _getPrimaryPointingContext(TimeContext timeContext) {
     switch (timeContext) {
       case TimeContext.morning:
@@ -174,7 +184,7 @@ class PointingSelector {
     }
   }
 
-  /// Simple selection from candidates, excluding viewed pointings.
+  /** Simple selection from candidates, excluding viewed pointings. */
   Pointing _selectFromCandidates(List<Pointing> all, Set<String> viewedToday) {
     var candidates = all.where((p) => !viewedToday.contains(p.id)).toList();
 

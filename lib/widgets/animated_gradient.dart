@@ -13,29 +13,29 @@ import '../theme/app_theme.dart';
  * in [AnimatedGradient], creating a subtle ambient awareness of real-world time.
  */
 enum TimeOfDayPeriod {
-  /// 5-7 AM: soft warm tones for early morning.
+  /** 5-7 AM: soft warm tones for early morning. */
   dawn,
 
-  /// 7 AM-12 PM: bright, energizing tones.
+  /** 7 AM-12 PM: bright, energizing tones. */
   morning,
 
-  /// 12-2 PM: warm, golden mid-day tones.
+  /** 12-2 PM: warm, golden mid-day tones. */
   midday,
 
-  /// 2-5 PM: calming transitional tones.
+  /** 2-5 PM: calming transitional tones. */
   afternoon,
 
-  /// 5-8 PM: warm oranges and purples for sunset.
+  /** 5-8 PM: warm oranges and purples for sunset. */
   dusk,
 
-  /// 8-10 PM: deep purples and blues for the evening.
+  /** 8-10 PM: deep purples and blues for the evening. */
   evening,
 
-  /// 10 PM-5 AM: deep, restful near-black tones.
+  /** 10 PM-5 AM: deep, restful near-black tones. */
   night,
 }
 
-/// Get current time period for gradient selection
+/** Get current time period for gradient selection */
 TimeOfDayPeriod _getCurrentTimePeriod() {
   final hour = DateTime.now().hour;
   if (hour >= 5 && hour < 7) return TimeOfDayPeriod.dawn;
@@ -47,7 +47,7 @@ TimeOfDayPeriod _getCurrentTimePeriod() {
   return TimeOfDayPeriod.night;
 }
 
-/// Get gradient colors for time period (dark mode)
+/** Get gradient colors for time period (dark mode) */
 LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
   switch (period) {
     case TimeOfDayPeriod.dawn:
@@ -101,10 +101,10 @@ LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
   }
 }
 
-/// Device performance tier for adaptive animation complexity
+/** Device performance tier for adaptive animation complexity */
 enum _DeviceTier { high, mid, low }
 
-/// Classify device by screen metrics for adaptive animation tuning
+/** Classify device by screen metrics for adaptive animation tuning */
 _DeviceTier _getDeviceTier(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final dpr = MediaQuery.of(context).devicePixelRatio;
@@ -113,23 +113,25 @@ _DeviceTier _getDeviceTier(BuildContext context) {
   return _DeviceTier.mid;
 }
 
-/// Animated gradient background using flutter_animate
-///
-/// Features:
-/// - 24h gradient cycle - colors shift based on time of day with auto-refresh
-/// - Smooth 5-minute polling to detect time period changes
-/// - Respects accessibility settings (reduce motion)
-/// - OLED mode support (pure black)
-///
-/// Excluded from accessibility tree as it's purely decorative.
-/// Set [disableAnimations] to true in tests to prevent timer issues.
+/**
+ * Animated gradient background using flutter_animate
+ *
+ * Features:
+ * - 24h gradient cycle - colors shift based on time of day with auto-refresh
+ * - Smooth 5-minute polling to detect time period changes
+ * - Respects accessibility settings (reduce motion)
+ * - OLED mode support (pure black)
+ *
+ * Excluded from accessibility tree as it's purely decorative.
+ * Set [disableAnimations] to true in tests to prevent timer issues.
+ */
 class AnimatedGradient extends ConsumerStatefulWidget {
   const AnimatedGradient({super.key});
 
-  /// Disable animations globally (for testing)
+  /** Disable animations globally (for testing) */
   static bool disableAnimations = false;
 
-  /// Check if running in test environment
+  /** Check if running in test environment */
   static bool isTestEnvironment() {
     // AutomatedTestWidgetsFlutterBinding sets this
     return WidgetsBinding.instance.runtimeType.toString().contains('Test');
@@ -226,14 +228,16 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   }
 }
 
-/// Floating particles effect
-///
-/// Respects accessibility settings:
-/// - System reduce motion (MediaQuery.disableAnimations)
-/// - App-level override (reduceMotionOverrideProvider)
-/// - [AnimatedGradient.disableAnimations] for test compatibility
-///
-/// Excluded from accessibility tree as it's purely decorative.
+/**
+ * Floating particles effect
+ *
+ * Respects accessibility settings:
+ * - System reduce motion (MediaQuery.disableAnimations)
+ * - App-level override (reduceMotionOverrideProvider)
+ * - [AnimatedGradient.disableAnimations] for test compatibility
+ *
+ * Excluded from accessibility tree as it's purely decorative.
+ */
 class FloatingParticles extends ConsumerWidget {
   const FloatingParticles({super.key});
 

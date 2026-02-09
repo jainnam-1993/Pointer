@@ -44,24 +44,26 @@ import 'screens/lineages_screen.dart';
 import 'screens/splash_screen.dart';
 import 'widgets/animated_transitions.dart';
 
-/// Navigator key for the root [GoRouter] navigator (routes outside the shell).
+/** Navigator key for the root [GoRouter] navigator (routes outside the shell). */
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Navigator key for the Home tab branch inside [StatefulShellRoute].
+/** Navigator key for the Home tab branch inside [StatefulShellRoute]. */
 final _homeNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Navigator key for the Inquiry tab branch inside [StatefulShellRoute].
+/** Navigator key for the Inquiry tab branch inside [StatefulShellRoute]. */
 final _inquiryNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Navigator key for the Library tab branch inside [StatefulShellRoute].
+/** Navigator key for the Library tab branch inside [StatefulShellRoute]. */
 final _libraryNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Navigator key for the Settings tab branch inside [StatefulShellRoute].
+/** Navigator key for the Settings tab branch inside [StatefulShellRoute]. */
 final _settingsNavigatorKey = GlobalKey<NavigatorState>();
 
-/// In-memory flag ensuring the [SplashScreen] is shown only once per cold start.
-///
-/// Resets naturally when the OS kills the process.
+/**
+ * In-memory flag ensuring the [SplashScreen] is shown only once per cold start.
+ *
+ * Resets naturally when the OS kills the process.
+ */
 bool _hasShownSplash = false;
 
 /**
@@ -90,14 +92,16 @@ void setRouterSharedPreferences(SharedPreferences prefs) {
  */
 GoRouter? _appRouter;
 
-/// Returns the singleton [GoRouter], creating it on first access via [_createRouter].
+/** Returns the singleton [GoRouter], creating it on first access via [_createRouter]. */
 GoRouter _getOrCreateRouter() {
   return _appRouter ??= _createRouter();
 }
 
-/// Checks onboarding completion status directly from [SharedPreferences].
-///
-/// Returns `false` if [_sharedPrefs] has not been set or the key is absent.
+/**
+ * Checks onboarding completion status directly from [SharedPreferences].
+ *
+ * Returns `false` if [_sharedPrefs] has not been set or the key is absent.
+ */
 bool _isOnboardingCompleted() {
   return _sharedPrefs?.getBool('pointer_onboarding_completed') ?? false;
 }

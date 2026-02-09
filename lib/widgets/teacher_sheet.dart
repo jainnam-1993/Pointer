@@ -33,7 +33,7 @@ void showTeacherSheet(BuildContext context, Teacher teacher) {
  * Typically shown via [showTeacherSheet] helper function.
  */
 class TeacherSheet extends StatelessWidget {
-  /// The teacher whose information is displayed in this sheet.
+  /** The teacher whose information is displayed in this sheet. */
   final Teacher teacher;
 
   const TeacherSheet({super.key, required this.teacher});
