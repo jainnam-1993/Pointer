@@ -11,10 +11,10 @@ import '../../theme/app_theme.dart';
  * Displayed above the notification settings card when permission is not granted.
  */
 class NotificationPermissionBanner extends StatelessWidget {
-  /** Callback to open the system notification settings. */
-  final VoidCallback onOpenSettings;
+  /** Callback to request notification permission (shows system prompt, falls back to settings). */
+  final VoidCallback onEnable;
 
-  const NotificationPermissionBanner({super.key, required this.onOpenSettings});
+  const NotificationPermissionBanner({super.key, required this.onEnable});
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +41,15 @@ class NotificationPermissionBanner extends StatelessWidget {
                   style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 const SizedBox(height: 2),
-                Text('Enable in system settings to receive daily pointings', style: TextStyle(color: colors.textSecondary, fontSize: 12)),
+                Text('Tap Enable to receive daily pointings', style: TextStyle(color: colors.textSecondary, fontSize: 12)),
               ],
             ),
           ),
           const SizedBox(width: 8),
           TextButton(
-            onPressed: onOpenSettings,
+            onPressed: onEnable,
             child: Text(
-              'Open Settings',
+              'Enable',
               style: TextStyle(color: colors.accent, fontWeight: FontWeight.w600, fontSize: 13),
             ),
           ),

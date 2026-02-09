@@ -174,6 +174,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     }
   }
 
+  /**
+   * Attempts to request notification permission via native system prompt.
+   *
+   * On iOS, the system dialog only appears if permission status is "not determined"
+   * (first time). If already denied, it returns false silently and we fall back
+   * to showing an in-app dialog directing the user to system settings.
+   */
+  Future<void> _requestNotificationPermission() async {
+    HapticFeedback.mediumImpact();
+
+    final notificationService = ref.read(notificationServiceProvider);
+    final granted = await notificationService.requestPermissions();
+
+    if (granted) {
+      setState(() {
+        _permissionGranted = true;
+        _notificationsEnabled = true;
+      });
+      await notificationService.setNotificationsEnabled(true);
+    } else {
+      _showPermissionDeniedDialog();
+    }
+  }
+
   /** Shows a dialog prompting the user to enable notifications in system settings. */
   Future<void> _showPermissionDeniedDialog() async {
     if (!mounted) return;
@@ -181,16 +205,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     showDialog(
       context: context,
       builder: (context) => GlassDialog(
-        title: 'Permission Required',
+        title: 'Notifications Blocked',
         content: Text(
-          'Notification permission is required to receive daily pointings. '
-          'Tap Open Settings, then enable Notifications.',
+          'Notification permission was previously denied. '
+          'Tap Open Settings to go to the app notification settings and enable notifications.',
           style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel', style: TextStyle(color: context.colors.textSecondary)),
+            child: Text('Not Now', style: TextStyle(color: context.colors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -269,7 +293,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                 SettingsSectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
                 if (!_permissionGranted)
-                  NotificationPermissionBanner(onOpenSettings: () => _openAppNotificationSettings()),
+                  NotificationPermissionBanner(onEnable: _requestNotificationPermission),
                 GlassCard(
                   padding: EdgeInsets.zero,
                   child: Column(
@@ -285,13 +309,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             HapticFeedback.mediumImpact();
 
                             if (value && !_permissionGranted) {
-                              final notificationService = ref.read(notificationServiceProvider);
-                              final granted = await notificationService.requestPermissions();
-                              if (!granted) {
-                                _showPermissionDeniedDialog();
-                                return;
-                              }
-                              setState(() => _permissionGranted = true);
+                              await _requestNotificationPermission();
+                              return;
                             }
 
                             setState(() => _notificationsEnabled = value);

@@ -13,7 +13,7 @@ void main() {
           theme: AppTheme.dark,
           home: Scaffold(
             body: _TestPermissionBanner(
-              onOpenSettings: () {}, // Verify widget accepts callback
+              onEnable: () {}, // Verify widget accepts callback
             ),
           ),
         ),
@@ -21,32 +21,32 @@ void main() {
 
       // Verify banner content
       expect(find.text('Notifications Disabled'), findsOneWidget);
-      expect(find.text('Enable in system settings to receive daily pointings'), findsOneWidget);
-      expect(find.text('Open Settings'), findsOneWidget);
+      expect(find.text('Tap Enable to receive daily pointings'), findsOneWidget);
+      expect(find.text('Enable'), findsOneWidget);
       expect(find.byIcon(Icons.notifications_off), findsOneWidget);
     });
 
-    testWidgets('calls onOpenSettings when button tapped', (tester) async {
-      bool settingsOpened = false;
+    testWidgets('calls onEnable when button tapped', (tester) async {
+      bool enableCalled = false;
 
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: Scaffold(body: _TestPermissionBanner(onOpenSettings: () => settingsOpened = true)),
+          home: Scaffold(body: _TestPermissionBanner(onEnable: () => enableCalled = true)),
         ),
       );
 
-      await tester.tap(find.text('Open Settings'));
+      await tester.tap(find.text('Enable'));
       await tester.pump();
 
-      expect(settingsOpened, isTrue);
+      expect(enableCalled, isTrue);
     });
 
     testWidgets('has correct styling and layout', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: Scaffold(body: _TestPermissionBanner(onOpenSettings: () {})),
+          home: Scaffold(body: _TestPermissionBanner(onEnable: () {})),
         ),
       );
 
@@ -64,9 +64,9 @@ void main() {
 
 // Test helper widget that mirrors the private banner implementation
 class _TestPermissionBanner extends StatelessWidget {
-  final VoidCallback onOpenSettings;
+  final VoidCallback onEnable;
 
-  const _TestPermissionBanner({required this.onOpenSettings});
+  const _TestPermissionBanner({required this.onEnable});
 
   @override
   Widget build(BuildContext context) {
@@ -88,12 +88,12 @@ class _TestPermissionBanner extends StatelessWidget {
               children: [
                 const Text('Notifications Disabled', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 const SizedBox(height: 2),
-                Text('Enable in system settings to receive daily pointings', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                Text('Tap Enable to receive daily pointings', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          TextButton(onPressed: onOpenSettings, child: const Text('Open Settings')),
+          TextButton(onPressed: onEnable, child: const Text('Enable')),
         ],
       ),
     );
