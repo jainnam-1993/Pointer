@@ -59,9 +59,6 @@ class Article {
   /// When the article was added to the library
   final DateTime? dateAdded;
 
-  /// Whether this is premium-only content
-  final bool isPremium;
-
   /// Topic tags for filtering (uses TopicTags constants)
   final Set<String> topicTags;
 
@@ -79,7 +76,6 @@ class Article {
     required this.categories,
     required this.readingTimeMinutes,
     this.dateAdded,
-    this.isPremium = false,
     this.topicTags = const {},
     this.moodTags = const {},
   });

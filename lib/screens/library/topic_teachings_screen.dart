@@ -115,7 +115,6 @@ class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: ArticleListItem(
                               article: article,
-                              isLocked: false,
                               onTap: () {
                                 HapticFeedback.lightImpact();
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));

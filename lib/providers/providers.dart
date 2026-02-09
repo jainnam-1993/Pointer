@@ -9,7 +9,7 @@
  * Or import specific domains for smaller import footprint:
  * - `core_providers.dart`: [SharedPreferences], [StorageService], [NotificationService]
  * - `settings_providers.dart`: Zen, OLED, typography, accessibility, theme, auto-advance
- * - `subscription_providers.dart`: Premium tier, usage tracking, freemium gating
+ * - `subscription_providers.dart`: Daily usage tracking (analytics)
  * - `content_providers.dart`: [Pointing] navigation, favorites, teaching filters
  * - `donation_providers.dart`: Tip jar IAP via [DonationNotifier]
  * - `tts_providers.dart`: AWS Polly TTS service and playback state (disabled)

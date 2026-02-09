@@ -2,7 +2,7 @@
  * Library providers - Articles, teacher profiles, search, and filtering.
  *
  * Provides the data layer for the Library screen with ~15 providers covering:
- * - [Article] access: all, by tradition/category/teacher/ID, featured, premium
+ * - [Article] access: all, by tradition/category/teacher/ID, featured
  * - [TeacherProfile] access: all, by name/tradition, with articles/pointings
  * - Full-text search across articles and teachers via [librarySearchQueryProvider]
  * - Tradition and category filter state for the filtered article list
@@ -52,14 +52,9 @@ final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
   }
 });
 
-/// Provides featured articles (non-premium, top picks)
+/// Provides featured articles (top picks)
 final featuredArticlesProvider = Provider<List<Article>>((ref) {
-  return articles.where((a) => !a.isPremium).take(5).toList();
-});
-
-/// Provides premium-only articles
-final premiumArticlesProvider = Provider<List<Article>>((ref) {
-  return articles.where((a) => a.isPremium).toList();
+  return articles.take(5).toList();
 });
 
 /// Provides article count by tradition

@@ -61,10 +61,7 @@ enum NotificationPreset {
   eveningFocus,
 
   /// 8am-8pm, every 6 hours — least intrusive schedule.
-  minimal,
-
-  /// Every 1 minute, 24/7 — debug-only preset for testing notifications.
-  testEveryMinute;
+  minimal;
 
   String get label {
     switch (this) {
@@ -76,8 +73,6 @@ enum NotificationPreset {
         return 'Evening';
       case NotificationPreset.minimal:
         return 'Minimal';
-      case NotificationPreset.testEveryMinute:
-        return '🧪 Test';
     }
   }
 
@@ -91,8 +86,6 @@ enum NotificationPreset {
         return '5pm - 10pm, every 2 hours';
       case NotificationPreset.minimal:
         return '8am - 8pm, every 6 hours';
-      case NotificationPreset.testEveryMinute:
-        return 'Every 1 minute (testing only)';
     }
   }
 
@@ -106,8 +99,6 @@ enum NotificationPreset {
         return const NotificationSchedule(startHour: 17, endHour: 22, frequencyMinutes: 120);
       case NotificationPreset.minimal:
         return const NotificationSchedule(startHour: 8, endHour: 20, frequencyMinutes: 360);
-      case NotificationPreset.testEveryMinute:
-        return const NotificationSchedule(startHour: 0, endHour: 23, endMinute: 59, frequencyMinutes: 1, quietStartHour: 24, quietEndHour: 24);
     }
   }
 }

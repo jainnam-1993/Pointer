@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
  * Immutable snapshot of the user's daily pointing view count.
  *
  * Resets automatically at midnight (based on [lastResetDate]).
- * Used by the freemium model to gate content after [freeUserLimit] views.
+ * Used for analytics tracking of daily engagement.
  */
 class DailyUsage {
   /// Number of pointings viewed today.
@@ -13,16 +13,7 @@ class DailyUsage {
   /// ISO date string (`YYYY-MM-DD`) of the last reset, used to detect day rollover.
   final String lastResetDate;
 
-  /// Maximum free views per day before the paywall triggers.
-  static const int freeUserLimit = 2;
-
   const DailyUsage({this.viewCount = 0, required this.lastResetDate});
-
-  /// Whether the user has reached the daily free view limit.
-  bool get limitReached => viewCount >= freeUserLimit;
-
-  /// Number of free views remaining today (may be negative if already exceeded).
-  int get remaining => freeUserLimit - viewCount;
 
   DailyUsage copyWith({int? viewCount, String? lastResetDate}) {
     return DailyUsage(viewCount: viewCount ?? this.viewCount, lastResetDate: lastResetDate ?? this.lastResetDate);
@@ -45,11 +36,10 @@ class DailyUsage {
 }
 
 /**
- * Service for tracking daily pointing view counts under the freemium model.
+ * Service for tracking daily pointing view counts for analytics.
  *
  * Persists [DailyUsage] to [SharedPreferences] and auto-resets when a new
- * calendar day is detected. Used by subscription providers to decide
- * whether to show the paywall.
+ * calendar day is detected.
  */
 class UsageTrackingService {
   final SharedPreferences _prefs;
@@ -89,7 +79,7 @@ class UsageTrackingService {
     return updated;
   }
 
-  /// Reset usage counters to zero. Used for testing or after premium restore.
+  /// Reset usage counters to zero. Used for testing.
   Future<void> resetUsage() async {
     await _saveUsage(DailyUsage.initial());
   }

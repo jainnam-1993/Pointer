@@ -18,10 +18,7 @@ import '../../widgets/glass_card.dart';
  * (30m to 12h). Changes are saved immediately via [NotificationService.saveSchedule].
  */
 class NotificationTimesSheet extends ConsumerStatefulWidget {
-  /// Whether to show the test preset (visible only in developer mode).
-  final bool showTestPreset;
-
-  const NotificationTimesSheet({super.key, this.showTestPreset = false});
+  const NotificationTimesSheet({super.key});
 
   @override
   ConsumerState<NotificationTimesSheet> createState() => _NotificationTimesSheetState();
@@ -225,9 +222,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: NotificationPreset.values
-                            .where((preset) => widget.showTestPreset || preset != NotificationPreset.testEveryMinute)
-                            .map((preset) {
+                        children: NotificationPreset.values.map((preset) {
                               final isSelected = _matchesPreset(preset);
                               return ChoiceChip(
                                 label: Text(preset.label),

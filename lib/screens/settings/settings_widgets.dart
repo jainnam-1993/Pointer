@@ -30,7 +30,7 @@ class SettingsRow extends StatelessWidget {
   /// Optional secondary text below the title (e.g., current value or status).
   final String? subtitle;
 
-  /// Optional widget before the title (e.g., lock icon for premium features).
+  /// Optional widget before the title (e.g., icon).
   final Widget? leading;
 
   /// Optional widget after the title (e.g., switch, chevron, or value text).

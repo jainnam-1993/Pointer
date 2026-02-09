@@ -12,7 +12,6 @@ import '../widgets/glass_card.dart';
  * Data model for a guided self-inquiry session.
  *
  * Each session belongs to a [Tradition] and has a difficulty level.
- * Each session has a difficulty level and belongs to a [Tradition].
  */
 class InquirySession {
   /// Unique identifier for the session.
@@ -30,9 +29,6 @@ class InquirySession {
   /// Difficulty level: Beginner, Intermediate, or Advanced.
   final String level;
 
-  /// Whether this session requires premium access.
-  final bool isPremium;
-
   /// The spiritual tradition this inquiry belongs to.
   final Tradition tradition;
 
@@ -42,7 +38,6 @@ class InquirySession {
     required this.description,
     required this.duration,
     required this.level,
-    required this.isPremium,
     required this.tradition,
   });
 
@@ -71,7 +66,6 @@ const inquirySessions = [
     description: 'The fundamental inquiry',
     duration: '5 min',
     level: 'Beginner',
-    isPremium: false,
     tradition: Tradition.advaita,
   ),
   InquirySession(
@@ -80,7 +74,6 @@ const inquirySessions = [
     description: 'Turn attention to its source',
     duration: '7 min',
     level: 'Beginner',
-    isPremium: false,
     tradition: Tradition.direct,
   ),
   InquirySession(
@@ -89,7 +82,6 @@ const inquirySessions = [
     description: "Recognizing what doesn't change",
     duration: '10 min',
     level: 'Intermediate',
-    isPremium: true,
     tradition: Tradition.direct,
   ),
   InquirySession(
@@ -98,7 +90,6 @@ const inquirySessions = [
     description: 'What are thoughts made of?',
     duration: '8 min',
     level: 'Intermediate',
-    isPremium: true,
     tradition: Tradition.zen,
   ),
   InquirySession(
@@ -107,7 +98,6 @@ const inquirySessions = [
     description: 'Beyond the practice',
     duration: '12 min',
     level: 'Advanced',
-    isPremium: true,
     tradition: Tradition.contemporary,
   ),
 ];
@@ -116,8 +106,7 @@ const inquirySessions = [
  * Self-inquiry session selection screen.
  *
  * Displays an intro card explaining the practice followed by [_SessionCard] items
- * for each [InquirySession]. Premium sessions show a lock icon and navigate to the
- * paywall when tapped by free users. Uses [StaggeredFadeIn] for entry animations.
+ * for each [InquirySession]. Uses [StaggeredFadeIn] for entry animations.
  */
 class InquiryScreen extends StatelessWidget {
   const InquiryScreen({super.key});
@@ -180,7 +169,6 @@ class InquiryScreen extends StatelessWidget {
                       child: _SessionCard(
                         session: session,
                         index: index,
-                        isLocked: false,
                         onTap: () async {
                           HapticFeedback.mediumImpact();
                           if (context.mounted) {
@@ -200,7 +188,7 @@ class InquiryScreen extends StatelessWidget {
   }
 }
 
-/// Card displaying an [InquirySession] with tradition-colored circle, lock state, and premium badge.
+/// Card displaying an [InquirySession] with tradition-colored circle and session details.
 class _SessionCard extends StatelessWidget {
   /// The inquiry session to display.
   final InquirySession session;
@@ -208,13 +196,10 @@ class _SessionCard extends StatelessWidget {
   /// Zero-based index (shown as session number in the circle).
   final int index;
 
-  /// Whether this session is locked behind premium (shows lock icon and reduced opacity).
-  final bool isLocked;
-
-  /// Callback when the card is tapped (navigates to player or paywall).
+  /// Callback when the card is tapped (navigates to player).
   final VoidCallback onTap;
 
-  const _SessionCard({required this.session, required this.index, required this.isLocked, required this.onTap});
+  const _SessionCard({required this.session, required this.index, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -231,50 +216,40 @@ class _SessionCard extends StatelessWidget {
           '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
-        borderColor: isLocked ? context.colors.glassBorder.withValues(alpha: 0.5) : null,
         onTap: onTap,
-        child: Opacity(
-          opacity: isLocked ? 0.6 : 1,
-          child: Row(
-            children: [
-              // Number or lock with tradition-specific accent color
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
-                child: Center(
-                  child: isLocked
-                      ? Icon(Icons.lock_outline, size: 20, color: textColor.withValues(alpha: 0.5))
-                      : Text(
-                          '${index + 1}',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: traditionAccent),
-                        ),
+        child: Row(
+          children: [
+            // Number with tradition-specific accent color
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
+              child: Center(
+                child: Text(
+                  '${index + 1}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: traditionAccent),
                 ),
               ),
-              const SizedBox(width: 16),
+            ),
+            const SizedBox(width: 16),
 
-              // Text content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          session.title,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isLocked ? textColor.withValues(alpha: 0.5) : textColor),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(session.description, style: TextStyle(fontSize: 14, color: isLocked ? textColorMuted : textColorSecondary)),
-                    const SizedBox(height: 4),
-                    Text('${session.duration} • ${session.level}', style: TextStyle(fontSize: 12, color: textColorMuted)),
-                  ],
-                ),
+            // Text content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    session.title,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(session.description, style: TextStyle(fontSize: 14, color: textColorSecondary)),
+                  const SizedBox(height: 4),
+                  Text('${session.duration} • ${session.level}', style: TextStyle(fontSize: 12, color: textColorMuted)),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

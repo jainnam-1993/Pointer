@@ -26,12 +26,6 @@ class StorageKeys {
   /// JSON-encoded [AppSettings] object containing all user preferences.
   static const settings = 'pointer_settings';
 
-  /// Current subscription tier string (e.g. `'free'`, `'premium'`).
-  static const subscriptionTier = 'pointer_subscription';
-
-  /// Whether the user has ever saved a pointing (first-save milestone).
-  static const hasEverSaved = 'pointer_has_ever_saved';
-
   /// ID of the last viewed [Pointing], used to restore state after restart.
   static const currentPointingId = 'pointer_current_pointing_id';
 
@@ -136,7 +130,7 @@ class AppSettings {
  * Persistent storage wrapper around [SharedPreferences].
  *
  * Provides typed access to all app data — favourites, view history,
- * settings, subscription tier, and round-robin pointing order — via
+ * settings, and round-robin pointing order — via
  * [StorageKeys]. Caches frequently-accessed data (viewed teaching IDs)
  * to avoid repeated JSON parsing.
  */
@@ -153,12 +147,6 @@ class StorageService {
 
   /// Persist the onboarding completion state.
   Future<void> setOnboardingCompleted(bool completed) => _prefs.setBool(StorageKeys.onboardingCompleted, completed);
-
-  /// Whether the user has ever saved at least one pointing.
-  bool get hasEverSaved => _prefs.getBool(StorageKeys.hasEverSaved) ?? false;
-
-  /// Record that the first-save milestone has been reached.
-  Future<void> markFirstSaveCompleted() => _prefs.setBool(StorageKeys.hasEverSaved, true);
 
   /// List of saved [Pointing] IDs, ordered from oldest to newest.
   List<String> get favorites {
@@ -298,8 +286,6 @@ class StorageService {
     await _prefs.remove(StorageKeys.viewedTeachings);
     await _prefs.remove(StorageKeys.preferredTraditions);
     await _prefs.remove(StorageKeys.settings);
-    await _prefs.remove(StorageKeys.subscriptionTier);
-    await _prefs.remove(StorageKeys.hasEverSaved);
     await _prefs.remove(StorageKeys.currentPointingId);
     await _prefs.remove(StorageKeys.pointingOrder);
     await _prefs.remove(StorageKeys.pointingIndex);

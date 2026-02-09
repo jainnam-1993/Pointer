@@ -52,10 +52,9 @@ class SectionHeader extends StatelessWidget {
 /// Card for displaying an article in a list
 class ArticleListItem extends StatelessWidget {
   final Article article;
-  final bool isLocked;
   final VoidCallback onTap;
 
-  const ArticleListItem({super.key, required this.article, required this.isLocked, required this.onTap});
+  const ArticleListItem({super.key, required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -63,60 +62,57 @@ class ArticleListItem extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${isLocked ? ". Premium content, locked" : ""}',
+      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
         onTap: onTap,
-        child: Opacity(
-          opacity: isLocked ? 0.6 : 1,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
+                  ),
+                  if (article.subtitle != null) ...[
+                    const SizedBox(height: 4),
                     Text(
-                      article.title,
+                      article.subtitle!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
-                    ),
-                    if (article.subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        article.subtitle!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 13, color: colors.textSecondary),
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Text('${article.readingTimeMinutes} min', style: TextStyle(fontSize: 12, color: colors.textMuted)),
-                        if (article.teacher != null) ...[
-                          Text(' · ', style: TextStyle(fontSize: 12, color: colors.textMuted)),
-                          Flexible(
-                            child: Text(
-                              article.teacher!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12, color: colors.textMuted),
-                            ),
-                          ),
-                        ],
-                      ],
+                      style: TextStyle(fontSize: 13, color: colors.textSecondary),
                     ),
                   ],
-                ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text('${article.readingTimeMinutes} min', style: TextStyle(fontSize: 12, color: colors.textMuted)),
+                      if (article.teacher != null) ...[
+                        Text(' · ', style: TextStyle(fontSize: 12, color: colors.textMuted)),
+                        Flexible(
+                          child: Text(
+                            article.teacher!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, color: colors.textMuted),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ),
+            ),
 
-              // Arrow
-              Icon(Icons.arrow_forward_ios, size: 14, color: colors.textMuted),
-            ],
-          ),
+            // Arrow
+            Icon(Icons.arrow_forward_ios, size: 14, color: colors.textMuted),
+          ],
         ),
       ),
     );

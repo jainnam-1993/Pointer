@@ -86,7 +86,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
   /// Border color for glassmorphism containers in pressed or focused state.
   final Color glassBorderActive;
 
-  /// Decorative gold accent used for premium badges and tradition highlights.
+  /// Decorative gold accent used for tradition highlights.
   final Color gold;
 
   /// General-purpose accent color (violet) for buttons and interactive states.

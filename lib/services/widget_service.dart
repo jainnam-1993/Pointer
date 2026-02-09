@@ -15,8 +15,6 @@ class _WidgetKeys {
   static const updateIntervalHours = 'update_interval_hours';
   // Multi-pointing widget cache (JSON array)
   static const pointingsCache = 'pointings_cache';
-  // Premium status for widget gating
-  static const isPremium = 'widget_is_premium';
   // Favorites list (JSON array of pointing IDs)
   static const favorites = 'widget_favorites';
 }
@@ -35,10 +33,7 @@ class WidgetService {
   /// Default update interval in hours
   static const defaultUpdateIntervalHours = 3;
 
-  /// Initialize widget service and register background callback
-  ///
-  /// NOTE: Widget is a PREMIUM feature. The widget will only show content
-  /// for premium users. Call [setPremiumStatus] when subscription status changes.
+  /// Initialize widget service and register background callback.
   static Future<void> initialize() async {
     // Set iOS App Group for shared storage
     await HomeWidget.setAppGroupId(iosAppGroup);
@@ -46,36 +41,6 @@ class WidgetService {
     // Register the callback for widget taps
     HomeWidget.registerInteractivityCallback(widgetBackgroundCallback);
     debugPrint('[WidgetService] Initialized');
-  }
-
-  /// Set premium status for widget gating (all features now free).
-  static Future<void> setPremiumStatus(bool isPremium) async {
-    try {
-      await HomeWidget.saveWidgetData<bool>(_WidgetKeys.isPremium, true);
-      await populatePointingsCache();
-    } catch (e) {
-      debugPrint('Failed to set widget premium status: $e');
-    }
-  }
-
-  /// Clear widget data (for free users)
-  static Future<void> clearWidgetData() async {
-    try {
-      await HomeWidget.saveWidgetData<String>(_WidgetKeys.pointingsCache, '[]');
-      await HomeWidget.saveWidgetData<String>(_WidgetKeys.content, '');
-      await HomeWidget.saveWidgetData<String>(_WidgetKeys.teacher, '');
-      await HomeWidget.saveWidgetData<String>(_WidgetKeys.tradition, '');
-
-      // Trigger widget update to show empty state
-      await HomeWidget.updateWidget(
-        iOSName: 'PointerWidget',
-        androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
-      );
-      debugPrint('Widget data cleared (free user)');
-    } catch (e) {
-      debugPrint('Failed to clear widget data: $e');
-    }
   }
 
   /// Populate the pointings cache for the multi-pointing widget.
@@ -404,43 +369,41 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   }
 }
 
-/// Save the current widget pointing to favorites
+/// Save the current widget pointing to favorites.
+///
+/// Reads the pending pointing ID written by Kotlin's ACTION_SAVE handler,
+/// then toggles that pointing in the app's SharedPreferences favorites list.
 Future<void> _saveCurrentWidgetPointing() async {
   try {
-    // Get current pointing content from widget storage
-    final content = await HomeWidget.getWidgetData<String>('pointing_content');
-    if (content == null || content.isEmpty) {
-      debugPrint('No pointing content to save');
+    // Read the pointing ID that Kotlin stored before sending the background intent
+    final pointingId = await HomeWidget.getWidgetData<String>('save_pending_id');
+    if (pointingId == null || pointingId.isEmpty) {
+      debugPrint('[WidgetSave] No pending save ID');
       return;
     }
 
-    // Find matching pointing by content
-    final matching = pointings.where((p) => p.content == content).toList();
+    // Clear the pending ID
+    await HomeWidget.saveWidgetData<String>('save_pending_id', null);
 
-    if (matching.isEmpty) {
-      debugPrint('Could not find pointing to save');
-      return;
-    }
-
-    final pointing = matching.first;
-
-    // Initialize SharedPreferences and save to favorites
+    // Toggle in the app's favorites (SharedPreferences)
     final prefs = await SharedPreferences.getInstance();
-    final favoritesKey = 'pointer_favorites';
+    const favoritesKey = 'pointer_favorites';
     final stored = prefs.getString(favoritesKey);
     final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
-    if (!favorites.contains(pointing.id)) {
-      favorites.add(pointing.id);
-      await prefs.setString(favoritesKey, jsonEncode(favorites));
-      debugPrint('Saved pointing ${pointing.id} to favorites');
-
-      // Sync favorites to widget data so heart icon updates immediately
-      await WidgetService.updateFavorites(favorites.toSet());
+    if (favorites.contains(pointingId)) {
+      favorites.remove(pointingId);
+      debugPrint('[WidgetSave] Removed $pointingId from favorites');
     } else {
-      debugPrint('Pointing ${pointing.id} already in favorites');
+      favorites.add(pointingId);
+      debugPrint('[WidgetSave] Added $pointingId to favorites');
     }
+
+    await prefs.setString(favoritesKey, jsonEncode(favorites));
+
+    // Sync favorites back to widget data so heart icon stays in sync
+    await WidgetService.updateFavorites(favorites.toSet());
   } catch (e) {
-    debugPrint('Error saving widget pointing: $e');
+    debugPrint('[WidgetSave] Error: $e');
   }
 }

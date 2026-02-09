@@ -264,38 +264,6 @@ void main() {
       expect(times[2], DateTime(2025, 1, 15, 10, 0));
     });
 
-    test('testEveryMinute preset generates 1-minute intervals', () {
-      final schedule = NotificationPreset.testEveryMinute.schedule;
-
-      // Verify schedule configuration
-      expect(schedule.frequencyMinutes, 1);
-      expect(schedule.startHour, 0);
-      expect(schedule.endHour, 23);
-      expect(schedule.endMinute, 59);
-
-      // Test a 5-minute window
-      final date = DateTime(2025, 1, 15);
-      const testSchedule = NotificationSchedule(
-        startHour: 10,
-        startMinute: 0,
-        endHour: 10,
-        endMinute: 5,
-        frequencyMinutes: 1,
-        quietStartHour: 24, // Disable quiet hours
-        quietEndHour: 24,
-      );
-
-      final times = testSchedule.getNotificationTimes(date);
-
-      expect(times.length, 6); // 10:00, 10:01, 10:02, 10:03, 10:04, 10:05
-      expect(times[0], DateTime(2025, 1, 15, 10, 0));
-      expect(times[1], DateTime(2025, 1, 15, 10, 1));
-      expect(times[2], DateTime(2025, 1, 15, 10, 2));
-      expect(times[3], DateTime(2025, 1, 15, 10, 3));
-      expect(times[4], DateTime(2025, 1, 15, 10, 4));
-      expect(times[5], DateTime(2025, 1, 15, 10, 5));
-    });
-
     test('quiet hours are respected', () {
       const schedule = NotificationSchedule(
         startHour: 21,

@@ -113,7 +113,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => NotificationTimesSheet(showTestPreset: _showDeveloperOptions),
+      builder: (context) => const NotificationTimesSheet(),
     );
   }
 

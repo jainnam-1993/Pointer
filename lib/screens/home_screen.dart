@@ -59,9 +59,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Whether the save confirmation overlay is visible.
   bool _showSaveConfirmation = false;
 
-  /// Whether the current save is the user's first-ever save (triggers celebration).
-  bool _isFirstSave = false;
-
   /// Accumulated vertical drag offset for the swipe blur effect.
   double _swipeOffset = 0.0;
 
@@ -260,30 +257,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleSave() async {
     final pointing = ref.read(currentPointingProvider);
     final favorites = ref.read(favoritesProvider);
-    final storage = ref.read(storageServiceProvider);
 
     // Don't save if already a favorite
     if (favorites.contains(pointing.id)) {
       return;
     }
 
-    // Check if this is the user's first-ever save (before toggling)
-    final isFirstSave = !storage.hasEverSaved;
-
-    // Haptic feedback - stronger for first save celebration
-    if (isFirstSave) {
-      HapticFeedback.heavyImpact();
-    } else {
-      HapticFeedback.mediumImpact();
-    }
+    HapticFeedback.mediumImpact();
 
     // Save to favorites
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-
-    // Mark first save milestone completed (if applicable)
-    if (isFirstSave) {
-      await storage.markFirstSaveCompleted();
-    }
 
     // Update widget with new favorites data
     await WidgetService.updateFavorites({...favorites, pointing.id});
@@ -292,9 +275,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final affinity = ref.read(affinityServiceProvider);
     await affinity.recordSave(pointing.tradition);
 
-    // Show confirmation with celebration state
+    // Show confirmation overlay
     setState(() {
-      _isFirstSave = isFirstSave;
       _showSaveConfirmation = true;
     });
   }
@@ -304,7 +286,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (mounted) {
       setState(() {
         _showSaveConfirmation = false;
-        _isFirstSave = false;
       });
     }
   }
@@ -671,7 +652,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Save confirmation overlay with first-save celebration
           if (_showSaveConfirmation)
             Positioned.fill(
-              child: SaveConfirmation(onDismiss: _hideSaveConfirmation, isFirstSave: _isFirstSave),
+              child: SaveConfirmation(onDismiss: _hideSaveConfirmation),
             ),
         ],
       ),

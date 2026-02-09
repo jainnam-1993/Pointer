@@ -72,7 +72,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionInfo = traditions[widget.article.tradition]!;
-    // TTS disabled - isPremium check no longer needed here
+    // TTS disabled
 
     return Scaffold(
       body: Stack(
