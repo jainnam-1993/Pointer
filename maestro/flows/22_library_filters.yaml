@@ -76,16 +76,13 @@ appId: com.dailypointer
 - takeScreenshot: "maestro/screenshots/filters_07_saved_mode"
 
 # === RETURN TO TOPICS ===
-- tapOn:
-    text: ".*Saved.*"
-- tapOn:
-    text: ".*Topics.*"
+- back
 - waitForAnimationToEnd
 - takeScreenshot: "maestro/screenshots/filters_08_back_to_topics"
 
 # === VERIFY APP STILL FUNCTIONAL ===
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 - assertVisible:
-    text: "Save to favorites"
+    text: ".*Next.*"
 - takeScreenshot: "maestro/screenshots/filters_09_final"

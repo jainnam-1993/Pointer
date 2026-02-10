@@ -1,10 +1,19 @@
-// Library Screen - Browse articles and teachings from non-dual traditions
-import 'dart:ui';
+/**
+ * Library screen for browsing articles and teachings from non-dual traditions.
+ *
+ * Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
+ * ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
+ * featured articles section with peek indicator, browse mode and content type
+ * dropdowns.
+ *
+ * Re-exports all library/ subfiles for backward compatibility.
+ */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
@@ -16,105 +25,28 @@ import '../widgets/animated_transitions.dart';
 // import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
+import 'library/library_models.dart';
+import 'library/library_widgets.dart';
+import 'library/teacher_teachings_screen.dart';
+import 'library/lineage_teachings_screen.dart';
+import 'library/mood_teachings_screen.dart';
+import 'library/topic_teachings_screen.dart';
 
-/// Extension to sort teachings with unviewed first (viewed items sink down)
-extension TeachingListSorting on List<Teaching> {
-  /// Returns a new list sorted with unviewed teachings first, then viewed
-  List<Teaching> sortedByViewedStatus(Set<String> viewedIds) {
-    final copy = List<Teaching>.from(this);
-    copy.sort((a, b) {
-      final aViewed = viewedIds.contains(a.id);
-      final bViewed = viewedIds.contains(b.id);
-      if (aViewed && !bViewed) return 1;  // viewed sinks down
-      if (!aViewed && bViewed) return -1; // unviewed stays up
-      return 0; // maintain relative order
-    });
-    return copy;
-  }
-}
+// Re-export all library subfiles for backward compatibility
+export 'library/library_models.dart';
+export 'library/library_widgets.dart';
+export 'library/category_articles_screen.dart';
+export 'library/teacher_teachings_screen.dart';
+export 'library/lineage_teachings_screen.dart';
+export 'library/mood_teachings_screen.dart';
+export 'library/topic_teachings_screen.dart';
 
-/// Category metadata for display
-class CategoryInfo {
-  final String name;
-  final String icon;
-  final String description;
-
-  const CategoryInfo({
-    required this.name,
-    required this.icon,
-    required this.description,
-  });
-}
-
-const categoryInfoMap = <ArticleCategory, CategoryInfo>{
-  ArticleCategory.natureOfAwareness: CategoryInfo(
-    name: 'Nature of Awareness',
-    icon: '◯',
-    description: 'Understanding consciousness itself',
-  ),
-  ArticleCategory.selfInquiry: CategoryInfo(
-    name: 'Self-Inquiry',
-    icon: '?',
-    description: 'The investigation into "Who am I?"',
-  ),
-  ArticleCategory.everydayAwakening: CategoryInfo(
-    name: 'Everyday Awakening',
-    icon: '☀',
-    description: 'Living wisdom in daily life',
-  ),
-  ArticleCategory.traditionalTeachings: CategoryInfo(
-    name: 'Traditional Teachings',
-    icon: '◇',
-    description: 'Classic texts and ancient wisdom',
-  ),
-  ArticleCategory.modernPointers: CategoryInfo(
-    name: 'Modern Pointers',
-    icon: '✦',
-    description: 'Contemporary teachers, fresh words',
-  ),
-};
-
-/// Browse mode for category navigation
-enum LibraryBrowseMode {
-  topics,
-  teachers,
-  lineages,
-  moods,
-  saved,
-}
-
-extension LibraryBrowseModeExt on LibraryBrowseMode {
-  String get label {
-    switch (this) {
-      case LibraryBrowseMode.topics:
-        return 'Topics';
-      case LibraryBrowseMode.teachers:
-        return 'Teachers';
-      case LibraryBrowseMode.lineages:
-        return 'Lineages';
-      case LibraryBrowseMode.moods:
-        return 'Moods';
-      case LibraryBrowseMode.saved:
-        return 'Saved';
-    }
-  }
-
-  IconData get icon {
-    switch (this) {
-      case LibraryBrowseMode.topics:
-        return Icons.topic_outlined;
-      case LibraryBrowseMode.teachers:
-        return Icons.person_outline;
-      case LibraryBrowseMode.lineages:
-        return Icons.account_tree_outlined;
-      case LibraryBrowseMode.moods:
-        return Icons.mood_outlined;
-      case LibraryBrowseMode.saved:
-        return Icons.bookmark_outline;
-    }
-  }
-}
-
+/**
+ * Main library screen with featured articles, browse-by navigation, and saved pointings.
+ *
+ * Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
+ * [LibraryBrowseMode.lineages], [LibraryBrowseMode.moods], and [LibraryBrowseMode.saved].
+ */
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
 
@@ -123,7 +55,10 @@ class LibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
+  /** Current browse mode controlling which category navigation is shown. */
   LibraryBrowseMode _browseMode = LibraryBrowseMode.topics;
+
+  /** Current content type filter (all, articles only, or quotes only). */
   ContentFilter _contentFilter = ContentFilter.all;
 
   @override
@@ -131,79 +66,72 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
-    final subscription = ref.watch(subscriptionProvider);
     final favorites = ref.watch(favoritesProvider);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // Header with filter
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Library',
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _browseMode == LibraryBrowseMode.saved
-                              ? 'Your saved pointings'
-                              : 'Explore teachings and articles',
-                          style: TextStyle(
-                            color: colors.textSecondary,
-                            fontSize: 16,
+    final hasActiveFilter = _browseMode != LibraryBrowseMode.topics || _contentFilter != ContentFilter.all;
+
+    return PopScope(
+      canPop: !hasActiveFilter,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (!mounted) return;
+        setState(() {
+          _browseMode = LibraryBrowseMode.topics;
+          _contentFilter = ContentFilter.all;
+        });
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const Positioned.fill(child: AnimatedGradient()),
+            SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  // Header with filter
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Library', style: Theme.of(context).textTheme.displayLarge),
+                          const SizedBox(height: 4),
+                          Text(
+                            _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
+                            style: TextStyle(color: colors.textSecondary, fontSize: 16),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-                // Show saved pointings if browsing saved
-                if (_browseMode == LibraryBrowseMode.saved) ...[
-                  if (favorites.isEmpty)
-                    SliverFillRemaining(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No saved pointings yet',
-                                style: TextStyle(color: colors.textMuted, fontSize: 16),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Long-press a pointing to save it',
-                                style: TextStyle(color: colors.textMuted, fontSize: 14),
-                              ),
-                            ],
+                  // Show saved pointings if browsing saved
+                  if (_browseMode == LibraryBrowseMode.saved) ...[
+                    if (favorites.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
+                                const SizedBox(height: 16),
+                                Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
+                                const SizedBox(height: 8),
+                                Text('Long-press a pointing to save it', style: TextStyle(color: colors.textMuted, fontSize: 14)),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                      )
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
                             final pointingId = favorites[index];
-                            final pointing = pointings.firstWhere(
-                              (p) => p.id == pointingId,
-                              orElse: () => pointings.first,
-                            );
+                            final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: GlassCard(
@@ -219,174 +147,115 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                     ),
                                     if (pointing.teacher != null) ...[
                                       const SizedBox(height: 8),
-                                      Text(
-                                        '— ${pointing.teacher}',
-                                        style: TextStyle(color: colors.textMuted, fontSize: 13),
-                                      ),
+                                      Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
                                     ],
                                   ],
                                 ),
                               ),
                             );
-                          },
-                          childCount: favorites.length,
+                          }, childCount: favorites.length),
+                        ),
+                      ),
+                  ] else ...[
+                    // Featured Section
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                        child: Text(
+                          'FEATURED',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                         ),
                       ),
                     ),
-                ] else ...[
 
-                // Full Library is PREMIUM - show upgrade prompt for free users
-                // When kFreeAccessEnabled, skip this gate (all content free)
-                if (!kFreeAccessEnabled && !subscription.isPremium) ...[
-                  SliverFillRemaining(
-                    child: _LibraryPremiumUpgrade(
-                      // Uses GoRouter for redirect handling when kFreeAccessEnabled
-                      onUpgrade: () => context.push('/paywall'),
-                    ),
-                  ),
-                ] else ...[
-                // PREMIUM CONTENT BELOW
+                    // Featured articles horizontal scroll with peek indicator
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 185,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final screenWidth = constraints.maxWidth;
+                            // Card takes ~70% of screen, leaving ~30% for peek
+                            // Peek shows ~24px of next card edge
+                            final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                            final cardSpacing = 8.0;
+                            // Calculate padding: 24px left, enough right for last card + peek area
+                            final horizontalPadding = 24.0;
+                            // Extra right padding ensures smooth scroll end (peek area width)
+                            final rightPadding = screenWidth - cardWidth - horizontalPadding;
 
-                // Featured Section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                    child: Text(
-                      'FEATURED',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Featured articles horizontal scroll with peek indicator
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 185,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final screenWidth = constraints.maxWidth;
-                        // Card takes ~70% of screen, leaving ~30% for peek
-                        // Peek shows ~24px of next card edge
-                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                        final cardSpacing = 8.0;
-                        // Calculate padding: 24px left, enough right for last card + peek area
-                        final horizontalPadding = 24.0;
-                        // Extra right padding ensures smooth scroll end (peek area width)
-                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
-
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: rightPadding.clamp(24.0, 80.0),
-                          ),
-                          itemCount: featured.length,
-                          itemBuilder: (context, index) {
-                            final article = featured[index];
-                            final isLast = index == featured.length - 1;
-                            return StaggeredFadeIn(
-                              index: index,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  right: isLast ? 0 : cardSpacing,
-                                ),
-                                child: SizedBox(
-                                  width: cardWidth,
-                                  child: _FeaturedArticleCard(
-                                    article: article,
-                                    onTap: () => _openArticle(context, article),
+                            return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.only(left: horizontalPadding, right: rightPadding.clamp(24.0, 80.0)),
+                              itemCount: featured.length,
+                              itemBuilder: (context, index) {
+                                final article = featured[index];
+                                final isLast = index == featured.length - 1;
+                                return StaggeredFadeIn(
+                                  index: index,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
+                                    child: SizedBox(
+                                      width: cardWidth,
+                                      child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-                // Browse Mode Section with Dropdown
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                    // FittedBox scales content down proportionally on small screens
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'BROWSE BY',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textMuted,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          _BrowseModeDropdown(
-                            currentMode: _browseMode,
-                            onChanged: (mode) => setState(() => _browseMode = mode),
-                          ),
-                          const SizedBox(width: 8),
-                          _ContentTypeDropdown(
-                            currentFilter: _contentFilter,
-                            onChanged: (filter) => setState(() => _contentFilter = filter),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Dynamic browse list based on mode
-                _buildBrowseList(colors, bottomPadding, subscription.isPremium, _contentFilter),
-                ], // end premium content
-                ], // end else
-              ],
+                    // Browse Mode Section with Dropdown
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+                        // FittedBox scales content down proportionally on small screens
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'BROWSE BY',
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                              ),
+                              const SizedBox(width: 12),
+                              _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
+                              const SizedBox(width: 8),
+                              _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Dynamic browse list based on mode
+                    _buildBrowseList(colors, bottomPadding, _contentFilter),
+                  ], // end else
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _openArticle(BuildContext context, Article article) {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ArticleReaderScreen(article: article),
-      ),
-    );
-  }
-
-  void _openCategory(BuildContext context, ArticleCategory category,
-      CategoryInfo info, bool isPremium) {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CategoryArticlesScreen(
-          category: category,
-          info: info,
-          isPremium: isPremium,
+          ],
         ),
       ),
     );
   }
 
-  /// Build dynamic browse list based on current mode
-  Widget _buildBrowseList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
+  /** Navigates to the [ArticleReaderScreen] for the given article. */
+  void _openArticle(BuildContext context, Article article) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
+  }
+
+  /** Build dynamic browse list based on current mode */
+  Widget _buildBrowseList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
-        return _buildTopicsList(colors, bottomPadding, isPremium, contentFilter);
+        return _buildTopicsList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.teachers:
         return _buildTeachersList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.lineages:
@@ -399,71 +268,59 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
   }
 
-  Widget _buildTopicsList(PointerColors colors, double bottomPadding, bool isPremium, ContentFilter contentFilter) {
-    // When Quotes filter is selected, show TopicTags from teachings
+  /**
+   * Builds a sliver list of topics with merged counts based on the active [contentFilter].
+   *
+   * When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
+   * uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
+   */
+  Widget _buildTopicsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+    // Always show TopicTags with merged counts based on filter
+    final Map<String, int> topicCounts;
+
     if (contentFilter == ContentFilter.quotes) {
-      final topicCounts = TeachingRepository.topicCounts;
-      final sortedTopics = topicCounts.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value));
-
-      return SliverPadding(
-        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-        sliver: SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final entry = sortedTopics[index];
-              final topic = entry.key;
-              final count = entry.value;
-
-              return StaggeredFadeIn(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _BrowseCard(
-                    icon: TopicTags.icon(topic),
-                    name: TopicTags.displayName(topic),
-                    description: 'Quotes about ${topic.toLowerCase()}',
-                    count: count,
-                    onTap: () => _openTopic(context, topic, contentFilter),
-                  ),
-                ),
-              );
-            },
-            childCount: sortedTopics.length,
-          ),
-        ),
-      );
+      topicCounts = TeachingRepository.topicCounts;
+    } else if (contentFilter == ContentFilter.articles) {
+      topicCounts = getArticleTopicCounts();
+    } else {
+      // All - merge both counts
+      final quoteCounts = TeachingRepository.topicCounts;
+      final articleCounts = getArticleTopicCounts();
+      topicCounts = Map<String, int>.from(quoteCounts);
+      for (final entry in articleCounts.entries) {
+        topicCounts[entry.key] = (topicCounts[entry.key] ?? 0) + entry.value;
+      }
     }
 
-    // When Articles filter or All, show ArticleCategory
+    final sortedTopics = topicCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final category = ArticleCategory.values[index];
-            final info = categoryInfoMap[category]!;
-            final articleCount = getArticlesByCategory(category).length;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedTopics[index];
+          final topic = entry.key;
+          final count = entry.value;
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _CategoryCard(
-                  category: category,
-                  info: info,
-                  articleCount: articleCount,
-                  onTap: () => _openCategory(context, category, info, isPremium),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: TopicTags.icon(topic),
+                name: TopicTags.displayName(topic),
+                description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
+                count: count,
+                onTap: () => _openTopic(context, topic, contentFilter),
               ),
-            );
-          },
-          childCount: ArticleCategory.values.length,
-        ),
+            ),
+          );
+        }, childCount: sortedTopics.length),
       ),
     );
   }
 
+  /** Navigates to [TopicTeachingsScreen] for the given topic with the active filter. */
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(
@@ -473,6 +330,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  /** Builds a sliver list of teachers with counts based on the active [contentFilter]. */
   Widget _buildTeachersList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Get teachers based on content filter
     final Map<String, int> teacherCounts;
@@ -496,18 +354,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       }
     }
 
-    final sortedTeachers = teacherCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTeachers = teacherCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     if (sortedTeachers.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Center(
-            child: Text(
-              'No teachers found for this filter',
-              style: TextStyle(color: colors.textMuted),
-            ),
+            child: Text('No teachers found for this filter', style: TextStyle(color: colors.textMuted)),
           ),
         ),
       );
@@ -516,38 +370,34 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = sortedTeachers[index];
-            final teacher = entry.key;
-            final count = entry.value;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedTeachers[index];
+          final teacher = entry.key;
+          final count = entry.value;
 
-            // Get lineage for this teacher (from first teaching)
-            final teachingsSample = TeachingRepository.byTeacher(teacher);
-            final lineage = teachingsSample.isNotEmpty
-                ? traditions[teachingsSample.first.lineage]?.name ?? ''
-                : '';
+          // Get lineage for this teacher (from first teaching)
+          final teachingsSample = TeachingRepository.byTeacher(teacher);
+          final lineage = teachingsSample.isNotEmpty ? traditions[teachingsSample.first.lineage]?.name ?? '' : '';
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: '🙏',
-                  name: teacher,
-                  description: lineage,
-                  count: count,
-                  onTap: () => _openTeacher(context, teacher, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: '🙏',
+                name: teacher,
+                description: lineage,
+                count: count,
+                onTap: () => _openTeacher(context, teacher, contentFilter),
               ),
-            );
-          },
-          childCount: sortedTeachers.length,
-        ),
+            ),
+          );
+        }, childCount: sortedTeachers.length),
       ),
     );
   }
 
+  /** Builds a sliver list of tradition lineages with counts based on the active [contentFilter]. */
   Widget _buildLineagesList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build list of lineages with their counts based on filter
     final lineageData = <({Tradition tradition, TraditionInfo info, int count})>[];
@@ -576,30 +426,28 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final data = lineageData[index];
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final data = lineageData[index];
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: data.info.icon,
-                  name: data.info.name,
-                  description: data.info.description,
-                  count: data.count,
-                  onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: data.info.icon,
+                name: data.info.name,
+                description: data.info.description,
+                count: data.count,
+                onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
               ),
-            );
-          },
-          childCount: lineageData.length,
-        ),
+            ),
+          );
+        }, childCount: lineageData.length),
       ),
     );
   }
 
+  /** Builds a sliver list of mood tags with counts based on the active [contentFilter]. */
   Widget _buildMoodsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
     // Build mood counts based on filter
     final Map<String, int> moodCounts;
@@ -624,34 +472,30 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       }
     }
 
-    final sortedMoods = moodCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedMoods = moodCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = sortedMoods[index];
-            final mood = entry.key;
-            final count = entry.value;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final entry = sortedMoods[index];
+          final mood = entry.key;
+          final count = entry.value;
 
-            return StaggeredFadeIn(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _BrowseCard(
-                  icon: MoodTags.icon(mood),
-                  name: MoodTags.displayName(mood),
-                  description: 'Best for ${mood.toLowerCase()} moments',
-                  count: count,
-                  onTap: () => _openMood(context, mood, contentFilter),
-                ),
+          return StaggeredFadeIn(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _BrowseCard(
+                icon: MoodTags.icon(mood),
+                name: MoodTags.displayName(mood),
+                description: 'Best for ${mood.toLowerCase()} moments',
+                count: count,
+                onTap: () => _openMood(context, mood, contentFilter),
               ),
-            );
-          },
-          childCount: sortedMoods.length,
-        ),
+            ),
+          );
+        }, childCount: sortedMoods.length),
       ),
     );
   }
@@ -684,15 +528,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 }
 
-/// Dropdown for browse mode selection
+/** Dropdown for browse mode selection */
 class _BrowseModeDropdown extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onChanged;
 
-  const _BrowseModeDropdown({
-    required this.currentMode,
-    required this.onChanged,
-  });
+  const _BrowseModeDropdown({required this.currentMode, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -713,10 +554,7 @@ class _BrowseModeDropdown extends StatelessWidget {
               currentMode.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 4),
@@ -742,15 +580,12 @@ class _BrowseModeDropdown extends StatelessWidget {
   }
 }
 
-/// Dropdown for content type filter (All/Articles/Quotes)
+/** Dropdown for content type filter (All/Articles/Quotes) */
 class _ContentTypeDropdown extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onChanged;
 
-  const _ContentTypeDropdown({
-    required this.currentFilter,
-    required this.onChanged,
-  });
+  const _ContentTypeDropdown({required this.currentFilter, required this.onChanged});
 
   String get _label {
     switch (currentFilter) {
@@ -793,10 +628,7 @@ class _ContentTypeDropdown extends StatelessWidget {
               _label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 4),
@@ -822,168 +654,47 @@ class _ContentTypeDropdown extends StatelessWidget {
   }
 }
 
-/// Shared glassmorphism bottom sheet for filter options
-class _FilterSheet<T> extends StatelessWidget {
-  final String title;
-  final List<_FilterOption<T>> options;
-  final T currentValue;
-  final ValueChanged<T> onSelected;
-
-  const _FilterSheet({
-    required this.title,
-    required this.options,
-    required this.currentValue,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-    // Navbar clearance: navbar height (~65) + small gap (8)
-    const navbarClearance = 73.0;
-
-    return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-            decoration: BoxDecoration(
-              // Dark frosted glass: semi-opaque dark base + subtle light gradient overlay
-              color: isDark
-                  ? const Color(0xFF1C1C1E).withValues(alpha: 0.85) // iOS system gray6 dark
-                  : Colors.white.withValues(alpha: 0.92),
-              gradient: isDark
-                  ? LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.08),
-                        Colors.white.withValues(alpha: 0.02),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : null,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              border: isDark
-                  ? Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
-                      width: 0.5,
-                    )
-                  : null,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ...options.map((option) {
-                  final isSelected = option.value == currentValue;
-                  return ListTile(
-                    dense: true,
-                    visualDensity: VisualDensity.compact,
-                    leading: Icon(
-                      option.icon,
-                      color: isSelected ? colors.accent : colors.textMuted,
-                    ),
-                    title: Text(
-                      option.label,
-                      style: TextStyle(
-                        color: isSelected ? colors.accent : colors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      ),
-                    ),
-                    trailing: isSelected
-                        ? Icon(Icons.check, color: colors.accent)
-                        : null,
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      onSelected(option.value);
-                    },
-                  );
-                }),
-                // Navbar clearance
-                SizedBox(height: navbarClearance + MediaQuery.of(context).padding.bottom),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Option for filter sheet
-class _FilterOption<T> {
-  final T value;
-  final String label;
-  final IconData icon;
-
-  const _FilterOption({
-    required this.value,
-    required this.label,
-    required this.icon,
-  });
-}
-
+/** Bottom sheet for selecting content type filter (All/Articles/Quotes). */
 class _ContentTypeSheet extends StatelessWidget {
   final ContentFilter currentFilter;
   final ValueChanged<ContentFilter> onSelected;
 
-  const _ContentTypeSheet({
-    required this.currentFilter,
-    required this.onSelected,
-  });
+  const _ContentTypeSheet({required this.currentFilter, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
-    return _FilterSheet<ContentFilter>(
+    return FilterSheet<ContentFilter>(
       title: 'Show',
       currentValue: currentFilter,
       onSelected: onSelected,
       options: const [
-        _FilterOption(value: ContentFilter.all, label: 'All', icon: Icons.grid_view_rounded),
-        _FilterOption(value: ContentFilter.articles, label: 'Articles', icon: Icons.article_outlined),
-        _FilterOption(value: ContentFilter.quotes, label: 'Quotes', icon: Icons.format_quote_rounded),
+        FilterOption(value: ContentFilter.all, label: 'All', icon: Icons.grid_view_rounded),
+        FilterOption(value: ContentFilter.articles, label: 'Articles', icon: Icons.article_outlined),
+        FilterOption(value: ContentFilter.quotes, label: 'Quotes', icon: Icons.format_quote_rounded),
       ],
     );
   }
 }
 
+/** Bottom sheet for selecting browse mode (Topics/Teachers/Lineages/Moods/Saved). */
 class _BrowseModeSheet extends StatelessWidget {
   final LibraryBrowseMode currentMode;
   final ValueChanged<LibraryBrowseMode> onSelected;
 
-  const _BrowseModeSheet({
-    required this.currentMode,
-    required this.onSelected,
-  });
+  const _BrowseModeSheet({required this.currentMode, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
-    return _FilterSheet<LibraryBrowseMode>(
+    return FilterSheet<LibraryBrowseMode>(
       title: 'Browse by',
       currentValue: currentMode,
       onSelected: onSelected,
-      options: LibraryBrowseMode.values
-          .map((mode) => _FilterOption(
-                value: mode,
-                label: mode.label,
-                icon: mode.icon,
-              ))
-          .toList(),
+      options: LibraryBrowseMode.values.map((mode) => FilterOption(value: mode, label: mode.label, icon: mode.icon)).toList(),
     );
   }
 }
 
-/// Generic browse card for teachers, lineages, moods
+/** Generic browse card for teachers, lineages, moods */
 class _BrowseCard extends StatelessWidget {
   final String icon;
   final String name;
@@ -991,13 +702,7 @@ class _BrowseCard extends StatelessWidget {
   final int count;
   final VoidCallback onTap;
 
-  const _BrowseCard({
-    required this.icon,
-    required this.name,
-    required this.description,
-    required this.count,
-    required this.onTap,
-  });
+  const _BrowseCard({required this.icon, required this.name, required this.description, required this.count, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1015,18 +720,9 @@ class _BrowseCard extends StatelessWidget {
             Container(
               width: 44,
               height: 44,
-              decoration: BoxDecoration(
-                color: colors.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
               child: Center(
-                child: Text(
-                  icon,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: colors.accent,
-                  ),
-                ),
+                child: Text(icon, style: TextStyle(fontSize: 20, color: colors.accent)),
               ),
             ),
             const SizedBox(width: 14),
@@ -1038,19 +734,12 @@ class _BrowseCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: 13, color: colors.textSecondary),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -1064,17 +753,9 @@ class _BrowseCard extends StatelessWidget {
               children: [
                 Text(
                   '$count',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textMuted,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textMuted),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: colors.textMuted,
-                ),
+                Icon(Icons.arrow_forward_ios, size: 12, color: colors.textMuted),
               ],
             ),
           ],
@@ -1084,14 +765,12 @@ class _BrowseCard extends StatelessWidget {
   }
 }
 
+/** Horizontal-scrolling card for a featured [Article] with tradition icon, reading time, and teacher. */
 class _FeaturedArticleCard extends StatelessWidget {
   final Article article;
   final VoidCallback onTap;
 
-  const _FeaturedArticleCard({
-    required this.article,
-    required this.onTap,
-  });
+  const _FeaturedArticleCard({required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1100,12 +779,13 @@ class _FeaturedArticleCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
+      label:
+          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${article.teacher != null ? " by ${article.teacher}" : ""}. Featured article.',
       child: GlassCard(
-          padding: const EdgeInsets.all(16),
-          borderRadius: 20,
-          onTap: onTap,
-          child: Column(
+        padding: const EdgeInsets.all(16),
+        borderRadius: 20,
+        onTap: onTap,
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Tradition + reading time row
@@ -1113,23 +793,11 @@ class _FeaturedArticleCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colors.accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    traditionInfo.icon,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+                  decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                  child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  '${article.readingTimeMinutes} min read',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colors.textMuted,
-                  ),
-                ),
+                Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 12, color: colors.textMuted)),
               ],
             ),
             const SizedBox(height: 12),
@@ -1137,11 +805,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             // Title
             Text(
               article.title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: colors.textPrimary,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -1151,10 +815,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.subtitle != null)
               Text(
                 article.subtitle!,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 13, color: colors.textSecondary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -1165,350 +826,9 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.teacher != null)
               Text(
                 article.teacher!,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.textMuted,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: TextStyle(fontSize: 12, color: colors.textMuted, fontStyle: FontStyle.italic),
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryCard extends StatelessWidget {
-  final ArticleCategory category;
-  final CategoryInfo info;
-  final int articleCount;
-  final VoidCallback onTap;
-
-  const _CategoryCard({
-    required this.category,
-    required this.info,
-    required this.articleCount,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Semantics(
-      button: true,
-      label: '${info.name}. ${info.description}. $articleCount articles.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        onTap: onTap,
-        child: Row(
-          children: [
-            // Icon
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: colors.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  info.icon,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: colors.accent,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    info.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    info.description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Count and arrow
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '$articleCount',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textMuted,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: colors.textMuted,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Screen showing articles in a specific category
-class CategoryArticlesScreen extends StatelessWidget {
-  final ArticleCategory category;
-  final CategoryInfo info;
-  final bool isPremium;
-
-  const CategoryArticlesScreen({
-    super.key,
-    required this.category,
-    required this.info,
-    required this.isPremium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final categoryArticles = getArticlesByCategory(category);
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                info.name,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: colors.textPrimary,
-                                ),
-                              ),
-                              Text(
-                                '${categoryArticles.length} articles',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Articles list
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final article = categoryArticles[index];
-                        final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
-
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _ArticleListItem(
-                              article: article,
-                              isLocked: isLocked,
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                if (isLocked) {
-                                  // Show paywall
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Premium article - unlock with subscription'),
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: colors.glassBackground,
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ArticleReaderScreen(article: article),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: categoryArticles.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ArticleListItem extends StatelessWidget {
-  final Article article;
-  final bool isLocked;
-  final VoidCallback onTap;
-
-  const _ArticleListItem({
-    required this.article,
-    required this.isLocked,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Semantics(
-      button: true,
-      label:
-          '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read${isLocked ? ". Premium content, locked" : ""}',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        onTap: onTap,
-        child: Opacity(
-          opacity: isLocked ? 0.6 : 1,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            article.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        // Hide premium badge when kFreeAccessEnabled (all content free)
-                        if (!kFreeAccessEnabled && article.isPremium) ...[
-                          const SizedBox(width: 8),
-                          Icon(
-                            isLocked ? Icons.lock_outline : Icons.auto_awesome,
-                            size: 14,
-                            color: colors.accent,
-                          ),
-                        ],
-                      ],
-                    ),
-                    if (article.subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        article.subtitle!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Text(
-                          '${article.readingTimeMinutes} min',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colors.textMuted,
-                          ),
-                        ),
-                        if (article.teacher != null) ...[
-                          Text(
-                            ' · ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.textMuted,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              article.teacher!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: colors.textMuted,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // Arrow
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: colors.textMuted,
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -1516,1089 +836,3 @@ class _ArticleListItem extends StatelessWidget {
 }
 
 // ArticleReaderScreen extracted to article_reader_screen.dart
-
-// ============================================================
-// Teaching Detail Screens (Phase 6)
-// ============================================================
-
-/// Screen showing teachings by a specific teacher
-class TeacherTeachingsScreen extends ConsumerStatefulWidget {
-  final String teacher;
-  final ContentFilter filter;
-
-  const TeacherTeachingsScreen({super.key, required this.teacher, this.filter = ContentFilter.all});
-
-  @override
-  ConsumerState<TeacherTeachingsScreen> createState() => _TeacherTeachingsScreenState();
-}
-
-class _TeacherTeachingsScreenState extends ConsumerState<TeacherTeachingsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final storage = ref.watch(storageServiceProvider);
-    final viewedIds = storage.viewedTeachingIds;
-    final allTeachings = TeachingRepository.byTeacher(widget.teacher);
-    final allArticles = getArticlesByTeacher(widget.teacher);
-
-    // Apply filter and sort by viewed status (unviewed first)
-    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
-    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
-    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
-
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final subscriptionState = ref.watch(subscriptionProvider);
-    final isPremium = subscriptionState.tier == SubscriptionTier.premium;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.teacher,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: colors.textPrimary,
-                                ),
-                              ),
-                              Text(
-                                '${articles.length} articles, ${teachings.length} quotes',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Articles section (if any)
-                if (articles.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
-                      child: Text(
-                        'ARTICLES (${articles.length})',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: colors.textMuted,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
-
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                isLocked: isLocked,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    // Show paywall
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => ArticleReaderScreen(
-                                          article: article,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: articles.length,
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Quotes section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      24,
-                      articles.isNotEmpty ? 24 : 16,
-                      24,
-                      12,
-                    ),
-                    child: Text(
-                      'QUOTES (${teachings.length})',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final teaching = teachings[index];
-                        final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: teachings.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Screen showing teachings by lineage/tradition
-class LineageTeachingsScreen extends ConsumerStatefulWidget {
-  final Tradition tradition;
-  final TraditionInfo info;
-  final ContentFilter filter;
-
-  const LineageTeachingsScreen({
-    super.key,
-    required this.tradition,
-    required this.info,
-    this.filter = ContentFilter.all,
-  });
-
-  @override
-  ConsumerState<LineageTeachingsScreen> createState() => _LineageTeachingsScreenState();
-}
-
-class _LineageTeachingsScreenState extends ConsumerState<LineageTeachingsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final storage = ref.watch(storageServiceProvider);
-    final viewedIds = storage.viewedTeachingIds;
-    final allTeachings = TeachingRepository.byLineage(widget.tradition);
-    final allArticles = getArticlesByTradition(widget.tradition);
-
-    // Apply filter and sort by viewed status (unviewed first)
-    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
-    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
-    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
-
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(widget.info.icon, style: const TextStyle(fontSize: 18)),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    widget.info.name,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${articles.length} articles · ${teachings.length} quotes',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Description
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-                    child: Text(
-                      widget.info.description,
-                      style: TextStyle(
-                        color: colors.textSecondary,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Articles section (if any)
-                if (articles.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _SectionHeader(title: 'Articles', count: articles.length),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                isLocked: isLocked,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: articles.length,
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Quotes section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      24,
-                      articles.isNotEmpty ? 24 : 0,
-                      24,
-                      12,
-                    ),
-                    child: _SectionHeader(
-                      title: 'Quotes',
-                      count: teachings.length,
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final teaching = teachings[index];
-                        final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: teachings.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Screen showing teachings by mood
-class MoodTeachingsScreen extends ConsumerStatefulWidget {
-  final String mood;
-  final ContentFilter filter;
-
-  const MoodTeachingsScreen({super.key, required this.mood, this.filter = ContentFilter.all});
-
-  @override
-  ConsumerState<MoodTeachingsScreen> createState() => _MoodTeachingsScreenState();
-}
-
-class _MoodTeachingsScreenState extends ConsumerState<MoodTeachingsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final storage = ref.watch(storageServiceProvider);
-    final viewedIds = storage.viewedTeachingIds;
-    final allArticles = getArticlesByMood(widget.mood);
-    final allTeachings = TeachingRepository.byMood(widget.mood);
-
-    // Apply filter and sort by viewed status (unviewed first)
-    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
-    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
-    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
-
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    MoodTags.icon(widget.mood),
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    MoodTags.displayName(widget.mood),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${articles.length} articles, ${teachings.length} quotes',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Articles section
-                if (articles.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _SectionHeader(
-                        title: 'Articles',
-                        count: articles.length,
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
-
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                isLocked: isLocked,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    // Show paywall
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: articles.length,
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Quotes section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _SectionHeader(
-                      title: 'Quotes',
-                      count: teachings.length,
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    bottom: 32 + bottomPadding,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final teaching = teachings[index];
-                        final isViewed = viewedIds.contains(teaching.id);
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _TeachingCard(
-                              teaching: teaching,
-                              isViewed: isViewed,
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                await storage.markTeachingAsViewed(teaching.id);
-                                if (context.mounted) setState(() {});
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: teachings.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Screen showing teachings by topic tag
-class TopicTeachingsScreen extends ConsumerStatefulWidget {
-  final String topic;
-  final ContentFilter filter;
-
-  const TopicTeachingsScreen({super.key, required this.topic, this.filter = ContentFilter.all});
-
-  @override
-  ConsumerState<TopicTeachingsScreen> createState() => _TopicTeachingsScreenState();
-}
-
-class _TopicTeachingsScreenState extends ConsumerState<TopicTeachingsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final storage = ref.watch(storageServiceProvider);
-    final viewedIds = storage.viewedTeachingIds;
-    final allArticles = getArticlesByTopic(widget.topic);
-    final allTeachings = TeachingRepository.byTopic(widget.topic);
-
-    // Apply filter and sort by viewed status (unviewed first)
-    final articles = widget.filter == ContentFilter.quotes ? <Article>[] : allArticles;
-    final filteredTeachings = widget.filter == ContentFilter.articles ? <Teaching>[] : allTeachings;
-    final teachings = filteredTeachings.sortedByViewedStatus(viewedIds);
-
-    final isPremium = ref.watch(subscriptionProvider).isPremium;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    TopicTags.icon(widget.topic),
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    TopicTags.displayName(widget.topic),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.textPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${articles.length} articles, ${teachings.length} quotes',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Articles section
-                if (articles.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _SectionHeader(
-                        title: 'Articles',
-                        count: articles.length,
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final article = articles[index];
-                          final isLocked = !kFreeAccessEnabled && article.isPremium && !isPremium;
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _ArticleListItem(
-                                article: article,
-                                isLocked: isLocked,
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (isLocked) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Text('Premium article - unlock with subscription'),
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: colors.glassBackground,
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticleReaderScreen(article: article),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: articles.length,
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Quotes section
-                if (teachings.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _SectionHeader(
-                        title: 'Quotes',
-                        count: teachings.length,
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.only(
-                      left: 24,
-                      right: 24,
-                      bottom: 32 + bottomPadding,
-                    ),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final teaching = teachings[index];
-                          final isViewed = viewedIds.contains(teaching.id);
-                          return StaggeredFadeIn(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _TeachingCard(
-                                teaching: teaching,
-                                isViewed: isViewed,
-                                onTap: () async {
-                                  HapticFeedback.lightImpact();
-                                  await storage.markTeachingAsViewed(teaching.id);
-                                  if (context.mounted) setState(() {});
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: teachings.length,
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Empty state if no content
-                if (articles.isEmpty && teachings.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Center(
-                        child: Text(
-                          'No content found for this topic',
-                          style: TextStyle(color: colors.textMuted),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Filter mode for content display
-enum ContentFilter { all, articles, quotes }
-
-/// Section header for separated content sections
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final int count;
-
-  const _SectionHeader({required this.title, required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 12),
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: colors.textPrimary,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: colors.accent.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              count.toString(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colors.accent,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Card for displaying a teaching
-class _TeachingCard extends StatelessWidget {
-  final Teaching teaching;
-  final VoidCallback? onTap;
-  final bool isViewed;
-
-  const _TeachingCard({
-    required this.teaching,
-    this.onTap,
-    this.isViewed = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final traditionInfo = traditions[teaching.lineage]!;
-
-    return Semantics(
-      label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
-      child: GlassCard(
-      padding: const EdgeInsets.all(16),
-      onTap: onTap,
-      child: Opacity(
-        opacity: isViewed ? 0.7 : 1.0,
-        child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Content
-          Text(
-            teaching.content,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 15,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Footer: Teacher and lineage
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '— ${teaching.teacher}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: colors.textMuted,
-                    fontSize: 13,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colors.accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      traditionInfo.icon,
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      traditionInfo.name,
-                      style: TextStyle(
-                        color: colors.textMuted,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          // Topic tags
-          if (teaching.topicTags.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: teaching.topicTags.take(3).map((tag) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colors.glassBackground,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: colors.glassBorder),
-                  ),
-                  child: Text(
-                    TopicTags.displayName(tag),
-                    style: TextStyle(
-                      color: colors.textSecondary,
-                      fontSize: 11,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ],
-      ),
-      ),  // Opacity
-      ),  // GlassCard
-    );
-  }
-}
-
-/// Premium upgrade prompt for free users trying to access the library
-class _LibraryPremiumUpgrade extends StatelessWidget {
-  final VoidCallback onUpgrade;
-
-  const _LibraryPremiumUpgrade({required this.onUpgrade});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final goldColor = colors.gold;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Premium icon
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: goldColor.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.auto_awesome,
-                size: 40,
-                color: goldColor,
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Title
-            Text(
-              'Unlock the Full Library',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: colors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-
-            // Description
-            Text(
-              'Browse teachings by topic, teacher, lineage, and mood. '
-              'Access featured articles and extended commentary.',
-              style: TextStyle(
-                fontSize: 15,
-                color: colors.textSecondary,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-
-            // What's included
-            Container(
-              margin: const EdgeInsets.only(top: 16),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colors.glassBackground,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: colors.glassBorder),
-              ),
-              child: Column(
-                children: [
-                  _FeatureRow(icon: Icons.library_books, text: 'Full article library'),
-                  const SizedBox(height: 12),
-                  _FeatureRow(icon: Icons.notifications_active, text: 'Daily notifications'),
-                  const SizedBox(height: 12),
-                  _FeatureRow(icon: Icons.widgets, text: 'Home screen widget'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Upgrade button
-            GlassButton(
-              label: 'Upgrade to Premium',
-              onPressed: onUpgrade,
-              icon: Icon(Icons.auto_awesome, color: goldColor, size: 18),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Free features reminder
-            Text(
-              'Free forever: Unlimited pointings & saved favorites',
-              style: TextStyle(
-                fontSize: 12,
-                color: colors.textMuted,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FeatureRow extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _FeatureRow({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: colors.gold),
-        const SizedBox(width: 12),
-        Text(
-          text,
-          style: TextStyle(
-            color: colors.textPrimary,
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-}

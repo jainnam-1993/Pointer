@@ -20,25 +20,33 @@ appId: com.dailypointer
 - tapOn:
     text: "Home tab.*"
 - assertVisible:
-    text: "Save to favorites"
+    text: ".*Save to favorites.*"
 
 # Save first pointing
 - tapOn:
-    text: "Save to favorites"
+    text: ".*Save to favorites.*"
 - extendedWaitUntil:
     visible:
-      text: "Remove from favorites"
+      text: ".*Remove from favorites.*"
     timeout: 5000
 - takeScreenshot: "maestro/screenshots/fav2lib_01_first_save"
 
 # === SAVE SECOND POINTING ===
 - tapOn:
     text: ".*Next.*"
+- runFlow:
+    when:
+      visible: ".*Remove from favorites.*"
+    commands:
+      - tapOn:
+          text: ".*Remove from favorites.*"
+      - assertVisible:
+          text: ".*Save to favorites.*"
 - tapOn:
-    text: "Save to favorites"
+    text: ".*Save to favorites.*"
 - extendedWaitUntil:
     visible:
-      text: "Remove from favorites"
+      text: ".*Remove from favorites.*"
     timeout: 5000
 - takeScreenshot: "maestro/screenshots/fav2lib_02_second_save"
 
@@ -53,14 +61,14 @@ appId: com.dailypointer
 # === SWITCH TO SAVED BROWSE MODE ===
 - scrollUntilVisible:
     element:
-      text: "Topics"
+      text: ".*Topics.*"
     direction: DOWN
     timeout: 10000
 - tapOn:
-    text: "Topics"
+    text: ".*Topics.*"
 - waitForAnimationToEnd
 - tapOn:
-    text: "Saved"
+    text: ".*Saved.*"
 - waitForAnimationToEnd
 - takeScreenshot: "maestro/screenshots/fav2lib_04_saved_mode"
 

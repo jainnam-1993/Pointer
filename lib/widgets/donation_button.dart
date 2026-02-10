@@ -1,3 +1,14 @@
+/**
+ * Expandable tip jar donation widget for the settings screen.
+ *
+ * Provides a collapsible [GlassCard] that expands to reveal a 2x2 grid of
+ * consumable in-app purchase options (Tea, Cushion, Incense, Retreat).
+ * Integrates with [DonationNotifier] for IAP lifecycle management.
+ *
+ * See also: [DonationState] for the underlying state model.
+ */
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +18,7 @@ import '../providers/donation_providers.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
 
-/// Product display configuration
+/** Product display configuration pairing a product ID with its label and icon. */
 class _TipProduct {
   final String label;
   final IconData icon;
@@ -15,7 +26,7 @@ class _TipProduct {
   const _TipProduct(this.label, this.icon);
 }
 
-/// Map product IDs to display labels and icons
+/** Map product IDs to display labels and icons */
 const _tipProducts = <String, _TipProduct>{
   'tip_small': _TipProduct('Tea', Icons.local_cafe_outlined),
   'tip_medium': _TipProduct('Cushion', Icons.self_improvement_outlined),
@@ -23,13 +34,15 @@ const _tipProducts = <String, _TipProduct>{
   'tip_generous': _TipProduct('Retreat', Icons.park_outlined),
 };
 
-/// Floating donation button with expandable tip options
-///
-/// Displays as a collapsed button that expands to show:
-/// - Description text
-/// - 2x2 grid of tip options
-///
-/// Integrates with [donationProvider] for IAP state management.
+/**
+ * Floating donation button with expandable tip options
+ *
+ * Displays as a collapsed button that expands to show:
+ * - Description text
+ * - 2x2 grid of tip options
+ *
+ * Integrates with [donationProvider] for IAP state management.
+ */
 class DonationButton extends ConsumerStatefulWidget {
   const DonationButton({super.key});
 
@@ -62,19 +75,10 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     final state = ref.watch(donationProvider);
     final colors = context.colors;
 
-    // Hide when not available and not loading
-    if (!state.isAvailable && !state.isLoading) {
-      return const SizedBox.shrink();
-    }
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: GlassCard(
-        padding: EdgeInsets.zero,
-        intensity: GlassIntensity.standard,
-        child: _buildContent(state, colors),
-      ),
+      child: GlassCard(padding: EdgeInsets.zero, intensity: GlassIntensity.standard, child: _buildContent(state, colors)),
     );
   }
 
@@ -99,9 +103,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                child: _isExpanded
-                    ? _buildExpandedContent(state, colors)
-                    : const SizedBox.shrink(),
+                child: _isExpanded ? _buildExpandedContent(state, colors) : const SizedBox.shrink(),
               ),
             ),
           ],
@@ -116,40 +118,21 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       behavior: HitTestBehavior.opaque,
       child: Row(
         children: [
-          Icon(
-            Icons.favorite_outline,
-            color: colors.accent,
-            size: 20,
-          ),
+          Icon(Icons.favorite_outline, color: colors.accent, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Support Development',
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
           if (state.isLoading && !_isExpanded)
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: colors.accent,
-              ),
-            )
+            SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: colors.accent))
           else
             AnimatedRotation(
               turns: _isExpanded ? 0.5 : 0.0,
               duration: const Duration(milliseconds: 200),
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: colors.textMuted,
-                size: 24,
-              ),
+              child: Icon(Icons.keyboard_arrow_down, color: colors.textMuted, size: 24),
             ),
         ],
       ),
@@ -163,11 +146,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
         const SizedBox(height: 12),
         Text(
           'Here Now is free forever. If you find value, consider supporting development.',
-          style: TextStyle(
-            color: colors.textSecondary,
-            fontSize: 13,
-            height: 1.4,
-          ),
+          style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.4),
         ),
         const SizedBox(height: 16),
         _buildProductGrid(state, colors),
@@ -181,9 +160,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: CircularProgressIndicator(
-            color: colors.accent,
-          ),
+          child: CircularProgressIndicator(color: colors.accent),
         ),
       );
     }
@@ -198,13 +175,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text(
-            'No donation options available',
-            style: TextStyle(
-              color: colors.textMuted,
-              fontSize: 14,
-            ),
-          ),
+          child: Text('No donation options available', style: TextStyle(color: colors.textMuted, fontSize: 14)),
         ),
       );
     }
@@ -218,10 +189,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       children: [
         Text(
           state.error ?? 'An error occurred',
-          style: TextStyle(
-            color: Colors.red.shade300,
-            fontSize: 13,
-          ),
+          style: TextStyle(color: Colors.red.shade300, fontSize: 13),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
@@ -235,11 +203,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
             ),
             child: Text(
               'Retry',
-              style: TextStyle(
-                color: colors.accent,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -273,7 +237,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
   }
 }
 
-/// Individual tip option card
+/** Individual tip option card */
 class _TipOptionCard extends StatelessWidget {
   final ProductDetails product;
   final String label;
@@ -282,14 +246,7 @@ class _TipOptionCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isDisabled;
 
-  const _TipOptionCard({
-    required this.product,
-    required this.label,
-    required this.icon,
-    required this.colors,
-    this.onTap,
-    this.isDisabled = false,
-  });
+  const _TipOptionCard({required this.product, required this.label, required this.icon, required this.colors, this.onTap, this.isDisabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -303,39 +260,21 @@ class _TipOptionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.white.withValues(alpha: 0.6),
+            color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: colors.glassBorder,
-            ),
+            border: Border.all(color: colors.glassBorder),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: colors.accent,
-                size: 24,
-              ),
+              Icon(icon, color: colors.accent, size: 24),
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  color: colors.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: colors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 2),
-              Text(
-                product.price,
-                style: TextStyle(
-                  color: colors.textMuted,
-                  fontSize: 12,
-                ),
-              ),
+              Text(product.price, style: TextStyle(color: colors.textMuted, fontSize: 12)),
             ],
           ),
         ),

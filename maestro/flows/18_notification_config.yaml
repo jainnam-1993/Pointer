@@ -24,7 +24,7 @@ appId: com.dailypointer
 
 # === OPEN NOTIFICATION SETTINGS ===
 - tapOn:
-    text: "Notification Times"
+    text: ".*Notification Times.*"
 - takeScreenshot: "maestro/screenshots/notif_02_notification_settings"
 
 # Verify notification settings opened
@@ -108,11 +108,8 @@ appId: com.dailypointer
 - takeScreenshot: "maestro/screenshots/notif_12_quiet_hours"
 
 # === BACK TO SETTINGS ===
-- back:
-    optional: true
-- tapOn:
-    text: "Settings tab.*"
-    optional: true
+- pressKey: Home
+- launchApp
 - takeScreenshot: "maestro/screenshots/notif_13_back_settings"
 
 # === FINAL STATE ===

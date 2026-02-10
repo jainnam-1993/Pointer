@@ -34,19 +34,19 @@ appId: com.dailypointer
 # === OPEN HISTORY SCREEN ===
 - scrollUntilVisible:
     element:
-      text: "Past Pointings"
+      text: ".*Past Pointings.*"
     direction: DOWN
     timeout: 20000
     visibilityPercentage: 10
     centerElement: true
     waitToSettleTimeoutMs: 500
 - tapOn:
-    text: "Past Pointings"
+    text: ".*Past Pointings.*"
 - takeScreenshot: "maestro/screenshots/history_03_screen"
 
 # Verify history screen loaded
 - assertVisible:
-    text: "Past Pointings"
+    text: ".*Past Pointings.*"
 
 # === BROWSE HISTORY LIST ===
 # Scroll through history
@@ -62,7 +62,7 @@ appId: com.dailypointer
 - takeScreenshot: "maestro/screenshots/history_05_revisit"
 
 # === RETURN TO SETTINGS ===
-- back:
+- back
 - takeScreenshot: "maestro/screenshots/history_06_back_settings"
 
 # === FINAL STATE ===

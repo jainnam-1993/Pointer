@@ -7,23 +7,39 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
+/**
+ * Root shell widget providing bottom navigation and tab management.
+ *
+ * Wraps the [StatefulNavigationShell] from GoRouter with horizontal swipe
+ * gestures for tab switching, [FloatingParticles] background, and a
+ * glassmorphic [_BottomNavBar]. Hides the nav bar in zen mode.
+ *
+ * The [navigationShell] must NOT be wrapped in [AnimatedSwitcher] or
+ * [KeyedSubtree] as it contains internal GlobalKeys that conflict
+ * when the widget tree changes.
+ */
 class MainShell extends ConsumerStatefulWidget {
+  /** The GoRouter navigation shell managing tab state and branch navigation. */
   final StatefulNavigationShell navigationShell;
 
-  const MainShell({
-    super.key,
-    required this.navigationShell,
-  });
+  const MainShell({super.key, required this.navigationShell});
 
   @override
   ConsumerState<MainShell> createState() => _MainShellState();
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
+  bool _currentBranchCanPop() {
+    final key = widget.navigationShell.shellRouteContext.navigatorKey;
+    return key.currentState?.canPop() ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isZenMode = ref.watch(zenModeProvider);
     final currentIndex = widget.navigationShell.currentIndex;
+    final branchCanPop = _currentBranchCanPop();
+    final shouldInterceptBack = currentIndex != 0 && !branchCanPop;
 
     // Wrap content with horizontal swipe gesture and pure fade transition
     // Pure fade creates contemplative, peaceful experience (no slides)
@@ -46,47 +62,65 @@ class _MainShellState extends ConsumerState<MainShell> {
 
     // In zen mode, hide bottom nav bar
     if (isZenMode) {
-      return Scaffold(
+      return PopScope(
+        canPop: !shouldInterceptBack,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          widget.navigationShell.goBranch(0);
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              // Global particles effect (behind content) — RepaintBoundary isolates
+              // continuous particle animations from triggering full-tree repaints
+              const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
+              content,
+            ],
+          ),
+          extendBody: true,
+        ),
+      );
+    }
+
+    return PopScope(
+      canPop: !shouldInterceptBack,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        widget.navigationShell.goBranch(0);
+      },
+      child: Scaffold(
         body: Stack(
           children: [
-            // Global particles effect (behind content) — RepaintBoundary isolates
-            // continuous particle animations from triggering full-tree repaints
+            // Global particles effect (behind content)
             const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
             content,
           ],
         ),
         extendBody: true,
-      );
-    }
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Global particles effect (behind content)
-          const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-          content,
-        ],
-      ),
-      extendBody: true,
-      bottomNavigationBar: _BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) => widget.navigationShell.goBranch(
-          index,
-          initialLocation: index == currentIndex,
+        bottomNavigationBar: _BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
         ),
       ),
     );
   }
 }
 
+/**
+ * iOS Control Center-style glassmorphic bottom navigation bar.
+ *
+ * Features a backdrop blur, gradient glass effect, animated sliding indicator,
+ * and 3-tier responsive breakpoints (phone <600, tablet 600-900, large tablet >900).
+ * Constrained to [maxNavWidth] on large screens to prevent over-stretching.
+ */
 class _BottomNavBar extends StatefulWidget {
+  /** Index of the currently selected tab (0-3). */
   final int currentIndex;
+
+  /** Callback when a tab is tapped. */
   final ValueChanged<int> onTap;
 
-  const _BottomNavBar({
-    required this.currentIndex,
-    required this.onTap,
-  });
+  const _BottomNavBar({required this.currentIndex, required this.onTap});
 
   @override
   State<_BottomNavBar> createState() => _BottomNavBarState();
@@ -103,36 +137,24 @@ class _BottomNavBarState extends State<_BottomNavBar> {
     // Enhanced iOS-style glass gradient
     final glassGradient = isDark
         ? LinearGradient(
-            colors: [
-              Colors.white.withValues(alpha: 0.22),
-              Colors.white.withValues(alpha: 0.10),
-            ],
+            colors: [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
-            colors: [
-              Colors.white.withValues(alpha: 0.95),
-              Colors.white.withValues(alpha: 0.75),
-            ],
+            colors: [Colors.white.withValues(alpha: 0.95), Colors.white.withValues(alpha: 0.75)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
 
     final borderGradient = isDark
         ? LinearGradient(
-            colors: [
-              colors.glassBorder,
-              colors.glassBorder.withValues(alpha: 0.2),
-            ],
+            colors: [colors.glassBorder, colors.glassBorder.withValues(alpha: 0.2)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : LinearGradient(
-            colors: [
-              Colors.black.withValues(alpha: 0.08),
-              Colors.black.withValues(alpha: 0.03),
-            ],
+            colors: [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
@@ -152,7 +174,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
     // Constrain max width on large screens to prevent over-stretching
     final maxNavWidth = isLargeTablet ? 560.0 : (isTablet ? 480.0 : double.infinity);
     final horizontalMargin = isLargeTablet
-        ? (screenWidth - maxNavWidth) / 2  // Center with calculated margins
+        ? (screenWidth - maxNavWidth) /
+              2 // Center with calculated margins
         : (isTablet ? 48.0 : 24.0);
 
     // Responsive bottom margin:
@@ -163,21 +186,14 @@ class _BottomNavBarState extends State<_BottomNavBar> {
       margin: EdgeInsets.only(
         left: horizontalMargin,
         right: horizontalMargin,
-        top: 8.0,  // Top padding for separation from content (doubled from 4px)
+        top: 8.0, // Top padding for separation from content (doubled from 4px)
         bottom: bottomMargin,
       ),
       decoration: isDark
           ? null
           : BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 4))],
             ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -189,10 +205,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             decoration: BoxDecoration(
               gradient: glassGradient,
               borderRadius: BorderRadius.circular(borderRadius),
-              border: GradientBoxBorder(
-                gradient: borderGradient,
-                width: isDark ? 1.5 : 1,
-              ),
+              border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.5 : 1),
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -215,10 +228,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                       child: Container(
                         width: indicatorWidth,
                         height: 4,
-                        decoration: BoxDecoration(
-                          color: colors.accent,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                        decoration: BoxDecoration(color: colors.accent, borderRadius: BorderRadius.circular(2)),
                       ),
                     ),
                     // Nav items row - use Expanded for equal-width columns
@@ -273,20 +283,28 @@ class _BottomNavBarState extends State<_BottomNavBar> {
   }
 }
 
+/**
+ * A single navigation item with icon, label, and active/inactive states.
+ *
+ * Responsive sizing adapts across 3-tier breakpoints (phone/tablet/large tablet).
+ */
 class _NavItem extends StatelessWidget {
+  /** Icon shown when this tab is not selected. */
   final IconData icon;
+
+  /** Icon shown when this tab is selected (typically a filled variant). */
   final IconData activeIcon;
+
+  /** Text label displayed below the icon. */
   final String label;
+
+  /** Whether this tab is currently selected. */
   final bool isActive;
+
+  /** Callback when this nav item is tapped. */
   final VoidCallback onTap;
 
-  const _NavItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
+  const _NavItem({required this.icon, required this.activeIcon, required this.label, required this.isActive, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -316,11 +334,7 @@ class _NavItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isActive ? activeIcon : icon,
-                color: isActive ? activeColor : inactiveColor,
-                size: iconSize,
-              ),
+              Icon(isActive ? activeIcon : icon, color: isActive ? activeColor : inactiveColor, size: iconSize),
               const SizedBox(height: 4),
               Text(
                 label,
