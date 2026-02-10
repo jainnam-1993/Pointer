@@ -6,10 +6,10 @@ appId: com.dailypointer
 
 # Flow execution settings
 flows:
-  - flows/
+  - maestro/flows/
 
 # Screenshot output
-outputDir: screenshots
+outputDir: maestro/screenshots
 
 # Default wait times (ms)
 initFlow:

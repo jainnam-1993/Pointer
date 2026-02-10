@@ -1,74 +1,70 @@
 # Save Favorites Flow - Long-press to save pointing
 # Run: maestro test maestro/flows/12_save_favorites.yaml
 #
-# Tests: Long-press save gesture, first-save celebration, save confirmation
+# Tests: Long-press save gesture, save confirmation overlay
 # Note: Favorites sync to home widget tested in 16_widget_interactions.yaml
 
 appId: com.dailypointer
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
-# Skip onboarding if shown
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
 
 # Go to home tab
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 
 # === INITIAL STATE ===
 - assertVisible:
-    text: ".*Next.*"
-- takeScreenshot: "favorites_01_initial"
+    text: "Save to favorites"
+- takeScreenshot: "maestro/screenshots/favorites_01_initial"
 
-# === FIRST SAVE (triggers first-save celebration) ===
-# Long-press on the pointing card to save
-- longPressOn:
-    point: "50%,40%"
-- takeScreenshot: "favorites_02_first_save"
-
-# Check for first-save celebration (confetti animation)
-# Note: Visual celebration may be brief, screenshot captures the moment
+# === FIRST SAVE ===
+# Tap heart to save current pointing
+- tapOn:
+    text: "Save to favorites"
+- extendedWaitUntil:
+    visible:
+      text: "Remove from favorites"
+    timeout: 5000
+- takeScreenshot: "maestro/screenshots/favorites_02_first_save"
 
 # === SAVE CONFIRMATION ===
-# Save confirmation overlay should appear
-- assertVisible:
-    text: ".*saved.*"
-    optional: true
-- assertVisible:
-    text: ".*favorite.*"
-    optional: true
-- takeScreenshot: "favorites_03_confirmation"
+# Filled heart state should persist after save
+- takeScreenshot: "maestro/screenshots/favorites_03_confirmation"
 
 # === NAVIGATE TO NEW POINTING ===
 - tapOn:
     text: ".*Next.*"
-- takeScreenshot: "favorites_04_new_pointing"
+    optional: true
+- tapOn:
+    point: "50%,75%"
+    optional: true
+- takeScreenshot: "maestro/screenshots/favorites_04_new_pointing"
 
 # === SAVE SECOND POINTING ===
-- longPressOn:
-    point: "50%,40%"
-- takeScreenshot: "favorites_05_second_save"
+- tapOn:
+    text: "Save to favorites"
+- extendedWaitUntil:
+    visible:
+      text: "Remove from favorites"
+    timeout: 5000
+- takeScreenshot: "maestro/screenshots/favorites_05_second_save"
 
 # === UNSAVE (toggle off) ===
-# Long-press again on same pointing should unsave it
-- longPressOn:
-    point: "50%,40%"
-- takeScreenshot: "favorites_06_unsaved"
+- tapOn:
+    text: "Remove from favorites"
+- extendedWaitUntil:
+    visible:
+      text: "Save to favorites"
+    timeout: 5000
+- takeScreenshot: "maestro/screenshots/favorites_06_unsaved"
 
 # === VERIFY FINAL STATE ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - assertVisible:
-    text: ".*Next.*"
-- takeScreenshot: "favorites_07_complete"
+    text: "Save to favorites"
+- takeScreenshot: "maestro/screenshots/favorites_07_complete"

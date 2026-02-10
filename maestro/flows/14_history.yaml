@@ -6,84 +6,68 @@
 
 appId: com.dailypointer
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
-# Skip onboarding if shown
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
 
 # === VIEW SOME POINTINGS FIRST ===
 # Navigate through a few pointings to populate history
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - tapOn:
     text: ".*Next.*"
 - tapOn:
     text: ".*Next.*"
 - tapOn:
     text: ".*Next.*"
-- takeScreenshot: "history_01_after_viewing"
+- takeScreenshot: "maestro/screenshots/history_01_after_viewing"
 
 # === NAVIGATE TO SETTINGS ===
 - tapOn:
-    text: ".*Settings.*"
+    text: "Settings tab.*"
 - assertVisible:
-    text: ".*Settings.*"
-- takeScreenshot: "history_02_settings"
+    text: "Settings"
+- takeScreenshot: "maestro/screenshots/history_02_settings"
 
 # === OPEN HISTORY SCREEN ===
-# Scroll to find History option
-- swipe:
-    direction: UP
-    duration: 300
+- scrollUntilVisible:
+    element:
+      text: "Past Pointings"
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 10
+    centerElement: true
+    waitToSettleTimeoutMs: 500
 - tapOn:
-    text: ".*History.*"
-    optional: true
-- tapOn:
-    text: ".*Viewed.*"
-    optional: true
-- takeScreenshot: "history_03_screen"
+    text: "Past Pointings"
+- takeScreenshot: "maestro/screenshots/history_03_screen"
 
 # Verify history screen loaded
 - assertVisible:
-    text: ".*History.*"
-    optional: true
+    text: "Past Pointings"
 
 # === BROWSE HISTORY LIST ===
 # Scroll through history
 - swipe:
     direction: UP
     duration: 300
-- takeScreenshot: "history_04_scrolled"
+- takeScreenshot: "maestro/screenshots/history_04_scrolled"
 
 # === TAP TO REVISIT POINTING ===
 # Tap on a pointing in the history list
 - tapOn:
     point: "50%,30%"
-    optional: true
-- takeScreenshot: "history_05_revisit"
+- takeScreenshot: "maestro/screenshots/history_05_revisit"
 
 # === RETURN TO SETTINGS ===
 - back:
-    optional: true
-- tapOn:
-    text: ".*Settings.*"
-    optional: true
-- takeScreenshot: "history_06_back_settings"
+- takeScreenshot: "maestro/screenshots/history_06_back_settings"
 
 # === FINAL STATE ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "history_07_complete"
+- takeScreenshot: "maestro/screenshots/history_07_complete"

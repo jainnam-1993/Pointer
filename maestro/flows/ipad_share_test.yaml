@@ -1,0 +1,66 @@
+# iPad Share Image Test - Validates share popover doesn't crash on iPad
+# Run: maestro test maestro/flows/ipad_share_test.yaml
+#
+# Tests: Share Image button triggers iOS share sheet without crash
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# Go to home tab
+- tapOn:
+    text: "Home tab.*"
+
+# Wait for home screen
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "maestro/screenshots/ipad_share_01_home"
+
+# Open share modal via share button
+- tapOn:
+    id: "share_button"
+    optional: true
+- tapOn:
+    text: "Share this pointing"
+    optional: true
+- takeScreenshot: "maestro/screenshots/ipad_share_02_modal_open"
+
+# Wait for share preview to load
+- waitForAnimationToEnd
+
+# Verify Share screen is open
+- assertVisible:
+    text: "Share"
+
+# Tap Share Image button
+- tapOn:
+    text: "Share Image"
+- takeScreenshot: "maestro/screenshots/ipad_share_03_share_sheet"
+
+# Wait for share sheet to appear
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/ipad_share_04_after_share_tap"
+
+# Dismiss share sheet
+- tapOn:
+    text: "Cancel"
+    optional: true
+- tapOn:
+    text: "Done"
+    optional: true
+- back:
+    optional: true
+- takeScreenshot: "maestro/screenshots/ipad_share_05_dismissed"
+
+# Close share preview
+- back
+- takeScreenshot: "maestro/screenshots/ipad_share_06_back_home"
+
+# Final verification - app didn't crash
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "maestro/screenshots/ipad_share_07_complete"

@@ -1,0 +1,77 @@
+# Favorites to Library Flow - Cross-screen data flow
+# Run: maestro test maestro/flows/25_favorites_to_library.yaml
+#
+# Tests: Save pointings via long-press on home, then navigate to Library
+#        and verify saved content appears in "Saved" browse mode.
+#
+# This is the critical cross-screen data flow test:
+#   Home (save) -> Library (Saved mode shows saved pointings)
+
+appId: com.dailypointer
+---
+# Fresh state to ensure no pre-existing favorites
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === SAVE FIRST POINTING ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: "Save to favorites"
+
+# Save first pointing
+- tapOn:
+    text: "Save to favorites"
+- extendedWaitUntil:
+    visible:
+      text: "Remove from favorites"
+    timeout: 5000
+- takeScreenshot: "maestro/screenshots/fav2lib_01_first_save"
+
+# === SAVE SECOND POINTING ===
+- tapOn:
+    text: ".*Next.*"
+- tapOn:
+    text: "Save to favorites"
+- extendedWaitUntil:
+    visible:
+      text: "Remove from favorites"
+    timeout: 5000
+- takeScreenshot: "maestro/screenshots/fav2lib_02_second_save"
+
+# === NAVIGATE TO LIBRARY ===
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+- takeScreenshot: "maestro/screenshots/fav2lib_03_library"
+
+# === SWITCH TO SAVED BROWSE MODE ===
+- scrollUntilVisible:
+    element:
+      text: "Topics"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    text: "Topics"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Saved"
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/fav2lib_04_saved_mode"
+
+# === VERIFY SAVED CONTENT APPEARS ===
+- assertVisible:
+    text: "Your saved pointings"
+- takeScreenshot: "maestro/screenshots/fav2lib_05_saved_content"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "maestro/screenshots/fav2lib_06_final"

@@ -176,7 +176,8 @@ find_e(data)
 
 # Screenshot
 screenshot() {
-    local output="${1:-screenshot_$(date +%Y%m%d_%H%M%S).png}"
+    local output="${1:-maestro/screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png}"
+    mkdir -p "$(dirname "$output")"
     if [ -n "$SIMULATOR_UDID" ]; then
         xcrun simctl io "$SIMULATOR_UDID" screenshot "$output"
         echo "Screenshot saved: $output"

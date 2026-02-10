@@ -2,111 +2,47 @@
 # Run: maestro test maestro/flows/09_library_content.yaml
 #
 # Tests: Library navigation, article browsing, content verification
-# Premium features: Full library access requires premium subscription
-#
-# Note: Premium gating logic tested in integration_test/app_test.dart
-# This flow tests black-box content browsing experience
+# All content is free (no premium gating)
 
 appId: com.dailypointer
 ---
-- launchApp
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === NAVIGATE TO LIBRARY ===
+- tapOn:
+    text: "Library tab.*"
 - waitForAnimationToEnd
-
-# Skip onboarding if shown
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
-
-# Navigate to Library tab
-- tapOn:
-    text: ".*Library.*"
 - assertVisible:
-    text: ".*Library.*"
-- takeScreenshot: "library_01_browse"
+    text: "Library"
+- takeScreenshot: "maestro/screenshots/library_01_browse"
 
-# Verify library content loaded (articles section)
+# Scroll until browse controls are in view
+- scrollUntilVisible:
+    element:
+      text: "Topics"
+    direction: DOWN
+    timeout: 10000
 - assertVisible:
-    text: ".*Articles.*"
+    text: ".*BROWSE BY.*"
     optional: true
-- assertVisible:
-    text: ".*Teachings.*"
-    optional: true
+- takeScreenshot: "maestro/screenshots/library_02_scrolled"
+- takeScreenshot: "maestro/screenshots/library_03_browse_by"
 
-# Scroll to see more content
-- swipe:
-    direction: UP
-    duration: 300
-- takeScreenshot: "library_02_scrolled"
-
-# Tap on first available article
-- tapOn:
-    text: ".*minute read.*"
-    optional: true
-- takeScreenshot: "library_03_article_open"
-
-# Verify article content loaded (if opened)
-- assertVisible:
-    text: ".*read.*"
-    optional: true
-
-# Scroll within article
-- swipe:
-    direction: UP
-    duration: 300
-- takeScreenshot: "library_04_article_content"
-
-# Go back to library list
-- tapOn:
-    text: ".*Library.*"
-    optional: true
-- tapOn:
-    text: ".*back.*"
-    optional: true
-- back:
-    optional: true
-
-# === TEACHINGS SECTION ===
-- tapOn:
-    text: ".*Teachings.*"
-    optional: true
-- takeScreenshot: "library_05_teachings"
-
-# Verify teachings loaded
-- assertVisible:
-    text: ".*tradition.*"
-    optional: true
-
-# Tap on a teaching
-- tapOn:
-    text: ".*Advaita.*"
-    optional: true
-- tapOn:
-    text: ".*Zen.*"
-    optional: true
-- takeScreenshot: "library_06_teaching_detail"
-
-# === PREMIUM GATING CHECK ===
-# Try to access premium content - should show paywall for free users
-- tapOn:
+# === PREMIUM REGRESSION GUARD ===
+# All content is free — premium gating removed
+- assertNotVisible:
     text: ".*Unlock.*"
-    optional: true
-- tapOn:
+- assertNotVisible:
     text: ".*Premium.*"
-    optional: true
-- takeScreenshot: "library_07_premium_gating"
+- takeScreenshot: "maestro/screenshots/library_04_no_premium"
 
-# Return to home
+# === RETURN TO HOME ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - assertVisible:
-    text: ".*Next.*"
-- takeScreenshot: "library_08_complete"
+    text: "Save to favorites"
+- takeScreenshot: "maestro/screenshots/library_05_complete"

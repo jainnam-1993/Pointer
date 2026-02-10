@@ -1,0 +1,91 @@
+# Library Filters Flow - Browse modes and content filtering
+# Run: maestro test maestro/flows/22_library_filters.yaml
+#
+# Tests: Library browse mode switching (Topics/Teachers/Lineages/Moods/Saved),
+#        BROWSE BY dropdown interactions, content changes between modes.
+#
+# Browse modes: Topics, Teachers, Lineages, Moods, Saved
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === NAVIGATE TO LIBRARY ===
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+- takeScreenshot: "maestro/screenshots/filters_01_library"
+
+# Scroll down past featured to reach BROWSE BY section
+- scrollUntilVisible:
+    element:
+      text: "Topics"
+    direction: DOWN
+    timeout: 10000
+- assertVisible:
+    text: ".*BROWSE BY.*"
+    optional: true
+- takeScreenshot: "maestro/screenshots/filters_02_browse_by"
+
+# === DEFAULT MODE: TOPICS ===
+- assertVisible:
+    text: ".*Topics.*"
+- takeScreenshot: "maestro/screenshots/filters_03_topics_mode"
+
+# === SWITCH TO TEACHERS MODE ===
+- tapOn:
+    text: ".*Topics.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Teachers.*"
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/filters_04_teachers_mode"
+
+# === SWITCH TO LINEAGES MODE ===
+- tapOn:
+    text: ".*Teachers.*"
+- tapOn:
+    text: ".*Lineages.*"
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/filters_05_lineages_mode"
+
+# === SWITCH TO MOODS MODE ===
+- tapOn:
+    text: ".*Lineages.*"
+- tapOn:
+    text: ".*Moods.*"
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/filters_06_moods_mode"
+
+# === SWITCH TO SAVED MODE ===
+- tapOn:
+    text: ".*Moods.*"
+- tapOn:
+    text: ".*Saved.*"
+- waitForAnimationToEnd
+# Saved mode with no favorites shows empty state
+- assertVisible:
+    text: ".*saved.*"
+    optional: true
+- takeScreenshot: "maestro/screenshots/filters_07_saved_mode"
+
+# === RETURN TO TOPICS ===
+- tapOn:
+    text: ".*Saved.*"
+- tapOn:
+    text: ".*Topics.*"
+- waitForAnimationToEnd
+- takeScreenshot: "maestro/screenshots/filters_08_back_to_topics"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: "Save to favorites"
+- takeScreenshot: "maestro/screenshots/filters_09_final"
