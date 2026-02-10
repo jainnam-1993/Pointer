@@ -230,6 +230,37 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
 }
 
 // ============================================================
+// Article Favorites
+// ============================================================
+
+/** Saved article IDs, persisted via [StorageService]. */
+final articleFavoritesProvider = StateNotifierProvider<ArticleFavoritesNotifier, List<String>>((ref) {
+  final storage = ref.watch(storageServiceProvider);
+  return ArticleFavoritesNotifier(storage);
+});
+
+/** Manages saved/bookmarked [Article] IDs with toggle semantics. */
+class ArticleFavoritesNotifier extends StateNotifier<List<String>> {
+  final StorageService _storage;
+
+  ArticleFavoritesNotifier(this._storage) : super(_storage.favoriteArticles);
+
+  /** Toggle saved state — add if absent, remove if present. */
+  Future<void> toggle(String articleId) async {
+    if (state.contains(articleId)) {
+      await _storage.removeFavoriteArticle(articleId);
+      state = [...state]..remove(articleId);
+    } else {
+      await _storage.addFavoriteArticle(articleId);
+      state = [...state, articleId];
+    }
+  }
+
+  /** Whether the given article is currently saved. */
+  bool isSaved(String articleId) => state.contains(articleId);
+}
+
+// ============================================================
 // Teaching Filter - Tag-based filtering for Library
 // ============================================================
 

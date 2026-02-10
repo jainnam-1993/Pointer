@@ -10,6 +10,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
+import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import 'share_preview_screen.dart';
@@ -94,6 +95,21 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           },
                         ),
                         const Spacer(),
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final isSaved = ref.watch(articleFavoritesProvider).contains(widget.article.id);
+                            return IconButton(
+                              icon: Icon(
+                                isSaved ? Icons.bookmark : Icons.bookmark_border,
+                                color: isSaved ? colors.accent : colors.textPrimary,
+                              ),
+                              onPressed: () {
+                                HapticFeedback.lightImpact();
+                                ref.read(articleFavoritesProvider.notifier).toggle(widget.article.id);
+                              },
+                            );
+                          },
+                        ),
                         IconButton(
                           icon: Icon(Icons.share_outlined, color: colors.textPrimary),
                           onPressed: () => _shareArticle(context),

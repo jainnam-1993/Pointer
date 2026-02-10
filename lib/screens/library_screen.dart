@@ -68,6 +68,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
     final favorites = ref.watch(favoritesProvider);
+    final savedArticleIds = ref.watch(articleFavoritesProvider);
 
     final hasActiveFilter = _browseMode != LibraryBrowseMode.topics || _contentFilter != ContentFilter.all;
 
@@ -129,7 +130,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                         ),
                       ),
                     ),
-                    if (favorites.isEmpty)
+                    if (favorites.isEmpty && savedArticleIds.isEmpty)
                       SliverFillRemaining(
                         child: Center(
                           child: Padding(
@@ -139,17 +140,80 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                               children: [
                                 Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
                                 const SizedBox(height: 16),
-                                Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
+                                Text('Nothing saved yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
                                 const SizedBox(height: 8),
-                                Text('Long-press a pointing to save it', style: TextStyle(color: colors.textMuted, fontSize: 14)),
+                                Text('Long-press a pointing or bookmark an article', style: TextStyle(color: colors.textMuted, fontSize: 14)),
                               ],
                             ),
                           ),
                         ),
-                      )
-                    else
+                      ),
+
+                    // Saved articles section
+                    if (savedArticleIds.isNotEmpty) ...[
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                          child: Text('ARTICLES', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1)),
+                        ),
+                      ),
                       SliverPadding(
-                        padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final articleId = savedArticleIds[index];
+                            final article = articles.cast<Article?>().firstWhere((a) => a?.id == articleId, orElse: () => null);
+                            if (article == null) return const SizedBox.shrink();
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: GlassCard(
+                                padding: const EdgeInsets.all(20),
+                                onTap: () => _openArticle(context, article),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(article.title, style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600)),
+                                    if (article.subtitle != null) ...[
+                                      const SizedBox(height: 4),
+                                      Text(article.subtitle!, style: TextStyle(color: colors.textSecondary, fontSize: 13), maxLines: 2, overflow: TextOverflow.ellipsis),
+                                    ],
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Text('${article.readingTimeMinutes} min read', style: TextStyle(color: colors.textMuted, fontSize: 12)),
+                                        if (article.teacher != null) ...[
+                                          Text('  ·  ', style: TextStyle(color: colors.textMuted, fontSize: 12)),
+                                          Expanded(child: Text(article.teacher!, style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic), overflow: TextOverflow.ellipsis)),
+                                        ] else
+                                          const Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            ref.read(articleFavoritesProvider.notifier).toggle(articleId);
+                                          },
+                                          child: Icon(Icons.bookmark, size: 22, color: colors.accent),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }, childCount: savedArticleIds.length),
+                        ),
+                      ),
+                    ],
+
+                    // Saved pointings section
+                    if (favorites.isNotEmpty) ...[
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                          child: Text('POINTINGS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1)),
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate((context, index) {
                             final pointingId = favorites[index];
@@ -171,9 +235,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                     Row(
                                       children: [
                                         if (pointing.teacher != null)
-                                          Expanded(
-                                            child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
-                                          )
+                                          Expanded(child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)))
                                         else
                                           const Spacer(),
                                         GestureDetector(
@@ -214,6 +276,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                           }, childCount: favorites.length),
                         ),
                       ),
+                    ],
                   ] else ...[
                     // Featured Section
                     SliverToBoxAdapter(

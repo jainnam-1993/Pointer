@@ -9,9 +9,11 @@ library;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/pointings.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
+import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../share_preview_screen.dart';
@@ -50,15 +52,16 @@ class SectionHeader extends StatelessWidget {
 }
 
 /** Card for displaying an article in a list */
-class ArticleListItem extends StatelessWidget {
+class ArticleListItem extends ConsumerWidget {
   final Article article;
   final VoidCallback onTap;
 
   const ArticleListItem({super.key, required this.article, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
 
     return Semantics(
       button: true,
@@ -110,8 +113,20 @@ class ArticleListItem extends StatelessWidget {
               ),
             ),
 
-            // Arrow
-            Icon(Icons.arrow_forward_ios, size: 14, color: colors.textMuted),
+            const SizedBox(width: 8),
+
+            // Bookmark
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                ref.read(articleFavoritesProvider.notifier).toggle(article.id);
+              },
+              child: Icon(
+                isSaved ? Icons.bookmark : Icons.bookmark_border,
+                size: 22,
+                color: isSaved ? colors.accent : colors.textMuted,
+              ),
+            ),
           ],
         ),
       ),

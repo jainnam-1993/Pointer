@@ -14,6 +14,9 @@ class StorageKeys {
   /** JSON-encoded list of saved [Pointing] IDs. */
   static const favoritePointings = 'pointer_favorites';
 
+  /** JSON-encoded list of saved [Article] IDs. */
+  static const favoriteArticles = 'pointer_favorite_articles';
+
   /** JSON-encoded list of recently viewed [Pointing] entries (id + timestamp). */
   static const viewedPointings = 'pointer_viewed';
 
@@ -173,6 +176,31 @@ class StorageService {
 
   /** Whether the given [Pointing] ID is in the favourites list. */
   bool isFavorite(String pointingId) => favorites.contains(pointingId);
+
+  // ---- Article Favorites ----
+
+  /** Saved article IDs, ordered by save time (newest last). */
+  List<String> get favoriteArticles {
+    final stored = _prefs.getString(StorageKeys.favoriteArticles);
+    if (stored == null) return [];
+    return List<String>.from(jsonDecode(stored));
+  }
+
+  /** Add an [Article] ID to the saved articles list. */
+  Future<void> addFavoriteArticle(String articleId) async {
+    final current = favoriteArticles;
+    if (!current.contains(articleId)) {
+      current.add(articleId);
+      await _prefs.setString(StorageKeys.favoriteArticles, jsonEncode(current));
+    }
+  }
+
+  /** Remove an [Article] ID from the saved articles list. */
+  Future<void> removeFavoriteArticle(String articleId) async {
+    final current = favoriteArticles;
+    current.remove(articleId);
+    await _prefs.setString(StorageKeys.favoriteArticles, jsonEncode(current));
+  }
 
   /** Recently viewed pointings as a list of `{id, viewedAt}` maps, newest first. */
   List<Map<String, dynamic>> get viewedPointings {
