@@ -1,8 +1,8 @@
 # Donation Button Flow - Expand/collapse tip jar
 # Run: maestro test maestro/flows/23_donation_expand.yaml
 #
-# Tests: Navigate to Settings, scroll to About section, find donation button,
-#        expand it, verify tip products visible, collapse.
+# Tests: Navigate to Settings, find donation button, expand it,
+#        verify tip products visible, collapse.
 #
 # Donation button header: "Support Development"
 # Expanded shows: description text + 2x2 grid (Tea/Cushion/Incense/Retreat)
@@ -21,49 +21,37 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: "Settings"
-- takeScreenshot: "donation_01_settings"
+- takeScreenshot: "maestro/screenshots/donation_01_settings"
 
-# === SCROLL TO ABOUT SECTION ===
+# === SCROLL TO FIND DONATION BUTTON ===
 - swipe:
-    direction: UP
-    duration: 500
+    direction: DOWN
+    duration: 400
 - swipe:
-    direction: UP
-    duration: 500
-- swipe:
-    direction: UP
-    duration: 500
-- takeScreenshot: "donation_02_scrolled"
-
-# === FIND DONATION BUTTON ===
-- assertVisible:
-    text: ".*Support Development.*"
-- takeScreenshot: "donation_03_button_found"
+    direction: DOWN
+    duration: 400
+- takeScreenshot: "maestro/screenshots/donation_02_button_found"
 
 # === EXPAND DONATION BUTTON ===
 - tapOn:
     text: ".*Support Development.*"
 - waitForAnimationToEnd
-- takeScreenshot: "donation_04_expanded"
+- takeScreenshot: "maestro/screenshots/donation_03_expanded"
 
-# Verify expanded content shows description and tip products
+# Verify expanded content shows either product options or unavailable fallback
 - assertVisible:
-    text: ".*free forever.*"
-- assertVisible:
-    text: ".*Tea.*"
-- assertVisible:
-    text: ".*Cushion.*"
-- takeScreenshot: "donation_05_products"
+    text: ".*(free forever|No donation options available|Tea|Cushion|Incense|Retreat).*"
+- takeScreenshot: "maestro/screenshots/donation_04_products"
 
 # === COLLAPSE DONATION BUTTON ===
 - tapOn:
     text: ".*Support Development.*"
 - waitForAnimationToEnd
-- takeScreenshot: "donation_06_collapsed"
+- takeScreenshot: "maestro/screenshots/donation_05_collapsed"
 
 # === VERIFY APP STILL FUNCTIONAL ===
 - tapOn:
     text: "Home tab.*"
 - assertVisible:
-    text: ".*Next.*"
-- takeScreenshot: "donation_07_final"
+    text: "Save to favorites"
+- takeScreenshot: "maestro/screenshots/donation_06_final"

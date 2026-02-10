@@ -110,7 +110,8 @@ list_elements() {
 # Function: Take screenshot (reliable two-step method)
 # Usage: screenshot [filename]
 screenshot() {
-    local output="${1:-screenshot_$(date +%Y%m%d_%H%M%S).png}"
+    local output="${1:-maestro/screenshots/screenshot_$(date +%Y%m%d_%H%M%S).png}"
+    mkdir -p "$(dirname "$output")"
     echo "Capturing screenshot..."
     adb shell screencap /sdcard/screenshot.png
     adb pull /sdcard/screenshot.png "$output"

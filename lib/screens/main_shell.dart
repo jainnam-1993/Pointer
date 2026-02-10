@@ -29,10 +29,17 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
+  bool _currentBranchCanPop() {
+    final key = widget.navigationShell.shellRouteContext.navigatorKey;
+    return key.currentState?.canPop() ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isZenMode = ref.watch(zenModeProvider);
     final currentIndex = widget.navigationShell.currentIndex;
+    final branchCanPop = _currentBranchCanPop();
+    final shouldInterceptBack = currentIndex != 0 && !branchCanPop;
 
     // Wrap content with horizontal swipe gesture and pure fade transition
     // Pure fade creates contemplative, peaceful experience (no slides)
@@ -55,31 +62,45 @@ class _MainShellState extends ConsumerState<MainShell> {
 
     // In zen mode, hide bottom nav bar
     if (isZenMode) {
-      return Scaffold(
+      return PopScope(
+        canPop: !shouldInterceptBack,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          widget.navigationShell.goBranch(0);
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              // Global particles effect (behind content) — RepaintBoundary isolates
+              // continuous particle animations from triggering full-tree repaints
+              const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
+              content,
+            ],
+          ),
+          extendBody: true,
+        ),
+      );
+    }
+
+    return PopScope(
+      canPop: !shouldInterceptBack,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        widget.navigationShell.goBranch(0);
+      },
+      child: Scaffold(
         body: Stack(
           children: [
-            // Global particles effect (behind content) — RepaintBoundary isolates
-            // continuous particle animations from triggering full-tree repaints
+            // Global particles effect (behind content)
             const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
             content,
           ],
         ),
         extendBody: true,
-      );
-    }
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Global particles effect (behind content)
-          const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-          content,
-        ],
-      ),
-      extendBody: true,
-      bottomNavigationBar: _BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+        bottomNavigationBar: _BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+        ),
       ),
     );
   }

@@ -274,8 +274,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Save to favorites
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
 
-    // Update widget with new favorites data
-    await WidgetService.updateFavorites({...favorites, pointing.id});
+    // Sync widget heart state/cache with latest app favorites
+    await WidgetService.updateFavorites(ref.read(favoritesProvider).toSet());
 
     // Track tradition affinity (saves weighted 3x in affinity algorithm)
     final affinity = ref.read(affinityServiceProvider);
@@ -369,300 +369,304 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ? 80.0 // Minimal space for foldables
         : (screenHeight * 0.08).clamp(80.0, 120.0);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background
-          const Positioned.fill(child: AnimatedGradient()),
+    return PopScope(
+      canPop: !isZenMode,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (!mounted) return;
+        ref.read(zenModeProvider.notifier).state = false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Background
+            const Positioned.fill(child: AnimatedGradient()),
 
-          // Content - switches between zen mode and full view
-          if (isZenMode)
-            SafeArea(
-              child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
-            )
-          else
-            // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
-            GestureDetector(
-              behavior: HitTestBehavior.opaque, // Capture gestures on empty space too
-              onVerticalDragStart: (_) {
-                setState(() {
-                  _isSwipeInProgress = true;
-                  _swipeOffset = 0.0;
-                });
-              },
-              onVerticalDragUpdate: (details) {
-                setState(() {
-                  // Accumulate the delta, negative = swipe up, positive = swipe down
-                  _swipeOffset += details.delta.dy;
-                });
-              },
-              onVerticalDragEnd: (details) {
-                final wasSwipingUp = _swipeOffset < -50;
-                final wasSwipingDown = _swipeOffset > 50;
+            // Content - switches between zen mode and full view
+            if (isZenMode)
+              SafeArea(
+                child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
+              )
+            else
+              // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
+              GestureDetector(
+                behavior: HitTestBehavior.opaque, // Capture gestures on empty space too
+                onVerticalDragStart: (_) {
+                  setState(() {
+                    _isSwipeInProgress = true;
+                    _swipeOffset = 0.0;
+                  });
+                },
+                onVerticalDragUpdate: (details) {
+                  setState(() {
+                    // Accumulate the delta, negative = swipe up, positive = swipe down
+                    _swipeOffset += details.delta.dy;
+                  });
+                },
+                onVerticalDragEnd: (details) {
+                  final wasSwipingUp = _swipeOffset < -50;
+                  final wasSwipingDown = _swipeOffset > 50;
 
-                // Reset swipe state with animation
-                setState(() {
-                  _isSwipeInProgress = false;
-                  _swipeOffset = 0.0;
-                });
+                  // Reset swipe state with animation
+                  setState(() {
+                    _isSwipeInProgress = false;
+                    _swipeOffset = 0.0;
+                  });
 
-                // Swipe up (negative velocity) -> next
-                if (details.primaryVelocity! < -200 || wasSwipingUp) {
-                  _handleNext();
-                }
-                // Swipe down (positive velocity) -> previous
-                else if (details.primaryVelocity! > 200 || wasSwipingDown) {
-                  _handlePrevious();
-                }
-              },
-              // B.5: Removed horizontal swipe to allow main_shell tab navigation
-              child: SafeArea(
-                // SafeArea already handles system UI padding (taskbar, etc.)
-                // We only need to add space for our custom nav bar
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 24,
-                    right: 24,
-                    top: 20,
-                    bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
-                  ),
-                  child: Column(
-                    // Fixed layout: card area expands, bottom buttons stay anchored
-                    children: [
-                      // Expanded card area - card centered within, bottom stays fixed
-                      Expanded(
-                        child: Center(
-                          // Swipe blur effect: blur entire card during vertical drag
-                          child: ImageFiltered(
-                            imageFilter: ImageFilter.blur(
-                              sigmaX: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
-                              sigmaY: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
-                            ),
-                            child: AnimatedOpacity(
-                              duration: _isSwipeInProgress ? Duration.zero : const Duration(milliseconds: 200),
-                              opacity: 1.0 - (_swipeOffset.abs() / 200).clamp(0.0, 0.4),
-                              child: GestureDetector(
-                                onLongPress: _handleSave,
-                                onDoubleTap: _toggleZenMode,
-                                child: Semantics(
-                                  sortKey: const OrdinalSortKey(1.0),
-                                  label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
-                                  hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
-                                  customSemanticsActions: {
-                                    CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
-                                    CustomSemanticsAction(label: 'Share pointing'): _handleShare,
-                                  },
-                                  child: GlassCard(
-                                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
-                                    borderRadius: 32,
-                                    // Enable scrolling for large text / accessibility
-                                    // On foldables (square aspect), enforce minimum height to use more space
-                                    // Otherwise, let card size dynamically based on content
-                                    minHeight: isSquareAspect ? screenHeight * 0.25 : screenHeight * 0.15,
-                                    maxHeight: isSquareAspect ? screenHeight * 0.40 : screenHeight * 0.55,
-                                    enableScrolling: true,
-                                    // Subtle breathing animation syncs with "Ethereal Liquid Glass" design
-                                    enableBreathingAnimation: true,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Header row: tradition badge + share icon (Phase 5.11)
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 20),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              // Inline tradition badge with animation
-                                              AnimatedSwitcher(
-                                                duration: const Duration(milliseconds: 200),
-                                                switchInCurve: Curves.easeInOutCubic,
-                                                switchOutCurve: Curves.easeInOutCubic,
-                                                transitionBuilder: (child, animation) {
-                                                  return FadeTransition(
-                                                    opacity: animation,
-                                                    child: ScaleTransition(scale: animation, child: child),
-                                                  );
-                                                },
-                                                child: _buildInlineTraditionBadge(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
-                                              ),
-                                              // Heart + Share icons
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  // Save/favorite icon
-                                                  Semantics(
-                                                    button: true,
-                                                    label: ref.watch(favoritesProvider).contains(pointing.id)
-                                                        ? 'Remove from favorites'
-                                                        : 'Save to favorites',
-                                                    focusable: true,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        final favorites = ref.read(favoritesProvider);
-                                                        if (favorites.contains(pointing.id)) {
-                                                          HapticFeedback.mediumImpact();
-                                                          ref.read(favoritesProvider.notifier).toggle(pointing.id);
-                                                        } else {
-                                                          _handleSave();
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.all(8),
-                                                        decoration: BoxDecoration(
-                                                          color: colors.accent.withValues(alpha: 0.1),
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: Icon(
-                                                          ref.watch(favoritesProvider).contains(pointing.id)
-                                                              ? Icons.favorite
-                                                              : Icons.favorite_border,
-                                                          size: 18,
-                                                          color: ref.watch(favoritesProvider).contains(pointing.id)
-                                                              ? colors.accent
-                                                              : colors.textSecondary,
-                                                        ),
-                                                      ),
-                                                    ),
+                  // Swipe up (negative velocity) -> next
+                  if (details.primaryVelocity! < -200 || wasSwipingUp) {
+                    _handleNext();
+                  }
+                  // Swipe down (positive velocity) -> previous
+                  else if (details.primaryVelocity! > 200 || wasSwipingDown) {
+                    _handlePrevious();
+                  }
+                },
+                // B.5: Removed horizontal swipe to allow main_shell tab navigation
+                child: SafeArea(
+                  // SafeArea already handles system UI padding (taskbar, etc.)
+                  // We only need to add space for our custom nav bar
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      top: 20,
+                      bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
+                    ),
+                    child: Column(
+                      // Fixed layout: card area expands, bottom buttons stay anchored
+                      children: [
+                        // Expanded card area - card centered within, bottom stays fixed
+                        Expanded(
+                          child: Center(
+                            // Swipe blur effect: blur entire card during vertical drag
+                            child: ImageFiltered(
+                              imageFilter: ImageFilter.blur(
+                                sigmaX: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
+                                sigmaY: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
+                              ),
+                              child: AnimatedOpacity(
+                                duration: _isSwipeInProgress ? Duration.zero : const Duration(milliseconds: 200),
+                                opacity: 1.0 - (_swipeOffset.abs() / 200).clamp(0.0, 0.4),
+                                child: GestureDetector(
+                                  onLongPress: _handleSave,
+                                  onDoubleTap: _toggleZenMode,
+                                  child: Semantics(
+                                    sortKey: const OrdinalSortKey(1.0),
+                                    label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
+                                    hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
+                                    customSemanticsActions: {
+                                      CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
+                                      CustomSemanticsAction(label: 'Share pointing'): _handleShare,
+                                    },
+                                    child: GlassCard(
+                                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+                                      borderRadius: 32,
+                                      // Enable scrolling for large text / accessibility
+                                      // On foldables (square aspect), enforce minimum height to use more space
+                                      // Otherwise, let card size dynamically based on content
+                                      minHeight: isSquareAspect ? screenHeight * 0.25 : screenHeight * 0.15,
+                                      maxHeight: isSquareAspect ? screenHeight * 0.40 : screenHeight * 0.55,
+                                      enableScrolling: true,
+                                      // Subtle breathing animation syncs with "Ethereal Liquid Glass" design
+                                      enableBreathingAnimation: true,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Header row: tradition badge + share icon (Phase 5.11)
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                // Inline tradition badge with animation
+                                                AnimatedSwitcher(
+                                                  duration: const Duration(milliseconds: 200),
+                                                  switchInCurve: Curves.easeInOutCubic,
+                                                  switchOutCurve: Curves.easeInOutCubic,
+                                                  transitionBuilder: (child, animation) {
+                                                    return FadeTransition(
+                                                      opacity: animation,
+                                                      child: ScaleTransition(scale: animation, child: child),
+                                                    );
+                                                  },
+                                                  child: _buildInlineTraditionBadge(
+                                                    pointing.tradition,
+                                                    colors,
+                                                    key: ValueKey('${pointing.id}-badge'),
                                                   ),
-                                                  const SizedBox(width: 8),
-                                                  // Share icon
-                                                  Semantics(
-                                                    button: true,
-                                                    label: 'Share this pointing',
-                                                    focusable: true,
-                                                    child: GestureDetector(
-                                                      onTap: _handleShare,
-                                                      child: Container(
-                                                        padding: const EdgeInsets.all(8),
-                                                        decoration: BoxDecoration(
-                                                          color: colors.accent.withValues(alpha: 0.1),
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        AnimatedSwitcher(
-                                          duration: const Duration(milliseconds: 400),
-                                          switchInCurve: Curves.easeOut,
-                                          switchOutCurve: Curves.easeIn,
-                                          transitionBuilder: (child, animation) {
-                                            // Pure fade - calm and unhurried
-                                            return FadeTransition(
-                                              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                                              child: child,
-                                            );
-                                          },
-                                          child: Text(
-                                            pointing.content,
-                                            key: ValueKey(pointing.id),
-                                            style: AppTextStyles.pointingText(context),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                        if (pointing.instruction != null) ...[
-                                          const SizedBox(height: 24),
-                                          Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
-                                        ],
-                                        if (pointing.teacher != null) ...[
-                                          const SizedBox(height: 16),
-                                          AnimatedSwitcher(
-                                            duration: const Duration(milliseconds: 250),
-                                            switchInCurve: Curves.easeInOutCubic,
-                                            switchOutCurve: Curves.easeInOutCubic,
-                                            transitionBuilder: (child, animation) {
-                                              return FadeTransition(opacity: animation, child: child);
-                                            },
-                                            child: GestureDetector(
-                                              key: ValueKey('${pointing.id}-teacher'),
-                                              onTap: () {
-                                                final teacher = getTeacher(pointing.teacher);
-                                                if (teacher != null) {
-                                                  showTeacherSheet(context, teacher);
-                                                }
-                                              },
-                                              child: Text(
-                                                '- ${pointing.teacher}',
-                                                style: AppTextStyles.teacherText(context).copyWith(
-                                                  decoration: TextDecoration.underline,
-                                                  decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
                                                 ),
-                                                textAlign: TextAlign.center,
-                                              ),
+                                                // Heart + Share icons
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    // Save/favorite icon
+                                                    Semantics(
+                                                      button: true,
+                                                      label: ref.watch(favoritesProvider).contains(pointing.id)
+                                                          ? 'Remove from favorites'
+                                                          : 'Save to favorites',
+                                                      focusable: true,
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          final favorites = ref.read(favoritesProvider);
+                                                          if (favorites.contains(pointing.id)) {
+                                                            HapticFeedback.mediumImpact();
+                                                            await ref.read(favoritesProvider.notifier).toggle(pointing.id);
+                                                            await WidgetService.updateFavorites(ref.read(favoritesProvider).toSet());
+                                                          } else {
+                                                            await _handleSave();
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          padding: const EdgeInsets.all(8),
+                                                          decoration: BoxDecoration(
+                                                            color: colors.accent.withValues(alpha: 0.1),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                          child: Icon(
+                                                            ref.watch(favoritesProvider).contains(pointing.id)
+                                                                ? Icons.favorite
+                                                                : Icons.favorite_border,
+                                                            size: 18,
+                                                            color: ref.watch(favoritesProvider).contains(pointing.id)
+                                                                ? colors.accent
+                                                                : colors.textSecondary,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    // Share icon
+                                                    Semantics(
+                                                      button: true,
+                                                      label: 'Share this pointing',
+                                                      focusable: true,
+                                                      child: GestureDetector(
+                                                        onTap: _handleShare,
+                                                        child: Container(
+                                                          padding: const EdgeInsets.all(8),
+                                                          decoration: BoxDecoration(
+                                                            color: colors.accent.withValues(alpha: 0.1),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                          child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                        if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
-                                        // Extended commentary
-                                        if (pointing.commentary != null) ...[
-                                          const SizedBox(height: 16),
-                                          CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
-                                        ],
-                                        // Audio player
-                                        if (pointing.audioUrl != null) ...[
-                                          const SizedBox(height: 16),
-                                          AudioPlayerWidget(
-                                            pointingId: pointing.id,
-                                            audioUrl: pointing.audioUrl,
+                                          AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 400),
+                                            switchInCurve: Curves.easeOut,
+                                            switchOutCurve: Curves.easeIn,
+                                            transitionBuilder: (child, animation) {
+                                              // Pure fade - calm and unhurried
+                                              return FadeTransition(
+                                                opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                                                child: child,
+                                              );
+                                            },
+                                            child: Text(
+                                              pointing.content,
+                                              key: ValueKey(pointing.id),
+                                              style: AppTextStyles.pointingText(context),
+                                              textAlign: TextAlign.center,
+                                            ),
                                           ),
+                                          if (pointing.instruction != null) ...[
+                                            const SizedBox(height: 24),
+                                            Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
+                                          ],
+                                          if (pointing.teacher != null) ...[
+                                            const SizedBox(height: 16),
+                                            AnimatedSwitcher(
+                                              duration: const Duration(milliseconds: 250),
+                                              switchInCurve: Curves.easeInOutCubic,
+                                              switchOutCurve: Curves.easeInOutCubic,
+                                              transitionBuilder: (child, animation) {
+                                                return FadeTransition(opacity: animation, child: child);
+                                              },
+                                              child: GestureDetector(
+                                                key: ValueKey('${pointing.id}-teacher'),
+                                                onTap: () {
+                                                  final teacher = getTeacher(pointing.teacher);
+                                                  if (teacher != null) {
+                                                    showTeacherSheet(context, teacher);
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '- ${pointing.teacher}',
+                                                  style: AppTextStyles.teacherText(context).copyWith(
+                                                    decoration: TextDecoration.underline,
+                                                    decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
+                                          // Extended commentary
+                                          if (pointing.commentary != null) ...[
+                                            const SizedBox(height: 16),
+                                            CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
+                                          ],
+                                          // Audio player
+                                          if (pointing.audioUrl != null) ...[
+                                            const SizedBox(height: 16),
+                                            AudioPlayerWidget(pointingId: pointing.id, audioUrl: pointing.audioUrl),
+                                          ],
+                                          // Video player
+                                          if (pointing.videoUrl != null) ...[
+                                            const SizedBox(height: 16),
+                                            VideoPlayerWidget(pointingId: pointing.id, videoUrl: pointing.videoUrl),
+                                          ],
                                         ],
-                                        // Video player
-                                        if (pointing.videoUrl != null) ...[
-                                          const SizedBox(height: 16),
-                                          VideoPlayerWidget(
-                                            pointingId: pointing.id,
-                                            videoUrl: pointing.videoUrl,
-                                          ),
-                                        ],
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ), // Close GestureDetector
-                            ), // Close AnimatedOpacity
-                          ), // Close ImageFiltered
-                        ), // Close Center
-                      ), // Close Expanded
+                                ), // Close GestureDetector
+                              ), // Close AnimatedOpacity
+                            ), // Close ImageFiltered
+                          ), // Close Center
+                        ), // Close Expanded
 
-                      SizedBox(height: isSquareAspect ? 12 : 20),
+                        SizedBox(height: isSquareAspect ? 12 : 20),
 
-                      // Mini-inquiry entry point (hide in landscape to save space)
-                      if (!isSquareAspect) ...[const MiniInquiryCard(), const SizedBox(height: 24)],
+                        // Mini-inquiry entry point (hide in landscape to save space)
+                        if (!isSquareAspect) ...[const MiniInquiryCard(), const SizedBox(height: 24)],
 
-                      // Action button - Next only (Share moved to card header in Phase 5.11)
-                      Semantics(
-                        sortKey: const OrdinalSortKey(2.0),
-                        button: true,
-                        label: 'Show next pointing',
-                        child: GlassButton(
-                          label: 'Next',
-                          onPressed: _handleNext,
-                          icon: Icon(Icons.keyboard_arrow_down, color: colors.iconColor, size: 18),
+                        // Action button - Next only (Share moved to card header in Phase 5.11)
+                        Semantics(
+                          sortKey: const OrdinalSortKey(2.0),
+                          button: true,
+                          label: 'Show next pointing',
+                          child: GlassButton(
+                            label: 'Next',
+                            onPressed: _handleNext,
+                            icon: Icon(Icons.keyboard_arrow_down, color: colors.iconColor, size: 18),
+                          ),
                         ),
-                      ),
 
-                      // Footer - decorative hint text (hide in landscape)
-                      if (!isSquareAspect) ...[
-                        const SizedBox(height: 24),
-                        ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
+                        // Footer - decorative hint text (hide in landscape)
+                        if (!isSquareAspect) ...[
+                          const SizedBox(height: 24),
+                          ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
 
-          // Save confirmation overlay with first-save celebration
-          if (_showSaveConfirmation)
-            Positioned.fill(
-              child: SaveConfirmation(onDismiss: _hideSaveConfirmation),
-            ),
-        ],
+            // Save confirmation overlay with first-save celebration
+            if (_showSaveConfirmation) Positioned.fill(child: SaveConfirmation(onDismiss: _hideSaveConfirmation)),
+          ],
+        ),
       ),
     );
   }

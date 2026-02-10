@@ -70,6 +70,41 @@ flutter {
     source = "../.."
 }
 
+val generatedPluginRegistrant = file("src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java")
+val stripDevOnlyPluginsFromRegistrant = tasks.register("stripDevOnlyPluginsFromRegistrant") {
+    doLast {
+        if (!generatedPluginRegistrant.exists()) return@doLast
+
+        var content = generatedPluginRegistrant.readText()
+        val original = content
+
+        // Flutter currently regenerates this file with dev-only plugins after `flutter pub get`.
+        // Those plugins are not on release/profile classpaths, so javac fails.
+        val devOnlyPluginBlocks = listOf(
+            Regex(
+                """(?s)\s*try \{\s*flutterEngine\.getPlugins\(\)\.add\(new dev\.flutter\.plugins\.integration_test\.IntegrationTestPlugin\(\)\);\s*\} catch \(Exception e\) \{\s*Log\.e\(TAG, "Error registering plugin integration_test, dev\.flutter\.plugins\.integration_test\.IntegrationTestPlugin", e\);\s*\}\s*"""
+            ),
+            Regex(
+                """(?s)\s*try \{\s*flutterEngine\.getPlugins\(\)\.add\(new pl\.leancode\.patrol\.PatrolPlugin\(\)\);\s*\} catch \(Exception e\) \{\s*Log\.e\(TAG, "Error registering plugin patrol, pl\.leancode\.patrol\.PatrolPlugin", e\);\s*\}\s*"""
+            ),
+        )
+
+        devOnlyPluginBlocks.forEach { block ->
+            content = content.replace(block, "\n")
+        }
+
+        if (content != original) {
+            generatedPluginRegistrant.writeText(content)
+            logger.lifecycle("Stripped dev-only plugins from GeneratedPluginRegistrant.java for non-debug build")
+        }
+    }
+}
+
+tasks.matching { it.name == "compileReleaseJavaWithJavac" || it.name == "compileProfileJavaWithJavac" }
+    .configureEach {
+        dependsOn(stripDevOnlyPluginsFromRegistrant)
+    }
+
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

@@ -9,141 +9,73 @@
 
 appId: com.dailypointer
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
-# Skip onboarding if shown
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Maybe Later"
-    optional: true
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
 
 # === NAVIGATE TO SETTINGS ===
 - tapOn:
-    text: ".*Settings.*"
+    text: "Settings tab.*"
 - assertVisible:
-    text: ".*Settings.*"
-- takeScreenshot: "notif_01_settings"
+    text: "Settings"
+- takeScreenshot: "maestro/screenshots/notif_01_settings"
 
 # === OPEN NOTIFICATION SETTINGS ===
 - tapOn:
-    text: ".*Notification.*"
-- takeScreenshot: "notif_02_notification_settings"
+    text: ".*Notification Times.*"
+- takeScreenshot: "maestro/screenshots/notif_02_notification_settings"
 
 # Verify notification settings opened
 - assertVisible:
-    text: ".*Notification.*"
-    optional: true
+    text: "Notification Schedule"
 
-# === NOTIFICATION TOGGLE ===
-# Toggle notifications on/off
+# === PRESET COVERAGE ===
 - tapOn:
-    text: ".*Enable.*"
-    optional: true
-- tapOn:
-    id: "notification_toggle"
-    optional: true
-- takeScreenshot: "notif_03_toggled"
+    text: "Morning"
+- takeScreenshot: "maestro/screenshots/notif_03_toggled"
 
 # === PRESET: MORNING ===
 - tapOn:
-    text: ".*Morning.*"
-    optional: true
-- takeScreenshot: "notif_04_morning_preset"
+    text: "Morning"
+- takeScreenshot: "maestro/screenshots/notif_04_morning_preset"
 
 # === PRESET: ALL DAY ===
 - tapOn:
-    text: ".*All.*day.*"
-    optional: true
-- takeScreenshot: "notif_05_all_day_preset"
+    text: "All Day"
+- takeScreenshot: "maestro/screenshots/notif_05_all_day_preset"
 
 # === PRESET: EVENING ===
 - tapOn:
-    text: ".*Evening.*"
-    optional: true
-- takeScreenshot: "notif_06_evening_preset"
+    text: "Evening"
+- takeScreenshot: "maestro/screenshots/notif_06_evening_preset"
 
 # === PRESET: MINIMAL ===
 - tapOn:
-    text: ".*Minimal.*"
-    optional: true
-- takeScreenshot: "notif_07_minimal_preset"
+    text: "Minimal"
+- takeScreenshot: "maestro/screenshots/notif_07_minimal_preset"
 
-# === CUSTOM CONFIGURATION ===
-# Scroll to see more options
+# === SCHEDULE CONTROLS ===
 - swipe:
     direction: UP
     duration: 300
-- takeScreenshot: "notif_08_more_options"
+- takeScreenshot: "maestro/screenshots/notif_08_more_options"
 
-# === TIME WINDOW ===
-# Tap to configure start time
-- tapOn:
-    text: ".*Start.*"
-    optional: true
-- tapOn:
-    text: ".*from.*"
-    optional: true
-- takeScreenshot: "notif_09_start_time"
-
-# Close time picker
-- tapOn:
-    text: ".*OK.*"
-    optional: true
-- tapOn:
-    text: ".*Done.*"
-    optional: true
-
-# Tap to configure end time
-- tapOn:
-    text: ".*End.*"
-    optional: true
-- tapOn:
-    text: ".*to.*"
-    optional: true
-- takeScreenshot: "notif_10_end_time"
-
-# Close time picker
-- tapOn:
-    text: ".*OK.*"
-    optional: true
-- tapOn:
-    text: ".*Done.*"
-    optional: true
-
-# === FREQUENCY ===
-- tapOn:
-    text: ".*Frequency.*"
-    optional: true
-- tapOn:
-    text: ".*hour.*"
-    optional: true
-- takeScreenshot: "notif_11_frequency"
-
-# === QUIET HOURS ===
-- tapOn:
-    text: ".*Quiet.*"
-    optional: true
-- takeScreenshot: "notif_12_quiet_hours"
+- assertVisible:
+    text: "Time Window"
+- assertVisible:
+    text: "Frequency"
+- takeScreenshot: "maestro/screenshots/notif_09_time_frequency_visible"
 
 # === BACK TO SETTINGS ===
-- back:
-    optional: true
-- tapOn:
-    text: ".*Settings.*"
-    optional: true
-- takeScreenshot: "notif_13_back_settings"
+- pressKey: Home
+- launchApp
+- takeScreenshot: "maestro/screenshots/notif_13_back_settings"
 
 # === FINAL STATE ===
 - tapOn:
-    text: ".*Home.*"
+    text: "Home tab.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "notif_14_complete"
+- takeScreenshot: "maestro/screenshots/notif_14_complete"

@@ -33,10 +33,10 @@ fi
 echo -e "${GREEN}Running Maestro smoke test...${NC}"
 
 # Run smoke test with 60s timeout
-if timeout 60 maestro test maestro/flows/00_smoke_test.yaml --no-ansi 2>/dev/null; then
+if timeout 60 maestro test --config .maestro/config.yaml maestro/flows/00_smoke_test.yaml --no-ansi 2>/dev/null; then
     echo -e "${GREEN}Smoke test passed.${NC}"
 else
     echo -e "${RED}Smoke test failed. Commit blocked.${NC}"
-    echo "Run 'maestro test maestro/flows/00_smoke_test.yaml' to debug."
+    echo "Run 'maestro test --config .maestro/config.yaml maestro/flows/00_smoke_test.yaml' to debug."
     exit 1
 fi

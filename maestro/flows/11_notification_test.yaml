@@ -13,12 +13,7 @@ appId: com.dailypointer
     clearState: true  # Start fresh to ensure clean notification state
 
 # === HANDLE ONBOARDING ===
-- tapOn:
-    text: "Continue"
-    optional: true
-- tapOn:
-    text: "Continue"
-    optional: true
+- runFlow: ../shared/skip_onboarding.yaml
 - tapOn:
     text: "Continue"
     optional: true
@@ -28,27 +23,30 @@ appId: com.dailypointer
 
 # === NAVIGATE TO SETTINGS ===
 - tapOn:
-    text: ".*Settings.*"
-- takeScreenshot: "notif_01_settings_initial"
+    text: "Settings tab.*"
+- takeScreenshot: "maestro/screenshots/notif_01_settings_initial"
 
 # === UNLOCK DEVELOPER OPTIONS (7 taps on version) ===
-- scroll:
+- scrollUntilVisible:
+    element:
+      text: ".*Here Now v.*"
     direction: DOWN
+    timeout: 10000
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
+    text: ".*Here Now v.*"
 - tapOn:
-    text: ".*Pointer v.*"
-- takeScreenshot: "notif_02_developer_unlocked"
+    text: ".*Here Now v.*"
+- takeScreenshot: "maestro/screenshots/notif_02_developer_unlocked"
 
 # === GRANT ALARM PERMISSION (if needed) ===
 - tapOn:
@@ -59,19 +57,22 @@ appId: com.dailypointer
     timeout: 5000
 
 # === SCROLL UP TO FIND NOTIFICATIONS SECTION ===
-- scroll:
+- scrollUntilVisible:
+    element:
+      text: ".*Notification.*"
     direction: UP
+    timeout: 10000
 
 # === ENABLE NOTIFICATIONS ===
 - tapOn:
     text: ".*Notification.*"
-- takeScreenshot: "notif_03_notification_sheet"
+- takeScreenshot: "maestro/screenshots/notif_03_notification_sheet"
 
 # === SELECT TEST PRESET (every 1 minute) ===
 - tapOn:
     text: ".*Test.*"
     optional: true
-- takeScreenshot: "notif_04_test_preset_selected"
+- takeScreenshot: "maestro/screenshots/notif_04_test_preset_selected"
 
 # === CONFIRM/SAVE SCHEDULE ===
 - tapOn:
@@ -82,9 +83,8 @@ appId: com.dailypointer
     optional: true
 
 # === VERIFY SCHEDULE IS ACTIVE ===
-- scroll:
-    direction: DOWN
-- takeScreenshot: "notif_05_schedule_saved"
+- scroll
+- takeScreenshot: "maestro/screenshots/notif_05_schedule_saved"
 
 # === SEND IMMEDIATE TEST NOTIFICATION ===
 - tapOn:
@@ -93,11 +93,11 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Send Test.*"
     optional: true
-- takeScreenshot: "notif_06_test_sent"
+- takeScreenshot: "maestro/screenshots/notif_06_test_sent"
 
 # === BACKGROUND THE APP ===
 - pressKey: Home
-- takeScreenshot: "notif_07_backgrounded"
+- takeScreenshot: "maestro/screenshots/notif_07_backgrounded"
 
 # === INSTRUCTIONS FOR MANUAL VERIFICATION ===
 #

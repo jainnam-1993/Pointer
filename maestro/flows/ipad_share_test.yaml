@@ -18,12 +18,16 @@ appId: com.dailypointer
 # Wait for home screen
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "ipad_share_01_home"
+- takeScreenshot: "maestro/screenshots/ipad_share_01_home"
 
 # Open share modal via share button
 - tapOn:
+    id: "share_button"
+    optional: true
+- tapOn:
     text: "Share this pointing"
-- takeScreenshot: "ipad_share_02_modal_open"
+    optional: true
+- takeScreenshot: "maestro/screenshots/ipad_share_02_modal_open"
 
 # Wait for share preview to load
 - waitForAnimationToEnd
@@ -35,22 +39,28 @@ appId: com.dailypointer
 # Tap Share Image button
 - tapOn:
     text: "Share Image"
-- takeScreenshot: "ipad_share_03_share_sheet"
+- takeScreenshot: "maestro/screenshots/ipad_share_03_share_sheet"
 
 # Wait for share sheet to appear
 - waitForAnimationToEnd
-- takeScreenshot: "ipad_share_04_after_share_tap"
+- takeScreenshot: "maestro/screenshots/ipad_share_04_after_share_tap"
 
 # Dismiss share sheet
 - tapOn:
     text: "Cancel"
-- takeScreenshot: "ipad_share_05_dismissed"
+    optional: true
+- tapOn:
+    text: "Done"
+    optional: true
+- back:
+    optional: true
+- takeScreenshot: "maestro/screenshots/ipad_share_05_dismissed"
 
 # Close share preview
 - back
-- takeScreenshot: "ipad_share_06_back_home"
+- takeScreenshot: "maestro/screenshots/ipad_share_06_back_home"
 
 # Final verification - app didn't crash
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "ipad_share_07_complete"
+- takeScreenshot: "maestro/screenshots/ipad_share_07_complete"

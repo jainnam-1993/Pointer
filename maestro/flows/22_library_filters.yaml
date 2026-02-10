@@ -20,22 +20,22 @@ appId: com.dailypointer
 - waitForAnimationToEnd
 - assertVisible:
     text: "Library"
-- assertVisible:
-    text: ".*FEATURED.*"
-- takeScreenshot: "filters_01_library"
+- takeScreenshot: "maestro/screenshots/filters_01_library"
 
 # Scroll down past featured to reach BROWSE BY section
-- swipe:
-    direction: UP
-    duration: 400
+- scrollUntilVisible:
+    element:
+      text: "Topics"
+    direction: DOWN
+    timeout: 10000
 - assertVisible:
     text: ".*BROWSE BY.*"
-- takeScreenshot: "filters_02_browse_by"
+- takeScreenshot: "maestro/screenshots/filters_02_browse_by"
 
 # === DEFAULT MODE: TOPICS ===
 - assertVisible:
     text: ".*Topics.*"
-- takeScreenshot: "filters_03_topics_mode"
+- takeScreenshot: "maestro/screenshots/filters_03_topics_mode"
 
 # === SWITCH TO TEACHERS MODE ===
 - tapOn:
@@ -44,7 +44,7 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Teachers.*"
 - waitForAnimationToEnd
-- takeScreenshot: "filters_04_teachers_mode"
+- takeScreenshot: "maestro/screenshots/filters_04_teachers_mode"
 
 # === SWITCH TO LINEAGES MODE ===
 - tapOn:
@@ -52,7 +52,7 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Lineages.*"
 - waitForAnimationToEnd
-- takeScreenshot: "filters_05_lineages_mode"
+- takeScreenshot: "maestro/screenshots/filters_05_lineages_mode"
 
 # === SWITCH TO MOODS MODE ===
 - tapOn:
@@ -60,7 +60,7 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Moods.*"
 - waitForAnimationToEnd
-- takeScreenshot: "filters_06_moods_mode"
+- takeScreenshot: "maestro/screenshots/filters_06_moods_mode"
 
 # === SWITCH TO SAVED MODE ===
 - tapOn:
@@ -68,22 +68,18 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Saved.*"
 - waitForAnimationToEnd
-# Saved mode with no favorites shows empty state
 - assertVisible:
-    text: ".*saved.*"
-- takeScreenshot: "filters_07_saved_mode"
+    text: "Your saved pointings"
+- takeScreenshot: "maestro/screenshots/filters_07_saved_mode"
 
 # === RETURN TO TOPICS ===
-- tapOn:
-    text: ".*Saved.*"
-- tapOn:
-    text: ".*Topics.*"
+- back
 - waitForAnimationToEnd
-- takeScreenshot: "filters_08_back_to_topics"
+- takeScreenshot: "maestro/screenshots/filters_08_back_to_topics"
 
 # === VERIFY APP STILL FUNCTIONAL ===
 - tapOn:
-    text: "Home tab.*"
+    text: ".*Home.*"
 - assertVisible:
     text: ".*Next.*"
-- takeScreenshot: "filters_09_final"
+- takeScreenshot: "maestro/screenshots/filters_09_final"

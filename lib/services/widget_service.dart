@@ -234,6 +234,15 @@ class WidgetService {
    */
   static Future<void> processPendingWidgetActions() async {
     try {
+      // Android fallback: if widget background callback didn't run, this key
+      // still contains the pending pointing ID to toggle.
+      final pendingSaveId = await HomeWidget.getWidgetData<String>('save_pending_id');
+      if (pendingSaveId != null && pendingSaveId.isNotEmpty) {
+        debugPrint('[WidgetService] Processing pending Android save: $pendingSaveId');
+        await _toggleFavoriteById(pendingSaveId);
+        await HomeWidget.saveWidgetData<String>('save_pending_id', null);
+      }
+
       // Check for pending saves (iOS widget save button stores content here)
       final pendingSavesJson = await HomeWidget.getWidgetData<String>('pending_saves');
       if (pendingSavesJson != null && pendingSavesJson.isNotEmpty) {
@@ -257,6 +266,30 @@ class WidgetService {
     } catch (e) {
       debugPrint('Error processing pending widget actions: $e');
     }
+  }
+
+  /**
+   * Toggle a favorite in app SharedPreferences by pointing ID.
+   *
+   * Used as a resilience path for Android widget saves when the background
+   * callback does not execute.
+   */
+  static Future<void> _toggleFavoriteById(String pointingId) async {
+    final prefs = await SharedPreferences.getInstance();
+    const favoritesKey = 'pointer_favorites';
+    final stored = prefs.getString(favoritesKey);
+    final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
+
+    if (favorites.contains(pointingId)) {
+      favorites.remove(pointingId);
+      debugPrint('[WidgetService] Removed $pointingId from app favorites');
+    } else {
+      favorites.add(pointingId);
+      debugPrint('[WidgetService] Added $pointingId to app favorites');
+    }
+
+    await prefs.setString(favoritesKey, jsonEncode(favorites));
+    await updateFavorites(favorites.toSet());
   }
 
   /**
@@ -400,9 +433,6 @@ Future<void> _saveCurrentWidgetPointing() async {
       return;
     }
 
-    // Clear the pending ID
-    await HomeWidget.saveWidgetData<String>('save_pending_id', null);
-
     // Toggle in the app's favorites (SharedPreferences)
     final prefs = await SharedPreferences.getInstance();
     const favoritesKey = 'pointer_favorites';
@@ -421,6 +451,9 @@ Future<void> _saveCurrentWidgetPointing() async {
 
     // Sync favorites back to widget data so heart icon stays in sync
     await WidgetService.updateFavorites(favorites.toSet());
+
+    // Clear pending ID only after successful persistence.
+    await HomeWidget.saveWidgetData<String>('save_pending_id', null);
   } catch (e) {
     debugPrint('[WidgetSave] Error: $e');
   }

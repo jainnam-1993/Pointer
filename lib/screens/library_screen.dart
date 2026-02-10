@@ -68,83 +68,95 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final featured = getFeaturedArticles(limit: 3);
     final favorites = ref.watch(favoritesProvider);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // Header with filter
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Library', style: Theme.of(context).textTheme.displayLarge),
-                        const SizedBox(height: 4),
-                        Text(
-                          _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
-                          style: TextStyle(color: colors.textSecondary, fontSize: 16),
-                        ),
-                      ],
+    final hasActiveFilter = _browseMode != LibraryBrowseMode.topics || _contentFilter != ContentFilter.all;
+
+    return PopScope(
+      canPop: !hasActiveFilter,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (!mounted) return;
+        setState(() {
+          _browseMode = LibraryBrowseMode.topics;
+          _contentFilter = ContentFilter.all;
+        });
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const Positioned.fill(child: AnimatedGradient()),
+            SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  // Header with filter
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Library', style: Theme.of(context).textTheme.displayLarge),
+                          const SizedBox(height: 4),
+                          Text(
+                            _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
+                            style: TextStyle(color: colors.textSecondary, fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-                // Show saved pointings if browsing saved
-                if (_browseMode == LibraryBrowseMode.saved) ...[
-                  if (favorites.isEmpty)
-                    SliverFillRemaining(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
-                              const SizedBox(height: 16),
-                              Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
-                              const SizedBox(height: 8),
-                              Text('Long-press a pointing to save it', style: TextStyle(color: colors.textMuted, fontSize: 14)),
-                            ],
+                  // Show saved pointings if browsing saved
+                  if (_browseMode == LibraryBrowseMode.saved) ...[
+                    if (favorites.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
+                                const SizedBox(height: 16),
+                                Text('No saved pointings yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
+                                const SizedBox(height: 8),
+                                Text('Long-press a pointing to save it', style: TextStyle(color: colors.textMuted, fontSize: 14)),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final pointingId = favorites[index];
-                          final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: GlassCard(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    pointing.content,
-                                    style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if (pointing.teacher != null) ...[
-                                    const SizedBox(height: 8),
-                                    Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
+                      )
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120 + bottomPadding),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final pointingId = favorites[index];
+                            final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: GlassCard(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      pointing.content,
+                                      style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if (pointing.teacher != null) ...[
+                                      const SizedBox(height: 8),
+                                      Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
+                                    ],
                                   ],
-                                ],
+                                ),
                               ),
-                            ),
-                          );
-                        }, childCount: favorites.length),
+                            );
+                          }, childCount: favorites.length),
+                        ),
                       ),
-                    ),
-                ] else ...[
+                  ] else ...[
                     // Featured Section
                     SliverToBoxAdapter(
                       child: Padding(
@@ -223,11 +235,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
                     // Dynamic browse list based on mode
                     _buildBrowseList(colors, bottomPadding, _contentFilter),
-                ], // end else
-              ],
+                  ], // end else
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -75,11 +75,6 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     final state = ref.watch(donationProvider);
     final colors = context.colors;
 
-    // Hide when not available and not loading
-    if (!state.isAvailable && !state.isLoading) {
-      return const SizedBox.shrink();
-    }
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
