@@ -36,10 +36,7 @@ void main() {
             padding: EdgeInsets.all(24),
             child: GlassCard(
               padding: EdgeInsets.all(24),
-              child: Text(
-                'Glass Card Content',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('Glass Card Content', style: TextStyle(color: Colors.white)),
             ),
           ),
         ),
@@ -58,10 +55,7 @@ void main() {
             child: GlassCard(
               padding: const EdgeInsets.all(24),
               borderColor: PointerColors.dark.gold.withValues(alpha: 0.5),
-              child: const Text(
-                'Gold Border Card',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: const Text('Gold Border Card', style: TextStyle(color: Colors.white)),
             ),
           ),
         ),
@@ -85,21 +79,13 @@ void main() {
                 children: [
                   Text(
                     'What is aware of this moment?',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w300),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
                   Text(
                     'Simply notice.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: TextStyle(color: Colors.white70, fontSize: 16, fontStyle: FontStyle.italic),
                   ),
                 ],
               ),
@@ -154,11 +140,7 @@ void main() {
       await pumpForGolden(
         tester,
         createComponentTestWrapper(
-          child: GlassButton(
-            label: 'Loading',
-            onPressed: () {},
-            isLoading: true,
-          ),
+          child: GlassButton(label: 'Loading', onPressed: () {}, isLoading: true),
         ),
         size: const Size(300, 150),
       );
@@ -227,9 +209,7 @@ void main() {
     testWidgets('advaita badge', (tester) async {
       await pumpForGolden(
         tester,
-        createComponentTestWrapper(
-          child: const TraditionBadge(tradition: Tradition.advaita),
-        ),
+        createComponentTestWrapper(child: const TraditionBadge(tradition: Tradition.advaita)),
         size: const Size(300, 100),
       );
 
@@ -239,9 +219,7 @@ void main() {
     testWidgets('zen badge', (tester) async {
       await pumpForGolden(
         tester,
-        createComponentTestWrapper(
-          child: const TraditionBadge(tradition: Tradition.zen),
-        ),
+        createComponentTestWrapper(child: const TraditionBadge(tradition: Tradition.zen)),
         size: const Size(300, 100),
       );
 
@@ -258,11 +236,7 @@ void main() {
         tester,
         createComponentTestWrapper(
           backgroundColor: Colors.black,
-          child: const SizedBox(
-            width: 400,
-            height: 800,
-            child: AnimatedGradient(),
-          ),
+          child: const SizedBox(width: 400, height: 800, child: AnimatedGradient()),
         ),
         size: const Size(400, 800),
       );

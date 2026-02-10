@@ -7,33 +7,56 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'aws_credential_service.dart';
 
-/// TTS playback state
+/** Lifecycle state of the [TTSService] audio player. */
 enum TTSPlaybackState {
+  /** No audio loaded or player reset. */
   idle,
+
+  /** Synthesising speech or buffering audio data. */
   loading,
+
+  /** Audio is actively playing. */
   playing,
+
+  /** Playback is paused by the user. */
   paused,
+
+  /** Playback reached the end of the audio. */
   completed,
+
+  /** An error occurred during synthesis or playback. */
   error,
 }
 
-/// Available Polly neural voices
+/** AWS Polly neural voice used for text-to-speech synthesis. */
 enum PollyVoice {
+  /** US English female neural voice. */
   joanna('Joanna', 'US English, Female'),
+
+  /** US English male neural voice. */
   matthew('Matthew', 'US English, Male'),
+
+  /** British English female neural voice. */
   amy('Amy', 'British English, Female'),
+
+  /** British English male neural voice. */
   brian('Brian', 'British English, Male');
 
+  /** Polly voice ID sent in the API request. */
   final String id;
+
+  /** Human-readable description shown in the voice picker UI. */
   final String description;
 
   const PollyVoice(this.id, this.description);
 }
 
-/// Service for text-to-speech using AWS Polly.
-///
-/// Converts article text to speech via AWS Polly API and plays
-/// the resulting audio using just_audio.
+/**
+ * Service for text-to-speech using AWS Polly.
+ *
+ * Converts article text to speech via AWS Polly API and plays
+ * the resulting audio using just_audio.
+ */
 class TTSService {
   static TTSService? _instance;
   AudioPlayer? _player;
@@ -58,34 +81,33 @@ class TTSService {
     return _instance!;
   }
 
-  /// Stream of playback state changes
+  /** Stream of playback state changes */
   Stream<TTSPlaybackState> get stateStream => _stateController.stream;
 
-  /// Stream of playback position updates
+  /** Stream of playback position updates */
   Stream<Duration> get positionStream => _positionController.stream;
 
-  /// Stream of total duration (once known)
+  /** Stream of total duration (once known) */
   Stream<Duration?> get durationStream => _durationController.stream;
 
-  /// Stream of error messages
+  /** Stream of error messages */
   Stream<String> get errorStream => _errorController.stream;
 
-  /// Currently playing article ID
+  /** Currently playing article ID */
   String? get currentArticleId => _currentArticleId;
 
-  /// Selected voice
+  /** Selected voice */
   PollyVoice get selectedVoice => _selectedVoice;
 
-  /// Set voice preference
+  /** Set voice preference */
   void setVoice(PollyVoice voice) {
     _selectedVoice = voice;
   }
 
-  /// Current playback state
+  /** Current playback state */
   TTSPlaybackState get currentState {
     if (_player == null) return TTSPlaybackState.idle;
-    if (_player!.processingState == ProcessingState.loading ||
-        _player!.processingState == ProcessingState.buffering) {
+    if (_player!.processingState == ProcessingState.loading || _player!.processingState == ProcessingState.buffering) {
       return TTSPlaybackState.loading;
     }
     if (_player!.playing) return TTSPlaybackState.playing;
@@ -95,7 +117,7 @@ class TTSService {
     return TTSPlaybackState.paused;
   }
 
-  /// Initialize audio player
+  /** Initialize audio player */
   Future<void> initialize() async {
     _player = AudioPlayer();
 
@@ -114,7 +136,7 @@ class TTSService {
     debugPrint('TTSService: Initialized');
   }
 
-  /// Synthesize and play text for an article
+  /** Synthesize and play text for an article */
   Future<void> synthesizeAndPlay(String articleId, String text) async {
     if (_player == null) await initialize();
 
@@ -146,26 +168,12 @@ class TTSService {
     }
   }
 
-  /// Call AWS Polly SynthesizeSpeech API
-  Future<Uint8List> _synthesizeSpeech(
-    String text,
-    AWSCredentials credentials,
-  ) async {
+  /** Call AWS Polly SynthesizeSpeech API */
+  Future<Uint8List> _synthesizeSpeech(String text, AWSCredentials credentials) async {
     final uri = Uri.parse('$_endpoint/v1/speech');
-    final body = jsonEncode({
-      'OutputFormat': 'mp3',
-      'Text': text,
-      'TextType': 'text',
-      'VoiceId': _selectedVoice.id,
-      'Engine': 'neural',
-    });
+    final body = jsonEncode({'OutputFormat': 'mp3', 'Text': text, 'TextType': 'text', 'VoiceId': _selectedVoice.id, 'Engine': 'neural'});
 
-    final headers = await _signRequest(
-      method: 'POST',
-      uri: uri,
-      body: body,
-      credentials: credentials,
-    );
+    final headers = await _signRequest(method: 'POST', uri: uri, body: body, credentials: credentials);
 
     final client = HttpClient();
     try {
@@ -188,10 +196,7 @@ class TTSService {
       }
 
       // Read audio bytes
-      final bytes = await response.fold<List<int>>(
-        [],
-        (previous, element) => previous..addAll(element),
-      );
+      final bytes = await response.fold<List<int>>([], (previous, element) => previous..addAll(element));
 
       return Uint8List.fromList(bytes);
     } finally {
@@ -199,7 +204,7 @@ class TTSService {
     }
   }
 
-  /// Sign request with AWS SigV4
+  /** Sign request with AWS SigV4 */
   Future<Map<String, String>> _signRequest({
     required String method,
     required Uri uri,
@@ -218,16 +223,17 @@ class TTSService {
     final payloadHash = sha256.convert(utf8.encode(body)).toString();
 
     // Canonical headers
-    final canonicalHeaders = 'content-type:application/json\n'
+    final canonicalHeaders =
+        'content-type:application/json\n'
         'host:$host\n'
         'x-amz-date:$amzDate\n'
         'x-amz-security-token:${credentials.sessionToken}\n';
 
-    final signedHeaders =
-        'content-type;host;x-amz-date;x-amz-security-token';
+    final signedHeaders = 'content-type;host;x-amz-date;x-amz-security-token';
 
     // Canonical request
-    final canonicalRequest = '$method\n'
+    final canonicalRequest =
+        '$method\n'
         '$canonicalUri\n'
         '$canonicalQuerystring\n'
         '$canonicalHeaders\n'
@@ -237,24 +243,19 @@ class TTSService {
     // String to sign
     final algorithm = 'AWS4-HMAC-SHA256';
     final credentialScope = '$dateStamp/$_region/$_service/aws4_request';
-    final stringToSign = '$algorithm\n'
+    final stringToSign =
+        '$algorithm\n'
         '$amzDate\n'
         '$credentialScope\n'
         '${sha256.convert(utf8.encode(canonicalRequest))}';
 
     // Calculate signature
-    final signingKey = _getSignatureKey(
-      credentials.secretAccessKey,
-      dateStamp,
-      _region,
-      _service,
-    );
-    final signature = Hmac(sha256, signingKey)
-        .convert(utf8.encode(stringToSign))
-        .toString();
+    final signingKey = _getSignatureKey(credentials.secretAccessKey, dateStamp, _region, _service);
+    final signature = Hmac(sha256, signingKey).convert(utf8.encode(stringToSign)).toString();
 
     // Authorization header
-    final authorization = '$algorithm '
+    final authorization =
+        '$algorithm '
         'Credential=${credentials.accessKeyId}/$credentialScope, '
         'SignedHeaders=$signedHeaders, '
         'Signature=$signature';
@@ -267,21 +268,11 @@ class TTSService {
     };
   }
 
-  List<int> _getSignatureKey(
-    String key,
-    String dateStamp,
-    String regionName,
-    String serviceName,
-  ) {
-    final kDate = Hmac(sha256, utf8.encode('AWS4$key'))
-        .convert(utf8.encode(dateStamp))
-        .bytes;
-    final kRegion =
-        Hmac(sha256, kDate).convert(utf8.encode(regionName)).bytes;
-    final kService =
-        Hmac(sha256, kRegion).convert(utf8.encode(serviceName)).bytes;
-    final kSigning =
-        Hmac(sha256, kService).convert(utf8.encode('aws4_request')).bytes;
+  List<int> _getSignatureKey(String key, String dateStamp, String regionName, String serviceName) {
+    final kDate = Hmac(sha256, utf8.encode('AWS4$key')).convert(utf8.encode(dateStamp)).bytes;
+    final kRegion = Hmac(sha256, kDate).convert(utf8.encode(regionName)).bytes;
+    final kService = Hmac(sha256, kRegion).convert(utf8.encode(serviceName)).bytes;
+    final kSigning = Hmac(sha256, kService).convert(utf8.encode('aws4_request')).bytes;
     return kSigning;
   }
 
@@ -298,7 +289,7 @@ class TTSService {
         '${date.second.toString().padLeft(2, '0')}Z';
   }
 
-  /// Strip markdown formatting from text for TTS
+  /** Strip markdown formatting from text for TTS */
   String _stripMarkdown(String markdown) {
     var text = markdown;
 
@@ -309,28 +300,13 @@ class TTSService {
     text = text.replaceAll(RegExp(r'!\[.*?\]\(.+?\)'), '');
 
     // Remove bold/italic - use replaceAllMapped for capture groups
-    text = text.replaceAllMapped(
-      RegExp(r'\*\*(.+?)\*\*'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'\*(.+?)\*'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'__(.+?)__'),
-      (m) => m.group(1) ?? '',
-    );
-    text = text.replaceAllMapped(
-      RegExp(r'_(.+?)_'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'\*\*(.+?)\*\*'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'\*(.+?)\*'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'__(.+?)__'), (m) => m.group(1) ?? '');
+    text = text.replaceAllMapped(RegExp(r'_(.+?)_'), (m) => m.group(1) ?? '');
 
     // Remove links but keep text
-    text = text.replaceAllMapped(
-      RegExp(r'\[(.+?)\]\(.+?\)'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'\[(.+?)\]\(.+?\)'), (m) => m.group(1) ?? '');
 
     // Remove blockquote markers
     text = text.replaceAll(RegExp(r'^>\s*', multiLine: true), '');
@@ -340,10 +316,7 @@ class TTSService {
 
     // Remove code blocks
     text = text.replaceAll(RegExp(r'```[\s\S]*?```'), '');
-    text = text.replaceAllMapped(
-      RegExp(r'`(.+?)`'),
-      (m) => m.group(1) ?? '',
-    );
+    text = text.replaceAllMapped(RegExp(r'`(.+?)`'), (m) => m.group(1) ?? '');
 
     // Remove list markers
     text = text.replaceAll(RegExp(r'^\s*[-*+]\s+', multiLine: true), '');
@@ -355,29 +328,29 @@ class TTSService {
     return text.trim();
   }
 
-  /// Pause playback
+  /** Pause playback */
   Future<void> pause() async {
     await _player?.pause();
   }
 
-  /// Resume playback
+  /** Resume playback */
   Future<void> resume() async {
     await _player?.play();
   }
 
-  /// Stop playback
+  /** Stop playback */
   Future<void> stop() async {
     await _player?.stop();
     _currentArticleId = null;
     _stateController.add(TTSPlaybackState.idle);
   }
 
-  /// Seek to position
+  /** Seek to position */
   Future<void> seek(Duration position) async {
     await _player?.seek(position);
   }
 
-  /// Seek forward by seconds
+  /** Seek forward by seconds */
   Future<void> seekForward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final duration = _player?.duration ?? Duration.zero;
@@ -385,23 +358,23 @@ class TTSService {
     await seek(newPosition > duration ? duration : newPosition);
   }
 
-  /// Seek backward by seconds
+  /** Seek backward by seconds */
   Future<void> seekBackward({int seconds = 10}) async {
     final current = _player?.position ?? Duration.zero;
     final newPosition = current - Duration(seconds: seconds);
     await seek(newPosition.isNegative ? Duration.zero : newPosition);
   }
 
-  /// Get current position
+  /** Get current position */
   Duration get position => _player?.position ?? Duration.zero;
 
-  /// Get total duration
+  /** Get total duration */
   Duration? get duration => _player?.duration;
 
-  /// Is currently playing
+  /** Is currently playing */
   bool get isPlaying => _player?.playing ?? false;
 
-  /// Dispose resources
+  /** Dispose resources */
   Future<void> dispose() async {
     await _player?.dispose();
     _player = null;

@@ -1,5 +1,8 @@
-// Inquiry Player Screen - Guided inquiry session with timed phase transitions
-// Phases: Setup -> Question -> FollowUp -> Complete
+/**
+ * Inquiry Player Screen - Guided inquiry session with timed phase transitions.
+ * Phases: Setup -> Question -> FollowUp -> Complete.
+ */
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -13,45 +16,50 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/inquiry_phase_content.dart';
 
-/// Inquiry Player Screen - Guides users through a timed inquiry session
-///
-/// The inquiry flow:
-/// 1. Setup phase (3 sec) - Optional context before the question
-/// 2. Question phase (inquiry.pauseDuration) - Main contemplation
-/// 3. FollowUp phase - Optional follow-up with action buttons
-/// 4. Complete phase - If no follow-up, show completion with buttons
-///
-/// Respects accessibility settings for reduced motion.
+/**
+ * Inquiry Player Screen - Guides users through a timed inquiry session
+ *
+ * The inquiry flow:
+ * 1. Setup phase (3 sec) - Optional context before the question
+ * 2. Question phase (inquiry.pauseDuration) - Main contemplation
+ * 3. FollowUp phase - Optional follow-up with action buttons
+ * 4. Complete phase - If no follow-up, show completion with buttons
+ *
+ * Respects accessibility settings for reduced motion.
+ */
 class InquiryPlayerScreen extends ConsumerStatefulWidget {
-  const InquiryPlayerScreen({
-    super.key,
-    required this.inquiryId,
-  });
+  const InquiryPlayerScreen({super.key, required this.inquiryId});
 
-  /// ID of the inquiry to play, or 'random' for a random inquiry
+  /** ID of the inquiry to play, or 'random' for a random inquiry */
   final String inquiryId;
 
-  /// Duration of the setup phase (8 seconds for proper preparation)
+  /** Duration of the setup phase (8 seconds for proper preparation) */
   static const setupDuration = Duration(seconds: 8);
 
-  /// Duration of the question phase (20 seconds for deep contemplation)
+  /** Duration of the question phase (20 seconds for deep contemplation) */
   static const questionDuration = Duration(seconds: 20);
 
-  /// Disable auto-advance for testing
+  /** Disable auto-advance for testing */
   static bool disableAutoAdvance = false;
 
   @override
   ConsumerState<InquiryPlayerScreen> createState() => _InquiryPlayerScreenState();
 }
 
-class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
-    with SingleTickerProviderStateMixin {
+class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with SingleTickerProviderStateMixin {
+  /** The currently loaded [Inquiry] (null until [_loadInquiry] completes). */
   Inquiry? _currentInquiry;
+
+  /** Current phase in the inquiry flow (setup -> question -> followUp -> complete). */
   InquiryPhase _phase = InquiryPhase.setup;
+
+  /** Timer controlling automatic phase transitions. */
   Timer? _phaseTimer;
+
+  /** Whether a timed sequence is currently running. */
   bool _isPlaying = false;
 
-  // Timer animation state
+  /** Animation controller driving the [_BreathingProgressRing] during timed phases. */
   AnimationController? _timerController;
 
   @override
@@ -68,23 +76,22 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     super.dispose();
   }
 
-  /// Start the visual timer animation for a phase
+  /** Start the visual timer animation for a phase */
   void _startVisualTimer(Duration duration) {
     _timerController?.duration = duration;
     _timerController?.forward(from: 0.0);
   }
 
-  /// Stop the visual timer
+  /** Stop the visual timer */
   void _stopVisualTimer() {
     _timerController?.stop();
     _timerController?.reset();
   }
 
+  /** Loads the inquiry by ID (or random if 'random') and starts the timed sequence. */
   void _loadInquiry() {
     // Check if ID is a valid inquiry ID or if we should get a random one
-    final inquiry = widget.inquiryId == 'random'
-        ? getRandomInquiry()
-        : getInquiryById(widget.inquiryId);
+    final inquiry = widget.inquiryId == 'random' ? getRandomInquiry() : getInquiryById(widget.inquiryId);
 
     // Fall back to random if ID not found
     _currentInquiry = inquiry ?? getRandomInquiry();
@@ -95,6 +102,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     }
   }
 
+  /** Runs the timed inquiry sequence: setup -> question -> followUp/complete. */
   void _startSequence() async {
     if (_isPlaying || _currentInquiry == null) return;
     _isPlaying = true;
@@ -146,6 +154,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     _isPlaying = false;
   }
 
+  /** Waits for the given [duration] using a [Timer], returning a [Future] that completes when done. */
   Future<void> _waitForDuration(Duration duration) async {
     final completer = Completer<void>();
     _phaseTimer = Timer(duration, () {
@@ -160,6 +169,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     HapticFeedback.lightImpact();
   }
 
+  /** Loads a new random inquiry and restarts the sequence. */
   void _onAnother() {
     _phaseTimer?.cancel();
     _isPlaying = false;
@@ -177,13 +187,14 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     _startSequence();
   }
 
+  /** Cancels the current sequence and pops back to the inquiry list. */
   void _onDone() {
     _phaseTimer?.cancel();
     _triggerHaptic();
     context.pop();
   }
 
-  /// Manually advance to the next phase (for testing or user skip)
+  /** Manually advance to the next phase (for testing or user skip) */
   void advancePhase() {
     _phaseTimer?.cancel();
 
@@ -211,11 +222,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     final colors = context.colors;
 
     if (_currentInquiry == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -234,12 +241,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
                 // Phase content
                 Expanded(
                   child: Center(
-                    child: InquiryPhaseContent(
-                      inquiry: _currentInquiry!,
-                      phase: _phase,
-                      onAnother: _onAnother,
-                      onDone: _onDone,
-                    ),
+                    child: InquiryPhaseContent(inquiry: _currentInquiry!, phase: _phase, onAnother: _onAnother, onDone: _onDone),
                   ),
                 ),
 
@@ -253,6 +255,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     );
   }
 
+  /** Builds the top bar with close button and tradition badge. */
   Widget _buildTopBar(BuildContext context, PointerColors colors) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -264,10 +267,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             button: true,
             label: 'Close inquiry',
             child: IconButton(
-              icon: Icon(
-                Icons.close,
-                color: colors.textMuted,
-              ),
+              icon: Icon(Icons.close, color: colors.textMuted),
               onPressed: _onDone,
             ),
           ),
@@ -282,11 +282,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             ),
             child: Text(
               _getTraditionLabel(_currentInquiry!.tradition),
-              style: TextStyle(
-                color: colors.textMuted,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w500),
             ),
           ),
 
@@ -297,6 +293,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     );
   }
 
+  /** Builds the bottom phase indicator with progress ring and phase dots. */
   Widget _buildPhaseIndicator(BuildContext context, PointerColors colors) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final showTimer = _phase == InquiryPhase.setup || _phase == InquiryPhase.question;
@@ -311,10 +308,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
             AnimatedBuilder(
               animation: _timerController!,
               builder: (context, child) {
-                return _BreathingProgressRing(
-                  progress: _timerController!.value,
-                  colors: colors,
-                );
+                return _BreathingProgressRing(progress: _timerController!.value, colors: colors);
               },
             ),
           if (showTimer) const SizedBox(height: 16),
@@ -322,23 +316,11 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.setup,
-                isPast: _phase.index > InquiryPhase.setup.index,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.setup, isPast: _phase.index > InquiryPhase.setup.index, colors: colors),
               const SizedBox(width: 8),
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.question,
-                isPast: _phase.index > InquiryPhase.question.index,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.question, isPast: _phase.index > InquiryPhase.question.index, colors: colors),
               const SizedBox(width: 8),
-              _PhaseIndicatorDot(
-                isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete,
-                isPast: false,
-                colors: colors,
-              ),
+              _PhaseIndicatorDot(isActive: _phase == InquiryPhase.followUp || _phase == InquiryPhase.complete, isPast: false, colors: colors),
             ],
           ),
         ],
@@ -346,6 +328,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
     );
   }
 
+  /** Converts a tradition enum value to its display label. */
   String _getTraditionLabel(dynamic tradition) {
     final name = tradition.toString().split('.').last;
     switch (name) {
@@ -363,12 +346,9 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen>
   }
 }
 
+/** Animated dot indicating an inquiry phase state (active, past, or upcoming). */
 class _PhaseIndicatorDot extends StatelessWidget {
-  const _PhaseIndicatorDot({
-    required this.isActive,
-    required this.isPast,
-    required this.colors,
-  });
+  const _PhaseIndicatorDot({required this.isActive, required this.isPast, required this.colors});
 
   final bool isActive;
   final bool isPast;
@@ -381,25 +361,22 @@ class _PhaseIndicatorDot extends StatelessWidget {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive || isPast
-            ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4)
-            : colors.glassBorder,
+        color: isActive || isPast ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4) : colors.glassBorder,
         borderRadius: BorderRadius.circular(4),
       ),
     );
   }
 }
 
-/// Subtle breathing progress ring that fills as time passes
-/// Creates a gentle visual cue without being distracting
-/// Matches the liquid glass design system
+/**
+ * Subtle breathing progress ring that fills as time passes
+ * Creates a gentle visual cue without being distracting
+ * Matches the liquid glass design system
+ */
 class _BreathingProgressRing extends StatelessWidget {
-  const _BreathingProgressRing({
-    required this.progress,
-    required this.colors,
-  });
+  const _BreathingProgressRing({required this.progress, required this.colors});
 
-  /// Progress from 0.0 to 1.0
+  /** Progress from 0.0 to 1.0 */
   final double progress;
   final PointerColors colors;
 
@@ -410,12 +387,8 @@ class _BreathingProgressRing extends StatelessWidget {
     final breathingScale = 1.0 + (0.015 * (1 - (progress * 2 - 1).abs()));
 
     // Theme-consistent colors matching liquid glass style
-    final ringColor = isDark
-        ? colors.accent.withValues(alpha: 0.5)
-        : colors.primary.withValues(alpha: 0.4);
-    final bgColor = isDark
-        ? colors.glassBorder.withValues(alpha: 0.3)
-        : Colors.black.withValues(alpha: 0.06);
+    final ringColor = isDark ? colors.accent.withValues(alpha: 0.5) : colors.primary.withValues(alpha: 0.4);
+    final bgColor = isDark ? colors.glassBorder.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.06);
 
     return Transform.scale(
       scale: breathingScale,
@@ -423,26 +396,16 @@ class _BreathingProgressRing extends StatelessWidget {
         width: 44,
         height: 44,
         child: CustomPaint(
-          painter: _ProgressRingPainter(
-            progress: progress,
-            color: ringColor,
-            backgroundColor: bgColor,
-            strokeWidth: isDark ? 2.5 : 2.0,
-          ),
+          painter: _ProgressRingPainter(progress: progress, color: ringColor, backgroundColor: bgColor, strokeWidth: isDark ? 2.5 : 2.0),
         ),
       ),
     );
   }
 }
 
-/// Custom painter for the progress ring
+/** Custom painter for the progress ring */
 class _ProgressRingPainter extends CustomPainter {
-  _ProgressRingPainter({
-    required this.progress,
-    required this.color,
-    required this.backgroundColor,
-    this.strokeWidth = 2.5,
-  });
+  _ProgressRingPainter({required this.progress, required this.color, required this.backgroundColor, this.strokeWidth = 2.5});
 
   final double progress;
   final Color color;
@@ -483,8 +446,6 @@ class _ProgressRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ProgressRingPainter oldDelegate) {
-    return progress != oldDelegate.progress ||
-        color != oldDelegate.color ||
-        backgroundColor != oldDelegate.backgroundColor;
+    return progress != oldDelegate.progress || color != oldDelegate.color || backgroundColor != oldDelegate.backgroundColor;
   }
 }

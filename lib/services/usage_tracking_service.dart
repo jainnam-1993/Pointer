@@ -1,36 +1,28 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Daily usage tracking model
+/**
+ * Immutable snapshot of the user's daily pointing view count.
+ *
+ * Resets automatically at midnight (based on [lastResetDate]).
+ * Used for analytics tracking of daily engagement.
+ */
 class DailyUsage {
+  /** Number of pointings viewed today. */
   final int viewCount;
+
+  /** ISO date string (`YYYY-MM-DD`) of the last reset, used to detect day rollover. */
   final String lastResetDate;
-  static const int freeUserLimit = 2;
 
-  const DailyUsage({
-    this.viewCount = 0,
-    required this.lastResetDate,
-  });
-
-  bool get limitReached => viewCount >= freeUserLimit;
-  int get remaining => freeUserLimit - viewCount;
+  const DailyUsage({this.viewCount = 0, required this.lastResetDate});
 
   DailyUsage copyWith({int? viewCount, String? lastResetDate}) {
-    return DailyUsage(
-      viewCount: viewCount ?? this.viewCount,
-      lastResetDate: lastResetDate ?? this.lastResetDate,
-    );
+    return DailyUsage(viewCount: viewCount ?? this.viewCount, lastResetDate: lastResetDate ?? this.lastResetDate);
   }
 
-  Map<String, dynamic> toJson() => {
-        'viewCount': viewCount,
-        'lastResetDate': lastResetDate,
-      };
+  Map<String, dynamic> toJson() => {'viewCount': viewCount, 'lastResetDate': lastResetDate};
 
   factory DailyUsage.fromJson(Map<String, dynamic> json) {
-    return DailyUsage(
-      viewCount: json['viewCount'] ?? 0,
-      lastResetDate: json['lastResetDate'] ?? _todayString(),
-    );
+    return DailyUsage(viewCount: json['viewCount'] ?? 0, lastResetDate: json['lastResetDate'] ?? _todayString());
   }
 
   factory DailyUsage.initial() {
@@ -43,14 +35,19 @@ class DailyUsage {
   }
 }
 
-/// Service for tracking daily pointing usage for freemium model
+/**
+ * Service for tracking daily pointing view counts for analytics.
+ *
+ * Persists [DailyUsage] to [SharedPreferences] and auto-resets when a new
+ * calendar day is detected.
+ */
 class UsageTrackingService {
   final SharedPreferences _prefs;
   static const _usageKey = 'pointer_daily_usage';
 
   UsageTrackingService(this._prefs);
 
-  /// Get current daily usage, resetting if new day
+  /** Get current daily usage, resetting if new day */
   DailyUsage getUsage() {
     final json = _prefs.getString(_usageKey);
     if (json == null) {
@@ -58,11 +55,7 @@ class UsageTrackingService {
     }
 
     try {
-      final usage = DailyUsage.fromJson(
-        Map<String, dynamic>.from(
-          Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v))),
-        ),
-      );
+      final usage = DailyUsage.fromJson(Map<String, dynamic>.from(Uri.splitQueryString(json).map((k, v) => MapEntry(k, _parseValue(v)))));
 
       // Check if we need to reset for a new day
       final today = DailyUsage._todayString();
@@ -78,7 +71,7 @@ class UsageTrackingService {
     }
   }
 
-  /// Increment view count
+  /** Increment today's view count by one and return the updated [DailyUsage]. */
   Future<DailyUsage> incrementViewCount() async {
     final current = getUsage();
     final updated = current.copyWith(viewCount: current.viewCount + 1);
@@ -86,14 +79,13 @@ class UsageTrackingService {
     return updated;
   }
 
-  /// Reset usage (for testing or premium restore)
+  /** Reset usage counters to zero. Used for testing. */
   Future<void> resetUsage() async {
     await _saveUsage(DailyUsage.initial());
   }
 
   Future<void> _saveUsage(DailyUsage usage) async {
-    final encoded =
-        'viewCount=${usage.viewCount}&lastResetDate=${usage.lastResetDate}';
+    final encoded = 'viewCount=${usage.viewCount}&lastResetDate=${usage.lastResetDate}';
     await _prefs.setString(_usageKey, encoded);
   }
 

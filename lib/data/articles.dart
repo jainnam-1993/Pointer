@@ -1,16 +1,22 @@
-// Article Seed Data
-// Curated articles from classic non-dual teachings and contemporary teachers
-//
-// Content includes excerpts from classic texts, essays on key concepts,
-// and practical guides for self-inquiry and direct recognition.
+/**
+ * Curated article seed data for the Library feature.
+ *
+ * Contains the master `articles` list (166 articles) and helper functions
+ * for filtering by tradition, category, teacher, topic, and mood.
+ *
+ * See also:
+ * - [Article] in `models/article.dart` for the data model
+ * - [LibraryScreen] for the browsing UI
+ * - [ArticleReaderScreen] for the reading experience
+ */
+library;
 
 import '../models/article.dart';
 import 'pointings.dart';
 
-/// Curated articles for the Library
+/** Master list of all curated [Article] records. */
 const articles = <Article>[
   // === ADVAITA VEDANTA ARTICLES ===
-
   Article(
     id: 'art_iam_that_001',
     title: 'I Am That',
@@ -46,16 +52,12 @@ What remains when you stop looking for an answer?
 > "When I look inside and see that I am nothing, that is wisdom. When I look outside and see that I am everything, that is love. Between these two my life turns."
 
 The separate self is a useful fiction for daily life, but it has no ultimate reality. What you truly are was never born and will never die.''',
-    excerpt:
-        'Nisargadatta\'s radical teaching: You are not what you think yourself to be. Find out what you are.',
+    excerpt: "Nisargadatta's radical teaching: You are not what you think yourself to be. Find out what you are.",
     tradition: Tradition.advaita,
     teacher: 'Nisargadatta Maharaj',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'mind', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -97,16 +99,12 @@ What you discover is not something new. It is what has always been present:
 - As the unchanging witness of all experience
 
 This awareness is not personal. It is the same awareness looking out of all eyes, hearing through all ears. Recognition of this is enlightenment.''',
-    excerpt:
-        'Ramana Maharshi\'s self-inquiry method: the direct path to Self-realization.',
+    excerpt: "Ramana Maharshi's self-inquiry method: the direct path to Self-realization.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -144,16 +142,12 @@ This is the radical insight: there is no one to be liberated because there is no
 This teaching is not for beginners. It requires a readiness to let go of all spiritual ambition, all hope of attainment:
 
 > "You are already free. Your only bondage is believing you are not."''',
-    excerpt:
-        'The most radical non-dual scripture: You are already free. Your only bondage is believing you are not.',
+    excerpt: 'The most radical non-dual scripture: You are already free. Your only bondage is believing you are not.',
     tradition: Tradition.advaita,
-    teacher: 'Ashtavakra Gita',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    teacher: 'Ashtavakra',
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'practice', 'truth'},
     moodTags: {'general'},
   ),
@@ -192,16 +186,12 @@ Self-inquiry is not a technique to be perfected. It is a returning to what you a
 > "The mind turned inward is the Self. Turned outward, it becomes the ego and the world."
 
 There is only awareness. It appears as the world when directed outward through the senses. It knows itself as Self when it rests in itself. Both are the same awareness.''',
-    excerpt:
-        'Ramana\'s essential teaching: Your duty is to be, and not to be this or that.',
+    excerpt: "Ramana's essential teaching: Your duty is to be, and not to be this or that.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'ego', 'life', 'mind', 'practice'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -243,21 +233,16 @@ While Advaita is often presented philosophically, its heart is practical:
 3. **Meditation (Nididhyasana):** Abiding in understanding
 
 The goal is not belief but direct recognition.''',
-    excerpt:
-        'Introduction to the ancient teaching of non-duality: there is only one reality, and you are that.',
+    excerpt: 'Introduction to the ancient teaching of non-duality: there is only one reality, and you are that.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'truth'},
     moodTags: {'general'},
   ),
 
   // === ZEN BUDDHISM ARTICLES ===
-
   Article(
     id: 'art_gateless_gate_001',
     title: 'The Gateless Gate',
@@ -298,15 +283,11 @@ Don't analyze. What would YOU have done?
 4. Present your understanding to a teacher
 
 The breakthrough is not understanding about the koan - it is the koan understanding itself through you.''',
-    excerpt:
-        'Classic Zen koans from the Mumonkan: pointing beyond the rational mind.',
+    excerpt: 'Classic Zen koans from the Mumonkan: pointing beyond the rational mind.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'mind', 'nature', 'self-inquiry', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -359,15 +340,11 @@ Zen masters are famous for their fierce compassion. They destroy all spiritual b
 > "If you meet the Buddha on the road, kill him."
 
 Even the concept of Buddha can become an obstacle to direct seeing.''',
-    excerpt:
-        'Introduction to Zen: direct pointing beyond words to your original nature.',
+    excerpt: 'Introduction to Zen: direct pointing beyond words to your original nature.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'mind', 'nature'},
     moodTags: {'general'},
   ),
@@ -410,21 +387,16 @@ The true response is not verbal. It is a direct showing. When you really see you
 The question itself is the gate. But here's the secret: there is no gate. You have never been separate from your original face. You are looking at everything through it right now.
 
 The question doesn't give you something new. It removes the belief that you ever lost it.''',
-    excerpt:
-        'What was your face before your parents were born? The Zen inquiry into true nature.',
+    excerpt: 'What was your face before your parents were born? The Zen inquiry into true nature.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'nature', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // === DIRECT PATH ARTICLES ===
-
   Article(
     id: 'art_direct_path_001',
     title: 'The Direct Path',
@@ -471,15 +443,11 @@ If awareness is what we fundamentally are, then:
 ## The Practice
 
 This is not about having a particular experience. It is about recognizing what is always already the case. The "practice" is simply returning attention to awareness itself, again and again, until this recognition stabilizes.''',
-    excerpt:
-        'Contemporary non-duality: the Direct Path approach to self-recognition.',
+    excerpt: 'Contemporary non-duality: the Direct Path approach to self-recognition.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.modernPointers,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.modernPointers, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'self-inquiry', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -533,16 +501,12 @@ When this recognition stabilizes:
 - But there is no longer resistance to what is
 - Peace is not sought because it is recognized as ever-present
 - Life becomes an exploration, not a problem to solve''',
-    excerpt:
-        'Rupert Spira\'s teaching on awareness: we don\'t become present, we notice that we already are.',
+    excerpt: "Rupert Spira's teaching on awareness: we don't become present, we notice that we already are.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -590,22 +554,17 @@ Liberation is not a state. It is the recognition that:
 Why "perfume of silence"? Because this recognition brings a quality to life that is difficult to describe - a peace that is not dependent on circumstances, a love that is not conditional, a freedom that is not attained.
 
 It is the natural fragrance of our true nature.''',
-    excerpt:
-        'Francis Lucille\'s teaching: The separate self is not eliminated. It is seen through.',
+    excerpt: "Francis Lucille's teaching: The separate self is not eliminated. It is seen through.",
     tradition: Tradition.direct,
     teacher: 'Francis Lucille',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'freedom', 'silence'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // === CONTEMPORARY ARTICLES ===
-
   Article(
     id: 'art_power_of_now_001',
     title: 'The Power of Now',
@@ -656,16 +615,12 @@ The ego is the identification with form - the body, thoughts, possessions, roles
 > "You are not your thoughts. You are the awareness in which thoughts appear."
 
 This simple recognition is the doorway to freedom.''',
-    excerpt:
-        'Eckhart Tolle\'s teaching: The present moment is all you ever have.',
+    excerpt: "Eckhart Tolle's teaching: The present moment is all you ever have.",
     tradition: Tradition.contemporary,
     teacher: 'Eckhart Tolle',
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -713,15 +668,12 @@ Don't answer with another thought. Look. Is there actually someone there to whom
 > "Keep quiet. Do nothing. Be as you are. That's it."
 
 The simplicity is deceptive. The mind wants complexity, wants a project, wants something to do. But freedom is simpler than the mind can accept.''',
-    excerpt: 'Mooji\'s invitation: Can you just be? Not be something - just be?',
+    excerpt: "Mooji's invitation: Can you just be? Not be something - just be?",
     tradition: Tradition.contemporary,
     teacher: 'Mooji',
-    categories: [
-      ArticleCategory.modernPointers,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.modernPointers, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'freedom', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -773,22 +725,17 @@ Why "wake up and roar"?
 Because awakening is not passive. It is not a withdrawal from life. It is a full-hearted engagement with existence, without the burden of a separate self.
 
 > "Celebrate! You were never bound!"''',
-    excerpt:
-        'Papaji\'s teaching: Don\'t postpone. This instant is freedom.',
+    excerpt: "Papaji's teaching: Don't postpone. This instant is freedom.",
     tradition: Tradition.advaita,
-    teacher: 'Papaji (H.W.L. Poonja)',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.selfInquiry,
-    ],
+    teacher: 'Papaji',
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'freedom', 'practice', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // === PRACTICAL ARTICLES ===
-
   Article(
     id: 'art_self_inquiry_guide_001',
     title: 'A Guide to Self-Inquiry',
@@ -835,15 +782,11 @@ When you cannot find a separate self, don't panic. Rest in the open awareness th
 ## The Result
 
 Self-inquiry doesn't produce a result. It reveals what has always been present: awareness itself, free and unbounded.''',
-    excerpt:
-        'Practical guide to self-inquiry: step-by-step instructions for investigation.',
+    excerpt: 'Practical guide to self-inquiry: step-by-step instructions for investigation.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'meditation', 'mind'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -892,15 +835,11 @@ Eventually, there is no longer a sense of "maintaining" awareness. There is simp
 > "Nothing special is required. Just be what you are."
 
 Awakening is the end of seeking, not the beginning of a new spiritual project.''',
-    excerpt:
-        'How to bring recognition into everyday activities - awakening is not reserved for meditation.',
+    excerpt: 'How to bring recognition into everyday activities - awakening is not reserved for meditation.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'meditation'},
     moodTags: {'general'},
   ),
@@ -958,15 +897,11 @@ Paradoxically, the greatest obstacles on the spiritual path are our ideas about 
 ## The Ultimate Obstacle
 
 The ultimate obstacle is the belief that there are obstacles. What you are has never been obstructed.''',
-    excerpt:
-        'Common spiritual traps and how to recognize them - including the trap of believing in obstacles.',
+    excerpt: 'Common spiritual traps and how to recognize them - including the trap of believing in obstacles.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'ego', 'freedom', 'life'},
     moodTags: {'challenging', 'general'},
   ),
@@ -1018,16 +953,12 @@ He pointed away from himself to what is always already present in everyone.
 ## The Ultimate Teaching
 
 > "You are the light in which all appears. You are not in the picture. You are what makes the picture possible."''',
-    excerpt:
-        'Jean Klein\'s teaching: Remain with a listening attention, without conclusion.',
+    excerpt: "Jean Klein's teaching: Remain with a listening attention, without conclusion.",
     tradition: Tradition.direct,
     teacher: 'Jean Klein',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: true,
+
     topicTags: {'awareness', 'enlightenment', 'practice', 'truth'},
     moodTags: {'general'},
   ),
@@ -1091,25 +1022,20 @@ Whatever approach you use, remember:
 > "The practice is not meant to continue forever. It is a pointer to what needs no practice."
 
 You are already what you seek.''',
-    excerpt:
-        'Understanding the difference between meditation and self-inquiry - and when to use each.',
+    excerpt: 'Understanding the difference between meditation and self-inquiry - and when to use each.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'meditation', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // === GENERATED ARTICLES ===
 
-// === NEW ARTICLES BATCH 1 (50 articles) ===
+  // === NEW ARTICLES BATCH 1 (50 articles) ===
 
   // --- BEGINNER GUIDES ---
-
   Article(
     id: 'art_beginner_001',
     title: 'What is Non-Duality?',
@@ -1152,14 +1078,11 @@ Non-duality is not about adding new beliefs. It is about examining what we alrea
 **What is aware of your current experience?**
 
 Don't answer with a thought. Just look.''',
-    excerpt: 'A complete introduction to non-duality for beginners - what it is, what it isn\'t, and why it matters.',
+    excerpt: "A complete introduction to non-duality for beginners - what it is, what it isn't, and why it matters.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence'},
     moodTags: {'general'},
   ),
@@ -1213,12 +1136,9 @@ Come back to this simple question throughout your day:
 **What is aware right now?**''',
     excerpt: 'A gentle, step-by-step guide to your first self-inquiry - no prior experience needed.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -1280,12 +1200,9 @@ Throughout your day, notice: "I am aware of this thought."
 The one who is aware of the thought is not the thought.''',
     excerpt: 'The most important distinction you can make - you are not your thoughts, you are what is aware of them.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -1339,12 +1256,9 @@ Start by noticing: when is the sense of separate self strongest? When is it ligh
 This noticing itself begins to loosen the grip.''',
     excerpt: 'Understanding the root cause of all psychological suffering - and the way beyond it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general', 'uplifting'},
   ),
@@ -1398,17 +1312,14 @@ If you find yourself accumulating without looking, stop. Take a breath. Ask: Wha
 This app is a finger pointing at the moon. Don't mistake the finger for the moon.''',
     excerpt: 'Practical guide to using this app for genuine recognition, not just spiritual entertainment.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // --- AWARENESS INVESTIGATIONS ---
-
   Article(
     id: 'art_awareness_001',
     title: 'Is Awareness Personal?',
@@ -1452,12 +1363,9 @@ There is only awareness, appearing as many viewpoints. The separation is apparen
 This is why compassion is natural to awakening. There is no real "other" to exclude.''',
     excerpt: 'Investigating whether awareness is personal - and the profound implications of what we discover.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -1512,12 +1420,9 @@ If awareness is not located anywhere:
 Don't take this on faith. Keep looking until it becomes obvious from your own direct experience.''',
     excerpt: 'Direct investigation into the location of awareness - with surprising results.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -1569,12 +1474,9 @@ Throughout your day, notice: Does experience appear INSIDE awareness, or is awar
 Let this question work on you.''',
     excerpt: 'Investigating the size of awareness - and discovering it has none.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -1629,12 +1531,9 @@ What are you - the changing or the changeless? What do you want to identify as?
 Look and see what is true.''',
     excerpt: 'Discovering the unchanging witness that has been present throughout your entire life.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -1689,18 +1588,14 @@ In deep sleep, you taste your natural state - pure being without the disturbance
 You don't need to achieve contentless awareness. You experience it every night. The task is to recognize it while waking content is present.''',
     excerpt: 'Exploring what happens to awareness during deep sleep - and what this reveals about your nature.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // --- PRACTICE GUIDES ---
-
   Article(
     id: 'art_practice_001',
     title: 'Morning Recognition Practice',
@@ -1749,12 +1644,9 @@ The morning practice is training for continuous recognition.
 Eventually, there is no practice. There is simply the obvious presence of awareness, never lost.''',
     excerpt: 'A simple morning practice to recognize awareness before the day begins.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -1811,12 +1703,9 @@ This is not about bypassing emotions or pretending they don't matter. It is abou
 From this recognition, appropriate action naturally arises.''',
     excerpt: 'How to work with difficult emotions as doorways to recognition rather than obstacles.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -1873,12 +1762,9 @@ Yes, initially. This is the paradox. We use effort to discover that effort was n
 Not-doing is not just for meditation. It is possible to live from this place of rest - acting in the world while knowing yourself as the unchanging awareness in which action appears.''',
     excerpt: 'The profound practice of doing nothing - and discovering what remains.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'meditation', 'mind'},
     moodTags: {'general'},
   ),
@@ -1941,12 +1827,9 @@ Separation is apparent, not fundamental.
 Your most challenging relationship is your greatest teacher. Use it.''',
     excerpt: 'How to use relationships as mirrors for self-inquiry and awakening.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'relationship'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -2002,17 +1885,14 @@ If you fall asleep without reviewing, that's fine. The practice is a pointer, no
 What you are doesn't need any practice.''',
     excerpt: 'A simple evening practice for integrating recognition into daily life.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'presence'},
     moodTags: {'general'},
   ),
 
   // --- TEACHER PROFILES ---
-
   Article(
     id: 'art_teacher_001',
     title: 'Ramana Maharshi: The Sage of Arunachala',
@@ -2060,11 +1940,9 @@ Ramana's influence on modern non-dual teaching is immense. Teachers like Papaji,
     excerpt: 'The life and teaching of Ramana Maharshi, the sage who awakened at sixteen and taught only self-inquiry.',
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'practice', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -2115,11 +1993,9 @@ His core instruction:
     excerpt: 'The remarkable life and fierce teaching of Nisargadatta Maharaj.',
     tradition: Tradition.advaita,
     teacher: 'Nisargadatta Maharaj',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'mind', 'nature', 'truth'},
     moodTags: {'challenging', 'general'},
   ),
@@ -2170,11 +2046,9 @@ Tolle has brought non-dual teaching to millions through his accessible, non-reli
     excerpt: 'How Eckhart Tolle went from suicidal depression to global spiritual teacher.',
     tradition: Tradition.contemporary,
     teacher: 'Eckhart Tolle',
-    categories: [
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence'},
     moodTags: {'general'},
   ),
@@ -2224,14 +2098,12 @@ Spira has made the Direct Path accessible to a wide audience through YouTube, re
 ## His Words
 
 "The greatest discovery is that awareness is not personal. What you are is the same awareness that looks out of all eyes."''',
-    excerpt: 'Rupert Spira\'s precise, elegant approach to self-investigation and recognition.',
+    excerpt: "Rupert Spira's precise, elegant approach to self-investigation and recognition.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
-    categories: [
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'nature', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -2283,20 +2155,17 @@ Unlike many teachers who emphasize only the positive aspects of awakening, Adyas
 ## The Honesty
 
 Adyashanti is known for not playing the role of enlightened master. He speaks of his own continuing discoveries and challenges, making his teaching refreshingly authentic.''',
-    excerpt: 'Adyashanti\'s honest, grounded approach to awakening and its integration.',
+    excerpt: "Adyashanti's honest, grounded approach to awakening and its integration.",
     tradition: Tradition.contemporary,
     teacher: 'Adyashanti',
-    categories: [
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'ego', 'enlightenment', 'practice', 'presence'},
     moodTags: {'challenging', 'general'},
   ),
 
   // --- DEEPER TOPICS ---
-
   Article(
     id: 'art_deep_001',
     title: 'After the Recognition: What Then?',
@@ -2350,11 +2219,9 @@ There is nothing to do and no one to do it. What you are has never been lost and
 Everything else is just the show appearing in awareness.''',
     excerpt: 'What happens after the initial recognition - and how to navigate the integration process.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -2408,12 +2275,9 @@ It simply sees clearly what is - including the patterns that haven't yet unwound
 Be radically honest with yourself. Your awakening won't be endangered by honesty. It will be deepened.''',
     excerpt: 'Understanding spiritual bypassing - the subtle ways we use spirituality to avoid reality.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'ego', 'life', 'meditation'},
     moodTags: {'challenging', 'general'},
   ),
@@ -2469,11 +2333,9 @@ Those who have moved through the dark night often report a more profound, stable
 What died was the seeker. What remains is what was always here.''',
     excerpt: 'Understanding and navigating the dark night of the soul - when the spiritual path gets hard.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
     moodTags: {'challenging', 'general'},
   ),
@@ -2527,12 +2389,9 @@ Make effort until effort becomes unnecessary. You'll know when this happens.
 Until then, don't worry about the paradox. Just look: What is aware right now?''',
     excerpt: 'Understanding the paradox of effort on the spiritual path - and how to navigate it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'meditation', 'practice'},
     moodTags: {'general'},
   ),
@@ -2584,21 +2443,17 @@ When we see that the world is not separate from awareness, we can engage with it
 The world is not a problem to be escaped. It is awareness appearing as form.''',
     excerpt: 'What non-dual teaching really means when it says the world is illusory.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // --- ZEN ARTICLES ---
-
   Article(
     id: 'art_zen_001',
-    title: 'Beginner\'s Mind',
+    title: "Beginner's Mind",
     subtitle: 'The Most Important Zen Teaching',
     content: '''# Beginner's Mind
 
@@ -2643,12 +2498,9 @@ Forget everything you've learned. Just look. What is this moment, really? What a
 Don't answer from memory. Look fresh.''',
     excerpt: 'Why not-knowing is more valuable than knowledge on the spiritual path.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -2704,12 +2556,9 @@ Try it. Sit for five minutes with no technique, no goal. Just sit.
 What happens when you stop trying?''',
     excerpt: 'The simplest and most difficult meditation practice - just sitting with no technique or goal.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'meditation', 'mind', 'nature', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -2765,19 +2614,16 @@ Don't settle for any Buddha. Keep looking until there is nothing left to look fo
 ## The Warning
 
 This doesn't mean nihilism or rejecting everything. It means not getting stuck - in anything.''',
-    excerpt: 'Understanding one of Zen\'s most provocative teachings - and why concepts must die.',
+    excerpt: "Understanding one of Zen's most provocative teachings - and why concepts must die.",
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'practice', 'presence'},
     moodTags: {'challenging', 'general'},
   ),
 
   // --- CONTEMPORARY POINTERS ---
-
   Article(
     id: 'art_modern_001',
     title: 'Non-Duality and Science',
@@ -2825,12 +2671,9 @@ We don't need science to validate awakening. But for those with scientific minds
 The investigation matters more than the conclusions. Look for yourself: Is there actually a boundary between subject and object?''',
     excerpt: 'Exploring the unexpected parallels between non-dual teaching and modern physics.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'nature', 'presence', 'truth'},
     moodTags: {'general'},
   ),
@@ -2892,12 +2735,9 @@ You are awareness in which a body-mind appears. That body-mind may have wounds t
 Both can be true simultaneously.''',
     excerpt: 'How non-dual teaching and psychotherapy can work together for genuine wholeness.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'awareness', 'ego', 'life', 'mind'},
     moodTags: {'general'},
   ),
@@ -2955,11 +2795,9 @@ Look: What is aware of these words? What is aware of wanting to check notificati
 That awareness is what you are.''',
     excerpt: 'How to practice recognition in an age of constant digital distraction.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -3016,11 +2854,9 @@ Work is not separate from awakening. It is another form that awareness takes.
 Your professional life is not an obstacle to recognition. It is an invitation.''',
     excerpt: 'How to bring non-dual recognition into professional life without compromising either.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'meditation'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -3081,18 +2917,14 @@ But you'll recover faster. You'll apologize more easily. You'll be less defended
 And children learn from watching us fall down and get up with grace.''',
     excerpt: 'Using the challenges and joys of parenting as opportunities for awakening.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
     moodTags: {'challenging', 'general'},
   ),
 
-
-// === NEW ARTICLES BATCH 2 (50 articles) ===
-
+  // === NEW ARTICLES BATCH 2 (50 articles) ===
   Article(
     id: 'art_koan_001',
     title: 'How to Work with Koans',
@@ -3145,12 +2977,9 @@ Take the koan "What is aware right now?" Work with it today.
 Don't answer. Just look.''',
     excerpt: 'Practical guide to working with Zen koans for genuine insight.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3204,12 +3033,9 @@ Many people have recognition as awareness but remain disconnected from embodied 
 Full awakening includes the body. Not as something owned by awareness, but as awareness itself in form.''',
     excerpt: 'Using the body as a doorway to recognition - somatic approaches to awakening.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3274,12 +3100,9 @@ What will remain when everything you think you are is gone?
 Look for yourself.''',
     excerpt: 'Contemplating death to discover what we truly are - beyond what is born and dies.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'relationship'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3337,12 +3160,9 @@ Personal love continues, but it floats on a deeper ocean of impersonal love.
 What you are is not only awareness. It is aware love. Knowing and loving are not two different things.''',
     excerpt: 'Discovering that love is not an emotion but the nature of awareness itself.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'nature', 'practice'},
     moodTags: {'general', 'uplifting'},
   ),
@@ -3399,11 +3219,9 @@ Next time you create, try this: Instead of asking "What should I make?" ask "Wha
 Then listen.''',
     excerpt: 'Understanding creativity as expression of awareness rather than product of ego.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'ego', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -3463,12 +3281,9 @@ Go outside. Not to learn something, but to unlearn the artificial sense of separ
 Let the natural world remind you what you are.''',
     excerpt: 'How nature teaches non-duality without words - sky, water, mountains as pointers.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'nature'},
     moodTags: {'general'},
   ),
@@ -3522,12 +3337,9 @@ Are you seeking something that is absent? Or are you seeking something that is p
 Look carefully. What you seek is what is looking.''',
     excerpt: 'Understanding how the search perpetuates seeking - and what happens when it ends.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'freedom', 'presence'},
     moodTags: {'general'},
   ),
@@ -3586,12 +3398,9 @@ The future cannot harm you because the future never comes. When it arrives, it i
 You have only ever had to deal with now. And now is always manageable.''',
     excerpt: 'Investigating the nature of time - and discovering the eternal present.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'mind', 'nature'},
     moodTags: {'general'},
   ),
@@ -3648,12 +3457,9 @@ Life continues to unfold. Choices continue to be made. Preferences continue to o
 But without a separate doer claiming ownership.''',
     excerpt: 'Investigating the sense of being a chooser - and what we find when we look.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'mind', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3711,12 +3517,9 @@ Resolution comes from seeing that doubt - like all thoughts - arises in awarenes
 Rest there.''',
     excerpt: 'How to work skillfully with doubt on the spiritual path.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3773,12 +3576,9 @@ When grace is recognized, gratitude naturally arises. Not gratitude TO something
 The dewdrop realizes it was always the ocean. Thank you seems inadequate, but it's what arises.''',
     excerpt: 'Understanding the relationship between effort and grace on the spiritual path.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -3836,12 +3636,9 @@ Look before the word "awareness." Look before any label.
 What is this?''',
     excerpt: 'Understanding why words can point to truth but never capture it - and how to use them skillfully.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'presence', 'self-inquiry'},
     moodTags: {'challenging', 'general'},
   ),
@@ -3902,12 +3699,9 @@ When we recognize that happiness is our nature - not something to achieve - the 
 Life continues, but without the fundamental anxiety of lacking something.''',
     excerpt: 'Why the search for happiness in external things always fails - and where happiness actually is.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'relationship'},
     moodTags: {'general'},
   ),
@@ -3961,12 +3755,9 @@ Understanding ego brings compassion. Everyone is suffering under the illusion of
 The ego is not evil. It is simply confused.''',
     excerpt: 'What ego actually is - and why trying to destroy it misses the point.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'mind', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -4018,12 +3809,9 @@ Great teachers transmit through presence, not just words. Their silence speaks.
 We can all discover this silence. It is what we are.''',
     excerpt: 'Understanding the transformative power of silence - and the silence that includes sound.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'practice', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -4084,12 +3872,9 @@ The deepest surrender is surrender of the sense of being a separate controller.
 When the separate controller surrenders, there is only flow.''',
     excerpt: 'Understanding true surrender - the ending of resistance to what already is.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'life', 'mind', 'practice', 'presence'},
     moodTags: {'general'},
   ),
@@ -4147,13 +3932,11 @@ On the other side of boredom is contentment that needs nothing.
 When we can be at peace without stimulation, we are free. Entertainment is enjoyed when available and not needed when absent.
 
 This is true freedom - not dependence on constant input.''',
-    excerpt: 'How boredom can become a doorway to presence - if we don\'t run from it.',
+    excerpt: "How boredom can become a doorway to presence - if we don't run from it.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'life', 'mind', 'practice', 'presence'},
     moodTags: {'general'},
   ),
@@ -4209,12 +3992,9 @@ We are called to both: to recognize our nature AND to develop our humanity.
 This is the full path.''',
     excerpt: 'Understanding the difference between spiritual awakening and psychological development - and why we need both.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 3,
-    isPremium: true,
+
     topicTags: {'awareness', 'ego', 'life', 'practice'},
     moodTags: {'general'},
   ),
@@ -4274,12 +4054,9 @@ Don't collect techniques. Find what resonates and go deep.
 And remember: all techniques are temporary. Eventually, practice gives way to simply being what you are.''',
     excerpt: 'A practical guide to different meditation approaches and when to use each.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'life', 'meditation'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -4337,11 +4114,9 @@ Retreats can become another form of seeking - spiritual holidays from real life.
 The goal is not the retreat. It is bringing recognition into every moment.''',
     excerpt: 'Practical guide to attending a spiritual retreat - preparation, process, and integration.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'life', 'meditation', 'mind', 'practice'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -4402,11 +4177,9 @@ Ultimately, the true teacher is awareness itself. All external teachers point to
 Trust your own direct experience above any authority.''',
     excerpt: 'How to find a genuine spiritual teacher - and red flags to watch for.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'freedom', 'life', 'practice', 'presence'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -4471,11 +4244,9 @@ Choose one book that calls to you. Read it deeply. Let it work on you.
 Then put it down and look: What is aware of these words?''',
     excerpt: 'A curated reading list for the spiritual path - essential texts across traditions.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'freedom', 'mind'},
     moodTags: {'general'},
   ),
@@ -4541,18 +4312,14 @@ In the deepest sense, all beings are your sangha. Awareness meeting awareness in
 When separation dissolves, community is not a thing you're part of - it's what you are.''',
     excerpt: 'The role of community on the spiritual path - benefits, challenges, and skillful engagement.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'practice', 'relationship'},
     moodTags: {'challenging', 'contemplative'},
   ),
 
-
-// === NEW ARTICLES BATCH 3 (60 articles) ===
-
+  // === NEW ARTICLES BATCH 3 (60 articles) ===
   Article(
     id: 'art_emptiness_001',
     title: 'Understanding Emptiness',
@@ -4604,12 +4371,9 @@ Paradoxically, emptiness is full. Because nothing exists separately, everything 
 The empty self is full of the whole universe.''',
     excerpt: 'What "emptiness" actually means in Buddhism - not void, but the absence of separate existence.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'relationship', 'truth'},
     moodTags: {'general'},
   ),
@@ -4670,12 +4434,9 @@ Step back. Witness. Create space.
 Then, if ready, let even the witness dissolve.''',
     excerpt: 'The practice of witnessing - stepping back as the observer of experience.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -4739,11 +4500,9 @@ Pick one thing you're resisting today. Practice accepting it completely.
 Notice what happens when resistance ends.''',
     excerpt: 'Understanding radical acceptance - not approval, but the end of resistance to what is.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'life', 'practice', 'presence', 'truth'},
     moodTags: {'general'},
   ),
@@ -4810,12 +4569,9 @@ Don't try to maintain constant watching. That's exhausting and egic.
 Just notice, when you remember, that thoughts are being watched.''',
     excerpt: 'The simple, powerful practice of observing thoughts without engaging them.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -4875,12 +4631,9 @@ Life without defending a self-image is remarkably free.
 You can be wrong. You can change. You can be seen. There's nothing essential at stake.''',
     excerpt: 'Understanding self-image as a construct - and finding freedom beyond it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'freedom', 'life'},
     moodTags: {'general'},
   ),
@@ -4945,12 +4698,9 @@ What is here, before the next thought about past or future?
 Look. This is it.''',
     excerpt: 'Understanding why this moment is all there is - and the freedom found in now.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -5016,12 +4766,9 @@ Eventually, attention rests in awareness and doesn't need to be redirected.
 This is effortless presence. This is home.''',
     excerpt: 'Understanding attention as the key to experience - and how to use it for awakening.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -5086,12 +4833,9 @@ Living from this peace changes everything. Not because circumstances improve, bu
 We are peace, appearing as a human life.''',
     excerpt: 'The inherent peace of awareness - always present, always available, independent of circumstances.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'nature'},
     moodTags: {'general'},
   ),
@@ -5159,12 +4903,9 @@ Life continues. Learning continues. Growth continues.
 But without the fundamental sense that something is missing.''',
     excerpt: 'What happens when the spiritual search finally ends - and why the end is a beginning.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'freedom', 'life'},
     moodTags: {'challenging', 'general'},
   ),
@@ -5229,14 +4970,11 @@ Not looking for something special. Not trying to improve it.
 Just this.
 
 What's here?''',
-    excerpt: 'Why awakening is ordinary - and why that\'s actually extraordinary.',
+    excerpt: "Why awakening is ordinary - and why that's actually extraordinary.",
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
     moodTags: {'general'},
   ),
@@ -5306,12 +5044,9 @@ Ask: Can I actually find this boundary?
 What happens when I can't?''',
     excerpt: 'Investigating the fundamental division of subject and object - and what happens when it collapses.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -5376,12 +5111,9 @@ This is not a belief to adopt. It is a recognition to verify.
 When recognized, you don't become something new. You see what you always already were.''',
     excerpt: 'The great Vedantic declaration: "That thou art" - understanding the identity of self and absolute.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'truth'},
     moodTags: {'general'},
   ),
@@ -5449,12 +5181,9 @@ While knowing that what we are is the unchanging witness of it all.
 Loss is real at one level. At another, nothing is lost.''',
     excerpt: 'Understanding impermanence - and discovering what remains unchanged.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'mind', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -5518,12 +5247,9 @@ But awareness and its contents are not two. The reflections are made OF awarenes
 Still, the pointing helps: You are that which reflects, not the reflections themselves.''',
     excerpt: 'The analogy of mind as mirror - reflecting everything, affected by nothing.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'nature', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -5593,12 +5319,9 @@ Who is being mindful? What is awareness itself?
 Let the practice deepen into recognition.''',
     excerpt: 'How mindfulness practice can mature into spiritual awakening - the bridge and beyond.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -5666,11 +5389,9 @@ If words come, let them come.
 The words are forms. The reality is formless love.''',
     excerpt: 'What prayer looks like in non-dual understanding - no separate self, no separate God, just love.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'devotion', 'life', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -5734,12 +5455,9 @@ And yet, we continue to walk. Not because we need to arrive, but because walking
 The pathless path is walked without a walker, toward a destination that was never left.''',
     excerpt: 'The paradox of the spiritual path - a journey to where you already are.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'practice', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -5807,12 +5525,9 @@ Who you are is not at stake. What can threaten awareness?
 You can be anything - and nothing - because you are not your identity.''',
     excerpt: 'A deep investigation into identity - who do you think you are, and who are you really?',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'relationship'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -5881,14 +5596,11 @@ This moment, without the story of enlightenment, what is present?
 Ordinary awareness. Ordinary life. Just this.
 
 This is it. Not the myth. This.''',
-    excerpt: 'Debunking the fantasy of enlightenment - what awakening actually is and isn\'t.',
+    excerpt: "Debunking the fantasy of enlightenment - what awakening actually is and isn't.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'mind', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -5965,18 +5677,14 @@ What is here?
 Just this. Simple presence. Nothing missing.''',
     excerpt: 'The simplest pointing - nothing to do, nothing to achieve, just simple presence.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
 
   // More articles for variety
-
   Article(
     id: 'art_illusion_001',
     title: 'Maya: The Nature of Illusion',
@@ -6032,12 +5740,9 @@ Engaging fully, not fooled. Playing the role, not believing we ARE the role.
 This is freedom within appearance.''',
     excerpt: 'Understanding Maya - the world is real as appearance, not as what it appears to be.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'nature', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -6107,12 +5812,9 @@ And yet, when a true guru appears, gratitude is natural.
 Not worship of a person, but appreciation for the pointing.''',
     excerpt: 'The role of the spiritual teacher - why gurus are both essential and unnecessary.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'nature'},
     moodTags: {'challenging', 'general'},
   ),
@@ -6181,12 +5883,9 @@ Tomorrow morning, upon waking, notice: I have entered another reality that feels
 What is present in both?''',
     excerpt: 'What dreams reveal about waking life - and what is present in both states.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'nature', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -6253,12 +5952,9 @@ Awakening is not just recognition. It is recognition that includes the heart.
 Mind sees clearly. Heart opens fully. Same awakening.''',
     excerpt: 'Why awakening leads to compassion - when separation dissolves, love remains.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'presence'},
     moodTags: {'general', 'uplifting'},
   ),
@@ -6329,12 +6025,9 @@ Notice this. Rest here.
 There was never anything to do.''',
     excerpt: 'The recognition that ends spiritual effort - there was never anything to do.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'life', 'practice'},
     moodTags: {'general'},
   ),
@@ -6403,14 +6096,11 @@ Neti neti leads to Iti - "This!" The positive recognition of what you are.
 Use negation to clear away false identification.
 
 Then rest in what remains. Not nothing. Everything.''',
-    excerpt: 'The ancient method of negation - finding what you are by eliminating what you\'re not.',
+    excerpt: "The ancient method of negation - finding what you are by eliminating what you're not.",
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'practice', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -6477,12 +6167,9 @@ Look at awareness right now. Does it seem like something that will end?
 Or is it the timeless presence in which all ending and beginning appears?''',
     excerpt: 'How self-recognition frees us from the fear of death - what was never born cannot die.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'mind', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -6554,12 +6241,9 @@ Ask: Is awareness acting? Or is action appearing in awareness?
 See the stillness in the movement.''',
     excerpt: 'The Bhagavad Gita teaching on action and non-doing - engaged yet still.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'life', 'mind'},
     moodTags: {'general'},
   ),
@@ -6634,12 +6318,9 @@ Appearing as words. Appearing as world. Appearing as you.
 But always, already, beyond words.''',
     excerpt: 'Acknowledging that what words point to cannot be captured by words.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -6719,19 +6400,14 @@ Nothing else possible.
 Just this.''',
     excerpt: 'The simplest, most direct pointer - everything you seek is just this, exactly as it is.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'mind'},
     moodTags: {'general'},
   ),
 
-
-// === NEW ARTICLES BATCH 4 (100 articles) ===
-
+  // === NEW ARTICLES BATCH 4 (100 articles) ===
   Article(
     id: 'art_first_step_001',
     title: 'The First Step',
@@ -6785,11 +6461,9 @@ Then take it again. And again.
 This is the path.''',
     excerpt: 'The simplest starting point - notice you are aware.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'enlightenment', 'life', 'practice', 'presence'},
     moodTags: {'general'},
   ),
@@ -6853,12 +6527,9 @@ Stories come and go. Presence remains.
 Which are you?''',
     excerpt: 'Understanding how the mind creates stories - and finding reality beneath them.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'freedom', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -6927,11 +6598,9 @@ Is it something that can be lost?
 Can you find the refuge that is never not here?''',
     excerpt: 'Finding true refuge - the safety of what you are, which cannot be lost.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'nature', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -6992,11 +6661,9 @@ Let it be simple. Let it be obvious.
 This is it.''',
     excerpt: 'Why the truth is simple - and why we complicate it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'life', 'mind'},
     moodTags: {'general'},
   ),
@@ -7060,11 +6727,9 @@ What do you really want? Underneath all desires?
 Is it something to get? Or something to recognize?''',
     excerpt: 'Understanding the spiritual longing - awareness seeking itself.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'freedom', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -7129,14 +6794,11 @@ Right now, without changing anything:
 Is awareness content?
 
 Look. Not the thoughts. Awareness itself.''',
-    excerpt: 'Finding contentment that doesn\'t depend on conditions - the natural state of awareness.',
+    excerpt: "Finding contentment that doesn't depend on conditions - the natural state of awareness.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'nature'},
     moodTags: {'general'},
   ),
@@ -7207,12 +6869,9 @@ But it may take time to stabilize, integrate, embody.
 The freedom itself is immediate.''',
     excerpt: 'Understanding true freedom - not freedom from bondage but recognition that bondage was never real.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'practice', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -7285,11 +6944,9 @@ Not just the "spiritual" parts. All of it.
 This is true awakening.''',
     excerpt: 'The importance of being real rather than performing spirituality.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
     moodTags: {'general'},
   ),
@@ -7362,11 +7019,9 @@ Not to specific sounds. To the listening itself.
 What is that?''',
     excerpt: 'The art of truly listening - receiving teaching and life without resistance.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -7442,11 +7097,9 @@ What do you think you know? Is it really true?
 What is the gift of admitting you don't know?''',
     excerpt: 'The gift of not-knowing - spiritual humility as openness to reality.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'life', 'mind'},
     moodTags: {'general'},
   ),
@@ -7515,11 +7168,9 @@ Life happens on you rather than to you.
 You are the space, not only what fills it.''',
     excerpt: 'Recognizing the ground of being - the awareness in which all experience appears.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -7599,17 +7250,14 @@ Just this. Where you always are. When you always are.
 Home.''',
     excerpt: 'Recognizing that here and now are the only place and time - you have never been elsewhere.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 3,
-    isPremium: false,
+
     topicTags: {'freedom', 'life', 'mind', 'practice'},
     moodTags: {'general'},
   ),
 
   // Quick additions to reach target
-
   Article(
     id: 'art_breath_001',
     title: 'The Breath as Anchor',
@@ -7670,11 +7318,9 @@ Let it be as it is.
 What is aware of this?''',
     excerpt: 'Using the breath as an anchor to presence and a doorway to awareness.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'meditation', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -7742,11 +7388,9 @@ You are not the thoughts. You are what remains in the gaps.
 Look.''',
     excerpt: 'Finding the natural peace in the gaps between thoughts.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'nature', 'practice'},
     moodTags: {'general'},
   ),
@@ -7810,11 +7454,9 @@ Look up, metaphorically. See the vastness that holds all.
 Rest there.''',
     excerpt: 'The classic analogy - you are the sky, not the clouds that pass through it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence'},
     moodTags: {'challenging', 'general'},
   ),
@@ -7886,11 +7528,9 @@ Rising and falling. Never separate from the ocean.
 What remains when the wave subsides?''',
     excerpt: 'The wave is never separate from the ocean - you are never separate from awareness.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'nature', 'presence'},
     moodTags: {'general'},
   ),
@@ -7956,11 +7596,9 @@ When you forget, you'll come back again.
 No problem.''',
     excerpt: 'What to do when you forget - simply come back to awareness.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8034,11 +7672,9 @@ Now.
 What happens when you stop?''',
     excerpt: 'The most direct practice - just stop seeking, trying, figuring out.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'mind', 'practice'},
     moodTags: {'general'},
   ),
@@ -8101,11 +7737,9 @@ What is always true for you? Right now?
 The answer is what you are.''',
     excerpt: 'Finding what is always true - the constant presence of awareness.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8176,11 +7810,9 @@ Not when you awaken. Now.
 Welcome home.''',
     excerpt: 'The recognition that you have always been home - nothing to find, nowhere to go.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'life', 'practice'},
     moodTags: {'general'},
   ),
@@ -8250,19 +7882,16 @@ The end of looking elsewhere.
 You are here. You are aware.
 
 That's all.''',
-    excerpt: 'The final word after all teaching - you are aware, and that\'s all.',
+    excerpt: "The final word after all teaching - you are aware, and that's all.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'truth'},
     moodTags: {'general'},
   ),
 
   // Additional articles for variety
-
   Article(
     id: 'art_morning_001',
     title: 'The Morning Mind',
@@ -8321,11 +7950,9 @@ Before anything: What is here?
 Let the day begin from here.''',
     excerpt: 'Using the fresh state of morning for recognition.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general', 'morning'},
   ),
@@ -8394,11 +8021,9 @@ Not doing anything to earn rest.
 Just resting. As awareness. Always already at rest.''',
     excerpt: 'Using the natural settling of evening for rest and recognition.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'mind', 'practice'},
     moodTags: {'general', 'morning'},
   ),
@@ -8471,18 +8096,14 @@ Stop. Feel. Notice.
 What is this moment, exactly as it is?''',
     excerpt: 'Transforming waiting from frustration to presence.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'life', 'meditation'},
     moodTags: {'general'},
   ),
 
-
-// === NEW ARTICLES BATCH 5 (75 articles) ===
-
+  // === NEW ARTICLES BATCH 5 (75 articles) ===
   Article(
     id: 'art_look_001',
     title: 'Look Now',
@@ -8540,11 +8161,9 @@ Right now: What is aware of these words?
 Don't think about it. Look.''',
     excerpt: 'The direct invitation to look now - not later, not after more preparation.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 1,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'meditation', 'mind'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8612,11 +8231,9 @@ Without adding anything.
 What is that?''',
     excerpt: 'The most fundamental knowing - the self-evident fact of your existence.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'meditation', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8683,11 +8300,9 @@ What are you resisting right now?
 What happens if you stop?''',
     excerpt: 'Understanding how resistance perpetuates what we resist.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'freedom', 'life', 'practice', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8758,11 +8373,9 @@ Not thinking about being here.
 Actually here.''',
     excerpt: 'The recognition that this moment is all there is - ever.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'life', 'practice', 'presence', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8828,13 +8441,11 @@ You are the answer.
 Not in the future. Now.
 
 Look.''',
-    excerpt: 'The recognition that you are the answer you\'ve been seeking.',
+    excerpt: "The recognition that you are the answer you've been seeking.",
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'presence', 'self-inquiry'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -8904,11 +8515,9 @@ Awareness. Being. This.
 Obvious. Overlooked. Recognized.''',
     excerpt: 'How we overlook the obvious - and what happens when we see it.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence', 'self-inquiry'},
     moodTags: {'general'},
   ),
@@ -8972,11 +8581,9 @@ Are you already aware?
 The answer is what you are.''',
     excerpt: 'The most important word - you already are what you seek.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'enlightenment', 'freedom'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -9047,11 +8654,9 @@ Not an awareness you have to maintain.
 What you are.''',
     excerpt: 'Awareness requires no effort - you simply are it.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'practice', 'presence'},
     moodTags: {'general'},
   ),
@@ -9120,11 +8725,9 @@ Right now, without adding anything:
 What is your natural state?''',
     excerpt: 'Your natural state is awareness - everything else is added.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'enlightenment', 'mind', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -9196,17 +8799,14 @@ Is something missing from awareness itself?
 Or only from the story about "me"?''',
     excerpt: 'The recognition that awareness is complete - nothing is missing.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'freedom', 'presence', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
 
   // More quick articles for count
-
   Article(
     id: 'art_wonder_001',
     title: 'The Wonder of Being',
@@ -9262,11 +8862,9 @@ You are.
 Rest in that wonder.''',
     excerpt: 'The extraordinary wonder of simply being - the mystery of existence.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'mind', 'nature'},
     moodTags: {'general'},
   ),
@@ -9334,11 +8932,9 @@ Not what you're aware of.
 What is aware.''',
     excerpt: 'The direct recognition needs no intermediary - just turn attention to its source.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.selfInquiry,
-    ],
+    categories: [ArticleCategory.selfInquiry],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'mind', 'practice'},
     moodTags: {'challenging', 'contemplative'},
   ),
@@ -9404,11 +9000,9 @@ What if you don't need to be better?
 What if this, right now, is enough?''',
     excerpt: 'The recognition that awareness is already perfect - nothing needs fixing.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'nature', 'presence'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -9479,11 +9073,9 @@ Is presence absent?
 Or only the preferred state?''',
     excerpt: 'Presence is not a state to achieve - it is what is aware of all states.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'freedom', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -9555,11 +9147,9 @@ You are this light.
 Not seeing it. Being it.''',
     excerpt: 'Awareness as light - self-luminous, illuminating all experience.',
     tradition: Tradition.advaita,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'mind', 'presence'},
     moodTags: {'general'},
   ),
@@ -9629,11 +9219,9 @@ Can you sense the spaciousness of awareness?
 Not as a thing. As what you are.''',
     excerpt: 'Awareness as space - containing everything, touched by nothing.',
     tradition: Tradition.direct,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'nature'},
     moodTags: {'general'},
   ),
@@ -9705,11 +9293,9 @@ Not defended. Not contracted.
 Just here.''',
     excerpt: 'The natural openness of awareness - nothing excluded, everything allowed.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'freedom', 'nature'},
     moodTags: {'general'},
   ),
@@ -9778,11 +9364,9 @@ Not because experience changes.
 Because the fight with experience ends.''',
     excerpt: 'The art of allowing - letting experience be exactly as it is.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'ego', 'enlightenment', 'life', 'mind'},
     moodTags: {'general'},
   ),
@@ -9852,11 +9436,9 @@ This is it.
 Now what?''',
     excerpt: 'The recognition that this is it - there is nothing else.',
     tradition: Tradition.zen,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'ego', 'enlightenment', 'freedom', 'life'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -9932,11 +9514,9 @@ We didn't earn it. It's given.
 Thank you.''',
     excerpt: 'Gratitude as the natural response to recognizing what we are.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'enlightenment', 'life'},
     moodTags: {'general'},
   ),
@@ -10003,11 +9583,9 @@ Ask: Who suffers?
 Find that one.''',
     excerpt: 'What the end of suffering really means - and what continues.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.everydayAwakening],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'life', 'practice', 'presence'},
     moodTags: {'challenging', 'general'},
   ),
@@ -10085,21 +9663,18 @@ Not the end of truth.
 The beginning of living it.''',
     excerpt: 'After all the words - silence, and living what cannot be said.',
     tradition: Tradition.contemporary,
-    categories: [
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 2,
-    isPremium: false,
+
     topicTags: {'awareness', 'ego', 'nature', 'silence'},
     moodTags: {'general'},
   ),
 
   // === NEW ARTICLES FROM TEACHINGS-DB (Batch 2) ===
-
   Article(
     id: 'art_true_meditation_001',
     title: 'True Meditation',
-    subtitle: 'Adyashanti\'s Radical Approach',
+    subtitle: "Adyashanti's Radical Approach",
     content: '''## The Absence of Technique
 
 Most meditation is a subtle form of control. We sit down wanting peace, clarity, or awakening. We employ techniques to get somewhere. True meditation, as Adyashanti points to, is the opposite: the complete abandonment of the meditator.
@@ -10120,7 +9695,7 @@ When you stop rejecting, the energy that was going into resistance becomes avail
 
 What if you sat down with absolutely no agenda? Not even the agenda to have no agenda? The moment there is an agenda, there is a meditator. The moment there is a meditator, there is separation.
 
-**3. Discover What\'s Already at Rest**
+**3. Discover What's Already at Rest**
 
 You do not need to become still. Stillness is already here. Even in the midst of mental chaos, something is aware of the chaos. That awareness is not chaotic. It was never not still.
 
@@ -10135,15 +9710,12 @@ You do not need to become still. Stillness is already here. Even in the midst of
 ## The Deeper Instruction
 
 Underneath all the steps, there is one instruction: be what you already are. You are not becoming aware. You are recognizing you have always been awareness. True meditation is simply no longer pretending otherwise.''',
-    excerpt: 'Adyashanti\'s revolutionary approach: meditation as the abandonment of the meditator.',
+    excerpt: "Adyashanti's revolutionary approach: meditation as the abandonment of the meditator.",
     tradition: Tradition.contemporary,
     teacher: 'Adyashanti',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'meditation', 'awareness', 'surrender', 'practice'},
     moodTags: {'contemplative', 'morning'},
   ),
@@ -10151,12 +9723,12 @@ Underneath all the steps, there is one instruction: be what you already are. You
   Article(
     id: 'art_i_am_practice_001',
     title: 'Holding to I Am',
-    subtitle: 'Nisargadatta Maharaj\'s Core Practice',
+    subtitle: "Nisargadatta Maharaj's Core Practice",
     content: '''## The Primal Sense of Being
 
-> "Just stay with the sense \'I am.\' That is your capital. Guard it well."
+> "Just stay with the sense 'I am.' That is your capital. Guard it well."
 
-The instruction to hold to "I am" is the cornerstone of Nisargadatta\'s teaching. The "I am" is not a thought, concept, or mantra. It is the primal sense of existing — the awareness of being that underlies all experience.
+The instruction to hold to "I am" is the cornerstone of Nisargadatta's teaching. The "I am" is not a thought, concept, or mantra. It is the primal sense of existing — the awareness of being that underlies all experience.
 
 In ordinary experience, "I am" is always followed by something: I am tired, I am a seeker, I am successful. The teaching is to drop everything after "I am" and remain with the bare sense of existing.
 
@@ -10187,16 +9759,13 @@ Nisargadatta received three instructions from his guru:
 
 When you hold to "I am" faithfully, it reveals what you are not, shows you what is permanent, and eventually dissolves itself — revealing what is prior to even "I am."
 
-> "Go back to that state of pure being, where the \'I am\' is still in its purity before it gets contaminated with \'I am this\' or \'I am that.\'"''',
+> "Go back to that state of pure being, where the 'I am' is still in its purity before it gets contaminated with 'I am this' or 'I am that.'"''',
     excerpt: 'Nisargadatta\'s essential practice: holding to the pure sense of "I am" before all qualifications.',
     tradition: Tradition.advaita,
     teacher: 'Nisargadatta Maharaj',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'self-inquiry', 'awareness', 'practice', 'presence'},
     moodTags: {'contemplative', 'morning'},
   ),
@@ -10204,10 +9773,10 @@ When you hold to "I am" faithfully, it reveals what you are not, shows you what 
   Article(
     id: 'art_atma_vichara_001',
     title: 'The Art of Self-Inquiry',
-    subtitle: 'Ramana Maharshi\'s Atma Vichara',
+    subtitle: "Ramana Maharshi's Atma Vichara",
     content: '''## Investigation, Not Thought
 
-> "The question \'Who am I?\' will destroy all other thoughts, and like the stick used for stirring the funeral pyre, it will itself be destroyed in the end."
+> "The question 'Who am I?' will destroy all other thoughts, and like the stick used for stirring the funeral pyre, it will itself be destroyed in the end."
 
 Self-inquiry is the direct path taught by Ramana Maharshi. Unlike practices that calm the mind or develop concentration, self-inquiry goes directly to the root of the "I" thought to discover what lies beyond it.
 
@@ -10244,15 +9813,12 @@ When inquiry is genuine and persistent, there comes a point where the "I" that w
 When stress arises: "Who is stressed?" When ambition drives: "Who wants success?" When conflict occurs: "Who feels threatened?" The inquiry applies everywhere — not as obsession but as natural turning inward.
 
 > "There is no greater mystery than this: being Reality ourselves, we seek to gain Reality."''',
-    excerpt: 'A practical guide to Ramana Maharshi\'s self-inquiry — investigation, not thinking.',
+    excerpt: "A practical guide to Ramana Maharshi's self-inquiry — investigation, not thinking.",
     tradition: Tradition.advaita,
     teacher: 'Ramana Maharshi',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'self-inquiry', 'mind', 'awareness', 'practice'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -10260,7 +9826,7 @@ When stress arises: "Who is stressed?" When ambition drives: "Who wants success?
   Article(
     id: 'art_three_stages_001',
     title: 'Understanding, Feeling, Living',
-    subtitle: 'Rupert Spira\'s Three Stages of Recognition',
+    subtitle: "Rupert Spira's Three Stages of Recognition",
     content: '''## The Direct Path
 
 The direct path begins with the recognition that what you seek — peace, happiness, freedom — is not something to be attained in the future but is your present nature. It does not take the seeker to enlightenment. It takes enlightenment to the seeker.
@@ -10297,15 +9863,12 @@ The direct path is fundamentally an investigation of present experience:
 4. Where is awareness located? — Location cannot be found
 
 > "You are not on a path to enlightenment. You ARE enlightenment, appearing to be on a path."''',
-    excerpt: 'Rupert Spira\'s direct path unfolds through understanding, feeling, and embodied living.',
+    excerpt: "Rupert Spira's direct path unfolds through understanding, feeling, and embodied living.",
     tradition: Tradition.direct,
     teacher: 'Rupert Spira',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'practice', 'presence', 'truth'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -10318,7 +9881,7 @@ The direct path is fundamentally an investigation of present experience:
 
 Every spiritual path implies causation: do this practice, follow this method, and enlightenment will result. Tony Parsons points to something more radical: liberation has no cause because there is no one to be liberated.
 
-> "Nothing you can do will bring about liberation because there\'s no one there to do anything. And liberation isn\'t something that\'s brought about — it\'s what IS when the illusion of someone falls away."
+> "Nothing you can do will bring about liberation because there's no one there to do anything. And liberation isn't something that's brought about — it's what IS when the illusion of someone falls away."
 
 The entire causal framework is part of the dream. Practice cannot cause awakening. Grace cannot cause it. Understanding cannot cause it. Yet awakening does seem to "happen" — but when it is seen, it is seen that no one woke up.
 
@@ -10338,7 +9901,7 @@ Liberation does not exclude anything. The apparent seeker is included. The appar
 
 ## What Remains
 
-> "This is it. And you won\'t find it because you are it."
+> "This is it. And you won't find it because you are it."
 
 What remains is:
 - **Aliveness** — not your aliveness, just aliveness
@@ -10346,15 +9909,12 @@ What remains is:
 - **This** — whatever is appearing, simply appearing
 
 The secret is not hidden. It is open — it is everything. The secret is that there is no secret.''',
-    excerpt: 'Tony Parsons\' radical message: liberation has no cause, because there is no one to be liberated.',
+    excerpt: "Tony Parsons' radical message: liberation has no cause, because there is no one to be liberated.",
     tradition: Tradition.contemporary,
     teacher: 'Tony Parsons',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'freedom', 'ego', 'truth', 'enlightenment'},
     moodTags: {'contemplative', 'challenging'},
   ),
@@ -10362,7 +9922,7 @@ The secret is not hidden. It is open — it is everything. The secret is that th
   Article(
     id: 'art_body_approach_001',
     title: 'The Body as Doorway',
-    subtitle: 'Jean Klein\'s Approach to Embodied Awakening',
+    subtitle: "Jean Klein's Approach to Embodied Awakening",
     content: '''## Beyond Transcendence
 
 Most seekers want to transcend the body. They see it as the prison of the soul. Jean Klein pointed out this is like a fish trying to escape from water.
@@ -10395,15 +9955,12 @@ When you remove all mental additions from a sensation, what remains is pure aliv
 The approach is not transcendence but transparency. The body becomes transparent — not solid, not "mine," not a barrier — simply sensation appearing in awareness.
 
 > "The body is the final frontier of understanding. When awareness permeates the body completely, the journey is complete."''',
-    excerpt: 'Jean Klein\'s unique teaching: the body is not an obstacle to awakening but a doorway into presence.',
+    excerpt: "Jean Klein's unique teaching: the body is not an obstacle to awakening but a doorway into presence.",
     tradition: Tradition.direct,
     teacher: 'Jean Klein',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'presence', 'practice', 'nature'},
     moodTags: {'contemplative', 'morning'},
   ),
@@ -10411,12 +9968,12 @@ The approach is not transcendence but transparency. The body becomes transparent
   Article(
     id: 'art_invitation_001',
     title: 'The Invitation to Freedom',
-    subtitle: 'Mooji\'s Core Pointing',
+    subtitle: "Mooji's Core Pointing",
     content: '''## Invitation, Not Instruction
 
-Mooji\'s teaching is not instruction but invitation. Instruction tells you what to do. Invitation asks you to look. Instruction assumes you lack something. Invitation assumes you ARE what you seek.
+Mooji's teaching is not instruction but invitation. Instruction tells you what to do. Invitation asks you to look. Instruction assumes you lack something. Invitation assumes you ARE what you seek.
 
-> "I\'m not giving you something you don\'t have. I\'m inviting you to see what has always been here."
+> "I'm not giving you something you don't have. I'm inviting you to see what has always been here."
 
 An invitation does not give you what you lack. It draws your attention to what is already present.
 
@@ -10430,7 +9987,7 @@ When you truly look for the one who is looking, you find nothing perceivable. An
 
 After a glimpse of recognition, the mind wants to analyze what happened, compare it to expectations, question if it was "real." Mooji speaks of "marinating in presence" — allowing the recognition to soak in without commentary.
 
-> "Stay in the fire. Let it burn away what isn\'t real."
+> "Stay in the fire. Let it burn away what isn't real."
 
 When recognition occurs, even a glimpse: do not rush, do not analyze, do not grasp, stay silent, be here.
 
@@ -10440,18 +9997,15 @@ If what you have found requires effort to maintain, special conditions, constant
 
 What you ARE requires nothing to be, is present in all conditions, cannot be enhanced by practice, and is untouched by any experience.
 
-> "Just be. Not \'be something.\' Not \'be better.\' Not \'be spiritual.\' Just BE. And notice: you cannot NOT be. Being is your nature, not your achievement."
+> "Just be. Not 'be something.' Not 'be better.' Not 'be spiritual.' Just BE. And notice: you cannot NOT be. Being is your nature, not your achievement."
 
 > "Stop being a tourist in your own Self."''',
-    excerpt: 'Mooji\'s invitation: you are already that which you seek — stop being a tourist in your own Self.',
+    excerpt: "Mooji's invitation: you are already that which you seek — stop being a tourist in your own Self.",
     tradition: Tradition.contemporary,
     teacher: 'Mooji',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'self-inquiry', 'awareness', 'freedom', 'presence'},
     moodTags: {'uplifting', 'general'},
   ),
@@ -10459,10 +10013,10 @@ What you ARE requires nothing to be, is present in all conditions, cannot be enh
   Article(
     id: 'art_the_work_001',
     title: 'The Four Questions',
-    subtitle: 'Byron Katie\'s Method of Self-Inquiry',
+    subtitle: "Byron Katie's Method of Self-Inquiry",
     content: '''## A Different Kind of Inquiry
 
-> "I discovered that when I believed my thoughts, I suffered, but that when I didn\'t believe them, I didn\'t suffer, and that this is true for every human being."
+> "I discovered that when I believed my thoughts, I suffered, but that when I didn't believe them, I didn't suffer, and that this is true for every human being."
 
 The Work is a process of inquiry that teaches you to identify and question thoughts that cause suffering. It begins not with spiritual concepts but with raw, honest experience — your actual judgments about others.
 
@@ -10471,9 +10025,9 @@ The Work is a process of inquiry that teaches you to identify and question thoug
 Take any stressful thought and ask:
 
 **1. Is it true?**
-Sit with this question. Do not rush to answer. Let the question sink below the mind\'s immediate response.
+Sit with this question. Do not rush to answer. Let the question sink below the mind's immediate response.
 
-**2. Can you absolutely know that it\'s true?**
+**2. Can you absolutely know that it's true?**
 This deeper inquiry opens the mind to uncertainty. Has there ever been a time when the opposite was true?
 
 **3. How do you react when you believe that thought?**
@@ -10486,9 +10040,9 @@ In the same situation, with the same person, but without the ability to think th
 
 After the four questions, find opposites of your original statement:
 
-- **Turn it to the self:** "He doesn\'t listen to me" becomes "I don\'t listen to me"
-- **Turn it to the other:** "He doesn\'t listen to me" becomes "I don\'t listen to him"
-- **Turn it to the opposite:** "He doesn\'t listen to me" becomes "He does listen to me"
+- **Turn it to the self:** "He doesn't listen to me" becomes "I don't listen to me"
+- **Turn it to the other:** "He doesn't listen to me" becomes "I don't listen to him"
+- **Turn it to the opposite:** "He doesn't listen to me" becomes "He does listen to me"
 
 For each turnaround, find three specific, genuine examples of how it is true.
 
@@ -10496,16 +10050,13 @@ For each turnaround, find three specific, genuine examples of how it is true.
 
 The Work does not tell you what to think. It helps you discover what you actually think — and whether those thoughts serve you. When a thought is seen clearly, it loses its power to cause suffering.
 
-> "It\'s not the problem that causes our suffering; it\'s our thinking about the problem."''',
-    excerpt: 'Byron Katie\'s four questions that end suffering: a radical method of questioning stressful thoughts.',
+> "It's not the problem that causes our suffering; it's our thinking about the problem."''',
+    excerpt: "Byron Katie's four questions that end suffering: a radical method of questioning stressful thoughts.",
     tradition: Tradition.contemporary,
     teacher: 'Byron Katie',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.everydayAwakening,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.everydayAwakening],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'self-inquiry', 'mind', 'freedom', 'practice'},
     moodTags: {'challenging', 'general'},
   ),
@@ -10513,14 +10064,14 @@ The Work does not tell you what to think. It helps you discover what you actuall
   Article(
     id: 'art_stop_teaching_001',
     title: 'Stop',
-    subtitle: 'Papaji\'s One-Word Teaching',
+    subtitle: "Papaji's One-Word Teaching",
     content: '''## The Single Instruction
 
-Papaji\'s entire teaching can be reduced to a single word: STOP.
+Papaji's entire teaching can be reduced to a single word: STOP.
 
 Not stop gradually. Not stop after preparation. Not stop when worthy. Just stop.
 
-> "Don\'t wait one more moment. Freedom is not the result of anything. It is HERE — now — in this instant of stopping."
+> "Don't wait one more moment. Freedom is not the result of anything. It is HERE — now — in this instant of stopping."
 
 In the instant of stopping all mental activity — before the next thought arises, before the mind comments on the stopping — freedom is revealed. Not achieved. Revealed. Because it was always here, obscured only by the movement of seeking it.
 
@@ -10532,7 +10083,7 @@ The mind immediately wants to make stopping into a process: first quiet down, th
 
 ## The Gap Before Thought
 
-> "Between one thought and the next, there is a gap. In that gap, there is no \'I,\' no problem, no world, no seeker. What is THAT?"
+> "Between one thought and the next, there is a gap. In that gap, there is no 'I,' no problem, no world, no seeker. What is THAT?"
 
 This gap is your nature — always present, not affected by thoughts appearing, not created by practice. You do not enter the gap. You ARE the gap pretending to be the thoughts.
 
@@ -10546,16 +10097,13 @@ You are looking for what you already are. The search creates the sense of lack. 
 
 When seeking stops, what remains is not nothing. It cannot be named because naming is the next thought. It can only be pointed to: what is here right now that does not need a thought to exist?
 
-> "When you stop, you don\'t become free. You recognize you were always free."''',
-    excerpt: 'Papaji\'s radical instruction: stop everything this instant and recognize what was always here.',
+> "When you stop, you don't become free. You recognize you were always free."''',
+    excerpt: "Papaji's radical instruction: stop everything this instant and recognize what was always here.",
     tradition: Tradition.advaita,
     teacher: 'Papaji',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'freedom', 'silence', 'enlightenment', 'mind'},
     moodTags: {'contemplative', 'challenging'},
   ),
@@ -10563,7 +10111,7 @@ When seeking stops, what remains is not nothing. It cannot be named because nami
   Article(
     id: 'art_awareness_teaching_001',
     title: 'The Substance of Experience',
-    subtitle: 'Francis Lucille\'s Scientific Inquiry',
+    subtitle: "Francis Lucille's Scientific Inquiry",
     content: '''## Awareness Is All There Is
 
 > "Awareness is not the highest state. It is the only state. Everything else is awareness appearing as this or that."
@@ -10577,7 +10125,7 @@ Francis Lucille brings the precision of a scientist to the investigation of cons
 3. **What is awareness made of?** Investigate the substance of knowing itself. No edges, center, or composition can be found
 4. **Is awareness separate from what it knows?** Look for the border between knower and known. It cannot be found
 
-> "In the moment of recognizing \'I am aware,\' you already have all the enlightenment there is. The problem is only that you don\'t value this recognition."
+> "In the moment of recognizing 'I am aware,' you already have all the enlightenment there is. The problem is only that you don't value this recognition."
 
 ## The Substance Investigation
 
@@ -10599,16 +10147,13 @@ All suffering comes from one illusion: the belief that there is a knower here an
 
 When this split is seen through, suffering ends — not because life changes, but because there is no one standing apart from life.
 
-> "I don\'t ask you to believe me. I ask you to look."''',
-    excerpt: 'Francis Lucille\'s rigorous investigation: awareness is not the highest state — it is the only state.',
+> "I don't ask you to believe me. I ask you to look."''',
+    excerpt: "Francis Lucille's rigorous investigation: awareness is not the highest state — it is the only state.",
     tradition: Tradition.direct,
     teacher: 'Francis Lucille',
-    categories: [
-      ArticleCategory.natureOfAwareness,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'awareness', 'self-inquiry', 'truth', 'nature'},
     moodTags: {'contemplative', 'general'},
   ),
@@ -10623,9 +10168,9 @@ The Ashtavakra Gita stands apart from nearly all spiritual literature. Where oth
 
 > "You are not the body. The body is not yours. You are not the doer. You are awareness itself, the one witness, unchanging, free."
 
-King Janaka asks: how is knowledge acquired? How is liberation attained? Ashtavakra\'s answer upends every assumption: you are already free.
+King Janaka asks: how is knowledge acquired? How is liberation attained? Ashtavakra's answer upends every assumption: you are already free.
 
-## Janaka\'s Recognition
+## Janaka's Recognition
 
 Upon hearing the truth directly, Janaka responds with ecstasy:
 
@@ -10639,7 +10184,7 @@ Both bondage and liberation are mental constructs. The Self was never bound, so 
 
 ## The Natural State
 
-In Ashtavakra\'s vision, the realized being does nothing to maintain freedom. There is no effort, no practice, no vigilance required. Actions happen spontaneously without a sense of doership.
+In Ashtavakra's vision, the realized being does nothing to maintain freedom. There is no effort, no practice, no vigilance required. Actions happen spontaneously without a sense of doership.
 
 - Neither holding nor rejecting
 - Neither pure nor impure
@@ -10651,15 +10196,12 @@ In Ashtavakra\'s vision, the realized being does nothing to maintain freedom. Th
 ## For the Mature Seeker
 
 This teaching is not for beginners. It requires a readiness to let go of all spiritual ambition, all hope of attainment. The Ashtavakra Gita offers no comfort to the seeker — only annihilation. And in that annihilation, the recognition that nothing was ever lost.''',
-    excerpt: 'The Ashtavakra Gita\'s blazing declaration: you are already free, you were never bound.',
+    excerpt: "The Ashtavakra Gita's blazing declaration: you are already free, you were never bound.",
     tradition: Tradition.advaita,
     teacher: 'Ashtavakra',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'freedom', 'awareness', 'truth', 'enlightenment'},
     moodTags: {'contemplative', 'challenging'},
   ),
@@ -10667,7 +10209,7 @@ This teaching is not for beginners. It requires a readiness to let go of all spi
   Article(
     id: 'art_avadhuta_001',
     title: 'Song of the Avadhuta',
-    subtitle: 'Dattatreya\'s Ecstatic Freedom',
+    subtitle: "Dattatreya's Ecstatic Freedom",
     content: '''## The One Who Has Shaken Off Everything
 
 The Avadhuta Gita is among the most radical and ecstatic expressions of non-dual realization in Sanskrit literature. Attributed to the sage Dattatreya, it sings of absolute freedom — the state of one who has shaken off all limitations, all identities, all concepts of bondage and liberation.
@@ -10695,15 +10237,12 @@ The Self cannot be captured in language. All descriptions miss it. Silence point
 > "There is no I, no you, no world, no God. There is only THAT — indescribable, infinite, free."
 
 The Avadhuta Gita does not comfort or instruct. It celebrates. It is the song of one for whom the game is over, the dream is recognized, and what remains is too vast for words.''',
-    excerpt: 'Dattatreya\'s ecstatic song of absolute freedom — beyond all paths, all concepts, all limitation.',
+    excerpt: "Dattatreya's ecstatic song of absolute freedom — beyond all paths, all concepts, all limitation.",
     tradition: Tradition.advaita,
     teacher: 'Dattatreya',
-    categories: [
-      ArticleCategory.traditionalTeachings,
-      ArticleCategory.natureOfAwareness,
-    ],
+    categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'freedom', 'awareness', 'silence', 'truth'},
     moodTags: {'contemplative', 'uplifting'},
   ),
@@ -10728,7 +10267,7 @@ Robert Adams taught that silence is not merely the absence of sound or thought �
 
 ## Self-Inquiry Simplified
 
-Robert took Ramana\'s teaching and made it extraordinarily accessible:
+Robert took Ramana's teaching and made it extraordinarily accessible:
 
 1. A thought or feeling arises
 2. Ask: "To whom does this come?"
@@ -10741,20 +10280,17 @@ The question is not meant to produce an answer. It is meant to stop the mind. Wh
 
 ## Everything Is Unfolding
 
-> "Everything is unfolding as it should. You don\'t have to fix anything, change anything, make anything happen."
+> "Everything is unfolding as it should. You don't have to fix anything, change anything, make anything happen."
 
 This is not passivity. It is recognition of a deeper order. From the absolute perspective, there is only consciousness appearing as all this. The apparent person is also an appearance. When you know this, you can participate in life fully without being bound by it.
 
-> "You don\'t have to do anything to find silence. You have to stop doing."''',
-    excerpt: 'Robert Adams\' teaching on silence: not the absence of sound, but the presence of the Self.',
+> "You don't have to do anything to find silence. You have to stop doing."''',
+    excerpt: "Robert Adams' teaching on silence: not the absence of sound, but the presence of the Self.",
     tradition: Tradition.advaita,
     teacher: 'Robert Adams',
-    categories: [
-      ArticleCategory.selfInquiry,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.selfInquiry, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'silence', 'self-inquiry', 'awareness', 'surrender'},
     moodTags: {'contemplative', 'evening'},
   ),
@@ -10799,15 +10335,12 @@ Feel the aliveness within the body. Not thinking about the body but directly fee
 When any difficulty arises, ask: What is my problem right now? Not the story — what is actually happening? Can I accept what is in this moment? What action, if any, can I take right now?
 
 Presence is not a special state to achieve. It is the simple recognition of what is already here when attention is withdrawn from the stream of thinking.''',
-    excerpt: 'Five practical doorways to presence: Eckhart Tolle\'s guide to stepping into the now.',
+    excerpt: "Five practical doorways to presence: Eckhart Tolle's guide to stepping into the now.",
     tradition: Tradition.contemporary,
     teacher: 'Eckhart Tolle',
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.modernPointers,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.modernPointers],
     readingTimeMinutes: 4,
-    isPremium: true,
+
     topicTags: {'presence', 'mind', 'awareness', 'practice'},
     moodTags: {'morning', 'general'},
   ),
@@ -10852,43 +10385,46 @@ Robert taught three foundational understandings:
 2. **Everything is unfolding as it should** — Trust the intelligence of existence
 3. **You are not the doer** — Actions happen through the body-mind
 
-> "The Self knows. Trust that. Your personal preferences don\'t know what is needed. The Self does."''',
+> "The Self knows. Trust that. Your personal preferences don't know what is needed. The Self does."''',
     excerpt: 'Robert Adams on trusting the deeper intelligence: everything is unfolding exactly as it should.',
     tradition: Tradition.advaita,
     teacher: 'Robert Adams',
-    categories: [
-      ArticleCategory.everydayAwakening,
-      ArticleCategory.traditionalTeachings,
-    ],
+    categories: [ArticleCategory.everydayAwakening, ArticleCategory.traditionalTeachings],
     readingTimeMinutes: 4,
-    isPremium: false,
+
     topicTags: {'surrender', 'truth', 'awareness', 'life'},
     moodTags: {'uplifting', 'stress'},
   ),
-
 ];
 
-/// Get articles filtered by tradition
+final Map<String, Article> _articlesById = {for (final article in articles) article.id: article};
+
+/** Get a single article by ID */
+Article? getArticleById(String id) {
+  return _articlesById[id];
+}
+
+/** Get articles filtered by tradition */
 List<Article> getArticlesByTradition(Tradition tradition) {
   return articles.where((a) => a.tradition == tradition).toList();
 }
 
-/// Get articles filtered by category
+/** Get articles filtered by category */
 List<Article> getArticlesByCategory(ArticleCategory category) {
   return articles.where((a) => a.hasCategory(category)).toList();
 }
 
-/// Get articles filtered by teacher
+/** Get articles filtered by teacher */
 List<Article> getArticlesByTeacher(String teacherName) {
   return articles.where((a) => a.isBy(teacherName)).toList();
 }
 
-/// Get featured articles (non-premium, highly relevant)
+/** Get featured articles (top picks) */
 List<Article> getFeaturedArticles({int limit = 5}) {
-  return articles.where((a) => !a.isPremium).take(limit).toList();
+  return articles.take(limit).toList();
 }
 
-/// Search articles by title or content
+/** Search articles by title or content */
 List<Article> searchArticles(String query) {
   final lowerQuery = query.toLowerCase();
   return articles.where((a) {
@@ -10898,17 +10434,17 @@ List<Article> searchArticles(String query) {
   }).toList();
 }
 
-/// Get articles by topic tag
+/** Get articles by topic tag */
 List<Article> getArticlesByTopic(String topic) {
   return articles.where((a) => a.hasTopic(topic)).toList();
 }
 
-/// Get articles by mood tag
+/** Get articles by mood tag */
 List<Article> getArticlesByMood(String mood) {
   return articles.where((a) => a.hasMood(mood)).toList();
 }
 
-/// Get count of articles per topic tag
+/** Get count of articles per topic tag */
 Map<String, int> getArticleTopicCounts() {
   final counts = <String, int>{};
   for (final article in articles) {
@@ -10919,7 +10455,7 @@ Map<String, int> getArticleTopicCounts() {
   return counts;
 }
 
-/// Get count of articles per mood tag
+/** Get count of articles per mood tag */
 Map<String, int> getArticleMoodCounts() {
   final counts = <String, int>{};
   for (final article in articles) {

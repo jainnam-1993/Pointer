@@ -6,18 +6,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 
-/// Time period for 24h gradient cycle
+/**
+ * Time-of-day period for the 24-hour gradient cycle.
+ *
+ * Each period maps to a distinct dark-mode background gradient palette
+ * in [AnimatedGradient], creating a subtle ambient awareness of real-world time.
+ */
 enum TimeOfDayPeriod {
-  dawn,    // 5-7am - soft warm colors
-  morning, // 7-12pm - bright, energizing
-  midday,  // 12-2pm - warm, golden
-  afternoon, // 2-5pm - calming transition
-  dusk,    // 5-8pm - warm oranges and purples
-  evening, // 8-10pm - deep purples and blues
-  night,   // 10pm-5am - deep, restful
+  /** 5-7 AM: soft warm tones for early morning. */
+  dawn,
+
+  /** 7 AM-12 PM: bright, energizing tones. */
+  morning,
+
+  /** 12-2 PM: warm, golden mid-day tones. */
+  midday,
+
+  /** 2-5 PM: calming transitional tones. */
+  afternoon,
+
+  /** 5-8 PM: warm oranges and purples for sunset. */
+  dusk,
+
+  /** 8-10 PM: deep purples and blues for the evening. */
+  evening,
+
+  /** 10 PM-5 AM: deep, restful near-black tones. */
+  night,
 }
 
-/// Get current time period for gradient selection
+/** Get current time period for gradient selection */
 TimeOfDayPeriod _getCurrentTimePeriod() {
   final hour = DateTime.now().hour;
   if (hour >= 5 && hour < 7) return TimeOfDayPeriod.dawn;
@@ -29,7 +47,7 @@ TimeOfDayPeriod _getCurrentTimePeriod() {
   return TimeOfDayPeriod.night;
 }
 
-/// Get gradient colors for time period (dark mode)
+/** Get gradient colors for time period (dark mode) */
 LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
   switch (period) {
     case TimeOfDayPeriod.dawn:
@@ -78,20 +96,15 @@ LinearGradient _getTimeBasedGradient(TimeOfDayPeriod period) {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         stops: [0.0, 0.3, 0.7, 1.0],
-        colors: [
-          Color(0xFF0D0D0D),
-          Color(0xFF050505),
-          Color(0xFF000000),
-          Color(0xFF0A0A0A),
-        ],
+        colors: [Color(0xFF0D0D0D), Color(0xFF050505), Color(0xFF000000), Color(0xFF0A0A0A)],
       );
   }
 }
 
-/// Device performance tier for adaptive animation complexity
+/** Device performance tier for adaptive animation complexity */
 enum _DeviceTier { high, mid, low }
 
-/// Classify device by screen metrics for adaptive animation tuning
+/** Classify device by screen metrics for adaptive animation tuning */
 _DeviceTier _getDeviceTier(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final dpr = MediaQuery.of(context).devicePixelRatio;
@@ -100,23 +113,25 @@ _DeviceTier _getDeviceTier(BuildContext context) {
   return _DeviceTier.mid;
 }
 
-/// Animated gradient background using flutter_animate
-///
-/// Features:
-/// - 24h gradient cycle - colors shift based on time of day with auto-refresh
-/// - Smooth 5-minute polling to detect time period changes
-/// - Respects accessibility settings (reduce motion)
-/// - OLED mode support (pure black)
-///
-/// Excluded from accessibility tree as it's purely decorative.
-/// Set [disableAnimations] to true in tests to prevent timer issues.
+/**
+ * Animated gradient background using flutter_animate
+ *
+ * Features:
+ * - 24h gradient cycle - colors shift based on time of day with auto-refresh
+ * - Smooth 5-minute polling to detect time period changes
+ * - Respects accessibility settings (reduce motion)
+ * - OLED mode support (pure black)
+ *
+ * Excluded from accessibility tree as it's purely decorative.
+ * Set [disableAnimations] to true in tests to prevent timer issues.
+ */
 class AnimatedGradient extends ConsumerStatefulWidget {
   const AnimatedGradient({super.key});
 
-  /// Disable animations globally (for testing)
+  /** Disable animations globally (for testing) */
   static bool disableAnimations = false;
 
-  /// Check if running in test environment
+  /** Check if running in test environment */
   static bool isTestEnvironment() {
     // AutomatedTestWidgetsFlutterBinding sets this
     return WidgetsBinding.instance.runtimeType.toString().contains('Test');
@@ -135,8 +150,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     super.initState();
     // Check time period every 5 minutes for 24h gradient cycle
     // Skip timer in test environment to avoid timer issues
-    if (!AnimatedGradient.disableAnimations &&
-        !AnimatedGradient.isTestEnvironment()) {
+    if (!AnimatedGradient.disableAnimations && !AnimatedGradient.isTestEnvironment()) {
       _timeCheckTimer = Timer.periodic(const Duration(minutes: 5), (_) {
         _checkTimePeriodChange();
       });
@@ -164,16 +178,13 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     final themeMode = ref.watch(themeModeProvider);
 
     // Exclude decorative background from accessibility tree
-    return ExcludeSemantics(
-      child: _buildGradient(context, themeMode),
-    );
+    return ExcludeSemantics(child: _buildGradient(context, themeMode));
   }
 
   Widget _buildGradient(BuildContext context, AppThemeMode themeMode) {
     // Derive isDark from provider value (not Theme.of) for proper rebuild
-    final isDark = themeMode == AppThemeMode.dark ||
-        (themeMode == AppThemeMode.system &&
-         MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    final isDark =
+        themeMode == AppThemeMode.dark || (themeMode == AppThemeMode.system && MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     // Check OLED mode - pure black background, no gradient animation
     final isOledMode = ref.watch(oledModeProvider);
@@ -186,26 +197,20 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     final reduceMotion = shouldReduceMotion(context, appOverride);
 
     // Time-based gradient for 24h cycle (dark mode) or light theme gradient
-    final gradient = isDark
-        ? _getTimeBasedGradient(_currentPeriod)
-        : AppGradients.backgroundLight;
+    final gradient = isDark ? _getTimeBasedGradient(_currentPeriod) : AppGradients.backgroundLight;
 
     // Enhanced shimmer with visible tints for both themes
     final shimmerColor = isDark
-        ? const Color(0xFFFFE082).withValues(alpha: 0.18)  // Warm amber shimmer
+        ? const Color(0xFFFFE082).withValues(alpha: 0.18) // Warm amber shimmer
         : const Color(0xFFB794F4).withValues(alpha: 0.25); // Soft violet shimmer for light mode
 
-    final container = Container(
-      decoration: BoxDecoration(gradient: gradient),
-    );
+    final container = Container(decoration: BoxDecoration(gradient: gradient));
 
     // Skip animations when:
     // 1. Static flag is set (for testing)
     // 2. In test environment
     // 3. Reduce motion is enabled (accessibility)
-    if (AnimatedGradient.disableAnimations ||
-        reduceMotion ||
-        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
+    if (AnimatedGradient.disableAnimations || reduceMotion || kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return container;
     }
 
@@ -213,31 +218,26 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     final tier = _getDeviceTier(context);
     final shimmerDuration = switch (tier) {
       _DeviceTier.high => 4000.ms,
-      _DeviceTier.mid => 5333.ms,  // ~45fps equivalent
-      _DeviceTier.low => 8000.ms,  // ~30fps equivalent
+      _DeviceTier.mid => 5333.ms, // ~45fps equivalent
+      _DeviceTier.low => 8000.ms, // ~30fps equivalent
     };
 
     return RepaintBoundary(
-      child: container
-          .animate(
-            onPlay: (controller) => controller.repeat(reverse: true),
-          )
-          .shimmer(
-            duration: shimmerDuration,
-            color: shimmerColor,
-          ),
+      child: container.animate(onPlay: (controller) => controller.repeat(reverse: true)).shimmer(duration: shimmerDuration, color: shimmerColor),
     );
   }
 }
 
-/// Floating particles effect
-///
-/// Respects accessibility settings:
-/// - System reduce motion (MediaQuery.disableAnimations)
-/// - App-level override (reduceMotionOverrideProvider)
-/// - [AnimatedGradient.disableAnimations] for test compatibility
-///
-/// Excluded from accessibility tree as it's purely decorative.
+/**
+ * Floating particles effect
+ *
+ * Respects accessibility settings:
+ * - System reduce motion (MediaQuery.disableAnimations)
+ * - App-level override (reduceMotionOverrideProvider)
+ * - [AnimatedGradient.disableAnimations] for test compatibility
+ *
+ * Excluded from accessibility tree as it's purely decorative.
+ */
 class FloatingParticles extends ConsumerWidget {
   const FloatingParticles({super.key});
 
@@ -251,9 +251,7 @@ class FloatingParticles extends ConsumerWidget {
     // 1. Static flag is set (for testing)
     // 2. In test environment
     // 3. Reduce motion is enabled (accessibility)
-    if (AnimatedGradient.disableAnimations ||
-        reduceMotion ||
-        kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
+    if (AnimatedGradient.disableAnimations || reduceMotion || kDebugMode && !kIsWeb && AnimatedGradient.isTestEnvironment()) {
       return const SizedBox.shrink();
     }
 
@@ -307,28 +305,24 @@ class FloatingParticles extends ConsumerWidget {
                   top: pos.dy,
                   // Single controller per particle (was 2: moveY + fade)
                   // Synced base duration replaces index*600 offset
-                  child: Container(
-                    width: 3 + (index % 3) * 1.5,
-                    height: 3 + (index % 3) * 1.5,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: particleColor.withValues(alpha: baseAlpha + (index % 3) * 0.03),
-                    ),
-                  )
-                      .animate(
-                        onPlay: (controller) => controller.repeat(reverse: true),
-                      )
-                      .custom(
-                        duration: baseDuration.ms,
-                        curve: Curves.easeInOut,
-                        builder: (context, value, child) => Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, -15 * value),
-                            child: child,
+                  child:
+                      Container(
+                            width: 3 + (index % 3) * 1.5,
+                            height: 3 + (index % 3) * 1.5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: particleColor.withValues(alpha: baseAlpha + (index % 3) * 0.03),
+                            ),
+                          )
+                          .animate(onPlay: (controller) => controller.repeat(reverse: true))
+                          .custom(
+                            duration: baseDuration.ms,
+                            curve: Curves.easeInOut,
+                            builder: (context, value, child) => Opacity(
+                              opacity: value,
+                              child: Transform.translate(offset: Offset(0, -15 * value), child: child),
+                            ),
                           ),
-                        ),
-                      ),
                 );
               }),
             );

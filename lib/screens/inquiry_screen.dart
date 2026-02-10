@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
-import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
+/**
+ * Data model for a guided self-inquiry session.
+ *
+ * Each session belongs to a [Tradition] and has a difficulty level.
+ */
 class InquirySession {
+  /** Unique identifier for the session. */
   final String id;
+
+  /** Display title (e.g., "Who Am I?"). */
   final String title;
+
+  /** Short description of the inquiry approach. */
   final String description;
+
+  /** Human-readable duration string (e.g., "5 min"). */
   final String duration;
+
+  /** Difficulty level: Beginner, Intermediate, or Advanced. */
   final String level;
-  final bool isPremium;
+
+  /** The spiritual tradition this inquiry belongs to. */
   final Tradition tradition;
 
   const InquirySession({
@@ -25,11 +38,10 @@ class InquirySession {
     required this.description,
     required this.duration,
     required this.level,
-    required this.isPremium,
     required this.tradition,
   });
 
-  /// Get the accent color for this session's tradition
+  /** Get the accent color for this session's tradition */
   Color get accentColor {
     switch (tradition) {
       case Tradition.advaita:
@@ -46,6 +58,7 @@ class InquirySession {
   }
 }
 
+/** All available inquiry sessions, ordered from beginner to advanced. */
 const inquirySessions = [
   InquirySession(
     id: '1',
@@ -53,7 +66,6 @@ const inquirySessions = [
     description: 'The fundamental inquiry',
     duration: '5 min',
     level: 'Beginner',
-    isPremium: false,
     tradition: Tradition.advaita,
   ),
   InquirySession(
@@ -62,7 +74,6 @@ const inquirySessions = [
     description: 'Turn attention to its source',
     duration: '7 min',
     level: 'Beginner',
-    isPremium: false,
     tradition: Tradition.direct,
   ),
   InquirySession(
@@ -71,7 +82,6 @@ const inquirySessions = [
     description: "Recognizing what doesn't change",
     duration: '10 min',
     level: 'Intermediate',
-    isPremium: true,
     tradition: Tradition.direct,
   ),
   InquirySession(
@@ -80,7 +90,6 @@ const inquirySessions = [
     description: 'What are thoughts made of?',
     duration: '8 min',
     level: 'Intermediate',
-    isPremium: true,
     tradition: Tradition.zen,
   ),
   InquirySession(
@@ -89,17 +98,21 @@ const inquirySessions = [
     description: 'Beyond the practice',
     duration: '12 min',
     level: 'Advanced',
-    isPremium: true,
     tradition: Tradition.contemporary,
   ),
 ];
 
-class InquiryScreen extends ConsumerWidget {
+/**
+ * Self-inquiry session selection screen.
+ *
+ * Displays an intro card explaining the practice followed by [_SessionCard] items
+ * for each [InquirySession]. Uses [StaggeredFadeIn] for entry animations.
+ */
+class InquiryScreen extends StatelessWidget {
   const InquiryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final subscription = ref.watch(subscriptionProvider);
+  Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -108,17 +121,9 @@ class InquiryScreen extends ConsumerWidget {
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 20,
-                bottom: 120 + bottomPadding,
-              ),
+              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
               children: [
-                Text(
-                  'Self-Inquiry',
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
+                Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge),
                 const SizedBox(height: 16),
 
                 // Intro card with fade-in
@@ -136,20 +141,10 @@ class InquiryScreen extends ConsumerWidget {
                           children: [
                             Text(
                               'These sessions guide you through the ancient practice of self-investigation.',
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: 16,
-                                height: 1.5,
-                              ),
+                              style: TextStyle(color: textColor, fontSize: 16, height: 1.5),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              'Each session is 5-15 minutes. No experience required.',
-                              style: TextStyle(
-                                color: textColorSecondary,
-                                fontSize: 14,
-                              ),
-                            ),
+                            Text('Each session is 5-15 minutes. No experience required.', style: TextStyle(color: textColorSecondary, fontSize: 14)),
                           ],
                         ),
                       );
@@ -159,18 +154,13 @@ class InquiryScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Section header
-                Text(
-                  'AVAILABLE SESSIONS',
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
+                Text('AVAILABLE SESSIONS', style: Theme.of(context).textTheme.labelSmall),
                 const SizedBox(height: 16),
 
                 // Sessions list with staggered animation
                 ...inquirySessions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final session = entry.value;
-                    // When kFreeAccessEnabled, all sessions are unlocked
-                  final isLocked = !kFreeAccessEnabled && session.isPremium && !subscription.isPremium;
 
                   return StaggeredFadeIn(
                     index: index + 1, // Offset by 1 for intro card
@@ -179,16 +169,10 @@ class InquiryScreen extends ConsumerWidget {
                       child: _SessionCard(
                         session: session,
                         index: index,
-                        isLocked: isLocked,
                         onTap: () async {
                           HapticFeedback.mediumImpact();
-                          if (isLocked) {
-                            if (context.mounted) context.push('/paywall');
-                          } else {
-                            // Navigate to inquiry session
-                            if (context.mounted) {
-                              context.push('/inquiry/${session.id}');
-                            }
+                          if (context.mounted) {
+                            context.push('/inquiry/${session.id}');
                           }
                         },
                       ),
@@ -204,18 +188,18 @@ class InquiryScreen extends ConsumerWidget {
   }
 }
 
+/** Card displaying an [InquirySession] with tradition-colored circle and session details. */
 class _SessionCard extends StatelessWidget {
+  /** The inquiry session to display. */
   final InquirySession session;
+
+  /** Zero-based index (shown as session number in the circle). */
   final int index;
-  final bool isLocked;
+
+  /** Callback when the card is tapped (navigates to player). */
   final VoidCallback onTap;
 
-  const _SessionCard({
-    required this.session,
-    required this.index,
-    required this.isLocked,
-    required this.onTap,
-  });
+  const _SessionCard({required this.session, required this.index, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -226,44 +210,25 @@ class _SessionCard extends StatelessWidget {
     // Use tradition-specific accent color for the circle
     final traditionAccent = session.accentColor;
     final circleColor = traditionAccent.withValues(alpha: 0.15);
-    final goldColor = colors.gold;
-
     return Semantics(
       button: true,
-      label: '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition${isLocked ? '. Locked, premium required' : ''}',
+      label:
+          '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
       child: GlassCard(
         padding: const EdgeInsets.all(16),
-        borderColor: isLocked
-            ? context.colors.glassBorder.withValues(alpha: 0.5)
-            : null,
         onTap: onTap,
-        child: Opacity(
-        opacity: isLocked ? 0.6 : 1,
         child: Row(
           children: [
-            // Number or lock with tradition-specific accent color
+            // Number with tradition-specific accent color
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: circleColor,
-              ),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
               child: Center(
-                child: isLocked
-                    ? Icon(
-                        Icons.lock_outline,
-                        size: 20,
-                        color: textColor.withValues(alpha: 0.5),
-                      )
-                    : Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: traditionAccent,
-                        ),
-                      ),
+                child: Text(
+                  '${index + 1}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: traditionAccent),
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -273,50 +238,18 @@ class _SessionCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        session.title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: isLocked ? textColor.withValues(alpha: 0.5) : textColor,
-                        ),
-                      ),
-                      // Hide premium badge when kFreeAccessEnabled (all content free)
-                      if (!kFreeAccessEnabled && session.isPremium) ...[
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 14,
-                          color: isLocked
-                              ? goldColor.withValues(alpha: 0.5)
-                              : goldColor,
-                        ),
-                      ],
-                    ],
+                  Text(
+                    session.title,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    session.description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isLocked ? textColorMuted : textColorSecondary,
-                    ),
-                  ),
+                  Text(session.description, style: TextStyle(fontSize: 14, color: textColorSecondary)),
                   const SizedBox(height: 4),
-                  Text(
-                    '${session.duration} • ${session.level}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: textColorMuted,
-                    ),
-                  ),
+                  Text('${session.duration} • ${session.level}', style: TextStyle(fontSize: 12, color: textColorMuted)),
                 ],
               ),
             ),
           ],
-        ),
         ),
       ),
     );

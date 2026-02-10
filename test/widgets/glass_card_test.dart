@@ -29,11 +29,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: GlassCard(
-                child: Text('Test Content'),
-              ),
-            ),
+            home: Scaffold(body: GlassCard(child: Text('Test Content'))),
           ),
         ),
       );
@@ -43,64 +39,45 @@ void main() {
 
     testWidgets('applies default padding', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
-      );
-
-      // Find the container with padding (the innermost one)
-      final containers = tester.widgetList<Container>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Container),
         ),
       );
 
-      final containerWithPadding = containers.firstWhere(
-        (c) => c.padding != null,
-      );
+      // Find the container with padding (the innermost one)
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
+
+      final containerWithPadding = containers.firstWhere((c) => c.padding != null);
       expect(containerWithPadding.padding, const EdgeInsets.all(24));
     });
 
     testWidgets('applies custom padding', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              padding: EdgeInsets.all(16),
-              child: Text('Test'),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(
+              body: GlassCard(padding: EdgeInsets.all(16), child: Text('Test')),
             ),
           ),
-        )),
-      );
-
-      // Find the container with padding (the innermost one)
-      final containers = tester.widgetList<Container>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Container),
         ),
       );
 
-      final containerWithPadding = containers.firstWhere(
-        (c) => c.padding != null,
-      );
+      // Find the container with padding (the innermost one)
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
+
+      final containerWithPadding = containers.firstWhere((c) => c.padding != null);
       expect(containerWithPadding.padding, const EdgeInsets.all(16));
     });
 
     testWidgets('uses ClipRRect with default borderRadius', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       final clipRRect = tester.widget<ClipRRect>(find.byType(ClipRRect));
@@ -109,14 +86,11 @@ void main() {
 
     testWidgets('uses ClipRRect with custom borderRadius', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              borderRadius: 16,
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(borderRadius: 16, child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       final clipRRect = tester.widget<ClipRRect>(find.byType(ClipRRect));
@@ -125,68 +99,49 @@ void main() {
 
     testWidgets('applies BackdropFilter with blur', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              intensity: GlassIntensity.heavy,
-              child: Text('Test'),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(
+              body: GlassCard(intensity: GlassIntensity.heavy, child: Text('Test')),
             ),
           ),
-        )),
+        ),
       );
 
-      final backdropFilter = tester.widget<BackdropFilter>(
-        find.byType(BackdropFilter),
-      );
+      final backdropFilter = tester.widget<BackdropFilter>(find.byType(BackdropFilter));
       // BackdropFilter uses ImageFilter
       expect(backdropFilter.filter, isNotNull);
     });
 
     testWidgets('has glass gradient in decoration', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          theme: AppTheme.dark,
-          home: const Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          MaterialApp(
+            theme: AppTheme.dark,
+            home: const Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
-      );
-
-      // Find all containers within GlassCard and check if any has gradient
-      final containers = tester.widgetList<Container>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Container),
         ),
       );
 
-      final containerWithGradient = containers.firstWhere(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
-      );
+      // Find all containers within GlassCard and check if any has gradient
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
+
+      final containerWithGradient = containers.firstWhere((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
       expect((containerWithGradient.decoration as BoxDecoration).gradient, isA<LinearGradient>());
     });
 
     testWidgets('has gradient border', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          theme: AppTheme.dark,
-          home: const Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          MaterialApp(
+            theme: AppTheme.dark,
+            home: const Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       // Find all containers within GlassCard and check if any has GradientBoxBorder
-      final containers = tester.widgetList<Container>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Container),
-        ),
-      );
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
 
       final containerWithBorder = containers.firstWhere(
         (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).border is GradientBoxBorder,
@@ -199,14 +154,13 @@ void main() {
       bool tapped = false;
 
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              onTap: () => tapped = true,
-              child: const Text('Test'),
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassCard(onTap: () => tapped = true, child: const Text('Test')),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.byType(GestureDetector), findsOneWidget);
@@ -217,43 +171,29 @@ void main() {
 
     testWidgets('does not wrap in GestureDetector without onTap', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       // GlassCard itself is not a GestureDetector
       // Check there are no GestureDetectors that are ancestors of our content
-      expect(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(GestureDetector),
-        ),
-        findsNothing,
-      );
+      expect(find.descendant(of: find.byType(GlassCard), matching: find.byType(GestureDetector)), findsNothing);
     });
 
     testWidgets('renders complex child content', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Title'),
-                  SizedBox(height: 8),
-                  Text('Subtitle'),
-                  Icon(Icons.star),
-                ],
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(
+              body: GlassCard(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [Text('Title'), SizedBox(height: 8), Text('Subtitle'), Icon(Icons.star)]),
               ),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.text('Title'), findsOneWidget);
@@ -265,14 +205,13 @@ void main() {
   group('GlassButton', () {
     testWidgets('renders label text', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test Button',
-              onPressed: () {},
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test Button', onPressed: () {}),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.text('Test Button'), findsOneWidget);
@@ -282,14 +221,13 @@ void main() {
       bool pressed = false;
 
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () => pressed = true,
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () => pressed = true),
             ),
           ),
-        )),
+        ),
       );
 
       await tester.tap(find.byType(GlassButton));
@@ -300,15 +238,13 @@ void main() {
       bool pressed = false;
 
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () => pressed = true,
-              isLoading: true,
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () => pressed = true, isLoading: true),
             ),
           ),
-        )),
+        ),
       );
 
       await tester.tap(find.byType(GlassButton));
@@ -317,15 +253,13 @@ void main() {
 
     testWidgets('shows loading indicator when isLoading', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
-              isLoading: true,
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}, isLoading: true),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -334,15 +268,13 @@ void main() {
 
     testWidgets('shows icon when provided', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
-              icon: const Icon(Icons.arrow_forward),
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}, icon: const Icon(Icons.arrow_forward)),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
@@ -350,16 +282,13 @@ void main() {
 
     testWidgets('hides icon when loading', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
-              icon: const Icon(Icons.arrow_forward),
-              isLoading: true,
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}, icon: const Icon(Icons.arrow_forward), isLoading: true),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.byIcon(Icons.arrow_forward), findsNothing);
@@ -367,14 +296,13 @@ void main() {
 
     testWidgets('uses InkWell for tap effect', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}),
             ),
           ),
-        )),
+        ),
       );
 
       expect(find.byType(InkWell), findsOneWidget);
@@ -382,66 +310,46 @@ void main() {
 
     testWidgets('uses correct border radius for pill shape', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}),
             ),
           ),
-        )),
-      );
-
-      final clipRRect = tester.widget<ClipRRect>(
-        find.descendant(
-          of: find.byType(GlassButton),
-          matching: find.byType(ClipRRect),
         ),
       );
+
+      final clipRRect = tester.widget<ClipRRect>(find.descendant(of: find.byType(GlassButton), matching: find.byType(ClipRRect)));
       expect(clipRRect.borderRadius, BorderRadius.circular(32));
     });
 
     testWidgets('has BackdropFilter for glass effect', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: GlassButton(label: 'Test', onPressed: () {}),
             ),
           ),
-        )),
+        ),
       );
 
-      expect(
-        find.descendant(
-          of: find.byType(GlassButton),
-          matching: find.byType(BackdropFilter),
-        ),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byType(GlassButton), matching: find.byType(BackdropFilter)), findsOneWidget);
     });
 
     testWidgets('has gradient border for glass effect', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(MaterialApp(
-          theme: AppTheme.dark,
-          home: Scaffold(
-            body: GlassButton(
-              label: 'Primary',
-              onPressed: () {},
-              isPrimary: true,
+        wrapWithProviderScope(
+          MaterialApp(
+            theme: AppTheme.dark,
+            home: Scaffold(
+              body: GlassButton(label: 'Primary', onPressed: () {}, isPrimary: true),
             ),
           ),
-        )),
-      );
-
-      final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(GlassButton),
-          matching: find.byType(Container),
         ),
       );
+
+      final container = tester.widget<Container>(find.descendant(of: find.byType(GlassButton), matching: find.byType(Container)));
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.border, isA<GradientBoxBorder>());
     });
@@ -449,34 +357,23 @@ void main() {
 
   group('GradientBoxBorder', () {
     test('creates border with gradient', () {
-      const border = GradientBoxBorder(
-        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
-        width: 2.0,
-      );
+      const border = GradientBoxBorder(gradient: LinearGradient(colors: [Colors.white, Colors.black]), width: 2.0);
       expect(border.gradient, isA<LinearGradient>());
       expect(border.width, 2.0);
     });
 
     test('has correct dimensions', () {
-      const border = GradientBoxBorder(
-        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
-        width: 3.0,
-      );
+      const border = GradientBoxBorder(gradient: LinearGradient(colors: [Colors.white, Colors.black]), width: 3.0);
       expect(border.dimensions, const EdgeInsets.all(3.0));
     });
 
     test('is uniform', () {
-      const border = GradientBoxBorder(
-        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
-      );
+      const border = GradientBoxBorder(gradient: LinearGradient(colors: [Colors.white, Colors.black]));
       expect(border.isUniform, true);
     });
 
     test('scales correctly', () {
-      const border = GradientBoxBorder(
-        gradient: LinearGradient(colors: [Colors.white, Colors.black]),
-        width: 2.0,
-      );
+      const border = GradientBoxBorder(gradient: LinearGradient(colors: [Colors.white, Colors.black]), width: 2.0);
       final scaled = border.scale(0.5) as GradientBoxBorder;
       expect(scaled.width, 1.0);
     });
@@ -494,22 +391,15 @@ void main() {
 
     testWidgets('enableBreathingAnimation defaults to false', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       // By default, animation is disabled, so no Stack overlay
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Stack),
-        ),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       // Should not find a Stack (animation overlay not added)
       expect(stacks.length, 0);
     });
@@ -517,23 +407,15 @@ void main() {
     testWidgets('does not render animation overlay when disableAnimations is true', (tester) async {
       // Animation is already disabled via setUpAll
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              enableBreathingAnimation: true,
-              child: Text('Test'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(enableBreathingAnimation: true, child: Text('Test'))),
           ),
-        )),
+        ),
       );
 
       // Even with enableBreathingAnimation: true, no Stack because disableAnimations is true
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Stack),
-        ),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       expect(stacks.length, 0);
     });
 
@@ -550,23 +432,13 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => true),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: GlassCard(
-                enableBreathingAnimation: true,
-                child: Text('Test'),
-              ),
-            ),
+            home: Scaffold(body: GlassCard(enableBreathingAnimation: true, child: Text('Test'))),
           ),
         ),
       );
 
       // reduceMotion is enabled, so animation should not render Stack overlay
-      final stacks = tester.widgetList<Stack>(
-        find.descendant(
-          of: find.byType(GlassCard),
-          matching: find.byType(Stack),
-        ),
-      );
+      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
       expect(stacks.length, 0);
 
       // Restore
@@ -575,14 +447,11 @@ void main() {
 
     testWidgets('still renders content when animation is disabled', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviderScope(const MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              enableBreathingAnimation: true,
-              child: Text('Content Still Visible'),
-            ),
+        wrapWithProviderScope(
+          const MaterialApp(
+            home: Scaffold(body: GlassCard(enableBreathingAnimation: true, child: Text('Content Still Visible'))),
           ),
-        )),
+        ),
       );
 
       // Content should always be visible regardless of animation state

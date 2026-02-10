@@ -8,7 +8,6 @@ import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/donation_service.dart';
-import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/donation_button.dart';
@@ -18,12 +17,6 @@ late SharedPreferences prefs;
 
 /// Mock notification service
 class MockNotificationService extends Mock implements NotificationService {}
-
-/// Premium subscription state for testing
-final _premiumState = SubscriptionState(
-  tier: SubscriptionTier.premium,
-  isLoading: false,
-);
 
 /// Mock donation service for testing
 class MockDonationService extends DonationService {
@@ -50,8 +43,7 @@ class MockDonationService extends DonationService {
 class TestDonationNotifier extends DonationNotifier {
   final DonationState _initialState;
 
-  TestDonationNotifier(this._initialState, DonationService service)
-      : super(service);
+  TestDonationNotifier(this._initialState, super.service);
 
   @override
   Future<void> initialize() async {
@@ -64,58 +56,21 @@ class TestDonationNotifier extends DonationNotifier {
   }
 }
 
-/// Test subscription notifier that returns fixed state
-class _TestSubscriptionNotifier extends SubscriptionNotifier {
-  final SubscriptionState _fixedState;
-
-  _TestSubscriptionNotifier(this._fixedState) : super(_MockStorageService());
-
-  @override
-  SubscriptionState get state => _fixedState;
-}
-
-/// Minimal mock storage service for testing
-class _MockStorageService extends StorageService {
-  _MockStorageService() : super(prefs);
-}
-
 /// Create mock ProductDetails for testing
-ProductDetails createMockProduct({
-  required String id,
-  required String title,
-  required String price,
-}) {
-  return ProductDetails(
-    id: id,
-    title: title,
-    description: 'Test product $id',
-    price: price,
-    rawPrice: 1.99,
-    currencyCode: 'USD',
-  );
+ProductDetails createMockProduct({required String id, required String title, required String price}) {
+  return ProductDetails(id: id, title: title, description: 'Test product $id', price: price, rawPrice: 1.99, currencyCode: 'USD');
 }
 
 /// Helper to wrap widget with ProviderScope for testing
-Widget wrapWithProviderScope(
-  Widget child, {
-  DonationState? donationState,
-  MockNotificationService? notificationService,
-}) {
+Widget wrapWithProviderScope(Widget child, {DonationState? donationState, MockNotificationService? notificationService}) {
   final mockNotificationService = notificationService ?? MockNotificationService();
 
   // Setup default mock behavior
-  when(() => mockNotificationService.checkPermissions())
-      .thenAnswer((_) async => true);
+  when(() => mockNotificationService.checkPermissions()).thenAnswer((_) async => true);
   when(() => mockNotificationService.isNotificationsEnabled).thenReturn(false);
-  when(() => mockNotificationService.getSchedule()).thenReturn(
-    NotificationSchedule(
-      startHour: 8,
-      startMinute: 0,
-      endHour: 21,
-      endMinute: 0,
-      frequencyMinutes: 180,
-    ),
-  );
+  when(
+    () => mockNotificationService.getSchedule(),
+  ).thenReturn(NotificationSchedule(startHour: 8, startMinute: 0, endHour: 21, endMinute: 0, frequencyMinutes: 180));
 
   // Default donation state with products
   final defaultProducts = [
@@ -125,12 +80,7 @@ Widget wrapWithProviderScope(
     createMockProduct(id: 'tip_generous', title: 'Generous Tip', price: '\$9.99'),
   ];
 
-  final donation = donationState ??
-      DonationState(
-        isAvailable: true,
-        isLoading: false,
-        products: defaultProducts,
-      );
+  final donation = donationState ?? DonationState(isAvailable: true, isLoading: false, products: defaultProducts);
 
   final mockDonationService = MockDonationService();
 
@@ -142,14 +92,9 @@ Widget wrapWithProviderScope(
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
       notificationServiceProvider.overrideWithValue(mockNotificationService),
-      subscriptionProvider.overrideWith(
-        (ref) => _TestSubscriptionNotifier(_premiumState),
-      ),
       backgroundShimmerActiveProvider.overrideWith((ref) => false),
       donationServiceProvider.overrideWithValue(mockDonationService),
-      donationProvider.overrideWith(
-        (ref) => TestDonationNotifier(donation, mockDonationService),
-      ),
+      donationProvider.overrideWith((ref) => TestDonationNotifier(donation, mockDonationService)),
     ],
     child: child,
   );
@@ -157,9 +102,7 @@ Widget wrapWithProviderScope(
 
 void main() {
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({
-      'pointer_onboarding_completed': true,
-    });
+    SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
 
     // Disable animations for tests
@@ -177,14 +120,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('Settings'), findsOneWidget);
@@ -196,14 +132,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('NOTIFICATIONS'), findsOneWidget);
@@ -216,14 +145,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('APPEARANCE'), findsOneWidget);
@@ -247,14 +169,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
       await scrollToDonationButton(tester);
 
@@ -268,25 +183,12 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
       await scrollToDonationButton(tester);
 
       // DonationButton should be a descendant of ListView (inline, not floating)
-      expect(
-        find.ancestor(
-          of: find.byType(DonationButton),
-          matching: find.byType(ListView),
-        ),
-        findsOneWidget,
-      );
+      expect(find.ancestor(of: find.byType(DonationButton), matching: find.byType(ListView)), findsOneWidget);
     });
 
     testWidgets('hides DonationButton when donations not available', (tester) async {
@@ -297,14 +199,8 @@ void main() {
 
       await tester.pumpWidget(
         wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-          donationState: const DonationState(
-            isAvailable: false,
-            isLoading: false,
-          ),
+          MaterialApp(theme: AppTheme.dark, home: const SettingsScreen()),
+          donationState: const DonationState(isAvailable: false, isLoading: false),
         ),
       );
       await tester.pump(const Duration(milliseconds: 500));
@@ -322,14 +218,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
       await scrollToDonationButton(tester);
 
@@ -338,10 +227,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show expanded content
-      expect(
-        find.text('Here Now is free forever. If you find value, consider supporting development.'),
-        findsOneWidget,
-      );
+      expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsOneWidget);
     });
 
     testWidgets('shows tip options when DonationButton expanded', (tester) async {
@@ -350,14 +236,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
       await scrollToDonationButton(tester);
 
@@ -378,25 +257,12 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapWithProviderScope(MaterialApp(theme: AppTheme.dark, home: const SettingsScreen())));
       await tester.pump(const Duration(milliseconds: 500));
       await scrollToDonationButton(tester);
 
       // Should have GlassCard within DonationButton
-      expect(
-        find.descendant(
-          of: find.byType(DonationButton),
-          matching: find.byType(GlassCard),
-        ),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: find.byType(DonationButton), matching: find.byType(GlassCard)), findsOneWidget);
     });
   });
 }

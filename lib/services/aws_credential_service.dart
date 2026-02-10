@@ -3,25 +3,34 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:otp/otp.dart';
 
-/// AWS credentials returned from the auth endpoint
+/**
+ * Temporary AWS credentials returned from the TOTP auth endpoint.
+ *
+ * Used by [TTSService] to sign requests to the AWS Polly API.
+ * Credentials include a [sessionToken] for STS-based access and
+ * auto-expire after [expiration], with a 5-minute safety buffer
+ * via [needsRefresh].
+ */
 class AWSCredentials {
+  /** IAM access key ID for request signing. */
   final String accessKeyId;
+
+  /** IAM secret access key for HMAC-based request signing. */
   final String secretAccessKey;
+
+  /** STS session token included as an `X-Amz-Security-Token` header. */
   final String sessionToken;
+
+  /** UTC timestamp after which these credentials are no longer valid. */
   final DateTime expiration;
 
-  AWSCredentials({
-    required this.accessKeyId,
-    required this.secretAccessKey,
-    required this.sessionToken,
-    required this.expiration,
-  });
+  AWSCredentials({required this.accessKeyId, required this.secretAccessKey, required this.sessionToken, required this.expiration});
 
+  /** Whether these credentials have passed their [expiration] time. */
   bool get isExpired => DateTime.now().isAfter(expiration);
 
-  /// Buffer of 5 minutes before actual expiry to avoid edge cases
-  bool get needsRefresh =>
-      DateTime.now().isAfter(expiration.subtract(const Duration(minutes: 5)));
+  /** Whether these credentials should be refreshed (5-minute buffer before [expiration]). */
+  bool get needsRefresh => DateTime.now().isAfter(expiration.subtract(const Duration(minutes: 5)));
 
   factory AWSCredentials.fromJson(Map<String, dynamic> json) {
     return AWSCredentials(
@@ -33,11 +42,13 @@ class AWSCredentials {
   }
 }
 
-/// Service for managing AWS credentials via TOTP authentication.
-///
-/// Flow:
-/// 1. Setup (one-time): User enters OTP → API returns TOTP secret → cached securely
-/// 2. Runtime: Generate TOTP from secret → API returns AWS credentials
+/**
+ * Service for managing AWS credentials via TOTP authentication.
+ *
+ * Flow:
+ * 1. Setup (one-time): User enters OTP → API returns TOTP secret → cached securely
+ * 2. Runtime: Generate TOTP from secret → API returns AWS credentials
+ */
 class AWSCredentialService {
   static final AWSCredentialService _instance = AWSCredentialService._internal();
   static AWSCredentialService get instance => _instance;
@@ -55,39 +66,32 @@ class AWSCredentialService {
   static const String _credentialsCacheKey = 'aws_credentials_cache';
 
   // API endpoints
-  static const String _secretEndpoint =
-      'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/setup';
-  static const String _credentialsEndpoint =
-      'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/auth';
+  static const String _secretEndpoint = 'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/setup';
+  static const String _credentialsEndpoint = 'https://l35p6w7qe7.execute-api.us-east-1.amazonaws.com/prod/auth';
 
   // In-memory credential cache
   AWSCredentials? _cachedCredentials;
 
-  /// Check if TTS is configured (has TOTP secret stored)
+  /** Check if TTS is configured (has TOTP secret stored) */
   Future<bool> isConfigured() async {
     final secret = await _secureStorage.read(key: _secretKey);
     return secret != null && secret.isNotEmpty;
   }
 
-  /// Setup TTS access with a one-time OTP.
-  ///
-  /// This calls an API that validates the OTP and returns the TOTP secret
-  /// which is then stored securely for future use.
-  ///
-  /// Returns true if setup was successful, throws on error.
+  /**
+   * Setup TTS access with a one-time OTP.
+   *
+   * This calls an API that validates the OTP and returns the TOTP secret
+   * which is then stored securely for future use.
+   *
+   * Returns true if setup was successful, throws on error.
+   */
   Future<bool> setupWithOTP(String otp) async {
     try {
-      final response = await http.post(
-        Uri.parse(_secretEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'code': otp}),
-      );
+      final response = await http.post(Uri.parse(_secretEndpoint), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'code': otp}));
 
       if (response.statusCode != 200) {
-        throw AWSCredentialException(
-          'Failed to validate OTP: ${response.statusCode}',
-          response.body,
-        );
+        throw AWSCredentialException('Failed to validate OTP: ${response.statusCode}', response.body);
       }
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -110,23 +114,27 @@ class AWSCredentialService {
     }
   }
 
-  /// Clear the stored TOTP secret and cached credentials.
-  /// Use this to "log out" of TTS access.
+  /**
+   * Clear the stored TOTP secret and cached credentials.
+   * Use this to "log out" of TTS access.
+   */
   Future<void> clearConfiguration() async {
     await _secureStorage.delete(key: _secretKey);
     await _secureStorage.delete(key: _credentialsCacheKey);
     _cachedCredentials = null;
   }
 
-  /// Get AWS credentials for Polly API access.
-  ///
-  /// This automatically:
-  /// 1. Returns cached credentials if still valid
-  /// 2. Generates a TOTP code from the stored secret
-  /// 3. Calls the auth API to get fresh credentials
-  /// 4. Caches the new credentials
-  ///
-  /// Throws [AWSCredentialException] if not configured or on error.
+  /**
+   * Get AWS credentials for Polly API access.
+   *
+   * This automatically:
+   * 1. Returns cached credentials if still valid
+   * 2. Generates a TOTP code from the stored secret
+   * 3. Calls the auth API to get fresh credentials
+   * 4. Caches the new credentials
+   *
+   * Throws [AWSCredentialException] if not configured or on error.
+   */
   Future<AWSCredentials> getCredentials() async {
     // Return cached if valid
     if (_cachedCredentials != null && !_cachedCredentials!.needsRefresh) {
@@ -136,10 +144,7 @@ class AWSCredentialService {
     // Check for stored secret
     final secret = await _secureStorage.read(key: _secretKey);
     if (secret == null || secret.isEmpty) {
-      throw AWSCredentialException(
-        'TTS not configured',
-        'Please configure TTS access in Settings first.',
-      );
+      throw AWSCredentialException('TTS not configured', 'Please configure TTS access in Settings first.');
     }
 
     // Generate TOTP code
@@ -154,10 +159,7 @@ class AWSCredentialService {
       );
 
       if (response.statusCode != 200) {
-        throw AWSCredentialException(
-          'Failed to get credentials: ${response.statusCode}',
-          response.body,
-        );
+        throw AWSCredentialException('Failed to get credentials: ${response.statusCode}', response.body);
       }
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -179,21 +181,16 @@ class AWSCredentialService {
     }
   }
 
-  /// Generate a TOTP code from the secret.
-  /// Uses standard TOTP: SHA1, 30-second window, 6 digits.
+  /**
+   * Generate a TOTP code from the secret.
+   * Uses standard TOTP: SHA1, 30-second window, 6 digits.
+   */
   String _generateTOTP(String secret) {
     final now = DateTime.now().millisecondsSinceEpoch;
-    return OTP.generateTOTPCodeString(
-      secret,
-      now,
-      algorithm: Algorithm.SHA1,
-      interval: 30,
-      length: 6,
-      isGoogle: true,
-    );
+    return OTP.generateTOTPCodeString(secret, now, algorithm: Algorithm.SHA1, interval: 30, length: 6, isGoogle: true);
   }
 
-  /// Cache credentials to secure storage for offline/backup use.
+  /** Cache credentials to secure storage for offline/backup use. */
   Future<void> _cacheCredentials(AWSCredentials credentials) async {
     final json = jsonEncode({
       'AccessKeyId': credentials.accessKeyId,
@@ -204,7 +201,7 @@ class AWSCredentialService {
     await _secureStorage.write(key: _credentialsCacheKey, value: json);
   }
 
-  /// Load cached credentials from secure storage.
+  /** Load cached credentials from secure storage. */
   Future<AWSCredentials?> _loadCachedCredentials() async {
     final cached = await _secureStorage.read(key: _credentialsCacheKey);
     if (cached == null) return null;
@@ -218,9 +215,12 @@ class AWSCredentialService {
   }
 }
 
-/// Exception for AWS credential operations.
+/** Exception thrown by [AWSCredentialService] for setup, auth, or network failures. */
 class AWSCredentialException implements Exception {
+  /** User-facing error summary. */
   final String message;
+
+  /** Optional technical details (e.g. HTTP response body). */
   final String? details;
 
   AWSCredentialException(this.message, [this.details]);

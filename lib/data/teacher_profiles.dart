@@ -1,24 +1,29 @@
-// Teacher Profile Seed Data
-// Detailed profiles of non-dual teachers featured in the Library
-//
-// Includes biographical information, key teachings, and cross-references
-// to related articles and pointings.
+/**
+ * Detailed teacher profile seed data for the Library feature.
+ *
+ * Each [TeacherProfile] includes biography, key teachings, a representative
+ * quote, and cross-references to related [Article] and [Pointing] IDs.
+ *
+ * See also:
+ * - [TeacherProfile] in `models/teacher_profile.dart` for the data model
+ * - [TeacherTeachingsScreen] for the per-teacher browsing UI
+ * - [teachers] in `teachers.dart` for the lightweight teacher map
+ */
+library;
 
 import '../models/teacher_profile.dart';
 import 'pointings.dart';
 
-/// Teacher profiles for the Library
+/** Master list of all [TeacherProfile] records for the Library. */
 const teacherProfiles = <TeacherProfile>[
   // === ADVAITA VEDANTA TEACHERS ===
-
   TeacherProfile(
     name: 'Nisargadatta Maharaj',
     bio:
         'Nisargadatta Maharaj was a spiritual teacher of nondualism, belonging to the Inchagiri Sampradaya lineage of Navnath. His famous book "I Am That" is a compilation of his talks and is considered a spiritual classic. A simple shopkeeper in Mumbai, he taught from his small loft above his shop, attracting seekers from around the world with his direct, uncompromising approach to truth.',
     dates: '1897-1981',
     primaryTradition: Tradition.advaita,
-    quote:
-        'Wisdom tells me I am nothing. Love tells me I am everything. Between these two my life flows.',
+    quote: 'Wisdom tells me I am nothing. Love tells me I am everything. Between these two my life flows.',
     location: 'Mumbai, India',
     keyTeachings: [
       'The sense "I Am" as the gateway to truth',
@@ -27,12 +32,8 @@ const teacherProfiles = <TeacherProfile>[
       'The witness and the witnessed are one',
       'Abidance in the "I Am"',
     ],
-    articleIds: [
-      'art_iam_that_001',
-    ],
-    pointingIds: [
-      'adv-5',
-    ],
+    articleIds: ['art_iam_that_001'],
+    pointingIds: ['adv-5'],
   ),
 
   TeacherProfile(
@@ -41,25 +42,11 @@ const teacherProfiles = <TeacherProfile>[
         'Bhagavan Sri Ramana Maharshi was an Indian Hindu sage and jivanmukti. At age 16, he had a profound experience of death and awakening. He left home for Arunachala, where he remained for the rest of his life. His primary teaching was Self-inquiry (Atma Vichara) - the practice of asking "Who am I?" He spoke rarely but his presence was said to convey the teaching directly.',
     dates: '1879-1950',
     primaryTradition: Tradition.advaita,
-    quote:
-        'Your own Self-Realization is the greatest service you can render the world.',
+    quote: 'Your own Self-Realization is the greatest service you can render the world.',
     location: 'Tiruvannamalai, India',
-    keyTeachings: [
-      'Self-inquiry (Atma Vichara)',
-      'Who am I?',
-      'The Self is always realized',
-      'Silence is the loudest teaching',
-      'Be as you are',
-    ],
-    articleIds: [
-      'art_who_am_i_001',
-      'art_be_as_you_are_001',
-      'art_self_inquiry_guide_001',
-    ],
-    pointingIds: [
-      'adv-3',
-      'adv-6',
-    ],
+    keyTeachings: ['Self-inquiry (Atma Vichara)', 'Who am I?', 'The Self is always realized', 'Silence is the loudest teaching', 'Be as you are'],
+    articleIds: ['art_who_am_i_001', 'art_be_as_you_are_001', 'art_self_inquiry_guide_001'],
+    pointingIds: ['adv-3', 'adv-6'],
   ),
 
   TeacherProfile(
@@ -70,16 +57,8 @@ const teacherProfiles = <TeacherProfile>[
     primaryTradition: Tradition.advaita,
     quote: 'This instant is freedom.',
     location: 'Lucknow, India',
-    keyTeachings: [
-      'Instant awakening is possible',
-      'Don\'t postpone freedom',
-      'The seeker is the problem',
-      'Keep quiet',
-      'Who is asking?',
-    ],
-    articleIds: [
-      'art_papaji_001',
-    ],
+    keyTeachings: ['Instant awakening is possible', 'Don\'t postpone freedom', 'The seeker is the problem', 'Keep quiet', 'Who is asking?'],
+    articleIds: ['art_papaji_001'],
     pointingIds: [],
   ),
 
@@ -91,21 +70,12 @@ const teacherProfiles = <TeacherProfile>[
     primaryTradition: Tradition.contemporary,
     quote: 'Don\'t be a storehouse of memories. Leave past, future and even present thoughts behind.',
     location: 'Monte Sahaja, Portugal',
-    keyTeachings: [
-      'Just be',
-      'You are the unchanging witness',
-      'To whom does this arise?',
-      'The invitation to freedom',
-      'The Isness of being',
-    ],
-    articleIds: [
-      'art_mooji_001',
-    ],
+    keyTeachings: ['Just be', 'You are the unchanging witness', 'To whom does this arise?', 'The invitation to freedom', 'The Isness of being'],
+    articleIds: ['art_mooji_001'],
     pointingIds: [],
   ),
 
   // === DIRECT PATH TEACHERS ===
-
   TeacherProfile(
     name: 'Rupert Spira',
     bio:
@@ -121,13 +91,8 @@ const teacherProfiles = <TeacherProfile>[
       'The Direct Path',
       'The yoga of self-inquiry',
     ],
-    articleIds: [
-      'art_presence_001',
-      'art_direct_path_001',
-    ],
-    pointingIds: [
-      'dir-2',
-    ],
+    articleIds: ['art_presence_001', 'art_direct_path_001'],
+    pointingIds: ['dir-2'],
   ),
 
   TeacherProfile(
@@ -145,13 +110,8 @@ const teacherProfiles = <TeacherProfile>[
       'Looking for the looker',
       'Beauty as a doorway',
     ],
-    articleIds: [
-      'art_francis_lucille_001',
-      'art_direct_path_001',
-    ],
-    pointingIds: [
-      'dir-3',
-    ],
+    articleIds: ['art_francis_lucille_001', 'art_direct_path_001'],
+    pointingIds: ['dir-3'],
   ),
 
   TeacherProfile(
@@ -169,15 +129,11 @@ const teacherProfiles = <TeacherProfile>[
       'Beauty and art as spiritual practice',
       'Welcoming all experience',
     ],
-    articleIds: [
-      'art_jean_klein_001',
-      'art_direct_path_001',
-    ],
+    articleIds: ['art_jean_klein_001', 'art_direct_path_001'],
     pointingIds: [],
   ),
 
   // === CONTEMPORARY TEACHERS ===
-
   TeacherProfile(
     name: 'Eckhart Tolle',
     bio:
@@ -186,23 +142,12 @@ const teacherProfiles = <TeacherProfile>[
     primaryTradition: Tradition.contemporary,
     quote: 'The present moment is all you ever have.',
     location: 'Vancouver, Canada',
-    keyTeachings: [
-      'The power of Now',
-      'The pain body',
-      'Presence as transformation',
-      'The ego and true identity',
-      'Stillness speaks',
-    ],
-    articleIds: [
-      'art_power_of_now_001',
-    ],
-    pointingIds: [
-      'con-2',
-    ],
+    keyTeachings: ['The power of Now', 'The pain body', 'Presence as transformation', 'The ego and true identity', 'Stillness speaks'],
+    articleIds: ['art_power_of_now_001'],
+    pointingIds: ['con-2'],
   ),
 
   // === TRADITIONAL TEXTS (as teacher) ===
-
   TeacherProfile(
     name: 'Ashtavakra Gita',
     bio:
@@ -210,24 +155,12 @@ const teacherProfiles = <TeacherProfile>[
     dates: 'c. 500 BCE - 400 CE',
     primaryTradition: Tradition.advaita,
     quote: 'You are already free. Your only bondage is believing you are not.',
-    keyTeachings: [
-      'The Self is already free',
-      'Bondage is a concept',
-      'Non-doership',
-      'The world as appearance',
-      'Immediate liberation',
-    ],
-    articleIds: [
-      'art_ashtavakra_001',
-    ],
-    pointingIds: [
-      'adv-2',
-      'adv-4',
-    ],
+    keyTeachings: ['The Self is already free', 'Bondage is a concept', 'Non-doership', 'The world as appearance', 'Immediate liberation'],
+    articleIds: ['art_ashtavakra_001'],
+    pointingIds: ['adv-2', 'adv-4'],
   ),
 
   // === ZEN TEACHERS ===
-
   TeacherProfile(
     name: 'Pema Chodron',
     bio:
@@ -244,36 +177,59 @@ const teacherProfiles = <TeacherProfile>[
       'Letting go of certainty',
     ],
     articleIds: [],
-    pointingIds: [
-      'con-3',
-    ],
+    pointingIds: ['con-3'],
   ),
 ];
 
-/// Get teacher profile by name
+final Map<String, TeacherProfile> _teacherProfilesByLowerName = {for (final profile in teacherProfiles) profile.name.toLowerCase(): profile};
+
+final Map<Tradition, List<TeacherProfile>> _teachersByTradition = {
+  for (final tradition in Tradition.values)
+    tradition: List<TeacherProfile>.unmodifiable(teacherProfiles.where((profile) => profile.primaryTradition == tradition).toList(growable: false)),
+};
+
+final List<TeacherProfile> _teachersWithArticles = List<TeacherProfile>.unmodifiable(
+  teacherProfiles.where((profile) => profile.articleIds.isNotEmpty).toList(growable: false),
+);
+
+final List<TeacherProfile> _teachersWithPointings = List<TeacherProfile>.unmodifiable(
+  teacherProfiles.where((profile) => profile.pointingIds.isNotEmpty).toList(growable: false),
+);
+
+final List<String> _allTeacherNames = List<String>.unmodifiable(teacherProfiles.map((profile) => profile.name).toList(growable: false));
+
+final Map<String, String> _teacherSearchCorpus = {
+  for (final profile in teacherProfiles) profile.name: [profile.name, profile.bio ?? '', ...profile.keyTeachings].join('\n').toLowerCase(),
+};
+
+/** Get teacher profile by name */
 TeacherProfile? getTeacherProfile(String name) {
-  try {
-    return teacherProfiles.firstWhere(
-      (t) => t.name.toLowerCase() == name.toLowerCase(),
-    );
-  } catch (e) {
-    return null;
-  }
+  return _teacherProfilesByLowerName[name.toLowerCase()];
 }
 
-/// Get teachers by tradition
+/** Get teachers by tradition */
 List<TeacherProfile> getTeachersByTradition(Tradition tradition) {
-  return teacherProfiles
-      .where((t) => t.primaryTradition == tradition)
-      .toList();
+  return _teachersByTradition[tradition] ?? const <TeacherProfile>[];
 }
 
-/// Get all teacher names
+/** Get all teacher names */
 List<String> getAllTeacherNames() {
-  return teacherProfiles.map((t) => t.name).toList();
+  return _allTeacherNames;
 }
 
-/// Get teachers who have articles
+/** Get teachers who have articles */
 List<TeacherProfile> getTeachersWithArticles() {
-  return teacherProfiles.where((t) => t.articleIds.isNotEmpty).toList();
+  return _teachersWithArticles;
+}
+
+/** Get teachers who have related pointings */
+List<TeacherProfile> getTeachersWithPointings() {
+  return _teachersWithPointings;
+}
+
+/** Search teacher profiles by name, bio, and key teachings */
+List<TeacherProfile> searchTeacherProfiles(String query) {
+  final normalizedQuery = query.toLowerCase().trim();
+  if (normalizedQuery.isEmpty) return const <TeacherProfile>[];
+  return teacherProfiles.where((profile) => (_teacherSearchCorpus[profile.name] ?? '').contains(normalizedQuery)).toList(growable: false);
 }

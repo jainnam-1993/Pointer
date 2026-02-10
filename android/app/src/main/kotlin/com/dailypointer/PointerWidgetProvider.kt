@@ -66,6 +66,13 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 // Toggle favorite status locally for immediate UI feedback
                 val wasAdded = toggleFavorite(context, currentId)
 
+                // Store current pointing ID for Flutter background callback to read
+                if (currentId != null) {
+                    val prefsName = "${context.packageName}.homewidget"
+                    val prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+                    prefs.edit().putString("save_pending_id", currentId).apply()
+                }
+
                 // Send background intent to Flutter to persist the change
                 val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
                     context,
@@ -477,15 +484,8 @@ class PointerWidgetProvider : AppWidgetProvider() {
             // Set empty view for when no data
             views.setEmptyView(R.id.widget_flipper, R.id.widget_empty_state)
 
-            // Check premium status and update empty state text accordingly
-            val widgetData = HomeWidgetPlugin.getData(context)
-            val isPremium = widgetData?.getBoolean("widget_is_premium", false) ?: false
-            val emptyText = if (isPremium) {
-                "Tap to load"
-            } else {
-                "Premium Feature\nUpgrade to unlock"
-            }
-            views.setTextViewText(R.id.widget_empty_text, emptyText)
+            // Set empty state text
+            views.setTextViewText(R.id.widget_empty_text, "Tap to load")
 
             // Set up Previous button
             val prevIntent = Intent(context, PointerWidgetProvider::class.java).apply {

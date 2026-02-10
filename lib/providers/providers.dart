@@ -1,16 +1,19 @@
-/// Providers barrel file - Re-exports all domain-specific providers
-///
-/// Import this file to access all providers:
-/// ```dart
-/// import 'package:pointer/providers/providers.dart';
-/// ```
-///
-/// Or import specific domains for smaller import footprint:
-/// - core_providers.dart: SharedPreferences, storage, notifications
-/// - settings_providers.dart: Zen, OLED, typography, accessibility, theme
-/// - subscription_providers.dart: Premium, usage tracking, freemium
-/// - content_providers.dart: Pointings, favorites, teaching filter
-/// - tts_providers.dart: TTS service, playback state
+/**
+ * Providers barrel file - Re-exports all domain-specific providers.
+ *
+ * Import this file to access all providers:
+ * ```dart
+ * import 'package:pointer/providers/providers.dart';
+ * ```
+ *
+ * Or import specific domains for smaller import footprint:
+ * - `core_providers.dart`: [SharedPreferences], [StorageService], [NotificationService]
+ * - `settings_providers.dart`: Zen, OLED, typography, accessibility, theme, auto-advance
+ * - `subscription_providers.dart`: Daily usage tracking (analytics)
+ * - `content_providers.dart`: [Pointing] navigation, favorites, teaching filters
+ * - `donation_providers.dart`: Tip jar IAP via [DonationNotifier]
+ * - `tts_providers.dart`: AWS Polly TTS service and playback state (disabled)
+ */
 library;
 
 export 'content_providers.dart';

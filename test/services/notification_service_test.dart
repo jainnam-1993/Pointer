@@ -8,14 +8,11 @@ import 'package:pointer/services/notification_service.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
-class MockFlutterLocalNotificationsPlugin extends Mock
-    implements FlutterLocalNotificationsPlugin {}
+class MockFlutterLocalNotificationsPlugin extends Mock implements FlutterLocalNotificationsPlugin {}
 
-class MockAndroidFlutterLocalNotificationsPlugin extends Mock
-    implements AndroidFlutterLocalNotificationsPlugin {}
+class MockAndroidFlutterLocalNotificationsPlugin extends Mock implements AndroidFlutterLocalNotificationsPlugin {}
 
-class FakeAndroidNotificationChannel extends Fake
-    implements AndroidNotificationChannel {}
+class FakeAndroidNotificationChannel extends Fake implements AndroidNotificationChannel {}
 
 void main() {
   setUpAll(() {
@@ -24,11 +21,7 @@ void main() {
 
   group('NotificationTime', () {
     test('can be created with required fields', () {
-      const time = NotificationTime(
-        id: 'test-1',
-        hour: 8,
-        minute: 30,
-      );
+      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30);
 
       expect(time.id, 'test-1');
       expect(time.hour, 8);
@@ -37,12 +30,7 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      const time = NotificationTime(
-        id: 'test-1',
-        hour: 8,
-        minute: 30,
-        isEnabled: true,
-      );
+      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30, isEnabled: true);
 
       final modified = time.copyWith(hour: 9, isEnabled: false);
 
@@ -53,12 +41,7 @@ void main() {
     });
 
     test('toJson serializes correctly', () {
-      const time = NotificationTime(
-        id: 'test-1',
-        hour: 8,
-        minute: 30,
-        isEnabled: true,
-      );
+      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30, isEnabled: true);
 
       final json = time.toJson();
 
@@ -69,12 +52,7 @@ void main() {
     });
 
     test('fromJson deserializes correctly', () {
-      final json = {
-        'id': 'test-1',
-        'hour': 8,
-        'minute': 30,
-        'isEnabled': true,
-      };
+      final json = {'id': 'test-1', 'hour': 8, 'minute': 30, 'isEnabled': true};
 
       final time = NotificationTime.fromJson(json);
 
@@ -85,11 +63,7 @@ void main() {
     });
 
     test('fromJson uses default for missing isEnabled', () {
-      final json = {
-        'id': 'test-1',
-        'hour': 8,
-        'minute': 30,
-      };
+      final json = {'id': 'test-1', 'hour': 8, 'minute': 30};
 
       final time = NotificationTime.fromJson(json);
 
@@ -206,8 +180,7 @@ void main() {
         expect(notificationDetails.android, isNotNull);
 
         // iOS: passive, no sound, no banner, show in list
-        expect(notificationDetails.iOS!.interruptionLevel,
-            InterruptionLevel.passive);
+        expect(notificationDetails.iOS!.interruptionLevel, InterruptionLevel.passive);
         expect(notificationDetails.iOS!.presentSound, false);
         expect(notificationDetails.iOS!.presentBanner, false);
         expect(notificationDetails.iOS!.presentList, true);
@@ -226,15 +199,13 @@ void main() {
       });
 
       test('isNotificationsEnabled returns stored value', () {
-        when(() => mockPrefs.getBool('pointer_notifications_enabled'))
-            .thenReturn(true);
+        when(() => mockPrefs.getBool('pointer_notifications_enabled')).thenReturn(true);
 
         expect(service.isNotificationsEnabled, true);
       });
 
       test('getNotificationTimes returns empty list when not set', () {
-        when(() => mockPrefs.getString('pointer_notification_times'))
-            .thenReturn(null);
+        when(() => mockPrefs.getString('pointer_notification_times')).thenReturn(null);
 
         expect(service.getNotificationTimes(), isEmpty);
       });
@@ -244,8 +215,7 @@ void main() {
           {'id': 't1', 'hour': 8, 'minute': 0, 'isEnabled': true},
           {'id': 't2', 'hour': 12, 'minute': 30, 'isEnabled': false},
         ];
-        when(() => mockPrefs.getString('pointer_notification_times'))
-            .thenReturn(jsonEncode(times));
+        when(() => mockPrefs.getString('pointer_notification_times')).thenReturn(jsonEncode(times));
 
         final result = service.getNotificationTimes();
 
@@ -294,38 +264,6 @@ void main() {
       expect(times[2], DateTime(2025, 1, 15, 10, 0));
     });
 
-    test('testEveryMinute preset generates 1-minute intervals', () {
-      final schedule = NotificationPreset.testEveryMinute.schedule;
-
-      // Verify schedule configuration
-      expect(schedule.frequencyMinutes, 1);
-      expect(schedule.startHour, 0);
-      expect(schedule.endHour, 23);
-      expect(schedule.endMinute, 59);
-
-      // Test a 5-minute window
-      final date = DateTime(2025, 1, 15);
-      const testSchedule = NotificationSchedule(
-        startHour: 10,
-        startMinute: 0,
-        endHour: 10,
-        endMinute: 5,
-        frequencyMinutes: 1,
-        quietStartHour: 24, // Disable quiet hours
-        quietEndHour: 24,
-      );
-
-      final times = testSchedule.getNotificationTimes(date);
-
-      expect(times.length, 6); // 10:00, 10:01, 10:02, 10:03, 10:04, 10:05
-      expect(times[0], DateTime(2025, 1, 15, 10, 0));
-      expect(times[1], DateTime(2025, 1, 15, 10, 1));
-      expect(times[2], DateTime(2025, 1, 15, 10, 2));
-      expect(times[3], DateTime(2025, 1, 15, 10, 3));
-      expect(times[4], DateTime(2025, 1, 15, 10, 4));
-      expect(times[5], DateTime(2025, 1, 15, 10, 5));
-    });
-
     test('quiet hours are respected', () {
       const schedule = NotificationSchedule(
         startHour: 21,
@@ -346,11 +284,7 @@ void main() {
     });
 
     test('copyWith preserves unchanged values', () {
-      const original = NotificationSchedule(
-        startHour: 8,
-        endHour: 20,
-        frequencyMinutes: 180,
-      );
+      const original = NotificationSchedule(startHour: 8, endHour: 20, frequencyMinutes: 180);
 
       final modified = original.copyWith(frequencyMinutes: 60);
 
@@ -372,13 +306,7 @@ void main() {
     });
 
     test('summary formats correctly for minute intervals', () {
-      const schedule = NotificationSchedule(
-        startHour: 8,
-        startMinute: 0,
-        endHour: 20,
-        endMinute: 0,
-        frequencyMinutes: 30,
-      );
+      const schedule = NotificationSchedule(startHour: 8, startMinute: 0, endHour: 20, endMinute: 0, frequencyMinutes: 30);
 
       expect(schedule.summary, contains('Every 30 min'));
       expect(schedule.summary, contains('8:00 AM'));

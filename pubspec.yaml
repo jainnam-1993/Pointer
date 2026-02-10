@@ -24,7 +24,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.0
   flutter_animate: ^4.5.0
-  confetti: ^0.8.0  # First-save celebration effect
   # Glass effects implemented via BackdropFilter in glass_card.dart
   # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
 
@@ -46,7 +45,10 @@ dependencies:
   audio_service: ^0.18.15
 
   # Video Playback
-  video_player: ^2.9.0
+  media_kit: ^1.1.11
+  media_kit_video: ^1.2.5
+  media_kit_libs_android_video: ^1.3.6
+  media_kit_libs_ios_video: ^1.1.4
 
   # URL Launching (for privacy/terms links)
   url_launcher: ^6.3.0

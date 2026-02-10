@@ -95,30 +95,10 @@ void main() {
   group('PointingSelector', () {
     // Test data
     final testPointings = [
-      const Pointing(
-        id: 'test-1',
-        content: 'Morning pointing',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.morning],
-      ),
-      const Pointing(
-        id: 'test-2',
-        content: 'Midday pointing',
-        tradition: Tradition.zen,
-        contexts: [PointingContext.midday],
-      ),
-      const Pointing(
-        id: 'test-3',
-        content: 'Evening pointing',
-        tradition: Tradition.direct,
-        contexts: [PointingContext.evening],
-      ),
-      const Pointing(
-        id: 'test-4',
-        content: 'General pointing',
-        tradition: Tradition.contemporary,
-        contexts: [PointingContext.general],
-      ),
+      const Pointing(id: 'test-1', content: 'Morning pointing', tradition: Tradition.advaita, contexts: [PointingContext.morning]),
+      const Pointing(id: 'test-2', content: 'Midday pointing', tradition: Tradition.zen, contexts: [PointingContext.midday]),
+      const Pointing(id: 'test-3', content: 'Evening pointing', tradition: Tradition.direct, contexts: [PointingContext.evening]),
+      const Pointing(id: 'test-4', content: 'General pointing', tradition: Tradition.contemporary, contexts: [PointingContext.general]),
       const Pointing(
         id: 'test-5',
         content: 'Morning and general pointing',
@@ -130,11 +110,7 @@ void main() {
     group('selectPointing', () {
       test('returns a pointing from the list', () {
         final selector = PointingSelector(random: Random(42));
-        final pointing = selector.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
         expect(testPointings, contains(pointing));
       });
@@ -145,11 +121,7 @@ void main() {
 
         // Run multiple times to ensure consistency
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointing(
-            all: testPointings,
-            viewedToday: viewedIds,
-            respectTimeContext: false,
-          );
+          final pointing = selector.selectPointing(all: testPointings, viewedToday: viewedIds, respectTimeContext: false);
 
           expect(viewedIds, isNot(contains(pointing.id)));
         }
@@ -159,11 +131,7 @@ void main() {
         final selector = PointingSelector(random: Random(42));
         final allIds = testPointings.map((p) => p.id).toSet();
 
-        final pointing = selector.selectPointing(
-          all: testPointings,
-          viewedToday: allIds,
-          respectTimeContext: false,
-        );
+        final pointing = selector.selectPointing(all: testPointings, viewedToday: allIds, respectTimeContext: false);
 
         expect(testPointings, contains(pointing));
       });
@@ -172,17 +140,9 @@ void main() {
         final selector1 = PointingSelector(random: Random(42));
         final selector2 = PointingSelector(random: Random(42));
 
-        final pointing1 = selector1.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing1 = selector1.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
-        final pointing2 = selector2.selectPointing(
-          all: testPointings,
-          viewedToday: {},
-          respectTimeContext: false,
-        );
+        final pointing2 = selector2.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
 
         expect(pointing1.id, equals(pointing2.id));
       });
@@ -196,16 +156,8 @@ void main() {
 
         // Collect multiple selections to ensure different distributions
         for (var i = 0; i < 20; i++) {
-          final p1 = selector1.selectPointing(
-            all: testPointings,
-            viewedToday: {},
-            respectTimeContext: false,
-          );
-          final p2 = selector2.selectPointing(
-            all: testPointings,
-            viewedToday: {},
-            respectTimeContext: false,
-          );
+          final p1 = selector1.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
+          final p2 = selector2.selectPointing(all: testPointings, viewedToday: {}, respectTimeContext: false);
           results1.add(p1.id);
           results2.add(p2.id);
         }
@@ -222,16 +174,11 @@ void main() {
 
         // Run multiple times to check consistency
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.morning);
 
           // Should be morning or general pointing
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.morning || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.morning || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have morning or general context',
           );
@@ -242,15 +189,10 @@ void main() {
         final selector = PointingSelector(random: Random(42));
 
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.midday,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.midday);
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.midday || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.midday || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have midday or general context',
           );
@@ -261,15 +203,10 @@ void main() {
         final selector = PointingSelector(random: Random(42));
 
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.evening,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.evening);
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.evening || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.evening || c == PointingContext.general),
             isTrue,
             reason: 'Pointing ${pointing.id} should have evening or general context',
           );
@@ -280,15 +217,10 @@ void main() {
         final selector = PointingSelector(random: Random(42));
 
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.night,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.night);
 
           expect(
-            pointing.contexts.any((c) =>
-                c == PointingContext.evening || c == PointingContext.general),
+            pointing.contexts.any((c) => c == PointingContext.evening || c == PointingContext.general),
             isTrue,
             reason: 'Night pointing ${pointing.id} should use evening or general context',
           );
@@ -297,22 +229,13 @@ void main() {
 
       test('falls back when no contextual matches', () {
         final morningOnlyPointings = [
-          const Pointing(
-            id: 'morning-only',
-            content: 'Morning only',
-            tradition: Tradition.advaita,
-            contexts: [PointingContext.morning],
-          ),
+          const Pointing(id: 'morning-only', content: 'Morning only', tradition: Tradition.advaita, contexts: [PointingContext.morning]),
         ];
 
         final selector = PointingSelector(random: Random(42));
 
         // Request evening pointing when only morning available
-        final pointing = selector.selectPointingForTime(
-          all: morningOnlyPointings,
-          viewedToday: {},
-          timeContext: TimeContext.evening,
-        );
+        final pointing = selector.selectPointingForTime(all: morningOnlyPointings, viewedToday: {}, timeContext: TimeContext.evening);
 
         expect(pointing.id, equals('morning-only'));
       });
@@ -322,11 +245,7 @@ void main() {
         final viewedIds = {'test-1'};
 
         for (var i = 0; i < 10; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: viewedIds,
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: viewedIds, timeContext: TimeContext.morning);
 
           expect(pointing.id, isNot(equals('test-1')));
         }
@@ -336,11 +255,7 @@ void main() {
         final selector = PointingSelector(random: Random(42));
         final allIds = testPointings.map((p) => p.id).toSet();
 
-        final pointing = selector.selectPointingForTime(
-          all: testPointings,
-          viewedToday: allIds,
-          timeContext: TimeContext.morning,
-        );
+        final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: allIds, timeContext: TimeContext.morning);
 
         expect(testPointings, contains(pointing));
       });
@@ -351,11 +266,7 @@ void main() {
 
         // Run enough times to potentially see all pointings
         for (var i = 0; i < 100; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: testPointings,
-            viewedToday: {},
-            timeContext: TimeContext.general,
-          );
+          final pointing = selector.selectPointingForTime(all: testPointings, viewedToday: {}, timeContext: TimeContext.general);
           selectedIds.add(pointing.id);
         }
 
@@ -367,24 +278,9 @@ void main() {
       test('respects time-specific preference probability', () {
         // Create test data with clear time-specific vs general split
         final morningPointings = [
-          const Pointing(
-            id: 'morning-specific',
-            content: 'Morning specific',
-            tradition: Tradition.advaita,
-            contexts: [PointingContext.morning],
-          ),
-          const Pointing(
-            id: 'general-1',
-            content: 'General 1',
-            tradition: Tradition.zen,
-            contexts: [PointingContext.general],
-          ),
-          const Pointing(
-            id: 'general-2',
-            content: 'General 2',
-            tradition: Tradition.direct,
-            contexts: [PointingContext.general],
-          ),
+          const Pointing(id: 'morning-specific', content: 'Morning specific', tradition: Tradition.advaita, contexts: [PointingContext.morning]),
+          const Pointing(id: 'general-1', content: 'General 1', tradition: Tradition.zen, contexts: [PointingContext.general]),
+          const Pointing(id: 'general-2', content: 'General 2', tradition: Tradition.direct, contexts: [PointingContext.general]),
         ];
 
         final selector = PointingSelector(random: Random(42));
@@ -393,11 +289,7 @@ void main() {
 
         // Run many iterations to check distribution
         for (var i = 0; i < 100; i++) {
-          final pointing = selector.selectPointingForTime(
-            all: morningPointings,
-            viewedToday: {},
-            timeContext: TimeContext.morning,
-          );
+          final pointing = selector.selectPointingForTime(all: morningPointings, viewedToday: {}, timeContext: TimeContext.morning);
 
           if (pointing.id == 'morning-specific') {
             timeSpecificCount++;

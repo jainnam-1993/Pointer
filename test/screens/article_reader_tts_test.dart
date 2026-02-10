@@ -41,14 +41,9 @@ Final thoughts.
     mockPrefs = await SharedPreferences.getInstance();
   });
 
-  Widget createTestWidget({
-    required Article article,
-    bool forcePremium = true,
-  }) {
+  Widget createTestWidget({required Article article, bool forcePremium = true}) {
     return ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(mockPrefs),
-      ],
+      overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)],
       child: MaterialApp(
         theme: ThemeData.dark(),
         home: ArticleReaderScreen(article: article),
@@ -105,10 +100,7 @@ Final thoughts.
     // Skip this test until TTS is re-enabled
     testWidgets('TTS button is visible for premium users', (tester) async {
       // TTS feature is disabled - button should NOT be visible
-      await tester.pumpWidget(createTestWidget(
-        article: testArticle,
-        forcePremium: true,
-      ));
+      await tester.pumpWidget(createTestWidget(article: testArticle, forcePremium: true));
       await tester.pumpAndSettle();
 
       // Look for headphones icon (either outlined or filled)
@@ -139,20 +131,13 @@ Final thoughts.
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)],
           child: MaterialApp(
             theme: ThemeData.dark(),
             home: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ArticleReaderScreen(article: testArticle),
-                    ),
-                  ).then((_) => popped = true);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: testArticle))).then((_) => popped = true);
                 },
                 child: const Text('Open'),
               ),

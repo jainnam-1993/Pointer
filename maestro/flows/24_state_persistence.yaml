@@ -1,0 +1,120 @@
+# State Persistence Flow - Kill and restart app
+# Run: maestro test maestro/flows/24_state_persistence.yaml
+#
+# Tests: Complete onboarding, navigate the app, stop and relaunch,
+#        verify onboarding is NOT shown again (state persisted),
+#        verify app is functional after restart.
+
+appId: com.dailypointer
+---
+# === FRESH START ===
+- clearState
+- launchApp
+
+# Wait for app to render, then dismiss splash video
+- waitForAnimationToEnd
+- tapOn:
+    point: "50%,50%"
+- tapOn:
+    point: "50%,50%"
+
+# Wait for splash to finish and onboarding to appear
+- extendedWaitUntil:
+    visible:
+      text: "Continue"
+    timeout: 10000
+
+# Complete onboarding
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Continue"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Maybe Later"
+- waitForAnimationToEnd
+
+# Verify home loaded
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "persist_01_initial"
+
+# === INTERACT WITH APP ===
+- tapOn:
+    text: ".*Next.*"
+- tapOn:
+    text: ".*Next.*"
+- tapOn:
+    text: ".*Next.*"
+
+# Save a favorite
+- longPressOn:
+    point: "50%,40%"
+- waitForAnimationToEnd
+- takeScreenshot: "persist_02_interacted"
+
+# Visit another tab to exercise more state
+- tapOn:
+    text: "Settings tab.*"
+- assertVisible:
+    text: "Settings"
+
+# === STOP AND RELAUNCH ===
+- stopApp
+- launchApp
+
+# Wait for app to render, then dismiss splash video on restart
+- waitForAnimationToEnd
+- tapOn:
+    point: "50%,50%"
+- tapOn:
+    point: "50%,50%"
+
+# Wait for splash to finish and home screen to appear
+- extendedWaitUntil:
+    visible:
+      text: ".*Next.*"
+    timeout: 10000
+
+# === VERIFY STATE PERSISTED ===
+# Onboarding should NOT show (already completed)
+# App should go directly to home screen
+- tapOn:
+    text: "Home tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "persist_03_after_restart"
+
+# === VERIFY APP IS FUNCTIONAL ===
+- tapOn:
+    text: ".*Next.*"
+- assertVisible:
+    text: ".*Next.*"
+
+# Other tabs should load
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+
+- tapOn:
+    text: "Settings tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Settings"
+- takeScreenshot: "persist_04_all_tabs_work"
+
+# Return to home
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "persist_05_final"

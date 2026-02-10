@@ -1,20 +1,32 @@
-// Article Reader Screen - Full article display with markdown rendering
+/**
+ * Full article reading screen with markdown rendering, share functionality,
+ * and tradition-tagged header. TTS playback is currently disabled.
+ */
+library;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
+import 'share_preview_screen.dart';
 
-/// Full article reader screen with TTS support
+/**
+ * Full article reader screen with markdown rendering and share support.
+ *
+ * Displays the [Article] title, subtitle, reading time, teacher attribution,
+ * and markdown-rendered body. Includes a share button that creates a [Pointing]
+ * from the article excerpt for [SharePreviewScreen]. TTS playback is currently
+ * disabled but state variables are retained for future re-enablement.
+ */
 class ArticleReaderScreen extends ConsumerStatefulWidget {
+  /** The article to display in the reader. */
   final Article article;
 
-  const ArticleReaderScreen({
-    super.key,
-    required this.article,
-  });
+  const ArticleReaderScreen({super.key, required this.article});
 
   @override
   ConsumerState<ArticleReaderScreen> createState() => _ArticleReaderScreenState();
@@ -27,12 +39,40 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   // ignore: unused_field
   final bool _ttsConfigured = false;
 
+  /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
+  void _shareArticle(BuildContext context) {
+    HapticFeedback.mediumImpact();
+    final article = widget.article;
+    final pointing = Pointing(
+      id: 'article_${article.id}',
+      content: article.excerpt ?? article.title,
+      tradition: article.tradition,
+      contexts: const [PointingContext.general],
+      teacher: article.teacher,
+      source: article.title,
+    );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      useRootNavigator: true,
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(ctx).size.height * 0.9,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: SharePreviewScreen(pointing: pointing),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionInfo = traditions[widget.article.tradition]!;
-    // TTS disabled - isPremium check no longer needed here
+    // TTS disabled
 
     return Scaffold(
       body: Stack(
@@ -54,24 +94,19 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           },
                         ),
                         const Spacer(),
-                        // TTS button disabled - feature temporarily removed
-                        // TODO: Re-enable when TTS feature is ready
+                        IconButton(
+                          icon: Icon(Icons.share_outlined, color: colors.textPrimary),
+                          onPressed: () => _shareArticle(context),
+                        ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: colors.glassBackground,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(color: colors.glassBorder),
                           ),
-                          child: Text(
-                            traditionInfo.name,
-                            style: TextStyle(
-                              color: colors.textMuted,
-                              fontSize: 12,
-                            ),
-                          ),
+                          child: Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 12)),
                         ),
                       ],
                     ),
@@ -91,56 +126,28 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         if (_showTTSPlayer) const SizedBox(height: 16),
                         Text(
                           widget.article.title,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            color: colors.textPrimary,
-                            height: 1.2,
-                          ),
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),
                         ),
                         if (widget.article.subtitle != null) ...[
                           const SizedBox(height: 8),
-                          Text(
-                            widget.article.subtitle!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: colors.textSecondary,
-                            ),
-                          ),
+                          Text(widget.article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
                         ],
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
-                              Icons.schedule,
-                              size: 14,
-                              color: colors.textMuted,
-                            ),
+                            Icon(Icons.schedule, size: 14, color: colors.textMuted),
                             const SizedBox(width: 4),
-                            Text(
-                              '${widget.article.readingTimeMinutes} min read',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: colors.textMuted,
-                              ),
-                            ),
+                            Text('${widget.article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
                             if (widget.article.teacher != null) ...[
                               const SizedBox(width: 16),
-                              Icon(
-                                Icons.person_outline,
-                                size: 14,
-                                color: colors.textMuted,
-                              ),
+                              Icon(Icons.person_outline, size: 14, color: colors.textMuted),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
                                   widget.article.teacher!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: colors.textMuted,
-                                  ),
+                                  style: TextStyle(fontSize: 13, color: colors.textMuted),
                                 ),
                               ),
                             ],
@@ -156,16 +163,8 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 // Article content
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 24,
-                      right: 24,
-                      top: 16,
-                      bottom: 32 + bottomPadding,
-                    ),
-                    child: _MarkdownContent(
-                      content: widget.article.content,
-                      colors: colors,
-                    ),
+                    padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 32 + bottomPadding),
+                    child: _MarkdownContent(content: widget.article.content, colors: colors),
                   ),
                 ),
               ],
@@ -177,15 +176,20 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   }
 }
 
-/// Markdown content renderer using flutter_markdown
+/**
+ * Markdown content renderer using `flutter_markdown_plus`.
+ *
+ * Applies [PointerColors]-themed typography with styled blockquotes,
+ * accent-colored bullet points, and selectable text.
+ */
 class _MarkdownContent extends StatelessWidget {
+  /** Raw markdown content to render. */
   final String content;
+
+  /** Theme colors for styling markdown elements. */
   final PointerColors colors;
 
-  const _MarkdownContent({
-    required this.content,
-    required this.colors,
-  });
+  const _MarkdownContent({required this.content, required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -193,52 +197,20 @@ class _MarkdownContent extends StatelessWidget {
       data: content,
       selectable: true,
       styleSheet: MarkdownStyleSheet(
-        h1: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: colors.textPrimary,
-        ),
-        h2: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        h3: TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        p: TextStyle(
-          fontSize: 16,
-          color: colors.textPrimary,
-          height: 1.6,
-        ),
-        blockquote: TextStyle(
-          fontSize: 16,
-          fontStyle: FontStyle.italic,
-          color: colors.textPrimary,
-          height: 1.5,
-        ),
+        h1: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: colors.textPrimary),
+        h2: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        h3: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        p: TextStyle(fontSize: 16, color: colors.textPrimary, height: 1.6),
+        blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: colors.textPrimary, height: 1.5),
         blockquoteDecoration: BoxDecoration(
           color: colors.accent.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(8),
-          border: Border(
-            left: BorderSide(
-              color: colors.accent.withValues(alpha: 0.5),
-              width: 3,
-            ),
-          ),
+          border: Border(left: BorderSide(color: colors.accent.withValues(alpha: 0.5), width: 3)),
         ),
         blockquotePadding: const EdgeInsets.all(16),
         listBullet: TextStyle(color: colors.accent),
-        strong: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: colors.textPrimary,
-        ),
-        em: TextStyle(
-          fontStyle: FontStyle.italic,
-          color: colors.textPrimary,
-        ),
+        strong: TextStyle(fontWeight: FontWeight.w600, color: colors.textPrimary),
+        em: TextStyle(fontStyle: FontStyle.italic, color: colors.textPrimary),
       ),
     );
   }

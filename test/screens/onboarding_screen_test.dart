@@ -41,16 +41,11 @@ void main() {
   });
 
   Widget createOnboardingScreen({bool disableAnimations = false}) {
-    Widget app = const MaterialApp(
-      home: OnboardingScreen(),
-    );
+    Widget app = const MaterialApp(home: OnboardingScreen());
 
     // Wrap with MediaQuery to disable animations if requested
     if (disableAnimations) {
-      app = MediaQuery(
-        data: const MediaQueryData(disableAnimations: true),
-        child: app,
-      );
+      app = MediaQuery(data: const MediaQueryData(disableAnimations: true), child: app);
     }
 
     return ProviderScope(

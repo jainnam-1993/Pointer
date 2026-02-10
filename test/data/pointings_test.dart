@@ -32,12 +32,7 @@ void main() {
 
   group('Pointing model', () {
     test('can be created with required fields', () {
-      const pointing = Pointing(
-        id: 'test-1',
-        content: 'Test content',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const pointing = Pointing(id: 'test-1', content: 'Test content', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       expect(pointing.id, 'test-1');
       expect(pointing.content, 'Test content');
@@ -70,13 +65,7 @@ void main() {
         id: 'test-3',
         content: 'Test',
         tradition: Tradition.direct,
-        contexts: [
-          PointingContext.morning,
-          PointingContext.midday,
-          PointingContext.evening,
-          PointingContext.stress,
-          PointingContext.general,
-        ],
+        contexts: [PointingContext.morning, PointingContext.midday, PointingContext.evening, PointingContext.stress, PointingContext.general],
       );
 
       expect(pointing.contexts.length, 5);
@@ -87,11 +76,7 @@ void main() {
 
   group('TraditionInfo model', () {
     test('can be created with all fields', () {
-      const info = TraditionInfo(
-        name: 'Test Tradition',
-        icon: 'T',
-        description: 'A test tradition',
-      );
+      const info = TraditionInfo(name: 'Test Tradition', icon: 'T', description: 'A test tradition');
 
       expect(info.name, 'Test Tradition');
       expect(info.icon, 'T');
@@ -106,29 +91,25 @@ void main() {
 
     test('maps all Tradition enum values', () {
       for (final tradition in Tradition.values) {
-        expect(traditions.containsKey(tradition), true,
-            reason: '${tradition.name} should be in traditions map');
+        expect(traditions.containsKey(tradition), true, reason: '${tradition.name} should be in traditions map');
       }
     });
 
     test('all traditions have non-empty names', () {
       for (final entry in traditions.entries) {
-        expect(entry.value.name, isNotEmpty,
-            reason: '${entry.key.name} should have a name');
+        expect(entry.value.name, isNotEmpty, reason: '${entry.key.name} should have a name');
       }
     });
 
     test('all traditions have non-empty icons', () {
       for (final entry in traditions.entries) {
-        expect(entry.value.icon, isNotEmpty,
-            reason: '${entry.key.name} should have an icon');
+        expect(entry.value.icon, isNotEmpty, reason: '${entry.key.name} should have an icon');
       }
     });
 
     test('all traditions have non-empty descriptions', () {
       for (final entry in traditions.entries) {
-        expect(entry.value.description, isNotEmpty,
-            reason: '${entry.key.name} should have a description');
+        expect(entry.value.description, isNotEmpty, reason: '${entry.key.name} should have a description');
       }
     });
 
@@ -178,30 +159,25 @@ void main() {
       final uniqueIds = ids.toSet();
       // Allow for some duplicates in the data (multiple batches may share IDs)
       // At minimum, we should have > 75% unique IDs
-      expect(uniqueIds.length, greaterThan(ids.length * 0.75),
-          reason: 'Most pointing ids should be unique');
+      expect(uniqueIds.length, greaterThan(ids.length * 0.75), reason: 'Most pointing ids should be unique');
     });
 
     test('all pointings have non-empty content', () {
       for (final pointing in pointings) {
-        expect(pointing.content, isNotEmpty,
-            reason: 'Pointing ${pointing.id} should have content');
+        expect(pointing.content, isNotEmpty, reason: 'Pointing ${pointing.id} should have content');
       }
     });
 
     test('all pointings have at least one context', () {
       for (final pointing in pointings) {
-        expect(pointing.contexts, isNotEmpty,
-            reason: 'Pointing ${pointing.id} should have at least one context');
+        expect(pointing.contexts, isNotEmpty, reason: 'Pointing ${pointing.id} should have at least one context');
       }
     });
 
     test('all traditions have at least 2 pointings', () {
       for (final tradition in Tradition.values) {
-        final count =
-            pointings.where((p) => p.tradition == tradition).length;
-        expect(count, greaterThanOrEqualTo(2),
-            reason: '${tradition.name} should have at least 2 pointings');
+        final count = pointings.where((p) => p.tradition == tradition).length;
+        expect(count, greaterThanOrEqualTo(2), reason: '${tradition.name} should have at least 2 pointings');
       }
     });
 
@@ -218,15 +194,13 @@ void main() {
 
     test('content is not too short', () {
       for (final pointing in pointings) {
-        expect(pointing.content.length, greaterThan(10),
-            reason: 'Pointing ${pointing.id} content should be meaningful');
+        expect(pointing.content.length, greaterThan(10), reason: 'Pointing ${pointing.id} content should be meaningful');
       }
     });
 
     test('content is not too long for mobile display', () {
       for (final pointing in pointings) {
-        expect(pointing.content.length, lessThan(500),
-            reason: 'Pointing ${pointing.id} content should fit mobile screen');
+        expect(pointing.content.length, lessThan(500), reason: 'Pointing ${pointing.id} content should fit mobile screen');
       }
     });
   });
@@ -243,24 +217,17 @@ void main() {
     test('returns pointing from specified tradition', () {
       for (final tradition in Tradition.values) {
         final pointing = getRandomPointing(tradition: tradition);
-        expect(pointing.tradition, tradition,
-            reason: 'Should return pointing from ${tradition.name}');
+        expect(pointing.tradition, tradition, reason: 'Should return pointing from ${tradition.name}');
       }
     });
 
     test('returns pointing with specified context', () {
       // Test contexts that have pointings in the data
       // Note: midday context has no pointings, so it falls back to first pointing
-      final contextsWithData = [
-        PointingContext.morning,
-        PointingContext.evening,
-        PointingContext.stress,
-        PointingContext.general,
-      ];
+      final contextsWithData = [PointingContext.morning, PointingContext.evening, PointingContext.stress, PointingContext.general];
       for (final context in contextsWithData) {
         final pointing = getRandomPointing(context: context);
-        expect(pointing.contexts, contains(context),
-            reason: 'Should return pointing with ${context.name} context');
+        expect(pointing.contexts, contains(context), reason: 'Should return pointing with ${context.name} context');
       }
     });
 
@@ -272,10 +239,7 @@ void main() {
 
     test('returns pointing matching both tradition and context', () {
       // Test combination that should have matches
-      final pointing = getRandomPointing(
-        tradition: Tradition.advaita,
-        context: PointingContext.general,
-      );
+      final pointing = getRandomPointing(tradition: Tradition.advaita, context: PointingContext.general);
       expect(pointing.tradition, Tradition.advaita);
       expect(pointing.contexts, contains(PointingContext.general));
     });
@@ -291,8 +255,7 @@ void main() {
         results.add(getRandomPointing().id);
       }
       // With 100 attempts, we should get some variety if random
-      expect(results.length, greaterThan(1),
-          reason: 'getRandomPointing should return varied results');
+      expect(results.length, greaterThan(1), reason: 'getRandomPointing should return varied results');
     });
 
     test('is actually random over multiple calls', () {
@@ -303,8 +266,7 @@ void main() {
 
       // Count unique IDs - with 50 calls, we should have multiple unique
       final uniqueIds = pointingIds.toSet();
-      expect(uniqueIds.length, greaterThan(3),
-          reason: 'Should return different pointings over multiple calls');
+      expect(uniqueIds.length, greaterThan(3), reason: 'Should return different pointings over multiple calls');
     });
   });
 
@@ -313,9 +275,7 @@ void main() {
       for (final tradition in Tradition.values) {
         final results = getPointingsByTradition(tradition);
         for (final pointing in results) {
-          expect(pointing.tradition, tradition,
-              reason:
-                  'All results should be ${tradition.name} tradition');
+          expect(pointing.tradition, tradition, reason: 'All results should be ${tradition.name} tradition');
         }
       }
     });
@@ -323,8 +283,7 @@ void main() {
     test('returns non-empty list for each tradition', () {
       for (final tradition in Tradition.values) {
         final results = getPointingsByTradition(tradition);
-        expect(results, isNotEmpty,
-            reason: '${tradition.name} should have pointings');
+        expect(results, isNotEmpty, reason: '${tradition.name} should have pointings');
       }
     });
 
@@ -359,8 +318,7 @@ void main() {
       for (final context in PointingContext.values) {
         final results = getPointingsByContext(context);
         for (final pointing in results) {
-          expect(pointing.contexts, contains(context),
-              reason: 'All results should have ${context.name} context');
+          expect(pointing.contexts, contains(context), reason: 'All results should have ${context.name} context');
         }
       }
     });
@@ -426,8 +384,7 @@ void main() {
     });
 
     test('some pointings have instructions', () {
-      final withInstructions =
-          pointings.where((p) => p.instruction != null).length;
+      final withInstructions = pointings.where((p) => p.instruction != null).length;
       expect(withInstructions, greaterThan(0));
     });
 

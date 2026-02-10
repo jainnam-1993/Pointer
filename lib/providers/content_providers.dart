@@ -1,7 +1,14 @@
-/// Content providers - Pointings, favorites, affinity, and teaching filters
-///
-/// Manages spiritual content: daily pointings with round-robin navigation,
-/// user favorites, tradition affinity learning, and teaching library filters.
+/**
+ * Content providers - Pointings, favorites, affinity, and teaching filters.
+ *
+ * Manages spiritual content delivery: daily [Pointing] navigation via
+ * [CurrentPointingNotifier] (round-robin with persistent shuffle order),
+ * user favorites via [FavoritesNotifier], tradition affinity learning via
+ * [AffinityService], teaching library filters via [TeachingFilterNotifier],
+ * and preferred tradition selection via [PreferredTraditionsNotifier].
+ *
+ * All state is persisted through [StorageService] and survives app restarts.
+ */
 library;
 
 import 'dart:math';
@@ -19,7 +26,7 @@ import 'core_providers.dart';
 // Tradition Affinity Learning
 // ============================================================
 
-/// Affinity service provider for tracking tradition preferences
+/** Affinity service provider for tracking tradition preferences */
 final affinityServiceProvider = Provider<AffinityService>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return AffinityService(prefs);
@@ -29,28 +36,29 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 // Current Pointing with Round-Robin Navigation
 // ============================================================
 
-/// Current pointing state - persists across app restarts with round-robin order
-final currentPointingProvider =
-    StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
+/** Current pointing state - persists across app restarts with round-robin order */
+final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return CurrentPointingNotifier(storage);
 });
 
-/// Round-robin pointing navigation
-///
-/// Shuffles all pointings once on first launch, persists the order.
-/// Guarantees seeing all pointings before any repeats.
+/**
+ * Round-robin pointing navigation
+ *
+ * Shuffles all pointings once on first launch, persists the order.
+ * Guarantees seeing all pointings before any repeats.
+ */
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
-  late List<String> _order;  // Shuffled pointing IDs
-  late int _index;           // Current position in order
+  late List<String> _order; // Shuffled pointing IDs
+  late int _index; // Current position in order
 
   CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
     _initializeOrder();
     _updateWidget(state);
   }
 
-  /// Initialize or load persisted pointing order
+  /** Initialize or load persisted pointing order */
   void _initializeOrder() {
     final savedOrder = _storage.pointingOrder;
 
@@ -89,7 +97,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     }
   }
 
-  /// Load persisted pointing or get first from order
+  /** Load persisted pointing or get first from order */
   static Pointing _initializePointing(StorageService storage) {
     // Try to restore from saved pointing ID
     final savedId = storage.currentPointingId;
@@ -112,7 +120,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     return pointings.first;
   }
 
-  /// Move to next pointing in round-robin order
+  /** Move to next pointing in round-robin order */
   void nextPointing({Tradition? tradition, PointingContext? context}) {
     _index = (_index + 1) % _order.length;
 
@@ -125,14 +133,14 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     _persistAndUpdateWidget(state);
   }
 
-  /// Move to previous pointing in round-robin order
+  /** Move to previous pointing in round-robin order */
   void previousPointing() {
     _index = (_index - 1 + _order.length) % _order.length;
     state = getPointingById(_order[_index]) ?? pointings.first;
     _persistAndUpdateWidget(state);
   }
 
-  /// Jump to a specific pointing (e.g., from favorites or teacher sheet)
+  /** Jump to a specific pointing (e.g., from favorites or teacher sheet) */
   void setPointing(Pointing pointing) {
     // Find in order or add to current position
     final idx = _order.indexOf(pointing.id);
@@ -145,7 +153,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     _persistAndUpdateWidget(state);
   }
 
-  /// Reshuffle order for next cycle (keeps current pointing at index 0)
+  /** Reshuffle order for next cycle (keeps current pointing at index 0) */
   void _reshuffleOrder() {
     final current = _order[_index];
     _order.shuffle(Random());
@@ -156,19 +164,19 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     _storage.setPointingOrder(_order);
   }
 
-  /// Persist current state and update widget
+  /** Persist current state and update widget */
   void _persistAndUpdateWidget(Pointing pointing) {
     _storage.setCurrentPointingId(pointing.id);
     _storage.setPointingIndex(_index);
     _updateWidget(pointing);
   }
 
-  /// Update home screen widget with current pointing
+  /** Update home screen widget with current pointing */
   void _updateWidget(Pointing pointing) {
     WidgetService.updateWidget(pointing);
   }
 
-  /// Get current position info (for UI display if needed)
+  /** Get current position info (for UI display if needed) */
   int get currentIndex => _index;
   int get totalPointings => _order.length;
 }
@@ -177,18 +185,36 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 // Favorites
 // ============================================================
 
-/// Favorites provider
-final favoritesProvider =
-    StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
+/**
+ * Provider for saved/favorited [Pointing] IDs managed by [FavoritesNotifier].
+ *
+ * State is a list of pointing ID strings, persisted via [StorageService].
+ * Favorites are interleaved into the home widget rotation by [WidgetService].
+ */
+final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return FavoritesNotifier(storage);
 });
 
+/**
+ * Manages the user's saved/favorited [Pointing] IDs.
+ *
+ * Persists favorites through [StorageService]. Supports toggle semantics
+ * (add if absent, remove if present) and lookup. The favorites list
+ * also feeds into [WidgetService] for home screen widget content and
+ * [AffinityService] for tradition preference learning (3x weight for saves).
+ */
 class FavoritesNotifier extends StateNotifier<List<String>> {
   final StorageService _storage;
 
   FavoritesNotifier(this._storage) : super(_storage.favorites);
 
+  /**
+   * Toggles the favorite state of a [Pointing] by [pointingId].
+   *
+   * Adds to favorites if not present, removes if already saved.
+   * Persists the change immediately via [StorageService].
+   */
   Future<void> toggle(String pointingId) async {
     if (state.contains(pointingId)) {
       await _storage.removeFavorite(pointingId);
@@ -199,6 +225,7 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
     }
   }
 
+  /** Returns whether the [Pointing] with [pointingId] is currently favorited. */
   bool isFavorite(String pointingId) => state.contains(pointingId);
 }
 
@@ -206,22 +233,37 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
 // Teaching Filter - Tag-based filtering for Library
 // ============================================================
 
-/// State for teaching filters
+/**
+ * Immutable state for tag-based [Teaching] filters in the library.
+ *
+ * Combines multiple filter dimensions ([lineage], [topics], [moods],
+ * [teacher], [type]) that are AND-composed when applied via [apply].
+ * Used by [TeachingFilterNotifier] and consumed by [filteredTeachingsProvider].
+ */
 class TeachingFilterState {
+  /** Filter by spiritual tradition/lineage (e.g., Advaita, Zen, Direct Path). */
   final Tradition? lineage;
+
+  /** Active topic tag filters from [TopicTags] constants. */
   final Set<String> topics;
+
+  /** Active mood tag filters from [MoodTags] constants. */
   final Set<String> moods;
+
+  /** Filter by teacher name. */
   final String? teacher;
+
+  /** Filter by teaching type (quote or article). */
   final TeachingType? type;
 
-  const TeachingFilterState({
-    this.lineage,
-    this.topics = const {},
-    this.moods = const {},
-    this.teacher,
-    this.type,
-  });
+  const TeachingFilterState({this.lineage, this.topics = const {}, this.moods = const {}, this.teacher, this.type});
 
+  /**
+   * Creates a copy with selectively overridden fields.
+   *
+   * Use `clearLineage`, `clearTeacher`, or `clearType` to explicitly
+   * set those fields to `null` (since passing `null` preserves the current value).
+   */
   TeachingFilterState copyWith({
     Tradition? lineage,
     Set<String>? topics,
@@ -241,7 +283,7 @@ class TeachingFilterState {
     );
   }
 
-  /// Apply filters to get matching teachings
+  /** Apply filters to get matching teachings */
   List<Teaching> apply() {
     return TeachingRepository.filter(
       lineage: lineage,
@@ -252,25 +294,26 @@ class TeachingFilterState {
     );
   }
 
-  /// Check if any filters are active
-  bool get hasActiveFilters =>
-      lineage != null ||
-      topics.isNotEmpty ||
-      moods.isNotEmpty ||
-      teacher != null ||
-      type != null;
+  /** Check if any filters are active */
+  bool get hasActiveFilters => lineage != null || topics.isNotEmpty || moods.isNotEmpty || teacher != null || type != null;
 }
 
-/// Teaching filter notifier
+/**
+ * Manages [TeachingFilterState] with granular setters for each filter dimension.
+ *
+ * Provides toggle semantics for topics and moods (add/remove from set),
+ * direct setters for lineage, teacher, and type, and a [reset] to clear all filters.
+ * State changes reactively update [filteredTeachingsProvider].
+ */
 class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
   TeachingFilterNotifier() : super(const TeachingFilterState());
 
-  /// Set lineage filter
+  /** Set lineage filter */
   void setLineage(Tradition? lineage) {
     state = state.copyWith(lineage: lineage, clearLineage: lineage == null);
   }
 
-  /// Toggle a topic tag
+  /** Toggle a topic tag */
   void toggleTopic(String topic) {
     final topics = Set<String>.from(state.topics);
     if (topics.contains(topic)) {
@@ -281,12 +324,12 @@ class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
     state = state.copyWith(topics: topics);
   }
 
-  /// Set topics (replace all)
+  /** Set topics (replace all) */
   void setTopics(Set<String> topics) {
     state = state.copyWith(topics: topics);
   }
 
-  /// Toggle a mood tag
+  /** Toggle a mood tag */
   void toggleMood(String mood) {
     final moods = Set<String>.from(state.moods);
     if (moods.contains(mood)) {
@@ -297,58 +340,56 @@ class TeachingFilterNotifier extends StateNotifier<TeachingFilterState> {
     state = state.copyWith(moods: moods);
   }
 
-  /// Set moods (replace all)
+  /** Set moods (replace all) */
   void setMoods(Set<String> moods) {
     state = state.copyWith(moods: moods);
   }
 
-  /// Set teacher filter
+  /** Set teacher filter */
   void setTeacher(String? teacher) {
     state = state.copyWith(teacher: teacher, clearTeacher: teacher == null);
   }
 
-  /// Set teaching type filter
+  /** Set teaching type filter */
   void setType(TeachingType? type) {
     state = state.copyWith(type: type, clearType: type == null);
   }
 
-  /// Clear all filters
+  /** Clear all filters */
   void reset() {
     state = const TeachingFilterState();
   }
 }
 
-/// Provider for teaching filter state
-final teachingFilterProvider =
-    StateNotifierProvider<TeachingFilterNotifier, TeachingFilterState>((ref) {
+/** Provider for teaching filter state */
+final teachingFilterProvider = StateNotifierProvider<TeachingFilterNotifier, TeachingFilterState>((ref) {
   return TeachingFilterNotifier();
 });
 
-/// Derived provider for filtered teachings
+/** Derived provider for filtered teachings */
 final filteredTeachingsProvider = Provider<List<Teaching>>((ref) {
   final filterState = ref.watch(teachingFilterProvider);
   return filterState.apply();
 });
 
-/// Provider for unique teachers with teaching counts
+/** Provider for unique teachers with teaching counts */
 final teacherListProvider = Provider<List<MapEntry<String, int>>>((ref) {
   final counts = TeachingRepository.teacherCounts;
-  final entries = counts.entries.toList()
-    ..sort((a, b) => b.value.compareTo(a.value));
+  final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
   return entries;
 });
 
-/// Provider for topic tag counts
+/** Provider for topic tag counts */
 final topicCountsProvider = Provider<Map<String, int>>((ref) {
   return TeachingRepository.topicCounts;
 });
 
-/// Provider for mood tag counts
+/** Provider for mood tag counts */
 final moodCountsProvider = Provider<Map<String, int>>((ref) {
   return TeachingRepository.moodCounts;
 });
 
-/// Provider for lineage counts
+/** Provider for lineage counts */
 final lineageCountsProvider = Provider<Map<Tradition, int>>((ref) {
   return TeachingRepository.lineageCounts;
 });
@@ -357,20 +398,26 @@ final lineageCountsProvider = Provider<Map<Tradition, int>>((ref) {
 // Preferred Traditions Selection
 // ============================================================
 
-/// Provider for user's preferred/enabled traditions
-/// By default, all traditions are enabled
-final preferredTraditionsProvider =
-    StateNotifierProvider<PreferredTraditionsNotifier, Set<Tradition>>((ref) {
+/**
+ * Provider for user's preferred/enabled traditions
+ * By default, all traditions are enabled
+ */
+final preferredTraditionsProvider = StateNotifierProvider<PreferredTraditionsNotifier, Set<Tradition>>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return PreferredTraditionsNotifier(storage);
 });
 
-/// Notifier for managing preferred traditions
+/**
+ * Manages the user's preferred/enabled [Tradition] set.
+ *
+ * All traditions are enabled by default. Users can toggle individual
+ * traditions on/off, with a minimum of one always remaining enabled.
+ * Persisted via [StorageService] as a list of tradition name strings.
+ */
 class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
   final StorageService _storage;
 
-  PreferredTraditionsNotifier(this._storage)
-      : super(_loadFromStorage(_storage));
+  PreferredTraditionsNotifier(this._storage) : super(_loadFromStorage(_storage));
 
   static Set<Tradition> _loadFromStorage(StorageService storage) {
     final stored = storage.preferredTraditions;
@@ -378,15 +425,10 @@ class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
       // Default: all traditions enabled
       return Tradition.values.toSet();
     }
-    return stored
-        .map((name) => Tradition.values.firstWhere(
-              (t) => t.name == name,
-              orElse: () => Tradition.advaita,
-            ))
-        .toSet();
+    return stored.map((name) => Tradition.values.firstWhere((t) => t.name == name, orElse: () => Tradition.advaita)).toSet();
   }
 
-  /// Toggle a tradition's enabled state
+  /** Toggle a tradition's enabled state */
   void toggle(Tradition tradition) {
     if (state.contains(tradition)) {
       // Don't allow disabling all traditions - keep at least one
@@ -399,10 +441,10 @@ class PreferredTraditionsNotifier extends StateNotifier<Set<Tradition>> {
     _persist();
   }
 
-  /// Check if a tradition is enabled
+  /** Check if a tradition is enabled */
   bool isEnabled(Tradition tradition) => state.contains(tradition);
 
-  /// Enable all traditions
+  /** Enable all traditions */
   void enableAll() {
     state = Tradition.values.toSet();
     _persist();

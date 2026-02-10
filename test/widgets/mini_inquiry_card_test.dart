@@ -24,9 +24,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(child: MiniInquiryCard()),
-            ),
+            home: const Scaffold(body: Center(child: MiniInquiryCard())),
           ),
         ),
       );
@@ -44,9 +42,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(child: MiniInquiryCard()),
-            ),
+            home: const Scaffold(body: Center(child: MiniInquiryCard())),
           ),
         ),
       );
@@ -62,9 +58,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(child: MiniInquiryCard()),
-            ),
+            home: const Scaffold(body: Center(child: MiniInquiryCard())),
           ),
         ),
       );
@@ -79,9 +73,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.light,
-            home: const Scaffold(
-              body: Center(child: MiniInquiryCard()),
-            ),
+            home: const Scaffold(body: Center(child: MiniInquiryCard())),
           ),
         ),
       );
@@ -98,9 +90,7 @@ void main() {
             theme: AppTheme.dark,
             home: const SizedBox(
               width: 300,
-              child: Scaffold(
-                body: Center(child: MiniInquiryCard()),
-              ),
+              child: Scaffold(body: Center(child: MiniInquiryCard())),
             ),
           ),
         ),
@@ -116,9 +106,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: Center(child: MiniInquiryCard()),
-            ),
+            home: const Scaffold(body: Center(child: MiniInquiryCard())),
           ),
         ),
       );

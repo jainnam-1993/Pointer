@@ -1,13 +1,22 @@
-// Inquiry Seed Data
-// Traditional non-dual teaching techniques: koans, self-inquiry, direct pointing
+/**
+ * Curated seed data for guided non-dual inquiries.
+ *
+ * Contains the master `inquiries` list and helper functions for
+ * random selection, type/tradition filtering, and ID lookup.
+ *
+ * See also:
+ * - [Inquiry] in `models/inquiry.dart` for the data model
+ * - [InquiryPlayerScreen] for the timed presentation UI
+ */
+library;
 
 import 'dart:math';
 import '../models/inquiry.dart';
 import 'pointings.dart'; // For Tradition enum
 
+/** Master list of all curated [Inquiry] records. */
 const inquiries = <Inquiry>[
   // === SELF-INQUIRY (Advaita) - 7 inquiries ===
-
   Inquiry(
     id: 'si_001',
     question: 'Who is aware of this thought?',
@@ -79,7 +88,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === KOANS (Zen) - 7 inquiries ===
-
   Inquiry(
     id: 'koan_001',
     question: 'What was your face before your parents were born?',
@@ -151,7 +159,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === DIRECT POINTING (Direct Path) - 7 inquiries ===
-
   Inquiry(
     id: 'dp_001',
     setup: 'Close your eyes for a moment.',
@@ -226,7 +233,6 @@ const inquiries = <Inquiry>[
   ),
 
   // === CONTEMPORARY CONTEMPLATION - 6 inquiries ===
-
   Inquiry(
     id: 'cont_001',
     question: 'Can you find the boundary between you and your experience?',
@@ -287,7 +293,7 @@ const inquiries = <Inquiry>[
 
 final _random = Random();
 
-/// Get a random inquiry, optionally filtered by type or tradition
+/** Get a random inquiry, optionally filtered by type or tradition */
 Inquiry getRandomInquiry({InquiryType? type, Tradition? tradition}) {
   var filtered = inquiries.toList();
 
@@ -302,17 +308,17 @@ Inquiry getRandomInquiry({InquiryType? type, Tradition? tradition}) {
   return filtered[_random.nextInt(filtered.length)];
 }
 
-/// Get all inquiries of a specific type
+/** Get all inquiries of a specific type */
 List<Inquiry> getInquiriesByType(InquiryType type) {
   return inquiries.where((i) => i.type == type).toList();
 }
 
-/// Get all inquiries from a specific tradition
+/** Get all inquiries from a specific tradition */
 List<Inquiry> getInquiriesByTradition(Tradition tradition) {
   return inquiries.where((i) => i.tradition == tradition).toList();
 }
 
-/// Get a specific inquiry by ID, returns null if not found
+/** Get a specific inquiry by ID, returns null if not found */
 Inquiry? getInquiryById(String id) {
   try {
     return inquiries.firstWhere((i) => i.id == id);

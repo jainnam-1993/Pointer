@@ -9,7 +9,14 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 
-/// Screen showing history of viewed pointings
+/**
+ * Screen showing chronological history of previously viewed pointings.
+ *
+ * Displays [_HistoryCard] items with tradition badge, content preview, teacher
+ * attribution, and relative timestamp. Tapping a card sets it as the current
+ * pointing and navigates back to the home screen. Shows an empty state
+ * when no pointings have been viewed yet.
+ */
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
 
@@ -38,19 +45,10 @@ class HistoryScreen extends ConsumerWidget {
                           HapticFeedback.lightImpact();
                           context.pop();
                         },
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: colors.textPrimary,
-                          size: 20,
-                        ),
+                        icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Past Pointings',
-                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 28,
-                        ),
-                      ),
+                      Text('Past Pointings', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28)),
                     ],
                   ),
                 ),
@@ -59,8 +57,7 @@ class HistoryScreen extends ConsumerWidget {
                 Expanded(
                   child: viewedPointings.isEmpty
                       ? _buildEmptyState(context, colors)
-                      : _buildPointingsList(
-                          context, ref, viewedPointings, bottomPadding, colors),
+                      : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
                 ),
               ],
             ),
@@ -70,38 +67,26 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 
+  /** Builds the empty state shown when no pointings have been viewed yet. */
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.history,
-            size: 64,
-            color: colors.textSecondary.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.history, size: 64, color: colors.textSecondary.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
           Text(
             'No pointings yet',
-            style: TextStyle(
-              color: colors.textSecondary,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(color: colors.textSecondary, fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Your viewed pointings will appear here',
-            style: TextStyle(
-              color: colors.textSecondary.withValues(alpha: 0.7),
-              fontSize: 14,
-            ),
-          ),
+          Text('Your viewed pointings will appear here', style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14)),
         ],
       ),
     );
   }
 
+  /** Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations. */
   Widget _buildPointingsList(
     BuildContext context,
     WidgetRef ref,
@@ -110,12 +95,7 @@ class HistoryScreen extends ConsumerWidget {
     PointerColors colors,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 8,
-        bottom: 100 + bottomPadding,
-      ),
+      padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 100 + bottomPadding),
       itemCount: viewedPointings.length,
       itemBuilder: (context, index) {
         final viewed = viewedPointings[index];
@@ -123,10 +103,7 @@ class HistoryScreen extends ConsumerWidget {
         final viewedAt = DateTime.fromMillisecondsSinceEpoch(viewed['viewedAt'] as int);
 
         // Find the actual pointing data
-        final pointing = pointings.cast<Pointing?>().firstWhere(
-          (p) => p?.id == pointingId,
-          orElse: () => null,
-        );
+        final pointing = pointings.cast<Pointing?>().firstWhere((p) => p?.id == pointingId, orElse: () => null);
 
         if (pointing == null) return const SizedBox.shrink();
 
@@ -151,17 +128,20 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
+/** Card displaying a previously viewed [Pointing] with tradition badge and relative timestamp. */
 class _HistoryCard extends StatelessWidget {
+  /** The pointing to display. */
   final Pointing pointing;
+
+  /** When this pointing was last viewed. */
   final DateTime viewedAt;
+
+  /** Callback when the card is tapped (sets as current pointing and navigates home). */
   final VoidCallback onTap;
 
-  const _HistoryCard({
-    required this.pointing,
-    required this.viewedAt,
-    required this.onTap,
-  });
+  const _HistoryCard({required this.pointing, required this.viewedAt, required this.onTap});
 
+  /** Formats a [DateTime] as a relative time string (e.g., "5m ago", "Yesterday", "3/15"). */
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);
@@ -198,28 +178,15 @@ class _HistoryCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      traditionInfo.icon,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Text(traditionInfo.icon, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: 8),
                     Text(
                       traditionInfo.name,
-                      style: TextStyle(
-                        color: colors.accent,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
-                Text(
-                  _formatDate(viewedAt),
-                  style: TextStyle(
-                    color: colors.textSecondary.withValues(alpha: 0.7),
-                    fontSize: 12,
-                  ),
-                ),
+                Text(_formatDate(viewedAt), style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12)),
               ],
             ),
             const SizedBox(height: 12),
@@ -229,11 +196,7 @@ class _HistoryCard extends StatelessWidget {
               pointing.content,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.4),
             ),
 
             // Teacher attribution
@@ -241,11 +204,7 @@ class _HistoryCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '— ${pointing.teacher}',
-                style: TextStyle(
-                  color: colors.textSecondary,
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: TextStyle(color: colors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
               ),
             ],
           ],

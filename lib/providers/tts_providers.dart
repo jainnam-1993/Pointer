@@ -1,7 +1,13 @@
-/// TTS providers - Text-to-speech service and playback state
-///
-/// Manages AWS Polly TTS integration including credential management
-/// and audio playback state.
+/**
+ * TTS providers - Text-to-speech service and playback state.
+ *
+ * Manages AWS Polly TTS integration including credential management
+ * via [AWSCredentialService] and audio playback state via [TTSService].
+ *
+ * **STATUS: DISABLED** - TTS functionality is currently disabled but
+ * providers are retained for future re-enablement. See [TTSService]
+ * for implementation details.
+ */
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +19,7 @@ import '../services/tts_service.dart';
 // TTS Service
 // ============================================================
 
-/// TTS service singleton provider
+/** TTS service singleton provider */
 final ttsServiceProvider = Provider<TTSService>((ref) {
   return TTSService.instance;
 });
@@ -22,12 +28,12 @@ final ttsServiceProvider = Provider<TTSService>((ref) {
 // AWS Credentials
 // ============================================================
 
-/// AWS credential service singleton provider
+/** AWS credential service singleton provider */
 final awsCredentialServiceProvider = Provider<AWSCredentialService>((ref) {
   return AWSCredentialService.instance;
 });
 
-/// TTS configuration state (is configured?)
+/** TTS configuration state (is configured?) */
 final ttsConfiguredProvider = FutureProvider<bool>((ref) async {
   return AWSCredentialService.instance.isConfigured();
 });
@@ -36,7 +42,7 @@ final ttsConfiguredProvider = FutureProvider<bool>((ref) async {
 // Playback State
 // ============================================================
 
-/// TTS playback state stream provider
+/** TTS playback state stream provider */
 final ttsPlaybackStateProvider = StreamProvider<TTSPlaybackState>((ref) {
   return TTSService.instance.stateStream;
 });

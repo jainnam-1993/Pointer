@@ -8,13 +8,29 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 import 'notification_preview.dart';
 
-/// Animation durations for onboarding - deliberately slower for contemplative feel
+/**
+ * Animation duration constants for onboarding -- deliberately slower for a contemplative feel.
+ *
+ * Used by [TypewriterText], [DissolveTransition], [StrikeThroughReveal],
+ * [NotificationSimulation], and [BreathingGlow].
+ */
 class OnboardingDurations {
+  /** Delay between each word appearing in [TypewriterText]. */
   static const Duration wordReveal = Duration(milliseconds: 200);
+
+  /** Fade duration for each word in [TypewriterText]. */
   static const Duration wordFade = Duration(milliseconds: 400);
+
+  /** Duration of the dissolve/blur animation in [DissolveTransition]. */
   static const Duration dissolve = Duration(milliseconds: 800);
+
+  /** Duration of the strike-through line animation in [StrikeThroughReveal]. */
   static const Duration strikethrough = Duration(milliseconds: 300);
+
+  /** One full breath cycle (inhale + exhale) for [BreathingGlow]. */
   static const Duration breathCycle = Duration(seconds: 3);
+
+  /** Slide-in duration for [NotificationSimulation] banner appearance. */
   static const Duration notificationSlide = Duration(milliseconds: 400);
 }
 
@@ -22,27 +38,29 @@ class OnboardingDurations {
 // TypewriterText
 // ============================================================================
 
-/// Word-by-word text reveal with configurable timing.
-///
-/// Each word fades in sequentially, creating a contemplative reading experience.
-/// Triggers a subtle haptic on the final word.
+/**
+ * Word-by-word text reveal with configurable timing.
+ *
+ * Each word fades in sequentially, creating a contemplative reading experience.
+ * Triggers a subtle haptic on the final word.
+ */
 class TypewriterText extends StatefulWidget {
-  /// The text to reveal word by word.
+  /** The text to reveal word by word. */
   final String text;
 
-  /// Style for the text. Falls back to theme's textPrimary color.
+  /** Style for the text. Falls back to theme's textPrimary color. */
   final TextStyle? style;
 
-  /// Delay between each word appearing.
+  /** Delay between each word appearing. */
   final Duration wordDelay;
 
-  /// Initial delay before the first word appears.
+  /** Initial delay before the first word appears. */
   final Duration startDelay;
 
-  /// Called when all words have been revealed.
+  /** Called when all words have been revealed. */
   final VoidCallback? onComplete;
 
-  /// Text alignment.
+  /** Text alignment. */
   final TextAlign textAlign;
 
   const TypewriterText({
@@ -126,21 +144,11 @@ class _TypewriterTextState extends State<TypewriterText> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final defaultStyle = widget.style ??
-        TextStyle(
-          fontSize: 20,
-          height: 1.7,
-          fontWeight: FontWeight.w400,
-          color: colors.textPrimary,
-        );
+    final defaultStyle = widget.style ?? TextStyle(fontSize: 20, height: 1.7, fontWeight: FontWeight.w400, color: colors.textPrimary);
 
     // If reduced motion, show all text immediately
     if (_shouldReduceMotion || _isComplete && _visibleWordCount == _words.length) {
-      return Text(
-        widget.text,
-        style: defaultStyle,
-        textAlign: widget.textAlign,
-      );
+      return Text(widget.text, style: defaultStyle, textAlign: widget.textAlign);
     }
 
     return Wrap(
@@ -154,10 +162,7 @@ class _TypewriterTextState extends State<TypewriterText> {
           opacity: isVisible ? 1.0 : 0.0,
           duration: OnboardingDurations.wordFade,
           curve: Curves.easeOut,
-          child: Text(
-            isLastWord ? word : '$word ',
-            style: defaultStyle,
-          ),
+          child: Text(isLastWord ? word : '$word ', style: defaultStyle),
         );
       }),
     );
@@ -182,24 +187,26 @@ class _TypewriterTextState extends State<TypewriterText> {
 // DissolveTransition
 // ============================================================================
 
-/// Shows first child, then dissolves/blurs it away as second child emerges.
-///
-/// Creates an ethereal transition effect where the first child becomes
-/// increasingly blurred and faded while the second child materializes.
+/**
+ * Shows first child, then dissolves/blurs it away as second child emerges.
+ *
+ * Creates an ethereal transition effect where the first child becomes
+ * increasingly blurred and faded while the second child materializes.
+ */
 class DissolveTransition extends StatefulWidget {
-  /// The initial widget to show.
+  /** The initial widget to show. */
   final Widget firstChild;
 
-  /// The widget that emerges as the first dissolves.
+  /** The widget that emerges as the first dissolves. */
   final Widget secondChild;
 
-  /// How long to hold the first child before dissolving.
+  /** How long to hold the first child before dissolving. */
   final Duration holdDuration;
 
-  /// Duration of the dissolve/emergence animation.
+  /** Duration of the dissolve/emergence animation. */
   final Duration dissolveDuration;
 
-  /// Called when the transition completes.
+  /** Called when the transition completes. */
   final VoidCallback? onComplete;
 
   const DissolveTransition({
@@ -215,8 +222,7 @@ class DissolveTransition extends StatefulWidget {
   State<DissolveTransition> createState() => _DissolveTransitionState();
 }
 
-class _DissolveTransitionState extends State<DissolveTransition>
-    with SingleTickerProviderStateMixin {
+class _DissolveTransitionState extends State<DissolveTransition> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _dissolveAnimation;
   late Animation<double> _blurAnimation;
@@ -226,10 +232,7 @@ class _DissolveTransitionState extends State<DissolveTransition>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.dissolveDuration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.dissolveDuration, vsync: this);
 
     // First child fades out (1.0 -> 0.0)
     _dissolveAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
@@ -313,19 +316,12 @@ class _DissolveTransitionState extends State<DissolveTransition>
               Opacity(
                 opacity: _dissolveAnimation.value,
                 child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: _blurAnimation.value,
-                    sigmaY: _blurAnimation.value,
-                  ),
+                  imageFilter: ImageFilter.blur(sigmaX: _blurAnimation.value, sigmaY: _blurAnimation.value),
                   child: widget.firstChild,
                 ),
               ),
             // Second child emerging
-            if (_emergeAnimation.value > 0 || _hasStarted)
-              Opacity(
-                opacity: _emergeAnimation.value,
-                child: widget.secondChild,
-              ),
+            if (_emergeAnimation.value > 0 || _hasStarted) Opacity(opacity: _emergeAnimation.value, child: widget.secondChild),
           ],
         );
       },
@@ -337,24 +333,26 @@ class _DissolveTransitionState extends State<DissolveTransition>
 // StrikeThroughReveal
 // ============================================================================
 
-/// Text that appears then gets struck through and fades.
-///
-/// Used to show concepts that are being "let go of" or transcended,
-/// such as "Progress", "Streaks", "Becoming".
+/**
+ * Text that appears then gets struck through and fades.
+ *
+ * Used to show concepts that are being "let go of" or transcended,
+ * such as "Progress", "Streaks", "Becoming".
+ */
 class StrikeThroughReveal extends StatefulWidget {
-  /// List of items to show and strike through sequentially.
+  /** List of items to show and strike through sequentially. */
   final List<String> items;
 
-  /// Delay before showing the next item after the previous fades.
+  /** Delay before showing the next item after the previous fades. */
   final Duration itemDelay;
 
-  /// Delay after item appears before strike-through begins.
+  /** Delay after item appears before strike-through begins. */
   final Duration strikeDelay;
 
-  /// Style for the text.
+  /** Style for the text. */
   final TextStyle? style;
 
-  /// Called when all items have been shown and struck through.
+  /** Called when all items have been shown and struck through. */
   final VoidCallback? onComplete;
 
   const StrikeThroughReveal({
@@ -370,8 +368,7 @@ class StrikeThroughReveal extends StatefulWidget {
   State<StrikeThroughReveal> createState() => _StrikeThroughRevealState();
 }
 
-class _StrikeThroughRevealState extends State<StrikeThroughReveal>
-    with TickerProviderStateMixin {
+class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerProviderStateMixin {
   int _currentIndex = 0;
   _StrikePhase _phase = _StrikePhase.hidden;
   late AnimationController _fadeController;
@@ -383,25 +380,13 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal>
   void initState() {
     super.initState();
 
-    _fadeController = AnimationController(
-      duration: OnboardingDurations.wordFade,
-      vsync: this,
-    );
+    _fadeController = AnimationController(duration: OnboardingDurations.wordFade, vsync: this);
 
-    _strikeController = AnimationController(
-      duration: OnboardingDurations.strikethrough,
-      vsync: this,
-    );
+    _strikeController = AnimationController(duration: OnboardingDurations.strikethrough, vsync: this);
 
-    _fadeAnimation = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeOut,
-    );
+    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
 
-    _strikeAnimation = CurvedAnimation(
-      parent: _strikeController,
-      curve: Curves.easeInOut,
-    );
+    _strikeAnimation = CurvedAnimation(parent: _strikeController, curve: Curves.easeInOut);
 
     _startSequence();
   }
@@ -492,13 +477,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal>
     }
 
     final colors = context.colors;
-    final defaultStyle = widget.style ??
-        TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.w500,
-          color: colors.textPrimary,
-          height: 1.4,
-        );
+    final defaultStyle = widget.style ?? TextStyle(fontSize: 28, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.4);
 
     final currentItem = widget.items[_currentIndex];
 
@@ -507,13 +486,12 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal>
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: widget.items
-            .map((item) => Text(
-                  item,
-                  style: defaultStyle.copyWith(
-                    decoration: TextDecoration.lineThrough,
-                    decorationColor: colors.textMuted,
-                  ),
-                ))
+            .map(
+              (item) => Text(
+                item,
+                style: defaultStyle.copyWith(decoration: TextDecoration.lineThrough, decorationColor: colors.textMuted),
+              ),
+            )
             .toList(),
       );
     }
@@ -525,16 +503,9 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal>
           opacity: _fadeAnimation.value,
           child: CustomPaint(
             painter: _phase == _StrikePhase.striking || _phase == _StrikePhase.fading
-                ? _StrikeThroughPainter(
-                    progress: _strikeAnimation.value,
-                    color: colors.textMuted,
-                    strokeWidth: 2.0,
-                  )
+                ? _StrikeThroughPainter(progress: _strikeAnimation.value, color: colors.textMuted, strokeWidth: 2.0)
                 : null,
-            child: Text(
-              currentItem,
-              style: defaultStyle,
-            ),
+            child: Text(currentItem, style: defaultStyle),
           ),
         );
       },
@@ -549,11 +520,7 @@ class _StrikeThroughPainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
 
-  _StrikeThroughPainter({
-    required this.progress,
-    required this.color,
-    required this.strokeWidth,
-  });
+  _StrikeThroughPainter({required this.progress, required this.color, required this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -567,18 +534,12 @@ class _StrikeThroughPainter extends CustomPainter {
     final y = size.height / 2;
     final endX = size.width * progress;
 
-    canvas.drawLine(
-      Offset(0, y),
-      Offset(endX, y),
-      paint,
-    );
+    canvas.drawLine(Offset(0, y), Offset(endX, y), paint);
   }
 
   @override
   bool shouldRepaint(_StrikeThroughPainter oldDelegate) {
-    return oldDelegate.progress != progress ||
-        oldDelegate.color != color ||
-        oldDelegate.strokeWidth != strokeWidth;
+    return oldDelegate.progress != progress || oldDelegate.color != color || oldDelegate.strokeWidth != strokeWidth;
   }
 }
 
@@ -586,30 +547,32 @@ class _StrikeThroughPainter extends CustomPainter {
 // NotificationSimulation
 // ============================================================================
 
-/// Simulates a notification banner sliding down from the top.
-///
-/// Creates an iOS/Android-style notification appearance matching the actual
-/// Pointer notification UI with Ensō icon, title, tradition badge, and actions.
+/**
+ * Simulates a notification banner sliding down from the top.
+ *
+ * Creates an iOS/Android-style notification appearance matching the actual
+ * Pointer notification UI with Ensō icon, title, tradition badge, and actions.
+ */
 class NotificationSimulation extends StatefulWidget {
-  /// App name shown in the notification header.
+  /** App name shown in the notification header. */
   final String appName;
 
-  /// The notification message body (the pointing content).
+  /** The notification message body (the pointing content). */
   final String message;
 
-  /// Title shown above the message (defaults to "Today's Pointing").
+  /** Title shown above the message (defaults to "Today's Pointing"). */
   final String title;
 
-  /// Tradition and teacher attribution (e.g., "Advaita Vedanta — Nisargadatta").
+  /** Tradition and teacher attribution (e.g., "Advaita Vedanta — Nisargadatta"). */
   final String? attribution;
 
-  /// Whether to show action buttons (Save, Another).
+  /** Whether to show action buttons (Save, Another). */
   final bool showActions;
 
-  /// Delay before the notification appears.
+  /** Delay before the notification appears. */
   final Duration delay;
 
-  /// Called when the notification has fully appeared.
+  /** Called when the notification has fully appeared. */
   final VoidCallback? onComplete;
 
   const NotificationSimulation({
@@ -627,8 +590,7 @@ class NotificationSimulation extends StatefulWidget {
   State<NotificationSimulation> createState() => _NotificationSimulationState();
 }
 
-class _NotificationSimulationState extends State<NotificationSimulation>
-    with SingleTickerProviderStateMixin {
+class _NotificationSimulationState extends State<NotificationSimulation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
@@ -638,26 +600,19 @@ class _NotificationSimulationState extends State<NotificationSimulation>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: OnboardingDurations.notificationSlide,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: OnboardingDurations.notificationSlide, vsync: this);
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -1.5),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      ),
+    );
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -712,12 +667,7 @@ class _NotificationSimulationState extends State<NotificationSimulation>
         opacity: _opacityAnimation,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: NotificationPreview(
-            title: widget.title,
-            body: widget.message,
-            attribution: widget.attribution,
-            showActions: widget.showActions,
-          ),
+          child: NotificationPreview(title: widget.title, body: widget.message, attribution: widget.attribution, showActions: widget.showActions),
         ),
       ),
     );
@@ -728,24 +678,26 @@ class _NotificationSimulationState extends State<NotificationSimulation>
 // BreathingGlow
 // ============================================================================
 
-/// Subtle pulsing glow effect for containers.
-///
-/// Wraps a child widget with an animated glow that pulses gently,
-/// like breathing. Uses a smooth sine-wave animation for natural feel.
+/**
+ * Subtle pulsing glow effect for containers.
+ *
+ * Wraps a child widget with an animated glow that pulses gently,
+ * like breathing. Uses a smooth sine-wave animation for natural feel.
+ */
 class BreathingGlow extends StatefulWidget {
-  /// The widget to wrap with the breathing glow effect.
+  /** The widget to wrap with the breathing glow effect. */
   final Widget child;
 
-  /// Color of the glow. Defaults to theme accent color.
+  /** Color of the glow. Defaults to theme accent color. */
   final Color? glowColor;
 
-  /// Duration of one full breath cycle (inhale + exhale).
+  /** Duration of one full breath cycle (inhale + exhale). */
   final Duration cycleDuration;
 
-  /// Maximum blur radius of the glow.
+  /** Maximum blur radius of the glow. */
   final double maxBlur;
 
-  /// Maximum spread radius of the glow.
+  /** Maximum spread radius of the glow. */
   final double maxSpread;
 
   const BreathingGlow({
@@ -761,17 +713,13 @@ class BreathingGlow extends StatefulWidget {
   State<BreathingGlow> createState() => _BreathingGlowState();
 }
 
-class _BreathingGlowState extends State<BreathingGlow>
-    with SingleTickerProviderStateMixin {
+class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.cycleDuration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.cycleDuration, vsync: this);
 
     // Start animation after frame is built (to check reduced motion)
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -830,50 +778,26 @@ class _BreathingGlowState extends State<BreathingGlow>
 // Utility Extensions
 // ============================================================================
 
-/// Extension to add onboarding-specific animations using flutter_animate
+/** Extension to add onboarding-specific animations using flutter_animate */
 extension OnboardingAnimateExtensions on Widget {
-  /// Applies a contemplative fade-in with subtle upward drift.
-  Widget contemplativeFadeIn({
-    Duration delay = Duration.zero,
-    Duration duration = const Duration(milliseconds: 800),
-  }) {
-    return animate(delay: delay)
-        .fadeIn(duration: duration, curve: Curves.easeOut)
-        .slideY(
-          begin: 0.05,
-          end: 0,
-          duration: duration,
-          curve: Curves.easeOut,
-        );
+  /** Applies a contemplative fade-in with subtle upward drift. */
+  Widget contemplativeFadeIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
+    return animate(
+      delay: delay,
+    ).fadeIn(duration: duration, curve: Curves.easeOut).slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
   }
 
-  /// Applies a gentle scale-in effect for emphasis.
-  Widget gentleScaleIn({
-    Duration delay = Duration.zero,
-    Duration duration = const Duration(milliseconds: 600),
-  }) {
-    return animate(delay: delay)
-        .scaleXY(
-          begin: 0.95,
-          end: 1.0,
-          duration: duration,
-          curve: Curves.easeOut,
-        )
-        .fadeIn(duration: duration, curve: Curves.easeOut);
+  /** Applies a gentle scale-in effect for emphasis. */
+  Widget gentleScaleIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 600)}) {
+    return animate(
+      delay: delay,
+    ).scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
   }
 
-  /// Applies a soft blur-in effect (from blurred to clear).
-  Widget blurIn({
-    Duration delay = Duration.zero,
-    Duration duration = const Duration(milliseconds: 800),
-  }) {
+  /** Applies a soft blur-in effect (from blurred to clear). */
+  Widget blurIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
     return animate(delay: delay)
-        .blur(
-          begin: const Offset(10, 10),
-          end: Offset.zero,
-          duration: duration,
-          curve: Curves.easeOut,
-        )
+        .blur(begin: const Offset(10, 10), end: Offset.zero, duration: duration, curve: Curves.easeOut)
         .fadeIn(duration: duration, curve: Curves.easeOut);
   }
 }

@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pointer/providers/donation_providers.dart';
 import 'package:pointer/services/donation_service.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
@@ -36,7 +35,7 @@ class _MockDonationService extends DonationService {
 }
 
 class _TestDonationNotifier extends DonationNotifier {
-  _TestDonationNotifier(DonationService service) : super(service);
+  _TestDonationNotifier(super.service);
   @override
   Future<void> initialize() async {
     state = const DonationState(isAvailable: false, isLoading: false);
@@ -46,25 +45,17 @@ class _TestDonationNotifier extends DonationNotifier {
 final _mockDonationService = _MockDonationService();
 
 /// Creates a test app with providers configured
-Widget createTestApp({
-  required Widget child,
-  SharedPreferences? prefs,
-  Pointing? initialPointing,
-}) {
+Widget createTestApp({required Widget child, SharedPreferences? prefs, Pointing? initialPointing}) {
   return ProviderScope(
     overrides: [
       if (prefs != null) sharedPreferencesProvider.overrideWithValue(prefs),
-      if (prefs != null)
-        storageServiceProvider
-            .overrideWith((ref) => StorageService(prefs)),
+      if (prefs != null) storageServiceProvider.overrideWith((ref) => StorageService(prefs)),
       highContrastProvider.overrideWith((ref) => false),
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
       donationServiceProvider.overrideWithValue(_mockDonationService),
-      donationProvider.overrideWith(
-        (ref) => _TestDonationNotifier(_mockDonationService),
-      ),
+      donationProvider.overrideWith((ref) => _TestDonationNotifier(_mockDonationService)),
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final storage = ref.watch(storageServiceProvider);
@@ -73,10 +64,7 @@ Widget createTestApp({
           return notifier;
         }),
     ],
-    child: MaterialApp(
-      theme: AppTheme.dark,
-      home: child,
-    ),
+    child: MaterialApp(theme: AppTheme.dark, home: child),
   );
 }
 
@@ -91,13 +79,10 @@ void main() {
   });
 
   group('VoiceOver: Semantic Labels', () {
-    testWidgets('TraditionBadge has semantic label with tradition name',
-        (tester) async {
+    testWidgets('TraditionBadge has semantic label with tradition name', (tester) async {
       await tester.pumpWidget(
         createTestApp(
-          child: const Scaffold(
-            body: TraditionBadge(tradition: Tradition.advaita),
-          ),
+          child: const Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
         ),
       );
 
@@ -110,10 +95,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           child: Scaffold(
-            body: GlassButton(
-              label: 'Test',
-              onPressed: () {},
-            ),
+            body: GlassButton(label: 'Test', onPressed: () {}),
           ),
         ),
       );
@@ -126,29 +108,19 @@ void main() {
       for (final tradition in Tradition.values) {
         await tester.pumpWidget(
           createTestApp(
-            child: Scaffold(
-              body: TraditionBadge(tradition: tradition),
-            ),
+            child: Scaffold(body: TraditionBadge(tradition: tradition)),
           ),
         );
 
         final semantics = tester.getSemantics(find.byType(TraditionBadge));
-        expect(semantics.label, isNotEmpty,
-            reason: 'TraditionBadge for ${tradition.name} should have a label');
+        expect(semantics.label, isNotEmpty, reason: 'TraditionBadge for ${tradition.name} should have a label');
       }
     });
   });
 
   group('VoiceOver: Decorative Elements Excluded', () {
-    testWidgets('AnimatedGradient is excluded from semantics tree',
-        (tester) async {
-      await tester.pumpWidget(
-        createTestApp(
-          child: const Scaffold(
-            body: AnimatedGradient(),
-          ),
-        ),
-      );
+    testWidgets('AnimatedGradient is excluded from semantics tree', (tester) async {
+      await tester.pumpWidget(createTestApp(child: const Scaffold(body: AnimatedGradient())));
 
       // AnimatedGradient returns ExcludeSemantics to exclude from a11y tree
       // Verify AnimatedGradient exists and uses ExcludeSemantics
@@ -156,18 +128,11 @@ void main() {
       expect(find.byType(ExcludeSemantics), findsWidgets); // May find multiple
     });
 
-    testWidgets('FloatingParticles is excluded from semantics tree',
-        (tester) async {
+    testWidgets('FloatingParticles is excluded from semantics tree', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            reduceMotionOverrideProvider.overrideWith((ref) => false),
-          ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: FloatingParticles(),
-            ),
-          ),
+          overrides: [reduceMotionOverrideProvider.overrideWith((ref) => false)],
+          child: const MaterialApp(home: Scaffold(body: FloatingParticles())),
         ),
       );
 
@@ -181,9 +146,7 @@ void main() {
     late SharedPreferences prefs;
 
     setUp(() async {
-      SharedPreferences.setMockInitialValues({
-        'pointer_onboarding_completed': true,
-      });
+      SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
       prefs = await SharedPreferences.getInstance();
     });
 
@@ -195,13 +158,7 @@ void main() {
         contexts: [PointingContext.general],
       );
 
-      await tester.pumpWidget(
-        createTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: testPointing,
-        ),
-      );
+      await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       await tester.pumpAndSettle();
 
       // Find the Semantics widget with custom actions
@@ -220,14 +177,11 @@ void main() {
     late SharedPreferences prefs;
 
     setUp(() async {
-      SharedPreferences.setMockInitialValues({
-        'pointer_onboarding_completed': true,
-      });
+      SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
       prefs = await SharedPreferences.getInstance();
     });
 
-    testWidgets('HomeScreen has logical semantic focus order',
-        (tester) async {
+    testWidgets('HomeScreen has logical semantic focus order', (tester) async {
       const testPointing = Pointing(
         id: 'test-1',
         content: 'Test pointing content',
@@ -235,13 +189,7 @@ void main() {
         contexts: [PointingContext.general],
       );
 
-      await tester.pumpWidget(
-        createTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: testPointing,
-        ),
-      );
+      await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       await tester.pumpAndSettle();
 
       // Verify key semantic elements exist in the tree
@@ -257,24 +205,17 @@ void main() {
       expect(allSemantics, findsWidgets);
     });
 
-    testWidgets('Settings theme options have selected state in label',
-        (tester) async {
+    testWidgets('Settings theme options have selected state in label', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(prefs),
-            storageServiceProvider
-                .overrideWith((ref) => StorageService(prefs)),
+            storageServiceProvider.overrideWith((ref) => StorageService(prefs)),
             highContrastProvider.overrideWith((ref) => false),
             donationServiceProvider.overrideWithValue(_mockDonationService),
-            donationProvider.overrideWith(
-              (ref) => _TestDonationNotifier(_mockDonationService),
-            ),
+            donationProvider.overrideWith((ref) => _TestDonationNotifier(_mockDonationService)),
           ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: const SettingsScreen(),
-          ),
+          child: MaterialApp(theme: AppTheme.dark, home: const SettingsScreen()),
         ),
       );
       await tester.pumpAndSettle();
@@ -300,10 +241,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: GlassButton(
-                label: 'Press me',
-                onPressed: () => pressed = true,
-              ),
+              child: GlassButton(label: 'Press me', onPressed: () => pressed = true),
             ),
           ),
         ),
@@ -327,11 +265,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: GlassButton(
-                label: 'Loading',
-                onPressed: () {},
-                isLoading: true,
-              ),
+              child: GlassButton(label: 'Loading', onPressed: () {}, isLoading: true),
             ),
           ),
         ),
@@ -346,14 +280,11 @@ void main() {
     late SharedPreferences prefs;
 
     setUp(() async {
-      SharedPreferences.setMockInitialValues({
-        'pointer_onboarding_completed': true,
-      });
+      SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
       prefs = await SharedPreferences.getInstance();
     });
 
-    testWidgets('HomeScreen pointing card has hint for actions',
-        (tester) async {
+    testWidgets('HomeScreen pointing card has hint for actions', (tester) async {
       const testPointing = Pointing(
         id: 'test-1',
         content: 'Test pointing content',
@@ -361,13 +292,7 @@ void main() {
         contexts: [PointingContext.general],
       );
 
-      await tester.pumpWidget(
-        createTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: testPointing,
-        ),
-      );
+      await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       // Use pump with duration for continuous animations (AnimatedGradient)
       await tester.pump(const Duration(seconds: 2));
 

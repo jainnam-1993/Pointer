@@ -15,19 +15,12 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      expect(
-        () => container.read(sharedPreferencesProvider),
-        throwsUnimplementedError,
-      );
+      expect(() => container.read(sharedPreferencesProvider), throwsUnimplementedError);
     });
 
     test('works when overridden with value', () {
       final mockPrefs = MockSharedPreferences();
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final prefs = container.read(sharedPreferencesProvider);
@@ -42,11 +35,7 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
     });
 
     tearDown(() => container.dispose());
@@ -66,8 +55,7 @@ void main() {
 
     test('uses provided SharedPreferences instance', () {
       // Mock the hasCompletedOnboarding getter to verify SharedPreferences is used
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
       final service = container.read(storageServiceProvider);
 
@@ -82,11 +70,7 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
     });
 
     tearDown(() => container.dispose());
@@ -106,8 +90,7 @@ void main() {
 
     test('uses provided SharedPreferences instance', () {
       // Mock the isNotificationsEnabled getter to verify SharedPreferences is used
-      when(() => mockPrefs.getBool('pointer_notifications_enabled'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_notifications_enabled')).thenReturn(true);
 
       final service = container.read(notificationServiceProvider);
 
@@ -122,18 +105,13 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
     });
 
     tearDown(() => container.dispose());
 
     test('returns false when onboarding not completed', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(null);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(null);
 
       final isCompleted = container.read(onboardingCompletedProvider);
 
@@ -141,8 +119,7 @@ void main() {
     });
 
     test('returns true when onboarding completed', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
       final isCompleted = container.read(onboardingCompletedProvider);
 
@@ -151,10 +128,8 @@ void main() {
 
     test('can be updated via notifier', () {
       // Mock initial state (not completed)
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(false);
-      when(() => mockPrefs.setBool('pointer_onboarding_completed', true))
-          .thenAnswer((_) async => true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
+      when(() => mockPrefs.setBool('pointer_onboarding_completed', true)).thenAnswer((_) async => true);
 
       // Read initial state
       expect(container.read(onboardingCompletedProvider), false);
@@ -167,21 +142,16 @@ void main() {
     });
 
     test('updates trigger provider listeners', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(false);
-      when(() => mockPrefs.setBool('pointer_onboarding_completed', true))
-          .thenAnswer((_) async => true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
+      when(() => mockPrefs.setBool('pointer_onboarding_completed', true)).thenAnswer((_) async => true);
 
       var listenCallCount = 0;
       bool? lastValue;
 
-      container.listen<bool>(
-        onboardingCompletedProvider,
-        (previous, next) {
-          listenCallCount++;
-          lastValue = next;
-        },
-      );
+      container.listen<bool>(onboardingCompletedProvider, (previous, next) {
+        listenCallCount++;
+        lastValue = next;
+      });
 
       // Update state
       container.read(onboardingCompletedProvider.notifier).state = true;
@@ -192,10 +162,8 @@ void main() {
     });
 
     test('multiple updates work correctly', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(false);
-      when(() => mockPrefs.setBool(any(), any()))
-          .thenAnswer((_) async => true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
+      when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
 
       // Read initial state
       expect(container.read(onboardingCompletedProvider), false);
@@ -220,11 +188,7 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
     });
 
     tearDown(() => container.dispose());
@@ -250,8 +214,7 @@ void main() {
     });
 
     test('onboardingCompletedProvider depends on storageServiceProvider', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
       // Reading onboardingCompletedProvider should trigger storageServiceProvider
       final isCompleted = container.read(onboardingCompletedProvider);
@@ -263,21 +226,15 @@ void main() {
 
     test('providers react to sharedPreferences changes', () {
       // Initial state
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(false);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
 
       expect(container.read(onboardingCompletedProvider), false);
 
       // Simulate SharedPreferences change
-      when(() => mockPrefs.getBool('pointer_onboarding_completed'))
-          .thenReturn(true);
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
       // Create new container to simulate app restart with new SharedPreferences state
-      final newContainer = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final newContainer = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(newContainer.dispose);
 
       expect(newContainer.read(onboardingCompletedProvider), true);

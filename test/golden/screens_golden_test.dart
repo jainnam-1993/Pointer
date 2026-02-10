@@ -32,14 +32,7 @@ void main() {
     testWidgets('home screen with pointing', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: goldenTestPointing,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing));
 
       await expectGoldenMatches(tester, 'home_screen_with_pointing');
     });
@@ -47,14 +40,7 @@ void main() {
     testWidgets('home screen with minimal pointing', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: goldenTestPointing2,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing2));
 
       await expectGoldenMatches(tester, 'home_screen_minimal_pointing');
     });
@@ -69,13 +55,7 @@ void main() {
     testWidgets('settings screen default state', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const SettingsScreen(),
-          prefs: prefs,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const SettingsScreen(), prefs: prefs));
 
       await expectGoldenMatches(tester, 'settings_screen_default');
     });
@@ -83,13 +63,7 @@ void main() {
     testWidgets('settings screen with notifications enabled', (tester) async {
       final prefs = await createMockPrefs(notificationsEnabled: true);
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const SettingsScreen(),
-          prefs: prefs,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const SettingsScreen(), prefs: prefs));
 
       await expectGoldenMatches(tester, 'settings_screen_notifications_on');
     });
@@ -97,13 +71,7 @@ void main() {
     testWidgets('settings screen premium user', (tester) async {
       final prefs = await createMockPrefs(isPremium: true);
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const SettingsScreen(),
-          prefs: prefs,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const SettingsScreen(), prefs: prefs));
 
       await expectGoldenMatches(tester, 'settings_screen_premium');
     });
@@ -116,13 +84,7 @@ void main() {
     testWidgets('lineages screen shows all traditions', (tester) async {
       final prefs = await createMockPrefs();
 
-      await pumpForGolden(
-        tester,
-        createGoldenTestApp(
-          child: const LineagesScreen(),
-          prefs: prefs,
-        ),
-      );
+      await pumpForGolden(tester, createGoldenTestApp(child: const LineagesScreen(), prefs: prefs));
 
       await expectGoldenMatches(tester, 'lineages_screen_all_traditions');
     });

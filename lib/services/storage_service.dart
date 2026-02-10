@@ -1,36 +1,76 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Storage keys
+/**
+ * [SharedPreferences] key constants for all persisted app data.
+ *
+ * Each key is namespaced with `pointer_` to avoid collisions with
+ * third-party packages that share the same preferences store.
+ */
 class StorageKeys {
+  /** Whether the user has completed the onboarding flow. */
   static const onboardingCompleted = 'pointer_onboarding_completed';
+
+  /** JSON-encoded list of saved [Pointing] IDs. */
   static const favoritePointings = 'pointer_favorites';
+
+  /** JSON-encoded list of recently viewed [Pointing] entries (id + timestamp). */
   static const viewedPointings = 'pointer_viewed';
+
+  /** JSON-encoded list of recently viewed teaching entries for library sort rotation. */
   static const viewedTeachings = 'pointer_viewed_teachings';
+
+  /** JSON-encoded list of user-selected [Tradition] names. */
   static const preferredTraditions = 'pointer_preferred_traditions';
+
+  /** JSON-encoded [AppSettings] object containing all user preferences. */
   static const settings = 'pointer_settings';
-  static const subscriptionTier = 'pointer_subscription';
-  static const hasEverSaved = 'pointer_has_ever_saved';
+
+  /** ID of the last viewed [Pointing], used to restore state after restart. */
   static const currentPointingId = 'pointer_current_pointing_id';
-  // Round-robin pointing order (shuffled once, persists across restarts)
+
+  /** JSON-encoded shuffled list of [Pointing] IDs for round-robin navigation. */
   static const pointingOrder = 'pointer_pointing_order';
+
+  /** Current index into the [pointingOrder] list. */
   static const pointingIndex = 'pointer_pointing_index';
 }
 
-/// App settings model
+/**
+ * Immutable model of all user-configurable app settings.
+ *
+ * Persisted as JSON via [StorageService.updateSettings] and
+ * loaded via [StorageService.settings]. Defaults are chosen for
+ * a mindful, non-intrusive experience (auto-advance on, haptics on).
+ */
 class AppSettings {
+  /** Whether haptic feedback is enabled for interactions. */
   final bool hapticFeedback;
+
+  /** Whether pointings auto-advance to the next after [autoAdvanceDelay] seconds. */
   final bool autoAdvance;
+
+  /** Seconds to wait before auto-advancing to the next pointing. */
   final int autoAdvanceDelay;
+
+  /** Theme mode string: `'system'`, `'light'`, or `'dark'`. */
   final String theme;
+
+  /** Whether high-contrast colour palette is active for accessibility. */
   final bool highContrast;
+
+  /** Whether OLED-optimized true-black background is enabled. */
   final bool oledMode;
+
+  /** Whether zen mode is active (hides UI chrome for distraction-free reading). */
   final bool zenMode;
+
+  /** Whether animations and transitions are enabled (false forces reduced motion). */
   final bool animationsEnabled;
 
   const AppSettings({
     this.hapticFeedback = true,
-    this.autoAdvance = true,  // Default ON (opt-out)
+    this.autoAdvance = true, // Default ON (opt-out)
     this.autoAdvanceDelay = 60, // 1 minute default
     this.theme = 'system',
     this.highContrast = false,
@@ -62,20 +102,20 @@ class AppSettings {
   }
 
   Map<String, dynamic> toJson() => {
-        'hapticFeedback': hapticFeedback,
-        'autoAdvance': autoAdvance,
-        'autoAdvanceDelay': autoAdvanceDelay,
-        'theme': theme,
-        'highContrast': highContrast,
-        'oledMode': oledMode,
-        'zenMode': zenMode,
-        'animationsEnabled': animationsEnabled,
-      };
+    'hapticFeedback': hapticFeedback,
+    'autoAdvance': autoAdvance,
+    'autoAdvanceDelay': autoAdvanceDelay,
+    'theme': theme,
+    'highContrast': highContrast,
+    'oledMode': oledMode,
+    'zenMode': zenMode,
+    'animationsEnabled': animationsEnabled,
+  };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       hapticFeedback: json['hapticFeedback'] ?? true,
-      autoAdvance: json['autoAdvance'] ?? true,  // Default ON
+      autoAdvance: json['autoAdvance'] ?? true, // Default ON
       autoAdvanceDelay: json['autoAdvanceDelay'] ?? 60, // 1 minute
       theme: json['theme'] ?? 'system',
       highContrast: json['highContrast'] ?? false,
@@ -86,36 +126,36 @@ class AppSettings {
   }
 }
 
-/// Storage service for persisting app data
+/**
+ * Persistent storage wrapper around [SharedPreferences].
+ *
+ * Provides typed access to all app data — favourites, view history,
+ * settings, and round-robin pointing order — via
+ * [StorageKeys]. Caches frequently-accessed data (viewed teaching IDs)
+ * to avoid repeated JSON parsing.
+ */
 class StorageService {
   final SharedPreferences _prefs;
 
-  // Cache for viewed teachings to avoid repeated JSON parsing
+  /** In-memory cache for viewed teaching IDs to avoid repeated JSON parsing. */
   Set<String>? _viewedTeachingIdsCache;
 
   StorageService(this._prefs);
 
-  // Onboarding
-  bool get hasCompletedOnboarding =>
-      _prefs.getBool(StorageKeys.onboardingCompleted) ?? false;
+  /** Whether the user has completed the onboarding flow. */
+  bool get hasCompletedOnboarding => _prefs.getBool(StorageKeys.onboardingCompleted) ?? false;
 
-  Future<void> setOnboardingCompleted(bool completed) =>
-      _prefs.setBool(StorageKeys.onboardingCompleted, completed);
+  /** Persist the onboarding completion state. */
+  Future<void> setOnboardingCompleted(bool completed) => _prefs.setBool(StorageKeys.onboardingCompleted, completed);
 
-  // First save milestone tracking
-  bool get hasEverSaved =>
-      _prefs.getBool(StorageKeys.hasEverSaved) ?? false;
-
-  Future<void> markFirstSaveCompleted() =>
-      _prefs.setBool(StorageKeys.hasEverSaved, true);
-
-  // Favorites
+  /** List of saved [Pointing] IDs, ordered from oldest to newest. */
   List<String> get favorites {
     final stored = _prefs.getString(StorageKeys.favoritePointings);
     if (stored == null) return [];
     return List<String>.from(jsonDecode(stored));
   }
 
+  /** Add a [Pointing] ID to the favourites list (no-op if already present). */
   Future<void> addFavorite(String pointingId) async {
     final current = favorites;
     if (!current.contains(pointingId)) {
@@ -124,21 +164,24 @@ class StorageService {
     }
   }
 
+  /** Remove a [Pointing] ID from the favourites list. */
   Future<void> removeFavorite(String pointingId) async {
     final current = favorites;
     current.remove(pointingId);
     await _prefs.setString(StorageKeys.favoritePointings, jsonEncode(current));
   }
 
+  /** Whether the given [Pointing] ID is in the favourites list. */
   bool isFavorite(String pointingId) => favorites.contains(pointingId);
 
-  // Viewed pointings
+  /** Recently viewed pointings as a list of `{id, viewedAt}` maps, newest first. */
   List<Map<String, dynamic>> get viewedPointings {
     final stored = _prefs.getString(StorageKeys.viewedPointings);
     if (stored == null) return [];
     return List<Map<String, dynamic>>.from(jsonDecode(stored));
   }
 
+  /** Record a [Pointing] as viewed, moving it to the front of the list (capped at 100). */
   Future<void> markPointingAsViewed(String pointingId) async {
     final viewed = viewedPointings;
     // Remove if already exists
@@ -149,26 +192,26 @@ class StorageService {
     await _prefs.setString(StorageKeys.viewedPointings, jsonEncode(trimmed));
   }
 
-  /// Get IDs of pointings viewed today (since midnight local time)
+  /** Get IDs of pointings viewed today (since midnight local time) */
   Set<String> get viewedTodayIds {
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
     final todayStartMs = todayStart.millisecondsSinceEpoch;
 
-    return viewedPointings
-        .where((v) => (v['viewedAt'] as int?) != null && v['viewedAt'] >= todayStartMs)
-        .map((v) => v['id'] as String)
-        .toSet();
+    return viewedPointings.where((v) => (v['viewedAt'] as int?) != null && v['viewedAt'] >= todayStartMs).map((v) => v['id'] as String).toSet();
   }
 
-  // Viewed teachings (for library rotation - read items sink down)
+  /**
+   * Recently viewed teachings as a list of `{id, viewedAt}` maps, newest first.
+   * Used by the library screen to sink already-read items in sort order.
+   */
   List<Map<String, dynamic>> get viewedTeachings {
     final stored = _prefs.getString(StorageKeys.viewedTeachings);
     if (stored == null) return [];
     return List<Map<String, dynamic>>.from(jsonDecode(stored));
   }
 
-  /// Mark a teaching as viewed (for library sorting)
+  /** Mark a teaching as viewed (for library sorting) */
   Future<void> markTeachingAsViewed(String teachingId) async {
     final viewed = viewedTeachings;
     // Remove if already exists (to update timestamp)
@@ -182,44 +225,39 @@ class StorageService {
     _viewedTeachingIdsCache = null;
   }
 
-  /// Get all viewed teaching IDs (cached for performance)
-  /// Cache invalidated on markTeachingAsViewed()
+  /**
+   * Get all viewed teaching IDs (cached for performance)
+   * Cache invalidated on markTeachingAsViewed()
+   */
   Set<String> get viewedTeachingIds {
     _viewedTeachingIdsCache ??= viewedTeachings.map((v) => v['id'] as String).toSet();
     return _viewedTeachingIdsCache!;
   }
 
-  // Preferred traditions
+  /** User's preferred [Tradition] names, used for content personalisation. */
   List<String> get preferredTraditions {
     final stored = _prefs.getString(StorageKeys.preferredTraditions);
     if (stored == null) return [];
     return List<String>.from(jsonDecode(stored));
   }
 
-  Future<void> setPreferredTraditions(List<String> traditions) =>
-      _prefs.setString(StorageKeys.preferredTraditions, jsonEncode(traditions));
+  /** Persist the user's preferred [Tradition] names. */
+  Future<void> setPreferredTraditions(List<String> traditions) => _prefs.setString(StorageKeys.preferredTraditions, jsonEncode(traditions));
 
-  // Settings
+  /** Current [AppSettings], returning defaults if nothing is persisted. */
   AppSettings get settings {
     final stored = _prefs.getString(StorageKeys.settings);
     if (stored == null) return const AppSettings();
     return AppSettings.fromJson(jsonDecode(stored));
   }
 
-  Future<void> updateSettings(AppSettings newSettings) =>
-      _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
+  /** Persist updated [AppSettings] as JSON. */
+  Future<void> updateSettings(AppSettings newSettings) => _prefs.setString(StorageKeys.settings, jsonEncode(newSettings.toJson()));
 
-  // Subscription
-  String get subscriptionTier =>
-      _prefs.getString(StorageKeys.subscriptionTier) ?? 'free';
+  /** ID of the last-viewed [Pointing], used to restore position on restart. */
+  String? get currentPointingId => _prefs.getString(StorageKeys.currentPointingId);
 
-  Future<void> setSubscriptionTier(String tier) =>
-      _prefs.setString(StorageKeys.subscriptionTier, tier);
-
-  // Current pointing persistence (for restoring state after app restart)
-  String? get currentPointingId =>
-      _prefs.getString(StorageKeys.currentPointingId);
-
+  /** Set or clear the current [Pointing] ID for state restoration. */
   Future<void> setCurrentPointingId(String? id) async {
     if (id == null) {
       await _prefs.remove(StorageKeys.currentPointingId);
@@ -228,23 +266,23 @@ class StorageService {
     }
   }
 
-  // Round-robin pointing order (shuffled list of IDs, persists across restarts)
+  /** Shuffled list of [Pointing] IDs for round-robin navigation, or `null` if not yet initialized. */
   List<String>? get pointingOrder {
     final stored = _prefs.getString(StorageKeys.pointingOrder);
     if (stored == null) return null;
     return List<String>.from(jsonDecode(stored));
   }
 
-  Future<void> setPointingOrder(List<String> order) =>
-      _prefs.setString(StorageKeys.pointingOrder, jsonEncode(order));
+  /** Persist the shuffled round-robin [Pointing] order. */
+  Future<void> setPointingOrder(List<String> order) => _prefs.setString(StorageKeys.pointingOrder, jsonEncode(order));
 
-  // Current index in the pointing order
+  /** Current zero-based index into the [pointingOrder] list. */
   int get pointingIndex => _prefs.getInt(StorageKeys.pointingIndex) ?? 0;
 
-  Future<void> setPointingIndex(int index) =>
-      _prefs.setInt(StorageKeys.pointingIndex, index);
+  /** Persist the current round-robin index. */
+  Future<void> setPointingIndex(int index) => _prefs.setInt(StorageKeys.pointingIndex, index);
 
-  // Clear all
+  /** Remove all persisted data and invalidate caches. Used for account reset / testing. */
   Future<void> clearAll() async {
     await _prefs.remove(StorageKeys.onboardingCompleted);
     await _prefs.remove(StorageKeys.favoritePointings);
@@ -252,8 +290,6 @@ class StorageService {
     await _prefs.remove(StorageKeys.viewedTeachings);
     await _prefs.remove(StorageKeys.preferredTraditions);
     await _prefs.remove(StorageKeys.settings);
-    await _prefs.remove(StorageKeys.subscriptionTier);
-    await _prefs.remove(StorageKeys.hasEverSaved);
     await _prefs.remove(StorageKeys.currentPointingId);
     await _prefs.remove(StorageKeys.pointingOrder);
     await _prefs.remove(StorageKeys.pointingIndex);

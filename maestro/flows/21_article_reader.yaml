@@ -1,0 +1,68 @@
+# Article Reader Flow - Open and read an article
+# Run: maestro test maestro/flows/21_article_reader.yaml
+#
+# Tests: Navigate to Library, open an article, verify reader loads,
+#        scroll content, close reader, return to Library.
+#
+# Article reader shows: title, subtitle, "X min read", tradition badge,
+#   close (X) button, markdown content.
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === NAVIGATE TO LIBRARY ===
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+- assertVisible:
+    text: ".*FEATURED.*"
+- takeScreenshot: "article_01_library"
+
+# === OPEN AN ARTICLE ===
+# Tap on a featured article card (they show "min read" in subtitle)
+- tapOn:
+    text: ".*min read.*"
+- waitForAnimationToEnd
+- takeScreenshot: "article_02_reader_opened"
+
+# === VERIFY ARTICLE READER LOADED ===
+# Article reader shows reading time in header
+- assertVisible:
+    text: ".*min read.*"
+- takeScreenshot: "article_03_header"
+
+# === SCROLL ARTICLE CONTENT ===
+- swipe:
+    direction: UP
+    duration: 400
+- takeScreenshot: "article_04_scrolled"
+
+- swipe:
+    direction: UP
+    duration: 400
+- takeScreenshot: "article_05_scrolled_more"
+
+# === CLOSE ARTICLE ===
+# Close button (X icon) is in top-left of article reader
+- back
+- waitForAnimationToEnd
+- takeScreenshot: "article_06_back_to_library"
+
+# === VERIFY RETURN TO LIBRARY ===
+- assertVisible:
+    text: "Library"
+- takeScreenshot: "article_07_library_restored"
+
+# === VERIFY APP STILL FUNCTIONAL ===
+- tapOn:
+    text: "Home tab.*"
+- assertVisible:
+    text: ".*Next.*"
+- takeScreenshot: "article_08_final"

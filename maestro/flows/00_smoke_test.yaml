@@ -1,0 +1,52 @@
+# Smoke Test - Fast confidence gate (~30s)
+# Run: maestro test maestro/flows/00_smoke_test.yaml
+#
+# ZERO optional assertions. If ANY screen fails to load, this test FAILS.
+# This is the "did I break the app?" test. Run it after every change.
+#
+# Verifies: App launches, all 4 tabs render, content loads on each screen.
+
+appId: com.dailypointer
+---
+- launchApp:
+    clearState: true
+
+# Complete onboarding
+- runFlow: ../shared/skip_onboarding.yaml
+
+# === HOME TAB ===
+- tapOn:
+    text: "Home tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*Next.*"
+
+# === LIBRARY TAB ===
+- tapOn:
+    text: "Library tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Library"
+
+# === INQUIRY TAB ===
+- tapOn:
+    text: "Inquiry tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Self-Inquiry"
+
+# === SETTINGS TAB ===
+- tapOn:
+    text: "Settings tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Settings"
+- assertVisible:
+    text: ".*Notification.*"
+
+# === RETURN TO HOME ===
+- tapOn:
+    text: "Home tab.*"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*Next.*"

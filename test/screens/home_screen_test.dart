@@ -50,18 +50,12 @@ void main() {
             return notifier;
           }),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: const HomeScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
     );
   }
 
   // Helper for tests with animations - uses runAsync to avoid timer issues
-  Future<void> pumpHomeScreen(
-    WidgetTester tester,
-    Widget widget,
-  ) async {
+  Future<void> pumpHomeScreen(WidgetTester tester, Widget widget) async {
     // Use a phone-sized surface to avoid overflow in tests
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 2.0;
@@ -97,12 +91,7 @@ void main() {
     });
 
     testWidgets('shows tradition badge', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Test content',
-        tradition: Tradition.zen,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Test content', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -181,13 +170,7 @@ void main() {
       expect(find.byType(SafeArea), findsOneWidget);
 
       // Should have Column(s) for vertical layout
-      expect(
-        find.descendant(
-          of: find.byType(SafeArea),
-          matching: find.byType(Column),
-        ),
-        findsWidgets,
-      );
+      expect(find.descendant(of: find.byType(SafeArea), matching: find.byType(Column)), findsWidgets);
     });
 
     testWidgets('Next button has arrow icon', (tester) async {
@@ -207,8 +190,7 @@ void main() {
       // Use moderate length content that wraps but doesn't overflow test screen
       const mediumPointing = Pointing(
         id: 'test-medium',
-        content:
-            'This pointing content wraps across multiple lines to test flexible height.',
+        content: 'This pointing content wraps across multiple lines to test flexible height.',
         tradition: Tradition.original,
         contexts: [PointingContext.general],
       );
@@ -326,10 +308,7 @@ void main() {
               return notifier;
             }),
           ],
-          child: MaterialApp(
-            theme: ThemeData.dark(),
-            home: const HomeScreen(),
-          ),
+          child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
         ),
       );
 
@@ -361,10 +340,7 @@ void main() {
               return notifier;
             }),
           ],
-          child: MaterialApp(
-            theme: ThemeData.dark(),
-            home: const HomeScreen(),
-          ),
+          child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
         ),
       );
 
@@ -387,17 +363,11 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // HomeScreen uses Expanded with Center to center the card content
-      final expandedFinder = find.descendant(
-        of: find.byType(SafeArea),
-        matching: find.byType(Expanded),
-      );
+      final expandedFinder = find.descendant(of: find.byType(SafeArea), matching: find.byType(Expanded));
       expect(expandedFinder, findsOneWidget);
 
       // Center widget inside Expanded provides centering
-      final centerFinder = find.descendant(
-        of: expandedFinder,
-        matching: find.byType(Center),
-      );
+      final centerFinder = find.descendant(of: expandedFinder, matching: find.byType(Center));
       // Multiple Center widgets may exist, verify at least one is present
       expect(centerFinder, findsWidgets);
     });
@@ -406,13 +376,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // SizedBox widgets provide spacing
-      expect(
-        find.descendant(
-          of: find.byType(Column),
-          matching: find.byType(SizedBox),
-        ),
-        findsWidgets,
-      );
+      expect(find.descendant(of: find.byType(Column), matching: find.byType(SizedBox)), findsWidgets);
     });
 
     testWidgets('has Row for action buttons', (tester) async {

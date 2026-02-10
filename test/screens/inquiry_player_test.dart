@@ -276,17 +276,11 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.setup,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.setup),
             ),
           ),
         ),
@@ -298,27 +292,15 @@ void main() {
     testWidgets('renders question phase with visual', (tester) async {
       InquiryVisual.disableAnimations = true;
 
-      const inquiry = Inquiry(
-        id: 'test',
-        question: 'Test question?',
-        type: InquiryType.koan,
-        tradition: Tradition.zen,
-        hasVisualElement: true,
-      );
+      const inquiry = Inquiry(id: 'test', question: 'Test question?', type: InquiryType.koan, tradition: Tradition.zen, hasVisualElement: true);
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.question,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.question),
             ),
           ),
         ),
@@ -342,10 +324,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
@@ -374,26 +353,15 @@ void main() {
     testWidgets('renders complete phase', (tester) async {
       InquiryVisual.disableAnimations = true;
 
-      const inquiry = Inquiry(
-        id: 'test',
-        question: 'Test question?',
-        type: InquiryType.selfInquiry,
-        tradition: Tradition.advaita,
-      );
+      const inquiry = Inquiry(id: 'test', question: 'Test question?', type: InquiryType.selfInquiry, tradition: Tradition.advaita);
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
             home: const Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.complete,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.complete),
             ),
           ),
         ),
@@ -411,15 +379,10 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 100),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 100)),
           ),
         ),
       );
@@ -432,25 +395,15 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(mockPrefs),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
+          overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 200),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 200)),
           ),
         ),
       );
 
-      final sizedBox = tester.widget<SizedBox>(
-        find.descendant(
-          of: find.byType(InquiryVisual),
-          matching: find.byType(SizedBox),
-        ).first,
-      );
+      final sizedBox = tester.widget<SizedBox>(find.descendant(of: find.byType(InquiryVisual), matching: find.byType(SizedBox)).first);
 
       expect(sizedBox.width, 200);
       expect(sizedBox.height, 200);
@@ -467,9 +420,7 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: InquiryVisual(size: 100),
-            ),
+            home: const Scaffold(body: InquiryVisual(size: 100)),
           ),
         ),
       );
@@ -481,11 +432,7 @@ void main() {
 
   group('inquiryByIdProvider', () {
     test('returns inquiry when ID exists', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final inquiry = container.read(inquiryByIdProvider('si_001'));
@@ -495,11 +442,7 @@ void main() {
     });
 
     test('returns null when ID does not exist', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final inquiry = container.read(inquiryByIdProvider('nonexistent_id'));

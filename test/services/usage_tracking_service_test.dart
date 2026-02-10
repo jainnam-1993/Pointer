@@ -23,10 +23,7 @@ void main() {
     });
 
     test('limitReached returns true when at limit', () {
-      final usage = DailyUsage(
-        viewCount: DailyUsage.freeUserLimit,
-        lastResetDate: '2025-01-01',
-      );
+      final usage = DailyUsage(viewCount: DailyUsage.freeUserLimit, lastResetDate: '2025-01-01');
       expect(usage.limitReached, true);
       expect(usage.remaining, 0);
     });
@@ -47,10 +44,7 @@ void main() {
     });
 
     test('fromJson deserializes correctly', () {
-      final usage = DailyUsage.fromJson({
-        'viewCount': 2,
-        'lastResetDate': '2025-01-01',
-      });
+      final usage = DailyUsage.fromJson({'viewCount': 2, 'lastResetDate': '2025-01-01'});
       expect(usage.viewCount, 2);
       expect(usage.lastResetDate, '2025-01-01');
     });
@@ -65,16 +59,14 @@ void main() {
     });
 
     test('getUsage parses stored data', () {
-      when(() => mockPrefs.getString(any()))
-          .thenReturn('viewCount=3&lastResetDate=${_todayString()}');
+      when(() => mockPrefs.getString(any())).thenReturn('viewCount=3&lastResetDate=${_todayString()}');
 
       final usage = service.getUsage();
       expect(usage.viewCount, 3);
     });
 
     test('getUsage resets on new day', () {
-      when(() => mockPrefs.getString(any()))
-          .thenReturn('viewCount=3&lastResetDate=2020-01-01');
+      when(() => mockPrefs.getString(any())).thenReturn('viewCount=3&lastResetDate=2020-01-01');
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       final usage = service.getUsage();
@@ -82,8 +74,7 @@ void main() {
     });
 
     test('incrementViewCount increases count', () async {
-      when(() => mockPrefs.getString(any()))
-          .thenReturn('viewCount=1&lastResetDate=${_todayString()}');
+      when(() => mockPrefs.getString(any())).thenReturn('viewCount=1&lastResetDate=${_todayString()}');
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       final usage = await service.incrementViewCount();

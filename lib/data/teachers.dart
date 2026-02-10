@@ -1,7 +1,18 @@
+/**
+ * Teacher database — name-keyed map of [Teacher] records.
+ *
+ * Provides the `teachers` constant and helper functions [getTeacher] and
+ * [getPointingsByTeacher] used by [TeacherSheet] and the home screen.
+ *
+ * For richer biographical profiles used in the Library, see
+ * `teacher_profiles.dart` and [TeacherProfile].
+ */
+library;
+
 import '../models/teacher.dart';
 import 'pointings.dart';
 
-/// Database of teacher information for expandable teacher info feature
+/** Name-keyed map of all [Teacher] records (22 teachers across traditions). */
 const teachers = <String, Teacher>{
   'Ramana Maharshi': Teacher(
     name: 'Ramana Maharshi',
@@ -61,16 +72,14 @@ const teachers = <String, Teacher>{
   ),
   'Bashō': Teacher(
     name: 'Bashō',
-    bio:
-        'Japanese poet and master of haiku. His poems capture the essence of Zen - direct perception without conceptual elaboration.',
+    bio: 'Japanese poet and master of haiku. His poems capture the essence of Zen - direct perception without conceptual elaboration.',
     dates: '1644-1694',
     tradition: Tradition.zen,
     tags: ['Haiku', 'Zen', 'Japan'],
   ),
   'Francis of Assisi / Advaita': Teacher(
     name: 'Francis of Assisi / Advaita',
-    bio:
-        'Pointing that bridges the Christian mystical tradition with non-dual awareness. The recognition of the divine in all things.',
+    bio: 'Pointing that bridges the Christian mystical tradition with non-dual awareness. The recognition of the divine in all things.',
     dates: null,
     tradition: Tradition.original,
     tags: ['Christian mysticism', 'Unity'],
@@ -181,13 +190,13 @@ const teachers = <String, Teacher>{
   ),
 };
 
-/// Get teacher by name, returns null if not found
+/** Get teacher by name, returns null if not found */
 Teacher? getTeacher(String? name) {
   if (name == null) return null;
   return teachers[name];
 }
 
-/// Get all pointings by a specific teacher
+/** Get all pointings by a specific teacher */
 List<Pointing> getPointingsByTeacher(String teacherName) {
   return pointings.where((p) => p.teacher == teacherName).toList();
 }

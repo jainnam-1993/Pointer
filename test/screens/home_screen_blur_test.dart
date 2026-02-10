@@ -51,7 +51,6 @@ void main() {
       // Negative swipe = same opacity
       expect(calculateOpacity(-80), 0.6);
     });
-
   });
 
   group('Swipe threshold', () {

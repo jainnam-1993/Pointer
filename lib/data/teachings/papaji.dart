@@ -1,6 +1,12 @@
-// Papaji Teachings
-// H.W.L. Poonja (Papaji) - Direct disciple of Ramana Maharshi
-// Source: https://avadhuta.com/category/read/
+/**
+ * Papaji (H.W.L. Poonja) teaching collection.
+ *
+ * Direct disciple of Ramana Maharshi, known for fierce, uncompromising
+ * pointings to instant awakening. Sourced from avadhuta.com.
+ *
+ * Registered with [TeachingRepository] at app startup via `main.dart`.
+ */
+library;
 
 import '../teaching.dart';
 import '../pointings.dart';
@@ -9,13 +15,12 @@ const String _teacher = 'Papaji';
 const Tradition _lineage = Tradition.advaita;
 const String _sourceBase = 'https://avadhuta.com';
 
-/// Papaji's teachings indexed from avadhuta.com
+/** Papaji's [Teaching] records indexed from avadhuta.com. */
 final List<Teaching> papajiTeachings = [
   // === CORE TEACHINGS ===
   Teaching(
     id: 'papaji-no-chooser',
-    content:
-        'There is no chooser and there is no choice. Everything is spontaneously arising.',
+    content: 'There is no chooser and there is no choice. Everything is spontaneously arising.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -27,8 +32,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-ultimate-truth',
-    content:
-        'The ultimate truth is so simple. It is nothing more than being in one\'s own natural state.',
+    content: 'The ultimate truth is so simple. It is nothing more than being in one\'s own natural state.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -53,8 +57,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-you-are-that',
-    content:
-        'You are That. You are God. Not the God that you have heard of, but the God that you are.',
+    content: 'You are That. You are God. Not the God that you have heard of, but the God that you are.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -67,8 +70,7 @@ final List<Teaching> papajiTeachings = [
   // === MIND & CONSCIOUSNESS ===
   Teaching(
     id: 'papaji-mind-darkness',
-    content:
-        'The mind keeps you in darkness. It creates the illusion of separation. When mind is still, there is light.',
+    content: 'The mind keeps you in darkness. It creates the illusion of separation. When mind is still, there is light.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -80,8 +82,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-what-is-self',
-    content:
-        'What is the Self? It is not the body, not the mind, not the intellect. It is that which is aware of all these.',
+    content: 'What is the Self? It is not the body, not the mind, not the intellect. It is that which is aware of all these.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -94,8 +95,7 @@ final List<Teaching> papajiTeachings = [
   // === PRACTICE & INQUIRY ===
   Teaching(
     id: 'papaji-keep-quiet',
-    content:
-        'Keep Quiet! Keep Quiet! Keep Quiet! This is the highest teaching. In this Quietness, you will find what you have been looking for.',
+    content: 'Keep Quiet! Keep Quiet! Keep Quiet! This is the highest teaching. In this Quietness, you will find what you have been looking for.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -107,8 +107,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-no-practice',
-    content:
-        'No practice is needed. What is needed is the understanding that you are already That which you are seeking.',
+    content: 'No practice is needed. What is needed is the understanding that you are already That which you are seeking.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -120,8 +119,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-one-moment',
-    content:
-        'Simply sit quiet for one moment. In this one moment, all your questions will be answered.',
+    content: 'Simply sit quiet for one moment. In this one moment, all your questions will be answered.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -133,8 +131,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-how-to-inquire',
-    content:
-        'Ask yourself "Who am I?" and remain as the answer. The answer is not a thought. It is the Silence from which thoughts arise.',
+    content: 'Ask yourself "Who am I?" and remain as the answer. The answer is not a thought. It is the Silence from which thoughts arise.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -147,8 +144,7 @@ final List<Teaching> papajiTeachings = [
   // === LIBERATION & FREEDOM ===
   Teaching(
     id: 'papaji-not-bound',
-    content:
-        'You are not bound. You have never been bound. It is only the mind that tells you that you are bound.',
+    content: 'You are not bound. You have never been bound. It is only the mind that tells you that you are bound.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -160,8 +156,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-freedom-here',
-    content:
-        'Freedom is always here. It does not come and go. What comes and goes is the thought that you are not free.',
+    content: 'Freedom is always here. It does not come and go. What comes and goes is the thought that you are not free.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -173,8 +168,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-decide-now',
-    content:
-        'Decide right now to be free. Not tomorrow, not later, but right now. This decision itself is freedom.',
+    content: 'Decide right now to be free. Not tomorrow, not later, but right now. This decision itself is freedom.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -187,8 +181,7 @@ final List<Teaching> papajiTeachings = [
   // === TALKS ===
   Teaching(
     id: 'papaji-reveal-itself',
-    content:
-        'Don\'t try to understand. Don\'t make any effort. Just remain still. It will reveal itself.',
+    content: 'Don\'t try to understand. Don\'t make any effort. Just remain still. It will reveal itself.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,
@@ -200,8 +193,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-one-second',
-    content:
-        'Devote one second to your nature. Just one second of seeing who you really are, and everything changes.',
+    content: 'Devote one second to your nature. Just one second of seeing who you really are, and everything changes.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,
@@ -213,8 +205,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-vigilance',
-    content:
-        'Only vigilance is needed. Stay alert. Watch the mind. Don\'t let it pull you into its stories.',
+    content: 'Only vigilance is needed. Stay alert. Watch the mind. Don\'t let it pull you into its stories.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,
@@ -226,8 +217,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-this-moment',
-    content:
-        'This moment is your home. You don\'t need to go anywhere. You don\'t need to become anything. This moment is complete.',
+    content: 'This moment is your home. You don\'t need to go anywhere. You don\'t need to become anything. This moment is complete.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,
@@ -239,8 +229,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-burning-desire',
-    content:
-        'The burning desire for freedom is itself the fire that burns all bondage.',
+    content: 'The burning desire for freedom is itself the fire that burns all bondage.',
     teacher: _teacher,
     source: 'Talk',
     lineage: _lineage,
@@ -253,8 +242,7 @@ final List<Teaching> papajiTeachings = [
   // === ADDITIONAL CORE TEACHINGS ===
   Teaching(
     id: 'papaji-no-effort',
-    content:
-        'Effortlessness is the key. Any effort you make takes you away from yourself.',
+    content: 'Effortlessness is the key. Any effort you make takes you away from yourself.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -265,8 +253,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-dont-postpone',
-    content:
-        'Don\'t postpone. Don\'t say "tomorrow." This instant is freedom. There is no other time.',
+    content: 'Don\'t postpone. Don\'t say "tomorrow." This instant is freedom. There is no other time.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -277,8 +264,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-who-wants',
-    content:
-        'Find out who wants enlightenment. When you look, you cannot find this one. That is enlightenment.',
+    content: 'Find out who wants enlightenment. When you look, you cannot find this one. That is enlightenment.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,
@@ -289,8 +275,7 @@ final List<Teaching> papajiTeachings = [
 
   Teaching(
     id: 'papaji-wake-up',
-    content:
-        'Wake up and roar! You were never the small one you took yourself to be.',
+    content: 'Wake up and roar! You were never the small one you took yourself to be.',
     teacher: _teacher,
     source: 'Satsang Extract',
     lineage: _lineage,

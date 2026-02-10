@@ -9,16 +9,20 @@ import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/onboarding_animations.dart';
 
-/// Contemplative onboarding experience for Pointer app.
-///
-/// Four screens that immerse the user in the app's philosophy:
-/// 1. The Interruption - immediate pointing question
-/// 2. The Contrast - meditation apps vs. direct inquiry
-/// 3. The Simplicity - letting go of progress/streaks/becoming
-/// 4. Notifications - the entire practice distilled
+/**
+ * Contemplative onboarding experience for Pointer app.
+ *
+ * Four screens that immerse the user in the app's philosophy:
+ * 1. The Interruption - immediate pointing question
+ * 2. The Contrast - meditation apps vs. direct inquiry
+ * 3. The Simplicity - letting go of progress/streaks/becoming
+ * 4. Notifications - the entire practice distilled
+ */
 
-/// Responsive font size that scales with screen width and respects text scaling.
-/// Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
+/**
+ * Responsive font size that scales with screen width and respects text scaling.
+ * Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
+ */
 double _responsiveFontSize(BuildContext context, double baseSize) {
   final screenWidth = MediaQuery.of(context).size.width;
   final textScaler = MediaQuery.textScalerOf(context);
@@ -27,6 +31,18 @@ double _responsiveFontSize(BuildContext context, double baseSize) {
   return textScaler.scale(baseSize * widthFactor);
 }
 
+/**
+ * Four-page contemplative onboarding experience.
+ *
+ * Guides first-time users through the app's philosophy using animated pages:
+ * 1. [_InterruptionPage] - word-by-word question reveal
+ * 2. [_ContrastPage] - dissolve transition between meditation concept and inquiry
+ * 3. [_SimplicityPage] - strike-through animation for concepts being let go
+ * 4. [_NotificationsPage] - simulated notification with explanation
+ *
+ * Supports horizontal swiping between pages and handles notification permission
+ * request on the final page. Marks onboarding complete in [StorageService].
+ */
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -44,16 +60,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
+  /** Animates to the specified page with haptic feedback. No-ops if [page] > 3. */
   void _advanceToPage(int page) {
     if (!mounted || page > 3) return;
     HapticFeedback.lightImpact();
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutCubic,
-    );
+    _pageController.animateToPage(page, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
   }
 
+  /** Advances to the next page or finishes onboarding on the last page. */
   Future<void> _handleContinue() async {
     HapticFeedback.lightImpact();
     if (_currentPage < 3) {
@@ -63,13 +77,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
+  /** Requests notification permission and finishes onboarding regardless of result. */
   Future<void> _handleEnableNotifications() async {
     HapticFeedback.mediumImpact();
-    final granted =
-        await ref.read(notificationServiceProvider).requestPermissions();
+    final granted = await ref.read(notificationServiceProvider).requestPermissions();
     await _finishOnboarding(granted);
   }
 
+  /** Marks onboarding complete in storage and navigates to home screen. */
   Future<void> _finishOnboarding(bool notificationsEnabled) async {
     final storage = ref.read(storageServiceProvider);
     await storage.setOnboardingCompleted(true);
@@ -103,40 +118,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       HapticFeedback.lightImpact();
                       setState(() => _currentPage = page);
                     },
-                    children: const [
-                      _InterruptionPage(),
-                      _ContrastPage(),
-                      _SimplicityPage(),
-                      _NotificationsPage(),
-                    ],
+                    children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
                   ),
                 ),
 
                 // Page indicators
-                _PageIndicators(
-                  currentPage: _currentPage,
-                  pageCount: 4,
-                ),
+                _PageIndicators(currentPage: _currentPage, pageCount: 4),
 
                 SizedBox(height: isLandscape ? 16 : 32),
 
                 // Buttons
                 Padding(
-                  padding: EdgeInsets.only(
-                    left: 32,
-                    right: 32,
-                    bottom: bottomPadding + (isLandscape ? 8 : 20),
-                  ),
+                  padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
                   child: Column(
                     children: [
                       if (isLastPage) ...[
                         SizedBox(
                           width: double.infinity,
-                          child: _OnboardingButton(
-                            label: 'Enable Notifications',
-                            onPressed: _handleEnableNotifications,
-                            isPrimary: true,
-                          ),
+                          child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
                         ),
                         const SizedBox(height: 16),
                         Builder(
@@ -146,10 +145,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               onPressed: () => _finishOnboarding(false),
                               child: Text(
                                 'Maybe Later',
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: _responsiveFontSize(context, 16),
-                                ),
+                                style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
                               ),
                             );
                           },
@@ -157,11 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ] else
                         SizedBox(
                           width: double.infinity,
-                          child: _OnboardingButton(
-                            label: 'Continue',
-                            onPressed: _handleContinue,
-                            isPrimary: true,
-                          ),
+                          child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
                         ),
                     ],
                   ),
@@ -179,9 +171,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 // Screen 1: The Interruption
 // =============================================================================
 
-/// Screen starts empty, then reveals question word-by-word.
-/// "What is looking through your eyes right now?"
-/// Followed by "Don't answer. Just look."
+/**
+ * Screen starts empty, then reveals question word-by-word.
+ * "What is looking through your eyes right now?"
+ * Followed by "Don't answer. Just look."
+ */
 class _InterruptionPage extends StatefulWidget {
   const _InterruptionPage();
 
@@ -266,11 +260,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               glowColor: colors.accent,
               maxBlur: 15,
               maxSpread: 3,
-              child: Icon(
-                Icons.visibility_outlined,
-                size: 32,
-                color: colors.textMuted,
-              ),
+              child: Icon(Icons.visibility_outlined, size: 32, color: colors.textMuted),
             ),
           ),
         ],
@@ -283,7 +273,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
 // Screen 2: The Contrast
 // =============================================================================
 
-/// Shows meditation app concept, dissolves it away, reveals the question.
+/** Shows meditation app concept, dissolves it away, reveals the question. */
 class _ContrastPage extends StatelessWidget {
   const _ContrastPage();
 
@@ -302,20 +292,11 @@ class _ContrastPage extends StatelessWidget {
             firstChild: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.self_improvement_outlined,
-                  size: 48,
-                  color: colors.textMuted,
-                ),
+                Icon(Icons.self_improvement_outlined, size: 48, color: colors.textMuted),
                 const SizedBox(height: 24),
                 Text(
                   'Meditation apps teach you to become a better meditator.',
-                  style: TextStyle(
-                    fontSize: _responsiveFontSize(context, 22),
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: colors.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: _responsiveFontSize(context, 22), height: 1.5, fontWeight: FontWeight.w400, color: colors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -338,12 +319,7 @@ class _ContrastPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     'Who is meditating?',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 28),
-                      height: 1.4,
-                      fontWeight: FontWeight.w300,
-                      color: colors.textPrimary,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 28), height: 1.4, fontWeight: FontWeight.w300, color: colors.textPrimary),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -360,7 +336,7 @@ class _ContrastPage extends StatelessWidget {
 // Screen 3: The Simplicity
 // =============================================================================
 
-/// Strike-through animation for concepts being let go.
+/** Strike-through animation for concepts being let go. */
 class _SimplicityPage extends StatefulWidget {
   const _SimplicityPage();
 
@@ -394,15 +370,8 @@ class _SimplicityPageState extends State<_SimplicityPage> {
               items: const ['Progress', 'Streaks', 'Becoming'],
               itemDelay: const Duration(milliseconds: 400),
               strikeDelay: const Duration(milliseconds: 600),
-              style: TextStyle(
-                fontSize: _responsiveFontSize(context, 32),
-                fontWeight: FontWeight.w400,
-                color: colors.textSecondary,
-                height: 1.4,
-              ),
-              onComplete: reduceMotion
-                  ? () => setState(() => _showRemains = true)
-                  : _onStrikeComplete,
+              style: TextStyle(fontSize: _responsiveFontSize(context, 32), fontWeight: FontWeight.w400, color: colors.textSecondary, height: 1.4),
+              onComplete: reduceMotion ? () => setState(() => _showRemains = true) : _onStrikeComplete,
             ),
 
           // What remains
@@ -419,12 +388,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                 children: [
                   Text(
                     'Just recognition.',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 32),
-                      fontWeight: FontWeight.w300,
-                      color: colors.textPrimary,
-                      height: 1.4,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 32), fontWeight: FontWeight.w300, color: colors.textPrimary, height: 1.4),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -453,7 +417,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
 // Screen 4: Notifications
 // =============================================================================
 
-/// Simulates a notification banner, then explains the practice.
+/** Simulates a notification banner, then explains the practice. */
 class _NotificationsPage extends StatefulWidget {
   const _NotificationsPage();
 
@@ -510,12 +474,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               curve: Curves.easeOut,
               child: Text(
                 'A notification arrives.\nYou pause. You look.',
-                style: TextStyle(
-                  fontSize: _responsiveFontSize(context, 20),
-                  height: 1.6,
-                  fontWeight: FontWeight.w400,
-                  color: colors.textSecondary,
-                ),
+                style: TextStyle(fontSize: _responsiveFontSize(context, 20), height: 1.6, fontWeight: FontWeight.w400, color: colors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -535,12 +494,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
                 intensity: GlassIntensity.light,
                 child: Text(
                   "That's the entire practice.",
-                  style: TextStyle(
-                    fontSize: _responsiveFontSize(context, 18),
-                    height: 1.5,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: _responsiveFontSize(context, 18), height: 1.5, fontWeight: FontWeight.w500, color: colors.textPrimary),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -559,14 +513,19 @@ class _NotificationsPageState extends State<_NotificationsPage> {
 // Shared Components
 // =============================================================================
 
+/**
+ * Animated dot indicators showing current page position.
+ *
+ * The active dot expands to 24px width; inactive dots are 8px circles at 30% opacity.
+ */
 class _PageIndicators extends StatelessWidget {
+  /** Zero-based index of the current page. */
   final int currentPage;
+
+  /** Total number of pages to display dots for. */
   final int pageCount;
 
-  const _PageIndicators({
-    required this.currentPage,
-    required this.pageCount,
-  });
+  const _PageIndicators({required this.currentPage, required this.pageCount});
 
   @override
   Widget build(BuildContext context) {
@@ -591,16 +550,13 @@ class _PageIndicators extends StatelessWidget {
   }
 }
 
+/** Glass-styled button used on onboarding pages with optional primary highlight. */
 class _OnboardingButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isPrimary;
 
-  const _OnboardingButton({
-    required this.label,
-    required this.onPressed,
-    this.isPrimary = false,
-  });
+  const _OnboardingButton({required this.label, required this.onPressed, this.isPrimary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -614,11 +570,7 @@ class _OnboardingButton extends StatelessWidget {
       child: Center(
         child: Text(
           label,
-          style: TextStyle(
-            color: textColor,
-            fontSize: _responsiveFontSize(context, 16),
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w600),
         ),
       ),
     );

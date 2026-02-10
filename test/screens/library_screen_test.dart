@@ -8,23 +8,11 @@ import 'package:pointer/data/articles.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
-import 'package:pointer/services/storage_service.dart';
 
 late SharedPreferences prefs;
 
-/// Premium subscription state for testing
-final _premiumState = SubscriptionState(
-  tier: SubscriptionTier.premium,
-  isLoading: false,
-);
-
-final _freeState = SubscriptionState(
-  tier: SubscriptionTier.free,
-  isLoading: false,
-);
-
 /// Helper to wrap widget with ProviderScope for testing
-Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
+Widget wrapWithProviderScope(Widget child) {
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
@@ -32,35 +20,14 @@ Widget wrapWithProviderScope(Widget child, {bool isPremium = true}) {
       oledModeProvider.overrideWith((ref) => false),
       reduceMotionOverrideProvider.overrideWith((ref) => null),
       themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-      // Mock subscription state for testing
-      subscriptionProvider.overrideWith(
-        (ref) => _TestSubscriptionNotifier(isPremium ? _premiumState : _freeState),
-      ),
     ],
     child: child,
   );
 }
 
-/// Test subscription notifier that returns fixed state
-class _TestSubscriptionNotifier extends SubscriptionNotifier {
-  final SubscriptionState _fixedState;
-
-  _TestSubscriptionNotifier(this._fixedState) : super(_MockStorageService());
-
-  @override
-  SubscriptionState get state => _fixedState;
-}
-
-/// Minimal mock storage service for testing
-class _MockStorageService extends StorageService {
-  _MockStorageService() : super(prefs);
-}
-
 void main() {
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({
-      'pointer_onboarding_completed': true,
-    });
+    SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
   });
   group('LibraryScreen', () {
@@ -75,13 +42,11 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.text('Library'), findsOneWidget);
       expect(find.text('Explore teachings and articles'), findsOneWidget);
@@ -97,13 +62,11 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.text('FEATURED'), findsOneWidget);
     });
@@ -118,19 +81,17 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       // Updated from "BROWSE BY TOPIC" to "BROWSE BY" with dropdown
       expect(find.text('BROWSE BY'), findsOneWidget);
     });
 
-    testWidgets('displays some category names visible on screen', (tester) async {
+    testWidgets('displays some topic names visible on screen', (tester) async {
       tester.view.physicalSize = const Size(1920, 4000);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -140,17 +101,15 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      // Check that at least some categories are visible (others may need scrolling)
-      expect(find.text('Nature of Awareness'), findsOneWidget);
+      // Topics browse now shows TopicTags for all filters (unified view)
       expect(find.text('Self-Inquiry'), findsOneWidget);
+      expect(find.text('Awareness'), findsOneWidget);
     });
 
     testWidgets('renders in light theme', (tester) async {
@@ -163,13 +122,11 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.light,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.byType(LibraryScreen), findsOneWidget);
     });
@@ -184,13 +141,11 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: const Scaffold(
-              body: LibraryScreen(),
-            ),
+            home: const Scaffold(body: LibraryScreen()),
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 2));
 
       expect(find.byType(LibraryScreen), findsOneWidget);
     });
@@ -206,11 +161,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: false,
-            ),
+            home: CategoryArticlesScreen(category: category, info: info),
           ),
         ),
       );
@@ -228,65 +179,13 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: false,
-            ),
+            home: CategoryArticlesScreen(category: category, info: info),
           ),
         ),
       );
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-    });
-
-    // Note: With kFreeAccessEnabled=true, premium gating is disabled.
-    // These tests verify that no lock icons appear (all content is free).
-    testWidgets('does not show lock icons when kFreeAccessEnabled is true',
-        (tester) async {
-      // Use modernPointers category which has premium articles in data
-      const category = ArticleCategory.modernPointers;
-      final info = categoryInfoMap[category]!;
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: false, // Even non-premium users see no locks
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // With kFreeAccessEnabled=true, no lock icons should appear
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
-    });
-
-    testWidgets('premium users also see no lock icons', (tester) async {
-      const category = ArticleCategory.natureOfAwareness;
-      final info = categoryInfoMap[category]!;
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(
-              category: category,
-              info: info,
-              isPremium: true,
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // Premium users should not see lock icons
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
     });
   });
 
@@ -409,8 +308,7 @@ void main() {
   group('categoryInfoMap', () {
     test('contains all ArticleCategory values', () {
       for (final category in ArticleCategory.values) {
-        expect(categoryInfoMap.containsKey(category), isTrue,
-            reason: 'Missing category: $category');
+        expect(categoryInfoMap.containsKey(category), isTrue, reason: 'Missing category: $category');
       }
     });
 

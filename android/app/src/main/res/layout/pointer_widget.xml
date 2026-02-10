@@ -68,16 +68,17 @@
         android:paddingTop="8dp"
         android:paddingBottom="12dp">
 
-        <!-- Save to favorites - left side (scales with widget) -->
+        <!-- Save to favorites - left side -->
         <ImageView
             android:id="@+id/widget_save"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.15"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_heart_outline"
-            android:padding="8dp"
+            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="Save to favorites" />
 
         <TextView

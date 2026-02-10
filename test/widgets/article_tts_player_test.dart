@@ -5,18 +5,12 @@ import 'package:pointer/widgets/article_tts_player.dart';
 import 'package:pointer/services/tts_service.dart';
 
 void main() {
-  Widget createTestWidget({
-    required String articleId,
-    VoidCallback? onClose,
-  }) {
+  Widget createTestWidget({required String articleId, VoidCallback? onClose}) {
     return ProviderScope(
       child: MaterialApp(
         theme: ThemeData.dark(),
         home: Scaffold(
-          body: ArticleTTSPlayer(
-            articleId: articleId,
-            onClose: onClose,
-          ),
+          body: ArticleTTSPlayer(articleId: articleId, onClose: onClose),
         ),
       ),
     );
@@ -39,10 +33,12 @@ void main() {
     });
 
     testWidgets('accepts onClose callback', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        articleId: 'test',
-        onClose: () {}, // Verify widget accepts callback parameter
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          articleId: 'test',
+          onClose: () {}, // Verify widget accepts callback parameter
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(ArticleTTSPlayer), findsOneWidget);
@@ -77,24 +73,18 @@ void main() {
     });
 
     test('US English voices are available', () {
-      final usVoices = PollyVoice.values
-          .where((v) => v.description.contains('US English'))
-          .toList();
+      final usVoices = PollyVoice.values.where((v) => v.description.contains('US English')).toList();
       expect(usVoices.length, 2);
     });
 
     test('British English voices are available', () {
-      final britishVoices = PollyVoice.values
-          .where((v) => v.description.contains('British English'))
-          .toList();
+      final britishVoices = PollyVoice.values.where((v) => v.description.contains('British English')).toList();
       expect(britishVoices.length, 2);
     });
 
     test('male and female voices are available', () {
-      final maleVoices =
-          PollyVoice.values.where((v) => v.description.contains('Male')).toList();
-      final femaleVoices =
-          PollyVoice.values.where((v) => v.description.contains('Female')).toList();
+      final maleVoices = PollyVoice.values.where((v) => v.description.contains('Male')).toList();
+      final femaleVoices = PollyVoice.values.where((v) => v.description.contains('Female')).toList();
 
       expect(maleVoices.length, 2);
       expect(femaleVoices.length, 2);

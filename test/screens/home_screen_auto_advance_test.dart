@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,12 +34,10 @@ void main() {
   });
 
   /// Creates a HomeScreen with auto-advance settings configured
-  Widget createHomeScreenWithAutoAdvance({
-    bool autoAdvanceEnabled = true,
-    int autoAdvanceDelay = 60,
-  }) {
+  Widget createHomeScreenWithAutoAdvance({bool autoAdvanceEnabled = true, int autoAdvanceDelay = 60}) {
     // Configure settings with auto-advance preferences
-    final settingsJson = '''
+    final settingsJson =
+        '''
     {
       "hapticFeedback": true,
       "autoAdvance": $autoAdvanceEnabled,
@@ -60,10 +57,7 @@ void main() {
         oledModeProvider.overrideWith((ref) => false),
         reduceMotionOverrideProvider.overrideWith((ref) => null),
       ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: const HomeScreen(),
-      ),
+      child: MaterialApp(theme: ThemeData.dark(), home: const HomeScreen()),
     );
   }
 
@@ -89,11 +83,7 @@ void main() {
     });
 
     test('autoAdvanceProvider reads from settings', () {
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       // Default settings have autoAdvance = true
@@ -112,11 +102,7 @@ void main() {
       ''';
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(settingsJson);
 
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final isEnabled = container.read(autoAdvanceProvider);
@@ -132,11 +118,7 @@ void main() {
       ''';
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(settingsJson);
 
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       final delay = container.read(autoAdvanceDelayProvider);
@@ -146,19 +128,13 @@ void main() {
 
   group('Auto-Advance Timer Behavior', () {
     testWidgets('HomeScreen renders with auto-advance enabled', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreenWithAutoAdvance(autoAdvanceEnabled: true),
-      );
+      await pumpHomeScreen(tester, createHomeScreenWithAutoAdvance(autoAdvanceEnabled: true));
 
       expect(find.byType(HomeScreen), findsOneWidget);
     });
 
     testWidgets('HomeScreen renders with auto-advance disabled', (tester) async {
-      await pumpHomeScreen(
-        tester,
-        createHomeScreenWithAutoAdvance(autoAdvanceEnabled: false),
-      );
+      await pumpHomeScreen(tester, createHomeScreenWithAutoAdvance(autoAdvanceEnabled: false));
 
       expect(find.byType(HomeScreen), findsOneWidget);
     });
@@ -178,11 +154,7 @@ void main() {
     test('SettingsNotifier.setAutoAdvance updates state', () async {
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(null);
 
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       // Initial state: enabled (default)
@@ -192,30 +164,20 @@ void main() {
       await container.read(settingsProvider.notifier).setAutoAdvance(false);
 
       // Verify it was saved
-      verify(() => mockPrefs.setString(
-        'pointer_settings',
-        any(that: contains('"autoAdvance":false')),
-      )).called(1);
+      verify(() => mockPrefs.setString('pointer_settings', any(that: contains('"autoAdvance":false')))).called(1);
     });
 
     test('SettingsNotifier.setAutoAdvanceDelay updates state', () async {
       when(() => mockPrefs.getString('pointer_settings')).thenReturn(null);
 
-      final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(mockPrefs),
-        ],
-      );
+      final container = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(container.dispose);
 
       // Change delay to 120 seconds
       await container.read(settingsProvider.notifier).setAutoAdvanceDelay(120);
 
       // Verify it was saved
-      verify(() => mockPrefs.setString(
-        'pointer_settings',
-        any(that: contains('"autoAdvanceDelay":120')),
-      )).called(1);
+      verify(() => mockPrefs.setString('pointer_settings', any(that: contains('"autoAdvanceDelay":120')))).called(1);
     });
   });
 }

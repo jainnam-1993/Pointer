@@ -1,5 +1,8 @@
-// Inquiry Phase Content - Display widget for each inquiry phase
-// Handles setup, question, followUp, and complete phases
+/**
+ * Inquiry Phase Content - Display widget for each inquiry phase.
+ * Handles setup, question, followUp, and complete phases.
+ */
+library;
 
 import 'package:flutter/material.dart';
 import '../models/inquiry.dart';
@@ -7,40 +10,31 @@ import '../theme/app_theme.dart';
 import 'glass_card.dart';
 import 'inquiry_visual.dart';
 
-/// Phases of an inquiry session
-enum InquiryPhase {
-  setup,
-  question,
-  followUp,
-  complete,
-}
+/** Phases of an inquiry session */
+enum InquiryPhase { setup, question, followUp, complete }
 
-/// Content widget for each phase of an inquiry
-///
-/// Displays the appropriate content based on the current phase:
-/// - setup: Optional context before the main question
-/// - question: The main inquiry question with visual element
-/// - followUp: Optional follow-up after contemplation
-/// - complete: Completion state with action buttons
+/**
+ * Content widget for each phase of an inquiry
+ *
+ * Displays the appropriate content based on the current phase:
+ * - setup: Optional context before the main question
+ * - question: The main inquiry question with visual element
+ * - followUp: Optional follow-up after contemplation
+ * - complete: Completion state with action buttons
+ */
 class InquiryPhaseContent extends StatelessWidget {
-  const InquiryPhaseContent({
-    super.key,
-    required this.inquiry,
-    required this.phase,
-    this.onAnother,
-    this.onDone,
-  });
+  const InquiryPhaseContent({super.key, required this.inquiry, required this.phase, this.onAnother, this.onDone});
 
-  /// The current inquiry being displayed
+  /** The current inquiry being displayed */
   final Inquiry inquiry;
 
-  /// The current phase of the inquiry
+  /** The current phase of the inquiry */
   final InquiryPhase phase;
 
-  /// Callback when user wants another inquiry
+  /** Callback when user wants another inquiry */
   final VoidCallback? onAnother;
 
-  /// Callback when user is done
+  /** Callback when user is done */
   final VoidCallback? onDone;
 
   @override
@@ -55,10 +49,7 @@ class InquiryPhaseContent extends StatelessWidget {
         return FadeTransition(
           opacity: animation,
           child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.05),
-              end: Offset.zero,
-            ).animate(animation),
+            position: Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero).animate(animation),
             child: child,
           ),
         );
@@ -93,10 +84,7 @@ class InquiryPhaseContent extends StatelessWidget {
         children: [
           Text(
             inquiry.setup!,
-            style: AppTextStyles.pointingText(context).copyWith(
-              color: colors.textSecondary,
-              fontStyle: FontStyle.italic,
-            ),
+            style: AppTextStyles.pointingText(context).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
         ],
@@ -112,43 +100,24 @@ class InquiryPhaseContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Visual element if the inquiry has one
-          if (inquiry.hasVisualElement) ...[
-            const InquiryVisual(size: 140),
-            const SizedBox(height: 48),
-          ],
+          if (inquiry.hasVisualElement) ...[const InquiryVisual(size: 140), const SizedBox(height: 48)],
 
           // Main question in glass card
           GlassCard(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32,
-              vertical: 40,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32, vertical: 40),
             child: Column(
               children: [
-                Text(
-                  inquiry.question,
-                  style: AppTextStyles.pointingText(context).copyWith(
-                    height: 1.6,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+                Text(inquiry.question, style: AppTextStyles.pointingText(context).copyWith(height: 1.6), textAlign: TextAlign.center),
                 if (inquiry.teacher != null) ...[
                   const SizedBox(height: 20),
-                  Text(
-                    '- ${inquiry.teacher}',
-                    style: AppTextStyles.teacherText(context),
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('- ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
                 ],
               ],
             ),
           ),
 
           // Visual element below if no visual above
-          if (!inquiry.hasVisualElement) ...[
-            const SizedBox(height: 48),
-            const InquiryVisual(size: 100),
-          ],
+          if (!inquiry.hasVisualElement) ...[const SizedBox(height: 48), const InquiryVisual(size: 100)],
         ],
       ),
     );
@@ -167,10 +136,7 @@ class InquiryPhaseContent extends StatelessWidget {
         children: [
           Text(
             inquiry.followUp!,
-            style: AppTextStyles.pointingText(context).copyWith(
-              color: colors.textSecondary,
-              fontStyle: FontStyle.italic,
-            ),
+            style: AppTextStyles.pointingText(context).copyWith(color: colors.textSecondary, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 48),
@@ -194,10 +160,7 @@ class InquiryPhaseContent extends StatelessWidget {
           // Completion message
           Text(
             'Rest here.',
-            style: AppTextStyles.pointingText(context).copyWith(
-              color: colors.textMuted,
-              fontStyle: FontStyle.italic,
-            ),
+            style: AppTextStyles.pointingText(context).copyWith(color: colors.textMuted, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 48),
@@ -214,35 +177,17 @@ class InquiryPhaseContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Another button
-        _ActionButton(
-          label: 'Another',
-          onTap: onAnother,
-          isPrimary: false,
-          isDark: isDark,
-          colors: colors,
-        ),
+        _ActionButton(label: 'Another', onTap: onAnother, isPrimary: false, isDark: isDark, colors: colors),
         const SizedBox(width: 16),
         // Done button
-        _ActionButton(
-          label: 'Done',
-          onTap: onDone,
-          isPrimary: true,
-          isDark: isDark,
-          colors: colors,
-        ),
+        _ActionButton(label: 'Done', onTap: onDone, isPrimary: true, isDark: isDark, colors: colors),
       ],
     );
   }
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.label,
-    required this.onTap,
-    required this.isPrimary,
-    required this.isDark,
-    required this.colors,
-  });
+  const _ActionButton({required this.label, required this.onTap, required this.isPrimary, required this.isDark, required this.colors});
 
   final String label;
   final VoidCallback? onTap;
@@ -252,13 +197,9 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isPrimary
-        ? colors.accent.withValues(alpha: isDark ? 0.2 : 0.15)
-        : colors.glassBackground;
+    final bgColor = isPrimary ? colors.accent.withValues(alpha: isDark ? 0.2 : 0.15) : colors.glassBackground;
 
-    final borderColor = isPrimary
-        ? colors.accent.withValues(alpha: isDark ? 0.4 : 0.3)
-        : colors.glassBorder;
+    final borderColor = isPrimary ? colors.accent.withValues(alpha: isDark ? 0.4 : 0.3) : colors.glassBorder;
 
     return Semantics(
       button: true,
@@ -274,11 +215,7 @@ class _ActionButton extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: TextStyle(
-              color: isPrimary ? colors.accent : colors.textSecondary,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
+            style: TextStyle(color: isPrimary ? colors.accent : colors.textSecondary, fontWeight: FontWeight.w600, fontSize: 16),
           ),
         ),
       ),

@@ -1,16 +1,22 @@
-// Adyashanti Teachings
-// Contemporary Zen-influenced teacher
-// Source: https://adyashanti.opengatesangha.org/teachings/library
+/**
+ * Adyashanti teaching collection.
+ *
+ * Contemporary Zen-influenced teacher emphasizing the end of seeking
+ * and the recognition of what is already present. Sourced from
+ * Open Gate Sangha.
+ *
+ * Registered with [TeachingRepository] at app startup via `main.dart`.
+ */
+library;
 
 import '../teaching.dart';
 import '../pointings.dart';
 
 const String _teacher = 'Adyashanti';
 const Tradition _lineage = Tradition.contemporary;
-const String _sourceBase =
-    'https://adyashanti.opengatesangha.org/teachings/library/writing';
+const String _sourceBase = 'https://adyashanti.opengatesangha.org/teachings/library/writing';
 
-/// Adyashanti's teachings indexed from Open Gate Sangha
+/** Adyashanti's [Teaching] records indexed from Open Gate Sangha. */
 final List<Teaching> adyashantiTeachings = [
   // === SELF-INQUIRY / AWARENESS ===
   Teaching(
@@ -136,8 +142,7 @@ final List<Teaching> adyashantiTeachings = [
   // === AWAKENING ===
   Teaching(
     id: 'adya-end-of-seeking',
-    content:
-        'The end of seeking is not finding what you were looking for. It is the falling away of the one who was looking.',
+    content: 'The end of seeking is not finding what you were looking for. It is the falling away of the one who was looking.',
     teacher: _teacher,
     source: 'The End of Your World',
     lineage: _lineage,
@@ -198,8 +203,7 @@ final List<Teaching> adyashantiTeachings = [
   // === TRUE NATURE ===
   Teaching(
     id: 'adya-silence-speaks',
-    content:
-        'There is a silence inside of you that you can trust. It is the silence from which you came and to which you will return.',
+    content: 'There is a silence inside of you that you can trust. It is the silence from which you came and to which you will return.',
     teacher: _teacher,
     source: 'The Way of Liberation',
     lineage: _lineage,
@@ -222,8 +226,7 @@ final List<Teaching> adyashantiTeachings = [
 
   Teaching(
     id: 'adya-ground-of-being',
-    content:
-        'Rest in the ground of being. Not in your thoughts about being, not in your feelings about being, but in being itself.',
+    content: 'Rest in the ground of being. Not in your thoughts about being, not in your feelings about being, but in being itself.',
     teacher: _teacher,
     source: 'True Meditation',
     lineage: _lineage,
@@ -235,8 +238,7 @@ final List<Teaching> adyashantiTeachings = [
   // === LETTING GO ===
   Teaching(
     id: 'adya-let-everything-go',
-    content:
-        'Let everything go. Let all of it fall away. What remains is what you truly are.',
+    content: 'Let everything go. Let all of it fall away. What remains is what you truly are.',
     teacher: _teacher,
     source: 'Falling into Grace',
     lineage: _lineage,
@@ -247,8 +249,7 @@ final List<Teaching> adyashantiTeachings = [
 
   Teaching(
     id: 'adya-grace',
-    content:
-        'Grace is always present. It is the recognition that you do not have to hold yourself together. You can fall and be caught.',
+    content: 'Grace is always present. It is the recognition that you do not have to hold yourself together. You can fall and be caught.',
     teacher: _teacher,
     source: 'Falling into Grace',
     lineage: _lineage,
@@ -260,8 +261,7 @@ final List<Teaching> adyashantiTeachings = [
   // === TRUTH ===
   Teaching(
     id: 'adya-truth-simple',
-    content:
-        'The truth is much simpler than you think. It is so simple that the mind cannot grasp it. It can only be lived.',
+    content: 'The truth is much simpler than you think. It is so simple that the mind cannot grasp it. It can only be lived.',
     teacher: _teacher,
     source: 'The Way of Liberation',
     lineage: _lineage,
