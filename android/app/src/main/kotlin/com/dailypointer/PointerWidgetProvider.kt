@@ -67,10 +67,11 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 val wasAdded = toggleFavorite(context, currentId)
 
                 // Store current pointing ID for Flutter background callback to read
+                // Use HomeWidgetPlugin.getData() to write to the same SharedPreferences
+                // that Flutter's HomeWidget.getWidgetData() reads from
                 if (currentId != null) {
-                    val prefsName = "${context.packageName}.homewidget"
-                    val prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-                    prefs.edit().putString("save_pending_id", currentId).apply()
+                    val widgetPrefs = HomeWidgetPlugin.getData(context)
+                    widgetPrefs?.edit()?.putString("save_pending_id", currentId)?.apply()
                 }
 
                 // Send background intent to Flutter to persist the change
@@ -287,11 +288,9 @@ class PointerWidgetProvider : AppWidgetProvider() {
                     true
                 }
 
-                // Save back to home_widget SharedPreferences
+                // Save back to the same SharedPreferences that HomeWidgetPlugin reads from
                 val newJsonArray = org.json.JSONArray(favorites)
-                val prefsName = "${context.packageName}.homewidget"
-                val prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-                prefs.edit().putString(KEY_FAVORITES, newJsonArray.toString()).apply()
+                widgetData?.edit()?.putString(KEY_FAVORITES, newJsonArray.toString())?.apply()
 
                 Log.d(TAG, "toggleFavorite: $pointingId -> ${if (wasAdded) "added" else "removed"}, total=${favorites.size}")
                 return wasAdded

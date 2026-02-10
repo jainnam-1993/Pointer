@@ -166,10 +166,24 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                       maxLines: 4,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    if (pointing.teacher != null) ...[
-                                      const SizedBox(height: 8),
-                                      Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
-                                    ],
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        if (pointing.teacher != null)
+                                          Expanded(
+                                            child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
+                                          )
+                                        else
+                                          const Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            ref.read(favoritesProvider.notifier).toggle(pointingId);
+                                          },
+                                          child: Icon(Icons.favorite, size: 22, color: colors.accent),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
