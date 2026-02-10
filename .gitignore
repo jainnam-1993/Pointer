@@ -55,3 +55,21 @@ android/app/upload-keystore.jks
 *.keystore
 *.jks
 android/play-store-credentials.json
+
+# Test output (integration test screenshots, generated assets)
+test_output/
+maestro/screenshots/
+
+# Root-level test screenshots & Unison conflict artifacts
+/*.png
+
+# Build artifacts
+.gradle/
+android/app/local.properties
+android/gradle/
+
+# Claude Code local state
+.claude/
+
+# iOS generated files
+ios/ExportOptions.plist
