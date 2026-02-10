@@ -22,7 +22,6 @@ import '../widgets/commentary_section.dart';
 import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
-import '../widgets/save_confirmation.dart';
 // Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
 // import '../widgets/tradition_badge.dart';
 import '../services/widget_service.dart';
@@ -58,8 +57,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /** Whether a pointing transition animation is in progress. */
   bool _isAnimating = false;
 
-  /** Whether the save confirmation overlay is visible. */
-  bool _showSaveConfirmation = false;
 
   /** Accumulated vertical drag offset for the swipe blur effect. */
   double _swipeOffset = 0.0;
@@ -117,8 +114,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Skip if currently animating or swiping
     if (_isAnimating || _isSwipeInProgress) return;
 
-    // Skip if save confirmation is showing
-    if (_showSaveConfirmation) return;
 
     // Check if auto-advance is still enabled (user might have toggled it)
     final isEnabled = ref.read(autoAdvanceProvider);
@@ -281,19 +276,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final affinity = ref.read(affinityServiceProvider);
     await affinity.recordSave(pointing.tradition);
 
-    // Show confirmation overlay
-    setState(() {
-      _showSaveConfirmation = true;
-    });
-  }
-
-  /** Dismisses the save confirmation overlay. */
-  void _hideSaveConfirmation() {
-    if (mounted) {
-      setState(() {
-        _showSaveConfirmation = false;
-      });
-    }
   }
 
   /** Inline tradition badge for card header (Phase 5.11) */
@@ -663,8 +645,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-            // Save confirmation overlay with first-save celebration
-            if (_showSaveConfirmation) Positioned.fill(child: SaveConfirmation(onDismiss: _hideSaveConfirmation)),
           ],
         ),
       ),

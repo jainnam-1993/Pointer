@@ -8,7 +8,6 @@ import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
-import 'package:pointer/widgets/save_confirmation.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/theme/app_theme.dart';
 
@@ -21,13 +20,11 @@ void main() {
   setUpAll(() {
     // Disable animations and auto-advance to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
-    SaveConfirmation.disableAutoDismiss = true;
     HomeScreen.disableAutoAdvanceForTesting = true;
   });
 
   tearDownAll(() {
     AnimatedGradient.disableAnimations = false;
-    SaveConfirmation.disableAutoDismiss = false;
     HomeScreen.disableAutoAdvanceForTesting = false;
   });
 

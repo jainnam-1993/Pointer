@@ -25,6 +25,7 @@ import '../widgets/animated_transitions.dart';
 // import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
+import 'share_preview_screen.dart';
 import 'library/library_models.dart';
 import 'library/library_widgets.dart';
 import 'library/teacher_teachings_screen.dart';
@@ -175,6 +176,28 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                           )
                                         else
                                           const Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.transparent,
+                                              useRootNavigator: true,
+                                              builder: (_) => FractionallySizedBox(
+                                                heightFactor: 0.9,
+                                                child: ClipRRect(
+                                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                                                  child: SharePreviewScreen(pointing: pointing),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 16),
+                                            child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted),
+                                          ),
+                                        ),
                                         GestureDetector(
                                           onTap: () {
                                             HapticFeedback.lightImpact();

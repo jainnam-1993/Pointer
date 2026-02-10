@@ -11,7 +11,6 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/glass_card.dart';
-import 'package:pointer/widgets/save_confirmation.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
@@ -22,13 +21,11 @@ void main() {
   setUpAll(() {
     // Disable animations to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
-    SaveConfirmation.disableAutoDismiss = true;
     HomeScreen.disableAutoAdvanceForTesting = true;
   });
 
   tearDownAll(() {
     AnimatedGradient.disableAnimations = false;
-    SaveConfirmation.disableAutoDismiss = false;
     HomeScreen.disableAutoAdvanceForTesting = false;
   });
 
@@ -169,36 +166,6 @@ void main() {
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
 
-      // Verify save confirmation is shown
-      expect(find.byType(SaveConfirmation), findsOneWidget);
-    });
-
-    testWidgets('save confirmation widget auto-dismiss behavior', (tester) async {
-      // Test the SaveConfirmation widget in isolation with auto-dismiss enabled
-      SaveConfirmation.disableAutoDismiss = false;
-      bool wasDismissed = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: SaveConfirmation(autoDismissDuration: const Duration(milliseconds: 100), onDismiss: () => wasDismissed = true),
-          ),
-        ),
-      );
-
-      // Initially visible
-      expect(find.byType(SaveConfirmation), findsOneWidget);
-
-      // Wait for auto-dismiss
-      await tester.pump(const Duration(milliseconds: 200));
-      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
-      await tester.pump(const Duration(seconds: 2));
-
-      expect(wasDismissed, isTrue);
-
-      // Reset for other tests
-      SaveConfirmation.disableAutoDismiss = true;
     });
 
     testWidgets('long press does not add duplicate favorites', (tester) async {
@@ -265,53 +232,6 @@ void main() {
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
 
-      // Verify "Saved" text is shown
-      expect(find.text('Saved'), findsOneWidget);
-    });
-  });
-
-  group('SaveConfirmation Widget', () {
-    testWidgets('renders with heart icon and text', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SaveConfirmation())));
-
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
-      expect(find.text('Saved'), findsOneWidget);
-    });
-
-    testWidgets('has animated scale effect', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SaveConfirmation())));
-
-      // Find the AnimatedScale or ScaleTransition
-      expect(
-        find.byType(AnimatedScale).evaluate().isNotEmpty ||
-            find.byType(ScaleTransition).evaluate().isNotEmpty ||
-            find.byType(TweenAnimationBuilder<double>).evaluate().isNotEmpty,
-        isTrue,
-      );
-    });
-
-    testWidgets('calls onDismiss callback when provided', (tester) async {
-      // Test with auto-dismiss enabled for this specific test
-      SaveConfirmation.disableAutoDismiss = false;
-      bool wasDismissed = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SaveConfirmation(autoDismissDuration: const Duration(milliseconds: 100), onDismiss: () => wasDismissed = true),
-          ),
-        ),
-      );
-
-      // Wait for auto-dismiss
-      await tester.pump(const Duration(milliseconds: 200));
-      // Use pump(Duration) instead of pumpAndSettle due to confetti animation
-      await tester.pump(const Duration(seconds: 2));
-
-      expect(wasDismissed, isTrue);
-
-      // Reset for other tests
-      SaveConfirmation.disableAutoDismiss = true;
     });
   });
 
