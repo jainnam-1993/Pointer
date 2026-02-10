@@ -30,7 +30,6 @@ appId: com.dailypointer
     timeout: 10000
 - assertVisible:
     text: ".*BROWSE BY.*"
-    optional: true
 - takeScreenshot: "maestro/screenshots/filters_02_browse_by"
 
 # === DEFAULT MODE: TOPICS ===
@@ -69,10 +68,8 @@ appId: com.dailypointer
 - tapOn:
     text: ".*Saved.*"
 - waitForAnimationToEnd
-# Saved mode with no favorites shows empty state
 - assertVisible:
-    text: ".*saved.*"
-    optional: true
+    text: "Your saved pointings"
 - takeScreenshot: "maestro/screenshots/filters_07_saved_mode"
 
 # === RETURN TO TOPICS ===

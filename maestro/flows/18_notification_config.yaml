@@ -31,81 +31,42 @@ appId: com.dailypointer
 - assertVisible:
     text: "Notification Schedule"
 
-# === NOTIFICATION TOGGLE ===
-# Toggle notifications on/off
+# === PRESET COVERAGE ===
 - tapOn:
     text: "Morning"
-    optional: true
 - takeScreenshot: "maestro/screenshots/notif_03_toggled"
 
 # === PRESET: MORNING ===
 - tapOn:
     text: "Morning"
-    optional: true
 - takeScreenshot: "maestro/screenshots/notif_04_morning_preset"
 
 # === PRESET: ALL DAY ===
 - tapOn:
     text: "All Day"
-    optional: true
 - takeScreenshot: "maestro/screenshots/notif_05_all_day_preset"
 
 # === PRESET: EVENING ===
 - tapOn:
     text: "Evening"
-    optional: true
 - takeScreenshot: "maestro/screenshots/notif_06_evening_preset"
 
 # === PRESET: MINIMAL ===
 - tapOn:
     text: "Minimal"
-    optional: true
 - takeScreenshot: "maestro/screenshots/notif_07_minimal_preset"
 
-# === CUSTOM CONFIGURATION ===
-# Scroll to see more options
+# === SCHEDULE CONTROLS ===
 - swipe:
     direction: UP
     duration: 300
 - takeScreenshot: "maestro/screenshots/notif_08_more_options"
 
-# === TIME WINDOW ===
-# Tap to configure start time
-- tapOn:
-    text: "Start"
-    optional: true
-- takeScreenshot: "maestro/screenshots/notif_09_start_time"
-
-# Save/close picker if opened
-- tapOn:
-    text: "Done"
-    optional: true
-
-# Tap to configure end time
-- tapOn:
-    text: "End"
-    optional: true
-- takeScreenshot: "maestro/screenshots/notif_10_end_time"
-
-# Save/close picker if opened
-- tapOn:
-    text: "Done"
-    optional: true
-
-# === FREQUENCY ===
-- tapOn:
+- assertVisible:
+    text: "Time Window"
+- assertVisible:
     text: "Frequency"
-    optional: true
-- tapOn:
-    text: "1h"
-    optional: true
-- takeScreenshot: "maestro/screenshots/notif_11_frequency"
-
-# === CLOSE SHEET ===
-- tapOn:
-    text: "Done"
-    optional: true
-- takeScreenshot: "maestro/screenshots/notif_12_quiet_hours"
+- takeScreenshot: "maestro/screenshots/notif_09_time_frequency_visible"
 
 # === BACK TO SETTINGS ===
 - pressKey: Home
