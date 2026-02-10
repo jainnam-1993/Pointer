@@ -107,6 +107,27 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
                   // Show saved pointings if browsing saved
                   if (_browseMode == LibraryBrowseMode.saved) ...[
+                    // Browse Mode dropdown (so user can switch back)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'BROWSE BY',
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                              ),
+                              const SizedBox(width: 12),
+                              _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     if (favorites.isEmpty)
                       SliverFillRemaining(
                         child: Center(
