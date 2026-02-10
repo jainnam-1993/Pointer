@@ -1,0 +1,125 @@
+{
+  "identifier" : "StoreKitTest",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "tip_small",
+      "localizations" : [
+        {
+          "description" : "Buy the developer a cup of tea",
+          "displayName" : "Tea",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.dailypointer.tip_small",
+      "referenceName" : "Tip Small",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "tip_medium",
+      "localizations" : [
+        {
+          "description" : "Help improve the meditation space",
+          "displayName" : "Cushion",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.dailypointer.tip_medium",
+      "referenceName" : "Tip Medium",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "tip_large",
+      "localizations" : [
+        {
+          "description" : "Support ongoing development",
+          "displayName" : "Incense",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.dailypointer.tip_large",
+      "referenceName" : "Tip Large",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "tip_generous",
+      "localizations" : [
+        {
+          "description" : "Generous support for continued development",
+          "displayName" : "Retreat",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.dailypointer.tip_generous",
+      "referenceName" : "Tip Generous",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

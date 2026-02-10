@@ -51,6 +51,9 @@ dependencies:
   # URL Launching (for privacy/terms links)
   url_launcher: ^6.3.0
 
+  # In-App Purchases (Donations)
+  in_app_purchase: ^3.1.0
+
   # AWS Polly TTS
   otp: ^3.1.4                           # TOTP code generation
   flutter_secure_storage: ^9.2.2        # Secure TOTP secret storage

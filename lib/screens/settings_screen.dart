@@ -14,6 +14,7 @@ import '../services/workmanager_service.dart';
 import '../services/ambient_sound_service.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/donation_button.dart';
 import '../widgets/glass_card.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -107,6 +108,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             fontSize: 14,
             height: 1.5,
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Close', style: TextStyle(color: context.colors.accent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showThankYouDialog() async {
+    if (!mounted) return;
+
+    // Clear the result so dialog doesn't show again on rebuild
+    ref.read(donationProvider.notifier).clearResult();
+
+    HapticFeedback.heavyImpact();
+
+    showDialog(
+      context: context,
+      builder: (context) => GlassDialog(
+        title: 'Thank You',
+        content: Text(
+          'Your support means the world.\n\n'
+          'May your practice deepen.',
+          style: TextStyle(
+            color: context.colors.textSecondary,
+            fontSize: 14,
+            height: 1.5,
+          ),
+          textAlign: TextAlign.center,
         ),
         actions: [
           TextButton(
@@ -216,6 +249,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     final subscription = ref.watch(subscriptionProvider);
+
+    // Listen for donation results to show thank you dialog
+    ref.listen<DonationState>(donationProvider, (previous, next) {
+      if (next.lastResult == DonationResult.success &&
+          previous?.lastResult != DonationResult.success) {
+        _showThankYouDialog();
+      }
+    });
     final isDark = context.isDarkMode;
     final colors = context.colors;
     final textColorMuted = colors.textMuted;
@@ -231,14 +272,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         children: [
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 20,
-                bottom: 8,
-              ),
+            child: Stack(
               children: [
+                ListView(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 20,
+                    bottom: 100, // Extra padding for donation button
+                  ),
+                  children: [
                 StaggeredFadeIn(
                   index: 0,
                   child: Text(
@@ -559,6 +602,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
+                // Donation button positioned at bottom
+                const Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                  child: DonationButton(),
                 ),
               ],
             ),

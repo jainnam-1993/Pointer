@@ -83,7 +83,6 @@ ios/Runner/
 ├── Info.plist                 # App config: Google OAuth URL scheme, export compliance, permissions
 ├── GoogleService-Info.plist   # Firebase configuration
 ├── Runner.entitlements        # App capabilities (Sign in with Apple, push notifications)
-├── StoreKitTest.storekit      # StoreKit Configuration for local IAP testing (4 tip products: $1.99-$19.99)
 └── AppDelegate.swift          # App lifecycle, AVAudioSession config (.playback, .mixWithOthers, .duckOthers), flutter_local_notifications plugin registration callback for foreground handling, UNUserNotificationCenter delegate setup (iOS 10+), background fetch (UIApplication.backgroundFetchIntervalMinimum) for WorkManager periodic notifications
 
 test/                          # Unit tests
@@ -138,7 +137,6 @@ fastlane/                      # Play Store deployment
 - **Screen sizes**: iPhone 14 Pro Max (1290x2796, 3.0 DPR), iPad Pro (2048x2732, 2.0 DPR), standard phone (1080x1920, 2.0 DPR)
 - **Golden tests** (`test/golden/`): setupGoldenTests(), goldenTestTheme (Roboto), pumpForGolden(), GoldenDevices
 - **Accessibility** (`test/accessibility/`): VoiceOver semantics, labels, focus order, custom actions, screen reader hints
-- **IAP testing**: iOS uses StoreKitTest.storekit Configuration file (4 tip products). Android uses 'android.test.purchased' static test ID. kUseDonationTestProducts flag controls test mode (default: true in debug)
 
 ### Integration Tests (`integration_test/`)
 - State-controlled E2E using IntegrationTestWidgetsFlutterBinding (Riverpod state injection)
@@ -168,7 +166,7 @@ fastlane/                      # Play Store deployment
 
 **Freemium V2**: FREE = unlimited pointings/quotes. PREMIUM (lifetime purchase via RevenueCat) = library, audio, notifications, widget. Firebase auth callbacks sync purchases cross-device. `kFreeAccessEnabled` flag in `subscription_providers.dart` (**⚠️ currently TRUE** - all features unlocked, RevenueCat disabled for App Store release without IAP).
 
-**Tip Jar** (`donation_service.dart` + `donation_providers.dart` + `donation_button.dart`): Voluntary donations via in-app purchases. 4 consumable products (small/medium/large/generous) with semantic labels (Tea/Cushion/Incense/Retreat). Expandable UI in SettingsScreen. Graceful degradation when IAP unavailable. Product IDs: `com.dailypointer.tip_*`. **Test mode**: kUseDonationTestProducts flag (default: true in debug) - Android uses 'android.test.purchased' static ID, iOS uses real IDs with StoreKitTest.storekit Configuration file. **CRITICAL**: Must call completePurchase() after successful purchase to acknowledge receipt with store.
+**Tip Jar** (`donation_service.dart` + `donation_providers.dart` + `donation_button.dart`): Voluntary donations via in-app purchases. 4 consumable products (small/medium/large/generous) with semantic labels (Tea/Cushion/Incense/Retreat). Expandable UI in SettingsScreen. Graceful degradation when IAP unavailable. Product IDs: `com.dailypointer.tip_*`. Must call completePurchase() after successful purchase to acknowledge receipt with store.
 
 ## Execution Protocol
 

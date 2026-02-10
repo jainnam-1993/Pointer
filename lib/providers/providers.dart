@@ -15,6 +15,7 @@ library;
 
 export 'content_providers.dart';
 export 'core_providers.dart';
+export 'donation_providers.dart';
 export 'settings_providers.dart';
 export 'subscription_providers.dart';
 export 'tts_providers.dart';
