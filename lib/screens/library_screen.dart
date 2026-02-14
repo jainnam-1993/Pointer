@@ -154,7 +154,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                          child: Text('ARTICLES', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1)),
+                          child: Text(
+                            'ARTICLES',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                          ),
                         ),
                       ),
                       SliverPadding(
@@ -172,10 +175,18 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(article.title, style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600)),
+                                    Text(
+                                      article.title,
+                                      style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
+                                    ),
                                     if (article.subtitle != null) ...[
                                       const SizedBox(height: 4),
-                                      Text(article.subtitle!, style: TextStyle(color: colors.textSecondary, fontSize: 13), maxLines: 2, overflow: TextOverflow.ellipsis),
+                                      Text(
+                                        article.subtitle!,
+                                        style: TextStyle(color: colors.textSecondary, fontSize: 13),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ],
                                     const SizedBox(height: 12),
                                     Row(
@@ -183,7 +194,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                         Text('${article.readingTimeMinutes} min read', style: TextStyle(color: colors.textMuted, fontSize: 12)),
                                         if (article.teacher != null) ...[
                                           Text('  ·  ', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-                                          Expanded(child: Text(article.teacher!, style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic), overflow: TextOverflow.ellipsis)),
+                                          Expanded(
+                                            child: Text(
+                                              article.teacher!,
+                                              style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
                                         ] else
                                           const Spacer(),
                                         GestureDetector(
@@ -209,7 +226,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                          child: Text('POINTINGS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1)),
+                          child: Text(
+                            'POINTINGS',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                          ),
                         ),
                       ),
                       SliverPadding(
@@ -235,7 +255,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                     Row(
                                       children: [
                                         if (pointing.teacher != null)
-                                          Expanded(child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)))
+                                          Expanded(
+                                            child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
+                                          )
                                         else
                                           const Spacer(),
                                         GestureDetector(
@@ -292,7 +314,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     // Featured articles horizontal scroll with peek indicator
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 185,
+                        height: (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble(),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             final screenWidth = constraints.maxWidth;
@@ -897,6 +919,10 @@ class _FeaturedArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final traditionInfo = traditions[article.tradition]!;
+    final isCompact = MediaQuery.of(context).size.width < 360;
+    final titleFontSize = isCompact ? 16.0 : 18.0;
+    final subtitleFontSize = isCompact ? 12.0 : 13.0;
+    final metaFontSize = isCompact ? 11.0 : 12.0;
 
     return Semantics(
       button: true,
@@ -918,15 +944,22 @@ class _FeaturedArticleCard extends StatelessWidget {
                   child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
                 ),
                 const SizedBox(width: 8),
-                Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 12, color: colors.textMuted)),
+                Expanded(
+                  child: Text(
+                    '${article.readingTimeMinutes} min read',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: metaFontSize, color: colors.textMuted),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: isCompact ? 10 : 12),
 
             // Title
             Text(
               article.title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
+              style: TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.w600, color: colors.textPrimary),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -936,7 +969,7 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.subtitle != null)
               Text(
                 article.subtitle!,
-                style: TextStyle(fontSize: 13, color: colors.textSecondary),
+                style: TextStyle(fontSize: subtitleFontSize, color: colors.textSecondary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -947,7 +980,9 @@ class _FeaturedArticleCard extends StatelessWidget {
             if (article.teacher != null)
               Text(
                 article.teacher!,
-                style: TextStyle(fontSize: 12, color: colors.textMuted, fontStyle: FontStyle.italic),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: metaFontSize, color: colors.textMuted, fontStyle: FontStyle.italic),
               ),
           ],
         ),

@@ -35,6 +35,17 @@ const _tipProducts = <String, _TipProduct>{
 };
 
 /**
+ * Resolves a product config from either a short ID (tip_small) or
+ * a fully-qualified store ID (com.dailypointer.tip_small).
+ */
+_TipProduct? _resolveTipProduct(String productId) {
+  final direct = _tipProducts[productId];
+  if (direct != null) return direct;
+  final suffix = productId.split('.').last;
+  return _tipProducts[suffix];
+}
+
+/**
  * Floating donation button with expandable tip options
  *
  * Displays as a collapsed button that expands to show:
@@ -73,6 +84,9 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(donationProvider);
+    if (!state.isAvailable && !state.isLoading) {
+      return const SizedBox.shrink();
+    }
     final colors = context.colors;
 
     return AnimatedContainer(
@@ -223,7 +237,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       crossAxisSpacing: 12,
       childAspectRatio: 1.4,
       children: products.map((product) {
-        final config = _tipProducts[product.id];
+        final config = _resolveTipProduct(product.id);
         return _TipOptionCard(
           product: product,
           label: config?.label ?? product.title,

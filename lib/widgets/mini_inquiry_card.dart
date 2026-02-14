@@ -33,8 +33,7 @@ class MiniInquiryCard extends StatelessWidget {
           context.push('/inquiry/random');
         },
         child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
             // Diamond icon
             Container(
@@ -48,9 +47,13 @@ class MiniInquiryCard extends StatelessWidget {
             const SizedBox(width: 12),
 
             // Text only - no question preview for cleaner look
-            Text(
-              'Take a moment',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: colors.accent),
+            Flexible(
+              child: Text(
+                'Take a moment',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: colors.accent),
+              ),
             ),
           ],
         ),

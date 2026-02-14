@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,6 +81,7 @@ class _StaggeredFadeInState extends State<StaggeredFadeIn> with SingleTickerProv
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  Timer? _startTimer;
 
   @override
   void initState() {
@@ -90,13 +93,14 @@ class _StaggeredFadeInState extends State<StaggeredFadeIn> with SingleTickerProv
     _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     // Stagger the animation start based on index
-    Future.delayed(widget.delay * widget.index, () {
+    _startTimer = Timer(widget.delay * widget.index, () {
       if (mounted) _controller.forward();
     });
   }
 
   @override
   void dispose() {
+    _startTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

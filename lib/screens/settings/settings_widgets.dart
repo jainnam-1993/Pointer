@@ -50,6 +50,7 @@ class SettingsRow extends StatelessWidget {
     final content = Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
+        crossAxisAlignment: subtitle != null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
           if (leading != null) ...[leading!, const SizedBox(width: 8)],
           Expanded(
@@ -61,7 +62,13 @@ class SettingsRow extends StatelessWidget {
               ],
             ),
           ),
-          if (trailing != null) trailing!,
+          if (trailing != null) ...[
+            const SizedBox(width: 12),
+            Flexible(
+              fit: FlexFit.loose,
+              child: Align(alignment: Alignment.centerRight, child: trailing!),
+            ),
+          ],
         ],
       ),
     );

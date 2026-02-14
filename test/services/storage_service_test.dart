@@ -81,10 +81,14 @@ void main() {
     test('has correct key values', () {
       expect(StorageKeys.onboardingCompleted, 'pointer_onboarding_completed');
       expect(StorageKeys.favoritePointings, 'pointer_favorites');
+      expect(StorageKeys.favoriteArticles, 'pointer_favorite_articles');
       expect(StorageKeys.viewedPointings, 'pointer_viewed');
+      expect(StorageKeys.viewedTeachings, 'pointer_viewed_teachings');
       expect(StorageKeys.preferredTraditions, 'pointer_preferred_traditions');
       expect(StorageKeys.settings, 'pointer_settings');
-      expect(StorageKeys.subscriptionTier, 'pointer_subscription');
+      expect(StorageKeys.currentPointingId, 'pointer_current_pointing_id');
+      expect(StorageKeys.pointingOrder, 'pointer_pointing_order');
+      expect(StorageKeys.pointingIndex, 'pointer_pointing_index');
     });
   });
 
@@ -295,10 +299,14 @@ void main() {
 
       verify(() => mockPrefs.remove(StorageKeys.onboardingCompleted)).called(1);
       verify(() => mockPrefs.remove(StorageKeys.favoritePointings)).called(1);
+      verify(() => mockPrefs.remove(StorageKeys.favoriteArticles)).called(1);
       verify(() => mockPrefs.remove(StorageKeys.viewedPointings)).called(1);
+      verify(() => mockPrefs.remove(StorageKeys.viewedTeachings)).called(1);
       verify(() => mockPrefs.remove(StorageKeys.preferredTraditions)).called(1);
       verify(() => mockPrefs.remove(StorageKeys.settings)).called(1);
-      verify(() => mockPrefs.remove(StorageKeys.subscriptionTier)).called(1);
+      verify(() => mockPrefs.remove(StorageKeys.currentPointingId)).called(1);
+      verify(() => mockPrefs.remove(StorageKeys.pointingOrder)).called(1);
+      verify(() => mockPrefs.remove(StorageKeys.pointingIndex)).called(1);
     });
   });
 

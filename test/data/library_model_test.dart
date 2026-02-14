@@ -24,7 +24,6 @@ void main() {
         categories: [ArticleCategory.selfInquiry, ArticleCategory.natureOfAwareness],
         readingTimeMinutes: 5,
         dateAdded: DateTime(2024, 1, 1),
-        isPremium: true,
       );
 
       expect(article.id, 'test_001');
@@ -36,7 +35,6 @@ void main() {
       expect(article.teacher, 'Test Teacher');
       expect(article.categories.length, 2);
       expect(article.readingTimeMinutes, 5);
-      expect(article.isPremium, true);
     });
 
     test('creates Article with minimal required fields', () {
@@ -54,7 +52,6 @@ void main() {
       expect(article.excerpt, isNull);
       expect(article.teacher, isNull);
       expect(article.dateAdded, isNull);
-      expect(article.isPremium, false);
     });
 
     test('hasCategory returns correct result', () {
@@ -230,13 +227,10 @@ void main() {
       }
     });
 
-    test('getFeaturedArticles returns non-premium articles', () {
+    test('getFeaturedArticles returns capped list', () {
       final featured = getFeaturedArticles();
       expect(featured, isNotEmpty);
       expect(featured.length, lessThanOrEqualTo(5));
-      for (final article in featured) {
-        expect(article.isPremium, false);
-      }
     });
 
     test('searchArticles finds articles by title', () {
@@ -350,20 +344,10 @@ void main() {
       expect(article, isNull);
     });
 
-    test('featuredArticlesProvider returns non-premium articles', () {
+    test('featuredArticlesProvider returns capped list', () {
       final featured = container.read(featuredArticlesProvider);
       expect(featured, isNotEmpty);
       expect(featured.length, lessThanOrEqualTo(5));
-      for (final article in featured) {
-        expect(article.isPremium, false);
-      }
-    });
-
-    test('premiumArticlesProvider returns only premium articles', () {
-      final premium = container.read(premiumArticlesProvider);
-      for (final article in premium) {
-        expect(article.isPremium, true);
-      }
     });
 
     test('teacherProfilesProvider returns all teachers', () {

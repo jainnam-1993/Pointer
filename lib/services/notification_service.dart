@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../data/pointings.dart';
 import 'workmanager_service.dart';
@@ -262,6 +265,9 @@ class _NotificationStorageKeys {
 class NotificationService {
   final SharedPreferences _prefs;
   final FlutterLocalNotificationsPlugin _localNotifications;
+  static bool _timeZonesInitialized = false;
+  static const int _iosScheduleIdBase = 50000;
+  static const int _iosScheduleBatchLimit = 60;
 
   NotificationService(this._prefs, [FlutterLocalNotificationsPlugin? plugin]) : _localNotifications = plugin ?? FlutterLocalNotificationsPlugin();
 
@@ -507,13 +513,23 @@ class NotificationService {
    * WorkManager survives app kills and is more reliable than AlarmManager.
    */
   Future<void> scheduleAllNotifications() async {
-    // Cancel any existing WorkManager tasks
-    await WorkManagerService.cancelAll();
+    // Always reset pending local notifications first.
+    await _localNotifications.cancelAll();
+    // WorkManager is Android-only in this app.
+    if (Platform.isAndroid) {
+      await WorkManagerService.cancelAll();
+    }
 
     if (!isNotificationsEnabled) return;
 
     final schedule = getSchedule();
     if (!schedule.isEnabled) return;
+
+    if (Platform.isIOS) {
+      final count = await _scheduleIosBatchNotifications(schedule);
+      debugPrint('[NotificationService] iOS batch scheduled: $count notifications');
+      return;
+    }
 
     debugPrint(
       '[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00',
@@ -527,6 +543,51 @@ class NotificationService {
     );
 
     debugPrint('[NotificationService] WorkManager scheduled successfully');
+  }
+
+  void _initializeTimeZonesIfNeeded() {
+    if (_timeZonesInitialized) return;
+    tz_data.initializeTimeZones();
+    _timeZonesInitialized = true;
+  }
+
+  Future<int> _scheduleIosBatchNotifications(NotificationSchedule schedule) async {
+    _initializeTimeZonesIfNeeded();
+
+    final now = DateTime.now();
+    final windowStart = DateTime(now.year, now.month, now.day);
+    final windowEnd = windowStart.add(const Duration(days: 14));
+    final scheduledTimes = <DateTime>[];
+
+    var day = windowStart;
+    while (day.isBefore(windowEnd) && scheduledTimes.length < _iosScheduleBatchLimit) {
+      final timesForDay = schedule.getNotificationTimes(day);
+      for (final time in timesForDay) {
+        if (!time.isAfter(now)) continue;
+        scheduledTimes.add(time);
+        if (scheduledTimes.length >= _iosScheduleBatchLimit) break;
+      }
+      day = day.add(const Duration(days: 1));
+    }
+
+    for (var i = 0; i < scheduledTimes.length; i++) {
+      final localTime = scheduledTimes[i];
+      final scheduledAtUtc = tz.TZDateTime.from(localTime.toUtc(), tz.UTC);
+      final pointing = getRandomPointing();
+
+      await _localNotifications.zonedSchedule(
+        _iosScheduleIdBase + i,
+        "Today's Pointing",
+        pointing.content,
+        scheduledAtUtc,
+        _buildRichNotificationDetails(pointing),
+        payload: pointing.id,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    }
+
+    return scheduledTimes.length;
   }
 
   /** Show an immediate notification for a pointing. */
@@ -629,7 +690,9 @@ class NotificationService {
   /** Cancel all scheduled notifications (both local and WorkManager). */
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
-    await WorkManagerService.cancelAll();
+    if (Platform.isAndroid) {
+      await WorkManagerService.cancelAll();
+    }
   }
 
   /** Get list of pending notifications for debugging. */

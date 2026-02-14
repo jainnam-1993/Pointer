@@ -13,7 +13,7 @@
 
 ## Task 3: Fix Notifications
 - [x] Re-enable WorkManager on Android only
-- [ ] Add iOS zonedSchedule batch fallback (deferred — iOS WorkManager disabled)
+- [x] Add iOS zonedSchedule batch fallback (batch local notifications when WorkManager is Android-only)
 - [x] Add "Send Test Notification" button in settings
 - [x] Remove testEveryMinute preset (not useful — WorkManager minimum is 15min)
 - [x] Validate: WorkManager initialized in logs, test notification button visible

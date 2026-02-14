@@ -32,6 +32,41 @@ double _responsiveFontSize(BuildContext context, double baseSize) {
 }
 
 /**
+ * Responsive vertical spacing that compresses on short screens and larger text.
+ */
+double _responsiveVerticalSpace(BuildContext context, double baseSize) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  final textScale = MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.4);
+  final heightFactor = (screenHeight / 812).clamp(0.72, 1.0);
+  final textCompensation = (1 / textScale).clamp(0.75, 1.0);
+  return baseSize * heightFactor * textCompensation;
+}
+
+/**
+ * Makes onboarding pages vertically scrollable while keeping content centered when space allows.
+ */
+Widget _buildScrollableCenteredPage({required BuildContext context, required Widget child, double horizontalPadding = 32}) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final verticalPadding = _responsiveVerticalSpace(context, 8);
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight - (verticalPadding * 2)),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: verticalPadding),
+              child: Center(child: child),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+/**
  * Four-page contemplative onboarding experience.
  *
  * Guides first-time users through the app's philosophy using animated pages:
@@ -205,11 +240,13 @@ class _InterruptionPageState extends State<_InterruptionPage> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final spaceLarge = _responsiveVerticalSpace(context, 60);
+    final spaceMedium = _responsiveVerticalSpace(context, 40);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+    return _buildScrollableCenteredPage(
+      context: context,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Main question - word by word reveal
           TypewriterText(
@@ -226,7 +263,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
             onComplete: reduceMotion ? null : _onMainTextComplete,
           ),
 
-          const SizedBox(height: 40),
+          SizedBox(height: spaceMedium),
 
           // Subtext - appears after main question
           AnimatedOpacity(
@@ -249,7 +286,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
             ),
           ),
 
-          const SizedBox(height: 60),
+          SizedBox(height: spaceLarge),
 
           // Subtle eye icon - fades in last
           AnimatedOpacity(
@@ -280,11 +317,13 @@ class _ContrastPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final cardPadding = _responsiveVerticalSpace(context, 32).clamp(20.0, 32.0);
+    final betweenIconAndCopy = _responsiveVerticalSpace(context, 24);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+    return _buildScrollableCenteredPage(
+      context: context,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           DissolveTransition(
             holdDuration: const Duration(seconds: 3),
@@ -293,7 +332,7 @@ class _ContrastPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.self_improvement_outlined, size: 48, color: colors.textMuted),
-                const SizedBox(height: 24),
+                SizedBox(height: betweenIconAndCopy),
                 Text(
                   'Meditation apps teach you to become a better meditator.',
                   style: TextStyle(fontSize: _responsiveFontSize(context, 22), height: 1.5, fontWeight: FontWeight.w400, color: colors.textSecondary),
@@ -302,7 +341,7 @@ class _ContrastPage extends StatelessWidget {
               ],
             ),
             secondChild: GlassCard(
-              padding: const EdgeInsets.all(32),
+              padding: EdgeInsets.all(cardPadding),
               intensity: GlassIntensity.light,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -316,7 +355,7 @@ class _ContrastPage extends StatelessWidget {
                       letterSpacing: 1,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: _responsiveVerticalSpace(context, 12)),
                   Text(
                     'Who is meditating?',
                     style: TextStyle(fontSize: _responsiveFontSize(context, 28), height: 1.4, fontWeight: FontWeight.w300, color: colors.textPrimary),
@@ -358,11 +397,12 @@ class _SimplicityPageState extends State<_SimplicityPage> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final betweenPrimaryAndSecondary = _responsiveVerticalSpace(context, 24);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+    return _buildScrollableCenteredPage(
+      context: context,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Strike-through sequence
           if (!_showRemains)
@@ -391,7 +431,7 @@ class _SimplicityPageState extends State<_SimplicityPage> {
                     style: TextStyle(fontSize: _responsiveFontSize(context, 32), fontWeight: FontWeight.w300, color: colors.textPrimary, height: 1.4),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: betweenPrimaryAndSecondary),
                   Text(
                     'Invitations to see what you already are.',
                     style: TextStyle(
@@ -445,14 +485,17 @@ class _NotificationsPageState extends State<_NotificationsPage> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final topSpace = _responsiveVerticalSpace(context, 16);
+    final betweenNotificationAndText = _responsiveVerticalSpace(context, 40);
+    final betweenTextAndConclusion = _responsiveVerticalSpace(context, 28);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+    return _buildScrollableCenteredPage(
+      context: context,
+      horizontalPadding: 16,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Push notification toward upper portion of screen
-          SizedBox(height: screenHeight * 0.05),
+          SizedBox(height: topSpace),
 
           // Simulated notification (matches actual notification UI)
           NotificationSimulation(
@@ -462,8 +505,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
             onComplete: reduceMotion ? null : _onNotificationComplete,
           ),
 
-          // Flexible space between notification and centered content
-          const Spacer(),
+          SizedBox(height: betweenNotificationAndText),
 
           // Centered explanation and conclusion
           Padding(
@@ -480,7 +522,7 @@ class _NotificationsPageState extends State<_NotificationsPage> {
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: betweenTextAndConclusion),
 
           // Conclusion
           Padding(
@@ -500,9 +542,6 @@ class _NotificationsPageState extends State<_NotificationsPage> {
               ),
             ),
           ),
-
-          // Equal spacer below to center the text content
-          const Spacer(),
         ],
       ),
     );

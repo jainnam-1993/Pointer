@@ -118,6 +118,7 @@ Widget createGoldenTestApp({
   SharedPreferences? prefs,
   Pointing? initialPointing,
   bool highContrast = false,
+  double textScaleFactor = 1.0,
 }) {
   return ProviderScope(
     overrides: [
@@ -156,6 +157,7 @@ Widget createGoldenTestApp({
           size: size,
           devicePixelRatio: 3.0,
           padding: const EdgeInsets.only(top: 47, bottom: 34), // Safe area
+          textScaler: TextScaler.linear(textScaleFactor),
         ),
         child: SizedBox(width: size.width, height: size.height, child: child),
       ),

@@ -362,14 +362,9 @@ void main() {
     testWidgets('content is centered', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // HomeScreen uses Expanded with Center to center the card content
-      final expandedFinder = find.descendant(of: find.byType(SafeArea), matching: find.byType(Expanded));
-      expect(expandedFinder, findsOneWidget);
-
-      // Center widget inside Expanded provides centering
-      final centerFinder = find.descendant(of: expandedFinder, matching: find.byType(Center));
-      // Multiple Center widgets may exist, verify at least one is present
-      expect(centerFinder, findsWidgets);
+      // Main content card should be wrapped by a Center for vertical/horizontal centering.
+      final centeredCard = find.ancestor(of: find.byType(GlassCard), matching: find.byType(Center));
+      expect(centeredCard, findsWidgets);
     });
 
     testWidgets('has proper spacing between elements', (tester) async {

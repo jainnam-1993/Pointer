@@ -45,7 +45,22 @@ void main() {
       await expectGoldenMatches(tester, 'home_screen_minimal_pointing');
     });
 
-    // Note: Small device test skipped - HomeScreen needs responsive layout fixes
+    testWidgets('home screen with pointing on iPhone SE', (tester) async {
+      final prefs = await createMockPrefs();
+
+      await pumpForGolden(
+        tester,
+        createGoldenTestApp(
+          child: const HomeScreen(),
+          prefs: prefs,
+          initialPointing: goldenTestPointing,
+          size: GoldenDevices.iPhoneSE,
+        ),
+        size: GoldenDevices.iPhoneSE,
+      );
+
+      await expectGoldenMatches(tester, 'home_screen_with_pointing_iphonese');
+    });
   });
 
   // ==========================================================
@@ -89,7 +104,17 @@ void main() {
       await expectGoldenMatches(tester, 'lineages_screen_all_traditions');
     });
 
-    // Note: Small device test skipped - LineagesScreen needs responsive layout fixes
+    testWidgets('lineages screen on iPhone SE', (tester) async {
+      final prefs = await createMockPrefs();
+
+      await pumpForGolden(
+        tester,
+        createGoldenTestApp(child: const LineagesScreen(), prefs: prefs, size: GoldenDevices.iPhoneSE),
+        size: GoldenDevices.iPhoneSE,
+      );
+
+      await expectGoldenMatches(tester, 'lineages_screen_all_traditions_iphonese');
+    });
   });
 
   // ==========================================================

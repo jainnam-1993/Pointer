@@ -134,35 +134,24 @@ void main() {
 
       expect(notifier.state.viewCount, 2);
       expect(notifier.state.lastResetDate, '2026-02-08');
-      expect(notifier.state.limitReached, true);
-      expect(notifier.state.remaining, 0);
     });
   });
 
   group('DailyUsage', () {
-    test('limitReached is false when under limit', () {
+    test('stores raw view count', () {
       final usage = DailyUsage(viewCount: 1, lastResetDate: _todayString());
-      expect(usage.limitReached, false);
-      expect(usage.remaining, 1);
+      expect(usage.viewCount, 1);
     });
 
-    test('limitReached is true when at limit', () {
+    test('supports any view count value', () {
       final usage = DailyUsage(viewCount: 2, lastResetDate: _todayString());
-      expect(usage.limitReached, true);
-      expect(usage.remaining, 0);
-    });
-
-    test('limitReached is true when over limit', () {
-      final usage = DailyUsage(viewCount: 5, lastResetDate: _todayString());
-      expect(usage.limitReached, true);
-      expect(usage.remaining, -3);
+      expect(usage.viewCount, 2);
     });
 
     test('initial factory creates zero-count usage for today', () {
       final usage = DailyUsage.initial();
       expect(usage.viewCount, 0);
       expect(usage.lastResetDate, _todayString());
-      expect(usage.limitReached, false);
     });
 
     test('copyWith creates modified copy', () {
@@ -179,10 +168,6 @@ void main() {
 
       expect(modified.viewCount, 3);
       expect(modified.lastResetDate, '2026-02-09');
-    });
-
-    test('freeUserLimit is 2', () {
-      expect(DailyUsage.freeUserLimit, 2);
     });
   });
 }

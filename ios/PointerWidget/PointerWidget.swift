@@ -251,7 +251,6 @@ struct PointerWidgetEntryView: View {
                 .font(.system(size: 9, weight: .medium))
                 .foregroundColor(mutedTextColor)
                 .textCase(.uppercase)
-                .tracking(0.5)
 
             Spacer()
 
@@ -277,7 +276,6 @@ struct PointerWidgetEntryView: View {
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(mutedTextColor)
                     .textCase(.uppercase)
-                    .tracking(0.5)
                 Spacer()
             }
 
@@ -312,7 +310,6 @@ struct PointerWidgetEntryView: View {
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(mutedTextColor)
                     .textCase(.uppercase)
-                    .tracking(0.5)
                 Spacer()
             }
 
@@ -395,7 +392,6 @@ struct PointerWidgetEntryView: View {
                 .font(.system(size: 9, weight: .medium))
                 .foregroundColor(mutedTextColor)
                 .textCase(.uppercase)
-                .tracking(0.5)
 
             Spacer()
 
@@ -416,7 +412,6 @@ struct PointerWidgetEntryView: View {
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(mutedTextColor)
                     .textCase(.uppercase)
-                    .tracking(0.5)
                 Spacer()
             }
 
@@ -445,7 +440,6 @@ struct PointerWidgetEntryView: View {
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(mutedTextColor)
                     .textCase(.uppercase)
-                    .tracking(0.5)
                 Spacer()
             }
 
@@ -517,7 +511,11 @@ struct PointerWidgetEntryView: View {
     /// Circular Lock Screen widget - shows icon/symbol
     private var accessoryCircularWidget: some View {
         ZStack {
-            AccessoryWidgetBackground()
+            if #available(iOS 16.0, *) {
+                AccessoryWidgetBackground()
+            } else {
+                Color.clear
+            }
             Image(systemName: "sparkles")
                 .font(.system(size: 24, weight: .light))
         }
@@ -621,6 +619,25 @@ struct ContainerBackgroundView: View {
 struct PointerWidget: Widget {
     let kind: String = "PointerWidget"
 
+    private var supportedFamiliesList: [WidgetFamily] {
+        if #available(iOSApplicationExtension 16.0, *) {
+            return [
+                .systemSmall,
+                .systemMedium,
+                .systemLarge,
+                .accessoryCircular,
+                .accessoryRectangular,
+                .accessoryInline,
+            ]
+        }
+
+        return [
+            .systemSmall,
+            .systemMedium,
+            .systemLarge,
+        ]
+    }
+
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
@@ -635,14 +652,7 @@ struct PointerWidget: Widget {
         }
         .configurationDisplayName("Daily Pointing")
         .description("Wisdom from non-dual traditions")
-        .supportedFamilies([
-            .systemSmall,
-            .systemMedium,
-            .systemLarge,
-            .accessoryCircular,
-            .accessoryRectangular,
-            .accessoryInline
-        ])
+        .supportedFamilies(supportedFamiliesList)
     }
 }
 
@@ -685,8 +695,11 @@ extension Collection {
 
 // MARK: - Preview
 
+#if DEBUG
+@available(iOS 17.0, *)
 #Preview(as: .systemMedium) {
     PointerWidget()
 } timeline: {
-    PointingEntry(date: .now, data: .placeholder)
+    PointingEntry(date: Date(), data: .placeholder)
 }
+#endif

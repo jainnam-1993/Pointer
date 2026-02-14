@@ -292,17 +292,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                 // Notifications section
                 SettingsSectionHeader(title: 'NOTIFICATIONS'),
                 const SizedBox(height: 12),
-                if (!_permissionGranted)
-                  NotificationPermissionBanner(onEnable: _requestNotificationPermission),
+                if (!_permissionGranted) NotificationPermissionBanner(onEnable: _requestNotificationPermission),
                 GlassCard(
                   padding: EdgeInsets.zero,
                   child: Column(
                     children: [
                       SettingsRow(
                         title: 'Daily Pointings',
-                        subtitle: _permissionGranted
-                            ? _getNotificationCountSummary()
-                            : 'Permission required',
+                        subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
                         trailing: Switch(
                           value: _notificationsEnabled && _permissionGranted,
                           onChanged: (value) async {
@@ -325,13 +322,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       const SettingsDivider(),
                       SettingsRow(
                         title: 'Notification Times',
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getScheduleTimeSummary(), style: TextStyle(color: textColorMuted, fontSize: 14)),
-                            const SizedBox(width: 8),
-                            Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                          ],
+                        trailing: LayoutBuilder(
+                          builder: (context, constraints) {
+                            const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
+                            final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: maxSummaryWidth),
+                                  child: Text(
+                                    _getScheduleTimeSummary(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(color: textColorMuted, fontSize: 14),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                              ],
+                            );
+                          },
                         ),
                         onTap: _showNotificationTimesSheet,
                       ),

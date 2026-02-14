@@ -99,10 +99,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           builder: (context, ref, _) {
                             final isSaved = ref.watch(articleFavoritesProvider).contains(widget.article.id);
                             return IconButton(
-                              icon: Icon(
-                                isSaved ? Icons.bookmark : Icons.bookmark_border,
-                                color: isSaved ? colors.accent : colors.textPrimary,
-                              ),
+                              icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
                               onPressed: () {
                                 HapticFeedback.lightImpact();
                                 ref.read(articleFavoritesProvider.notifier).toggle(widget.article.id);
@@ -113,16 +110,6 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         IconButton(
                           icon: Icon(Icons.share_outlined, color: colors.textPrimary),
                           onPressed: () => _shareArticle(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: colors.glassBackground,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: colors.glassBorder),
-                          ),
-                          child: Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 12)),
                         ),
                       ],
                     ),
@@ -140,6 +127,24 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (_showTTSPlayer) const SizedBox(height: 16),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 48),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colors.glassBackground,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: colors.glassBorder),
+                            ),
+                            child: Text(
+                              traditionInfo.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: colors.textMuted, fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
                         Text(
                           widget.article.title,
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),

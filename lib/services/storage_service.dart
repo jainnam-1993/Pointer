@@ -314,6 +314,7 @@ class StorageService {
   Future<void> clearAll() async {
     await _prefs.remove(StorageKeys.onboardingCompleted);
     await _prefs.remove(StorageKeys.favoritePointings);
+    await _prefs.remove(StorageKeys.favoriteArticles);
     await _prefs.remove(StorageKeys.viewedPointings);
     await _prefs.remove(StorageKeys.viewedTeachings);
     await _prefs.remove(StorageKeys.preferredTraditions);

@@ -57,7 +57,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /** Whether a pointing transition animation is in progress. */
   bool _isAnimating = false;
 
-
   /** Accumulated vertical drag offset for the swipe blur effect. */
   double _swipeOffset = 0.0;
 
@@ -113,7 +112,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleAutoAdvance() async {
     // Skip if currently animating or swiping
     if (_isAnimating || _isSwipeInProgress) return;
-
 
     // Check if auto-advance is still enabled (user might have toggled it)
     final isEnabled = ref.read(autoAdvanceProvider);
@@ -275,14 +273,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Track tradition affinity (saves weighted 3x in affinity algorithm)
     final affinity = ref.read(affinityServiceProvider);
     await affinity.recordSave(pointing.tradition);
-
   }
 
   /** Inline tradition badge for card header (Phase 5.11) */
   Widget _buildInlineTraditionBadge(Tradition tradition, PointerColors colors, {Key? key}) {
     final traditionInfo = traditions[tradition]!;
+    final maxBadgeWidth = MediaQuery.of(context).size.width < 360 ? 150.0 : 190.0;
     return Container(
       key: key,
+      constraints: BoxConstraints(maxWidth: maxBadgeWidth),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
       child: Row(
@@ -290,11 +289,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
           const SizedBox(width: 6),
-          Text(
-            traditionInfo.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500),
+          Flexible(
+            child: Text(
+              traditionInfo.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: colors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500),
+            ),
           ),
         ],
       ),
@@ -340,6 +341,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final colors = context.colors;
+    final isCompactWidth = screenWidth < 360;
+    final cardHorizontalPadding = isCompactWidth ? 20.0 : 24.0;
+    final headerGap = isCompactWidth ? 6.0 : 8.0;
+    final actionIconGap = isCompactWidth ? 6.0 : 8.0;
 
     // Detect foldable/tablet with square-ish aspect ratio (< 1.3)
     final aspectRatio = screenHeight / screenWidth;
@@ -442,7 +447,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       CustomSemanticsAction(label: 'Share pointing'): _handleShare,
                                     },
                                     child: GlassCard(
-                                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+                                      padding: EdgeInsets.fromLTRB(cardHorizontalPadding, 20, cardHorizontalPadding, 28),
                                       borderRadius: 32,
                                       // Enable scrolling for large text / accessibility
                                       // On foldables (square aspect), enforce minimum height to use more space
@@ -459,25 +464,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           Padding(
                                             padding: const EdgeInsets.only(bottom: 20),
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 // Inline tradition badge with animation
-                                                AnimatedSwitcher(
-                                                  duration: const Duration(milliseconds: 200),
-                                                  switchInCurve: Curves.easeInOutCubic,
-                                                  switchOutCurve: Curves.easeInOutCubic,
-                                                  transitionBuilder: (child, animation) {
-                                                    return FadeTransition(
-                                                      opacity: animation,
-                                                      child: ScaleTransition(scale: animation, child: child),
-                                                    );
-                                                  },
-                                                  child: _buildInlineTraditionBadge(
-                                                    pointing.tradition,
-                                                    colors,
-                                                    key: ValueKey('${pointing.id}-badge'),
+                                                Expanded(
+                                                  child: Align(
+                                                    alignment: Alignment.centerLeft,
+                                                    child: AnimatedSwitcher(
+                                                      duration: const Duration(milliseconds: 200),
+                                                      switchInCurve: Curves.easeInOutCubic,
+                                                      switchOutCurve: Curves.easeInOutCubic,
+                                                      transitionBuilder: (child, animation) {
+                                                        return FadeTransition(
+                                                          opacity: animation,
+                                                          child: ScaleTransition(scale: animation, child: child),
+                                                        );
+                                                      },
+                                                      child: _buildInlineTraditionBadge(
+                                                        pointing.tradition,
+                                                        colors,
+                                                        key: ValueKey('${pointing.id}-badge'),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
+                                                SizedBox(width: headerGap),
                                                 // Heart + Share icons
                                                 Row(
                                                   mainAxisSize: MainAxisSize.min,
@@ -518,7 +528,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    const SizedBox(width: 8),
+                                                    SizedBox(width: actionIconGap),
                                                     // Share icon
                                                     Semantics(
                                                       button: true,
@@ -644,7 +654,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
-
           ],
         ),
       ),

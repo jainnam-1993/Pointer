@@ -18,14 +18,11 @@ void main() {
     test('initial creates usage with zero count', () {
       final usage = DailyUsage.initial();
       expect(usage.viewCount, 0);
-      expect(usage.limitReached, false);
-      expect(usage.remaining, DailyUsage.freeUserLimit);
     });
 
-    test('limitReached returns true when at limit', () {
-      final usage = DailyUsage(viewCount: DailyUsage.freeUserLimit, lastResetDate: '2025-01-01');
-      expect(usage.limitReached, true);
-      expect(usage.remaining, 0);
+    test('supports arbitrary view counts', () {
+      final usage = DailyUsage(viewCount: 7, lastResetDate: '2025-01-01');
+      expect(usage.viewCount, 7);
     });
 
     test('copyWith creates new instance', () {

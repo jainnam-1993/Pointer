@@ -26,6 +26,7 @@ class HistoryScreen extends ConsumerWidget {
     final viewedPointings = storage.viewedPointings;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final colors = context.colors;
+    final titleFontSize = MediaQuery.of(context).size.width < 360 ? 24.0 : 28.0;
 
     return Scaffold(
       body: Stack(
@@ -48,7 +49,14 @@ class HistoryScreen extends ConsumerWidget {
                         icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
                       ),
                       const SizedBox(width: 8),
-                      Text('Past Pointings', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28)),
+                      Expanded(
+                        child: Text(
+                          'Past Pointings',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: titleFontSize),
+                        ),
+                      ),
                     ],
                   ),
                 ),

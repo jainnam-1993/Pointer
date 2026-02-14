@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -81,6 +82,8 @@ class _TypewriterTextState extends State<TypewriterText> {
   late List<String> _words;
   int _visibleWordCount = 0;
   bool _isComplete = false;
+  Timer? _startDelayTimer;
+  Timer? _wordDelayTimer;
 
   @override
   void initState() {
@@ -104,6 +107,9 @@ class _TypewriterTextState extends State<TypewriterText> {
   }
 
   void _startAnimation() {
+    _startDelayTimer?.cancel();
+    _wordDelayTimer?.cancel();
+
     // Check if animations are disabled for accessibility
     if (_shouldReduceMotion) {
       setState(() {
@@ -114,7 +120,7 @@ class _TypewriterTextState extends State<TypewriterText> {
       return;
     }
 
-    Future.delayed(widget.startDelay, () {
+    _startDelayTimer = Timer(widget.startDelay, () {
       if (!mounted) return;
       _revealNextWord();
     });
@@ -133,12 +139,19 @@ class _TypewriterTextState extends State<TypewriterText> {
       _isComplete = true;
       widget.onComplete?.call();
     } else {
-      Future.delayed(widget.wordDelay, _revealNextWord);
+      _wordDelayTimer = Timer(widget.wordDelay, _revealNextWord);
     }
   }
 
   bool get _shouldReduceMotion {
     return MediaQuery.of(context).disableAnimations;
+  }
+
+  @override
+  void dispose() {
+    _startDelayTimer?.cancel();
+    _wordDelayTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -228,6 +241,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
   late Animation<double> _blurAnimation;
   late Animation<double> _emergeAnimation;
   bool _hasStarted = false;
+  Timer? _holdTimer;
 
   @override
   void initState() {
@@ -279,7 +293,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
         return;
       }
 
-      Future.delayed(widget.holdDuration, () {
+      _holdTimer = Timer(widget.holdDuration, () {
         if (!mounted) return;
         HapticFeedback.lightImpact();
         _hasStarted = true;
@@ -294,6 +308,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
 
   @override
   void dispose() {
+    _holdTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -375,6 +390,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
   late AnimationController _strikeController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _strikeAnimation;
+  final List<Timer> _timers = [];
 
   @override
   void initState() {
@@ -423,7 +439,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
       if (!mounted) return;
 
       // Wait then start strike-through
-      Future.delayed(widget.strikeDelay, () {
+      _scheduleTimer(widget.strikeDelay, () {
         if (!mounted) return;
 
         HapticFeedback.lightImpact();
@@ -443,7 +459,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
             if (!mounted) return;
 
             // Move to next item
-            Future.delayed(widget.itemDelay, () {
+            _scheduleTimer(widget.itemDelay, () {
               if (!mounted) return;
 
               setState(() {
@@ -459,12 +475,20 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     });
   }
 
+  void _scheduleTimer(Duration duration, VoidCallback callback) {
+    final timer = Timer(duration, callback);
+    _timers.add(timer);
+  }
+
   bool get _shouldReduceMotion {
     return MediaQuery.of(context).disableAnimations;
   }
 
   @override
   void dispose() {
+    for (final timer in _timers) {
+      timer.cancel();
+    }
     _fadeController.dispose();
     _strikeController.dispose();
     super.dispose();
@@ -595,6 +619,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
   bool _isVisible = false;
+  Timer? _appearanceTimer;
 
   @override
   void initState() {
@@ -634,7 +659,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
         return;
       }
 
-      Future.delayed(widget.delay, () {
+      _appearanceTimer = Timer(widget.delay, () {
         if (!mounted) return;
         HapticFeedback.mediumImpact();
         setState(() => _isVisible = true);
@@ -649,6 +674,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 
   @override
   void dispose() {
+    _appearanceTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
