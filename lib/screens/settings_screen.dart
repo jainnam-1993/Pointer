@@ -132,7 +132,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         content: Text(
           'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
           'Each pointing is a direct invitation to recognize what you already are.\n\n'
-          'Version 1.0.0',
+          'Version 1.1.0',
           style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
         ),
         actions: [
@@ -228,15 +228,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     );
   }
 
-  /** Increments version tap counter; reveals developer options after 7 taps. */
+  /** Increments version tap counter; toggles developer options every 7 taps. */
   void _onVersionTap() {
     setState(() {
       _versionTapCount++;
-      if (_versionTapCount >= 7 && !_showDeveloperOptions) {
-        _showDeveloperOptions = true;
+      if (_versionTapCount >= 7) {
+        _showDeveloperOptions = !_showDeveloperOptions;
+        _versionTapCount = 0;
         HapticFeedback.heavyImpact();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: const Text('Developer options enabled'), behavior: SnackBarBehavior.floating, duration: const Duration(seconds: 2)),
+          SnackBar(
+            content: Text(_showDeveloperOptions ? 'Developer options enabled' : 'Developer options disabled'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
         );
       }
     });
@@ -346,22 +351,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                           },
                         ),
                         onTap: _showNotificationTimesSheet,
-                      ),
-                      const SettingsDivider(),
-                      SettingsRow(
-                        title: 'Send Test Notification',
-                        subtitle: 'Verify notifications are working',
-                        trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
-                        onTap: () async {
-                          HapticFeedback.mediumImpact();
-                          final notificationService = ref.read(notificationServiceProvider);
-                          await notificationService.sendTestNotification();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
-                          }
-                        },
                       ),
                     ],
                   ),
@@ -529,7 +518,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                 GestureDetector(
                   onTap: _onVersionTap,
                   child: Center(
-                    child: Text('Here Now v1.0.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
+                    child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
                   ),
                 ),
               ],
