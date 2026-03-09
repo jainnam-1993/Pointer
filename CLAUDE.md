@@ -169,6 +169,24 @@ fastlane/                      # Play Store deployment
 - **Use for**: Black-box E2E, store screenshots, native widget testing
 - **Don't use for**: State-controlled tests (use Flutter), WCAG compliance (use Flutter accessibility tests), timing-sensitive flows
 
+## Release Status
+
+**Current version**: 1.2.0+15 (pubspec), App Store version 1.1
+**iOS**: v1.2.0 (build 13) — Submitted to App Review with 4 IAPs (Waiting for Review, auto-release on approval)
+**Android**: v1.2.0 (build 15) — Live on Play Store internal testing. Production blocked by Google's new developer account policy (requires 20+ testers × 14 days closed testing)
+**IAPs (both stores)**: 4 consumable tip jar products configured and active
+  - `com.dailypointer.tip_small` — Buy Me a Tea ($0.99)
+  - `com.dailypointer.tip_medium` — Buy Me a Cushion ($4.99)
+  - `com.dailypointer.tip_large` — Buy Me Incense ($9.99)
+  - `com.dailypointer.tip_generous` — Fund a Retreat ($24.99)
+
+## Next Actions
+
+- **When Apple approves**: Post Reddit update from `docs/REDDIT_V1.2_UPDATE.md` to r/nonduality thread
+- **Android production**: Promote internal → closed testing (Alpha), recruit 20+ testers, wait 14 days, then apply for production access
+- **App Store IAP prices**: Verify tip_medium ($4.99), tip_large ($9.99), tip_generous ($24.99) were applied correctly after review approval
+- **Version alignment**: iOS has build 13, Android has build 15 — cosmetic mismatch, same code. Align on next release
+
 ## TODOs
 
 - Backend API (planned per EXECUTION_PLAN.md)
