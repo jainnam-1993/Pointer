@@ -5,6 +5,11 @@ import 'package:pointer/data/teachers.dart';
 import 'package:pointer/data/teaching.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() async {
+    await loadTeachers();
+  });
   group('Pointings content validation', () {
     test('no empty content fields', () {
       for (final p in pointings) {

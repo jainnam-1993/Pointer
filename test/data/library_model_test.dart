@@ -1,16 +1,23 @@
 // Library Model Tests
-// Tests for Article, TeacherProfile models and library providers
+// Tests for Article, Teacher models and library providers
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
-import 'package:pointer/data/teacher_profiles.dart';
+import 'package:pointer/data/teachers.dart';
 import 'package:pointer/models/article.dart';
-import 'package:pointer/models/teacher_profile.dart';
+import 'package:pointer/models/teacher.dart';
 import 'package:pointer/providers/library_providers.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() async {
+    // Load teacher data from JSON asset before running tests
+    await loadTeachers();
+  });
+
   group('Article Model', () {
     test('creates Article correctly with all fields', () {
       final article = Article(
@@ -108,13 +115,13 @@ void main() {
     });
   });
 
-  group('TeacherProfile Model', () {
-    test('creates TeacherProfile correctly with all fields', () {
-      const teacher = TeacherProfile(
+  group('Teacher Model', () {
+    test('creates Teacher correctly with all fields', () {
+      const teacher = Teacher(
         name: 'Test Teacher',
         bio: 'A biographical description',
         dates: '1900-2000',
-        primaryTradition: Tradition.advaita,
+        tradition: Tradition.advaita,
         imageAsset: 'assets/teachers/test.png',
         keyTeachings: ['Teaching 1', 'Teaching 2'],
         articleIds: ['art_001', 'art_002'],
@@ -126,7 +133,7 @@ void main() {
       expect(teacher.name, 'Test Teacher');
       expect(teacher.bio, 'A biographical description');
       expect(teacher.dates, '1900-2000');
-      expect(teacher.primaryTradition, Tradition.advaita);
+      expect(teacher.tradition, Tradition.advaita);
       expect(teacher.imageAsset, 'assets/teachers/test.png');
       expect(teacher.keyTeachings.length, 2);
       expect(teacher.articleIds.length, 2);
@@ -135,8 +142,8 @@ void main() {
       expect(teacher.location, 'Test Location');
     });
 
-    test('creates TeacherProfile with minimal required fields', () {
-      const teacher = TeacherProfile(name: 'Minimal Teacher', primaryTradition: Tradition.zen);
+    test('creates Teacher with minimal required fields', () {
+      const teacher = Teacher(name: 'Minimal Teacher', tradition: Tradition.zen);
 
       expect(teacher.name, 'Minimal Teacher');
       expect(teacher.bio, isNull);
@@ -148,33 +155,60 @@ void main() {
     });
 
     test('hasArticle returns correct result', () {
-      const teacher = TeacherProfile(name: 'Article Teacher', primaryTradition: Tradition.direct, articleIds: ['art_001', 'art_002']);
+      const teacher = Teacher(name: 'Article Teacher', tradition: Tradition.direct, articleIds: ['art_001', 'art_002']);
 
       expect(teacher.hasArticle('art_001'), true);
       expect(teacher.hasArticle('art_003'), false);
     });
 
     test('hasPointing returns correct result', () {
-      const teacher = TeacherProfile(name: 'Pointing Teacher', primaryTradition: Tradition.contemporary, pointingIds: ['p_001']);
+      const teacher = Teacher(name: 'Pointing Teacher', tradition: Tradition.contemporary, pointingIds: ['p_001']);
 
       expect(teacher.hasPointing('p_001'), true);
       expect(teacher.hasPointing('p_002'), false);
     });
 
     test('isFromTradition returns correct result', () {
-      const teacher = TeacherProfile(name: 'Tradition Teacher', primaryTradition: Tradition.advaita);
+      const teacher = Teacher(name: 'Tradition Teacher', tradition: Tradition.advaita);
 
       expect(teacher.isFromTradition(Tradition.advaita), true);
       expect(teacher.isFromTradition(Tradition.zen), false);
     });
 
     test('equality works correctly', () {
-      const teacher1 = TeacherProfile(name: 'Same Teacher', primaryTradition: Tradition.zen);
+      const teacher1 = Teacher(name: 'Same Teacher', tradition: Tradition.zen);
 
-      const teacher2 = TeacherProfile(name: 'Same Teacher', primaryTradition: Tradition.advaita, bio: 'Different bio');
+      const teacher2 = Teacher(name: 'Same Teacher', tradition: Tradition.advaita, bio: 'Different bio');
 
       expect(teacher1 == teacher2, true);
       expect(teacher1.hashCode, teacher2.hashCode);
+    });
+
+    test('fromJson round-trips correctly', () {
+      final json = <String, dynamic>{
+        'name': 'JSON Teacher',
+        'bio': 'A bio',
+        'dates': '1900-2000',
+        'tradition': 'advaita',
+        'tags': <dynamic>['tag1', 'tag2'],
+        'imageAsset': null,
+        'keyTeachings': <dynamic>['Teaching 1'],
+        'quote': 'A quote',
+        'location': 'Some Place',
+        'articleIds': <dynamic>['art_001'],
+        'pointingIds': <dynamic>['p_001'],
+      };
+
+      final teacher = Teacher.fromJson(json);
+      expect(teacher.name, 'JSON Teacher');
+      expect(teacher.bio, 'A bio');
+      expect(teacher.tradition, Tradition.advaita);
+      expect(teacher.tags, ['tag1', 'tag2']);
+      expect(teacher.keyTeachings, ['Teaching 1']);
+      expect(teacher.quote, 'A quote');
+      expect(teacher.location, 'Some Place');
+      expect(teacher.articleIds, ['art_001']);
+      expect(teacher.pointingIds, ['p_001']);
     });
   });
 
@@ -239,19 +273,19 @@ void main() {
     });
   });
 
-  group('Teacher Profiles Data', () {
-    test('teacher profiles list is not empty', () {
-      expect(teacherProfiles, isNotEmpty);
+  group('Teachers Data', () {
+    test('teachers map is not empty', () {
+      expect(teachers, isNotEmpty);
     });
 
-    test('all teacher profiles have required fields', () {
-      for (final teacher in teacherProfiles) {
+    test('all teachers have required fields', () {
+      for (final teacher in teachers.values) {
         expect(teacher.name, isNotEmpty);
       }
     });
 
-    test('teacher profiles cover multiple traditions', () {
-      final traditions = teacherProfiles.map((t) => t.primaryTradition).toSet();
+    test('teachers cover multiple traditions', () {
+      final traditions = teachers.values.map((t) => t.tradition).toSet();
       expect(traditions.length, greaterThanOrEqualTo(3));
     });
 
@@ -275,19 +309,19 @@ void main() {
       final advaitaTeachers = getTeachersByTradition(Tradition.advaita);
       expect(advaitaTeachers, isNotEmpty);
       for (final teacher in advaitaTeachers) {
-        expect(teacher.primaryTradition, Tradition.advaita);
+        expect(teacher.tradition, Tradition.advaita);
       }
     });
 
     test('getAllTeacherNames returns all names', () {
       final names = getAllTeacherNames();
-      expect(names.length, teacherProfiles.length);
+      expect(names.length, teachers.length);
     });
 
     test('getTeachersWithArticles returns teachers with articleIds', () {
-      final teachers = getTeachersWithArticles();
-      expect(teachers, isNotEmpty);
-      for (final teacher in teachers) {
+      final teachersWithArts = getTeachersWithArticles();
+      expect(teachersWithArts, isNotEmpty);
+      for (final teacher in teachersWithArts) {
         expect(teacher.articleIds, isNotEmpty);
       }
     });
@@ -351,8 +385,8 @@ void main() {
     });
 
     test('teacherProfilesProvider returns all teachers', () {
-      final teachers = container.read(teacherProfilesProvider);
-      expect(teachers, teacherProfiles);
+      final allTeachersList = container.read(teacherProfilesProvider);
+      expect(allTeachersList.length, teachers.length);
     });
 
     test('teacherByNameProvider returns correct teacher', () {
@@ -375,7 +409,7 @@ void main() {
       final directTeachers = container.read(teachersByTraditionProvider(Tradition.direct));
       expect(directTeachers, isNotEmpty);
       for (final teacher in directTeachers) {
-        expect(teacher.primaryTradition, Tradition.direct);
+        expect(teacher.tradition, Tradition.direct);
       }
     });
 
@@ -439,7 +473,7 @@ void main() {
 
     test('totalTeacherCountProvider returns correct count', () {
       final count = container.read(totalTeacherCountProvider);
-      expect(count, teacherProfiles.length);
+      expect(count, teachers.length);
     });
 
     test('totalReadingTimeProvider calculates correctly', () {

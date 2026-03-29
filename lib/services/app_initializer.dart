@@ -32,9 +32,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
+import '../data/teachers.dart';
 import '../data/teaching.dart';
-import '../data/teachings/adyashanti.dart';
-import '../data/teachings/papaji.dart';
 import '../providers/core_providers.dart';
 import '../router.dart';
 import 'notification_service.dart';
@@ -161,9 +160,11 @@ class AppInitializer {
     await WidgetService.populatePointingsCache();
     await WidgetService.processPendingWidgetActions();
 
-    TeachingRepository.initialize(
-      pointings: pointings,
-      additionalTeachings: [...papajiTeachings, ...adyashantiTeachings],
-    );
+    // Load teacher data from JSON asset
+    await loadTeachers();
+
+    // Initialize teaching repository with pointings + JSON teachings
+    TeachingRepository.initialize(pointings: pointings);
+    await TeachingRepository.loadFromAsset();
   }
 }

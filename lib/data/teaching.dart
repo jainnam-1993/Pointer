@@ -11,6 +11,10 @@
  */
 library;
 
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+
 import 'pointings.dart';
 
 /** Type of teaching content */
@@ -339,6 +343,29 @@ class Teaching {
     this.dateAdded,
   });
 
+  /** Deserialize from JSON map (e.g., from `assets/data/teachings.json`). */
+  factory Teaching.fromJson(Map<String, dynamic> json) {
+    return Teaching(
+      id: json['id'] as String,
+      content: json['content'] as String,
+      instruction: json['instruction'] as String?,
+      teacher: json['teacher'] as String,
+      source: json['source'] as String?,
+      lineage: Tradition.values.firstWhere(
+        (t) => t.name == json['lineage'],
+        orElse: () => Tradition.contemporary,
+      ),
+      topicTags: (json['topicTags'] as List<dynamic>?)?.cast<String>().toSet() ?? const <String>{},
+      moodTags: (json['moodTags'] as List<dynamic>?)?.cast<String>().toSet() ?? const <String>{},
+      type: TeachingType.values.firstWhere(
+        (t) => t.name == json['type'],
+        orElse: () => TeachingType.extract,
+      ),
+      sourceUrl: json['sourceUrl'] as String?,
+      dateAdded: json['dateAdded'] != null ? DateTime.tryParse(json['dateAdded'] as String) : null,
+    );
+  }
+
   /** Convert existing Pointing to Teaching */
   factory Teaching.fromPointing(Pointing p) {
     return Teaching(
@@ -493,6 +520,32 @@ class TeachingRepository {
     }
 
     _initialized = true;
+  }
+
+  /**
+   * Load teachings from `assets/data/teachings.json` and add to the repository.
+   *
+   * Validates topic and mood tags against [TopicTags.all] and [MoodTags.all].
+   * Invalid tags trigger an assertion failure in debug mode.
+   */
+  static Future<void> loadFromAsset() async {
+    final jsonString = await rootBundle.loadString('assets/data/teachings.json');
+    final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+    final teachings = jsonList.map((e) => Teaching.fromJson(e as Map<String, dynamic>)).toList();
+    _validateTags(teachings);
+    _allTeachings.addAll(teachings);
+  }
+
+  /** Validate that all topic and mood tags reference known constants. */
+  static void _validateTags(List<Teaching> teachings) {
+    for (final t in teachings) {
+      for (final tag in t.topicTags) {
+        assert(TopicTags.all.contains(tag), 'Unknown topic tag: "$tag" in teaching ${t.id}');
+      }
+      for (final tag in t.moodTags) {
+        assert(MoodTags.all.contains(tag), 'Unknown mood tag: "$tag" in teaching ${t.id}');
+      }
+    }
   }
 
   /** Clear and reinitialize (for testing) */
