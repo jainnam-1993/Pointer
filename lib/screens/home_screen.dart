@@ -108,17 +108,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _autoAdvanceTimer = Timer.periodic(Duration(seconds: delaySeconds), (_) => _handleAutoAdvance());
   }
 
-  /** Handles automatic advancement to next pointing */
-  Future<void> _handleAutoAdvance() async {
-    // Skip if currently animating or swiping
-    if (_isAnimating || _isSwipeInProgress) return;
-
-    // Check if auto-advance is still enabled (user might have toggled it)
-    final isEnabled = ref.read(autoAdvanceProvider);
-    if (!isEnabled) {
-      _autoAdvanceTimer?.cancel();
-      return;
-    }
+  /**
+   * Core advance logic shared by auto-advance and manual next.
+   *
+   * Advances the pointing, waits for transition animation, announces
+   * to screen readers, updates widget, records view history and
+   * affinity, then restarts the auto-advance timer.
+   *
+   * [withHaptic] triggers medium haptic feedback (manual advance only).
+   */
+  Future<void> _advancePointing({bool withHaptic = false}) async {
+    if (withHaptic) HapticFeedback.mediumImpact();
 
     setState(() => _isAnimating = true);
 
@@ -145,6 +145,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _startAutoAdvanceTimer();
   }
 
+  /** Handles automatic advancement to next pointing */
+  Future<void> _handleAutoAdvance() async {
+    // Skip if currently animating or swiping
+    if (_isAnimating || _isSwipeInProgress) return;
+
+    // Check if auto-advance is still enabled (user might have toggled it)
+    final isEnabled = ref.read(autoAdvanceProvider);
+    if (!isEnabled) {
+      _autoAdvanceTimer?.cancel();
+      return;
+    }
+
+    await _advancePointing();
+  }
+
   /** Announces pointing content to screen readers */
   void _announcePointingContent(BuildContext context, Pointing pointing) {
     final traditionInfo = traditions[pointing.tradition]!;
@@ -167,36 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
    */
   Future<void> _handleNext() async {
     if (_isAnimating) return;
-
-    // Haptic feedback
-    HapticFeedback.mediumImpact();
-
-    setState(() => _isAnimating = true);
-
-    // Get next pointing
-    ref.read(currentPointingProvider.notifier).nextPointing();
-    ref.read(dailyUsageProvider.notifier).recordView();
-
-    // Wait for transition animation to complete
-    await Future.delayed(300.ms);
-
-    setState(() => _isAnimating = false);
-
-    // Announce new pointing to screen readers and update widget
-    final newPointing = ref.read(currentPointingProvider);
-    if (mounted) _announcePointingContent(context, newPointing);
-    WidgetService.updateWidget(newPointing);
-
-    // Record in history
-    final storage = ref.read(storageServiceProvider);
-    await storage.markPointingAsViewed(newPointing.id);
-
-    // Track tradition affinity for personalization
-    final affinity = ref.read(affinityServiceProvider);
-    await affinity.recordView(newPointing.tradition);
-
-    // Restart timer for the new pointing (gives full 60s with new content)
-    _startAutoAdvanceTimer();
+    await _advancePointing(withHaptic: true);
   }
 
   /** Handles navigation to the previous pointing with haptic feedback. */

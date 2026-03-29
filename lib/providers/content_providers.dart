@@ -3,7 +3,7 @@
  *
  * Manages spiritual content delivery: daily [Pointing] navigation via
  * [CurrentPointingNotifier] (round-robin with persistent shuffle order),
- * user favorites via [FavoritesNotifier], tradition affinity learning via
+ * user favorites via generic [FavoritesNotifier], tradition affinity learning via
  * [AffinityService], teaching library filters via [TeachingFilterNotifier],
  * and preferred tradition selection via [PreferredTraditionsNotifier].
  *
@@ -186,79 +186,71 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 // ============================================================
 
 /**
- * Provider for saved/favorited [Pointing] IDs managed by [FavoritesNotifier].
+ * Generic favorites manager with toggle semantics.
+ *
+ * Replaces the former `FavoritesNotifier` and `ArticleFavoritesNotifier`
+ * which were structural clones differing only in storage callbacks.
+ * Persists state via injected [load], [add], and [remove] functions,
+ * decoupling the notifier from specific [StorageService] methods.
+ */
+class FavoritesNotifier extends StateNotifier<List<String>> {
+  final Future<void> Function(String) _add;
+  final Future<void> Function(String) _remove;
+
+  FavoritesNotifier({
+    required List<String> Function() load,
+    required Future<void> Function(String) add,
+    required Future<void> Function(String) remove,
+  })  : _add = add,
+        _remove = remove,
+        super(load());
+
+  /** Whether the given [id] is currently in the favorites list. */
+  bool isFavorite(String id) => state.contains(id);
+
+  /**
+   * Toggles the favorite state of an item by [id].
+   *
+   * Adds if absent, removes if present. Persists immediately.
+   */
+  Future<void> toggle(String id) async {
+    if (state.contains(id)) {
+      state = state.where((e) => e != id).toList();
+      await _remove(id);
+    } else {
+      state = [...state, id];
+      await _add(id);
+    }
+  }
+}
+
+/**
+ * Provider for saved/favorited [Pointing] IDs.
  *
  * State is a list of pointing ID strings, persisted via [StorageService].
- * Favorites are interleaved into the home widget rotation by [WidgetService].
+ * Favorites are interleaved into the home widget rotation by [WidgetService]
+ * and feed into [AffinityService] for tradition preference learning (3x weight).
  */
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(storage);
+  return FavoritesNotifier(
+    load: () => storage.favorites,
+    add: storage.addFavorite,
+    remove: storage.removeFavorite,
+  );
 });
 
 /**
- * Manages the user's saved/favorited [Pointing] IDs.
- *
- * Persists favorites through [StorageService]. Supports toggle semantics
- * (add if absent, remove if present) and lookup. The favorites list
- * also feeds into [WidgetService] for home screen widget content and
- * [AffinityService] for tradition preference learning (3x weight for saves).
+ * Provider for saved/bookmarked [Article] IDs, persisted via [StorageService].
  */
-class FavoritesNotifier extends StateNotifier<List<String>> {
-  final StorageService _storage;
-
-  FavoritesNotifier(this._storage) : super(_storage.favorites);
-
-  /**
-   * Toggles the favorite state of a [Pointing] by [pointingId].
-   *
-   * Adds to favorites if not present, removes if already saved.
-   * Persists the change immediately via [StorageService].
-   */
-  Future<void> toggle(String pointingId) async {
-    if (state.contains(pointingId)) {
-      await _storage.removeFavorite(pointingId);
-      state = [...state]..remove(pointingId);
-    } else {
-      await _storage.addFavorite(pointingId);
-      state = [...state, pointingId];
-    }
-  }
-
-  /** Returns whether the [Pointing] with [pointingId] is currently favorited. */
-  bool isFavorite(String pointingId) => state.contains(pointingId);
-}
-
-// ============================================================
-// Article Favorites
-// ============================================================
-
-/** Saved article IDs, persisted via [StorageService]. */
-final articleFavoritesProvider = StateNotifierProvider<ArticleFavoritesNotifier, List<String>>((ref) {
+final articleFavoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return ArticleFavoritesNotifier(storage);
+  return FavoritesNotifier(
+    load: () => storage.favoriteArticles,
+    add: storage.addFavoriteArticle,
+    remove: storage.removeFavoriteArticle,
+  );
 });
-
-/** Manages saved/bookmarked [Article] IDs with toggle semantics. */
-class ArticleFavoritesNotifier extends StateNotifier<List<String>> {
-  final StorageService _storage;
-
-  ArticleFavoritesNotifier(this._storage) : super(_storage.favoriteArticles);
-
-  /** Toggle saved state — add if absent, remove if present. */
-  Future<void> toggle(String articleId) async {
-    if (state.contains(articleId)) {
-      await _storage.removeFavoriteArticle(articleId);
-      state = [...state]..remove(articleId);
-    } else {
-      await _storage.addFavoriteArticle(articleId);
-      state = [...state, articleId];
-    }
-  }
-
-  /** Whether the given article is currently saved. */
-  bool isSaved(String articleId) => state.contains(articleId);
-}
 
 // ============================================================
 // Teaching Filter - Tag-based filtering for Library
