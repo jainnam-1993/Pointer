@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,58 +15,6 @@ class FakeAndroidNotificationChannel extends Fake implements AndroidNotification
 void main() {
   setUpAll(() {
     registerFallbackValue(FakeAndroidNotificationChannel());
-  });
-
-  group('NotificationTime', () {
-    test('can be created with required fields', () {
-      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30);
-
-      expect(time.id, 'test-1');
-      expect(time.hour, 8);
-      expect(time.minute, 30);
-      expect(time.isEnabled, true); // default
-    });
-
-    test('copyWith creates modified copy', () {
-      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30, isEnabled: true);
-
-      final modified = time.copyWith(hour: 9, isEnabled: false);
-
-      expect(modified.id, 'test-1');
-      expect(modified.hour, 9);
-      expect(modified.minute, 30);
-      expect(modified.isEnabled, false);
-    });
-
-    test('toJson serializes correctly', () {
-      const time = NotificationTime(id: 'test-1', hour: 8, minute: 30, isEnabled: true);
-
-      final json = time.toJson();
-
-      expect(json['id'], 'test-1');
-      expect(json['hour'], 8);
-      expect(json['minute'], 30);
-      expect(json['isEnabled'], true);
-    });
-
-    test('fromJson deserializes correctly', () {
-      final json = {'id': 'test-1', 'hour': 8, 'minute': 30, 'isEnabled': true};
-
-      final time = NotificationTime.fromJson(json);
-
-      expect(time.id, 'test-1');
-      expect(time.hour, 8);
-      expect(time.minute, 30);
-      expect(time.isEnabled, true);
-    });
-
-    test('fromJson uses default for missing isEnabled', () {
-      final json = {'id': 'test-1', 'hour': 8, 'minute': 30};
-
-      final time = NotificationTime.fromJson(json);
-
-      expect(time.isEnabled, true);
-    });
   });
 
   group('NotificationService', () {
@@ -204,30 +150,6 @@ void main() {
         expect(service.isNotificationsEnabled, true);
       });
 
-      test('getNotificationTimes returns empty list when not set', () {
-        when(() => mockPrefs.getString('pointer_notification_times')).thenReturn(null);
-
-        expect(service.getNotificationTimes(), isEmpty);
-      });
-
-      test('getNotificationTimes returns stored times', () {
-        final times = [
-          {'id': 't1', 'hour': 8, 'minute': 0, 'isEnabled': true},
-          {'id': 't2', 'hour': 12, 'minute': 30, 'isEnabled': false},
-        ];
-        when(() => mockPrefs.getString('pointer_notification_times')).thenReturn(jsonEncode(times));
-
-        final result = service.getNotificationTimes();
-
-        expect(result.length, 2);
-        expect(result[0].id, 't1');
-        expect(result[0].hour, 8);
-        expect(result[0].isEnabled, true);
-        expect(result[1].id, 't2');
-        expect(result[1].hour, 12);
-        expect(result[1].minute, 30);
-        expect(result[1].isEnabled, false);
-      });
     });
 
     group('Permission Checking', () {

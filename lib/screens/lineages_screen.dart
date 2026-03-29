@@ -248,7 +248,13 @@ class _TraditionCard extends StatelessWidget {
                 // Info button
                 GestureDetector(
                   onTap: onInfoTap,
-                  child: Icon(Icons.info_outline, color: colors.textMuted, size: 20),
+                  child: SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Center(
+                      child: Icon(Icons.info_outline, color: colors.textMuted, size: 20),
+                    ),
+                  ),
                 ),
               ],
             ),

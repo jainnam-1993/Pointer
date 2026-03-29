@@ -11,15 +11,21 @@
  */
 library;
 
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:media_kit/media_kit.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
+import 'services/maestro_hooks.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'theme/app_theme.dart';
@@ -68,6 +74,11 @@ void notificationActionCallback(NotificationResponse response) {
 void main() async {
   MediaKit.ensureInitialized();
 
+  // Register Maestro MCP VM Service extensions in debug mode
+  if (kDebugMode) {
+    MaestroHooks.init();
+  }
+
   final result = await AppInitializer.initialize(
     onNotificationAction: notificationActionCallback,
   );
@@ -96,19 +107,62 @@ class PointerApp extends ConsumerStatefulWidget {
 }
 
 class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObserver {
+  static const _widgetChannel = MethodChannel('com.dailypointer/widget');
+  StreamSubscription? _widgetClickSub;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // Opening bell sound is embedded in the splash video asset —
     // no separate just_audio playback needed (avoids codec contention).
+
+    _setupWidgetDeepLink();
   }
 
   @override
   void dispose() {
+    _widgetClickSub?.cancel();
     ref.read(ambientSoundServiceProvider).dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  /// Set up listeners for widget deep-link taps from both platforms.
+  void _setupWidgetDeepLink() {
+    // Android: MethodChannel from MainActivity
+    _widgetChannel.setMethodCallHandler((call) async {
+      if (call.method == 'onWidgetPointingTap') {
+        final pointingId = call.arguments as String?;
+        if (pointingId != null) {
+          debugPrint('[WidgetDeepLink] Android tap: $pointingId');
+          _navigateToPointing(pointingId);
+        }
+      }
+    });
+
+    // iOS: widgetURL deep-link via home_widget
+    _widgetClickSub = HomeWidget.widgetClicked.listen((uri) {
+      if (uri == null) return;
+      debugPrint('[WidgetDeepLink] iOS tap: $uri');
+      // URI format: dailypointer://pointing/{id}
+      if (uri.host == 'pointing' && uri.pathSegments.isNotEmpty) {
+        _navigateToPointing(uri.pathSegments.first);
+      }
+    });
+  }
+
+  /// Navigate to the home tab and set the current pointing by ID.
+  void _navigateToPointing(String pointingId) {
+    final found = ref.read(currentPointingProvider.notifier).setPointingById(pointingId);
+    if (found) {
+      // Navigate to home tab
+      final router = ref.read(routerProvider);
+      router.go('/');
+      debugPrint('[WidgetDeepLink] Navigated to pointing: $pointingId');
+    } else {
+      debugPrint('[WidgetDeepLink] Pointing not found: $pointingId');
+    }
   }
 
   @override
@@ -139,6 +193,11 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
       themeMode: themeMode,
       routerConfig: router,
       builder: (context, child) {
+        // Set root context for Maestro MCP tree walker (covers all routes + overlays)
+        if (kDebugMode) {
+          MaestroHooks.setContext(context);
+        }
+
         final isDark = Theme.of(context).brightness == Brightness.dark;
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(

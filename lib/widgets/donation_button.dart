@@ -273,6 +273,7 @@ class _TipOptionCard extends StatelessWidget {
         opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
           padding: const EdgeInsets.all(12),
+          constraints: const BoxConstraints(minHeight: 44),
           decoration: BoxDecoration(
             color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),

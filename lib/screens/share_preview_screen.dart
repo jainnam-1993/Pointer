@@ -252,23 +252,28 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
             itemBuilder: (context, index) {
               final template = ShareTemplate.values[index];
               final isSelected = template == selected;
-              return GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  ref.read(shareTemplateProvider.notifier).setTemplate(template);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
-                  ),
-                  child: Text(
-                    template.displayName,
-                    style: TextStyle(
-                      color: isSelected ? colors.primary : colors.textSecondary,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              return Semantics(
+                button: true,
+                selected: isSelected,
+                label: '${template.displayName} style',
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    ref.read(shareTemplateProvider.notifier).setTemplate(template);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                    ),
+                    child: Text(
+                      template.displayName,
+                      style: TextStyle(
+                        color: isSelected ? colors.primary : colors.textSecondary,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      ),
                     ),
                   ),
                 ),
@@ -303,35 +308,40 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
             itemBuilder: (context, index) {
               final format = ShareFormat.values[index];
               final isSelected = format == selected;
-              return GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  ref.read(shareFormatProvider.notifier).setFormat(format);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        format == ShareFormat.square ? Icons.crop_square : Icons.crop_portrait,
-                        size: 18,
-                        color: isSelected ? colors.primary : colors.textSecondary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        format.displayName,
-                        style: TextStyle(
+              return Semantics(
+                button: true,
+                selected: isSelected,
+                label: '${format.displayName} format',
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    ref.read(shareFormatProvider.notifier).setFormat(format);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          format == ShareFormat.square ? Icons.crop_square : Icons.crop_portrait,
+                          size: 18,
                           color: isSelected ? colors.primary : colors.textSecondary,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Text(
+                          format.displayName,
+                          style: TextStyle(
+                            color: isSelected ? colors.primary : colors.textSecondary,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

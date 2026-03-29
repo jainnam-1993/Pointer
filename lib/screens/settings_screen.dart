@@ -280,15 +280,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
     final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       body: Stack(
         children: [
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 8),
+              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
               children: [
-                StaggeredFadeIn(index: 0, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
+                StaggeredFadeIn(index: 0, child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge))),
                 const SizedBox(height: 24),
 
                 // Notifications section

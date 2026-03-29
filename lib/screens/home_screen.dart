@@ -287,7 +287,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
+          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14))),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
@@ -511,7 +511,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                           }
                                                         },
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(8),
+                                                          padding: const EdgeInsets.all(13),
                                                           decoration: BoxDecoration(
                                                             color: colors.accent.withValues(alpha: 0.1),
                                                             borderRadius: BorderRadius.circular(10),
@@ -537,7 +537,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                       child: GestureDetector(
                                                         onTap: _handleShare,
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(8),
+                                                          padding: const EdgeInsets.all(13),
                                                           decoration: BoxDecoration(
                                                             color: colors.accent.withValues(alpha: 0.1),
                                                             borderRadius: BorderRadius.circular(10),
@@ -681,9 +681,9 @@ class _SourceCitation extends StatelessWidget {
     final style = TextStyle(
       fontSize: 12,
       fontStyle: FontStyle.italic,
-      color: colors.textSecondary.withValues(alpha: 0.6),
+      color: colors.textMuted,
       decoration: match != null ? TextDecoration.underline : null,
-      decorationColor: match != null ? colors.textSecondary.withValues(alpha: 0.3) : null,
+      decorationColor: match != null ? colors.textMuted.withValues(alpha: 0.5) : null,
     );
 
     if (match == null) {

@@ -21,7 +21,7 @@ class MiniInquiryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return Semantics(
+    final card = Semantics(
       button: true,
       label: 'Take a moment - start guided inquiry',
       hint: 'Double tap to begin',
@@ -58,6 +58,9 @@ class MiniInquiryCard extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 200.ms);
+    );
+
+    if (MediaQuery.of(context).disableAnimations) return card;
+    return card.animate().fadeIn(duration: 400.ms, delay: 200.ms);
   }
 }

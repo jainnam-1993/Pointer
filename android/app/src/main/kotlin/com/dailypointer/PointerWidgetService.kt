@@ -135,6 +135,7 @@ class PointerRemoteViewsFactory(
     /**
      * Load pointings data from shared storage.
      * Flutter stores pointings as JSON array in home_widget storage.
+     * Falls back to bundled default_pointings.json if cache is empty.
      */
     private fun loadData() {
         isDarkMode = isSystemInDarkMode()
@@ -144,8 +145,9 @@ class PointerRemoteViewsFactory(
             val jsonString = widgetData?.getString(KEY_POINTINGS_CACHE, null)
 
             if (jsonString.isNullOrEmpty()) {
-                Log.d(TAG, "No cached pointings found, using empty list")
-                pointings = emptyList()
+                Log.d(TAG, "No cached pointings found, loading bundled defaults")
+                pointings = loadDefaultPointings()
+                triggerBackgroundRefresh()
                 return
             }
 
@@ -201,6 +203,53 @@ class PointerRemoteViewsFactory(
     private fun getAccentColorForTradition(tradition: String): Int {
         val colorHex = TRADITION_COLORS[tradition] ?: "#8B5CF6"
         return Color.parseColor(colorHex)
+    }
+
+    /**
+     * Load default pointings from bundled res/raw/default_pointings.json.
+     * Used as a fallback when the Flutter cache is not yet populated.
+     */
+    private fun loadDefaultPointings(): List<PointingData> {
+        try {
+            val inputStream = context.resources.openRawResource(R.raw.default_pointings)
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            val jsonArray = JSONArray(jsonString)
+            val defaults = mutableListOf<PointingData>()
+
+            for (i in 0 until jsonArray.length()) {
+                val obj = jsonArray.getJSONObject(i)
+                defaults.add(
+                    PointingData(
+                        id = obj.optString("id", ""),
+                        content = obj.optString("content", ""),
+                        tradition = obj.optString("tradition", ""),
+                        teacher = obj.optString("teacher", "")
+                    )
+                )
+            }
+
+            Log.d(TAG, "Loaded ${defaults.size} default pointings from bundle")
+            return defaults
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading default pointings: ${e.message}", e)
+            return emptyList()
+        }
+    }
+
+    /**
+     * Trigger Flutter background callback to populate the real cache.
+     */
+    private fun triggerBackgroundRefresh() {
+        try {
+            val intent = es.antonborri.home_widget.HomeWidgetBackgroundIntent.getBroadcast(
+                context,
+                android.net.Uri.parse("pointer://widget/refresh")
+            )
+            intent.send()
+            Log.d(TAG, "Background refresh triggered to populate cache")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to trigger background refresh: ${e.message}")
+        }
     }
 
     /**

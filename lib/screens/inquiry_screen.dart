@@ -123,7 +123,7 @@ class InquiryScreen extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
               children: [
-                Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge),
+                Semantics(header: true, child: Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge)),
                 const SizedBox(height: 16),
 
                 // Intro card with fade-in

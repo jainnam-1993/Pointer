@@ -121,6 +121,15 @@ GoRouter _createRouter() {
       final isOnboarding = location == '/onboarding';
       final onboardingCompleted = _isOnboardingCompleted();
 
+      // Skip splash if launched from widget tap (flag set by native MainActivity)
+      if (!_hasShownSplash) {
+        final skipSplash = _sharedPrefs?.getBool('widget_skip_splash') ?? false;
+        if (skipSplash) {
+          _hasShownSplash = true;
+          _sharedPrefs?.remove('widget_skip_splash');
+        }
+      }
+
       // Splash: show once per cold start (always, regardless of animation settings)
       if (!_hasShownSplash && !isSplash && !isOnboarding) {
         _hasShownSplash = true;

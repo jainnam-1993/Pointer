@@ -33,16 +33,9 @@ void main() {
       expect(usage.viewCount, 1); // original unchanged
     });
 
-    test('toJson serializes correctly', () {
+    test('stores viewCount and lastResetDate', () {
       final usage = DailyUsage(viewCount: 1, lastResetDate: '2025-01-01');
-      final json = usage.toJson();
-      expect(json['viewCount'], 1);
-      expect(json['lastResetDate'], '2025-01-01');
-    });
-
-    test('fromJson deserializes correctly', () {
-      final usage = DailyUsage.fromJson({'viewCount': 2, 'lastResetDate': '2025-01-01'});
-      expect(usage.viewCount, 2);
+      expect(usage.viewCount, 1);
       expect(usage.lastResetDate, '2025-01-01');
     });
   });

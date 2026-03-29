@@ -89,15 +89,16 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 updateAllWidgets(context)
             }
             ACTION_ITEM_CLICK -> {
-                // User tapped on a stack item - open app
+                // User tapped a stack item — pointing_id comes from factory's setOnClickFillInIntent
                 val pointingId = intent.getStringExtra(PointerRemoteViewsFactory.EXTRA_POINTING_ID)
-                val position = intent.getIntExtra(PointerRemoteViewsFactory.EXTRA_POINTING_POSITION, 0)
-                Log.d(TAG, "Item click: position=$position, id=$pointingId")
+                    ?: getCurrentPointingId(context) // fallback to current flipper position
+                Log.d(TAG, "Item click: id=$pointingId")
 
-                // Launch the app
                 val launchIntent = Intent(context, MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    putExtra("pointing_id", pointingId)
+                    if (pointingId != null) {
+                        putExtra("pointing_id", pointingId)
+                    }
                 }
                 context.startActivity(launchIntent)
             }
@@ -112,6 +113,12 @@ class PointerWidgetProvider : AppWidgetProvider() {
             Intent.ACTION_CONFIGURATION_CHANGED -> {
                 Log.d(TAG, "Configuration changed - updating widgets for theme change")
                 updateAllWidgets(context)
+            }
+            Intent.ACTION_BOOT_COMPLETED,
+            "android.intent.action.QUICKBOOT_POWERON" -> {
+                Log.d(TAG, "Boot completed - refreshing widget data")
+                updateAllWidgets(context)
+                notifyDataChanged(context)
             }
         }
     }
@@ -485,6 +492,19 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
             // Set empty state text
             views.setTextViewText(R.id.widget_empty_text, "Tap to load")
+
+            // Tap content area to open app with current pointing.
+            // Flipper has clickable=false and stack items have no clickable/focusable
+            // so touches pass through to the parent FrameLayout.
+            val openIntent = Intent(context, MainActivity::class.java).apply {
+                action = "com.pointer.widget.OPEN_FROM_WIDGET"
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val openPendingIntent = PendingIntent.getActivity(
+                context, appWidgetId, openIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_content_area, openPendingIntent)
 
             // Set up Previous button
             val prevIntent = Intent(context, PointerWidgetProvider::class.java).apply {

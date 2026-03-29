@@ -121,10 +121,16 @@ class ArticleListItem extends ConsumerWidget {
                 HapticFeedback.lightImpact();
                 ref.read(articleFavoritesProvider.notifier).toggle(article.id);
               },
-              child: Icon(
-                isSaved ? Icons.bookmark : Icons.bookmark_border,
-                size: 22,
-                color: isSaved ? colors.accent : colors.textMuted,
+              child: SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Icon(
+                    isSaved ? Icons.bookmark : Icons.bookmark_border,
+                    size: 22,
+                    color: isSaved ? colors.accent : colors.textMuted,
+                  ),
+                ),
               ),
             ),
           ],
@@ -177,7 +183,13 @@ class TeachingCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: onShare,
-                      child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
+                      child: SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: Center(
+                          child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
+                        ),
+                      ),
                     ),
                   ],
                   const SizedBox(width: 8),

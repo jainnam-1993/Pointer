@@ -50,11 +50,14 @@ class HistoryScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text(
-                          'Past Pointings',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: titleFontSize),
+                        child: Semantics(
+                          header: true,
+                          child: Text(
+                            'Past Pointings',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: titleFontSize),
+                          ),
                         ),
                       ),
                     ],
@@ -173,21 +176,24 @@ class _HistoryCard extends StatelessWidget {
     final colors = context.colors;
     final traditionInfo = traditions[pointing.tradition]!;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header row with tradition and time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text(traditionInfo.icon, style: const TextStyle(fontSize: 16)),
-                    const SizedBox(width: 8),
+    return Semantics(
+      button: true,
+      label: 'Pointing by ${pointing.teacher ?? "unknown"}: ${pointing.content.length > 80 ? pointing.content.substring(0, 80) : pointing.content}',
+      child: GestureDetector(
+        onTap: onTap,
+        child: GlassCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row with tradition and time
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 16))),
+                      const SizedBox(width: 8),
                     Text(
                       traditionInfo.name,
                       style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
@@ -217,6 +223,7 @@ class _HistoryCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }

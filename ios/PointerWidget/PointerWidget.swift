@@ -108,32 +108,41 @@ struct Provider: TimelineProvider {
         completion(timeline)
     }
 
-    /// Load all pointings from the JSON cache
+    /// Load all pointings from the JSON cache, falling back to bundled defaults.
     private func loadAllPointings() -> [[String: Any]] {
         guard let defaults = sharedDefaults else {
             print("[PointerWidget] ERROR: Could not access app group UserDefaults")
-            return []
+            return loadBundledDefaults()
         }
 
         guard let cacheJson = defaults.string(forKey: "pointings_cache") else {
-            print("[PointerWidget] WARNING: No pointings_cache in UserDefaults")
-            // Debug: List all keys to see what's there
-            let allKeys = defaults.dictionaryRepresentation().keys
-            print("[PointerWidget] Available keys: \(Array(allKeys.prefix(10)))")
-            return []
+            print("[PointerWidget] WARNING: No pointings_cache in UserDefaults, using bundled defaults")
+            return loadBundledDefaults()
         }
 
         guard let data = cacheJson.data(using: .utf8) else {
-            print("[PointerWidget] ERROR: Could not convert cache to data")
-            return []
+            print("[PointerWidget] ERROR: Could not convert cache to data, using bundled defaults")
+            return loadBundledDefaults()
         }
 
         guard let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
-            print("[PointerWidget] ERROR: Could not parse JSON")
-            return []
+            print("[PointerWidget] ERROR: Could not parse JSON, using bundled defaults")
+            return loadBundledDefaults()
         }
 
         print("[PointerWidget] Loaded \(array.count) pointings from cache")
+        return array
+    }
+
+    /// Load default pointings from the bundled DefaultPointings.json.
+    private func loadBundledDefaults() -> [[String: Any]] {
+        guard let url = Bundle.main.url(forResource: "DefaultPointings", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            print("[PointerWidget] ERROR: Could not load bundled DefaultPointings.json")
+            return []
+        }
+        print("[PointerWidget] Loaded \(array.count) default pointings from bundle")
         return array
     }
 
@@ -188,6 +197,12 @@ struct PointerWidgetEntryView: View {
     @Environment(\.widgetFamily) var family
     @Environment(\.colorScheme) var colorScheme
 
+    /// Deep-link URL for widget taps — passes the pointing ID to the app.
+    private var widgetDeepLink: URL? {
+        guard let id = entry.data.id else { return nil }
+        return URL(string: "dailypointer://pointing/\(id)")
+    }
+
     var body: some View {
         ZStack {
             // Glass background for iOS < 17 (iOS 17+ uses containerBackground)
@@ -213,6 +228,7 @@ struct PointerWidgetEntryView: View {
                 mediumWidgetWithActions
             }
         }
+        .widgetURL(widgetDeepLink)
     }
 
     private var isAccessoryWidget: Bool {

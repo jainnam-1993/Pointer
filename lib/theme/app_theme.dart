@@ -137,7 +137,7 @@ class PointerColors extends ThemeExtension<PointerColors> {
     secondary: Color(0xFFEC4899),
     textPrimary: Colors.white,
     textSecondary: Color(0x99FFFFFF), // white with 0.6 alpha
-    textMuted: Color(0x66FFFFFF), // white with 0.4 alpha
+    textMuted: Color(0x99FFFFFF), // white with 0.6 alpha
     glassBorder: Color(0x4DFFFFFF), // 30% opacity for visible liquid glass border
     glassBackground: Color(0x1AFFFFFF), // 10% opacity for glass fill
     glassBorderActive: Color(0x66FFFFFF), // 40% opacity for active state

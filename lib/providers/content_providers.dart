@@ -153,6 +153,14 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     _persistAndUpdateWidget(state);
   }
 
+  /** Jump to a pointing by ID (e.g., from widget deep-link). Returns true if found. */
+  bool setPointingById(String id) {
+    final pointing = getPointingById(id);
+    if (pointing == null) return false;
+    setPointing(pointing);
+    return true;
+  }
+
   /** Reshuffle order for next cycle (keeps current pointing at index 0) */
   void _reshuffleOrder() {
     final current = _order[_index];

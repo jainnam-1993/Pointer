@@ -94,7 +94,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Library', style: Theme.of(context).textTheme.displayLarge),
+                          Semantics(header: true, child: Text('Library', style: Theme.of(context).textTheme.displayLarge)),
                           const SizedBox(height: 4),
                           Text(
                             _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
@@ -275,9 +275,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                               ),
                                             );
                                           },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(right: 16),
-                                            child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted),
+                                          child: SizedBox(
+                                            width: 44,
+                                            height: 44,
+                                            child: Center(
+                                              child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(
@@ -285,7 +288,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                             HapticFeedback.lightImpact();
                                             ref.read(favoritesProvider.notifier).toggle(pointingId);
                                           },
-                                          child: Icon(Icons.favorite, size: 22, color: colors.accent),
+                                          child: SizedBox(
+                                            width: 44,
+                                            height: 44,
+                                            child: Center(
+                                              child: Icon(Icons.favorite, size: 22, color: colors.accent),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -939,7 +948,7 @@ class _FeaturedArticleCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                  child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
+                  child: Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12))),
                 ),
                 const SizedBox(width: 8),
                 Expanded(

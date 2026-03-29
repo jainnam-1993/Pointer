@@ -127,7 +127,6 @@ class _BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<_BottomNavBar> {
-  static const int _itemCount = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -209,30 +208,7 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                // Each nav item takes equal width (Expanded ensures this)
-                final itemWidth = constraints.maxWidth / _itemCount;
-                // Responsive indicator width scales with nav bar size
-                final indicatorWidth = isLargeTablet ? 56.0 : (isTablet ? 52.0 : 48.0);
-                // Center indicator under each item
-                final indicatorLeft = (widget.currentIndex * itemWidth) + (itemWidth - indicatorWidth) / 2;
-
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Animated sliding indicator
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeOutCubic,
-                      left: indicatorLeft,
-                      bottom: 6,
-                      child: Container(
-                        width: indicatorWidth,
-                        height: 4,
-                        decoration: BoxDecoration(color: colors.accent, borderRadius: BorderRadius.circular(2)),
-                      ),
-                    ),
-                    // Nav items row - use Expanded for equal-width columns
-                    Row(
+                return Row(
                       children: [
                         Expanded(
                           child: _NavItem(
@@ -271,8 +247,6 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                           ),
                         ),
                       ],
-                    ),
-                  ],
                 );
               },
             ),
@@ -320,7 +294,8 @@ class _NavItem extends StatelessWidget {
     final iconSize = isLargeTablet ? 30.0 : (isTablet ? 28.0 : 24.0);
     final fontSize = isLargeTablet ? 13.0 : (isTablet ? 12.0 : 10.0);
     final verticalPadding = isLargeTablet ? 12.0 : (isTablet ? 10.0 : 8.0);
-    final horizontalPadding = isLargeTablet ? 24.0 : (isTablet ? 20.0 : 16.0);
+
+    final indicatorWidth = isLargeTablet ? 56.0 : (isTablet ? 52.0 : 48.0);
 
     return Semantics(
       button: true,
@@ -329,13 +304,13 @@ class _NavItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
+        child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              SizedBox(height: verticalPadding),
               Icon(isActive ? activeIcon : icon, color: isActive ? activeColor : inactiveColor, size: iconSize),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(
                 label,
                 style: TextStyle(
@@ -344,6 +319,18 @@ class _NavItem extends StatelessWidget {
                   color: isActive ? activeColor : inactiveColor,
                 ),
               ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
+                width: isActive ? indicatorWidth : 0,
+                height: 3,
+                decoration: BoxDecoration(
+                  color: isActive ? colors.accent : Colors.transparent,
+                  borderRadius: BorderRadius.circular(1.5),
+                ),
+              ),
+              const SizedBox(height: 4),
             ],
           ),
         ),
