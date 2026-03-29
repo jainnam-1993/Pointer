@@ -269,9 +269,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     return '$displayHour$period';
   }
 
-  // TTS Configuration dialog disabled - feature temporarily removed
-  // Future<void> _showTTSConfigDialog() async { ... }
-
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
@@ -502,13 +499,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             }
                           },
                         ),
-                        // TTS Configuration disabled - feature temporarily removed
-                        // const SettingsDivider(),
-                        // SettingsRow(
-                        //   title: 'TTS Configuration',
-                        //   subtitle: 'Article audio access',
-                        //   ...
-                        // ),
                       ],
                     ),
                   ),
