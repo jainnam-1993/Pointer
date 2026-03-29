@@ -82,7 +82,7 @@ class NotificationPreview extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 14, AppSpacing.lg, AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +123,7 @@ class NotificationPreview extends StatelessWidget {
               Row(
                 children: [
                   _ActionButton(label: 'Save', color: actionColor, onTap: onSave),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _ActionButton(label: 'Another', color: actionColor, onTap: onAnother),
                 ],
               ),
@@ -148,8 +148,8 @@ class _ActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(16)),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+        decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
         child: Text(
           label,
           style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w600),

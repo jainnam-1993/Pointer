@@ -24,10 +24,10 @@ class InquiryScreen extends StatelessWidget {
 
     return PointerScaffold(
       body: ListView(
-        padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
+        padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: 20, bottom: 120 + bottomPadding),
         children: [
           Semantics(header: true, child: Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Intro card with fade-in
           StaggeredFadeIn(
@@ -46,7 +46,7 @@ class InquiryScreen extends StatelessWidget {
                         'These sessions guide you through the ancient practice of self-investigation.',
                         style: TextStyle(color: textColor, fontSize: 16, height: 1.5),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text('Each session is 5-15 minutes. No experience required.', style: TextStyle(color: textColorSecondary, fontSize: 14)),
                     ],
                   ),
@@ -54,11 +54,11 @@ class InquiryScreen extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Section header
           Text('AVAILABLE SESSIONS', style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Sessions list with staggered animation
           ...inquirySessions.asMap().entries.map((entry) {
@@ -68,7 +68,7 @@ class InquiryScreen extends StatelessWidget {
             return StaggeredFadeIn(
               index: index + 1, // Offset by 1 for intro card
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: _SessionCard(
                   session: session,
                   index: index,
@@ -115,7 +115,7 @@ class _SessionCard extends StatelessWidget {
       label:
           '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         onTap: onTap,
         child: Row(
           children: [
@@ -131,7 +131,7 @@ class _SessionCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
 
             // Text content
             Expanded(

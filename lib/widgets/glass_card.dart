@@ -75,8 +75,8 @@ class GlassCard extends ConsumerWidget {
   const GlassCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(24),
-    this.borderRadius = 24,
+    this.padding = AppSpacing.cardAll,
+    this.borderRadius = AppSpacing.radiusCard,
     this.borderColor,
     this.onTap,
     this.intensity = GlassIntensity.standard,
@@ -293,12 +293,12 @@ class GlassButton extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: isLoading ? null : onPressed,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(AppSpacing.xxl),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
             decoration: BoxDecoration(
               color: highContrastColors.cardBackground,
-              borderRadius: BorderRadius.circular(32),
+              borderRadius: BorderRadius.circular(AppSpacing.xxl),
               border: Border.all(color: highContrastColors.glassBorder, width: 2),
             ),
             child: Row(
@@ -312,7 +312,7 @@ class GlassButton extends ConsumerWidget {
                     label,
                     style: TextStyle(color: highContrastColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
                   ),
-                  if (icon != null) ...[const SizedBox(width: 8), icon!],
+                  if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
                 ],
               ],
             ),
@@ -355,16 +355,16 @@ class GlassButton extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: isLoading ? null : onPressed,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(AppSpacing.xxl),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(AppSpacing.xxl),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
                 decoration: BoxDecoration(
                   gradient: glassGradient,
-                  borderRadius: BorderRadius.circular(32),
+                  borderRadius: BorderRadius.circular(AppSpacing.xxl),
                   border: GradientBoxBorder(gradient: borderGradient, width: 1),
                 ),
                 child: Row(
@@ -378,7 +378,7 @@ class GlassButton extends ConsumerWidget {
                         label,
                         style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
                       ),
-                      if (icon != null) ...[const SizedBox(width: 8), icon!],
+                      if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
                     ],
                   ],
                 ),
@@ -426,13 +426,13 @@ class GlassDialog extends StatelessWidget {
               color: Colors.white.withValues(alpha: isDark ? 0.28 : 0.92),
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: const EdgeInsets.all(24),
+            padding: AppSpacing.cardAll,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (title != null)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                     child: Text(
                       title!,
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
@@ -441,10 +441,10 @@ class GlassDialog extends StatelessWidget {
                   ),
                 if (content != null) content!,
                 if (actions != null && actions!.isNotEmpty) ...[
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: actions!.map((action) => Padding(padding: const EdgeInsets.only(left: 8), child: action)).toList(),
+                    children: actions!.map((action) => Padding(padding: const EdgeInsets.only(left: AppSpacing.sm), child: action)).toList(),
                   ),
                 ],
               ],

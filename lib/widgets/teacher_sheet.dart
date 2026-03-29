@@ -53,36 +53,36 @@ class TeacherSheet extends StatelessWidget {
       expand: false,
       builder: (context, scrollController) {
         return ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
               ),
               child: ListView(
                 controller: scrollController,
-                padding: const EdgeInsets.all(24),
+                padding: AppSpacing.cardAll,
                 children: [
                   // Handle bar
-                  const DragHandle(bottomMargin: 24),
+                  const DragHandle(bottomMargin: AppSpacing.lg),
 
                   // Teacher name
                   Text(teacher.name, style: AppTextStyles.heading(context), textAlign: TextAlign.center),
 
                   // Dates
                   if (teacher.dates != null) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(teacher.dates!, style: AppTextStyles.footerText(context), textAlign: TextAlign.center),
                   ],
 
                   // Tradition badge
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -95,22 +95,22 @@ class TeacherSheet extends StatelessWidget {
 
                   // Biography
                   if (teacher.bio != null) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Text(teacher.bio!, style: AppTextStyles.bodyText(context), textAlign: TextAlign.center),
                   ],
 
                   // Tags
                   if (teacher.tags.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Wrap(
                       alignment: WrapAlignment.center,
-                      spacing: 8,
-                      runSpacing: 8,
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
                       children: teacher.tags
                           .map(
                             (tag) => Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(12)),
+                              decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
                               child: Text(tag, style: TextStyle(color: colors.textSecondary, fontSize: 11)),
                             ),
                           )
@@ -120,13 +120,13 @@ class TeacherSheet extends StatelessWidget {
 
                   // More from this teacher
                   if (otherPointings.length > 1) ...[
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     Text('More from ${teacher.name}', style: AppTextStyles.sectionHeader(context)),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     ...otherPointings.take(5).map((pointing) => _PointingTile(pointing: pointing)),
                   ],
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                 ],
               ),
             ),
@@ -147,12 +147,12 @@ class _PointingTile extends StatelessWidget {
     final colors = context.colors;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: colors.glassBackground,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(color: colors.glassBorder),
         ),
         child: Text(

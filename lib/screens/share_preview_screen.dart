@@ -144,11 +144,11 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
 
               // Format selector
               _buildFormatSelector(colors, format),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Share button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: AppSpacing.screenH,
                 child: SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -157,7 +157,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colors.primary,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
                     ),
                     child: _isSharing
                         ? const SizedBox(
@@ -169,14 +169,14 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.share),
-                              SizedBox(width: 8),
+                              SizedBox(width: AppSpacing.sm),
                               Text('Share Image', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                             ],
                           ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -213,7 +213,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
           width: previewWidth,
           height: previewHeight,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
           ),
           clipBehavior: Clip.antiAlias,
@@ -238,20 +238,20 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: AppSpacing.screenH,
           child: Text(
             'STYLE',
             style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         SizedBox(
           height: 48,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: AppSpacing.screenH,
             scrollDirection: Axis.horizontal,
             itemCount: ShareTemplate.values.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
             itemBuilder: (context, index) {
               final template = ShareTemplate.values[index];
               final isSelected = template == selected;
@@ -268,7 +268,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     decoration: BoxDecoration(
                       color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                     ),
                     child: Text(
@@ -294,20 +294,20 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: AppSpacing.screenH,
           child: Text(
             'FORMAT',
             style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         SizedBox(
           height: 48,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: AppSpacing.screenH,
             scrollDirection: Axis.horizontal,
             itemCount: ShareFormat.values.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
             itemBuilder: (context, index) {
               final format = ShareFormat.values[index];
               final isSelected = format == selected;
@@ -324,7 +324,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     decoration: BoxDecoration(
                       color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                     ),
                     child: Row(
@@ -335,7 +335,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                           size: 18,
                           color: isSelected ? colors.primary : colors.textSecondary,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           format.displayName,
                           style: TextStyle(

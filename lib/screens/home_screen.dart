@@ -254,7 +254,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       key: key,
       constraints: BoxConstraints(maxWidth: maxBadgeWidth),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -296,7 +296,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Center(
         key: const ValueKey('zen-mode'),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           child: SingleChildScrollView(
             child: Text(pointing.content, style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
           ),
@@ -386,8 +386,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // We only need to add space for our custom nav bar
                   child: Padding(
                     padding: EdgeInsets.only(
-                      left: 24,
-                      right: 24,
+                      left: AppSpacing.xl,
+                      right: AppSpacing.xl,
                       top: 20,
                       bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
                     ),
@@ -482,10 +482,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                           }
                                                         },
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(13),
+                                                          padding: const EdgeInsets.all(AppSpacing.sm),
                                                           decoration: BoxDecoration(
                                                             color: colors.accent.withValues(alpha: 0.1),
-                                                            borderRadius: BorderRadius.circular(10),
+                                                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                                                           ),
                                                           child: Icon(
                                                             ref.watch(favoritesProvider).contains(pointing.id)
@@ -508,10 +508,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                       child: GestureDetector(
                                                         onTap: _handleShare,
                                                         child: Container(
-                                                          padding: const EdgeInsets.all(13),
+                                                          padding: const EdgeInsets.all(AppSpacing.sm),
                                                           decoration: BoxDecoration(
                                                             color: colors.accent.withValues(alpha: 0.1),
-                                                            borderRadius: BorderRadius.circular(10),
+                                                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                                                           ),
                                                           child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
                                                         ),
@@ -541,11 +541,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             ),
                                           ),
                                           if (pointing.instruction != null) ...[
-                                            const SizedBox(height: 24),
+                                            const SizedBox(height: AppSpacing.xl),
                                             Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
                                           ],
                                           if (pointing.teacher != null) ...[
-                                            const SizedBox(height: 16),
+                                            const SizedBox(height: AppSpacing.lg),
                                             AnimatedSwitcher(
                                               duration: const Duration(milliseconds: 250),
                                               switchInCurve: Curves.easeInOutCubic,
@@ -575,17 +575,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
                                           // Extended commentary
                                           if (pointing.commentary != null) ...[
-                                            const SizedBox(height: 16),
+                                            const SizedBox(height: AppSpacing.lg),
                                             CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
                                           ],
                                           // Audio player
                                           if (pointing.audioUrl != null) ...[
-                                            const SizedBox(height: 16),
+                                            const SizedBox(height: AppSpacing.lg),
                                             AudioPlayerWidget(pointingId: pointing.id, audioUrl: pointing.audioUrl),
                                           ],
                                           // Video player
                                           if (pointing.videoUrl != null) ...[
-                                            const SizedBox(height: 16),
+                                            const SizedBox(height: AppSpacing.lg),
                                             VideoPlayerWidget(pointingId: pointing.id, videoUrl: pointing.videoUrl),
                                           ],
                                         ],
@@ -601,7 +601,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         SizedBox(height: isSquareAspect ? 12 : 20),
 
                         // Mini-inquiry entry point (hide in landscape to save space)
-                        if (!isSquareAspect) ...[const MiniInquiryCard(), const SizedBox(height: 24)],
+                        if (!isSquareAspect) ...[const MiniInquiryCard(), const SizedBox(height: AppSpacing.xl)],
 
                         // Action button - Next only (Share moved to card header in Phase 5.11)
                         Semantics(
@@ -617,7 +617,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                         // Footer - decorative hint text (hide in landscape)
                         if (!isSquareAspect) ...[
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                           ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
                         ],
                       ],

@@ -304,10 +304,10 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                               await _saveSchedule();
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
                               decoration: BoxDecoration(
                                 color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                                 border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                               ),
                               child: Text(

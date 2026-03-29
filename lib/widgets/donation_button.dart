@@ -102,7 +102,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       curve: Curves.easeInOut,
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,7 +133,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       child: Row(
         children: [
           Icon(Icons.favorite_outline, color: colors.accent, size: 20),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Support Development',
@@ -157,12 +157,12 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Text(
           'Here Now is free forever. If you find value, consider supporting development.',
           style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.4),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         _buildProductGrid(state, colors),
       ],
     );
@@ -173,7 +173,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     if (state.isLoading) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: AppSpacing.cardAll,
           child: CircularProgressIndicator(color: colors.accent),
         ),
       );
@@ -188,7 +188,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     if (state.products.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Text('No donation options available', style: TextStyle(color: colors.textMuted, fontSize: 14)),
         ),
       );
@@ -206,13 +206,13 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
           style: TextStyle(color: Colors.red.shade300, fontSize: 13),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         GestureDetector(
           onTap: _retry,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               border: Border.all(color: colors.glassBorder),
             ),
             child: Text(
@@ -233,8 +233,8 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
+      mainAxisSpacing: AppSpacing.md,
+      crossAxisSpacing: AppSpacing.md,
       childAspectRatio: 1.4,
       children: products.map((product) {
         final config = _resolveTipProduct(product.id);
@@ -272,11 +272,11 @@ class _TipOptionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.md),
           constraints: const BoxConstraints(minHeight: 44),
           decoration: BoxDecoration(
             color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(color: colors.glassBorder),
           ),
           child: Column(

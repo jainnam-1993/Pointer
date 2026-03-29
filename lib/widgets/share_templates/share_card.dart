@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/pointings.dart';
 import '../../services/share_service.dart';
+import '../../theme/app_theme.dart';
 
 /**
  * Tradition-specific color palette for share card templates.
@@ -27,7 +28,12 @@ class TraditionColors {
 
   const TraditionColors({required this.background, required this.backgroundEnd, required this.text, required this.accent, required this.badge});
 
-  /** Get colors for a tradition */
+  /** Get colors for a tradition.
+   *
+   * Accent/badge colors for advaita, direct, and contemporary reference
+   * [TraditionAccentColors] as the single source of truth. Zen and original
+   * use share-card-specific values that differ from the app-wide accents.
+   */
   static TraditionColors forTradition(Tradition tradition) {
     switch (tradition) {
       case Tradition.advaita:
@@ -35,15 +41,15 @@ class TraditionColors {
           background: Color(0xFF1A1206), // Deep gold/brown
           backgroundEnd: Color(0xFF2D1F0A),
           text: Color(0xFFFAF5E9), // Cream
-          accent: Color(0xFFD4A574), // Gold
-          badge: Color(0xFFD4A574),
+          accent: TraditionAccentColors.advaita,
+          badge: TraditionAccentColors.advaita,
         );
       case Tradition.zen:
         return const TraditionColors(
           background: Color(0xFF0A0A0A), // Pure black
           backgroundEnd: Color(0xFF1A1A1A),
           text: Color(0xFFF5F5F5), // White
-          accent: Color(0xFF666666), // Gray
+          accent: Color(0xFF666666), // Gray (share-card specific, differs from app accent)
           badge: Color(0xFF666666),
         );
       case Tradition.direct:
@@ -51,23 +57,23 @@ class TraditionColors {
           background: Color(0xFF1A0F2E), // Deep purple
           backgroundEnd: Color(0xFF2D1B4E),
           text: Color(0xFFF5F0FF), // Light purple
-          accent: Color(0xFF8B5CF6), // Violet
-          badge: Color(0xFF8B5CF6),
+          accent: TraditionAccentColors.direct,
+          badge: TraditionAccentColors.direct,
         );
       case Tradition.contemporary:
         return const TraditionColors(
           background: Color(0xFF0F1A1A), // Dark teal
           backgroundEnd: Color(0xFF1A2D2D),
           text: Color(0xFFE8F5F5), // Light teal
-          accent: Color(0xFF06B6D4), // Cyan
-          badge: Color(0xFF06B6D4),
+          accent: TraditionAccentColors.contemporary,
+          badge: TraditionAccentColors.contemporary,
         );
       case Tradition.original:
         return const TraditionColors(
           background: Color(0xFF1A0F1A), // Dark magenta
           backgroundEnd: Color(0xFF2D1B2D),
           text: Color(0xFFF5F0F5), // Light pink
-          accent: Color(0xFFF472B6), // Pink
+          accent: Color(0xFFF472B6), // Pink (share-card specific, differs from app accent)
           badge: Color(0xFFF472B6),
         );
     }

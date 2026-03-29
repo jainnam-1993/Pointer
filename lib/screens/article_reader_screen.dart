@@ -78,7 +78,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 // App bar
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     child: Row(
                       children: [
                         IconButton(
@@ -110,17 +110,17 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 // Article header
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: AppSpacing.screenH,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 48),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
                             decoration: BoxDecoration(
                               color: colors.glassBackground,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                               border: Border.all(color: colors.glassBorder),
                             ),
                             child: Text(
@@ -131,25 +131,25 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           article.title,
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),
                         ),
                         if (article.subtitle != null) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
                         ],
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
                             Icon(Icons.schedule, size: 14, color: colors.textMuted),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
                             if (article.teacher != null) ...[
-                              const SizedBox(width: 16),
+                              const SizedBox(width: AppSpacing.lg),
                               Icon(Icons.person_outline, size: 14, color: colors.textMuted),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               Flexible(
                                 child: Text(
                                   article.teacher!,
@@ -161,7 +161,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                             ],
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Divider(color: colors.glassBorder),
                       ],
                     ),
@@ -171,7 +171,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 // Article content
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 32 + bottomPadding),
+                    padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
                     child: _MarkdownContent(content: article.content, colors: colors),
                   ),
                 ),
@@ -212,10 +212,10 @@ class _MarkdownContent extends StatelessWidget {
         blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: colors.textPrimary, height: 1.5),
         blockquoteDecoration: BoxDecoration(
           color: colors.accent.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border(left: BorderSide(color: colors.accent.withValues(alpha: 0.5), width: 3)),
         ),
-        blockquotePadding: const EdgeInsets.all(16),
+        blockquotePadding: const EdgeInsets.all(AppSpacing.lg),
         listBullet: TextStyle(color: colors.accent),
         strong: TextStyle(fontWeight: FontWeight.w600, color: colors.textPrimary),
         em: TextStyle(fontStyle: FontStyle.italic, color: colors.textPrimary),
