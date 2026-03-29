@@ -121,6 +121,7 @@ class AmbientSoundService {
         }
       });
     } catch (e, stack) {
+      // Non-critical: opening bell sound is optional ambient enhancement
       debugPrint('AmbientSound: Error playing sound: $e');
       debugPrint('AmbientSound: Stack trace: $stack');
       await _cleanup();

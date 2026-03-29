@@ -67,6 +67,7 @@ class UsageTrackingService {
 
       return usage;
     } catch (_) {
+      // Non-critical: usage tracking is analytics-only; fresh state is safe fallback
       return DailyUsage.initial();
     }
   }

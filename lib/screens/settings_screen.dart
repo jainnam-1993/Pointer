@@ -170,6 +170,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     try {
       await _settingsChannel.invokeMethod('openNotificationSettings');
     } catch (e) {
+      // Non-critical: if platform settings can't open, user can navigate manually
       debugPrint('Failed to open notification settings: $e');
     }
   }

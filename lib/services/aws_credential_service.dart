@@ -210,6 +210,7 @@ class AWSCredentialService {
       final data = jsonDecode(cached) as Map<String, dynamic>;
       return AWSCredentials.fromJson(data);
     } catch (_) {
+      // Non-critical: corrupted cache is safe to discard; fresh credentials fetched next call
       return null;
     }
   }

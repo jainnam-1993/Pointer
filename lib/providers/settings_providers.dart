@@ -252,11 +252,19 @@ class NotificationSettingsState {
   /** Whether an async operation (enable/disable, save, delete) is in progress. */
   final bool isLoading;
 
-  const NotificationSettingsState({this.isEnabled = false, this.times = const [], this.isLoading = false});
+  /** Error message from the last failed operation, if any. */
+  final String? error;
 
-  /** Creates a copy with selectively overridden fields. */
-  NotificationSettingsState copyWith({bool? isEnabled, List<NotificationTime>? times, bool? isLoading}) {
-    return NotificationSettingsState(isEnabled: isEnabled ?? this.isEnabled, times: times ?? this.times, isLoading: isLoading ?? this.isLoading);
+  const NotificationSettingsState({this.isEnabled = false, this.times = const [], this.isLoading = false, this.error});
+
+  /** Creates a copy with selectively overridden fields. Set [clearError] to remove the error. */
+  NotificationSettingsState copyWith({bool? isEnabled, List<NotificationTime>? times, bool? isLoading, String? error, bool clearError = false}) {
+    return NotificationSettingsState(
+      isEnabled: isEnabled ?? this.isEnabled,
+      times: times ?? this.times,
+      isLoading: isLoading ?? this.isLoading,
+      error: clearError ? null : (error ?? this.error),
+    );
   }
 }
 
@@ -293,49 +301,58 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettingsSta
 
   /** Toggle notifications enabled/disabled */
   Future<void> setEnabled(bool enabled) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       await _service.setNotificationsEnabled(enabled);
       state = state.copyWith(isEnabled: enabled, isLoading: false);
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      debugPrint('NotificationSettings.setEnabled failed: $e');
+      state = state.copyWith(isLoading: false, error: 'Failed to update notification setting');
     }
   }
 
   /** Update a specific notification time */
   Future<void> updateTime(NotificationTime updated) async {
     final newTimes = state.times.map((t) => t.id == updated.id ? updated : t).toList();
-    state = state.copyWith(times: newTimes, isLoading: true);
+    state = state.copyWith(times: newTimes, isLoading: true, clearError: true);
     try {
       await _service.saveNotificationTimes(newTimes);
       state = state.copyWith(isLoading: false);
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      debugPrint('NotificationSettings.updateTime failed: $e');
+      state = state.copyWith(isLoading: false, error: 'Failed to save notification time');
     }
   }
 
   /** Add a new notification time */
   Future<void> addTime(NotificationTime time) async {
     final newTimes = [...state.times, time];
-    state = state.copyWith(times: newTimes, isLoading: true);
+    state = state.copyWith(times: newTimes, isLoading: true, clearError: true);
     try {
       await _service.saveNotificationTimes(newTimes);
       state = state.copyWith(isLoading: false);
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      debugPrint('NotificationSettings.addTime failed: $e');
+      state = state.copyWith(isLoading: false, error: 'Failed to add notification time');
     }
   }
 
   /** Remove a notification time */
   Future<void> removeTime(String id) async {
     final newTimes = state.times.where((t) => t.id != id).toList();
-    state = state.copyWith(times: newTimes, isLoading: true);
+    state = state.copyWith(times: newTimes, isLoading: true, clearError: true);
     try {
       await _service.saveNotificationTimes(newTimes);
       state = state.copyWith(isLoading: false);
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      debugPrint('NotificationSettings.removeTime failed: $e');
+      state = state.copyWith(isLoading: false, error: 'Failed to remove notification time');
     }
+  }
+
+  /** Clear the current error state. */
+  void clearError() {
+    state = state.copyWith(clearError: true);
   }
 
   /** Send a test notification */

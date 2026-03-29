@@ -131,6 +131,7 @@ class WidgetService {
         qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
     } catch (e) {
+      // Non-critical: widget is a companion feature; app works without it
       debugPrint('Failed to populate widget cache: $e');
     }
   }
@@ -146,6 +147,7 @@ class WidgetService {
 
       debugPrint('Widget favorites synced: ${favorites.length} items');
     } catch (e) {
+      // Non-critical: widget favorites sync is best-effort
       debugPrint('Failed to sync favorites to widget: $e');
     }
   }
@@ -212,6 +214,7 @@ class WidgetService {
 
       debugPrint('Widget schedule synced: $intervalHours hours');
     } catch (e) {
+      // Non-critical: widget schedule sync is best-effort
       debugPrint('Failed to sync widget schedule: $e');
     }
   }
@@ -223,6 +226,7 @@ class WidgetService {
       final data = await HomeWidget.getWidgetData<String>(_WidgetKeys.lastUpdated);
       return data != null;
     } catch (e) {
+      // Non-critical: widget existence check is best-effort
       return false;
     }
   }
@@ -264,6 +268,7 @@ class WidgetService {
         }
       }
     } catch (e) {
+      // Non-critical: pending actions will be retried on next app resume
       debugPrint('Error processing pending widget actions: $e');
     }
   }
@@ -320,6 +325,7 @@ class WidgetService {
         await updateFavorites(favorites.toSet());
       }
     } catch (e) {
+      // Non-critical: widget save is best-effort; user can save from app
       debugPrint('Error saving pointing by content: $e');
     }
   }
@@ -337,6 +343,7 @@ class WidgetService {
       );
       debugPrint('Widget refreshed for theme update');
     } catch (e) {
+      // Non-critical: widget theme refresh is cosmetic
       debugPrint('Failed to refresh widget: $e');
     }
   }
@@ -360,6 +367,7 @@ class WidgetService {
         qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
       );
     } catch (e) {
+      // Non-critical: widget favorite indicator is cosmetic
       debugPrint('Failed to update widget favorites: $e');
     }
   }
@@ -455,6 +463,7 @@ Future<void> _saveCurrentWidgetPointing() async {
     // Clear pending ID only after successful persistence.
     await HomeWidget.saveWidgetData<String>('save_pending_id', null);
   } catch (e) {
+    // Non-critical: widget save callback; pending action retried on next app launch
     debugPrint('[WidgetSave] Error: $e');
   }
 }
