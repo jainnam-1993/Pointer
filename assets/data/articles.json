@@ -1,0 +1,3530 @@
+[
+  {
+    "id": "art_iam_that_001",
+    "title": "I Am That",
+    "subtitle": "Excerpts from Nisargadatta Maharaj",
+    "excerpt": "Nisargadatta's radical teaching: You are not what you think yourself to be. Find out what you are.",
+    "tradition": "advaita",
+    "teacher": "Nisargadatta Maharaj",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_who_am_i_001",
+    "title": "Who Am I?",
+    "subtitle": "The Fundamental Inquiry",
+    "excerpt": "Ramana Maharshi's self-inquiry method: the direct path to Self-realization.",
+    "tradition": "advaita",
+    "teacher": "Ramana Maharshi",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "nature",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_ashtavakra_001",
+    "title": "The Ashtavakra Gita",
+    "subtitle": "Song of the Already Free",
+    "excerpt": "The most radical non-dual scripture: You are already free. Your only bondage is believing you are not.",
+    "tradition": "advaita",
+    "teacher": "Ashtavakra",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "practice",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_be_as_you_are_001",
+    "title": "Be As You Are",
+    "subtitle": "The Direct Teaching of Ramana Maharshi",
+    "excerpt": "Ramana's essential teaching: Your duty is to be, and not to be this or that.",
+    "tradition": "advaita",
+    "teacher": "Ramana Maharshi",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "ego",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_advaita_intro_001",
+    "title": "What is Advaita Vedanta?",
+    "subtitle": "An Introduction to Non-Duality",
+    "excerpt": "Introduction to the ancient teaching of non-duality: there is only one reality, and you are that.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_gateless_gate_001",
+    "title": "The Gateless Gate",
+    "subtitle": "Classic Zen Koans",
+    "excerpt": "Classic Zen koans from the Mumonkan: pointing beyond the rational mind.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "mind",
+      "nature",
+      "self-inquiry",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_zen_intro_001",
+    "title": "What is Zen?",
+    "subtitle": "Direct Pointing, Mind to Mind",
+    "excerpt": "Introduction to Zen: direct pointing beyond words to your original nature.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_original_face_001",
+    "title": "Your Original Face",
+    "subtitle": "The Zen Inquiry into True Nature",
+    "excerpt": "What was your face before your parents were born? The Zen inquiry into true nature.",
+    "tradition": "zen",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_direct_path_001",
+    "title": "The Direct Path",
+    "subtitle": "Awareness Recognizing Itself",
+    "excerpt": "Contemporary non-duality: the Direct Path approach to self-recognition.",
+    "tradition": "direct",
+    "categories": [
+      "modernPointers",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_presence_001",
+    "title": "The Nature of Presence",
+    "subtitle": "Rupert Spira on Awareness",
+    "excerpt": "Rupert Spira's teaching on awareness: we don't become present, we notice that we already are.",
+    "tradition": "direct",
+    "teacher": "Rupert Spira",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_francis_lucille_001",
+    "title": "The Perfume of Silence",
+    "subtitle": "Francis Lucille on Liberation",
+    "excerpt": "Francis Lucille's teaching: The separate self is not eliminated. It is seen through.",
+    "tradition": "direct",
+    "teacher": "Francis Lucille",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "silence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_power_of_now_001",
+    "title": "The Power of Now",
+    "subtitle": "Eckhart Tolle on Presence",
+    "excerpt": "Eckhart Tolle's teaching: The present moment is all you ever have.",
+    "tradition": "contemporary",
+    "teacher": "Eckhart Tolle",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_mooji_001",
+    "title": "Freedom in This Moment",
+    "subtitle": "Mooji on Self-Recognition",
+    "excerpt": "Mooji's invitation: Can you just be? Not be something - just be?",
+    "tradition": "contemporary",
+    "teacher": "Mooji",
+    "categories": [
+      "modernPointers",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "freedom",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_papaji_001",
+    "title": "Wake Up and Roar",
+    "subtitle": "Papaji on Instant Awakening",
+    "excerpt": "Papaji's teaching: Don't postpone. This instant is freedom.",
+    "tradition": "advaita",
+    "teacher": "Papaji",
+    "categories": [
+      "traditionalTeachings",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "enlightenment",
+      "freedom",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_self_inquiry_guide_001",
+    "title": "A Guide to Self-Inquiry",
+    "subtitle": "Practical Steps for Investigation",
+    "excerpt": "Practical guide to self-inquiry: step-by-step instructions for investigation.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "meditation",
+      "mind"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_everyday_awakening_001",
+    "title": "Awakening in Daily Life",
+    "subtitle": "Bringing Recognition into Every Moment",
+    "excerpt": "How to bring recognition into everyday activities - awakening is not reserved for meditation.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "meditation"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_obstacles_001",
+    "title": "Common Obstacles on the Path",
+    "subtitle": "Recognizing and Moving Beyond Blocks",
+    "excerpt": "Common spiritual traps and how to recognize them - including the trap of believing in obstacles.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "freedom",
+      "life"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_jean_klein_001",
+    "title": "The Listening Attention",
+    "subtitle": "Jean Klein on Silent Awareness",
+    "excerpt": "Jean Klein's teaching: Remain with a listening attention, without conclusion.",
+    "tradition": "direct",
+    "teacher": "Jean Klein",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "practice",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_meditation_vs_inquiry_001",
+    "title": "Meditation vs Self-Inquiry",
+    "subtitle": "Two Approaches to Truth",
+    "excerpt": "Understanding the difference between meditation and self-inquiry - and when to use each.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "meditation",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_beginner_001",
+    "title": "What is Non-Duality?",
+    "subtitle": "A Complete Introduction",
+    "excerpt": "A complete introduction to non-duality for beginners - what it is, what it isn't, and why it matters.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_beginner_002",
+    "title": "Your First Inquiry",
+    "subtitle": "A Gentle Introduction to Looking Within",
+    "excerpt": "A gentle, step-by-step guide to your first self-inquiry - no prior experience needed.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_beginner_003",
+    "title": "The Difference Between Thinking and Awareness",
+    "subtitle": "Understanding the Most Important Distinction",
+    "excerpt": "The most important distinction you can make - you are not your thoughts, you are what is aware of them.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_beginner_004",
+    "title": "Why We Suffer",
+    "subtitle": "The Root Cause of Psychological Pain",
+    "excerpt": "Understanding the root cause of all psychological suffering - and the way beyond it.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general",
+      "uplifting"
+    ]
+  },
+  {
+    "id": "art_beginner_005",
+    "title": "How to Use This App",
+    "subtitle": "Getting the Most from Your Practice",
+    "excerpt": "Practical guide to using this app for genuine recognition, not just spiritual entertainment.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_awareness_001",
+    "title": "Is Awareness Personal?",
+    "subtitle": "Investigating the Nature of Consciousness",
+    "excerpt": "Investigating whether awareness is personal - and the profound implications of what we discover.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_awareness_002",
+    "title": "Where Is Awareness Located?",
+    "subtitle": "A Direct Investigation",
+    "excerpt": "Direct investigation into the location of awareness - with surprising results.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_awareness_003",
+    "title": "Does Awareness Have a Size?",
+    "subtitle": "Exploring the Boundaries of Consciousness",
+    "excerpt": "Investigating the size of awareness - and discovering it has none.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_awareness_004",
+    "title": "The Unchanging Witness",
+    "subtitle": "What Never Changes",
+    "excerpt": "Discovering the unchanging witness that has been present throughout your entire life.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_awareness_005",
+    "title": "Awareness and Sleep",
+    "subtitle": "What Happens to Consciousness in Deep Sleep?",
+    "excerpt": "Exploring what happens to awareness during deep sleep - and what this reveals about your nature.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_practice_001",
+    "title": "Morning Recognition Practice",
+    "subtitle": "Starting Your Day with Awareness",
+    "excerpt": "A simple morning practice to recognize awareness before the day begins.",
+    "tradition": "direct",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_practice_002",
+    "title": "Working with Difficult Emotions",
+    "subtitle": "Using Challenges for Recognition",
+    "excerpt": "How to work with difficult emotions as doorways to recognition rather than obstacles.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_practice_003",
+    "title": "The Art of Not-Doing",
+    "subtitle": "Resting as Awareness",
+    "excerpt": "The profound practice of doing nothing - and discovering what remains.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "meditation",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_practice_004",
+    "title": "Inquiry in Relationships",
+    "subtitle": "Using Connection for Awakening",
+    "excerpt": "How to use relationships as mirrors for self-inquiry and awakening.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "relationship"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_practice_005",
+    "title": "The Evening Review",
+    "subtitle": "Reflection Practice for Integration",
+    "excerpt": "A simple evening practice for integrating recognition into daily life.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_teacher_001",
+    "title": "Ramana Maharshi: The Sage of Arunachala",
+    "subtitle": "Profile of the Modern Advaita Master",
+    "excerpt": "The life and teaching of Ramana Maharshi, the sage who awakened at sixteen and taught only self-inquiry.",
+    "tradition": "advaita",
+    "teacher": "Ramana Maharshi",
+    "categories": [
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_teacher_002",
+    "title": "Nisargadatta Maharaj: I Am That",
+    "subtitle": "The Bombay Cigarette Seller Who Taught Non-Duality",
+    "excerpt": "The remarkable life and fierce teaching of Nisargadatta Maharaj.",
+    "tradition": "advaita",
+    "teacher": "Nisargadatta Maharaj",
+    "categories": [
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "mind",
+      "nature",
+      "truth"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_teacher_003",
+    "title": "Eckhart Tolle: The Power of Presence",
+    "subtitle": "From Depression to Global Teaching",
+    "excerpt": "How Eckhart Tolle went from suicidal depression to global spiritual teacher.",
+    "tradition": "contemporary",
+    "teacher": "Eckhart Tolle",
+    "categories": [
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_teacher_004",
+    "title": "Rupert Spira: The Direct Path",
+    "subtitle": "British Potter Turned Advaita Teacher",
+    "excerpt": "Rupert Spira's precise, elegant approach to self-investigation and recognition.",
+    "tradition": "direct",
+    "teacher": "Rupert Spira",
+    "categories": [
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_teacher_005",
+    "title": "Adyashanti: American Zen",
+    "subtitle": "From Bicycle Mechanic to Awakened Teacher",
+    "excerpt": "Adyashanti's honest, grounded approach to awakening and its integration.",
+    "tradition": "contemporary",
+    "teacher": "Adyashanti",
+    "categories": [
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "ego",
+      "enlightenment",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_deep_001",
+    "title": "After the Recognition: What Then?",
+    "subtitle": "Life After Initial Awakening",
+    "excerpt": "What happens after the initial recognition - and how to navigate the integration process.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_deep_002",
+    "title": "Spiritual Bypassing",
+    "subtitle": "The Shadow Side of Awakening",
+    "excerpt": "Understanding spiritual bypassing - the subtle ways we use spirituality to avoid reality.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "life",
+      "meditation"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_deep_003",
+    "title": "The Dark Night of the Soul",
+    "subtitle": "When Everything Falls Apart",
+    "excerpt": "Understanding and navigating the dark night of the soul - when the spiritual path gets hard.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "enlightenment",
+      "life"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_deep_004",
+    "title": "The Paradox of Effort",
+    "subtitle": "Trying to Not Try",
+    "excerpt": "Understanding the paradox of effort on the spiritual path - and how to navigate it.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "meditation",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_deep_005",
+    "title": "Is the World Real?",
+    "subtitle": "Understanding the Nature of Appearance",
+    "excerpt": "What non-dual teaching really means when it says the world is illusory.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_zen_001",
+    "title": "Beginner's Mind",
+    "subtitle": "The Most Important Zen Teaching",
+    "excerpt": "Why not-knowing is more valuable than knowledge on the spiritual path.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_zen_002",
+    "title": "Just Sitting (Shikantaza)",
+    "subtitle": "The Essence of Zen Meditation",
+    "excerpt": "The simplest and most difficult meditation practice - just sitting with no technique or goal.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "meditation",
+      "mind",
+      "nature",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_zen_003",
+    "title": "Kill the Buddha",
+    "subtitle": "Understanding the Famous Zen Saying",
+    "excerpt": "Understanding one of Zen's most provocative teachings - and why concepts must die.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_modern_001",
+    "title": "Non-Duality and Science",
+    "subtitle": "Where Spirituality Meets Physics",
+    "excerpt": "Exploring the unexpected parallels between non-dual teaching and modern physics.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_modern_002",
+    "title": "Non-Duality and Therapy",
+    "subtitle": "Complementary Approaches to Wholeness",
+    "excerpt": "How non-dual teaching and psychotherapy can work together for genuine wholeness.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_modern_003",
+    "title": "Awakening in the Digital Age",
+    "subtitle": "Spiritual Practice in a Distracted World",
+    "excerpt": "How to practice recognition in an age of constant digital distraction.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_modern_004",
+    "title": "Awakening and Work",
+    "subtitle": "Non-Duality in Professional Life",
+    "excerpt": "How to bring non-dual recognition into professional life without compromising either.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "meditation"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_modern_005",
+    "title": "Awakening and Parenting",
+    "subtitle": "Non-Duality in Family Life",
+    "excerpt": "Using the challenges and joys of parenting as opportunities for awakening.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "enlightenment",
+      "life"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_koan_001",
+    "title": "How to Work with Koans",
+    "subtitle": "A Practical Guide to Zen Inquiry",
+    "excerpt": "Practical guide to working with Zen koans for genuine insight.",
+    "tradition": "zen",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "nature",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_body_001",
+    "title": "The Body as Doorway",
+    "subtitle": "Somatic Approaches to Recognition",
+    "excerpt": "Using the body as a doorway to recognition - somatic approaches to awakening.",
+    "tradition": "direct",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_death_001",
+    "title": "What Dies?",
+    "subtitle": "Contemplating Mortality",
+    "excerpt": "Contemplating death to discover what we truly are - beyond what is born and dies.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "relationship"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_love_001",
+    "title": "Love and Awareness",
+    "subtitle": "The Connection Between Being and Loving",
+    "excerpt": "Discovering that love is not an emotion but the nature of awareness itself.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "nature",
+      "practice"
+    ],
+    "moodTags": [
+      "general",
+      "uplifting"
+    ]
+  },
+  {
+    "id": "art_creativity_001",
+    "title": "Creativity and Non-Duality",
+    "subtitle": "Creating from Emptiness",
+    "excerpt": "Understanding creativity as expression of awareness rather than product of ego.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "ego",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_nature_001",
+    "title": "Nature as Teacher",
+    "subtitle": "Non-Dual Pointing in the Natural World",
+    "excerpt": "How nature teaches non-duality without words - sky, water, mountains as pointers.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_suffering_001",
+    "title": "The End of Seeking",
+    "subtitle": "When Searching Stops",
+    "excerpt": "Understanding how the search perpetuates seeking - and what happens when it ends.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "freedom",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_time_001",
+    "title": "Time and Timelessness",
+    "subtitle": "The Eternal Present",
+    "excerpt": "Investigating the nature of time - and discovering the eternal present.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_free_will_001",
+    "title": "Free Will and Choice",
+    "subtitle": "Who Decides?",
+    "excerpt": "Investigating the sense of being a chooser - and what we find when we look.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "mind",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_doubt_001",
+    "title": "Working with Doubt",
+    "subtitle": "When the Mind Questions Everything",
+    "excerpt": "How to work skillfully with doubt on the spiritual path.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_grace_001",
+    "title": "The Role of Grace",
+    "subtitle": "Effort and Surrender",
+    "excerpt": "Understanding the relationship between effort and grace on the spiritual path.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_language_001",
+    "title": "The Limits of Language",
+    "subtitle": "Why Words Can Never Capture Truth",
+    "excerpt": "Understanding why words can point to truth but never capture it - and how to use them skillfully.",
+    "tradition": "zen",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_happiness_001",
+    "title": "The Search for Happiness",
+    "subtitle": "Why External Seeking Fails",
+    "excerpt": "Why the search for happiness in external things always fails - and where happiness actually is.",
+    "tradition": "advaita",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "relationship"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_ego_001",
+    "title": "Understanding Ego",
+    "subtitle": "What the Separate Self Actually Is",
+    "excerpt": "What ego actually is - and why trying to destroy it misses the point.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "mind",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_silence_001",
+    "title": "The Power of Silence",
+    "subtitle": "Why Words Are Not Enough",
+    "excerpt": "Understanding the transformative power of silence - and the silence that includes sound.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_surrender_001",
+    "title": "The Art of Surrender",
+    "subtitle": "Letting Go into What Is",
+    "excerpt": "Understanding true surrender - the ending of resistance to what already is.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "life",
+      "mind",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_boredom_001",
+    "title": "Boredom and Presence",
+    "subtitle": "The Gift Hidden in Boredom",
+    "excerpt": "How boredom can become a doorway to presence - if we don't run from it.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "life",
+      "mind",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_waking_up_001",
+    "title": "Waking Up vs Growing Up",
+    "subtitle": "Different Dimensions of Development",
+    "excerpt": "Understanding the difference between spiritual awakening and psychological development - and why we need both.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_meditation_types_001",
+    "title": "Types of Meditation",
+    "subtitle": "Understanding Different Practices",
+    "excerpt": "A practical guide to different meditation approaches and when to use each.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "life",
+      "meditation"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_retreat_001",
+    "title": "Going on Retreat",
+    "subtitle": "What to Expect and How to Prepare",
+    "excerpt": "Practical guide to attending a spiritual retreat - preparation, process, and integration.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "life",
+      "meditation",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_finding_teacher_001",
+    "title": "Finding a Teacher",
+    "subtitle": "Guidance on Choosing a Guide",
+    "excerpt": "How to find a genuine spiritual teacher - and red flags to watch for.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "freedom",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_books_001",
+    "title": "Essential Reading",
+    "subtitle": "Key Books for the Path",
+    "excerpt": "A curated reading list for the spiritual path - essential texts across traditions.",
+    "tradition": "contemporary",
+    "categories": [
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "freedom",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_community_001",
+    "title": "The Role of Community",
+    "subtitle": "Sangha and the Spiritual Path",
+    "excerpt": "The role of community on the spiritual path - benefits, challenges, and skillful engagement.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "practice",
+      "relationship"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_emptiness_001",
+    "title": "Understanding Emptiness",
+    "subtitle": "The Buddhist Concept of Shunyata",
+    "excerpt": "What \"emptiness\" actually means in Buddhism - not void, but the absence of separate existence.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "relationship",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_witness_001",
+    "title": "The Witnessing Consciousness",
+    "subtitle": "Stepping Back as the Observer",
+    "excerpt": "The practice of witnessing - stepping back as the observer of experience.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_acceptance_001",
+    "title": "Radical Acceptance",
+    "subtitle": "The End of Resistance",
+    "excerpt": "Understanding radical acceptance - not approval, but the end of resistance to what is.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "life",
+      "practice",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_thought_watch_001",
+    "title": "Watching Thoughts",
+    "subtitle": "The Practice of Observing Mental Activity",
+    "excerpt": "The simple, powerful practice of observing thoughts without engaging them.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_self_image_001",
+    "title": "Beyond Self-Image",
+    "subtitle": "The Fiction We Live By",
+    "excerpt": "Understanding self-image as a construct - and finding freedom beyond it.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "freedom",
+      "life"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_now_001",
+    "title": "The Eternal Now",
+    "subtitle": "Why This Moment Is All There Is",
+    "excerpt": "Understanding why this moment is all there is - and the freedom found in now.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_attention_001",
+    "title": "The Power of Attention",
+    "subtitle": "Where Attention Goes, Reality Follows",
+    "excerpt": "Understanding attention as the key to experience - and how to use it for awakening.",
+    "tradition": "direct",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_peace_001",
+    "title": "The Peace That Passes Understanding",
+    "subtitle": "The Inherent Peace of Awareness",
+    "excerpt": "The inherent peace of awareness - always present, always available, independent of circumstances.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_seeking_end_001",
+    "title": "When Seeking Ends",
+    "subtitle": "The Natural Conclusion of the Search",
+    "excerpt": "What happens when the spiritual search finally ends - and why the end is a beginning.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "freedom",
+      "life"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_ordinary_001",
+    "title": "The Ordinariness of Awakening",
+    "subtitle": "Expecting Fireworks, Finding This",
+    "excerpt": "Why awakening is ordinary - and why that's actually extraordinary.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_duality_001",
+    "title": "Subject and Object",
+    "subtitle": "The Fundamental Division",
+    "excerpt": "Investigating the fundamental division of subject and object - and what happens when it collapses.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_tat_tvam_asi_001",
+    "title": "That Thou Art",
+    "subtitle": "The Great Vedantic Declaration",
+    "excerpt": "The great Vedantic declaration: \"That thou art\" - understanding the identity of self and absolute.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_impermanence_001",
+    "title": "The Teaching of Impermanence",
+    "subtitle": "Everything Changes",
+    "excerpt": "Understanding impermanence - and discovering what remains unchanged.",
+    "tradition": "zen",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_mirror_001",
+    "title": "The Mirror of Mind",
+    "subtitle": "Awareness as Reflection",
+    "excerpt": "The analogy of mind as mirror - reflecting everything, affected by nothing.",
+    "tradition": "zen",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "nature",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_mindfulness_awakening_001",
+    "title": "From Mindfulness to Awakening",
+    "subtitle": "The Bridge and the Beyond",
+    "excerpt": "How mindfulness practice can mature into spiritual awakening - the bridge and beyond.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_nondual_prayer_001",
+    "title": "Non-Dual Prayer",
+    "subtitle": "When There Is No Separate Self to Pray",
+    "excerpt": "What prayer looks like in non-dual understanding - no separate self, no separate God, just love.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "devotion",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_no_path_001",
+    "title": "The Pathless Path",
+    "subtitle": "The Journey With No Destination",
+    "excerpt": "The paradox of the spiritual path - a journey to where you already are.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "practice",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_identity_001",
+    "title": "Who Do You Think You Are?",
+    "subtitle": "Investigating Identity",
+    "excerpt": "A deep investigation into identity - who do you think you are, and who are you really?",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "relationship"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_enlightenment_myth_001",
+    "title": "The Myth of Enlightenment",
+    "subtitle": "What Awakening Is Not",
+    "excerpt": "Debunking the fantasy of enlightenment - what awakening actually is and isn't.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_simple_presence_001",
+    "title": "Simple Presence",
+    "subtitle": "Nothing Special, Everything Included",
+    "excerpt": "The simplest pointing - nothing to do, nothing to achieve, just simple presence.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_illusion_001",
+    "title": "Maya: The Nature of Illusion",
+    "subtitle": "Understanding the Play of Appearances",
+    "excerpt": "Understanding Maya - the world is real as appearance, not as what it appears to be.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_guru_001",
+    "title": "The Role of the Guru",
+    "subtitle": "Understanding the Teacher-Student Relationship",
+    "excerpt": "The role of the spiritual teacher - why gurus are both essential and unnecessary.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "nature"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_dreams_reality_001",
+    "title": "Dreams and Reality",
+    "subtitle": "What Dreams Reveal About Waking",
+    "excerpt": "What dreams reveal about waking life - and what is present in both states.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_compassion_001",
+    "title": "Compassion in Non-Duality",
+    "subtitle": "Why Awakening Includes the Heart",
+    "excerpt": "Why awakening leads to compassion - when separation dissolves, love remains.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general",
+      "uplifting"
+    ]
+  },
+  {
+    "id": "art_nothing_to_do_001",
+    "title": "Nothing to Do",
+    "subtitle": "The End of Spiritual Effort",
+    "excerpt": "The recognition that ends spiritual effort - there was never anything to do.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_neti_neti_001",
+    "title": "Neti Neti: Not This, Not That",
+    "subtitle": "The Method of Negation",
+    "excerpt": "The ancient method of negation - finding what you are by eliminating what you're not.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "practice",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_fear_death_002",
+    "title": "Freedom from the Fear of Death",
+    "subtitle": "What Self-Recognition Reveals About Mortality",
+    "excerpt": "How self-recognition frees us from the fear of death - what was never born cannot die.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "mind",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_action_inaction_001",
+    "title": "Action in Inaction",
+    "subtitle": "The Bhagavad Gita Teaching on Doing",
+    "excerpt": "The Bhagavad Gita teaching on action and non-doing - engaged yet still.",
+    "tradition": "advaita",
+    "categories": [
+      "traditionalTeachings",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_words_beyond_001",
+    "title": "What Words Cannot Say",
+    "subtitle": "The Limits of Teaching",
+    "excerpt": "Acknowledging that what words point to cannot be captured by words.",
+    "tradition": "zen",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_just_this_001",
+    "title": "Just This",
+    "subtitle": "The Simplest Pointing",
+    "excerpt": "The simplest, most direct pointer - everything you seek is just this, exactly as it is.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_first_step_001",
+    "title": "The First Step",
+    "subtitle": "Beginning the Journey",
+    "excerpt": "The simplest starting point - notice you are aware.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "enlightenment",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_stories_001",
+    "title": "The Stories We Tell",
+    "subtitle": "Narrative and Reality",
+    "excerpt": "Understanding how the mind creates stories - and finding reality beneath them.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "freedom",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_refuge_001",
+    "title": "Taking Refuge",
+    "subtitle": "Where to Find Safety",
+    "excerpt": "Finding true refuge - the safety of what you are, which cannot be lost.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "nature",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_simplicity_001",
+    "title": "The Simplicity of Truth",
+    "subtitle": "Why We Complicate What Is Simple",
+    "excerpt": "Why the truth is simple - and why we complicate it.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_longing_001",
+    "title": "The Spiritual Longing",
+    "subtitle": "What We Really Want",
+    "excerpt": "Understanding the spiritual longing - awareness seeking itself.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "freedom",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_contentment_001",
+    "title": "The Nature of Contentment",
+    "subtitle": "Satisfaction Without Conditions",
+    "excerpt": "Finding contentment that doesn't depend on conditions - the natural state of awareness.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_freedom_001",
+    "title": "What Freedom Really Is",
+    "subtitle": "Liberation from the Illusion of Bondage",
+    "excerpt": "Understanding true freedom - not freedom from bondage but recognition that bondage was never real.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness",
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "practice",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_authentic_001",
+    "title": "Authenticity and Awakening",
+    "subtitle": "Being Real vs Being Spiritual",
+    "excerpt": "The importance of being real rather than performing spirituality.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "enlightenment",
+      "life"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_listening_001",
+    "title": "The Art of Listening",
+    "subtitle": "Receiving Teaching Deeply",
+    "excerpt": "The art of truly listening - receiving teaching and life without resistance.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_humility_001",
+    "title": "Spiritual Humility",
+    "subtitle": "Not Knowing as Gift",
+    "excerpt": "The gift of not-knowing - spiritual humility as openness to reality.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_ground_001",
+    "title": "The Ground of Being",
+    "subtitle": "What Everything Rests On",
+    "excerpt": "Recognizing the ground of being - the awareness in which all experience appears.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_here_now_001",
+    "title": "Here and Now",
+    "subtitle": "The Only Place and Time",
+    "excerpt": "Recognizing that here and now are the only place and time - you have never been elsewhere.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 3,
+    "topicTags": [
+      "freedom",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_breath_001",
+    "title": "The Breath as Anchor",
+    "subtitle": "Returning to Presence Through Breathing",
+    "excerpt": "Using the breath as an anchor to presence and a doorway to awareness.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "meditation",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_gaps_001",
+    "title": "The Gaps Between Thoughts",
+    "subtitle": "Finding Peace in the Spaces",
+    "excerpt": "Finding the natural peace in the gaps between thoughts.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "nature",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_sky_clouds_001",
+    "title": "Sky and Clouds",
+    "subtitle": "The Classic Analogy for Awareness",
+    "excerpt": "The classic analogy - you are the sky, not the clouds that pass through it.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_ocean_wave_001",
+    "title": "Ocean and Wave",
+    "subtitle": "Another Powerful Analogy",
+    "excerpt": "The wave is never separate from the ocean - you are never separate from awareness.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_come_back_001",
+    "title": "Coming Back",
+    "subtitle": "What to Do When You Forget",
+    "excerpt": "What to do when you forget - simply come back to awareness.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_stop_001",
+    "title": "Just Stop",
+    "subtitle": "The Most Direct Practice",
+    "excerpt": "The most direct practice - just stop seeking, trying, figuring out.",
+    "tradition": "zen",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_always_001",
+    "title": "What Is Always True",
+    "subtitle": "Finding the Constant",
+    "excerpt": "Finding what is always true - the constant presence of awareness.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_already_home_001",
+    "title": "Already Home",
+    "subtitle": "The End of Spiritual Traveling",
+    "excerpt": "The recognition that you have always been home - nothing to find, nowhere to go.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "life",
+      "practice"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_final_word_001",
+    "title": "The Final Word",
+    "subtitle": "What Remains After All Teaching",
+    "excerpt": "The final word after all teaching - you are aware, and that's all.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_morning_001",
+    "title": "The Morning Mind",
+    "subtitle": "Awareness Upon Waking",
+    "excerpt": "Using the fresh state of morning for recognition.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_evening_001",
+    "title": "Evening Stillness",
+    "subtitle": "Resting as Day Ends",
+    "excerpt": "Using the natural settling of evening for rest and recognition.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "general",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_wait_001",
+    "title": "The Art of Waiting",
+    "subtitle": "Presence in the In-Between",
+    "excerpt": "Transforming waiting from frustration to presence.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "life",
+      "meditation"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_look_001",
+    "title": "Look Now",
+    "subtitle": "The Direct Invitation",
+    "excerpt": "The direct invitation to look now - not later, not after more preparation.",
+    "tradition": "direct",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 1,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "meditation",
+      "mind"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_know_001",
+    "title": "Do You Know You Exist?",
+    "subtitle": "The Most Fundamental Knowing",
+    "excerpt": "The most fundamental knowing - the self-evident fact of your existence.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "meditation",
+      "nature"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_resist_001",
+    "title": "What You Resist Persists",
+    "subtitle": "The Mechanics of Resistance",
+    "excerpt": "Understanding how resistance perpetuates what we resist.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "freedom",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_moment_001",
+    "title": "This Moment",
+    "subtitle": "The Only Moment",
+    "excerpt": "The recognition that this moment is all there is - ever.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "life",
+      "practice",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_answer_001",
+    "title": "You Are the Answer",
+    "subtitle": "The End of Questions",
+    "excerpt": "The recognition that you are the answer you've been seeking.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_obvious_001",
+    "title": "The Obvious",
+    "subtitle": "What Is Right in Front of You",
+    "excerpt": "How we overlook the obvious - and what happens when we see it.",
+    "tradition": "contemporary",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_already_001",
+    "title": "Already",
+    "subtitle": "You Already Are What You Seek",
+    "excerpt": "The most important word - you already are what you seek.",
+    "tradition": "advaita",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "enlightenment",
+      "freedom"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_effortless_001",
+    "title": "Effortless Awareness",
+    "subtitle": "No Effort Required",
+    "excerpt": "Awareness requires no effort - you simply are it.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_natural_001",
+    "title": "Your Natural State",
+    "subtitle": "Before All Conditioning",
+    "excerpt": "Your natural state is awareness - everything else is added.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "mind",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_complete_001",
+    "title": "Complete As You Are",
+    "subtitle": "Nothing Missing",
+    "excerpt": "The recognition that awareness is complete - nothing is missing.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_wonder_001",
+    "title": "The Wonder of Being",
+    "subtitle": "The Mystery of Existence",
+    "excerpt": "The extraordinary wonder of simply being - the mystery of existence.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "mind",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_direct_001",
+    "title": "The Direct Recognition",
+    "subtitle": "No Intermediary Needed",
+    "excerpt": "The direct recognition needs no intermediary - just turn attention to its source.",
+    "tradition": "direct",
+    "categories": [
+      "selfInquiry"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "mind",
+      "practice"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_perfect_001",
+    "title": "Already Perfect",
+    "subtitle": "Nothing to Fix",
+    "excerpt": "The recognition that awareness is already perfect - nothing needs fixing.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "nature",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_presence_002",
+    "title": "Presence Is Not a State",
+    "subtitle": "Beyond Experiences",
+    "excerpt": "Presence is not a state to achieve - it is what is aware of all states.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "freedom",
+      "practice"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_light_001",
+    "title": "The Light of Awareness",
+    "subtitle": "What Illuminates Experience",
+    "excerpt": "Awareness as light - self-luminous, illuminating all experience.",
+    "tradition": "advaita",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "presence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_space_001",
+    "title": "The Space of Awareness",
+    "subtitle": "What Contains Experience",
+    "excerpt": "Awareness as space - containing everything, touched by nothing.",
+    "tradition": "direct",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_open_001",
+    "title": "Wide Open",
+    "subtitle": "The Openness of Awareness",
+    "excerpt": "The natural openness of awareness - nothing excluded, everything allowed.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "freedom",
+      "nature"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_allow_001",
+    "title": "The Art of Allowing",
+    "subtitle": "Letting Experience Be",
+    "excerpt": "The art of allowing - letting experience be exactly as it is.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "ego",
+      "enlightenment",
+      "life",
+      "mind"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_this_is_it_001",
+    "title": "This Is It",
+    "subtitle": "There Is No Other",
+    "excerpt": "The recognition that this is it - there is nothing else.",
+    "tradition": "zen",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "ego",
+      "enlightenment",
+      "freedom",
+      "life"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_thank_001",
+    "title": "Gratitude",
+    "subtitle": "The Natural Response to Recognition",
+    "excerpt": "Gratitude as the natural response to recognizing what we are.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "enlightenment",
+      "life"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_end_001",
+    "title": "The End of Suffering",
+    "subtitle": "What Stops When",
+    "excerpt": "What the end of suffering really means - and what continues.",
+    "tradition": "contemporary",
+    "categories": [
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "life",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_final_001",
+    "title": "Nothing More to Say",
+    "subtitle": "The Final Silence",
+    "excerpt": "After all the words - silence, and living what cannot be said.",
+    "tradition": "contemporary",
+    "categories": [
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 2,
+    "topicTags": [
+      "awareness",
+      "ego",
+      "nature",
+      "silence"
+    ],
+    "moodTags": [
+      "general"
+    ]
+  },
+  {
+    "id": "art_true_meditation_001",
+    "title": "True Meditation",
+    "subtitle": "Adyashanti's Radical Approach",
+    "excerpt": "Adyashanti's revolutionary approach: meditation as the abandonment of the meditator.",
+    "tradition": "contemporary",
+    "teacher": "Adyashanti",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "meditation",
+      "practice",
+      "surrender"
+    ],
+    "moodTags": [
+      "contemplative",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_i_am_practice_001",
+    "title": "Holding to I Am",
+    "subtitle": "Nisargadatta Maharaj's Core Practice",
+    "excerpt": "Nisargadatta's essential practice: holding to the pure sense of \"I am\" before all qualifications.",
+    "tradition": "advaita",
+    "teacher": "Nisargadatta Maharaj",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "practice",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_atma_vichara_001",
+    "title": "The Art of Self-Inquiry",
+    "subtitle": "Ramana Maharshi's Atma Vichara",
+    "excerpt": "A practical guide to Ramana Maharshi's self-inquiry — investigation, not thinking.",
+    "tradition": "advaita",
+    "teacher": "Ramana Maharshi",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "practice",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_three_stages_001",
+    "title": "Understanding, Feeling, Living",
+    "subtitle": "Rupert Spira's Three Stages of Recognition",
+    "excerpt": "Rupert Spira's direct path unfolds through understanding, feeling, and embodied living.",
+    "tradition": "direct",
+    "teacher": "Rupert Spira",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "practice",
+      "presence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_open_secret_001",
+    "title": "The Open Secret",
+    "subtitle": "Tony Parsons on Liberation Without Cause",
+    "excerpt": "Tony Parsons' radical message: liberation has no cause, because there is no one to be liberated.",
+    "tradition": "contemporary",
+    "teacher": "Tony Parsons",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "ego",
+      "enlightenment",
+      "freedom",
+      "truth"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_body_approach_001",
+    "title": "The Body as Doorway",
+    "subtitle": "Jean Klein's Approach to Embodied Awakening",
+    "excerpt": "Jean Klein's unique teaching: the body is not an obstacle to awakening but a doorway into presence.",
+    "tradition": "direct",
+    "teacher": "Jean Klein",
+    "categories": [
+      "natureOfAwareness",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "contemplative",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_invitation_001",
+    "title": "The Invitation to Freedom",
+    "subtitle": "Mooji's Core Pointing",
+    "excerpt": "Mooji's invitation: you are already that which you seek — stop being a tourist in your own Self.",
+    "tradition": "contemporary",
+    "teacher": "Mooji",
+    "categories": [
+      "selfInquiry",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "presence",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "general",
+      "uplifting"
+    ]
+  },
+  {
+    "id": "art_the_work_001",
+    "title": "The Four Questions",
+    "subtitle": "Byron Katie's Method of Self-Inquiry",
+    "excerpt": "Byron Katie's four questions that end suffering: a radical method of questioning stressful thoughts.",
+    "tradition": "contemporary",
+    "teacher": "Byron Katie",
+    "categories": [
+      "selfInquiry",
+      "everydayAwakening"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "freedom",
+      "mind",
+      "practice",
+      "self-inquiry"
+    ],
+    "moodTags": [
+      "challenging",
+      "general"
+    ]
+  },
+  {
+    "id": "art_stop_teaching_001",
+    "title": "Stop",
+    "subtitle": "Papaji's One-Word Teaching",
+    "excerpt": "Papaji's radical instruction: stop everything this instant and recognize what was always here.",
+    "tradition": "advaita",
+    "teacher": "Papaji",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "enlightenment",
+      "freedom",
+      "mind",
+      "silence"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_awareness_teaching_001",
+    "title": "The Substance of Experience",
+    "subtitle": "Francis Lucille's Scientific Inquiry",
+    "excerpt": "Francis Lucille's rigorous investigation: awareness is not the highest state — it is the only state.",
+    "tradition": "direct",
+    "teacher": "Francis Lucille",
+    "categories": [
+      "natureOfAwareness",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "nature",
+      "self-inquiry",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "general"
+    ]
+  },
+  {
+    "id": "art_ashtavakra_freedom_001",
+    "title": "The Song of Ashtavakra",
+    "subtitle": "Ancient Verses on Absolute Freedom",
+    "excerpt": "The Ashtavakra Gita's blazing declaration: you are already free, you were never bound.",
+    "tradition": "advaita",
+    "teacher": "Ashtavakra",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "enlightenment",
+      "freedom",
+      "truth"
+    ],
+    "moodTags": [
+      "challenging",
+      "contemplative"
+    ]
+  },
+  {
+    "id": "art_avadhuta_001",
+    "title": "Song of the Avadhuta",
+    "subtitle": "Dattatreya's Ecstatic Freedom",
+    "excerpt": "Dattatreya's ecstatic song of absolute freedom — beyond all paths, all concepts, all limitation.",
+    "tradition": "advaita",
+    "teacher": "Dattatreya",
+    "categories": [
+      "traditionalTeachings",
+      "natureOfAwareness"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "freedom",
+      "silence",
+      "truth"
+    ],
+    "moodTags": [
+      "contemplative",
+      "uplifting"
+    ]
+  },
+  {
+    "id": "art_silence_heart_001",
+    "title": "Silence of the Heart",
+    "subtitle": "Robert Adams on the Primacy of Silence",
+    "excerpt": "Robert Adams' teaching on silence: not the absence of sound, but the presence of the Self.",
+    "tradition": "advaita",
+    "teacher": "Robert Adams",
+    "categories": [
+      "selfInquiry",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "self-inquiry",
+      "silence",
+      "surrender"
+    ],
+    "moodTags": [
+      "contemplative",
+      "evening"
+    ]
+  },
+  {
+    "id": "art_doorways_presence_001",
+    "title": "Doorways to Presence",
+    "subtitle": "Eckhart Tolle on Entering the Now",
+    "excerpt": "Five practical doorways to presence: Eckhart Tolle's guide to stepping into the now.",
+    "tradition": "contemporary",
+    "teacher": "Eckhart Tolle",
+    "categories": [
+      "everydayAwakening",
+      "modernPointers"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "mind",
+      "practice",
+      "presence"
+    ],
+    "moodTags": [
+      "general",
+      "morning"
+    ]
+  },
+  {
+    "id": "art_unfolding_001",
+    "title": "Everything Is Unfolding",
+    "subtitle": "Robert Adams on Trust and Surrender",
+    "excerpt": "Robert Adams on trusting the deeper intelligence: everything is unfolding exactly as it should.",
+    "tradition": "advaita",
+    "teacher": "Robert Adams",
+    "categories": [
+      "everydayAwakening",
+      "traditionalTeachings"
+    ],
+    "readingTimeMinutes": 4,
+    "topicTags": [
+      "awareness",
+      "life",
+      "surrender",
+      "truth"
+    ],
+    "moodTags": [
+      "stress",
+      "uplifting"
+    ]
+  }
+]

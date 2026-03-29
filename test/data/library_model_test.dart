@@ -11,6 +11,12 @@ import 'package:pointer/models/teacher_profile.dart';
 import 'package:pointer/providers/library_providers.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() async {
+    resetArticlesForTesting();
+    await loadArticles();
+  });
   group('Article Model', () {
     test('creates Article correctly with all fields', () {
       final article = Article(
@@ -193,7 +199,8 @@ void main() {
       for (final article in articles) {
         expect(article.id, isNotEmpty);
         expect(article.title, isNotEmpty);
-        expect(article.content, isNotEmpty);
+        // content is null from JSON metadata (lazy-loaded from .md files)
+        expect(article.content, isNull);
         expect(article.readingTimeMinutes, greaterThan(0));
       }
     });

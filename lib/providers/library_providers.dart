@@ -105,7 +105,7 @@ final librarySearchQueryProvider = StateProvider<String>((ref) => '');
 /**
  * Provides [Article] search results matching [librarySearchQueryProvider].
  *
- * Searches across title, subtitle, excerpt, content, and teacher name.
+ * Searches across title, subtitle, and excerpt (content is lazy-loaded).
  * Returns an empty list when the query is empty.
  */
 final articleSearchResultsProvider = Provider<List<Article>>((ref) {

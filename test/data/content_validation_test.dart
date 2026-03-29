@@ -5,6 +5,12 @@ import 'package:pointer/data/teachers.dart';
 import 'package:pointer/data/teaching.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() async {
+    resetArticlesForTesting();
+    await loadArticles();
+  });
   group('Pointings content validation', () {
     test('no empty content fields', () {
       for (final p in pointings) {
@@ -112,10 +118,11 @@ void main() {
       expect(matched, greaterThan(articlesWithTeacher.length * 0.8), reason: 'Only $matched/${articlesWithTeacher.length} article teachers in map');
     });
 
-    test('no encoding artifacts in content', () {
+    test('no encoding artifacts in article markdown files', () async {
       final artifacts = RegExp(r'â€™|â€œ|â€|Ã©|Ã¨|Ã¼|â€"');
       for (final a in articles) {
-        expect(a.content, isNot(matches(artifacts)), reason: 'Article ${a.id} contains encoding artifacts');
+        final content = await loadArticleContent(a.id);
+        expect(content, isNot(matches(artifacts)), reason: 'Article ${a.id} contains encoding artifacts');
       }
     });
 
@@ -135,9 +142,10 @@ void main() {
       }
     });
 
-    test('content is not empty', () {
+    test('markdown content files are not empty', () async {
       for (final a in articles) {
-        expect(a.content.trim(), isNotEmpty, reason: 'Article ${a.id} has empty content');
+        final content = await loadArticleContent(a.id);
+        expect(content.trim(), isNotEmpty, reason: 'Article ${a.id} has empty markdown content');
       }
     });
 

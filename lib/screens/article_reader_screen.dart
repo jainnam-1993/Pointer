@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
@@ -39,6 +40,20 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   final bool _showTTSPlayer = false;
   // ignore: unused_field
   final bool _ttsConfigured = false;
+
+  /** Lazy-loaded article content future. */
+  late final Future<String> _contentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // If the article already has content (e.g. from tests), use it directly;
+    // otherwise lazy-load from the Markdown asset file.
+    final existingContent = widget.article.content;
+    _contentFuture = existingContent != null
+        ? Future.value(existingContent)
+        : loadArticleContent(widget.article.id);
+  }
 
   /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
@@ -181,11 +196,30 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                   ),
                 ),
 
-                // Article content
+                // Article content (lazy-loaded)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 32 + bottomPadding),
-                    child: _MarkdownContent(content: widget.article.content, colors: colors),
+                    child: FutureBuilder<String>(
+                      future: _contentFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 48),
+                            child: Center(child: CircularProgressIndicator(color: colors.accent)),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 48),
+                            child: Center(
+                              child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                            ),
+                          );
+                        }
+                        return _MarkdownContent(content: snapshot.data!, colors: colors);
+                      },
+                    ),
                   ),
                 ),
               ],

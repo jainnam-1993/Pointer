@@ -203,7 +203,8 @@ Final thoughts.
     test('article has required fields', () {
       expect(testArticle.id, 'test-article-1');
       expect(testArticle.title, 'Test Article Title');
-      expect(testArticle.content.isNotEmpty, isTrue);
+      expect(testArticle.content, isNotNull);
+      expect(testArticle.content!.isNotEmpty, isTrue);
       expect(testArticle.tradition, Tradition.advaita);
       expect(testArticle.readingTimeMinutes, 5);
     });
