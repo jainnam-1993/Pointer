@@ -1,7 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/data/pointings.dart';
 
+import '../helpers/test_setup.dart';
+
 void main() {
+  setUpAll(loadTestPointings);
+
   group('Tradition enum', () {
     test('has all 5 traditions', () {
       expect(Tradition.values.length, 5);

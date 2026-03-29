@@ -9,12 +9,15 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 
+import '../helpers/test_setup.dart';
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 void main() {
   late MockSharedPreferences mockPrefs;
 
   setUpAll(() {
+    loadTestPointings();
     // Disable animations to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
   });

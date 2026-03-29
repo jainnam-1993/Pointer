@@ -6,10 +6,13 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/services/widget_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/test_setup.dart';
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(loadTestPointings);
 
   group('WidgetService constants', () {
     test('has correct iOS App Group', () {

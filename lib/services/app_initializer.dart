@@ -157,6 +157,9 @@ class AppInitializer {
   // ------------------------------------------------------------------
 
   static Future<void> _initContent(SharedPreferences prefs) async {
+    // Load pointings from JSON asset before anything that depends on them
+    await loadPointings();
+
     final widgetService = WidgetService(prefs);
     await widgetService.initialize();
     await widgetService.populatePointingsCache();
