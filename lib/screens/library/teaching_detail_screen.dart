@@ -18,7 +18,7 @@ import '../../providers/core_providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/animated_gradient.dart';
 import '../../widgets/animated_transitions.dart';
-import '../article_reader_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
 
@@ -143,7 +143,7 @@ class _TeachingDetailScreenState extends ConsumerState<TeachingDetailScreen> {
                               article: article,
                               onTap: () {
                                 HapticFeedback.lightImpact();
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: article)));
+                                context.push('/article/${article.id}');
                               },
                             ),
                           ),

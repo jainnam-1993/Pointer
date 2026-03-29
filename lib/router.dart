@@ -41,6 +41,7 @@ import 'screens/settings_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/main_shell.dart';
+import 'screens/article_reader_screen.dart';
 import 'screens/lineages_screen.dart';
 import 'screens/splash_screen.dart';
 import 'widgets/animated_transitions.dart';
@@ -196,6 +197,18 @@ GoRouter _createRouter() {
         path: '/lineages',
         pageBuilder: (context, state) =>
             SharedAxisPage(key: state.pageKey, transitionType: SharedAxisTransitionType.horizontal, child: const LineagesScreen()),
+      ),
+
+      // Article reader route (outside shell - full screen reading)
+      GoRoute(
+        path: '/article/:id',
+        pageBuilder: (context, state) {
+          final articleId = state.pathParameters['id']!;
+          return CalmPageTransition(
+            key: state.pageKey,
+            child: ArticleReaderScreen(articleId: articleId),
+          );
+        },
       ),
 
       // Main app with bottom navigation

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
@@ -23,20 +24,24 @@ import '../widgets/share_preview_helper.dart';
  * from the article excerpt for [SharePreviewScreen].
  */
 class ArticleReaderScreen extends ConsumerStatefulWidget {
-  /** The article to display in the reader. */
-  final Article article;
+  /** The article ID used to look up the article from the data layer. */
+  final String articleId;
 
-  const ArticleReaderScreen({super.key, required this.article});
+  const ArticleReaderScreen({super.key, required this.articleId});
 
   @override
   ConsumerState<ArticleReaderScreen> createState() => _ArticleReaderScreenState();
 }
 
 class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
+  /** Resolved article from [widget.articleId], or null if not found. */
+  late final Article? _article = getArticleById(widget.articleId);
+
+
   /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
     HapticFeedback.mediumImpact();
-    final article = widget.article;
+    final article = _article!;
     final pointing = Pointing(
       id: 'article_${article.id}',
       content: article.excerpt ?? article.title,
@@ -50,9 +55,18 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final article = _article;
+    if (article == null) {
+      // Article not found — go back gracefully
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) Navigator.of(context).maybePop();
+      });
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final traditionInfo = traditions[widget.article.tradition]!;
+    final traditionInfo = traditions[article.tradition]!;
 
     return Scaffold(
       body: Stack(
@@ -69,19 +83,17 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.close, color: colors.textPrimary),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => Navigator.pop(context),
                         ),
                         const Spacer(),
                         Consumer(
                           builder: (context, ref, _) {
-                            final isSaved = ref.watch(articleFavoritesProvider).contains(widget.article.id);
+                            final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
                             return IconButton(
                               icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
                               onPressed: () {
                                 HapticFeedback.lightImpact();
-                                ref.read(articleFavoritesProvider.notifier).toggle(widget.article.id);
+                                ref.read(articleFavoritesProvider.notifier).toggle(article.id);
                               },
                             );
                           },
@@ -121,26 +133,26 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          widget.article.title,
+                          article.title,
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),
                         ),
-                        if (widget.article.subtitle != null) ...[
+                        if (article.subtitle != null) ...[
                           const SizedBox(height: 8),
-                          Text(widget.article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+                          Text(article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
                         ],
                         const SizedBox(height: 12),
                         Row(
                           children: [
                             Icon(Icons.schedule, size: 14, color: colors.textMuted),
                             const SizedBox(width: 4),
-                            Text('${widget.article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
-                            if (widget.article.teacher != null) ...[
+                            Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
+                            if (article.teacher != null) ...[
                               const SizedBox(width: 16),
                               Icon(Icons.person_outline, size: 14, color: colors.textMuted),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
-                                  widget.article.teacher!,
+                                  article.teacher!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 13, color: colors.textMuted),
@@ -160,7 +172,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 32 + bottomPadding),
-                    child: _MarkdownContent(content: widget.article.content, colors: colors),
+                    child: _MarkdownContent(content: article.content, colors: colors),
                   ),
                 ),
               ],
