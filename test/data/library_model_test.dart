@@ -8,7 +8,73 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/data/teacher_profiles.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/models/teacher_profile.dart';
-import 'package:pointer/providers/library_providers.dart';
+
+// Inlined from deleted library_providers.dart for test use only.
+final articlesProvider = Provider<List<Article>>((ref) => articles);
+final articlesByTraditionProvider = Provider.family<List<Article>, Tradition>((ref, tradition) {
+  return getArticlesByTradition(tradition);
+});
+final articlesByCategoryProvider = Provider.family<List<Article>, ArticleCategory>((ref, category) {
+  return getArticlesByCategory(category);
+});
+final articlesByTeacherProvider = Provider.family<List<Article>, String>((ref, teacherName) {
+  return getArticlesByTeacher(teacherName);
+});
+final articleByIdProvider = Provider.family<Article?, String>((ref, id) {
+  return getArticleById(id);
+});
+final featuredArticlesProvider = Provider<List<Article>>((ref) {
+  return getFeaturedArticles(limit: 5);
+});
+final teacherProfilesProvider = Provider<List<TeacherProfile>>((ref) => teacherProfiles);
+final teacherByNameProvider = Provider.family<TeacherProfile?, String>((ref, name) {
+  return getTeacherProfile(name);
+});
+final teachersByTraditionProvider = Provider.family<List<TeacherProfile>, Tradition>((ref, tradition) {
+  return getTeachersByTradition(tradition);
+});
+final librarySearchQueryProvider = StateProvider<String>((ref) => '');
+final articleSearchResultsProvider = Provider<List<Article>>((ref) {
+  final query = ref.watch(librarySearchQueryProvider).trim();
+  if (query.isEmpty) return const [];
+  return searchArticles(query);
+});
+final teacherSearchResultsProvider = Provider<List<TeacherProfile>>((ref) {
+  return searchTeacherProfiles(ref.watch(librarySearchQueryProvider));
+});
+final selectedTraditionFilterProvider = StateProvider<Tradition?>((ref) => null);
+final selectedCategoryFilterProvider = StateProvider<ArticleCategory?>((ref) => null);
+final filteredArticlesProvider = Provider<List<Article>>((ref) {
+  final tradition = ref.watch(selectedTraditionFilterProvider);
+  final category = ref.watch(selectedCategoryFilterProvider);
+  var result = articles.toList();
+  if (tradition != null) {
+    result = result.where((a) => a.tradition == tradition).toList();
+  }
+  if (category != null) {
+    result = result.where((a) => a.hasCategory(category)).toList();
+  }
+  return result;
+});
+final totalArticleCountProvider = Provider<int>((ref) => articles.length);
+final totalTeacherCountProvider = Provider<int>((ref) => teacherProfiles.length);
+final totalReadingTimeProvider = Provider<int>((ref) {
+  return articles.fold(0, (sum, a) => sum + a.readingTimeMinutes);
+});
+final articlesPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
+  final map = <Tradition, int>{};
+  for (final tradition in Tradition.values) {
+    map[tradition] = articles.where((a) => a.tradition == tradition).length;
+  }
+  return map;
+});
+final teachersPerTraditionProvider = Provider<Map<Tradition, int>>((ref) {
+  final map = <Tradition, int>{};
+  for (final tradition in Tradition.values) {
+    map[tradition] = getTeachersByTradition(tradition).length;
+  }
+  return map;
+});
 
 void main() {
   group('Article Model', () {
