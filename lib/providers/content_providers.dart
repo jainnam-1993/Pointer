@@ -121,7 +121,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
   }
 
   /** Move to next pointing in round-robin order */
-  void nextPointing({Tradition? tradition, PointingContext? context}) {
+  void nextPointing() {
     _index = (_index + 1) % _order.length;
 
     // Reshuffle when completing a full cycle

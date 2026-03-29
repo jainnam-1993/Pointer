@@ -1,0 +1,94 @@
+# App Store Dark Mode Screenshots v1.1
+# Fresh install → onboarding → dark mode → capture all screens
+appId: com.dailypointer
+---
+
+# Wait for splash to finish
+- extendedWaitUntil:
+    visible:
+      text: ".*Continue.*"
+    timeout: 15000
+
+# Complete onboarding (4 screens)
+- tapOn:
+    text: ".*Continue.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Continue.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Continue.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Maybe Later.*"
+    optional: true
+- waitForAnimationToEnd
+
+# === SWITCH TO DARK MODE ===
+- tapOn:
+    text: ".*Settings.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Dark.*"
+- waitForAnimationToEnd
+
+# Capture settings in dark mode
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_settings"
+
+# === DARK HOME ===
+- tapOn:
+    text: ".*Home.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_home1"
+
+# Next pointing
+- tapOn:
+    text: ".*Next.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_home2"
+
+# One more
+- tapOn:
+    text: ".*Next.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_home3"
+
+# === DARK LIBRARY ===
+- tapOn:
+    text: ".*Library.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_library"
+
+# Open I Am That article
+- tapOn:
+    text: ".*I Am That.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_article"
+
+# Close article
+- tapOn:
+    point: "5%,5%"
+- waitForAnimationToEnd
+
+# === DARK INQUIRY ===
+- tapOn:
+    text: ".*Inquiry.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/dark_inquiry"
+
+# === SWITCH BACK TO LIGHT for contrast shot ===
+- tapOn:
+    text: ".*Settings.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Light.*"
+- waitForAnimationToEnd
+
+# Light home
+- tapOn:
+    text: ".*Home.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/light_home"

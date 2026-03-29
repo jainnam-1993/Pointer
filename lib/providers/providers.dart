@@ -9,7 +9,7 @@
  * Or import specific domains for smaller import footprint:
  * - `core_providers.dart`: [SharedPreferences], [StorageService], [NotificationService]
  * - `settings_providers.dart`: Zen, OLED, typography, accessibility, theme, auto-advance
- * - `subscription_providers.dart`: Daily usage tracking (analytics)
+ * - `usage_providers.dart`: Daily usage tracking (analytics)
  * - `content_providers.dart`: [Pointing] navigation, favorites, teaching filters
  * - `donation_providers.dart`: Tip jar IAP via [DonationNotifier]
  */
@@ -19,4 +19,4 @@ export 'content_providers.dart';
 export 'core_providers.dart';
 export 'donation_providers.dart';
 export 'settings_providers.dart';
-export 'subscription_providers.dart';
+export 'usage_providers.dart';

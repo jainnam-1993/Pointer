@@ -32,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/inquiry_screen.dart';
 import 'screens/inquiry_player_screen.dart';
@@ -103,7 +104,7 @@ GoRouter _getOrCreateRouter() {
  * Returns `false` if [_sharedPrefs] has not been set or the key is absent.
  */
 bool _isOnboardingCompleted() {
-  return _sharedPrefs?.getBool('pointer_onboarding_completed') ?? false;
+  return _sharedPrefs?.getBool(StorageKeys.onboardingCompleted) ?? false;
 }
 
 /**

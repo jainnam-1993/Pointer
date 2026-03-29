@@ -25,7 +25,7 @@ import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
-import 'services/maestro_hooks.dart';
+import 'debug/maestro_hooks.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'theme/app_theme.dart';

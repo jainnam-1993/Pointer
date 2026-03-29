@@ -1,0 +1,80 @@
+# App Store Marketing Screenshots v1.1
+# Run: maestro test maestro/flows/screenshots_appstore_v1.1.yaml
+appId: com.dailypointer
+---
+
+# === 1. HOME — Daily Pointing (hero shot) ===
+- tapOn:
+    text: ".*Home.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/01_home"
+
+# === 2. Next pointing for variety ===
+- tapOn:
+    text: ".*Next.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/02_home_next"
+
+# === 3. LIBRARY — Browse by Topics ===
+- tapOn:
+    text: ".*Library.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/03_library_topics"
+
+# === 4. Tap on Awareness topic ===
+- tapOn:
+    text: ".*Awareness.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/04_topic_awareness"
+
+# Go back
+- tapOn:
+    point: "8%,6%"
+- waitForAnimationToEnd
+
+# === 5. Tap I Am That article ===
+- tapOn:
+    text: ".*I Am That.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/05_article"
+
+# Close article
+- tapOn:
+    point: "5%,5%"
+- waitForAnimationToEnd
+
+# === 6. Switch browse mode to Teachers ===
+- tapOn:
+    text: ".*Topics.*"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Teachers.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/06_library_teachers"
+
+# === 7. INQUIRY ===
+- tapOn:
+    text: ".*Inquiry.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/07_inquiry"
+
+# === 8. SETTINGS ===
+- tapOn:
+    text: ".*Settings.*"
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/08_settings"
+
+# === 9. HOME — final pointing ===
+- tapOn:
+    text: ".*Home.*"
+- waitForAnimationToEnd
+- tapOn:
+    text: ".*Next.*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: "docs/store_assets/ios_screenshots_v1.1/09_home_final"

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pointer/providers/subscription_providers.dart';
+import 'package:pointer/providers/usage_providers.dart';
 import 'package:pointer/services/usage_tracking_service.dart';
 
 class MockUsageTrackingService extends Mock implements UsageTrackingService {}
