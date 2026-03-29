@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/pointings.dart';
 import '../../services/share_service.dart';
-import '../../utils/formatting.dart';
 
 /**
  * Tradition-specific color palette for share card templates.
@@ -107,198 +106,156 @@ class ShareCard extends StatelessWidget {
   }
 
   Widget _buildTemplate() {
-    switch (template) {
-      case ShareTemplate.minimal:
-        return _MinimalTemplate(pointing: pointing, format: format);
-      case ShareTemplate.gradient:
-        return _GradientTemplate(pointing: pointing, format: format);
-      case ShareTemplate.tradition:
-        return _TraditionTemplate(pointing: pointing, format: format);
-    }
+    final style = switch (template) {
+      ShareTemplate.minimal => _ShareTemplateStyle.minimal,
+      ShareTemplate.gradient => _ShareTemplateStyle.gradient,
+      ShareTemplate.tradition => _ShareTemplateStyle.forTradition(pointing.tradition),
+    };
+    return _ShareTemplate(pointing: pointing, format: format, style: style);
   }
 }
 
-/** Minimal template - clean, text-focused */
-class _MinimalTemplate extends StatelessWidget {
-  final Pointing pointing;
-  final ShareFormat format;
+/**
+ * Style configuration for share card templates.
+ *
+ * Captures all visual differences between the minimal, gradient, and
+ * tradition templates so they can share a single [_ShareTemplate] widget.
+ */
+class _ShareTemplateStyle {
+  /** Container decoration (solid color or gradient). */
+  final BoxDecoration decoration;
 
-  const _MinimalTemplate({required this.pointing, required this.format});
+  /** Primary text color for the pointing content. */
+  final Color textColor;
 
-  @override
-  Widget build(BuildContext context) {
-    final isStory = format == ShareFormat.story;
-    final safePadding = isStory ? 180.0 : 80.0; // Story safe zones
+  /** Color for teacher attribution. */
+  final Color accentColor;
 
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Spacer(),
-          // Pointing text
-          Text(
-            '"${pointing.content}"',
-            style: TextStyle(
-              fontFamily: 'Georgia',
-              fontSize: calculateShareFontSize(pointing.content.length, isStory),
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF1A1A1A),
-              height: 1.5,
-              letterSpacing: 0.3,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          // Teacher attribution
-          if (pointing.teacher != null)
-            Text(
-              '— ${pointing.teacher}',
-              style: const TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: Color(0xFF666666)),
-            ),
-          if (pointing.source != null)
-            Text(
-              pointing.source!,
-              style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: Color(0xFF999999)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          const Spacer(),
-          // Watermark
-          _Watermark(color: const Color(0xFF999999)),
-        ],
+  /** Color for source citation (typically accent with reduced alpha). */
+  final Color sourceColor;
+
+  /** Watermark color. */
+  final Color watermarkColor;
+
+  /** Whether to show the tradition badge above the pointing text. */
+  final bool showBadge;
+
+  /** Optional badge color override (null uses default purple). */
+  final Color? badgeColor;
+
+  const _ShareTemplateStyle({
+    required this.decoration,
+    required this.textColor,
+    required this.accentColor,
+    required this.sourceColor,
+    required this.watermarkColor,
+    this.showBadge = false,
+    this.badgeColor,
+  });
+
+  /** Clean white background, no badge. */
+  static const minimal = _ShareTemplateStyle(
+    decoration: BoxDecoration(color: Colors.white),
+    textColor: Color(0xFF1A1A1A),
+    accentColor: Color(0xFF666666),
+    sourceColor: Color(0xFF999999),
+    watermarkColor: Color(0xFF999999),
+  );
+
+  /** Dark purple gradient with default badge. */
+  static _ShareTemplateStyle gradient = _ShareTemplateStyle(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF0F0B1A), Color(0xFF1A1025), Color(0xFF150D20)],
       ),
-    );
-  }
-}
+    ),
+    textColor: const Color(0xFFF5F0FF),
+    accentColor: const Color(0xFFA78BFA),
+    sourceColor: const Color(0xFFA78BFA).withValues(alpha: 0.6),
+    watermarkColor: const Color(0xFF8B5CF6).withValues(alpha: 0.6),
+    showBadge: true,
+  );
 
-/** Gradient template - app gradient background */
-class _GradientTemplate extends StatelessWidget {
-  final Pointing pointing;
-  final ShareFormat format;
-
-  const _GradientTemplate({required this.pointing, required this.format});
-
-  @override
-  Widget build(BuildContext context) {
-    final isStory = format == ShareFormat.story;
-    final safePadding = isStory ? 180.0 : 80.0;
-
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0F0B1A), // Deep purple-black
-            Color(0xFF1A1025), // Dark purple
-            Color(0xFF150D20), // Midnight
-          ],
-        ),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Spacer(),
-          // Tradition badge
-          _TraditionBadge(tradition: pointing.tradition),
-          const SizedBox(height: 40),
-          // Pointing text
-          Text(
-            '"${pointing.content}"',
-            style: TextStyle(
-              fontFamily: 'Georgia',
-              fontSize: calculateShareFontSize(pointing.content.length, isStory),
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFFF5F0FF),
-              height: 1.5,
-              letterSpacing: 0.3,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          // Teacher attribution
-          if (pointing.teacher != null)
-            Text(
-              '— ${pointing.teacher}',
-              style: const TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: Color(0xFFA78BFA)),
-            ),
-          if (pointing.source != null)
-            Text(
-              pointing.source!,
-              style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: const Color(0xFFA78BFA).withValues(alpha: 0.6)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          const Spacer(),
-          // Watermark
-          _Watermark(color: const Color(0xFF8B5CF6).withValues(alpha: 0.6)),
-        ],
-      ),
-    );
-  }
-}
-
-/** Tradition template - colors matching the tradition */
-class _TraditionTemplate extends StatelessWidget {
-  final Pointing pointing;
-  final ShareFormat format;
-
-  const _TraditionTemplate({required this.pointing, required this.format});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = TraditionColors.forTradition(pointing.tradition);
-    final isStory = format == ShareFormat.story;
-    final safePadding = isStory ? 180.0 : 80.0;
-
-    return Container(
+  /** Tradition-specific colors and badge. */
+  static _ShareTemplateStyle forTradition(Tradition tradition) {
+    final colors = TraditionColors.forTradition(tradition);
+    return _ShareTemplateStyle(
       decoration: BoxDecoration(
         gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [colors.background, colors.backgroundEnd]),
       ),
+      textColor: colors.text,
+      accentColor: colors.accent,
+      sourceColor: colors.accent.withValues(alpha: 0.6),
+      watermarkColor: colors.accent.withValues(alpha: 0.6),
+      showBadge: true,
+      badgeColor: colors.badge,
+    );
+  }
+}
+
+/** Unified share card template driven by [_ShareTemplateStyle]. */
+class _ShareTemplate extends StatelessWidget {
+  final Pointing pointing;
+  final ShareFormat format;
+  final _ShareTemplateStyle style;
+
+  const _ShareTemplate({required this.pointing, required this.format, required this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    final isStory = format == ShareFormat.story;
+    final safePadding = isStory ? 180.0 : 80.0;
+
+    return Container(
+      decoration: style.decoration,
       padding: EdgeInsets.symmetric(horizontal: 80, vertical: safePadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          // Tradition badge
-          _TraditionBadge(tradition: pointing.tradition, color: colors.badge),
-          const SizedBox(height: 40),
-          // Pointing text
+          if (style.showBadge) ...[
+            _TraditionBadge(tradition: pointing.tradition, color: style.badgeColor),
+            const SizedBox(height: 40),
+          ],
           Text(
             '"${pointing.content}"',
             style: TextStyle(
               fontFamily: 'Georgia',
-              fontSize: calculateShareFontSize(pointing.content.length, isStory),
+              fontSize: _calculateFontSize(pointing.content.length, isStory),
               fontWeight: FontWeight.w400,
-              color: colors.text,
+              color: style.textColor,
               height: 1.5,
               letterSpacing: 0.3,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          // Teacher attribution
           if (pointing.teacher != null)
             Text(
               '— ${pointing.teacher}',
-              style: TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: colors.accent),
+              style: TextStyle(fontFamily: 'Georgia', fontSize: 24, fontStyle: FontStyle.italic, color: style.accentColor),
             ),
           if (pointing.source != null)
             Text(
               pointing.source!,
-              style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: colors.accent.withValues(alpha: 0.6)),
+              style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: style.sourceColor),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           const Spacer(),
-          // Watermark
-          _Watermark(color: colors.accent.withValues(alpha: 0.6)),
+          _Watermark(color: style.watermarkColor),
         ],
       ),
     );
+  }
+
+  static double _calculateFontSize(int length, bool isStory) {
+    if (length < 50) return isStory ? 48 : 40;
+    if (length < 100) return isStory ? 40 : 34;
+    if (length < 200) return isStory ? 32 : 28;
+    return isStory ? 26 : 24;
   }
 }
 

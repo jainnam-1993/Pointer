@@ -170,7 +170,11 @@ void main() {
     test('initializes from storage', () {
       when(() => mockStorage.favorites).thenReturn(['adv-1', 'zen-1']);
 
-      final notifier = FavoritesNotifier(mockStorage);
+      final notifier = FavoritesNotifier(
+        load: () => mockStorage.favorites,
+        add: mockStorage.addFavorite,
+        remove: mockStorage.removeFavorite,
+      );
 
       expect(notifier.state, ['adv-1', 'zen-1']);
       verify(() => mockStorage.favorites).called(1);
@@ -180,7 +184,11 @@ void main() {
       when(() => mockStorage.favorites).thenReturn([]);
       when(() => mockStorage.addFavorite(any())).thenAnswer((_) async => {});
 
-      final notifier = FavoritesNotifier(mockStorage);
+      final notifier = FavoritesNotifier(
+        load: () => mockStorage.favorites,
+        add: mockStorage.addFavorite,
+        remove: mockStorage.removeFavorite,
+      );
 
       await notifier.toggle('adv-1');
 
@@ -192,7 +200,11 @@ void main() {
       when(() => mockStorage.favorites).thenReturn(['adv-1', 'zen-1']);
       when(() => mockStorage.removeFavorite(any())).thenAnswer((_) async => {});
 
-      final notifier = FavoritesNotifier(mockStorage);
+      final notifier = FavoritesNotifier(
+        load: () => mockStorage.favorites,
+        add: mockStorage.addFavorite,
+        remove: mockStorage.removeFavorite,
+      );
 
       await notifier.toggle('adv-1');
 
@@ -203,7 +215,11 @@ void main() {
     test('isFavorite() returns correct status', () {
       when(() => mockStorage.favorites).thenReturn(['adv-1', 'zen-1']);
 
-      final notifier = FavoritesNotifier(mockStorage);
+      final notifier = FavoritesNotifier(
+        load: () => mockStorage.favorites,
+        add: mockStorage.addFavorite,
+        remove: mockStorage.removeFavorite,
+      );
 
       expect(notifier.isFavorite('adv-1'), true);
       expect(notifier.isFavorite('zen-1'), true);
