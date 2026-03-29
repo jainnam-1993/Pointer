@@ -66,6 +66,44 @@ void notificationActionCallback(NotificationResponse response) {
 }
 
 /**
+ * URI buffered from a widget deep-link that arrived before initialization
+ * completed. Drained after [AppInitializer] Phase 5 finishes.
+ */
+String? _pendingWidgetUri;
+
+/**
+ * Listens for widget-click deep-links and buffers them in [_pendingWidgetUri]
+ * instead of navigating immediately — prevents the deep-link from racing with
+ * the splash screen or SharedPreferences cache on cold start.
+ */
+void _setupWidgetDeepLink() {
+  // Check for an initial (cold-start) widget click URI.
+  HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+    if (uri != null) {
+      _pendingWidgetUri = uri.toString();
+    }
+  });
+
+  // Listen for widget clicks while the app is running.
+  HomeWidget.widgetClicked.listen((uri) {
+    if (uri == null) return;
+    _pendingWidgetUri = uri.toString();
+    _drainPendingWidgetUri();
+  });
+}
+
+/**
+ * If initialization is complete (router exists) and a pending URI is buffered,
+ * navigate to the home screen and clear the buffer.
+ */
+void _drainPendingWidgetUri() {
+  if (_pendingWidgetUri == null || _globalContainer == null) return;
+  final router = _globalContainer!.read(routerProvider);
+  router.go('/');
+  _pendingWidgetUri = null;
+}
+
+/**
  * Application entry point.
  *
  * Delegates initialization to [AppInitializer.initialize] and launches
@@ -79,10 +117,17 @@ void main() async {
     MaestroHooks.init();
   }
 
+  // Start listening for widget deep-links early so cold-start URIs are
+  // captured, but navigation is deferred until init completes.
+  _setupWidgetDeepLink();
+
   final result = await AppInitializer.initialize(
     onNotificationAction: notificationActionCallback,
   );
   _globalContainer = result.container;
+
+  // Drain any widget deep-link that arrived during initialization.
+  _drainPendingWidgetUri();
 
   runApp(UncontrolledProviderScope(container: result.container, child: const PointerApp()));
 }
