@@ -16,7 +16,7 @@ import '../../models/article.dart';
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
-import '../share_preview_screen.dart';
+import '../../widgets/share_preview_helper.dart';
 
 /** Section header for separated content sections */
 class SectionHeader extends StatelessWidget {
@@ -238,20 +238,7 @@ class TeachingCard extends StatelessWidget {
 /** Show share sheet for a teaching */
 void showLibraryShareSheet(BuildContext context, Teaching teaching) {
   HapticFeedback.mediumImpact();
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    useSafeArea: true,
-    useRootNavigator: true,
-    builder: (ctx) => SizedBox(
-      height: MediaQuery.of(ctx).size.height * 0.9,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: SharePreviewScreen(pointing: teaching.toPointing()),
-      ),
-    ),
-  );
+  showSharePreview(context, teaching.toPointing());
 }
 
 /** Shared glassmorphism bottom sheet for filter options */

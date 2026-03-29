@@ -13,7 +13,7 @@ import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
-import 'share_preview_screen.dart';
+import '../widgets/share_preview_helper.dart';
 
 /**
  * Full article reader screen with markdown rendering and share support.
@@ -45,20 +45,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
       teacher: article.teacher,
       source: article.title,
     );
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      useSafeArea: true,
-      useRootNavigator: true,
-      builder: (ctx) => SizedBox(
-        height: MediaQuery.of(ctx).size.height * 0.9,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: SharePreviewScreen(pointing: pointing),
-        ),
-      ),
-    );
+    showSharePreview(context, pointing);
   }
 
   @override

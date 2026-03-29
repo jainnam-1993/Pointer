@@ -20,11 +20,12 @@ import '../data/teaching.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/pointer_scaffold.dart';
+import '../widgets/share_preview_helper.dart';
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
-import 'share_preview_screen.dart';
 import 'library/library_models.dart';
 import 'library/library_widgets.dart';
 import 'library/teacher_teachings_screen.dart';
@@ -81,13 +82,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           _contentFilter = ContentFilter.all;
         });
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            const Positioned.fill(child: AnimatedGradient()),
-            SafeArea(
-              child: CustomScrollView(
-                slivers: [
+      child: PointerScaffold(
+        body: CustomScrollView(
+          slivers: [
                   // Header with filter
                   SliverToBoxAdapter(
                     child: Padding(
@@ -130,21 +127,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       ),
                     ),
                     if (favorites.isEmpty && savedArticleIds.isEmpty)
-                      SliverFillRemaining(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.bookmark_border, size: 64, color: colors.textMuted),
-                                const SizedBox(height: 16),
-                                Text('Nothing saved yet', style: TextStyle(color: colors.textMuted, fontSize: 16)),
-                                const SizedBox(height: 8),
-                                Text('Long-press a pointing or bookmark an article', style: TextStyle(color: colors.textMuted, fontSize: 14)),
-                              ],
-                            ),
-                          ),
+                      const SliverFillRemaining(
+                        child: EmptyStateWidget(
+                          icon: Icons.bookmark_border,
+                          title: 'Nothing saved yet',
+                          subtitle: 'Long-press a pointing or bookmark an article',
                         ),
                       ),
 
@@ -262,19 +249,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                         GestureDetector(
                                           onTap: () {
                                             HapticFeedback.lightImpact();
-                                            showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              backgroundColor: Colors.transparent,
-                                              useRootNavigator: true,
-                                              builder: (_) => FractionallySizedBox(
-                                                heightFactor: 0.9,
-                                                child: ClipRRect(
-                                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                                                  child: SharePreviewScreen(pointing: pointing),
-                                                ),
-                                              ),
-                                            );
+                                            showSharePreview(context, pointing);
                                           },
                                           child: SizedBox(
                                             width: 44,
@@ -389,9 +364,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   ], // end else
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -508,12 +480,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final sortedTeachers = teacherCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     if (sortedTeachers.isEmpty) {
-      return SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: Text('No teachers found for this filter', style: TextStyle(color: colors.textMuted)),
-          ),
+      return const SliverToBoxAdapter(
+        child: EmptyStateWidget(
+          icon: Icons.person_outline,
+          title: 'No teachers found',
+          subtitle: 'Try a different content filter',
         ),
       );
     }

@@ -8,6 +8,7 @@ import '../../providers/providers.dart';
 import '../../services/ambient_sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/pointer_switch.dart';
 
 /** Auto-advance toggle for automatic pointing rotation */
 class AutoAdvanceToggle extends ConsumerWidget {
@@ -16,11 +17,7 @@ class AutoAdvanceToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final isDark = context.isDarkMode;
     final isEnabled = ref.watch(autoAdvanceProvider);
-    final switchThumbColor = isDark ? Colors.white : colors.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
-    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return GlassCard(
       padding: const EdgeInsets.all(16),
@@ -44,16 +41,12 @@ class AutoAdvanceToggle extends ConsumerWidget {
                   ],
                 ),
               ),
-              Switch(
+              PointerSwitch(
                 value: isEnabled,
                 onChanged: (value) {
                   HapticFeedback.lightImpact();
                   ref.read(settingsProvider.notifier).setAutoAdvance(value);
                 },
-                activeThumbColor: switchThumbColor,
-                activeTrackColor: switchActiveTrackColor,
-                inactiveThumbColor: isDark ? Colors.white : Colors.grey,
-                inactiveTrackColor: switchInactiveTrackColor,
               ),
             ],
           ),

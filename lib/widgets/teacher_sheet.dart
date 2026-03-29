@@ -4,6 +4,7 @@ import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/teacher.dart';
 import '../theme/app_theme.dart';
+import 'drag_handle.dart';
 
 /**
  * Shows a modal bottom sheet with [Teacher] biography and related pointings.
@@ -65,14 +66,7 @@ class TeacherSheet extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 children: [
                   // Handle bar
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 24),
-                      decoration: BoxDecoration(color: colors.textMuted.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
-                    ),
-                  ),
+                  const DragHandle(bottomMargin: 24),
 
                   // Teacher name
                   Text(teacher.name, style: AppTextStyles.heading(context), textAlign: TextAlign.center),

@@ -7,9 +7,10 @@ import 'package:go_router/go_router.dart';
 import '../data/pointings.dart';
 import '../providers/content_providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/drag_handle.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/pointer_scaffold.dart';
 
 /**
  * Tradition/lineage management screen for filtering which traditions appear.
@@ -29,94 +30,87 @@ class LineagesScreen extends ConsumerWidget {
     final colors = context.colors;
     final preferredTraditions = ref.watch(preferredTraditionsProvider);
 
-    return Scaffold(
-      body: Stack(
+    return PointerScaffold(
+      body: Column(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: Column(
+          // Custom AppBar with back button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Row(
               children: [
-                // Custom AppBar with back button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          context.pop();
-                        },
-                        icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
-                        tooltip: 'Back',
-                      ),
-                      const Spacer(),
-                      // Reset button
-                      TextButton(
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          ref.read(preferredTraditionsProvider.notifier).enableAll();
-                        },
-                        child: Text(
-                          'Reset',
-                          style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
+                IconButton(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    context.pop();
+                  },
+                  icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
+                  tooltip: 'Back',
+                ),
+                const Spacer(),
+                // Reset button
+                TextButton(
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    ref.read(preferredTraditionsProvider.notifier).enableAll();
+                  },
+                  child: Text(
+                    'Reset',
+                    style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                 ),
-                // Content
-                Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.only(left: 24, right: 24, bottom: 40 + bottomPadding),
-                    children: [
-                      Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
-                      const SizedBox(height: 8),
-                      Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
-                      const SizedBox(height: 24),
+              ],
+            ),
+          ),
+          // Content
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.only(left: 24, right: 24, bottom: 40 + bottomPadding),
+              children: [
+                Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
+                const SizedBox(height: 8),
+                Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
+                const SizedBox(height: 24),
 
-                      // Traditions list with selection
-                      ...traditionEntries.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final tradition = entry.value.key;
-                        final info = entry.value.value;
-                        final count = getPointingsByTradition(tradition).length;
-                        final isEnabled = preferredTraditions.contains(tradition);
+                // Traditions list with selection
+                ...traditionEntries.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final tradition = entry.value.key;
+                  final info = entry.value.value;
+                  final count = getPointingsByTradition(tradition).length;
+                  final isEnabled = preferredTraditions.contains(tradition);
 
-                        return StaggeredFadeIn(
-                          index: index,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: _TraditionCard(
-                              tradition: tradition,
-                              info: info,
-                              pointingsCount: count,
-                              isEnabled: isEnabled,
-                              onToggle: () {
-                                HapticFeedback.mediumImpact();
-                                ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
-                              },
-                              onInfoTap: () {
-                                HapticFeedback.lightImpact();
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      }),
-
-                      // Helper text
-                      const SizedBox(height: 8),
-                      Text(
-                        'At least one tradition must remain selected',
-                        style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.center,
+                  return StaggeredFadeIn(
+                    index: index,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _TraditionCard(
+                        tradition: tradition,
+                        info: info,
+                        pointingsCount: count,
+                        isEnabled: isEnabled,
+                        onToggle: () {
+                          HapticFeedback.mediumImpact();
+                          ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
+                        },
+                        onInfoTap: () {
+                          HapticFeedback.lightImpact();
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
+                          );
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  );
+                }),
+
+                // Helper text
+                const SizedBox(height: 8),
+                Text(
+                  'At least one tradition must remain selected',
+                  style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -297,14 +291,7 @@ class _TraditionDetailSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Handle bar
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(color: textColorSecondary.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
-                    ),
-                  ),
+                  const DragHandle(bottomMargin: 20),
                   Row(
                     children: [
                       Text(info.icon, style: const TextStyle(fontSize: 32)),

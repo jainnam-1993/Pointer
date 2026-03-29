@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/pointer_switch.dart';
 
 /**
  * Appearance settings card containing theme selection, zen mode toggle, and animation toggle.
@@ -71,11 +72,7 @@ class ZenModeToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isZenMode = ref.watch(zenModeProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = context.colors;
-    final switchThumbColor = isDark ? Colors.white : colors.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
-    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,15 +87,11 @@ class ZenModeToggle extends ConsumerWidget {
             ],
           ),
         ),
-        Switch(
+        PointerSwitch(
           value: isZenMode,
           onChanged: (value) {
             ref.read(zenModeProvider.notifier).state = value;
           },
-          activeThumbColor: switchThumbColor,
-          activeTrackColor: switchActiveTrackColor,
-          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
-          inactiveTrackColor: switchInactiveTrackColor,
         ),
       ],
     );
@@ -117,11 +110,7 @@ class AnimationToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = context.colors;
-    final switchThumbColor = isDark ? Colors.white : colors.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
-    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,15 +125,11 @@ class AnimationToggle extends ConsumerWidget {
             ],
           ),
         ),
-        Switch(
+        PointerSwitch(
           value: settings.animationsEnabled,
           onChanged: (value) {
             ref.read(settingsProvider.notifier).setAnimationsEnabled(value);
           },
-          activeThumbColor: switchThumbColor,
-          activeTrackColor: switchActiveTrackColor,
-          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
-          inactiveTrackColor: switchInactiveTrackColor,
         ),
       ],
     );

@@ -10,7 +10,7 @@ import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import 'article_reader_screen.dart';
-import 'share_preview_screen.dart';
+import '../widgets/share_preview_helper.dart';
 import '../data/teachers.dart';
 import 'library_screen.dart';
 import '../widgets/teacher_sheet.dart';
@@ -215,21 +215,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleShare() async {
     final pointing = ref.read(currentPointingProvider);
     HapticFeedback.mediumImpact();
-
-    // Show share preview screen with template/format options
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      useSafeArea: true,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.9,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: SharePreviewScreen(pointing: pointing),
-        ),
-      ),
-    );
+    showSharePreview(context, pointing);
   }
 
   /**

@@ -5,9 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../data/pointings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/empty_state.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/pointer_scaffold.dart';
 
 /**
  * Screen showing chronological history of previously viewed pointings.
@@ -28,50 +29,43 @@ class HistoryScreen extends ConsumerWidget {
     final colors = context.colors;
     final titleFontSize = MediaQuery.of(context).size.width < 360 ? 24.0 : 28.0;
 
-    return Scaffold(
-      body: Stack(
+    return PointerScaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          // Header with back button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
               children: [
-                // Header with back button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          context.pop();
-                        },
-                        icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Semantics(
-                          header: true,
-                          child: Text(
-                            'Past Pointings',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: titleFontSize),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                IconButton(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    context.pop();
+                  },
+                  icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
                 ),
-
-                // Empty state or list
+                const SizedBox(width: 8),
                 Expanded(
-                  child: viewedPointings.isEmpty
-                      ? _buildEmptyState(context, colors)
-                      : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      'Past Pointings',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: titleFontSize),
+                    ),
+                  ),
                 ),
               ],
             ),
+          ),
+
+          // Empty state or list
+          Expanded(
+            child: viewedPointings.isEmpty
+                ? _buildEmptyState(context, colors)
+                : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
           ),
         ],
       ),
@@ -80,20 +74,10 @@ class HistoryScreen extends ConsumerWidget {
 
   /** Builds the empty state shown when no pointings have been viewed yet. */
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.history, size: 64, color: colors.textSecondary.withValues(alpha: 0.5)),
-          const SizedBox(height: 16),
-          Text(
-            'No pointings yet',
-            style: TextStyle(color: colors.textSecondary, fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 8),
-          Text('Your viewed pointings will appear here', style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14)),
-        ],
-      ),
+    return const EmptyStateWidget(
+      icon: Icons.history,
+      title: 'No pointings yet',
+      subtitle: 'Your viewed pointings will appear here',
     );
   }
 

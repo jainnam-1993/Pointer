@@ -6,8 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../services/workmanager_service.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
+import '../widgets/pointer_scaffold.dart';
+import '../widgets/pointer_switch.dart';
 import '../widgets/donation_button.dart';
 import '../widgets/glass_card.dart';
 import 'settings/settings_widgets.dart';
@@ -276,20 +277,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     final textColorMuted = colors.textMuted;
     final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : colors.textMuted;
     final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : colors.textMuted;
-    final switchThumbColor = isDark ? Colors.white : colors.primary;
-    final switchActiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.4) : colors.primary.withValues(alpha: 0.3);
-    final switchInactiveTrackColor = isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3);
-
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Scaffold(
-      body: Stack(
+    return PointerScaffold(
+      body: ListView(
+        padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
-              children: [
                 StaggeredFadeIn(index: 0, child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge))),
                 const SizedBox(height: 24),
 
@@ -304,7 +297,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       SettingsRow(
                         title: 'Daily Pointings',
                         subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
-                        trailing: Switch(
+                        trailing: PointerSwitch(
                           value: _notificationsEnabled && _permissionGranted,
                           onChanged: (value) async {
                             HapticFeedback.mediumImpact();
@@ -317,10 +310,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                             setState(() => _notificationsEnabled = value);
                             await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
                           },
-                          activeThumbColor: switchThumbColor,
-                          activeTrackColor: switchActiveTrackColor,
-                          inactiveThumbColor: isDark ? Colors.white : Colors.grey,
-                          inactiveTrackColor: switchInactiveTrackColor,
                         ),
                       ),
                       const SettingsDivider(),
@@ -513,11 +502,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                     child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 }

@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/pointer_scaffold.dart';
 
 /**
  * Data model for a guided self-inquiry session.
@@ -115,73 +115,66 @@ class InquiryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Scaffold(
-      body: Stack(
+    return PointerScaffold(
+      body: ListView(
+        padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
-          SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
-              children: [
-                Semantics(header: true, child: Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge)),
-                const SizedBox(height: 16),
+          Semantics(header: true, child: Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge)),
+          const SizedBox(height: 16),
 
-                // Intro card with fade-in
-                StaggeredFadeIn(
-                  index: 0,
-                  child: Builder(
-                    builder: (context) {
-                      final colors = context.colors;
-                      final textColor = colors.textPrimary;
-                      final textColorSecondary = colors.textSecondary;
-                      return GlassCard(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'These sessions guide you through the ancient practice of self-investigation.',
-                              style: TextStyle(color: textColor, fontSize: 16, height: 1.5),
-                            ),
-                            const SizedBox(height: 8),
-                            Text('Each session is 5-15 minutes. No experience required.', style: TextStyle(color: textColorSecondary, fontSize: 14)),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Section header
-                Text('AVAILABLE SESSIONS', style: Theme.of(context).textTheme.labelSmall),
-                const SizedBox(height: 16),
-
-                // Sessions list with staggered animation
-                ...inquirySessions.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final session = entry.value;
-
-                  return StaggeredFadeIn(
-                    index: index + 1, // Offset by 1 for intro card
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _SessionCard(
-                        session: session,
-                        index: index,
-                        onTap: () async {
-                          HapticFeedback.mediumImpact();
-                          if (context.mounted) {
-                            context.push('/inquiry/${session.id}');
-                          }
-                        },
+          // Intro card with fade-in
+          StaggeredFadeIn(
+            index: 0,
+            child: Builder(
+              builder: (context) {
+                final colors = context.colors;
+                final textColor = colors.textPrimary;
+                final textColorSecondary = colors.textSecondary;
+                return GlassCard(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'These sessions guide you through the ancient practice of self-investigation.',
+                        style: TextStyle(color: textColor, fontSize: 16, height: 1.5),
                       ),
-                    ),
-                  );
-                }),
-              ],
+                      const SizedBox(height: 8),
+                      Text('Each session is 5-15 minutes. No experience required.', style: TextStyle(color: textColorSecondary, fontSize: 14)),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
+          const SizedBox(height: 24),
+
+          // Section header
+          Text('AVAILABLE SESSIONS', style: Theme.of(context).textTheme.labelSmall),
+          const SizedBox(height: 16),
+
+          // Sessions list with staggered animation
+          ...inquirySessions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final session = entry.value;
+
+            return StaggeredFadeIn(
+              index: index + 1, // Offset by 1 for intro card
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _SessionCard(
+                  session: session,
+                  index: index,
+                  onTap: () async {
+                    HapticFeedback.mediumImpact();
+                    if (context.mounted) {
+                      context.push('/inquiry/${session.id}');
+                    }
+                  },
+                ),
+              ),
+            );
+          }),
         ],
       ),
     );
