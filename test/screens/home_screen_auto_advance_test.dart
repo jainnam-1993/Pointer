@@ -7,6 +7,7 @@ import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
+import '../helpers/test_setup.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
@@ -16,6 +17,8 @@ void main() {
   setUpAll(() {
     // Disable animations to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
+    loadTestPointings();
+    loadTestArticles();
   });
 
   tearDownAll(() {

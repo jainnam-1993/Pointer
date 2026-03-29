@@ -23,6 +23,7 @@ import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:mocktail/mocktail.dart';
+import '../helpers/test_setup.dart';
 
 /// Mock NotificationService for testing
 class MockNotificationService extends Mock implements NotificationService {}
@@ -46,6 +47,10 @@ class GoldenDevices {
 Future<void> setupGoldenTests() async {
   // Disable animations for consistent screenshots
   AnimatedGradient.disableAnimations = true;
+
+  // Load data from JSON assets for tests
+  loadTestPointings();
+  loadTestArticles();
 
   // Create and configure mock notification service
   _mockNotificationService = MockNotificationService();

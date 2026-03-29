@@ -67,8 +67,6 @@ Future<void> _pumpAndAssertResponsive(
 
 void main() {
   setUpAll(() async {
-    resetArticlesForTesting();
-    await loadArticles();
     await setupGoldenTests();
   });
 

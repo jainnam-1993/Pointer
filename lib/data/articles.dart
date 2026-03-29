@@ -229,3 +229,37 @@ Map<String, int> getArticleMoodCounts() {
 void resetArticlesForTesting() {
   _articlesLoaded = false;
 }
+
+/** Initialize articles from a pre-parsed list (for tests that can't use rootBundle). */
+void initArticlesForTest(List<Article> testArticles) {
+  articles = testArticles;
+  _articlesById = {for (final a in articles) a.id: a};
+  _articlesByTradition = {};
+  _articlesByTeacher = {};
+  _articlesByCategory = {};
+  _articlesByTopic = {};
+  _articlesByMood = {};
+  _searchIndex = {};
+
+  for (var i = 0; i < articles.length; i++) {
+    final a = articles[i];
+    _articlesByTradition.putIfAbsent(a.tradition, () => []).add(a);
+    if (a.teacher != null) {
+      _articlesByTeacher.putIfAbsent(a.teacher!.toLowerCase(), () => []).add(a);
+    }
+    for (final c in a.categories) {
+      _articlesByCategory.putIfAbsent(c, () => []).add(a);
+    }
+    for (final t in a.topicTags) {
+      _articlesByTopic.putIfAbsent(t, () => []).add(a);
+    }
+    for (final m in a.moodTags) {
+      _articlesByMood.putIfAbsent(m, () => []).add(a);
+    }
+    final tokens = _tokenize([a.title, a.subtitle, a.excerpt, a.teacher, ...a.topicTags, ...a.moodTags]);
+    for (final token in tokens) {
+      _searchIndex.putIfAbsent(token, () => {}).add(i);
+    }
+  }
+  _articlesLoaded = true;
+}

@@ -22,6 +22,7 @@ import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/widgets/glass_card.dart';
+import '../helpers/test_setup.dart';
 
 class _MockDonationService extends DonationService {
   @override
@@ -72,6 +73,8 @@ void main() {
   setUpAll(() {
     // Disable animations for consistent testing
     AnimatedGradient.disableAnimations = true;
+    loadTestPointings();
+    loadTestArticles();
   });
 
   tearDownAll(() {

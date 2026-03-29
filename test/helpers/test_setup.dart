@@ -6,7 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
+import 'package:pointer/models/article.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 
@@ -106,4 +108,12 @@ void loadTestPointings() {
   final list = (jsonDecode(jsonString) as List<dynamic>).cast<Map<String, dynamic>>();
   final testPointings = list.map((e) => Pointing.fromJson(e)).toList();
   initPointingsForTest(testPointings);
+}
+
+/// Load articles from the JSON asset file for unit tests.
+void loadTestArticles() {
+  final jsonString = File('assets/data/articles.json').readAsStringSync();
+  final list = (jsonDecode(jsonString) as List<dynamic>).cast<Map<String, dynamic>>();
+  final testArticles = list.map((e) => Article.fromJson(e)).toList();
+  initArticlesForTest(testArticles);
 }

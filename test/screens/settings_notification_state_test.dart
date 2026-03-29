@@ -46,13 +46,13 @@ void main() {
   });
 
   group('NotificationService checkPermissions', () {
-    test('returns true in test environment', () async {
+    test('returns false in test environment (fail-safe)', () async {
       final service = NotificationService(mockPrefs);
 
       final result = await service.checkPermissions();
 
-      // Falls back to true when plugin unavailable (test env)
-      expect(result, isTrue);
+      // Falls back to false when plugin unavailable (fail-safe per Wave 3)
+      expect(result, isFalse);
     });
   });
 

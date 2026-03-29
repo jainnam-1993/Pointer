@@ -10,6 +10,7 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/theme/app_theme.dart';
+import '../helpers/test_setup.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
@@ -20,6 +21,8 @@ void main() {
   setUpAll(() {
     // Disable animations and auto-advance to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
+    loadTestPointings();
+    loadTestArticles();
     HomeScreen.disableAutoAdvanceForTesting = true;
   });
 

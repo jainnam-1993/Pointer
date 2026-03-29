@@ -18,6 +18,7 @@ void main() {
 
   setUpAll(() {
     loadTestPointings();
+    loadTestArticles();
     // Disable animations and auto-advance to prevent timer issues in tests
     AnimatedGradient.disableAnimations = true;
     HomeScreen.disableAutoAdvanceForTesting = true;
