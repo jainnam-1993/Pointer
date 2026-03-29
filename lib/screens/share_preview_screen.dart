@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../services/share_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/error_helpers.dart';
 import '../widgets/share_templates/share_card.dart';
 
 /**
@@ -72,8 +73,10 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
         });
       }
     } catch (e) {
+      debugPrint('SharePreview: preview generation failed: $e');
       if (mounted) {
         setState(() => _isGeneratingPreview = false);
+        showErrorSnackBar(context, 'Could not generate preview');
       }
     }
   }
@@ -369,8 +372,9 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
         await shareService.shareImage(imageBytes, '', sharePositionOrigin: sharePositionOrigin);
       }
     } catch (e) {
+      debugPrint('SharePreview: share failed: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to share: $e')));
+        showErrorSnackBar(context, 'Could not share card');
       }
     } finally {
       if (mounted) {

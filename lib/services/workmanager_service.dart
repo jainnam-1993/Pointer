@@ -42,6 +42,7 @@ void callbackDispatcher() {
       }
       return true;
     } catch (e) {
+      // Returning false signals WorkManager to retry the task on next schedule
       debugPrint('[WorkManager] Error executing task: $e');
       return false;
     }
@@ -165,6 +166,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     debugPrint('[WorkManager] Selected $timeContext pointing: ${selected['id']}');
     return {'id': selected['id'] as String, 'content': selected['content'] as String, 'tradition': selected['tradition'] as String};
   } catch (e) {
+    // Non-critical: corrupted cache falls back to hardcoded pointing
     debugPrint('[WorkManager] Error parsing cache: $e');
     return _getFallbackPointing();
   }

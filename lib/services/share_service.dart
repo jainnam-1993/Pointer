@@ -171,7 +171,8 @@ class ShareService {
         return true;
       }
     } catch (e) {
-      // Fallback to regular share
+      // Non-critical: Instagram Stories integration is optional; falls back to regular share
+      debugPrint('ShareService: Instagram Stories failed, falling back: $e');
     }
     return false;
   }
