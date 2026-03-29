@@ -47,7 +47,7 @@ final autoAdvanceDelayProvider = Provider<int>((ref) {
  * Zen mode provider - hides all UI except pointing text
  * Initialized from stored settings for persistence across sessions
  */
-final zenModeProvider = StateProvider<bool>((ref) {
+final zenModeProvider = Provider<bool>((ref) {
   final settings = ref.watch(settingsProvider);
   return settings.zenMode;
 });
@@ -64,7 +64,7 @@ final fontSizeMultiplierProvider = StateProvider<double>((ref) => 1.0);
 // ============================================================
 
 /** OLED mode provider - pure black background for battery savings */
-final oledModeProvider = StateProvider<bool>((ref) {
+final oledModeProvider = Provider<bool>((ref) {
   final settings = ref.watch(settingsProvider);
   return settings.oledMode;
 });
@@ -126,8 +126,7 @@ final backgroundShimmerActiveProvider = Provider<bool>((ref) {
  * High contrast mode provider
  * Initialized from stored settings, can be toggled manually or detected via system preference
  */
-final highContrastProvider = StateProvider<bool>((ref) {
-  // Initialize from stored settings
+final highContrastProvider = Provider<bool>((ref) {
   final settings = ref.watch(settingsProvider);
   return settings.highContrast;
 });

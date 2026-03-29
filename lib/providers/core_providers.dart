@@ -53,8 +53,8 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
 // Onboarding State
 // ============================================================
 
-/** Onboarding completion state */
-final onboardingCompletedProvider = StateProvider<bool>((ref) {
+/** Onboarding completion state — read-only, derived from storage. */
+final onboardingCompletedProvider = Provider<bool>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return storage.hasCompletedOnboarding;
 });

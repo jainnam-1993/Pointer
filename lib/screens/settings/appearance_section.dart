@@ -93,7 +93,7 @@ class ZenModeToggle extends ConsumerWidget {
         Switch(
           value: isZenMode,
           onChanged: (value) {
-            ref.read(zenModeProvider.notifier).state = value;
+            ref.read(settingsProvider.notifier).setZenMode(value);
           },
           activeThumbColor: switchThumbColor,
           activeTrackColor: switchActiveTrackColor,

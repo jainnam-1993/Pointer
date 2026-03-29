@@ -126,24 +126,40 @@ void main() {
       expect(isCompleted, true);
     });
 
-    test('can be updated via notifier', () {
+    test('derives from storage (read-only)', () {
       // Mock initial state (not completed)
       when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
-      when(() => mockPrefs.setBool('pointer_onboarding_completed', true)).thenAnswer((_) async => true);
 
-      // Read initial state
       expect(container.read(onboardingCompletedProvider), false);
 
-      // Update via notifier
-      container.read(onboardingCompletedProvider.notifier).state = true;
+      // Verify it reads from storage each time
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
-      // Read updated state
+      // Create a new container to pick up the changed storage
+      final newContainer = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)],
+      );
+      addTearDown(newContainer.dispose);
+
+      expect(newContainer.read(onboardingCompletedProvider), true);
+    });
+
+    test('can be invalidated to re-read from storage', () {
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
+
+      expect(container.read(onboardingCompletedProvider), false);
+
+      // Simulate storage update
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
+
+      // Invalidate to force re-read
+      container.invalidate(onboardingCompletedProvider);
+
       expect(container.read(onboardingCompletedProvider), true);
     });
 
-    test('updates trigger provider listeners', () {
+    test('invalidation triggers provider listeners', () {
       when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
-      when(() => mockPrefs.setBool('pointer_onboarding_completed', true)).thenAnswer((_) async => true);
 
       var listenCallCount = 0;
       bool? lastValue;
@@ -153,32 +169,15 @@ void main() {
         lastValue = next;
       });
 
-      // Update state
-      container.read(onboardingCompletedProvider.notifier).state = true;
+      // Simulate storage update and invalidate
+      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
+      container.invalidate(onboardingCompletedProvider);
 
-      // Verify listener was called
+      // Force a read to trigger listener
+      container.read(onboardingCompletedProvider);
+
       expect(listenCallCount, 1);
       expect(lastValue, true);
-    });
-
-    test('multiple updates work correctly', () {
-      when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(false);
-      when(() => mockPrefs.setBool(any(), any())).thenAnswer((_) async => true);
-
-      // Read initial state
-      expect(container.read(onboardingCompletedProvider), false);
-
-      // Update to true
-      container.read(onboardingCompletedProvider.notifier).state = true;
-      expect(container.read(onboardingCompletedProvider), true);
-
-      // Update back to false
-      container.read(onboardingCompletedProvider.notifier).state = false;
-      expect(container.read(onboardingCompletedProvider), false);
-
-      // Update to true again
-      container.read(onboardingCompletedProvider.notifier).state = true;
-      expect(container.read(onboardingCompletedProvider), true);
     });
   });
 
