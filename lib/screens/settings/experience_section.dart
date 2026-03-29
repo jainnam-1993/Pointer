@@ -95,10 +95,10 @@ class AmbientSoundPicker extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
           Text('Play a contemplative sound when app opens', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: AmbientSound.values.map((sound) {
               final isSelected = currentSound == sound;
               return GestureDetector(
@@ -107,10 +107,10 @@ class AmbientSoundPicker extends ConsumerWidget {
                   ref.read(ambientSoundProvider.notifier).setSound(sound);
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
                   decoration: BoxDecoration(
                     color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
                   ),
                   child: Text(

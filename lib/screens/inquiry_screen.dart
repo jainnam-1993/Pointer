@@ -121,10 +121,10 @@ class InquiryScreen extends StatelessWidget {
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
+              padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: 20, bottom: AppSpacing.navBarOffset + bottomPadding),
               children: [
                 Text('Self-Inquiry', style: Theme.of(context).textTheme.displayLarge),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Intro card with fade-in
                 StaggeredFadeIn(
@@ -151,11 +151,11 @@ class InquiryScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Section header
                 Text('AVAILABLE SESSIONS', style: Theme.of(context).textTheme.labelSmall),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Sessions list with staggered animation
                 ...inquirySessions.asMap().entries.map((entry) {
@@ -165,7 +165,7 @@ class InquiryScreen extends StatelessWidget {
                   return StaggeredFadeIn(
                     index: index + 1, // Offset by 1 for intro card
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: _SessionCard(
                         session: session,
                         index: index,
@@ -215,7 +215,7 @@ class _SessionCard extends StatelessWidget {
       label:
           '${session.title}. ${session.description}. ${session.duration}, ${session.level} level. ${traditions[session.tradition]!.name} tradition',
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         onTap: onTap,
         child: Row(
           children: [
@@ -231,7 +231,7 @@ class _SessionCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
 
             // Text content
             Expanded(

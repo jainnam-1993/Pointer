@@ -29,17 +29,17 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 12),
+      padding: const EdgeInsets.only(top: AppSpacing.lg, bottom: AppSpacing.md),
       child: Row(
         children: [
           Text(
             title,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textPrimary),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+            decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
             child: Text(
               count.toString(),
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.accent),
@@ -67,7 +67,7 @@ class ArticleListItem extends ConsumerWidget {
       button: true,
       label: '${article.title}. ${article.subtitle ?? ""}. ${article.readingTimeMinutes} minute read',
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         onTap: onTap,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +151,7 @@ class TeachingCard extends StatelessWidget {
     return Semantics(
       label: '${teaching.content}. By ${teaching.teacher}. ${traditionInfo.name} tradition.${isViewed ? " Previously read." : ""}',
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         onTap: onTap,
         child: Opacity(
           opacity: isViewed ? 0.7 : 1.0,
@@ -180,10 +180,10 @@ class TeachingCard extends StatelessWidget {
                       child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
                     ),
                   ],
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
+                    decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -204,10 +204,10 @@ class TeachingCard extends StatelessWidget {
                   runSpacing: 4,
                   children: teaching.topicTags.take(3).map((tag) {
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
                       decoration: BoxDecoration(
                         color: colors.glassBackground,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                         border: Border.all(color: colors.glassBorder),
                       ),
                       child: Text(TopicTags.displayName(tag), style: TextStyle(color: colors.textSecondary, fontSize: 11)),

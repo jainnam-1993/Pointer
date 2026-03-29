@@ -38,7 +38,7 @@ class HistoryScreen extends ConsumerWidget {
               children: [
                 // Header with back button
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
                   child: Row(
                     children: [
                       IconButton(
@@ -48,7 +48,7 @@ class HistoryScreen extends ConsumerWidget {
                         },
                         icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'Past Pointings',
@@ -82,12 +82,12 @@ class HistoryScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.history, size: 64, color: colors.textSecondary.withValues(alpha: 0.5)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'No pointings yet',
             style: TextStyle(color: colors.textSecondary, fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text('Your viewed pointings will appear here', style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 14)),
         ],
       ),
@@ -103,7 +103,7 @@ class HistoryScreen extends ConsumerWidget {
     PointerColors colors,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 100 + bottomPadding),
+      padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.sm, bottom: 100 + bottomPadding),
       itemCount: viewedPointings.length,
       itemBuilder: (context, index) {
         final viewed = viewedPointings[index];
@@ -118,7 +118,7 @@ class HistoryScreen extends ConsumerWidget {
         return StaggeredFadeIn(
           index: index,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: _HistoryCard(
               pointing: pointing,
               viewedAt: viewedAt,
@@ -176,7 +176,7 @@ class _HistoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: GlassCard(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -209,7 +209,7 @@ class _HistoryCard extends StatelessWidget {
 
             // Teacher attribution
             if (pointing.teacher != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 '— ${pointing.teacher}',
                 style: TextStyle(color: colors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
