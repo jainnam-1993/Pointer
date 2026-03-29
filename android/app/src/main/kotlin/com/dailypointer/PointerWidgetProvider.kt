@@ -102,10 +102,16 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 context.startActivity(launchIntent)
             }
             ACTION_PREV -> {
+                val now = System.currentTimeMillis()
+                if (now - lastNavTime < NAV_DEBOUNCE_MS) return
+                lastNavTime = now
                 Log.d(TAG, "Previous action - showing previous item")
                 showPreviousItem(context)
             }
             ACTION_NEXT -> {
+                val now = System.currentTimeMillis()
+                if (now - lastNavTime < NAV_DEBOUNCE_MS) return
+                lastNavTime = now
                 Log.d(TAG, "Next action - showing next item")
                 showNextItem(context)
             }
@@ -218,6 +224,12 @@ class PointerWidgetProvider : AppWidgetProvider() {
         private const val KEY_LAST_DARK_MODE = "last_dark_mode"
         private const val KEY_FAVORITES = "widget_favorites"
         private const val KEY_POINTINGS_CACHE = "pointings_cache"
+
+        /** Timestamp of the last prev/next navigation, for debounce. */
+        private var lastNavTime = 0L
+
+        /** Minimum interval between prev/next taps (milliseconds). */
+        private const val NAV_DEBOUNCE_MS = 500L
 
         // Heart icons for favorite/non-favorite states
         private const val HEART_EMPTY = "♡"

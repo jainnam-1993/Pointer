@@ -168,10 +168,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _handleNext() async {
     if (_isAnimating) return;
 
+    // Set animating flag synchronously BEFORE any async work to prevent
+    // concurrent invocations from racing past the guard check.
+    setState(() => _isAnimating = true);
+
     // Haptic feedback
     HapticFeedback.mediumImpact();
-
-    setState(() => _isAnimating = true);
 
     // Get next pointing
     ref.read(currentPointingProvider.notifier).nextPointing();
