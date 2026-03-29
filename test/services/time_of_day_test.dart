@@ -2,7 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/services/pointing_selector.dart';
 
+import '../helpers/test_setup.dart';
+
 void main() {
+  setUpAll(loadTestPointings);
+
   group('TimeContext enum', () {
     test('has all 4 time contexts plus general', () {
       expect(TimeContext.values.length, 5);

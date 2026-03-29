@@ -4,7 +4,11 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/data/teachers.dart';
 import 'package:pointer/data/teaching.dart';
 
+import '../helpers/test_setup.dart';
+
 void main() {
+  setUpAll(loadTestPointings);
+
   group('Pointings content validation', () {
     test('no empty content fields', () {
       for (final p in pointings) {

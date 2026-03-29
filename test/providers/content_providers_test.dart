@@ -9,12 +9,15 @@ import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/providers/core_providers.dart';
 import 'package:pointer/services/storage_service.dart';
 
+import '../helpers/test_setup.dart';
+
 // Mocks
 class MockStorageService extends Mock implements StorageService {}
 
 void main() {
-  // Initialize TeachingRepository for filter tests
+  // Initialize pointings from JSON and TeachingRepository for filter tests
   setUpAll(() {
+    loadTestPointings();
     TeachingRepository.reset();
     TeachingRepository.initialize(pointings: pointings);
   });

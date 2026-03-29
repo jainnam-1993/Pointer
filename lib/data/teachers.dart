@@ -12,6 +12,10 @@ library;
 import '../models/teacher.dart';
 import 'pointings.dart';
 
+// Re-export getPointingsByTeacher from pointings.dart for backward compatibility.
+// Callers that import teachers.dart for this function continue to work.
+export 'pointings.dart' show getPointingsByTeacher;
+
 /** Name-keyed map of all [Teacher] records (22 teachers across traditions). */
 const teachers = <String, Teacher>{
   'Ramana Maharshi': Teacher(
@@ -194,9 +198,4 @@ const teachers = <String, Teacher>{
 Teacher? getTeacher(String? name) {
   if (name == null) return null;
   return teachers[name];
-}
-
-/** Get all pointings by a specific teacher */
-List<Pointing> getPointingsByTeacher(String teacherName) {
-  return pointings.where((p) => p.teacher == teacherName).toList();
 }

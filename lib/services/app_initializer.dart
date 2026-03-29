@@ -157,6 +157,9 @@ class AppInitializer {
   // ------------------------------------------------------------------
 
   static Future<void> _initContent() async {
+    // Load pointings from JSON asset before anything that depends on them
+    await loadPointings();
+
     await WidgetService.initialize();
     await WidgetService.populatePointingsCache();
     await WidgetService.processPendingWidgetActions();

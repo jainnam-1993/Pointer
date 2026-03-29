@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 
@@ -89,4 +93,17 @@ Future<void> pumpScreen(WidgetTester tester, Widget widget) async {
 Future<void> tapAndPump(WidgetTester tester, Finder finder) async {
   await tester.tap(finder);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
+}
+
+/// Load pointings from the JSON asset file for unit tests.
+///
+/// Reads `assets/data/pointings.json` from disk and initializes
+/// the global [pointings] list and pre-built indexes via
+/// [initPointingsForTest]. Call in `setUpAll()` for any test
+/// that accesses [pointings] or the query helper functions.
+void loadTestPointings() {
+  final jsonString = File('assets/data/pointings.json').readAsStringSync();
+  final list = (jsonDecode(jsonString) as List<dynamic>).cast<Map<String, dynamic>>();
+  final testPointings = list.map((e) => Pointing.fromJson(e)).toList();
+  initPointingsForTest(testPointings);
 }
