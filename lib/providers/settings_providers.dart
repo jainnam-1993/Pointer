@@ -89,7 +89,7 @@ final reduceMotionOverrideProvider = Provider<bool?>((ref) {
  *
  * The system setting always takes precedence when it requires reduced motion.
  */
-bool shouldReduceMotion(BuildContext context, bool? appOverride) {
+bool shouldReduceMotion(BuildContext context, [bool? appOverride]) {
   final systemReduceMotion = MediaQuery.of(context).disableAnimations;
 
   // System accessibility setting always takes precedence

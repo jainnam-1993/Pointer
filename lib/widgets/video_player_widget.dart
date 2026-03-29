@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import '../theme/app_theme.dart';
+import '../utils/formatting.dart';
 
 /**
  * Video player for video transmissions.
@@ -180,12 +181,6 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
     if (_showControls) _hideControlsAfterDelay();
   }
 
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,7 +228,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                 right: 16,
                 child: Row(
                   children: [
-                    Text(_formatDuration(_position), style: const TextStyle(color: Colors.white)),
+                    Text(formatDuration(_position), style: const TextStyle(color: Colors.white)),
                     const SizedBox(width: 8),
                     Expanded(
                       child: SliderTheme(
@@ -255,7 +250,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(_formatDuration(_duration), style: const TextStyle(color: Colors.white)),
+                    Text(formatDuration(_duration), style: const TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
