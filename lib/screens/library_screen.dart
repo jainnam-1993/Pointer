@@ -35,6 +35,7 @@ import 'library/topic_teachings_screen.dart';
 // Re-export all library subfiles for backward compatibility
 export 'library/library_models.dart';
 export 'library/library_widgets.dart';
+export 'library/teaching_detail_screen.dart';
 export 'library/teacher_teachings_screen.dart';
 export 'library/lineage_teachings_screen.dart';
 export 'library/mood_teachings_screen.dart';
