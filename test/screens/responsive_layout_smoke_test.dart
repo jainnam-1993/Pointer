@@ -67,6 +67,8 @@ Future<void> _pumpAndAssertResponsive(
 
 void main() {
   setUpAll(() async {
+    resetArticlesForTesting();
+    await loadArticles();
     await setupGoldenTests();
   });
 
@@ -80,6 +82,8 @@ void main() {
     _ResponsiveDevice('small_android', Size(360, 640)),
   ];
 
+  // articles.first is accessed inside builder closure (deferred), so
+  // it's safe after setUpAll has run loadArticles().
   final screens = <_ScreenCase>[
     const _ScreenCase(name: 'home', builder: HomeScreen.new, initialPointing: goldenTestPointing),
     const _ScreenCase(name: 'inquiry', builder: InquiryScreen.new),

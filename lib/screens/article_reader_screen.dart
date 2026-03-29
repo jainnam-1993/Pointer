@@ -38,6 +38,20 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   late final Article? _article = getArticleById(widget.articleId);
 
 
+  /** Lazy-loaded article content future. */
+  late final Future<String> _contentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // If the article already has content (e.g. from tests), use it directly;
+    // otherwise lazy-load from the Markdown asset file.
+    final existingContent = _article?.content;
+    _contentFuture = existingContent != null
+        ? Future.value(existingContent)
+        : loadArticleContent(_article!.id);
+  }
+
   /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
     HapticFeedback.mediumImpact();
@@ -168,11 +182,30 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                   ),
                 ),
 
-                // Article content
+                // Article content (lazy-loaded)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
-                    child: _MarkdownContent(content: article.content, colors: colors),
+                    child: FutureBuilder<String>(
+                      future: _contentFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                            child: Center(child: CircularProgressIndicator(color: colors.accent)),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                            child: Center(
+                              child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                            ),
+                          );
+                        }
+                        return _MarkdownContent(content: snapshot.data!, colors: colors);
+                      },
+                    ),
                   ),
                 ),
               ],

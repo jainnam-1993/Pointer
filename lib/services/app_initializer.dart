@@ -31,6 +31,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
 import '../data/teachings/adyashanti.dart';
@@ -159,6 +160,9 @@ class AppInitializer {
   static Future<void> _initContent(SharedPreferences prefs) async {
     // Load pointings from JSON asset before anything that depends on them
     await loadPointings();
+
+    // Load article metadata from JSON (content lazy-loaded on demand)
+    await loadArticles();
 
     final widgetService = WidgetService(prefs);
     await widgetService.initialize();

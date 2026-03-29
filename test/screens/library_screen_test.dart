@@ -26,9 +26,13 @@ Widget wrapWithProviderScope(Widget child) {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
+    resetArticlesForTesting();
+    await loadArticles();
   });
   group('LibraryScreen', () {
     testWidgets('renders header with title and subtitle', (tester) async {
