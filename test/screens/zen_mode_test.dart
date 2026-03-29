@@ -79,7 +79,7 @@ void main() {
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final storage = ref.watch(storageServiceProvider);
-            final notifier = CurrentPointingNotifier(storage);
+            final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
             notifier.setPointing(initialPointing);
             return notifier;
           }),
@@ -284,7 +284,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage);
+              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -336,7 +336,7 @@ void main() {
             themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage);
+              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -463,7 +463,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage);
+              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -507,7 +507,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage);
+              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
               notifier.setPointing(testPointing);
               return notifier;
             }),

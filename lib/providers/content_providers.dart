@@ -39,7 +39,8 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 /** Current pointing state - persists across app restarts with round-robin order */
 final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return CurrentPointingNotifier(storage);
+  final widgetService = ref.watch(widgetServiceProvider);
+  return CurrentPointingNotifier(storage, widgetService);
 });
 
 /**
@@ -50,10 +51,11 @@ final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, P
  */
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
+  final WidgetService _widgetService;
   late List<String> _order; // Shuffled pointing IDs
   late int _index; // Current position in order
 
-  CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
+  CurrentPointingNotifier(this._storage, this._widgetService) : super(_initializePointing(_storage)) {
     _initializeOrder();
     _updateWidget(state);
   }
@@ -173,7 +175,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 
   /** Update home screen widget with current pointing */
   void _updateWidget(Pointing pointing) {
-    WidgetService.updateWidget(pointing);
+    _widgetService.updateWidget(pointing);
   }
 
   /** Get current position info (for UI display if needed) */

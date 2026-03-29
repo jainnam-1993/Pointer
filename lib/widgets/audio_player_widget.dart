@@ -13,8 +13,8 @@ import '../theme/app_theme.dart';
  * - Seek slider with position/duration labels
  * - Skip forward/backward (10s) buttons
  *
- * Integrates with [AudioPointingService] for playback state management.
- * Renders nothing when [audioUrl] is null.
+ * Integrates with [AudioPointingService] via [audioPointingServiceProvider]
+ * for playback state management. Renders nothing when [audioUrl] is null.
  */
 class AudioPlayerWidget extends ConsumerStatefulWidget {
   /** Identifier of the pointing this player is associated with. */
@@ -30,7 +30,6 @@ class AudioPlayerWidget extends ConsumerStatefulWidget {
 }
 
 class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
-  final _audioService = AudioPointingService.instance;
   AudioPlaybackState _state = AudioPlaybackState.idle;
   Duration _position = Duration.zero;
   Duration? _duration;
@@ -39,6 +38,8 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   StreamSubscription<AudioPlaybackState>? _stateSubscription;
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<Duration?>? _durationSubscription;
+
+  AudioPointingService get _audioService => ref.read(audioPointingServiceProvider);
 
   bool get _isCurrentPointing => _audioService.currentPointingId == widget.pointingId;
 
@@ -57,19 +58,20 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   }
 
   void _setupListeners() {
-    _stateSubscription = _audioService.stateStream.listen((state) {
+    final audioService = _audioService;
+    _stateSubscription = audioService.stateStream.listen((state) {
       if (mounted && _isCurrentPointing) {
         setState(() => _state = state);
       }
     });
 
-    _positionSubscription = _audioService.positionStream.listen((position) {
+    _positionSubscription = audioService.positionStream.listen((position) {
       if (mounted && _isCurrentPointing) {
         setState(() => _position = position);
       }
     });
 
-    _durationSubscription = _audioService.durationStream.listen((duration) {
+    _durationSubscription = audioService.durationStream.listen((duration) {
       if (mounted && _isCurrentPointing) {
         setState(() => _duration = duration);
       }
@@ -79,12 +81,13 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   Future<void> _togglePlayback() async {
     if (widget.audioUrl == null) return;
 
+    final audioService = _audioService;
     if (_state == AudioPlaybackState.playing) {
-      await _audioService.pause();
+      await audioService.pause();
     } else if (_state == AudioPlaybackState.paused || _state == AudioPlaybackState.completed) {
-      await _audioService.resume();
+      await audioService.resume();
     } else {
-      await _audioService.play(widget.pointingId, widget.audioUrl!);
+      await audioService.play(widget.pointingId, widget.audioUrl!);
     }
   }
 

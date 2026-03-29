@@ -24,6 +24,9 @@ class _WidgetKeys {
  *
  * Communicates with native iOS (WidgetKit) and Android (AppWidgetProvider)
  * widgets through shared storage via the home_widget package.
+ *
+ * Instance-based with injected [SharedPreferences] for testability.
+ * Access via [widgetServiceProvider] in the Riverpod graph.
  */
 class WidgetService {
   /** iOS App Group identifier for shared storage */
@@ -35,8 +38,13 @@ class WidgetService {
   /** Default update interval in hours */
   static const defaultUpdateIntervalHours = 3;
 
+  /** Injected [SharedPreferences] for favorites reads (avoids async getInstance). */
+  final SharedPreferences _prefs;
+
+  WidgetService(this._prefs);
+
   /** Initialize widget service and register background callback. */
-  static Future<void> initialize() async {
+  Future<void> initialize() async {
     // Set iOS App Group for shared storage
     await HomeWidget.setAppGroupId(iosAppGroup);
     debugPrint('[WidgetService] App Group ID set: $iosAppGroup');
@@ -51,12 +59,11 @@ class WidgetService {
    * Randomizes order and prioritizes favorites for better discovery.
    * Also syncs favorites list for save button state.
    */
-  static Future<void> populatePointingsCache() async {
+  Future<void> populatePointingsCache() async {
     debugPrint('[WidgetService] populatePointingsCache called');
     try {
       // Load favorites list first
-      final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('pointer_favorites');
+      final stored = _prefs.getString('pointer_favorites');
       final favoriteIds = stored != null ? Set<String>.from(jsonDecode(stored)) : <String>{};
 
       // Separate favorites from non-favorites
@@ -122,7 +129,7 @@ class WidgetService {
       );
 
       // Also sync favorites from SharedPreferences
-      await _syncFavoritesFromStorage();
+      _syncFavoritesFromStorage();
 
       // Trigger widget update
       await HomeWidget.updateWidget(
@@ -136,10 +143,9 @@ class WidgetService {
   }
 
   /** Internal helper to sync favorites from SharedPreferences to widget. */
-  static Future<void> _syncFavoritesFromStorage() async {
+  Future<void> _syncFavoritesFromStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('pointer_favorites');
+      final stored = _prefs.getString('pointer_favorites');
       final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
       await HomeWidget.saveWidgetData<String>(_WidgetKeys.favorites, jsonEncode(favorites));
@@ -151,7 +157,7 @@ class WidgetService {
   }
 
   /** Update widget with the given pointing data. */
-  static Future<void> updateWidget(Pointing pointing) async {
+  Future<void> updateWidget(Pointing pointing) async {
     final traditionInfo = traditions[pointing.tradition];
 
     // Save data to shared storage
@@ -171,13 +177,13 @@ class WidgetService {
   }
 
   /** Update widget with a random pointing (for background refresh). */
-  static Future<void> updateWithRandomPointing() async {
+  Future<void> updateWithRandomPointing() async {
     final pointing = getRandomPointing();
     await updateWidget(pointing);
   }
 
   /** Get the current pointing data from widget storage */
-  static Future<WidgetPointing?> getCurrentWidgetPointing() async {
+  Future<WidgetPointing?> getCurrentWidgetPointing() async {
     final content = await HomeWidget.getWidgetData<String>(_WidgetKeys.content);
     if (content == null) return null;
 
@@ -199,7 +205,7 @@ class WidgetService {
    * When user changes notification frequency, call this to update
    * the widget's refresh interval accordingly.
    */
-  static Future<void> syncScheduleWithNotifications(int intervalHours) async {
+  Future<void> syncScheduleWithNotifications(int intervalHours) async {
     try {
       await HomeWidget.saveWidgetData<int>(_WidgetKeys.updateIntervalHours, intervalHours);
 
@@ -217,7 +223,7 @@ class WidgetService {
   }
 
   /** Check if any widgets are currently installed */
-  static Future<bool> hasActiveWidgets() async {
+  Future<bool> hasActiveWidgets() async {
     try {
       // This is a best-effort check - may not be 100% accurate
       final data = await HomeWidget.getWidgetData<String>(_WidgetKeys.lastUpdated);
@@ -232,7 +238,7 @@ class WidgetService {
    * iOS widget intents store pending saves in UserDefaults via app groups.
    * Call this on app launch/resume to process queued actions.
    */
-  static Future<void> processPendingWidgetActions() async {
+  Future<void> processPendingWidgetActions() async {
     try {
       // Android fallback: if widget background callback didn't run, this key
       // still contains the pending pointing ID to toggle.
@@ -274,10 +280,9 @@ class WidgetService {
    * Used as a resilience path for Android widget saves when the background
    * callback does not execute.
    */
-  static Future<void> _toggleFavoriteById(String pointingId) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> _toggleFavoriteById(String pointingId) async {
     const favoritesKey = 'pointer_favorites';
-    final stored = prefs.getString(favoritesKey);
+    final stored = _prefs.getString(favoritesKey);
     final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
     if (favorites.contains(pointingId)) {
@@ -288,7 +293,7 @@ class WidgetService {
       debugPrint('[WidgetService] Added $pointingId to app favorites');
     }
 
-    await prefs.setString(favoritesKey, jsonEncode(favorites));
+    await _prefs.setString(favoritesKey, jsonEncode(favorites));
     await updateFavorites(favorites.toSet());
   }
 
@@ -296,7 +301,7 @@ class WidgetService {
    * Save a pointing by matching its content.
    * Used by iOS widget intent callback processing.
    */
-  static Future<void> _savePointingByContent(String content) async {
+  Future<void> _savePointingByContent(String content) async {
     try {
       // Find matching pointing by content
       final matching = pointings.where((p) => p.content == content).toList();
@@ -306,14 +311,13 @@ class WidgetService {
       }
 
       final pointing = matching.first;
-      final prefs = await SharedPreferences.getInstance();
       const favoritesKey = 'pointer_favorites';
-      final stored = prefs.getString(favoritesKey);
+      final stored = _prefs.getString(favoritesKey);
       final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
       if (!favorites.contains(pointing.id)) {
         favorites.add(pointing.id);
-        await prefs.setString(favoritesKey, jsonEncode(favorites));
+        await _prefs.setString(favoritesKey, jsonEncode(favorites));
         debugPrint('Widget save: Added ${pointing.id} to favorites');
 
         // Sync favorites to widget
@@ -328,7 +332,7 @@ class WidgetService {
    * Refresh widget to pick up theme changes.
    * Call this when app resumes or user changes theme.
    */
-  static Future<void> refreshWidget() async {
+  Future<void> refreshWidget() async {
     try {
       await HomeWidget.updateWidget(
         iOSName: 'PointerWidget',
@@ -345,7 +349,7 @@ class WidgetService {
    * Update favorites list for widget display.
    * Widget shows filled heart for favorited pointings.
    */
-  static Future<void> updateFavorites(Set<String> favoriteIds) async {
+  Future<void> updateFavorites(Set<String> favoriteIds) async {
     try {
       // Save favorites as JSON array
       final jsonString = jsonEncode(favoriteIds.toList());
@@ -388,7 +392,10 @@ class WidgetPointing {
 }
 
 /**
- * Background callback for widget interactions
+ * Background callback for widget interactions.
+ *
+ * Runs without Riverpod — creates its own [WidgetService] with a fresh
+ * [SharedPreferences] instance.
  *
  * Handles URIs in format: pointer://widget/{action}
  * Supported actions:
@@ -404,17 +411,15 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   final path = uri.path;
 
   if (path == '/refresh' || uri.host == 'refresh') {
-    // User tapped refresh - repopulate cache and update widget
-    await WidgetService.populatePointingsCache();
+    final prefs = await SharedPreferences.getInstance();
+    await WidgetService(prefs).populatePointingsCache();
   } else if (path == '/prefetch' || uri.host == 'prefetch') {
-    // Widget requesting more data - repopulate cache
-    await WidgetService.populatePointingsCache();
+    final prefs = await SharedPreferences.getInstance();
+    await WidgetService(prefs).populatePointingsCache();
   } else if (path == '/save' || uri.host == 'save') {
-    // User tapped save - save current pointing to favorites
     await _saveCurrentWidgetPointing();
   } else if (uri.host == 'open') {
     // User tapped to open app - handled by native code
-    // The app will open automatically
   }
 }
 
@@ -423,17 +428,17 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
  *
  * Reads the pending pointing ID written by Kotlin's ACTION_SAVE handler,
  * then toggles that pointing in the app's SharedPreferences favorites list.
+ *
+ * Runs without Riverpod — creates a temporary [WidgetService] for the sync.
  */
 Future<void> _saveCurrentWidgetPointing() async {
   try {
-    // Read the pointing ID that Kotlin stored before sending the background intent
     final pointingId = await HomeWidget.getWidgetData<String>('save_pending_id');
     if (pointingId == null || pointingId.isEmpty) {
       debugPrint('[WidgetSave] No pending save ID');
       return;
     }
 
-    // Toggle in the app's favorites (SharedPreferences)
     final prefs = await SharedPreferences.getInstance();
     const favoritesKey = 'pointer_favorites';
     final stored = prefs.getString(favoritesKey);
@@ -450,9 +455,8 @@ Future<void> _saveCurrentWidgetPointing() async {
     await prefs.setString(favoritesKey, jsonEncode(favorites));
 
     // Sync favorites back to widget data so heart icon stays in sync
-    await WidgetService.updateFavorites(favorites.toSet());
+    await WidgetService(prefs).updateFavorites(favorites.toSet());
 
-    // Clear pending ID only after successful persistence.
     await HomeWidget.saveWidgetData<String>('save_pending_id', null);
   } catch (e) {
     debugPrint('[WidgetSave] Error: $e');

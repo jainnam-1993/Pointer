@@ -24,7 +24,6 @@ import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
 // Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
 // import '../widgets/tradition_badge.dart';
-import '../services/widget_service.dart';
 
 /**
  * Daily pointing home screen with auto-advance timer and swipe navigation.
@@ -83,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointing = ref.read(currentPointingProvider);
       _announcePointingContent(context, pointing);
-      WidgetService.updateWidget(pointing);
+      ref.read(widgetServiceProvider).updateWidget(pointing);
       _startAutoAdvanceTimer();
     });
   }
@@ -132,7 +131,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(context, newPointing);
-    WidgetService.updateWidget(newPointing);
+    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
@@ -185,7 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
     if (mounted) _announcePointingContent(context, newPointing);
-    WidgetService.updateWidget(newPointing);
+    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     // Record in history
     final storage = ref.read(storageServiceProvider);
@@ -219,7 +218,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
     if (mounted) _announcePointingContent(context, newPointing);
-    WidgetService.updateWidget(newPointing);
+    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     // Restart timer for the new pointing (gives full 60s with new content)
     _startAutoAdvanceTimer();
@@ -268,7 +267,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
 
     // Sync widget heart state/cache with latest app favorites
-    await WidgetService.updateFavorites(ref.read(favoritesProvider).toSet());
+    await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
 
     // Track tradition affinity (saves weighted 3x in affinity algorithm)
     final affinity = ref.read(affinityServiceProvider);
@@ -505,7 +504,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                           if (favorites.contains(pointing.id)) {
                                                             HapticFeedback.mediumImpact();
                                                             await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-                                                            await WidgetService.updateFavorites(ref.read(favoritesProvider).toSet());
+                                                            await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
                                                           } else {
                                                             await _handleSave();
                                                           }

@@ -57,31 +57,31 @@ class AmbientSoundNotifier extends StateNotifier<AmbientSound> {
   }
 }
 
-/** Riverpod provider exposing the [AmbientSoundService] singleton. */
+/** Riverpod provider exposing the [AmbientSoundService]. */
 final ambientSoundServiceProvider = Provider<AmbientSoundService>((ref) {
-  return AmbientSoundService.instance;
+  final service = AmbientSoundService();
+  ref.onDispose(service.dispose);
+  return service;
 });
 
 /**
- * Singleton service for playing an ambient sound once on app cold start.
+ * Service for playing an ambient sound once on app cold start.
  *
- * Uses static state ([_staticPlayer], [_isPlayingSound]) so the playback
- * guard survives widget rebuilds and provider re-creations. Only one
- * sound plays per app lifecycle — duplicate calls are ignored.
+ * Instance-based with provider-managed lifecycle. The playback guard
+ * ([_isPlayingSound]) prevents duplicate plays within one instance's
+ * lifetime. Access via [ambientSoundServiceProvider].
  */
 class AmbientSoundService {
-  /** Singleton instance, accessed via [ambientSoundServiceProvider]. */
-  static final AmbientSoundService instance = AmbientSoundService._();
-  AmbientSoundService._();
+  AmbientSoundService();
 
-  /** Persistent audio player that survives widget rebuilds. */
-  static AudioPlayer? _staticPlayer;
+  /** Audio player for opening sound playback. */
+  AudioPlayer? _player;
 
-  /** Guard flag preventing duplicate playback within the same app lifecycle. */
-  static bool _isPlayingSound = false;
+  /** Guard flag preventing duplicate playback. */
+  bool _isPlayingSound = false;
 
   /** Subscription to the player state stream, cancelled on cleanup. */
-  static StreamSubscription<PlayerState>? _playerStateSubscription;
+  StreamSubscription<PlayerState>? _playerStateSubscription;
 
   /** Play the opening sound (only on cold start) */
   Future<void> playOpeningSound(AmbientSound sound) async {
@@ -90,7 +90,7 @@ class AmbientSoundService {
       return;
     }
 
-    // Guard against double-plays using static flag
+    // Guard against double-plays
     if (_isPlayingSound) {
       debugPrint('AmbientSound: Already playing, skipping duplicate call');
       return;
@@ -103,18 +103,18 @@ class AmbientSoundService {
       // Dispose previous player/subscription if exists (cleanup)
       await _cleanup();
 
-      _staticPlayer = AudioPlayer();
+      _player = AudioPlayer();
 
       // Load the asset
-      final duration = await _staticPlayer!.setAsset(sound.assetPath!);
+      final duration = await _player!.setAsset(sound.assetPath!);
       debugPrint('AmbientSound: Asset loaded, duration: $duration');
 
       // Play the sound
-      await _staticPlayer!.play();
+      await _player!.play();
       debugPrint('AmbientSound: Play started successfully');
 
       // Wait for playback to complete (store subscription for cleanup)
-      _playerStateSubscription = _staticPlayer!.playerStateStream.listen((state) {
+      _playerStateSubscription = _player!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           debugPrint('AmbientSound: Playback completed');
           _cleanup();
@@ -128,11 +128,11 @@ class AmbientSoundService {
   }
 
   /** Clean up resources and reset state */
-  static Future<void> _cleanup() async {
+  Future<void> _cleanup() async {
     await _playerStateSubscription?.cancel();
     _playerStateSubscription = null;
-    await _staticPlayer?.dispose();
-    _staticPlayer = null;
+    await _player?.dispose();
+    _player = null;
     _isPlayingSound = false;
   }
 
