@@ -1,6 +1,6 @@
 /**
  * Full article reading screen with markdown rendering, share functionality,
- * and tradition-tagged header. TTS playback is currently disabled.
+ * and tradition-tagged header.
  */
 library;
 
@@ -20,8 +20,7 @@ import 'share_preview_screen.dart';
  *
  * Displays the [Article] title, subtitle, reading time, teacher attribution,
  * and markdown-rendered body. Includes a share button that creates a [Pointing]
- * from the article excerpt for [SharePreviewScreen]. TTS playback is currently
- * disabled but state variables are retained for future re-enablement.
+ * from the article excerpt for [SharePreviewScreen].
  */
 class ArticleReaderScreen extends ConsumerStatefulWidget {
   /** The article to display in the reader. */
@@ -34,12 +33,6 @@ class ArticleReaderScreen extends ConsumerStatefulWidget {
 }
 
 class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
-  // TTS feature disabled - keeping state vars for future re-enablement
-  // ignore: unused_field
-  final bool _showTTSPlayer = false;
-  // ignore: unused_field
-  final bool _ttsConfigured = false;
-
   /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
     HapticFeedback.mediumImpact();
@@ -73,7 +66,6 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionInfo = traditions[widget.article.tradition]!;
-    // TTS disabled
 
     return Scaffold(
       body: Stack(
@@ -116,9 +108,6 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                   ),
                 ),
 
-                // TTS Player disabled - feature temporarily removed
-                // TODO: Re-enable when TTS feature is ready
-
                 // Article header
                 SliverToBoxAdapter(
                   child: Padding(
@@ -126,7 +115,6 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (_showTTSPlayer) const SizedBox(height: 16),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 48),
                           child: Container(

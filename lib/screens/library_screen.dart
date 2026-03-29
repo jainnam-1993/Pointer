@@ -22,7 +22,6 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
-// import '../widgets/article_tts_player.dart';  // TTS disabled
 import '../widgets/glass_card.dart';
 import 'article_reader_screen.dart';
 import 'share_preview_screen.dart';

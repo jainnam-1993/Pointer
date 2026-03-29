@@ -12,7 +12,6 @@
  * - `subscription_providers.dart`: Daily usage tracking (analytics)
  * - `content_providers.dart`: [Pointing] navigation, favorites, teaching filters
  * - `donation_providers.dart`: Tip jar IAP via [DonationNotifier]
- * - `tts_providers.dart`: AWS Polly TTS service and playback state (disabled)
  */
 library;
 
@@ -21,4 +20,3 @@ export 'core_providers.dart';
 export 'donation_providers.dart';
 export 'settings_providers.dart';
 export 'subscription_providers.dart';
-export 'tts_providers.dart';
