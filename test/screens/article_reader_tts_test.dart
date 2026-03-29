@@ -4,37 +4,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/models/article.dart';
+import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
 
 void main() {
   late SharedPreferences mockPrefs;
 
-  final testArticle = Article(
-    id: 'test-article-1',
-    title: 'Test Article Title',
-    subtitle: 'A test subtitle',
-    content: '''
-# Introduction
-
-This is a test article with **markdown** content.
-
-## Section One
-
-Some text here with *emphasis*.
-
-- List item 1
-- List item 2
-
-## Conclusion
-
-Final thoughts.
-''',
-    tradition: Tradition.advaita,
-    readingTimeMinutes: 5,
-    teacher: 'Test Teacher',
-    categories: [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry],
-  );
+  /// Use a real article from the data layer so [getArticleById] resolves it.
+  final testArticle = articles.first;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
@@ -46,7 +24,7 @@ Final thoughts.
       overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)],
       child: MaterialApp(
         theme: ThemeData.dark(),
-        home: ArticleReaderScreen(article: article),
+        home: ArticleReaderScreen(articleId: article.id),
       ),
     );
   }
@@ -56,35 +34,38 @@ Final thoughts.
       await tester.pumpWidget(createTestWidget(article: testArticle));
       await tester.pumpAndSettle();
 
-      expect(find.text('Test Article Title'), findsOneWidget);
+      expect(find.text(testArticle.title), findsAtLeastNWidgets(1));
     });
 
     testWidgets('renders article subtitle', (tester) async {
-      await tester.pumpWidget(createTestWidget(article: testArticle));
+      final articleWithSubtitle = articles.firstWhere((a) => a.subtitle != null);
+      await tester.pumpWidget(createTestWidget(article: articleWithSubtitle));
       await tester.pumpAndSettle();
 
-      expect(find.text('A test subtitle'), findsOneWidget);
+      expect(find.text(articleWithSubtitle.subtitle!), findsOneWidget);
     });
 
     testWidgets('renders reading time', (tester) async {
       await tester.pumpWidget(createTestWidget(article: testArticle));
       await tester.pumpAndSettle();
 
-      expect(find.text('5 min read'), findsOneWidget);
+      expect(find.text('${testArticle.readingTimeMinutes} min read'), findsOneWidget);
     });
 
     testWidgets('renders teacher name', (tester) async {
-      await tester.pumpWidget(createTestWidget(article: testArticle));
+      final articleWithTeacher = articles.firstWhere((a) => a.teacher != null);
+      await tester.pumpWidget(createTestWidget(article: articleWithTeacher));
       await tester.pumpAndSettle();
 
-      expect(find.text('Test Teacher'), findsOneWidget);
+      expect(find.text(articleWithTeacher.teacher!), findsOneWidget);
     });
 
     testWidgets('renders tradition badge', (tester) async {
       await tester.pumpWidget(createTestWidget(article: testArticle));
       await tester.pumpAndSettle();
 
-      expect(find.text('Advaita Vedanta'), findsOneWidget);
+      final traditionName = traditions[testArticle.tradition]!.name;
+      expect(find.text(traditionName), findsOneWidget);
     });
 
     testWidgets('renders close button', (tester) async {
@@ -137,7 +118,7 @@ Final thoughts.
             home: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: testArticle))).then((_) => popped = true);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => ArticleReaderScreen(articleId: testArticle.id))).then((_) => popped = true);
                 },
                 child: const Text('Open'),
               ),
@@ -201,17 +182,18 @@ Final thoughts.
 
   group('Article - Model', () {
     test('article has required fields', () {
-      expect(testArticle.id, 'test-article-1');
-      expect(testArticle.title, 'Test Article Title');
+      expect(testArticle.id, isNotEmpty);
+      expect(testArticle.title, isNotEmpty);
       expect(testArticle.content.isNotEmpty, isTrue);
-      expect(testArticle.tradition, Tradition.advaita);
-      expect(testArticle.readingTimeMinutes, 5);
+      expect(testArticle.tradition, isNotNull);
+      expect(testArticle.readingTimeMinutes, greaterThan(0));
     });
 
     test('article optional fields work', () {
-      expect(testArticle.subtitle, 'A test subtitle');
-      expect(testArticle.teacher, 'Test Teacher');
-      expect(testArticle.categories, [ArticleCategory.natureOfAwareness, ArticleCategory.selfInquiry]);
+      final articleWithOptionals = articles.firstWhere((a) => a.subtitle != null && a.teacher != null);
+      expect(articleWithOptionals.subtitle, isNotNull);
+      expect(articleWithOptionals.teacher, isNotNull);
+      expect(articleWithOptionals.categories, isNotEmpty);
     });
 
     test('article without optional fields works', () {

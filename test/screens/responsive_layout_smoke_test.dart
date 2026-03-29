@@ -94,7 +94,7 @@ void main() {
     const _ScreenCase(name: 'onboarding', builder: OnboardingScreen.new),
     _ScreenCase(
       name: 'article_reader',
-      builder: () => ArticleReaderScreen(article: articles.first),
+      builder: () => ArticleReaderScreen(articleId: articles.first.id),
     ),
   ];
 

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
-import 'article_reader_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'share_preview_screen.dart';
 import '../data/teachers.dart';
 import 'library_screen.dart';
@@ -738,7 +738,7 @@ class _ArticleMatch extends _SourceMatch {
 
   @override
   void navigate(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArticleReaderScreen(article: article)));
+    context.push('/article/${article.id}');
   }
 }
 

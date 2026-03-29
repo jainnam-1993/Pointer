@@ -197,7 +197,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -214,7 +214,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -230,7 +230,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -246,7 +246,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -262,7 +262,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -278,7 +278,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.dark,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );
@@ -295,7 +295,7 @@ void main() {
         wrapWithProviderScope(
           MaterialApp(
             theme: AppTheme.light,
-            home: ArticleReaderScreen(article: article),
+            home: ArticleReaderScreen(articleId: article.id),
           ),
         ),
       );

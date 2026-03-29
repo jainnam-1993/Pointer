@@ -23,8 +23,8 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/animated_transitions.dart';
 // import '../widgets/article_tts_player.dart';  // TTS disabled
+import 'package:go_router/go_router.dart';
 import '../widgets/glass_card.dart';
-import 'article_reader_screen.dart';
 import 'share_preview_screen.dart';
 import 'library/library_models.dart';
 import 'library/library_widgets.dart';
@@ -391,7 +391,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /** Navigates to the [ArticleReaderScreen] for the given article. */
   void _openArticle(BuildContext context, Article article) {
     HapticFeedback.lightImpact();
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArticleReaderScreen(article: article)));
+    context.push('/article/${article.id}');
   }
 
   /** Build dynamic browse list based on current mode */
