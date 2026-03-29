@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/pointings.dart';
 import '../../services/share_service.dart';
+import '../../utils/formatting.dart';
 
 /**
  * Tradition-specific color palette for share card templates.
@@ -141,7 +142,7 @@ class _MinimalTemplate extends StatelessWidget {
             '"${pointing.content}"',
             style: TextStyle(
               fontFamily: 'Georgia',
-              fontSize: _calculateFontSize(pointing.content.length, isStory),
+              fontSize: calculateShareFontSize(pointing.content.length, isStory),
               fontWeight: FontWeight.w400,
               color: const Color(0xFF1A1A1A),
               height: 1.5,
@@ -169,13 +170,6 @@ class _MinimalTemplate extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  double _calculateFontSize(int length, bool isStory) {
-    if (length < 50) return isStory ? 48 : 40;
-    if (length < 100) return isStory ? 40 : 34;
-    if (length < 200) return isStory ? 32 : 28;
-    return isStory ? 26 : 24;
   }
 }
 
@@ -216,7 +210,7 @@ class _GradientTemplate extends StatelessWidget {
             '"${pointing.content}"',
             style: TextStyle(
               fontFamily: 'Georgia',
-              fontSize: _calculateFontSize(pointing.content.length, isStory),
+              fontSize: calculateShareFontSize(pointing.content.length, isStory),
               fontWeight: FontWeight.w400,
               color: const Color(0xFFF5F0FF),
               height: 1.5,
@@ -244,13 +238,6 @@ class _GradientTemplate extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  double _calculateFontSize(int length, bool isStory) {
-    if (length < 50) return isStory ? 48 : 40;
-    if (length < 100) return isStory ? 40 : 34;
-    if (length < 200) return isStory ? 32 : 28;
-    return isStory ? 26 : 24;
   }
 }
 
@@ -284,7 +271,7 @@ class _TraditionTemplate extends StatelessWidget {
             '"${pointing.content}"',
             style: TextStyle(
               fontFamily: 'Georgia',
-              fontSize: _calculateFontSize(pointing.content.length, isStory),
+              fontSize: calculateShareFontSize(pointing.content.length, isStory),
               fontWeight: FontWeight.w400,
               color: colors.text,
               height: 1.5,
@@ -312,13 +299,6 @@ class _TraditionTemplate extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  double _calculateFontSize(int length, bool isStory) {
-    if (length < 50) return isStory ? 48 : 40;
-    if (length < 100) return isStory ? 40 : 34;
-    if (length < 200) return isStory ? 32 : 28;
-    return isStory ? 26 : 24;
   }
 }
 

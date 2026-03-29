@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tts_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/formatting.dart';
 import 'glass_card.dart';
 
 /**
@@ -92,8 +93,8 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(_formatDuration(position), style: TextStyle(color: colors.textMuted, fontSize: 11)),
-                                Text(_formatDuration(duration), style: TextStyle(color: colors.textMuted, fontSize: 11)),
+                                Text(formatDuration(position), style: TextStyle(color: colors.textMuted, fontSize: 11)),
+                                Text(formatDuration(duration), style: TextStyle(color: colors.textMuted, fontSize: 11)),
                               ],
                             ),
                           ),
@@ -187,12 +188,6 @@ class _ArticleTTSPlayerState extends ConsumerState<ArticleTTSPlayer> {
         );
       },
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds.remainder(60);
-    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
   void _showVoiceSelector(BuildContext context) {

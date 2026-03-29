@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../providers/settings_providers.dart';
 import '../theme/app_theme.dart';
 import 'notification_preview.dart';
 
@@ -111,7 +112,7 @@ class _TypewriterTextState extends State<TypewriterText> {
     _wordDelayTimer?.cancel();
 
     // Check if animations are disabled for accessibility
-    if (_shouldReduceMotion) {
+    if (shouldReduceMotion(context)) {
       setState(() {
         _visibleWordCount = _words.length;
         _isComplete = true;
@@ -143,10 +144,6 @@ class _TypewriterTextState extends State<TypewriterText> {
     }
   }
 
-  bool get _shouldReduceMotion {
-    return MediaQuery.of(context).disableAnimations;
-  }
-
   @override
   void dispose() {
     _startDelayTimer?.cancel();
@@ -160,7 +157,7 @@ class _TypewriterTextState extends State<TypewriterText> {
     final defaultStyle = widget.style ?? TextStyle(fontSize: 20, height: 1.7, fontWeight: FontWeight.w400, color: colors.textPrimary);
 
     // If reduced motion, show all text immediately
-    if (_shouldReduceMotion || _isComplete && _visibleWordCount == _words.length) {
+    if (shouldReduceMotion(context) || _isComplete && _visibleWordCount == _words.length) {
       return Text(widget.text, style: defaultStyle, textAlign: widget.textAlign);
     }
 
@@ -286,7 +283,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (_shouldReduceMotion) {
+      if (shouldReduceMotion(context)) {
         // Skip animation, show second child immediately
         _controller.value = 1.0;
         widget.onComplete?.call();
@@ -302,10 +299,6 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
     });
   }
 
-  bool get _shouldReduceMotion {
-    return MediaQuery.of(context).disableAnimations;
-  }
-
   @override
   void dispose() {
     _holdTimer?.cancel();
@@ -316,7 +309,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
   @override
   Widget build(BuildContext context) {
     // Immediate switch for reduced motion
-    if (_shouldReduceMotion) {
+    if (shouldReduceMotion(context)) {
       return widget.secondChild;
     }
 
@@ -411,7 +404,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (_shouldReduceMotion) {
+      if (shouldReduceMotion(context)) {
         // Show all items at once in reduced motion mode
         setState(() {
           _currentIndex = widget.items.length - 1;
@@ -480,10 +473,6 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     _timers.add(timer);
   }
 
-  bool get _shouldReduceMotion {
-    return MediaQuery.of(context).disableAnimations;
-  }
-
   @override
   void dispose() {
     for (final timer in _timers) {
@@ -506,7 +495,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     final currentItem = widget.items[_currentIndex];
 
     // Reduced motion: show all items as a column
-    if (_shouldReduceMotion) {
+    if (shouldReduceMotion(context)) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: widget.items
@@ -652,7 +641,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (_shouldReduceMotion) {
+      if (shouldReduceMotion(context)) {
         setState(() => _isVisible = true);
         _controller.value = 1.0;
         widget.onComplete?.call();
@@ -668,10 +657,6 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
     });
   }
 
-  bool get _shouldReduceMotion {
-    return MediaQuery.of(context).disableAnimations;
-  }
-
   @override
   void dispose() {
     _appearanceTimer?.cancel();
@@ -681,7 +666,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 
   @override
   Widget build(BuildContext context) {
-    if (!_isVisible && !_shouldReduceMotion) {
+    if (!_isVisible && !shouldReduceMotion(context)) {
       return const SizedBox.shrink();
     }
 
@@ -750,14 +735,10 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
     // Start animation after frame is built (to check reduced motion)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (!_shouldReduceMotion) {
+      if (!shouldReduceMotion(context)) {
         _controller.repeat();
       }
     });
-  }
-
-  bool get _shouldReduceMotion {
-    return MediaQuery.of(context).disableAnimations;
   }
 
   @override
@@ -769,7 +750,7 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     // No glow effect for reduced motion
-    if (_shouldReduceMotion) {
+    if (shouldReduceMotion(context)) {
       return widget.child;
     }
 
