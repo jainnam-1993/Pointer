@@ -37,6 +37,49 @@ class StorageKeys {
 
   /** Current index into the [pointingOrder] list. */
   static const pointingIndex = 'pointer_pointing_index';
+
+  // Notification keys
+  /** Whether notifications are globally enabled. */
+  static const notificationsEnabled = 'pointer_notifications_enabled';
+
+  /** JSON-encoded [NotificationSchedule] configuration. */
+  static const notificationSchedule = 'pointer_notification_schedule';
+
+  /** Notification interval in minutes (used by WorkManager background tasks). */
+  static const notificationFrequency = 'pointer_notification_frequency';
+
+  /** Start hour of the notification window (used by WorkManager background tasks). */
+  static const notificationStartHour = 'pointer_notification_start_hour';
+
+  /** End hour of the notification window (used by WorkManager background tasks). */
+  static const notificationEndHour = 'pointer_notification_end_hour';
+
+  /** JSON-encoded list of recently shown notification IDs (duplicate prevention). */
+  static const recentNotificationIds = 'pointer_recent_notification_ids';
+
+  /** JSON-encoded pointings cache for background notification access. */
+  static const notificationPointingsCache = 'pointer_notification_pointings_cache';
+
+  // Affinity keys
+  /** JSON-encoded tradition view counts for affinity learning. */
+  static const affinityViewCounts = 'pointer_affinity_view_counts';
+
+  /** JSON-encoded tradition save counts for affinity learning. */
+  static const affinitySaveCounts = 'pointer_affinity_save_counts';
+
+  /** ISO timestamp of last affinity data update. */
+  static const affinityLastUpdated = 'pointer_affinity_last_updated';
+
+  // Usage keys
+  /** Query-string-encoded daily usage data (viewCount, lastResetDate). */
+  static const dailyUsage = 'pointer_daily_usage';
+
+  // Share keys
+  /** Persisted share template preference (enum name string). */
+  static const shareTemplate = 'pointer_share_template';
+
+  /** Persisted share format preference (enum name string). */
+  static const shareFormat = 'pointer_share_format';
 }
 
 /**
