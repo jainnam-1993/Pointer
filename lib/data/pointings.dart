@@ -221,11 +221,6 @@ Pointing? getPointingById(String id) {
   return _byId[id];
 }
 
-/** Returns all pointings attributed to the given [teacherName]. */
-List<Pointing> getPointingsByTeacher(String teacherName) {
-  return _byTeacher[teacherName] ?? [];
-}
-
 // ===========================================================================
 // Test support
 // ===========================================================================

@@ -13,6 +13,7 @@ void main() {
     loadTestPointings();
     resetArticlesForTesting();
     await loadArticles();
+    await loadTeachers();
   });
   group('Pointings content validation', () {
     test('no empty content fields', () {
