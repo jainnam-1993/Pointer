@@ -62,8 +62,8 @@ const teachers = <String, Teacher>{
     tradition: Tradition.contemporary,
     tags: ['Presence', 'The Power of Now', 'Contemporary'],
   ),
-  'Pema Chödrön': Teacher(
-    name: 'Pema Chödrön',
+  'Pema Chodron': Teacher(
+    name: 'Pema Chodron',
     bio:
         'American Tibetan Buddhist nun, author, and teacher. Known for practical teachings on working with difficult emotions and cultivating compassion and fearlessness.',
     dates: 'born 1936',

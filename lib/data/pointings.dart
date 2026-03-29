@@ -141,7 +141,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -160,7 +160,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -804,7 +804,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -894,7 +894,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -984,7 +984,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1074,7 +1074,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1164,7 +1164,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1254,7 +1254,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1344,7 +1344,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1434,7 +1434,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1524,7 +1524,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1605,7 +1605,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1695,7 +1695,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1785,7 +1785,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1875,7 +1875,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -1965,7 +1965,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2055,7 +2055,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2145,7 +2145,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2235,7 +2235,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2325,7 +2325,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2415,7 +2415,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2505,7 +2505,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2595,7 +2595,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2685,7 +2685,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2775,7 +2775,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2865,7 +2865,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -2955,7 +2955,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3045,7 +3045,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3135,7 +3135,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3225,7 +3225,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3315,7 +3315,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3405,7 +3405,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3495,7 +3495,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3585,7 +3585,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3675,7 +3675,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3765,7 +3765,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3855,7 +3855,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -3945,7 +3945,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -4035,7 +4035,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -4125,7 +4125,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15070,7 +15070,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15079,7 +15079,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15088,7 +15088,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15097,7 +15097,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15106,7 +15106,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15115,7 +15115,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15124,7 +15124,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15133,7 +15133,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.stress],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15142,7 +15142,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15151,7 +15151,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15160,7 +15160,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15169,7 +15169,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general, PointingContext.morning],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15178,7 +15178,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15187,7 +15187,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15196,7 +15196,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -15205,7 +15205,7 @@ const pointings = <Pointing>[
 
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -18560,7 +18560,7 @@ const pointings = <Pointing>[
     content: 'I am the boundless deep in which the worlds come and go. I have nothing to win, nothing to lose.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -18681,7 +18681,7 @@ const pointings = <Pointing>[
     content: 'Bondage is when the mind craves, grieves, or rejects. Liberation is when the mind does not crave, grieve, or reject.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.stress, PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -18689,7 +18689,7 @@ const pointings = <Pointing>[
     content: 'Scorching in the sun or resting in the shade — what is that to one who has transcended all duality?',
     tradition: Tradition.advaita,
     contexts: [PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
@@ -18697,7 +18697,7 @@ const pointings = <Pointing>[
     content: 'Right now you are free. What more is there to understand? Truly, bondage and liberation do not apply to you.',
     tradition: Tradition.advaita,
     contexts: [PointingContext.morning, PointingContext.general],
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     source: 'Ashtavakra Gita',
   ),
   Pointing(
