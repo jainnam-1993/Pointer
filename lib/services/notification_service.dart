@@ -499,8 +499,8 @@ class NotificationService {
 
       return iosGranted && androidGranted;
     } catch (_) {
-      // In test environment or if plugin not available, assume granted
-      return true;
+      // On error, assume permissions not granted (fail-safe)
+      return false;
     }
   }
 

@@ -231,16 +231,16 @@ void main() {
     });
 
     group('Permission Checking', () {
-      test('checkPermissions returns true in test environment (fallback)', () async {
-        // The service returns true when plugin unavailable (test env)
+      test('checkPermissions returns false in test environment (fail-safe)', () async {
+        // The service returns false when plugin unavailable (test env) — fail-safe
         final result = await service.checkPermissions();
-        expect(result, isTrue); // Falls back to true in test env
+        expect(result, isFalse); // Falls back to false in test env (fail-safe)
       });
 
       test('checkPermissions handles plugin exceptions gracefully', () async {
-        // When plugin methods throw, should return true as fallback
+        // When plugin methods throw, should return false as fail-safe
         final result = await service.checkPermissions();
-        expect(result, isTrue);
+        expect(result, isFalse);
       });
     });
   });

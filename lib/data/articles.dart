@@ -144,7 +144,7 @@ This teaching is not for beginners. It requires a readiness to let go of all spi
 > "You are already free. Your only bondage is believing you are not."''',
     excerpt: 'The most radical non-dual scripture: You are already free. Your only bondage is believing you are not.',
     tradition: Tradition.advaita,
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
 
@@ -10198,7 +10198,7 @@ In Ashtavakra's vision, the realized being does nothing to maintain freedom. The
 This teaching is not for beginners. It requires a readiness to let go of all spiritual ambition, all hope of attainment. The Ashtavakra Gita offers no comfort to the seeker — only annihilation. And in that annihilation, the recognition that nothing was ever lost.''',
     excerpt: "The Ashtavakra Gita's blazing declaration: you are already free, you were never bound.",
     tradition: Tradition.advaita,
-    teacher: 'Ashtavakra',
+    teacher: 'Ashtavakra Gita',
     categories: [ArticleCategory.traditionalTeachings, ArticleCategory.natureOfAwareness],
     readingTimeMinutes: 4,
 
