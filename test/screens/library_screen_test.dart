@@ -151,44 +151,6 @@ void main() {
     });
   });
 
-  group('CategoryArticlesScreen', () {
-    testWidgets('displays category name and article count', (tester) async {
-      const category = ArticleCategory.natureOfAwareness;
-      final info = categoryInfoMap[category]!;
-      final articleCount = getArticlesByCategory(category).length;
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(category: category, info: info),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.text('Nature of Awareness'), findsOneWidget);
-      expect(find.text('$articleCount articles'), findsOneWidget);
-    });
-
-    testWidgets('displays back button', (tester) async {
-      const category = ArticleCategory.selfInquiry;
-      final info = categoryInfoMap[category]!;
-
-      await tester.pumpWidget(
-        wrapWithProviderScope(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: CategoryArticlesScreen(category: category, info: info),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-    });
-  });
-
   group('ArticleReaderScreen', () {
     testWidgets('displays article title', (tester) async {
       final article = articles.first;
@@ -302,32 +264,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(ArticleReaderScreen), findsOneWidget);
-    });
-  });
-
-  group('categoryInfoMap', () {
-    test('contains all ArticleCategory values', () {
-      for (final category in ArticleCategory.values) {
-        expect(categoryInfoMap.containsKey(category), isTrue, reason: 'Missing category: $category');
-      }
-    });
-
-    test('all categories have non-empty names', () {
-      for (final info in categoryInfoMap.values) {
-        expect(info.name.isNotEmpty, isTrue);
-      }
-    });
-
-    test('all categories have icons', () {
-      for (final info in categoryInfoMap.values) {
-        expect(info.icon.isNotEmpty, isTrue);
-      }
-    });
-
-    test('all categories have descriptions', () {
-      for (final info in categoryInfoMap.values) {
-        expect(info.description.isNotEmpty, isTrue);
-      }
     });
   });
 

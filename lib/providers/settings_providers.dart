@@ -53,13 +53,6 @@ final zenModeProvider = StateProvider<bool>((ref) {
 });
 
 // ============================================================
-// Typography Customization
-// ============================================================
-
-/** Font size multiplier (1.0 = default, 0.8-1.4 range) */
-final fontSizeMultiplierProvider = StateProvider<double>((ref) => 1.0);
-
-// ============================================================
 // OLED Black Mode - True black for OLED displays
 // ============================================================
 
