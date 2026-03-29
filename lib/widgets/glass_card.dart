@@ -36,8 +36,6 @@ enum GlassIntensity {
  *
  * See also:
  * - [GlassButton] for the interactive button variant
- * - [GlassContainer] for a simpler glass background wrapper
- * - [GlassBottomSheet] for modal bottom sheet variant
  */
 class GlassCard extends ConsumerWidget {
   /** The widget displayed inside the glass card. */
@@ -384,111 +382,6 @@ class GlassButton extends ConsumerWidget {
                     ],
                   ],
                 ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/**
- * Simple glass container for backgrounds and overlays.
- *
- * A lightweight alternative to [GlassCard] without gradient borders,
- * shimmer animations, or intensity levels. Useful for background panels
- * and overlay regions that need basic frosted glass effect.
- */
-class GlassContainer extends StatelessWidget {
-  /** The widget displayed inside the container. */
-  final Widget child;
-
-  /** Gaussian blur sigma for the backdrop filter. */
-  final double blur;
-
-  /** Base white overlay opacity (increased by 0.5 in light mode). */
-  final double opacity;
-
-  /** Corner radius; defaults to [BorderRadius.zero] if not specified. */
-  final BorderRadius? borderRadius;
-
-  const GlassContainer({super.key, required this.child, this.blur = 40, this.opacity = 0.25, this.borderRadius});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final effectiveRadius = borderRadius ?? BorderRadius.zero;
-    final bgOpacity = isDark ? opacity : opacity + 0.5;
-
-    return ClipRRect(
-      borderRadius: effectiveRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: bgOpacity),
-            borderRadius: effectiveRadius,
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-/**
- * Glass-styled bottom sheet with iOS Control Center aesthetic.
- *
- * Renders a modal sheet with top-rounded corners, heavy backdrop blur,
- * and an optional drag handle. Respects safe area insets for the bottom padding.
- *
- * See also:
- * - [GlassDialog] for centered dialog variant
- */
-class GlassBottomSheet extends StatelessWidget {
-  /** The content displayed inside the sheet. */
-  final Widget child;
-
-  /** Custom padding; defaults to horizontal 24px with safe-area-aware bottom. */
-  final EdgeInsetsGeometry? padding;
-
-  /** Whether to show the drag handle indicator at the top. */
-  final bool showHandle;
-
-  const GlassBottomSheet({super.key, required this.child, this.padding, this.showHandle = true});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-    final colors = context.colors;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: isDark ? 0.22 : 0.88),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: padding ?? EdgeInsets.only(left: 24, right: 24, top: 16, bottom: bottomPadding + 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (showHandle) ...[
-                    Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(color: colors.textMuted.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2)),
-                    ),
-                  ],
-                  Flexible(child: child),
-                ],
               ),
             ),
           ),
