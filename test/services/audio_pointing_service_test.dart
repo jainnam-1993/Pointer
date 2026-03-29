@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/services/audio_pointing_service.dart';
+import 'package:pointer/services/audio_player_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -27,15 +28,15 @@ void main() {
     });
   });
 
-  group('AudioPointingService - Singleton', () {
-    test('instance returns same instance', () {
-      final instance1 = AudioPointingService.instance;
-      final instance2 = AudioPointingService.instance;
-      expect(identical(instance1, instance2), true);
+  group('AudioPointingService - Instance creation', () {
+    test('creates independent instances', () {
+      final instance1 = AudioPointingService();
+      final instance2 = AudioPointingService();
+      expect(identical(instance1, instance2), false);
     });
 
     test('instance is not null', () {
-      expect(AudioPointingService.instance, isNotNull);
+      expect(AudioPointingService(), isNotNull);
     });
   });
 
@@ -43,7 +44,7 @@ void main() {
     late AudioPointingService service;
 
     setUp(() {
-      service = AudioPointingService.instance;
+      service = AudioPointingService();
     });
 
     test('currentState is idle initially', () {
@@ -71,7 +72,7 @@ void main() {
     late AudioPointingService service;
 
     setUp(() {
-      service = AudioPointingService.instance;
+      service = AudioPointingService();
     });
 
     test('stateStream is broadcast stream', () {
@@ -106,7 +107,7 @@ void main() {
     late AudioPointingService service;
 
     setUp(() {
-      service = AudioPointingService.instance;
+      service = AudioPointingService();
     });
 
     test('pause does nothing when player is null', () async {
@@ -149,7 +150,7 @@ void main() {
 
   group('AudioPointingService - Seek Calculation', () {
     test('seekForward with custom seconds parameter', () async {
-      final service = AudioPointingService.instance;
+      final service = AudioPointingService();
 
       // Test with default parameter (should accept seconds: 10)
       await service.seekForward(seconds: 10);
@@ -157,7 +158,7 @@ void main() {
     });
 
     test('seekBackward with custom seconds parameter', () async {
-      final service = AudioPointingService.instance;
+      final service = AudioPointingService();
 
       // Test with default parameter (should accept seconds: 10)
       await service.seekBackward(seconds: 10);
@@ -169,7 +170,7 @@ void main() {
     late AudioPointingService service;
 
     setUp(() {
-      service = AudioPointingService.instance;
+      service = AudioPointingService();
     });
 
     test('stop broadcasts idle state', () async {
@@ -184,6 +185,13 @@ void main() {
       expect(states, contains(AudioPlaybackState.idle));
 
       await subscription.cancel();
+    });
+  });
+
+  group('AudioPlayerService base class', () {
+    test('AudioPointingService extends AudioPlayerService', () {
+      final service = AudioPointingService();
+      expect(service, isA<AudioPlayerService>());
     });
   });
 }

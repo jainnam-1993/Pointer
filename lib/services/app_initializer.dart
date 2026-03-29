@@ -86,7 +86,7 @@ class AppInitializer {
     final container = _createContainer(prefs, notificationService);
 
     // Phase 5: Content
-    await _initContent();
+    await _initContent(prefs);
 
     return InitResult(container: container);
   }
@@ -156,10 +156,11 @@ class AppInitializer {
   // Phase 5: Content — widget cache and teaching repository
   // ------------------------------------------------------------------
 
-  static Future<void> _initContent() async {
-    await WidgetService.initialize();
-    await WidgetService.populatePointingsCache();
-    await WidgetService.processPendingWidgetActions();
+  static Future<void> _initContent(SharedPreferences prefs) async {
+    final widgetService = WidgetService(prefs);
+    await widgetService.initialize();
+    await widgetService.populatePointingsCache();
+    await widgetService.processPendingWidgetActions();
 
     TeachingRepository.initialize(
       pointings: pointings,

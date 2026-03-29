@@ -8,13 +8,17 @@ import 'package:pointer/data/teaching.dart';
 import 'package:pointer/providers/content_providers.dart';
 import 'package:pointer/providers/core_providers.dart';
 import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/services/widget_service.dart';
 
 // Mocks
 class MockStorageService extends Mock implements StorageService {}
 
+class MockWidgetService extends Mock implements WidgetService {}
+
 void main() {
   // Initialize TeachingRepository for filter tests
   setUpAll(() {
+    registerFallbackValue(pointings.first);
     TeachingRepository.reset();
     TeachingRepository.initialize(pointings: pointings);
   });
@@ -25,9 +29,11 @@ void main() {
 
   group('CurrentPointingNotifier', () {
     late MockStorageService mockStorage;
+    late MockWidgetService mockWidgetService;
 
     setUp(() {
       mockStorage = MockStorageService();
+      mockWidgetService = MockWidgetService();
       // Default mock behaviors for CurrentPointingNotifier
       when(() => mockStorage.currentPointingId).thenReturn(null);
       when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
@@ -36,10 +42,12 @@ void main() {
       when(() => mockStorage.pointingIndex).thenReturn(0);
       when(() => mockStorage.setPointingOrder(any())).thenAnswer((_) async {});
       when(() => mockStorage.setPointingIndex(any())).thenAnswer((_) async {});
+      // Widget service mock
+      when(() => mockWidgetService.updateWidget(any())).thenAnswer((_) async {});
     });
 
     test('initializes with a valid pointing', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
 
       // Should have a valid pointing
       expect(notifier.state, isA<Pointing>());
@@ -48,7 +56,7 @@ void main() {
     });
 
     test('nextPointing() advances to next in round-robin order', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final initialPointing = notifier.state;
       final initialIndex = notifier.currentIndex;
 
@@ -63,7 +71,7 @@ void main() {
     });
 
     test('previousPointing() returns to previous in round-robin order', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final firstPointing = notifier.state;
 
       notifier.nextPointing();
@@ -77,7 +85,7 @@ void main() {
 
     test('previousPointing() wraps around at start', () {
       // With round-robin, previous at index 0 should wrap to last
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final totalPointings = notifier.totalPointings;
 
       // Go to index 0 first (may already be there from init)
@@ -92,7 +100,7 @@ void main() {
     });
 
     test('setPointing() sets specific pointing', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final targetPointing = pointings.first;
 
       notifier.setPointing(targetPointing);
@@ -102,7 +110,7 @@ void main() {
     });
 
     test('round-robin cycles through all pointings without repeats', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final totalPointings = notifier.totalPointings;
       final seenIds = <String>{};
 
@@ -131,7 +139,7 @@ void main() {
     });
 
     test('nextPointing() wraps to index 0 at cycle end', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
       final totalPointings = notifier.totalPointings;
 
       // Start from index 0
@@ -151,7 +159,7 @@ void main() {
     });
 
     test('exposes currentIndex and totalPointings', () {
-      final notifier = CurrentPointingNotifier(mockStorage);
+      final notifier = CurrentPointingNotifier(mockStorage, mockWidgetService);
 
       expect(notifier.currentIndex, isA<int>());
       expect(notifier.totalPointings, equals(pointings.length));
@@ -458,9 +466,11 @@ void main() {
 
   group('Riverpod Providers', () {
     late MockStorageService mockStorage;
+    late MockWidgetService mockWidgetService;
 
     setUp(() {
       mockStorage = MockStorageService();
+      mockWidgetService = MockWidgetService();
       when(() => mockStorage.currentPointingId).thenReturn(null);
       when(() => mockStorage.setCurrentPointingId(any())).thenAnswer((_) async {});
       // Round-robin order mocks
@@ -468,10 +478,15 @@ void main() {
       when(() => mockStorage.pointingIndex).thenReturn(0);
       when(() => mockStorage.setPointingOrder(any())).thenAnswer((_) async {});
       when(() => mockStorage.setPointingIndex(any())).thenAnswer((_) async {});
+      // Widget service mock
+      when(() => mockWidgetService.updateWidget(any())).thenAnswer((_) async {});
     });
 
     test('currentPointingProvider creates notifier', () {
-      final container = ProviderContainer(overrides: [storageServiceProvider.overrideWithValue(mockStorage)]);
+      final container = ProviderContainer(overrides: [
+        storageServiceProvider.overrideWithValue(mockStorage),
+        widgetServiceProvider.overrideWithValue(mockWidgetService),
+      ]);
       addTearDown(container.dispose);
 
       final pointing = container.read(currentPointingProvider);

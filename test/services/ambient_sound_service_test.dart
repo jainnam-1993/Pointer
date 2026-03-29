@@ -70,15 +70,15 @@ void main() {
   });
 
   group('AmbientSoundService', () {
-    test('singleton instance returns same object', () {
-      final instance1 = AmbientSoundService.instance;
-      final instance2 = AmbientSoundService.instance;
+    test('creates independent instances', () {
+      final instance1 = AmbientSoundService();
+      final instance2 = AmbientSoundService();
 
-      expect(identical(instance1, instance2), isTrue);
+      expect(identical(instance1, instance2), isFalse);
     });
 
     test('playOpeningSound skips when sound is none', () async {
-      final service = AmbientSoundService.instance;
+      final service = AmbientSoundService();
 
       // Should return immediately without error
       await service.playOpeningSound(AmbientSound.none);
@@ -93,7 +93,7 @@ void main() {
 
   group('AmbientSoundService edge cases', () {
     test('handles AmbientSound.none gracefully', () async {
-      final service = AmbientSoundService.instance;
+      final service = AmbientSoundService();
 
       // Should return early and not attempt playback
       await service.playOpeningSound(AmbientSound.none);

@@ -144,7 +144,7 @@ Widget createGoldenTestApp({
       if (initialPointing != null)
         currentPointingProvider.overrideWith((ref) {
           final storage = ref.watch(storageServiceProvider);
-          final notifier = CurrentPointingNotifier(storage);
+          final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
           notifier.setPointing(initialPointing);
           return notifier;
         }),

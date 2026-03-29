@@ -27,7 +27,6 @@ import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
 import 'debug/maestro_hooks.dart';
 import 'services/notification_service.dart';
-import 'services/widget_service.dart';
 import 'theme/app_theme.dart';
 
 /**
@@ -213,8 +212,9 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      WidgetService.refreshWidget();
-      WidgetService.processPendingWidgetActions().then((_) {
+      final widgetService = ref.read(widgetServiceProvider);
+      widgetService.refreshWidget();
+      widgetService.processPendingWidgetActions().then((_) {
         ref.invalidate(favoritesProvider);
       });
     }
@@ -222,7 +222,7 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
 
   @override
   void didChangePlatformBrightness() {
-    WidgetService.refreshWidget();
+    ref.read(widgetServiceProvider).refreshWidget();
   }
 
   @override

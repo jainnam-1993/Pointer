@@ -1,10 +1,10 @@
 /**
- * Core providers - SharedPreferences, storage, notifications, onboarding.
+ * Core providers - SharedPreferences, storage, notifications, widget, onboarding.
  *
  * Foundational providers that other domain providers depend on.
  * [sharedPreferencesProvider] must be overridden in the root [ProviderScope]
- * at app startup. [StorageService] and [NotificationService] are derived
- * from it and consumed by settings, content, and subscription providers.
+ * at app startup. [StorageService], [NotificationService], and [WidgetService]
+ * are derived from it and consumed by settings, content, and subscription providers.
  */
 library;
 
@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
+import '../services/widget_service.dart';
 
 // ============================================================
 // SharedPreferences - Root dependency
@@ -47,6 +48,16 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 final notificationServiceProvider = Provider<NotificationService>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return NotificationService(prefs);
+});
+
+// ============================================================
+// Widget Service
+// ============================================================
+
+/** Widget service provider - manages home screen widget data and updates */
+final widgetServiceProvider = Provider<WidgetService>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return WidgetService(prefs);
 });
 
 // ============================================================
