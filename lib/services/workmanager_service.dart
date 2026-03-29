@@ -6,6 +6,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'storage_service.dart';
+
 /**
  * Task name constants registered with the [Workmanager] plugin.
  *
@@ -18,21 +20,6 @@ class WorkManagerTasks {
 
   /** Single-fire notification task, used for one-off delayed reminders. */
   static const String oneTimeNotification = 'oneTimeNotification';
-}
-
-/** SharedPreferences keys for notification preferences accessed by background tasks. */
-class _NotificationKeys {
-  /** Whether notifications are globally enabled. */
-  static const String enabled = 'pointer_notifications_enabled';
-
-  /** Notification interval in minutes. */
-  static const String frequencyMinutes = 'pointer_notification_frequency';
-
-  /** First hour (0-23) of the allowed notification window. */
-  static const String startHour = 'pointer_notification_start_hour';
-
-  /** Last hour (0-23) of the allowed notification window. */
-  static const String endHour = 'pointer_notification_end_hour';
 }
 
 /**
@@ -69,7 +56,7 @@ Future<void> _showNotificationFromBackground() async {
   final prefs = await SharedPreferences.getInstance();
 
   // Check if notifications are enabled
-  final enabled = prefs.getBool(_NotificationKeys.enabled) ?? false;
+  final enabled = prefs.getBool(StorageKeys.notificationsEnabled) ?? false;
   if (!enabled) {
     debugPrint('[WorkManager] Notifications disabled, skipping');
     return;
@@ -77,8 +64,8 @@ Future<void> _showNotificationFromBackground() async {
 
   // Check if we're within the notification window
   final now = DateTime.now();
-  final startHour = prefs.getInt(_NotificationKeys.startHour) ?? 8;
-  final endHour = prefs.getInt(_NotificationKeys.endHour) ?? 21;
+  final startHour = prefs.getInt(StorageKeys.notificationStartHour) ?? 8;
+  final endHour = prefs.getInt(StorageKeys.notificationEndHour) ?? 21;
 
   if (now.hour < startHour || now.hour >= endHour) {
     debugPrint('[WorkManager] Outside notification window ($startHour-$endHour), current hour: ${now.hour}');
@@ -118,10 +105,6 @@ Future<void> _showNotificationFromBackground() async {
   debugPrint('[WorkManager] Notification shown successfully');
 }
 
-/** Storage keys matching notification_service.dart */
-const _pointingsCacheKey = 'pointer_notification_pointings_cache';
-const _recentNotificationIdsKey = 'pointer_recent_notification_ids';
-
 /**
  * Get a time-aware pointing from the cached data.
  *
@@ -142,7 +125,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
   }
 
   // Load cached pointings
-  final cacheJson = prefs.getString(_pointingsCacheKey);
+  final cacheJson = prefs.getString(StorageKeys.notificationPointingsCache);
   if (cacheJson == null) {
     debugPrint('[WorkManager] No pointing cache found, using fallback');
     return _getFallbackPointing();
@@ -158,7 +141,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     }
 
     // Get recently shown IDs to avoid repeats
-    final recentIds = prefs.getStringList(_recentNotificationIdsKey) ?? [];
+    final recentIds = prefs.getStringList(StorageKeys.recentNotificationIds) ?? [];
 
     // Filter out recently shown pointings
     var candidates = contextPointings.where((p) => !recentIds.contains(p['id'])).toList();
@@ -166,7 +149,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     // If all have been shown, reset and use all
     if (candidates.isEmpty) {
       candidates = contextPointings;
-      await prefs.setStringList(_recentNotificationIdsKey, []);
+      await prefs.setStringList(StorageKeys.recentNotificationIds, []);
     }
 
     // Select random from candidates
@@ -177,7 +160,7 @@ Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async
     if (updatedRecent.length > 10) {
       updatedRecent.removeAt(0);
     }
-    await prefs.setStringList(_recentNotificationIdsKey, updatedRecent);
+    await prefs.setStringList(StorageKeys.recentNotificationIds, updatedRecent);
 
     debugPrint('[WorkManager] Selected $timeContext pointing: ${selected['id']}');
     return {'id': selected['id'] as String, 'content': selected['content'] as String, 'tradition': selected['tradition'] as String};
@@ -227,10 +210,10 @@ class WorkManagerService {
   static Future<void> schedulePeriodicNotifications({required int frequencyMinutes, required int startHour, required int endHour}) async {
     // Save preferences for background access
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_NotificationKeys.enabled, true);
-    await prefs.setInt(_NotificationKeys.frequencyMinutes, frequencyMinutes);
-    await prefs.setInt(_NotificationKeys.startHour, startHour);
-    await prefs.setInt(_NotificationKeys.endHour, endHour);
+    await prefs.setBool(StorageKeys.notificationsEnabled, true);
+    await prefs.setInt(StorageKeys.notificationFrequency, frequencyMinutes);
+    await prefs.setInt(StorageKeys.notificationStartHour, startHour);
+    await prefs.setInt(StorageKeys.notificationEndHour, endHour);
 
     // Cancel existing work
     await Workmanager().cancelByUniqueName(WorkManagerTasks.periodicNotification);

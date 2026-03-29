@@ -18,59 +18,59 @@ void main() {
 
   group('AffinityService - recordView', () {
     test('increments view count for tradition', () async {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await affinityService.recordView(Tradition.advaita);
 
-      final captured = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('pointer_affinity_view_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['advaita'], 1);
     });
 
     test('increments existing view count', () async {
       final existing = jsonEncode({'advaita': 2, 'zen': 1});
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(existing);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(existing);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await affinityService.recordView(Tradition.advaita);
 
-      final captured = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('pointer_affinity_view_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['advaita'], 3);
       expect(decoded['zen'], 1);
     });
 
     test('updates last updated timestamp', () async {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await affinityService.recordView(Tradition.advaita);
 
-      verify(() => mockPrefs.setString('affinity_last_updated', any())).called(1);
+      verify(() => mockPrefs.setString('pointer_affinity_last_updated', any())).called(1);
     });
   });
 
   group('AffinityService - recordSave', () {
     test('increments save count for tradition', () async {
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await affinityService.recordSave(Tradition.zen);
 
-      final captured = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('pointer_affinity_save_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['zen'], 1);
     });
 
     test('increments existing save count', () async {
       final existing = jsonEncode({'advaita': 1, 'zen': 3});
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(existing);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(existing);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await affinityService.recordSave(Tradition.zen);
 
-      final captured = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.single as String;
+      final captured = verify(() => mockPrefs.setString('pointer_affinity_save_counts', captureAny())).captured.single as String;
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['zen'], 4);
       expect(decoded['advaita'], 1);
@@ -79,8 +79,8 @@ void main() {
 
   group('AffinityService - getAffinityScore', () {
     test('returns 0.2 when no data', () {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final score = affinityService.getAffinityScore(Tradition.advaita);
 
@@ -95,8 +95,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 10, 'zen': 0});
       final saveCounts = jsonEncode({'advaita': 0, 'zen': 3});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final advaitaScore = affinityService.getAffinityScore(Tradition.advaita);
       final zenScore = affinityService.getAffinityScore(Tradition.zen);
@@ -113,8 +113,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 6, 'zen': 3});
       final saveCounts = jsonEncode({'advaita': 2, 'zen': 1});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final advaitaScore = affinityService.getAffinityScore(Tradition.advaita);
       final zenScore = affinityService.getAffinityScore(Tradition.zen);
@@ -127,8 +127,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 10});
       final saveCounts = jsonEncode({'advaita': 2});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final zenScore = affinityService.getAffinityScore(Tradition.zen);
 
@@ -142,8 +142,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 8, 'zen': 3, 'direct': 5});
       final saveCounts = jsonEncode({'advaita': 2, 'zen': 1, 'direct': 0});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final affinities = affinityService.getAllAffinities();
 
@@ -161,8 +161,8 @@ void main() {
     });
 
     test('returns all traditions even when no data', () {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final affinities = affinityService.getAllAffinities();
 
@@ -178,8 +178,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 10, 'zen': 5});
       final saveCounts = jsonEncode({'advaita': 3, 'zen': 2});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final affinities = affinityService.getAllAffinities();
       final advaitaAffinity = affinities.firstWhere((a) => a.tradition == Tradition.advaita);
@@ -194,8 +194,8 @@ void main() {
 
   group('AffinityService - getTopTradition', () {
     test('returns null when no data', () {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final top = affinityService.getTopTradition();
 
@@ -206,8 +206,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 5, 'zen': 10});
       final saveCounts = jsonEncode({'advaita': 2, 'zen': 1});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final top = affinityService.getTopTradition();
 
@@ -218,8 +218,8 @@ void main() {
     test('returns null when all counts are zero', () {
       // Even though getAllAffinities returns data, if all view/save counts are 0,
       // getTopTradition should return null
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(jsonEncode({}));
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(jsonEncode({}));
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(jsonEncode({}));
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(jsonEncode({}));
 
       final top = affinityService.getTopTradition();
 
@@ -230,8 +230,8 @@ void main() {
       final viewCounts = jsonEncode({});
       final saveCounts = jsonEncode({'zen': 1});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final top = affinityService.getTopTradition();
 
@@ -244,8 +244,8 @@ void main() {
       final viewCounts = jsonEncode({'advaita': 10, 'zen': 5, 'direct': 8});
       final saveCounts = jsonEncode({'advaita': 1, 'zen': 2, 'direct': 0});
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       final ordered = affinityService.getTraditionsByPreference();
 
@@ -259,8 +259,8 @@ void main() {
     });
 
     test('returns all traditions when no data', () {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final ordered = affinityService.getTraditionsByPreference();
 
@@ -274,24 +274,24 @@ void main() {
 
       await affinityService.reset();
 
-      verify(() => mockPrefs.remove('affinity_view_counts')).called(1);
-      verify(() => mockPrefs.remove('affinity_save_counts')).called(1);
-      verify(() => mockPrefs.remove('affinity_last_updated')).called(1);
+      verify(() => mockPrefs.remove('pointer_affinity_view_counts')).called(1);
+      verify(() => mockPrefs.remove('pointer_affinity_save_counts')).called(1);
+      verify(() => mockPrefs.remove('pointer_affinity_last_updated')).called(1);
     });
 
     test('returns default scores after reset', () async {
       // Set up initial data
       final viewCounts = jsonEncode({'advaita': 10});
       final saveCounts = jsonEncode({'advaita': 5});
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(viewCounts);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(saveCounts);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(viewCounts);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(saveCounts);
 
       // After reset, return null
       when(() => mockPrefs.remove(any())).thenAnswer((_) async => true);
       await affinityService.reset();
 
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final score = affinityService.getAffinityScore(Tradition.advaita);
       expect(score, 0.2);
@@ -302,18 +302,18 @@ void main() {
     test('data persists across AffinityService instances', () async {
       // First instance records data
       final firstService = AffinityService(mockPrefs);
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await firstService.recordView(Tradition.advaita);
 
       // Capture what was saved
-      final capturedViews = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.single as String;
+      final capturedViews = verify(() => mockPrefs.setString('pointer_affinity_view_counts', captureAny())).captured.single as String;
 
       // Second instance reads the same data
       final secondService = AffinityService(mockPrefs);
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(capturedViews);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(capturedViews);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
 
       final affinities = secondService.getAllAffinities();
       final advaitaAffinity = affinities.firstWhere((a) => a.tradition == Tradition.advaita);
@@ -322,27 +322,27 @@ void main() {
     });
 
     test('multiple operations accumulate correctly', () async {
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(null);
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(null);
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(null);
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       // Record multiple views
       await affinityService.recordView(Tradition.advaita);
 
       // Update mock to return saved data
-      var capturedViews = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.last as String;
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(capturedViews);
+      var capturedViews = verify(() => mockPrefs.setString('pointer_affinity_view_counts', captureAny())).captured.last as String;
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(capturedViews);
 
       await affinityService.recordView(Tradition.advaita);
 
-      capturedViews = verify(() => mockPrefs.setString('affinity_view_counts', captureAny())).captured.last as String;
-      when(() => mockPrefs.getString('affinity_view_counts')).thenReturn(capturedViews);
+      capturedViews = verify(() => mockPrefs.setString('pointer_affinity_view_counts', captureAny())).captured.last as String;
+      when(() => mockPrefs.getString('pointer_affinity_view_counts')).thenReturn(capturedViews);
 
       // Record a save
       await affinityService.recordSave(Tradition.advaita);
 
-      final capturedSaves = verify(() => mockPrefs.setString('affinity_save_counts', captureAny())).captured.last as String;
-      when(() => mockPrefs.getString('affinity_save_counts')).thenReturn(capturedSaves);
+      final capturedSaves = verify(() => mockPrefs.setString('pointer_affinity_save_counts', captureAny())).captured.last as String;
+      when(() => mockPrefs.getString('pointer_affinity_save_counts')).thenReturn(capturedSaves);
 
       // Verify accumulated data
       final affinities = affinityService.getAllAffinities();

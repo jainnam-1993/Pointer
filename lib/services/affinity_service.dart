@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/pointings.dart';
+import 'storage_service.dart';
 
 /**
  * Service for learning user tradition affinity based on interactions.
@@ -14,37 +15,57 @@ import '../data/pointings.dart';
 class AffinityService {
   final SharedPreferences _prefs;
 
-  static const _viewCountsKey = 'affinity_view_counts';
-  static const _saveCountsKey = 'affinity_save_counts';
-  static const _lastUpdatedKey = 'affinity_last_updated';
+  // Legacy (un-prefixed) key names used before StorageKeys centralisation.
+  static const _legacyViewCountsKey = 'affinity_view_counts';
+  static const _legacySaveCountsKey = 'affinity_save_counts';
+  static const _legacyLastUpdatedKey = 'affinity_last_updated';
 
-  AffinityService(this._prefs);
+  AffinityService(this._prefs) {
+    _migrateKeysIfNeeded();
+  }
+
+  /** One-time migration: copy data from old un-prefixed keys to new prefixed keys. */
+  void _migrateKeysIfNeeded() {
+    _migrateKey(_legacyViewCountsKey, StorageKeys.affinityViewCounts);
+    _migrateKey(_legacySaveCountsKey, StorageKeys.affinitySaveCounts);
+    _migrateKey(_legacyLastUpdatedKey, StorageKeys.affinityLastUpdated);
+  }
+
+  void _migrateKey(String oldKey, String newKey) {
+    if (_prefs.getString(newKey) == null) {
+      final oldValue = _prefs.getString(oldKey);
+      if (oldValue != null) {
+        _prefs.setString(newKey, oldValue);
+        _prefs.remove(oldKey);
+      }
+    }
+  }
 
   /** Record that user viewed a pointing from this tradition */
   Future<void> recordView(Tradition tradition) async {
     final counts = _getViewCounts();
     counts[tradition.name] = (counts[tradition.name] ?? 0) + 1;
-    await _prefs.setString(_viewCountsKey, jsonEncode(counts));
-    await _prefs.setString(_lastUpdatedKey, DateTime.now().toIso8601String());
+    await _prefs.setString(StorageKeys.affinityViewCounts, jsonEncode(counts));
+    await _prefs.setString(StorageKeys.affinityLastUpdated, DateTime.now().toIso8601String());
   }
 
   /** Record that user saved/favorited a pointing from this tradition */
   Future<void> recordSave(Tradition tradition) async {
     final counts = _getSaveCounts();
     counts[tradition.name] = (counts[tradition.name] ?? 0) + 1;
-    await _prefs.setString(_saveCountsKey, jsonEncode(counts));
+    await _prefs.setString(StorageKeys.affinitySaveCounts, jsonEncode(counts));
   }
 
   /** Get view counts for all traditions */
   Map<String, int> _getViewCounts() {
-    final stored = _prefs.getString(_viewCountsKey);
+    final stored = _prefs.getString(StorageKeys.affinityViewCounts);
     if (stored == null) return {};
     return Map<String, int>.from(jsonDecode(stored));
   }
 
   /** Get save counts for all traditions */
   Map<String, int> _getSaveCounts() {
-    final stored = _prefs.getString(_saveCountsKey);
+    final stored = _prefs.getString(StorageKeys.affinitySaveCounts);
     if (stored == null) return {};
     return Map<String, int>.from(jsonDecode(stored));
   }
@@ -110,9 +131,9 @@ class AffinityService {
 
   /** Reset all affinity data */
   Future<void> reset() async {
-    await _prefs.remove(_viewCountsKey);
-    await _prefs.remove(_saveCountsKey);
-    await _prefs.remove(_lastUpdatedKey);
+    await _prefs.remove(StorageKeys.affinityViewCounts);
+    await _prefs.remove(StorageKeys.affinitySaveCounts);
+    await _prefs.remove(StorageKeys.affinityLastUpdated);
   }
 }
 

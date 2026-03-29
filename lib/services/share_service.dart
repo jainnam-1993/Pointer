@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/pointings.dart';
 import '../providers/providers.dart';
+import 'storage_service.dart';
 
 /** Visual template applied when generating a shareable [Pointing] card image. */
 enum ShareTemplate {
@@ -67,14 +68,13 @@ final shareTemplateProvider = StateNotifierProvider<ShareTemplateNotifier, Share
  */
 class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
   final SharedPreferences _prefs;
-  static const _storageKey = 'pointer_share_template';
 
   ShareTemplateNotifier(this._prefs) : super(ShareTemplate.gradient) {
     _loadFromStorage();
   }
 
   void _loadFromStorage() {
-    final saved = _prefs.getString(_storageKey);
+    final saved = _prefs.getString(StorageKeys.shareTemplate);
     if (saved != null) {
       state = ShareTemplate.values.firstWhere((t) => t.name == saved, orElse: () => ShareTemplate.gradient);
     }
@@ -83,7 +83,7 @@ class ShareTemplateNotifier extends StateNotifier<ShareTemplate> {
   /** Update the selected template and persist the choice. */
   void setTemplate(ShareTemplate template) {
     state = template;
-    _prefs.setString(_storageKey, template.name);
+    _prefs.setString(StorageKeys.shareTemplate, template.name);
   }
 }
 
@@ -98,14 +98,13 @@ final shareFormatProvider = StateNotifierProvider<ShareFormatNotifier, ShareForm
  */
 class ShareFormatNotifier extends StateNotifier<ShareFormat> {
   final SharedPreferences _prefs;
-  static const _storageKey = 'pointer_share_format';
 
   ShareFormatNotifier(this._prefs) : super(ShareFormat.square) {
     _loadFromStorage();
   }
 
   void _loadFromStorage() {
-    final saved = _prefs.getString(_storageKey);
+    final saved = _prefs.getString(StorageKeys.shareFormat);
     if (saved != null) {
       state = ShareFormat.values.firstWhere((f) => f.name == saved, orElse: () => ShareFormat.square);
     }
@@ -114,7 +113,7 @@ class ShareFormatNotifier extends StateNotifier<ShareFormat> {
   /** Update the selected format and persist the choice. */
   void setFormat(ShareFormat format) {
     state = format;
-    _prefs.setString(_storageKey, format.name);
+    _prefs.setString(StorageKeys.shareFormat, format.name);
   }
 }
 

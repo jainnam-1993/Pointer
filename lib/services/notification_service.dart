@@ -8,44 +8,8 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../data/pointings.dart';
+import 'storage_service.dart';
 import 'workmanager_service.dart';
-
-/**
- * Individual notification time entry (legacy model, kept for migration).
- *
- * Replaced by [NotificationSchedule] which uses a time-window + frequency
- * approach rather than discrete time slots.
- */
-class NotificationTime {
-  /** Unique identifier for this time slot. */
-  final String id;
-
-  /** Hour component (0-23) of the scheduled notification. */
-  final int hour;
-
-  /** Minute component (0-59) of the scheduled notification. */
-  final int minute;
-
-  /** Whether this individual time slot is active. */
-  final bool isEnabled;
-
-  const NotificationTime({required this.id, required this.hour, required this.minute, this.isEnabled = true});
-
-  NotificationTime copyWith({String? id, int? hour, int? minute, bool? isEnabled}) {
-    return NotificationTime(id: id ?? this.id, hour: hour ?? this.hour, minute: minute ?? this.minute, isEnabled: isEnabled ?? this.isEnabled);
-  }
-
-  Map<String, dynamic> toJson() => {'id': id, 'hour': hour, 'minute': minute, 'isEnabled': isEnabled};
-
-  factory NotificationTime.fromJson(Map<String, dynamic> json) {
-    return NotificationTime(
-      id: json['id'] as String,
-      hour: json['hour'] as int,
-      minute: json['minute'] as int,
-      isEnabled: json['isEnabled'] as bool? ?? true,
-    );
-  }
-}
 
 /**
  * Quick schedule presets for one-tap notification configuration.
@@ -191,10 +155,8 @@ class NotificationSchedule {
   bool _isInQuietHours(DateTime time) {
     final hour = time.hour;
     if (quietStartHour > quietEndHour) {
-      // Quiet hours span midnight (e.g., 22:00 - 07:00)
       return hour >= quietStartHour || hour < quietEndHour;
     } else {
-      // Quiet hours same day (e.g., 14:00 - 16:00)
       return hour >= quietStartHour && hour < quietEndHour;
     }
   }
@@ -211,7 +173,6 @@ class NotificationSchedule {
   };
 
   factory NotificationSchedule.fromJson(Map<String, dynamic> json) {
-    // Backward compatibility: convert old frequencyHours to minutes
     final frequencyMinutes = json['frequencyMinutes'] ?? ((json['frequencyHours'] as int? ?? 3) * 60);
 
     return NotificationSchedule(
@@ -244,23 +205,8 @@ class NotificationSchedule {
   }
 }
 
-/** Storage keys for notification preferences. */
-class _NotificationStorageKeys {
-  static const notificationsEnabled = 'pointer_notifications_enabled';
-  static const notificationTimes = 'pointer_notification_times'; // Legacy
-  static const notificationSchedule = 'pointer_notification_schedule';
-  static const pointingsCache = 'pointer_notification_pointings_cache';
-  // Note: recentNotificationIds key reserved for future duplicate prevention
-}
-
 /**
  * Service for managing local notifications with non-urgent styling.
- *
- * Notifications are configured to be mindful and non-intrusive:
- * - iOS: Uses passive interruption level (respects Focus modes)
- * - Android: Uses low importance channel (no sound, no peek)
- * - No vibration or sound by default
- * - Visible only in notification center, not as banners
  */
 class NotificationService {
   final SharedPreferences _prefs;
@@ -271,33 +217,16 @@ class NotificationService {
 
   NotificationService(this._prefs, [FlutterLocalNotificationsPlugin? plugin]) : _localNotifications = plugin ?? FlutterLocalNotificationsPlugin();
 
-  /**
-   * Android notification channel with custom chime sound.
-   *
-   * High importance with custom sound ensures:
-   * - Sound plays on notification
-   * - Heads-up notification appears
-   * - Appears in notification shade
-   */
   static const androidChannel = AndroidNotificationChannel(
     'pointings_v6',
     'Daily Pointings',
     description: 'Gentle reminders for your daily pointing',
-    importance: Importance.max, // Try MAX importance
-    enableVibration: true, // Enable vibration to trigger audio
+    importance: Importance.max,
+    enableVibration: true,
     playSound: true,
     sound: RawResourceAndroidNotificationSound('bell_chime'),
   );
 
-  /**
-   * iOS notification details with passive interruption level.
-   *
-   * Passive interruption ensures:
-   * - Respects Focus modes
-   * - No sound
-   * - No banner (no visual interruption)
-   * - Shows in notification list only
-   */
   static const iosNotificationDetails = DarwinNotificationDetails(
     interruptionLevel: InterruptionLevel.passive,
     presentSound: false,
@@ -305,10 +234,6 @@ class NotificationService {
     presentList: true,
   );
 
-  /**
-   * Android notification details with custom bell chime.
-   * Uses BigTextStyle for rich notifications with expandable text.
-   */
   static const androidNotificationDetails = AndroidNotificationDetails(
     'pointings_v6',
     'Daily Pointings',
@@ -325,7 +250,6 @@ class NotificationService {
     ],
   );
 
-  /** Combined notification details for cross-platform use. */
   static const notificationDetails = NotificationDetails(iOS: iosNotificationDetails, android: androidNotificationDetails);
 
   // ============================================================
@@ -333,13 +257,12 @@ class NotificationService {
   // ============================================================
 
   /** Whether notifications are enabled. */
-  bool get isNotificationsEnabled => _prefs.getBool(_NotificationStorageKeys.notificationsEnabled) ?? false;
+  bool get isNotificationsEnabled => _prefs.getBool(StorageKeys.notificationsEnabled) ?? false;
 
   /** Enable or disable notifications. */
   Future<void> setNotificationsEnabled(bool enabled) async {
-    await _prefs.setBool(_NotificationStorageKeys.notificationsEnabled, enabled);
+    await _prefs.setBool(StorageKeys.notificationsEnabled, enabled);
     if (enabled) {
-      // Cache pointings for background notification access
       await cachePointingsForBackground();
       await scheduleAllNotifications();
     } else {
@@ -347,14 +270,8 @@ class NotificationService {
     }
   }
 
-  /**
-   * Cache pointings data for background notification access.
-   *
-   * Background isolates can't access Flutter data, so we serialize
-   * a subset of pointings grouped by time context to SharedPreferences.
-   */
+  /** Cache pointings data for background notification access. */
   Future<void> cachePointingsForBackground() async {
-    // Group pointings by time context for smart selection
     final morningPointings = pointings
         .where((p) => p.contexts.contains(PointingContext.morning) || p.contexts.contains(PointingContext.general))
         .take(20)
@@ -370,35 +287,19 @@ class NotificationService {
         .take(20)
         .toList();
 
-    // Serialize for background access
     final cache = {
       'morning': morningPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
       'midday': middayPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
       'evening': eveningPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
     };
 
-    await _prefs.setString(_NotificationStorageKeys.pointingsCache, jsonEncode(cache));
+    await _prefs.setString(StorageKeys.notificationPointingsCache, jsonEncode(cache));
     debugPrint('[NotificationService] Cached ${morningPointings.length + middayPointings.length + eveningPointings.length} pointings for background');
-  }
-
-  /** Get configured notification times. */
-  List<NotificationTime> getNotificationTimes() {
-    final stored = _prefs.getString(_NotificationStorageKeys.notificationTimes);
-    if (stored == null) return [];
-    final List<dynamic> decoded = jsonDecode(stored);
-    return decoded.map((e) => NotificationTime.fromJson(e as Map<String, dynamic>)).toList();
-  }
-
-  /** Save notification times configuration (legacy). */
-  Future<void> saveNotificationTimes(List<NotificationTime> times) async {
-    final encoded = jsonEncode(times.map((t) => t.toJson()).toList());
-    await _prefs.setString(_NotificationStorageKeys.notificationTimes, encoded);
-    await scheduleAllNotifications();
   }
 
   /** Get the notification schedule (Phase 5.1 time window model). */
   NotificationSchedule getSchedule() {
-    final stored = _prefs.getString(_NotificationStorageKeys.notificationSchedule);
+    final stored = _prefs.getString(StorageKeys.notificationSchedule);
     if (stored == null) return const NotificationSchedule();
     return NotificationSchedule.fromJson(jsonDecode(stored));
   }
@@ -406,7 +307,7 @@ class NotificationService {
   /** Save notification schedule configuration. */
   Future<void> saveSchedule(NotificationSchedule schedule) async {
     final encoded = jsonEncode(schedule.toJson());
-    await _prefs.setString(_NotificationStorageKeys.notificationSchedule, encoded);
+    await _prefs.setString(StorageKeys.notificationSchedule, encoded);
     await scheduleAllNotifications();
   }
 
@@ -414,30 +315,19 @@ class NotificationService {
   // Initialization
   // ============================================================
 
-  /**
-   * Initialize the notification service.
-   *
-   * Sets up platform-specific configurations and creates the Android
-   * notification channel.
-   *
-   * [onNotificationResponse] - Callback for when user interacts with notification
-   * [onBackgroundNotificationResponse] - Callback for background notification interactions
-   */
   Future<void> initialize({
     void Function(NotificationResponse)? onNotificationResponse,
     void Function(NotificationResponse)? onBackgroundNotificationResponse,
   }) async {
-    // Use dedicated notification icon (white-only for Android status bar)
     const initSettingsAndroid = AndroidInitializationSettings('@drawable/ic_notification');
 
     const initSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
-      // Show notifications while app is in foreground
       defaultPresentAlert: true,
       defaultPresentBadge: true,
-      defaultPresentSound: false, // Silent for meditation app
+      defaultPresentSound: false,
       defaultPresentBanner: true,
       defaultPresentList: true,
     );
@@ -450,56 +340,35 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationResponse,
     );
 
-    // Create the Android notification channel
     await _configureAndroidChannel();
   }
 
-  /** Configure the Android notification channel. */
   Future<void> _configureAndroidChannel() async {
     final androidPlugin = _localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
     await androidPlugin?.createNotificationChannel(androidChannel);
   }
 
-  /** Request notification permissions from the user. */
   Future<bool> requestPermissions() async {
-    // iOS permissions
     final iosPlugin = _localNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    final iosGranted = await iosPlugin?.requestPermissions(alert: true, badge: true, sound: false);
 
-    final iosGranted = await iosPlugin?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: false, // We don't need sound for non-urgent notifications
-    );
-
-    // Android 13+ permissions
     final androidPlugin = _localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
     final androidGranted = await androidPlugin?.requestNotificationsPermission();
-
-    // Note: We use inexact alarms which don't require SCHEDULE_EXACT_ALARM permission.
-    // This is better for battery life and sufficient for a meditation app.
 
     return (iosGranted ?? true) && (androidGranted ?? true);
   }
 
-  /** Check if notification permissions are currently granted without requesting. */
   Future<bool> checkPermissions() async {
     try {
-      // iOS: check current permission status
       final iosPlugin = _localNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-
       final iosSettings = await iosPlugin?.checkPermissions();
       final iosGranted = iosSettings?.isEnabled ?? true;
 
-      // Android: check if notifications are enabled
       final androidPlugin = _localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
       final androidGranted = await androidPlugin?.areNotificationsEnabled() ?? true;
 
       return iosGranted && androidGranted;
     } catch (_) {
-      // On error, assume permissions not granted (fail-safe)
       return false;
     }
   }
@@ -508,14 +377,8 @@ class NotificationService {
   // Scheduling (via WorkManager)
   // ============================================================
 
-  /**
-   * Schedule all configured notifications using WorkManager.
-   * WorkManager survives app kills and is more reliable than AlarmManager.
-   */
   Future<void> scheduleAllNotifications() async {
-    // Always reset pending local notifications first.
     await _localNotifications.cancelAll();
-    // WorkManager is Android-only in this app.
     if (Platform.isAndroid) {
       await WorkManagerService.cancelAll();
     }
@@ -535,7 +398,6 @@ class NotificationService {
       '[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00',
     );
 
-    // Use WorkManager for periodic notifications
     await WorkManagerService.schedulePeriodicNotifications(
       frequencyMinutes: schedule.frequencyMinutes,
       startHour: schedule.startHour,
@@ -590,7 +452,6 @@ class NotificationService {
     return scheduledTimes.length;
   }
 
-  /** Show an immediate notification for a pointing. */
   Future<void> showImmediateNotification(Pointing pointing) async {
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -601,11 +462,6 @@ class NotificationService {
     );
   }
 
-  /**
-   * Build rich notification details with full pointing content.
-   * Android: Uses BigTextStyle for expandable text with tradition badge.
-   * iOS: Uses subtitle for tradition/teacher attribution.
-   */
   NotificationDetails _buildRichNotificationDetails(Pointing pointing) {
     final traditionName = traditions[pointing.tradition]?.name ?? pointing.tradition.name;
     final attribution = pointing.teacher != null ? '— ${pointing.teacher}' : '';
@@ -644,24 +500,22 @@ class NotificationService {
     );
   }
 
-  /** Send a test notification with visible banner (unlike passive daily notifications). */
   Future<void> sendTestNotification() async {
     final pointing = getRandomPointing();
     final traditionName = traditions[pointing.tradition]?.name ?? pointing.tradition.name;
     final attribution = pointing.teacher != null ? '— ${pointing.teacher}' : '';
     final subtitle = '$traditionName $attribution'.trim();
 
-    // Test notifications show visible banner (unlike passive daily notifications)
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       "🧪 Test Notification",
       pointing.content,
       NotificationDetails(
         iOS: DarwinNotificationDetails(
-          interruptionLevel: InterruptionLevel.active, // Visible!
-          presentAlert: true, // Required for iOS to show notification
+          interruptionLevel: InterruptionLevel.active,
+          presentAlert: true,
           presentSound: true,
-          presentBanner: true, // Show banner for test
+          presentBanner: true,
           presentList: true,
           subtitle: subtitle,
         ),
@@ -682,12 +536,10 @@ class NotificationService {
     debugPrint('[NotificationService] Test notification sent: ${pointing.id}');
   }
 
-  /** Cancel a scheduled notification. */
   Future<void> cancelNotification(int id) async {
     await _localNotifications.cancel(id);
   }
 
-  /** Cancel all scheduled notifications (both local and WorkManager). */
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
     if (Platform.isAndroid) {
@@ -695,12 +547,10 @@ class NotificationService {
     }
   }
 
-  /** Get list of pending notifications for debugging. */
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     return await _localNotifications.pendingNotificationRequests();
   }
 
-  /** Debug: Print all pending notifications to console. */
   Future<void> debugPrintPendingNotifications() async {
     final pending = await getPendingNotifications();
     debugPrint('[NotificationService] ===== PENDING NOTIFICATIONS =====');

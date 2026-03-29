@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'storage_service.dart';
+
 /**
  * Immutable snapshot of the user's daily pointing view count.
  *
@@ -18,8 +20,6 @@ class DailyUsage {
   DailyUsage copyWith({int? viewCount, String? lastResetDate}) {
     return DailyUsage(viewCount: viewCount ?? this.viewCount, lastResetDate: lastResetDate ?? this.lastResetDate);
   }
-
-  Map<String, dynamic> toJson() => {'viewCount': viewCount, 'lastResetDate': lastResetDate};
 
   factory DailyUsage.fromJson(Map<String, dynamic> json) {
     return DailyUsage(viewCount: json['viewCount'] ?? 0, lastResetDate: json['lastResetDate'] ?? _todayString());
@@ -43,13 +43,12 @@ class DailyUsage {
  */
 class UsageTrackingService {
   final SharedPreferences _prefs;
-  static const _usageKey = 'pointer_daily_usage';
 
   UsageTrackingService(this._prefs);
 
   /** Get current daily usage, resetting if new day */
   DailyUsage getUsage() {
-    final json = _prefs.getString(_usageKey);
+    final json = _prefs.getString(StorageKeys.dailyUsage);
     if (json == null) {
       return DailyUsage.initial();
     }
@@ -86,7 +85,7 @@ class UsageTrackingService {
 
   Future<void> _saveUsage(DailyUsage usage) async {
     final encoded = 'viewCount=${usage.viewCount}&lastResetDate=${usage.lastResetDate}';
-    await _prefs.setString(_usageKey, encoded);
+    await _prefs.setString(StorageKeys.dailyUsage, encoded);
   }
 
   dynamic _parseValue(String value) {

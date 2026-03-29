@@ -5,6 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
+import 'storage_service.dart';
 
 /** Keys for widget data storage */
 class _WidgetKeys {
@@ -12,7 +13,6 @@ class _WidgetKeys {
   static const teacher = 'pointing_teacher';
   static const tradition = 'pointing_tradition';
   static const lastUpdated = 'pointing_last_updated';
-  static const updateIntervalHours = 'update_interval_hours';
   // Multi-pointing widget cache (JSON array)
   static const pointingsCache = 'pointings_cache';
   // Favorites list (JSON array of pointing IDs)
@@ -56,7 +56,7 @@ class WidgetService {
     try {
       // Load favorites list first
       final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('pointer_favorites');
+      final stored = prefs.getString(StorageKeys.favoritePointings);
       final favoriteIds = stored != null ? Set<String>.from(jsonDecode(stored)) : <String>{};
 
       // Separate favorites from non-favorites
@@ -139,7 +139,7 @@ class WidgetService {
   static Future<void> _syncFavoritesFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getString('pointer_favorites');
+      final stored = prefs.getString(StorageKeys.favoritePointings);
       final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
       await HomeWidget.saveWidgetData<String>(_WidgetKeys.favorites, jsonEncode(favorites));
@@ -174,57 +174,6 @@ class WidgetService {
   static Future<void> updateWithRandomPointing() async {
     final pointing = getRandomPointing();
     await updateWidget(pointing);
-  }
-
-  /** Get the current pointing data from widget storage */
-  static Future<WidgetPointing?> getCurrentWidgetPointing() async {
-    final content = await HomeWidget.getWidgetData<String>(_WidgetKeys.content);
-    if (content == null) return null;
-
-    final teacher = await HomeWidget.getWidgetData<String>(_WidgetKeys.teacher);
-    final tradition = await HomeWidget.getWidgetData<String>(_WidgetKeys.tradition);
-    final lastUpdated = await HomeWidget.getWidgetData<String>(_WidgetKeys.lastUpdated);
-
-    return WidgetPointing(
-      content: content,
-      teacher: teacher?.isNotEmpty == true ? teacher : null,
-      tradition: tradition ?? 'Unknown',
-      lastUpdated: lastUpdated != null ? DateTime.tryParse(lastUpdated) : null,
-    );
-  }
-
-  /**
-   * Sync widget update schedule with notification settings.
-   *
-   * When user changes notification frequency, call this to update
-   * the widget's refresh interval accordingly.
-   */
-  static Future<void> syncScheduleWithNotifications(int intervalHours) async {
-    try {
-      await HomeWidget.saveWidgetData<int>(_WidgetKeys.updateIntervalHours, intervalHours);
-
-      // Force a widget refresh to apply new schedule
-      await HomeWidget.updateWidget(
-        iOSName: 'PointerWidget',
-        androidName: androidWidgetName,
-        qualifiedAndroidName: 'com.dailypointer.$androidWidgetName',
-      );
-
-      debugPrint('Widget schedule synced: $intervalHours hours');
-    } catch (e) {
-      debugPrint('Failed to sync widget schedule: $e');
-    }
-  }
-
-  /** Check if any widgets are currently installed */
-  static Future<bool> hasActiveWidgets() async {
-    try {
-      // This is a best-effort check - may not be 100% accurate
-      final data = await HomeWidget.getWidgetData<String>(_WidgetKeys.lastUpdated);
-      return data != null;
-    } catch (e) {
-      return false;
-    }
   }
 
   /**
@@ -276,7 +225,7 @@ class WidgetService {
    */
   static Future<void> _toggleFavoriteById(String pointingId) async {
     final prefs = await SharedPreferences.getInstance();
-    const favoritesKey = 'pointer_favorites';
+    const favoritesKey = StorageKeys.favoritePointings;
     final stored = prefs.getString(favoritesKey);
     final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
@@ -307,7 +256,7 @@ class WidgetService {
 
       final pointing = matching.first;
       final prefs = await SharedPreferences.getInstance();
-      const favoritesKey = 'pointer_favorites';
+      const favoritesKey = StorageKeys.favoritePointings;
       final stored = prefs.getString(favoritesKey);
       final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
@@ -369,7 +318,7 @@ class WidgetService {
  * Lightweight read-only model representing a [Pointing] as displayed
  * in the home screen widget.
  *
- * Retrieved from shared widget storage by [WidgetService.getCurrentWidgetPointing].
+ * Used by widget tests and background callback processing.
  */
 class WidgetPointing {
   /** The pointing text content shown in the widget. */
@@ -435,7 +384,7 @@ Future<void> _saveCurrentWidgetPointing() async {
 
     // Toggle in the app's favorites (SharedPreferences)
     final prefs = await SharedPreferences.getInstance();
-    const favoritesKey = 'pointer_favorites';
+    const favoritesKey = StorageKeys.favoritePointings;
     final stored = prefs.getString(favoritesKey);
     final favorites = stored != null ? List<String>.from(jsonDecode(stored)) : <String>[];
 
