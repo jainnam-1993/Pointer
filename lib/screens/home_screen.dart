@@ -333,7 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         if (!mounted) return;
-        ref.read(zenModeProvider.notifier).state = false;
+        ref.read(settingsProvider.notifier).setZenMode(false);
       },
       child: Scaffold(
         body: Stack(

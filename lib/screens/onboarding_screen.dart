@@ -123,7 +123,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _finishOnboarding(bool notificationsEnabled) async {
     final storage = ref.read(storageServiceProvider);
     await storage.setOnboardingCompleted(true);
-    ref.read(onboardingCompletedProvider.notifier).state = true;
+    ref.invalidate(onboardingCompletedProvider);
     if (mounted) {
       context.go('/');
     }

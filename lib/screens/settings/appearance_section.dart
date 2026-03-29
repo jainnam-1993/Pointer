@@ -90,7 +90,7 @@ class ZenModeToggle extends ConsumerWidget {
         PointerSwitch(
           value: isZenMode,
           onChanged: (value) {
-            ref.read(zenModeProvider.notifier).state = value;
+            ref.read(settingsProvider.notifier).setZenMode(value);
           },
         ),
       ],

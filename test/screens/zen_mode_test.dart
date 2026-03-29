@@ -150,8 +150,8 @@ void main() {
       // Initial state
       expect(capturedRef.read(zenModeProvider), isFalse);
 
-      // Toggle to true
-      capturedRef.read(zenModeProvider.notifier).state = true;
+      // Toggle to true via SettingsNotifier
+      await capturedRef.read(settingsProvider.notifier).setZenMode(true);
       await tester.pump();
 
       // Verify state changed
@@ -164,9 +164,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            sharedPreferencesProvider.overrideWithValue(mockPrefs),
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
-            zenModeProvider.overrideWith((ref) => true),
           ],
           child: Consumer(
             builder: (context, ref, _) {
@@ -177,11 +177,13 @@ void main() {
         ),
       );
 
-      // Initial state (overridden)
+      // Set initial state to true via SettingsNotifier
+      await capturedRef.read(settingsProvider.notifier).setZenMode(true);
+      await tester.pump();
       expect(capturedRef.read(zenModeProvider), isTrue);
 
       // Toggle to false
-      capturedRef.read(zenModeProvider.notifier).state = false;
+      await capturedRef.read(settingsProvider.notifier).setZenMode(false);
       await tester.pump();
 
       // Verify state changed
@@ -481,8 +483,8 @@ void main() {
       );
       await tester.pump();
 
-      // Enter zen mode
-      capturedRef.read(zenModeProvider.notifier).state = true;
+      // Enter zen mode via SettingsNotifier
+      await capturedRef.read(settingsProvider.notifier).setZenMode(true);
       await tester.pumpAndSettle();
 
       expect(capturedRef.read(zenModeProvider), isTrue);
@@ -525,23 +527,23 @@ void main() {
       );
       await tester.pump();
 
-      // Toggle on
-      capturedRef.read(zenModeProvider.notifier).state = true;
+      // Toggle on via SettingsNotifier
+      await capturedRef.read(settingsProvider.notifier).setZenMode(true);
       await tester.pumpAndSettle();
       expect(capturedRef.read(zenModeProvider), isTrue);
 
       // Toggle off
-      capturedRef.read(zenModeProvider.notifier).state = false;
+      await capturedRef.read(settingsProvider.notifier).setZenMode(false);
       await tester.pumpAndSettle();
       expect(capturedRef.read(zenModeProvider), isFalse);
 
       // Toggle on again
-      capturedRef.read(zenModeProvider.notifier).state = true;
+      await capturedRef.read(settingsProvider.notifier).setZenMode(true);
       await tester.pumpAndSettle();
       expect(capturedRef.read(zenModeProvider), isTrue);
 
       // Toggle off again
-      capturedRef.read(zenModeProvider.notifier).state = false;
+      await capturedRef.read(settingsProvider.notifier).setZenMode(false);
       await tester.pumpAndSettle();
       expect(capturedRef.read(zenModeProvider), isFalse);
     });

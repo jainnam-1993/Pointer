@@ -31,7 +31,7 @@ void main() {
         expect(container.read(highContrastProvider), false);
       });
 
-      test('can be toggled to true', () async {
+      test('can be toggled to true via SettingsNotifier', () async {
         SharedPreferences.setMockInitialValues({});
         final prefs = await SharedPreferences.getInstance();
 
@@ -44,7 +44,7 @@ void main() {
         );
         addTearDown(container.dispose);
 
-        container.read(highContrastProvider.notifier).state = true;
+        await container.read(settingsProvider.notifier).setHighContrast(true);
         expect(container.read(highContrastProvider), true);
       });
     });
