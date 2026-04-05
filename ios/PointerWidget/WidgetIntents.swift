@@ -17,8 +17,7 @@ struct PreviousPointingIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         if let defaults = UserDefaults(suiteName: appGroupId) {
             let currentIndex = defaults.integer(forKey: "widget_current_index")
-            let newIndex = max(0, currentIndex - 1)
-            defaults.set(newIndex, forKey: "widget_current_index")
+            defaults.set(currentIndex - 1, forKey: "widget_current_index")
             defaults.set(Date().timeIntervalSince1970, forKey: "widget_nav_requested")
         }
 
@@ -63,25 +62,10 @@ struct SavePointingIntent: AppIntent {
 
         // Get current pointing ID and content
         let currentId = defaults.string(forKey: "pointing_id")
-        let currentContent = defaults.string(forKey: "pointing_content")
 
-        // Store save request for Flutter to persist to SharedPreferences on next launch
-        // IMPORTANT: Store as JSON string, not native array, so Flutter can read it
-        if let content = currentContent {
-            var pendingSaves: [String] = []
-            if let existingJson = defaults.string(forKey: "pending_saves"),
-               let data = existingJson.data(using: .utf8),
-               let array = try? JSONSerialization.jsonObject(with: data) as? [String] {
-                pendingSaves = array
-            }
-
-            if !pendingSaves.contains(content) {
-                pendingSaves.append(content)
-                if let jsonData = try? JSONSerialization.data(withJSONObject: pendingSaves),
-                   let jsonString = String(data: jsonData, encoding: .utf8) {
-                    defaults.set(jsonString, forKey: "pending_saves")
-                }
-            }
+        // Store pending save by ID so both platforms use the same Flutter reconciliation path.
+        if let pointingId = currentId, !pointingId.isEmpty {
+            defaults.set(pointingId, forKey: "save_pending_id")
         }
 
         // Update widget_favorites immediately for instant UI feedback (optimistic update)

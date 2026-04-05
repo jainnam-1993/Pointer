@@ -1,8 +1,9 @@
 /**
  * Application entry point and top-level widget for the Here Now app.
  *
- * Delegates the startup sequence to [AppInitializer] which orchestrates
- * five phases (platform → core → services → container → content).
+ * Delegates startup bootstrap to [AppInitializer], then starts heavier
+ * warmup work behind the splash screen so the first Flutter frame can render
+ * immediately.
  *
  * This file retains only:
  * - The global [ProviderContainer] reference for background notification dispatch.
@@ -20,7 +21,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:media_kit/media_kit.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'services/ambient_sound_service.dart';
@@ -65,8 +65,9 @@ void notificationActionCallback(NotificationResponse response) {
 }
 
 /**
- * URI buffered from a widget deep-link that arrived before initialization
- * completed. Drained after [AppInitializer] Phase 5 finishes.
+ * URI buffered from a widget deep-link that arrived before critical startup
+ * content finished loading. Drained once [AppInitializer.criticalContentReady]
+ * completes.
  */
 String? _pendingWidgetUri;
 
@@ -92,13 +93,24 @@ void _setupWidgetDeepLink() {
 }
 
 /**
- * If initialization is complete (router exists) and a pending URI is buffered,
+ * If critical startup content is ready and a pending URI is buffered,
  * navigate to the home screen and clear the buffer.
  */
 void _drainPendingWidgetUri() {
   if (_pendingWidgetUri == null || _globalContainer == null) return;
+  if (!AppInitializer.isCriticalContentReady) return;
+
+  final uri = Uri.tryParse(_pendingWidgetUri!);
+  var found = true;
+  if (uri != null && uri.host == 'pointing' && uri.pathSegments.isNotEmpty) {
+    found = _globalContainer!.read(currentPointingProvider.notifier).setPointingById(uri.pathSegments.first);
+  }
   final router = _globalContainer!.read(routerProvider);
   router.go('/');
+  if (!found) {
+    final missingId = (uri != null && uri.pathSegments.isNotEmpty) ? uri.pathSegments.first : null;
+    debugPrint('[WidgetDeepLink] Pointing not found after startup: $missingId');
+  }
   _pendingWidgetUri = null;
 }
 
@@ -109,7 +121,7 @@ void _drainPendingWidgetUri() {
  * [PointerApp] inside an [UncontrolledProviderScope].
  */
 void main() async {
-  MediaKit.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   // Register Maestro MCP VM Service extensions in debug mode
   if (kDebugMode) {
@@ -120,13 +132,18 @@ void main() async {
   // captured, but navigation is deferred until init completes.
   _setupWidgetDeepLink();
 
-  final result = await AppInitializer.initialize(
-    onNotificationAction: notificationActionCallback,
-  );
+  final result = await AppInitializer.initialize(onNotificationAction: notificationActionCallback);
   _globalContainer = result.container;
 
-  // Drain any widget deep-link that arrived during initialization.
-  _drainPendingWidgetUri();
+  unawaited(
+    AppInitializer.criticalContentReady
+        .then((_) {
+          _drainPendingWidgetUri();
+        })
+        .catchError((error, stackTrace) {
+          debugPrint('[AppInitializer] Critical startup failed: $error');
+        }),
+  );
 
   runApp(UncontrolledProviderScope(container: result.container, child: const PointerApp()));
 }
@@ -198,6 +215,12 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
 
   /// Navigate to the home tab and set the current pointing by ID.
   void _navigateToPointing(String pointingId) {
+    if (!AppInitializer.isCriticalContentReady) {
+      _pendingWidgetUri = 'dailypointer://pointing/$pointingId';
+      debugPrint('[WidgetDeepLink] Buffered until startup ready: $pointingId');
+      return;
+    }
+
     final found = ref.read(currentPointingProvider.notifier).setPointingById(pointingId);
     if (found) {
       // Navigate to home tab

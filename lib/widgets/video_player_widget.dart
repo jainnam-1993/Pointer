@@ -7,6 +7,8 @@ import 'package:media_kit_video/media_kit_video.dart';
 import '../theme/app_theme.dart';
 import '../utils/formatting.dart';
 
+bool _mediaKitReady = false;
+
 /**
  * Video player for video transmissions.
  *
@@ -44,6 +46,10 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (widget.videoUrl == null) return;
 
     if (_player == null) {
+      if (!_mediaKitReady) {
+        MediaKit.ensureInitialized();
+        _mediaKitReady = true;
+      }
       _player = Player();
       _videoController = VideoController(_player!);
       await _player!.open(Media(widget.videoUrl!), play: false);
@@ -54,7 +60,9 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (mounted) {
       await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => _FullScreenVideoPlayer(player: _player!, videoController: _videoController!)),
+        MaterialPageRoute(
+          builder: (context) => _FullScreenVideoPlayer(player: _player!, videoController: _videoController!),
+        ),
       );
     }
   }
@@ -99,10 +107,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             Container(
               width: 64,
               height: 64,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colors.accent.withValues(alpha: 0.9),
-              ),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: colors.accent.withValues(alpha: 0.9)),
               child: const Icon(Icons.play_arrow, color: Colors.white, size: 36),
             ),
           ],
@@ -191,7 +196,9 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
           fit: StackFit.expand,
           children: [
             // Video
-            Center(child: Video(controller: widget.videoController, controls: NoVideoControls)),
+            Center(
+              child: Video(controller: widget.videoController, controls: NoVideoControls),
+            ),
 
             // Controls overlay
             if (_showControls) ...[

@@ -1,28 +1,13 @@
 /**
- * Phased application initialization.
+ * Startup bootstrap and warmup orchestration.
  *
- * Extracts the imperative startup sequence from `main()` into a testable,
- * structured initializer with explicit phase ordering:
- *
- * 1. **Platform** — Flutter bindings, system UI chrome.
- * 2. **Core** — [SharedPreferences], router configuration.
- * 3. **Services** — [NotificationService] (non-fatal on failure).
- * 4. **Container** — [ProviderContainer] with service overrides.
- * 5. **Content** — [WidgetService], [TeachingRepository].
- *
- * Usage from `main()`:
- * ```dart
- * final result = await AppInitializer.initialize(
- *   onNotificationAction: notificationActionCallback,
- * );
- * runApp(UncontrolledProviderScope(
- *   container: result.container,
- *   child: const PointerApp(),
- * ));
- * ```
+ * Keeps the first Flutter frame cheap by only doing the minimum work needed
+ * before `runApp()`, then loading content and non-critical services behind
+ * the splash screen.
  */
 library;
 
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -53,56 +38,121 @@ class InitResult {
 }
 
 /**
- * Phased application startup orchestrator.
+ * Background startup coordinator.
  *
- * Each phase runs sequentially because later phases depend on earlier ones
- * (e.g., [NotificationService] needs [SharedPreferences], the container
- * needs both). Individual service failures within a phase are caught and
- * logged so the app degrades gracefully.
+ * Exposes a "critical content" future for the splash screen to await before
+ * leaving, while continuing notification/widget warmup in the background.
+ */
+class StartupCoordinator {
+  final SharedPreferences _prefs;
+  final NotificationService _notificationService;
+  final void Function(NotificationResponse) _onNotificationAction;
+
+  final Completer<void> _criticalReady = Completer<void>();
+  Future<void>? _startFuture;
+
+  StartupCoordinator({
+    required SharedPreferences prefs,
+    required NotificationService notificationService,
+    required void Function(NotificationResponse) onNotificationAction,
+  }) : _prefs = prefs,
+       _notificationService = notificationService,
+       _onNotificationAction = onNotificationAction;
+
+  bool get isCriticalReady => _criticalReady.isCompleted;
+  Future<void> get criticalReady => _criticalReady.future;
+
+  Future<void> start() => _startFuture ??= _run();
+
+  Future<void> _run() async {
+    try {
+      await Future.wait([loadPointings(), loadArticles(), loadTeachers()]);
+
+      TeachingRepository.initialize(pointings: pointings);
+      await TeachingRepository.loadFromAsset();
+
+      if (!_criticalReady.isCompleted) {
+        _criticalReady.complete();
+      }
+    } catch (e, stackTrace) {
+      if (!_criticalReady.isCompleted) {
+        _criticalReady.completeError(e, stackTrace);
+      }
+      rethrow;
+    }
+
+    await Future.wait([_initializeNotifications(), _initializeWidgetCache(), if (Platform.isAndroid) _initializeWorkManager()]);
+  }
+
+  Future<void> _initializeNotifications() async {
+    try {
+      await _notificationService.initialize(onNotificationResponse: _onNotificationAction, onBackgroundNotificationResponse: _onNotificationAction);
+    } catch (e) {
+      debugPrint('[AppInitializer] Notification init failed (non-fatal): $e');
+    }
+  }
+
+  Future<void> _initializeWidgetCache() async {
+    try {
+      final widgetService = WidgetService(_prefs);
+      await widgetService.initialize();
+      await widgetService.populatePointingsCache();
+      await widgetService.processPendingWidgetActions();
+    } catch (e) {
+      debugPrint('[AppInitializer] Widget init failed (non-fatal): $e');
+    }
+  }
+
+  Future<void> _initializeWorkManager() async {
+    try {
+      await WorkManagerService.initialize();
+    } catch (e) {
+      debugPrint('[AppInitializer] WorkManager init failed (non-fatal): $e');
+    }
+  }
+}
+
+/**
+ * Minimal startup bootstrap plus background warmup accessors.
  */
 class AppInitializer {
   AppInitializer._();
 
-  /**
-   * Run the full initialization sequence and return the configured container.
-   *
-   * [onNotificationAction] is the callback for both foreground and background
-   * notification responses (annotated `@pragma('vm:entry-point')` at the
-   * call site).
-   */
-  static Future<InitResult> initialize({
-    required void Function(NotificationResponse) onNotificationAction,
-  }) async {
-    // Phase 1: Platform
-    _initPlatform();
+  static StartupCoordinator? _startupCoordinator;
 
-    // Phase 2: Core
-    final prefs = await _initCore();
-
-    // Phase 3: Services
-    final notificationService = await _initServices(prefs, onNotificationAction);
-
-    // Phase 4: Container
-    final container = _createContainer(prefs, notificationService);
-
-    // Phase 5: Content
-    await _initContent(prefs);
-
-    return InitResult(container: container);
+  static StartupCoordinator get startupCoordinator {
+    final coordinator = _startupCoordinator;
+    if (coordinator == null) {
+      throw StateError('AppInitializer.startupCoordinator accessed before initialize()');
+    }
+    return coordinator;
   }
 
-  // ------------------------------------------------------------------
-  // Phase 1: Platform bindings and system UI
-  // ------------------------------------------------------------------
+  static bool get isCriticalContentReady => startupCoordinator.isCriticalReady;
+  static Future<void> get criticalContentReady => startupCoordinator.criticalReady;
+  static Future<void> startBackgroundInitialization() => startupCoordinator.start();
+
+  /**
+   * Run the minimal bootstrap needed before `runApp()`.
+   *
+   * Heavy content loading and service warmup are kicked off separately via
+   * [startBackgroundInitialization].
+   */
+  static Future<InitResult> initialize({required void Function(NotificationResponse) onNotificationAction}) async {
+    _initPlatform();
+    final prefs = await _initCore();
+    final notificationService = NotificationService(prefs);
+
+    _startupCoordinator = StartupCoordinator(prefs: prefs, notificationService: notificationService, onNotificationAction: onNotificationAction);
+
+    final container = _createContainer(prefs, notificationService);
+    return InitResult(container: container);
+  }
 
   static void _initPlatform() {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
-
-  // ------------------------------------------------------------------
-  // Phase 2: Core persistence and router
-  // ------------------------------------------------------------------
 
   static Future<SharedPreferences> _initCore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -110,69 +160,9 @@ class AppInitializer {
     return prefs;
   }
 
-  // ------------------------------------------------------------------
-  // Phase 3: Services (non-fatal failures)
-  // ------------------------------------------------------------------
-
-  static Future<NotificationService> _initServices(
-    SharedPreferences prefs,
-    void Function(NotificationResponse) onNotificationAction,
-  ) async {
-    final service = NotificationService(prefs);
-    try {
-      await service.initialize(
-        onNotificationResponse: onNotificationAction,
-        onBackgroundNotificationResponse: onNotificationAction,
-      );
-    } catch (e) {
-      debugPrint('[AppInitializer] Notification init failed (non-fatal): $e');
-    }
-
-    // WorkManager for background notifications (Android only — iOS 26 beta crashes)
-    if (Platform.isAndroid) {
-      await WorkManagerService.initialize();
-    }
-
-    return service;
-  }
-
-  // ------------------------------------------------------------------
-  // Phase 4: Provider container with service overrides
-  // ------------------------------------------------------------------
-
-  static ProviderContainer _createContainer(
-    SharedPreferences prefs,
-    NotificationService notificationService,
-  ) {
+  static ProviderContainer _createContainer(SharedPreferences prefs, NotificationService notificationService) {
     return ProviderContainer(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        notificationServiceProvider.overrideWithValue(notificationService),
-      ],
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs), notificationServiceProvider.overrideWithValue(notificationService)],
     );
-  }
-
-  // ------------------------------------------------------------------
-  // Phase 5: Content — widget cache and teaching repository
-  // ------------------------------------------------------------------
-
-  static Future<void> _initContent(SharedPreferences prefs) async {
-    // Load pointings from JSON asset before anything that depends on them
-    await loadPointings();
-
-    // Load article metadata from JSON (content lazy-loaded on demand)
-    await loadArticles();
-
-    final widgetService = WidgetService(prefs);
-    await widgetService.initialize();
-    await widgetService.populatePointingsCache();
-    await widgetService.processPendingWidgetActions();
-
-    // Load teacher data from JSON asset
-    await loadTeachers();
-
-    // Initialize teaching repository with pointings + JSON teachings
-    TeachingRepository.initialize(pointings: pointings);
-    await TeachingRepository.loadFromAsset();
   }
 }

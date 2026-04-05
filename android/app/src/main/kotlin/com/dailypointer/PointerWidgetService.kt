@@ -37,6 +37,7 @@ class PointerRemoteViewsFactory(
     private var pointings: List<PointingData> = emptyList()
     private var favorites: Set<String> = emptySet()
     private var isDarkMode: Boolean = true
+    private var dataSource: PointerWidgetState.DataSource = PointerWidgetState.DataSource.BUNDLED_DEFAULTS
 
     override fun onCreate() {
         Log.d(TAG, "onCreate")
@@ -65,9 +66,12 @@ class PointerRemoteViewsFactory(
         val pointing = pointings[position]
 
         // Check if we're near the end and need more data (prefetch trigger)
-        if (position >= PREFETCH_THRESHOLD && pointings.size <= INITIAL_CACHE_SIZE) {
+        if (dataSource == PointerWidgetState.DataSource.CACHE &&
+            position >= PREFETCH_THRESHOLD &&
+            pointings.size <= INITIAL_CACHE_SIZE
+        ) {
             Log.d(TAG, "Prefetch trigger at position $position")
-            triggerPrefetch()
+            PointerWidgetState.requestPrefetch(context)
         }
 
         // Choose layout based on system theme
@@ -141,36 +145,16 @@ class PointerRemoteViewsFactory(
         isDarkMode = isSystemInDarkMode()
 
         try {
+            val snapshot = PointerWidgetState.loadSnapshot(context)
+            pointings = snapshot.pointings
+            dataSource = snapshot.source
+            PointerWidgetState.syncCurrentPointing(context, pointings)
+
             val widgetData = HomeWidgetPlugin.getData(context)
-            val jsonString = widgetData?.getString(KEY_POINTINGS_CACHE, null)
-
-            if (jsonString.isNullOrEmpty()) {
-                Log.d(TAG, "No cached pointings found, loading bundled defaults")
-                pointings = loadDefaultPointings()
-                triggerBackgroundRefresh()
-                return
-            }
-
-            val jsonArray = JSONArray(jsonString)
-            val loadedPointings = mutableListOf<PointingData>()
-
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                loadedPointings.add(
-                    PointingData(
-                        id = obj.optString("id", ""),
-                        content = obj.optString("content", ""),
-                        tradition = obj.optString("tradition", ""),
-                        teacher = obj.optString("teacher", "")
-                    )
-                )
-            }
-
-            pointings = loadedPointings
-            Log.d(TAG, "Loaded ${pointings.size} pointings from cache")
+            Log.d(TAG, "Loaded ${pointings.size} pointings from ${dataSource.name.lowercase()}")
 
             // Load favorites list
-            val favoritesJson = widgetData?.getString(KEY_FAVORITES, null)
+            val favoritesJson = widgetData?.getString(PointerWidgetState.KEY_FAVORITES, null)
             favorites = if (!favoritesJson.isNullOrEmpty()) {
                 try {
                     val favArray = JSONArray(favoritesJson)
@@ -205,73 +189,8 @@ class PointerRemoteViewsFactory(
         return Color.parseColor(colorHex)
     }
 
-    /**
-     * Load default pointings from bundled res/raw/default_pointings.json.
-     * Used as a fallback when the Flutter cache is not yet populated.
-     */
-    private fun loadDefaultPointings(): List<PointingData> {
-        try {
-            val inputStream = context.resources.openRawResource(R.raw.default_pointings)
-            val jsonString = inputStream.bufferedReader().use { it.readText() }
-            val jsonArray = JSONArray(jsonString)
-            val defaults = mutableListOf<PointingData>()
-
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                defaults.add(
-                    PointingData(
-                        id = obj.optString("id", ""),
-                        content = obj.optString("content", ""),
-                        tradition = obj.optString("tradition", ""),
-                        teacher = obj.optString("teacher", "")
-                    )
-                )
-            }
-
-            Log.d(TAG, "Loaded ${defaults.size} default pointings from bundle")
-            return defaults
-        } catch (e: Exception) {
-            Log.e(TAG, "Error loading default pointings: ${e.message}", e)
-            return emptyList()
-        }
-    }
-
-    /**
-     * Trigger Flutter background callback to populate the real cache.
-     */
-    private fun triggerBackgroundRefresh() {
-        try {
-            val intent = es.antonborri.home_widget.HomeWidgetBackgroundIntent.getBroadcast(
-                context,
-                android.net.Uri.parse("pointer://widget/refresh")
-            )
-            intent.send()
-            Log.d(TAG, "Background refresh triggered to populate cache")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to trigger background refresh: ${e.message}")
-        }
-    }
-
-    /**
-     * Trigger Flutter to load more pointings when nearing end of cache.
-     */
-    private fun triggerPrefetch() {
-        try {
-            val intent = es.antonborri.home_widget.HomeWidgetBackgroundIntent.getBroadcast(
-                context,
-                android.net.Uri.parse("pointer://widget/prefetch")
-            )
-            intent.send()
-            Log.d(TAG, "Prefetch intent sent")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to trigger prefetch: ${e.message}")
-        }
-    }
-
     companion object {
         private const val TAG = "PointerWidgetFactory"
-        private const val KEY_POINTINGS_CACHE = "pointings_cache"
-        private const val KEY_FAVORITES = "widget_favorites"
 
         const val EXTRA_POINTING_ID = "pointing_id"
         const val EXTRA_POINTING_POSITION = "pointing_position"
@@ -289,13 +208,3 @@ class PointerRemoteViewsFactory(
         )
     }
 }
-
-/**
- * Data class for pointing information displayed in widget.
- */
-data class PointingData(
-    val id: String,
-    val content: String,
-    val tradition: String,
-    val teacher: String
-)

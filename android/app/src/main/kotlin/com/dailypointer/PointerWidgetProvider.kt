@@ -45,12 +45,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
         when (intent.action) {
             ACTION_REFRESH -> {
-                // Send background intent to Flutter for refresh
-                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-                    context,
-                    Uri.parse("pointer://widget/refresh")
-                )
-                backgroundIntent.send()
+                PointerWidgetState.requestRefresh(context, force = true)
 
                 // Show brief feedback
                 Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
@@ -71,7 +66,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
                 // that Flutter's HomeWidget.getWidgetData() reads from
                 if (currentId != null) {
                     val widgetPrefs = HomeWidgetPlugin.getData(context)
-                    widgetPrefs?.edit()?.putString("save_pending_id", currentId)?.apply()
+                    widgetPrefs?.edit()?.putString(PointerWidgetState.KEY_SAVE_PENDING_ID, currentId)?.apply()
                 }
 
                 // Send background intent to Flutter to persist the change
@@ -144,20 +139,16 @@ class PointerWidgetProvider : AppWidgetProvider() {
         val isDarkMode = isSystemInDarkMode(context)
         val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
 
-        // Get total count from cache
-        val widgetData = HomeWidgetPlugin.getData(context)
-        val cacheJson = widgetData?.getString("pointings_cache", null)
-        val totalCount = if (!cacheJson.isNullOrEmpty()) {
-            try {
-                org.json.JSONArray(cacheJson).length()
-            } catch (e: Exception) { 1 }
-        } else 1
+        val snapshot = PointerWidgetState.loadSnapshot(context)
+        val totalCount = snapshot.pointings.size
+        if (totalCount <= 0) return
 
-        // Get and update current position
-        val prefs = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
-        var currentPosition = prefs.getInt("flipper_position", 0)
-        currentPosition = if (currentPosition <= 0) totalCount - 1 else currentPosition - 1
-        prefs.edit().putInt("flipper_position", currentPosition).apply()
+        val currentPosition = PointerWidgetState.setCurrentIndex(
+            context,
+            PointerWidgetState.getCurrentIndex(context, totalCount) - 1,
+            totalCount
+        )
+        PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
 
         Log.d(TAG, "showPrevious: position=$currentPosition of $totalCount")
 
@@ -185,20 +176,16 @@ class PointerWidgetProvider : AppWidgetProvider() {
         val isDarkMode = isSystemInDarkMode(context)
         val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
 
-        // Get total count from cache
-        val widgetData = HomeWidgetPlugin.getData(context)
-        val cacheJson = widgetData?.getString("pointings_cache", null)
-        val totalCount = if (!cacheJson.isNullOrEmpty()) {
-            try {
-                org.json.JSONArray(cacheJson).length()
-            } catch (e: Exception) { 1 }
-        } else 1
+        val snapshot = PointerWidgetState.loadSnapshot(context)
+        val totalCount = snapshot.pointings.size
+        if (totalCount <= 0) return
 
-        // Get and update current position
-        val prefs = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
-        var currentPosition = prefs.getInt("flipper_position", 0)
-        currentPosition = (currentPosition + 1) % totalCount
-        prefs.edit().putInt("flipper_position", currentPosition).apply()
+        val currentPosition = PointerWidgetState.setCurrentIndex(
+            context,
+            PointerWidgetState.getCurrentIndex(context, totalCount) + 1,
+            totalCount
+        )
+        PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
 
         Log.d(TAG, "showNext: position=$currentPosition of $totalCount")
 
@@ -213,12 +200,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         Log.d(TAG, "onEnabled: First widget placed")
-        // Request initial data load from Flutter
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-            context,
-            Uri.parse("pointer://widget/refresh")
-        )
-        backgroundIntent.send()
+        PointerWidgetState.requestRefresh(context, force = true)
     }
 
     override fun onDisabled(context: Context) {
@@ -229,8 +211,6 @@ class PointerWidgetProvider : AppWidgetProvider() {
         private const val TAG = "PointerWidget"
         private const val PREFS_NAME = "widget_prefs"
         private const val KEY_LAST_DARK_MODE = "last_dark_mode"
-        private const val KEY_FAVORITES = "widget_favorites"
-        private const val KEY_POINTINGS_CACHE = "pointings_cache"
 
         /** Timestamp of the last prev/next navigation, for debounce. */
         private var lastNavTime = 0L
@@ -262,22 +242,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
          * Get the pointing ID at the current flipper position
          */
         private fun getCurrentPointingId(context: Context): String? {
-            try {
-                val widgetData = HomeWidgetPlugin.getData(context)
-                val cacheJson = widgetData?.getString(KEY_POINTINGS_CACHE, null) ?: return null
-
-                val jsonArray = org.json.JSONArray(cacheJson)
-                if (jsonArray.length() == 0) return null
-
-                val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                val position = prefs.getInt("flipper_position", 0)
-
-                val safePosition = if (position >= 0 && position < jsonArray.length()) position else 0
-                return jsonArray.getJSONObject(safePosition).optString("id", null)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error getting current pointing ID: ${e.message}")
-                return null
-            }
+            return PointerWidgetState.getCurrentPointing(context)?.id
         }
 
         /**
@@ -290,7 +255,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
             try {
                 // Read current favorites from home_widget SharedPreferences
                 val widgetData = HomeWidgetPlugin.getData(context)
-                val favoritesJson = widgetData?.getString(KEY_FAVORITES, "[]") ?: "[]"
+                val favoritesJson = widgetData?.getString(PointerWidgetState.KEY_FAVORITES, "[]") ?: "[]"
 
                 val favorites = mutableListOf<String>()
                 val jsonArray = org.json.JSONArray(favoritesJson)
@@ -309,7 +274,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
 
                 // Save back to the same SharedPreferences that HomeWidgetPlugin reads from
                 val newJsonArray = org.json.JSONArray(favorites)
-                widgetData?.edit()?.putString(KEY_FAVORITES, newJsonArray.toString())?.apply()
+                widgetData?.edit()?.putString(PointerWidgetState.KEY_FAVORITES, newJsonArray.toString())?.apply()
 
                 Log.d(TAG, "toggleFavorite: $pointingId -> ${if (wasAdded) "added" else "removed"}, total=${favorites.size}")
                 return wasAdded
@@ -326,7 +291,7 @@ class PointerWidgetProvider : AppWidgetProvider() {
             if (pointingId == null) return false
             try {
                 val widgetData = HomeWidgetPlugin.getData(context)
-                val favoritesJson = widgetData?.getString(KEY_FAVORITES, null) ?: return false
+                val favoritesJson = widgetData?.getString(PointerWidgetState.KEY_FAVORITES, null) ?: return false
 
                 val jsonArray = org.json.JSONArray(favoritesJson)
                 for (i in 0 until jsonArray.length()) {
@@ -424,35 +389,20 @@ class PointerWidgetProvider : AppWidgetProvider() {
             appWidgetIds: IntArray
         ) {
             try {
-                val widgetData = HomeWidgetPlugin.getData(context)
-                val cacheJson = widgetData?.getString("pointings_cache", null)
-
-                if (cacheJson.isNullOrEmpty()) {
-                    Log.d(TAG, "No cache found, requesting initial load")
-                    // Request Flutter to load initial data
-                    val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-                        context,
-                        Uri.parse("pointer://widget/refresh")
-                    )
-                    backgroundIntent.send()
-                    return
-                }
-
-                // Get total count from cache
-                val totalCount = try {
-                    org.json.JSONArray(cacheJson).length()
-                } catch (e: Exception) { 1 }
+                val snapshot = PointerWidgetState.loadSnapshot(context)
+                val totalCount = snapshot.pointings.size
 
                 if (totalCount <= 1) {
                     Log.d(TAG, "advanceStackPosition: Only $totalCount items, skipping advance")
                     return
                 }
 
-                // Get current position and advance it
-                val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                var currentPosition = prefs.getInt("flipper_position", 0)
-                currentPosition = (currentPosition + 1) % totalCount
-                prefs.edit().putInt("flipper_position", currentPosition).apply()
+                val currentPosition = PointerWidgetState.setCurrentIndex(
+                    context,
+                    PointerWidgetState.getCurrentIndex(context, totalCount) + 1,
+                    totalCount
+                )
+                PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
 
                 Log.d(TAG, "advanceStackPosition: Advanced to position $currentPosition of $totalCount")
 
@@ -490,6 +440,9 @@ class PointerWidgetProvider : AppWidgetProvider() {
             }
 
             val views = RemoteViews(context.packageName, layoutId)
+            val snapshot = PointerWidgetState.loadSnapshot(context)
+            val currentPosition = PointerWidgetState.getCurrentIndex(context, snapshot.pointings.size)
+            PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
 
             // Set up AdapterViewFlipper with RemoteViewsService
             val serviceIntent = Intent(context, PointerWidgetService::class.java).apply {
@@ -503,7 +456,8 @@ class PointerWidgetProvider : AppWidgetProvider() {
             views.setEmptyView(R.id.widget_flipper, R.id.widget_empty_state)
 
             // Set empty state text
-            views.setTextViewText(R.id.widget_empty_text, "Tap to load")
+            views.setTextViewText(R.id.widget_empty_text, "Open app to sync pointings")
+            views.setDisplayedChild(R.id.widget_flipper, currentPosition)
 
             // Tap content area to open app with current pointing.
             // Flipper has clickable=false and stack items have no clickable/focusable

@@ -69,11 +69,6 @@ class MainActivity : FlutterActivity() {
         if (pointingId != null) {
             Log.d("MainActivity", "Widget deep-link: pointing_id=$pointingId")
 
-            // Write skip-splash flag to Flutter's SharedPreferences BEFORE the engine starts.
-            // The router reads this synchronously during redirect to bypass the splash video.
-            val flutterPrefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
-            flutterPrefs.edit().putBoolean("flutter.widget_skip_splash", true).apply()
-
             if (flutterEngine != null) {
                 sendPointingIdToFlutter(pointingId)
             } else {
@@ -83,20 +78,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun resolveCurrentWidgetPointingId(): String? {
-        try {
-            val widgetData = es.antonborri.home_widget.HomeWidgetPlugin.getData(this)
-            val cacheJson = widgetData?.getString("pointings_cache", null) ?: return null
-            val jsonArray = org.json.JSONArray(cacheJson)
-            if (jsonArray.length() == 0) return null
-
-            val prefs = getSharedPreferences("widget_prefs", MODE_PRIVATE)
-            val position = prefs.getInt("flipper_position", 0)
-            val safePosition = if (position in 0 until jsonArray.length()) position else 0
-            return jsonArray.getJSONObject(safePosition).optString("id", null)
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Error resolving widget pointing: ${e.message}")
-            return null
-        }
+        return PointerWidgetState.getCurrentPointing(this)?.id
     }
 
     private fun sendPointingIdToFlutter(pointingId: String) {
