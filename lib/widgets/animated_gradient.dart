@@ -126,10 +126,13 @@ _DeviceTier _getDeviceTier(BuildContext context) {
  * Set [disableAnimations] to true in tests to prevent timer issues.
  */
 class AnimatedGradient extends ConsumerStatefulWidget {
-  const AnimatedGradient({super.key});
+  const AnimatedGradient({super.key, this.periodOverride});
 
   /** Disable animations globally (for testing) */
   static bool disableAnimations = false;
+
+  /** Optional fixed period for deterministic rendering in tests/previews. */
+  final TimeOfDayPeriod? periodOverride;
 
   /** Check if running in test environment */
   static bool isTestEnvironment() {
@@ -143,18 +146,13 @@ class AnimatedGradient extends ConsumerStatefulWidget {
 
 class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   Timer? _timeCheckTimer;
-  TimeOfDayPeriod _currentPeriod = _getCurrentTimePeriod();
+  late TimeOfDayPeriod _currentPeriod;
 
   @override
   void initState() {
     super.initState();
-    // Check time period every 5 minutes for 24h gradient cycle
-    // Skip timer in test environment to avoid timer issues
-    if (!AnimatedGradient.disableAnimations && !AnimatedGradient.isTestEnvironment()) {
-      _timeCheckTimer = Timer.periodic(const Duration(minutes: 5), (_) {
-        _checkTimePeriodChange();
-      });
-    }
+    _currentPeriod = widget.periodOverride ?? _getCurrentTimePeriod();
+    _configureTimeCheckTimer();
   }
 
   @override
@@ -163,7 +161,30 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant AnimatedGradient oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.periodOverride != widget.periodOverride) {
+      _currentPeriod = widget.periodOverride ?? _getCurrentTimePeriod();
+      _configureTimeCheckTimer();
+    }
+  }
+
+  void _configureTimeCheckTimer() {
+    _timeCheckTimer?.cancel();
+    // Check time period every 5 minutes for 24h gradient cycle.
+    // Skip timer when a fixed period is requested or tests disable animation.
+    if (widget.periodOverride != null || AnimatedGradient.disableAnimations || AnimatedGradient.isTestEnvironment()) {
+      return;
+    }
+
+    _timeCheckTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      _checkTimePeriodChange();
+    });
+  }
+
   void _checkTimePeriodChange() {
+    if (widget.periodOverride != null) return;
     final newPeriod = _getCurrentTimePeriod();
     if (newPeriod != _currentPeriod) {
       setState(() {

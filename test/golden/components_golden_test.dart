@@ -236,7 +236,7 @@ void main() {
         tester,
         createComponentTestWrapper(
           backgroundColor: Colors.black,
-          child: const SizedBox(width: 400, height: 800, child: AnimatedGradient()),
+          child: const SizedBox(width: 400, height: 800, child: AnimatedGradient(periodOverride: TimeOfDayPeriod.night)),
         ),
         size: const Size(400, 800),
       );
