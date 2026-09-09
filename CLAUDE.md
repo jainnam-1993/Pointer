@@ -11,6 +11,13 @@ flutter test --concurrency=8           # Unit tests
 flutter test --update-goldens          # Update golden baselines
 maestro test maestro/flows/            # E2E tests (21 flows)
 
+# From the Linux devdesk (Dart 3.10.8 via mise = the Dart bundled with Flutter 3.38.9; flutter itself is Mac-only)
+dart format --page-width=150 <files>   # REQUIRED flag: the flutter_lints include in analysis_options.yaml cannot resolve
+                                       # without .dart_tool, so dart drops the whole file and its page_width: 150
+# Mac runs: ssh -o BatchMode=yes mac 'bash -s' <<'OUTER' with export PATH=/opt/homebrew/bin:$PATH and
+# cd /Volumes/workplace/Personal/Pointer. Never run `unison default -batch` first: the Mac unison watcher
+# lands devdesk edits in seconds, and a second unison on the archive crashes it.
+
 # Build & Deploy
 flutter build apk/ios/appbundle
 bundle exec fastlane android internal/production
@@ -20,7 +27,7 @@ bundle exec fastlane android internal/production
 
 ## Architecture
 
-```
+```text
 lib/
 ├── main.dart                  # Entry point, delegates to AppInitializer, retains notification callback (@pragma vm:entry-point) and PointerApp widget
 ├── router.dart                # GoRouter singleton with SharedPreferences-based redirects, /splash route with cold-start-only video
@@ -135,6 +142,7 @@ fastlane/                      # Play Store deployment
 ## Testing
 
 ### Unit Tests (`test/`)
+
 - **Setup**: ProviderScope with mocked deps, SharedPreferences mocking, mocktail for services
 - **Animations**: Use `pump(Duration(seconds: 2))` not `pumpAndSettle()` for continuous animations. Set `AnimatedGradient.disableAnimations = true` in `setUpAll()`
 - **Subscription mocking**: `_TestSubscriptionNotifier` pattern extends SubscriptionNotifier with fixed state. See `library_screen_test.dart`
@@ -143,11 +151,13 @@ fastlane/                      # Play Store deployment
 - **Accessibility** (`test/accessibility/`): VoiceOver semantics, labels, focus order, custom actions, screen reader hints
 
 ### Integration Tests (`integration_test/`)
+
 - State-controlled E2E using IntegrationTestWidgetsFlutterBinding (Riverpod state injection)
 - UncontrolledProviderScope pattern, custom settle() helper for animations
 - Screenshot capture: binding.convertFlutterSurfaceToImage() → binding.takeScreenshot()
 
 ### E2E Tests (Maestro)
+
 - 21 YAML flows (7 core + 14 feature): navigation, onboarding, widget, settings, library, Apple Sign-In (6 flows: basic, full, close, iPad, navbar spacing, full test), etc.
 - Cross-platform (iOS/Android), outputs to `maestro/screenshots/`
 - **Assertion patterns**: Use regex for flexible matching (`".*Next.*"` vs `"Next Pointing"`), mark optional for responsive layouts (landscape/portrait), verify content loaded (not just navigation)
@@ -162,10 +172,11 @@ fastlane/                      # Play Store deployment
 **iOS**: v1.2.0 (build 13) — Submitted to App Review with 4 IAPs (Waiting for Review, auto-release on approval)
 **Android**: v1.2.0 (build 15) — Live on Play Store internal testing. Production blocked by Google's new developer account policy (requires 20+ testers × 14 days closed testing)
 **IAPs (both stores)**: 4 consumable tip jar products configured and active
-  - `com.dailypointer.tip_small` — Buy Me a Tea ($0.99)
-  - `com.dailypointer.tip_medium` — Buy Me a Cushion ($4.99)
-  - `com.dailypointer.tip_large` — Buy Me Incense ($9.99)
-  - `com.dailypointer.tip_generous` — Fund a Retreat ($24.99)
+
+- `com.dailypointer.tip_small` — Buy Me a Tea ($0.99)
+- `com.dailypointer.tip_medium` — Buy Me a Cushion ($4.99)
+- `com.dailypointer.tip_large` — Buy Me Incense ($9.99)
+- `com.dailypointer.tip_generous` — Fund a Retreat ($24.99)
 
 ## Next Actions
 
