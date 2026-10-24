@@ -135,6 +135,10 @@ void main() async {
   final result = await AppInitializer.initialize(onNotificationAction: notificationActionCallback);
   _globalContainer = result.container;
 
+  // Start content loading now, before the first frame, so JSON asset reads
+  // overlap engine warmup instead of waiting for the splash to mount.
+  unawaited(AppInitializer.startBackgroundInitialization());
+
   unawaited(
     AppInitializer.criticalContentReady
         .then((_) {
@@ -235,12 +239,18 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      final widgetService = ref.read(widgetServiceProvider);
-      widgetService.refreshWidget();
-      widgetService.processPendingWidgetActions().then((_) {
-        ref.invalidate(favoritesProvider);
-      });
+      unawaited(_onResumed());
     }
+  }
+
+  /// Pick up writes made natively while backgrounded (widget Save writes
+  /// flutter.pointer_favorites directly), then let favorites re-read them.
+  Future<void> _onResumed() async {
+    await ref.read(sharedPreferencesProvider).reload();
+    final widgetService = ref.read(widgetServiceProvider);
+    unawaited(widgetService.refreshWidget());
+    await widgetService.processPendingWidgetActions();
+    if (mounted) ref.invalidate(favoritesProvider);
   }
 
   @override

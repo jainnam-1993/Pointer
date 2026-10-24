@@ -17,6 +17,8 @@ class _WidgetKeys {
   static const pointingsCache = 'pointings_cache';
   // Favorites list (JSON array of pointing IDs)
   static const favorites = 'widget_favorites';
+  // Fingerprint of the content and favorites the cache was last built from.
+  static const cacheSignature = 'pointer_widget_cache_signature';
 }
 
 /**
@@ -59,12 +61,20 @@ class WidgetService {
    * Randomizes order and prioritizes favorites for better discovery.
    * Also syncs favorites list for save button state.
    */
-  Future<void> populatePointingsCache() async {
+  Future<void> populatePointingsCache({bool force = false}) async {
     debugPrint('[WidgetService] populatePointingsCache called');
     try {
       // Load favorites list first
       final stored = _prefs.getString('pointer_favorites');
       final favoriteIds = stored != null ? Set<String>.from(jsonDecode(stored)) : <String>{};
+
+      // Rebuilding serializes every pointing; skip it when neither the bundled
+      // content nor the favorites changed since the last build.
+      final signature = widgetCacheSignature(pointings, stored);
+      if (!force && _prefs.getString(_WidgetKeys.cacheSignature) == signature) {
+        debugPrint('[WidgetService] Widget cache up to date; skipping rebuild');
+        return;
+      }
 
       // Separate favorites from non-favorites
       final favoritePointings = <Pointing>[];
@@ -129,7 +139,8 @@ class WidgetService {
       );
 
       // Also sync favorites from SharedPreferences
-      _syncFavoritesFromStorage();
+      await _syncFavoritesFromStorage();
+      await _prefs.setString(_WidgetKeys.cacheSignature, signature);
 
       // Trigger widget update
       await HomeWidget.updateWidget(
@@ -419,8 +430,9 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   final path = uri.path;
 
   if (path == '/refresh' || uri.host == 'refresh') {
+    // An explicit refresh asks for a new shuffle, so rebuild even if unchanged.
     final prefs = await SharedPreferences.getInstance();
-    await WidgetService(prefs).populatePointingsCache();
+    await WidgetService(prefs).populatePointingsCache(force: true);
   } else if (path == '/prefetch' || uri.host == 'prefetch') {
     final prefs = await SharedPreferences.getInstance();
     await WidgetService(prefs).populatePointingsCache();
@@ -470,4 +482,18 @@ Future<void> _saveCurrentWidgetPointing() async {
     // Non-critical: widget save callback; pending action retried on next app launch
     debugPrint('[WidgetSave] Error: $e');
   }
+}
+
+/**
+ * Fingerprint of the widget cache inputs: pointing ids and text lengths plus
+ * the raw favorites JSON. Stable across launches (no String.hashCode).
+ */
+String widgetCacheSignature(List<Pointing> pointings, String? favoritesJson) {
+  var textLength = 0;
+  final idChars = StringBuffer();
+  for (final p in pointings) {
+    textLength += p.content.length + (p.teacher?.length ?? 0);
+    idChars.write(p.id.length);
+  }
+  return 'v1:${pointings.length}:$textLength:${idChars.toString().length}:${favoritesJson ?? ''}';
 }

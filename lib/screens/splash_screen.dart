@@ -24,7 +24,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
-  static const _minimumDisplayDuration = Duration(milliseconds: 1500);
+  // Long enough for one readable beat of the enso before the exit blur; the
+  // splash otherwise ends as soon as content is ready.
+  static const _minimumDisplayDuration = Duration(milliseconds: 400);
   static const _loopDuration = Duration(milliseconds: 4267);
   static const _exitDuration = Duration(milliseconds: 880);
 
@@ -35,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   bool _minimumDurationElapsed = false;
   bool _exitStarted = false;
   bool _navigated = false;
+  bool _loadFailed = false;
 
   @override
   void initState() {
@@ -42,34 +45,38 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _loopController = AnimationController(vsync: this, duration: _loopDuration)..repeat();
     _exitController = AnimationController(vsync: this, duration: _exitDuration);
 
+    // main() normally starts loading before the first frame; start() is
+    // idempotent, so this only matters when the splash is shown directly.
+    unawaited(AppInitializer.startBackgroundInitialization().catchError((Object _) {}));
     _startupReady = AppInitializer.isCriticalContentReady;
-    unawaited(
-      AppInitializer.criticalContentReady
-          .then((_) {
-            if (!mounted) return;
-            _startupReady = true;
-            _beginExitIfReady();
-          })
-          .catchError((error, stackTrace) {
-            if (!mounted) return;
-            debugPrint('[SplashScreen] Critical startup failed: $error');
-            _startupReady = true;
-            _beginExitIfReady();
-          }),
-    );
+    _awaitContent(AppInitializer.criticalContentReady);
 
     Future<void>.delayed(_minimumDisplayDuration, () {
       if (!mounted) return;
       _minimumDurationElapsed = true;
       _beginExitIfReady();
     });
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future<void>.delayed(const Duration(milliseconds: 100), () {
-        if (!mounted) return;
-        unawaited(AppInitializer.startBackgroundInitialization());
-      });
-    });
+  void _awaitContent(Future<void> ready) {
+    unawaited(
+      ready
+          .then((_) {
+            if (!mounted) return;
+            _startupReady = true;
+            _beginExitIfReady();
+          })
+          .catchError((Object error) {
+            // Leaving now would read empty content globals; stay and offer a retry.
+            debugPrint('[SplashScreen] Critical startup failed: $error');
+            if (mounted) setState(() => _loadFailed = true);
+          }),
+    );
+  }
+
+  void _retry() {
+    setState(() => _loadFailed = false);
+    _awaitContent(AppInitializer.retryCriticalContent());
   }
 
   void _requestLeave() {
@@ -98,6 +105,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final animationsEnabled = !MediaQuery.of(context).disableAnimations;
+    if (_loadFailed) return _SplashLoadError(isDark: isDark, onRetry: _retry);
 
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.white,
@@ -164,6 +172,7 @@ class _SplashVideoMatch extends StatelessWidget {
                           isAntiAlias: true,
                           color: isDark ? Colors.white : Colors.black,
                           colorBlendMode: BlendMode.srcIn,
+                          errorBuilder: (context, error, stackTrace) => _EnsoFallback(size: ensoSize, isDark: isDark),
                         ),
                       ),
                     ),
@@ -174,6 +183,63 @@ class _SplashVideoMatch extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/** Drawn ring shown if the splash image asset cannot be loaded. */
+class _EnsoFallback extends StatelessWidget {
+  final double size;
+  final bool isDark;
+
+  const _EnsoFallback({required this.size, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: isDark ? Colors.white : Colors.black, width: size * 0.06),
+        ),
+      ),
+    );
+  }
+}
+
+/** Recoverable error state shown when bundled content fails to load. */
+class _SplashLoadError extends StatelessWidget {
+  final bool isDark;
+  final VoidCallback onRetry;
+
+  const _SplashLoadError({required this.isDark, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = isDark ? Colors.white : Colors.black;
+    return Scaffold(
+      backgroundColor: isDark ? Colors.black : Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Content could not be loaded.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: fg),
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton(onPressed: onRetry, child: const Text('Try again')),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
