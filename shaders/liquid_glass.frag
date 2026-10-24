@@ -95,7 +95,7 @@ void main() {
   // Band lift: what the bevel bends in from past the bar's edge is lifted toward white, so the crescents read as lit
   // glass. Only luminous samples are lifted (the dark bar under the lens stays dark); the threshold is lower in dark.
   float lum = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
-  rgb = mix(rgb, vec3(1.0), uLens.y * bevel * bevel * smoothstep(uLens.z, uLens.z + 0.35, lum));
+  rgb = mix(rgb, vec3(1.0), uLens.y * (0.4 + 0.6 * bevel) * smoothstep(uLens.z, uLens.z + 0.35, lum));
 
   // Light theme: a light field leaves no headroom for an additive rim, so the edge is drawn with darker cues: the
   // bevel multiplies (darkens) the backdrop above, a thin dark hairline closes the edge, and the specular survives only
