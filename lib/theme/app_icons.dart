@@ -16,12 +16,16 @@ class AppIcons {
   // Tabs
   static const IconData home = PhosphorIconsLight.sunHorizon;
   static const IconData homeActive = PhosphorIconsRegular.sunHorizon;
+  static const IconData homeFilled = PhosphorIconsFill.sunHorizon;
   static const IconData inquiry = PhosphorIconsLight.question;
   static const IconData inquiryActive = PhosphorIconsRegular.question;
+  static const IconData inquiryFilled = PhosphorIconsFill.question;
   static const IconData library = PhosphorIconsLight.bookOpen;
   static const IconData libraryActive = PhosphorIconsRegular.bookOpen;
+  static const IconData libraryFilled = PhosphorIconsFill.bookOpen;
   static const IconData settings = PhosphorIconsLight.slidersHorizontal;
   static const IconData settingsActive = PhosphorIconsRegular.slidersHorizontal;
+  static const IconData settingsFilled = PhosphorIconsFill.slidersHorizontal;
 
   // Tip tiers (distinct from the tabs)
   static const IconData tipTea = PhosphorIconsLight.coffee;

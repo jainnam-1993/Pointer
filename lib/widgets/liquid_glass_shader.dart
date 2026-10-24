@@ -12,6 +12,11 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+import '../utils/frame_log.dart';
+
+/** Build with `--dart-define=POINTER_LIQUID_LENS=false` to measure the glass without the lens (blur only). */
+const bool kLiquidLens = bool.fromEnvironment('POINTER_LIQUID_LENS', defaultValue: true);
+
 /**
  * Optical values for one glass shape, in logical px where a length is meant (CalmGlassBrief 3.3 and the main review of
  * 2026-10-24): a 1.25 px specular rim lit from the upper left, a 5 px bevel that bends and slightly darkens the
@@ -48,6 +53,9 @@ class LiquidLens {
 
   final double innerHighlight;
 
+  /** Colour split at the refracting edge (0 = none). Positive bends blue more; negative bends red more, which leaves a blue fringe where a dark edge meets a light one. */
+  final double dispersion;
+
   const LiquidLens({
     required this.radius,
     this.band = 5,
@@ -66,12 +74,13 @@ class LiquidLens {
     this.hairline = 0.10,
     this.hairlineWidth = 0.75,
     this.innerHighlight = 0.85,
+    this.dispersion = 0,
   });
 }
 
 /**
  * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uHalf, uShape, uLight, uRimColor,
- * uBody, uEdge. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
+ * uBody, uEdge, uLens. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
  * the phone). Kept pure so tests can pin the layout and the range.
  */
 List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
@@ -99,6 +108,10 @@ List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
     lens.hairlineWidth / unit,
     lens.lightTheme ? lens.innerHighlight : 0,
     lens.lightTheme ? 1 : 0,
+    lens.dispersion,
+    0,
+    0,
+    0,
   ];
 }
 
@@ -112,6 +125,12 @@ class LiquidGlassShader {
   /** Starts loading once; safe to call from every build. */
   static void ensureLoaded() {
     if (_program != null || _loading != null) return;
+    FrameLog.ensureStarted();
+    if (!kLiquidLens) {
+      _loading = Future<void>.value();
+      debugPrint('[LiquidGlass] path=fallback-blur reason=POINTER_LIQUID_LENS=false');
+      return;
+    }
     if (!ui.ImageFilter.isShaderFilterSupported) {
       _loading = Future<void>.value();
       debugPrint('[LiquidGlass] path=fallback-blur reason=shader filters unsupported (not Impeller)');

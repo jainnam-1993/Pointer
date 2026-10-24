@@ -17,6 +17,7 @@ uniform vec4 uLight;    // 8-11: rim alpha on the lit (top-left) edge, rim alpha
 uniform vec4 uRimColor; // 12-15: rim rgb, bevel darkening
 uniform vec4 uBody;     // 16-19: body saturation, bevel saturation, light direction x, light direction y
 uniform vec4 uEdge;     // 20-23: hairline darkness, hairline width (units), inner top highlight, light-theme mode (0 or 1)
+uniform vec4 uLens;     // 24-27: dispersion (0 none; blue bends more), unused x3
 
 uniform sampler2D uTexture;
 
@@ -64,6 +65,12 @@ void main() {
   // Bevel: the edge band bends the backdrop inward (a convex lens), so content near the edge is magnified.
   vec2 q = p - n * uShape.z * bevel * bevel;
   vec4 col = sampleBackdrop(q / (2.0 * uHalf) + 0.5);
+  // Dispersion: red bends a little less and blue a little more than green, only where the bevel bends light.
+  if (abs(uLens.x) > 0.0) {
+    vec2 bend = n * uShape.z * bevel * bevel;
+    col.r = sampleBackdrop((p - bend * (1.0 - uLens.x)) / (2.0 * uHalf) + 0.5).r;
+    col.b = sampleBackdrop((p - bend * (1.0 + uLens.x)) / (2.0 * uHalf) + 0.5).b;
+  }
 
   // Vibrancy: the body lifts the colour of what is behind it; the bevel adds a touch more and darkens slightly (thickness).
   vec3 base = col.a > 0.0 ? col.rgb / col.a : col.rgb;  // unpremultiply
