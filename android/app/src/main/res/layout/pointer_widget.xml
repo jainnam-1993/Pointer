@@ -98,7 +98,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/widget_save" />
 
-        <View
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
@@ -129,12 +129,12 @@
             android:paddingEnd="16dp"
             android:contentDescription="@string/widget_next" />
 
-        <View
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <View
+        <FrameLayout
             android:layout_width="48dp"
             android:layout_height="1dp" />
     </LinearLayout>

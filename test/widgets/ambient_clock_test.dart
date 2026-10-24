@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/widgets/ambient.dart';
 
@@ -20,6 +21,23 @@ void main() {
     expect(clock.interval, const Duration(microseconds: 66667));
     clock.removeListener(listener);
     expect(clock.isRunning, isFalse);
+  });
+
+  testWidgets('follows battery saver changes the platform pushes while the app stays resumed', (tester) async {
+    Future<void> push(bool lowPower) => tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      AmbientClock.powerChannel.name,
+      AmbientClock.powerChannel.codec.encodeMethodCall(MethodCall('lowPowerModeChanged', lowPower)),
+      (_) {},
+    );
+
+    clock.addListener(listener);
+    expect(clock.interval, const Duration(microseconds: 33333));
+    await push(true);
+    expect(clock.interval, const Duration(microseconds: 66667));
+    expect(clock.isRunning, isTrue);
+    await push(false);
+    expect(clock.interval, const Duration(microseconds: 33333));
+    clock.removeListener(listener);
   });
 
   testWidgets('pauses when the app is backgrounded and resumes after', (tester) async {
