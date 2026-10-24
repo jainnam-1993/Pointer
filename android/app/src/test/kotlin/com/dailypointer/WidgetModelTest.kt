@@ -145,7 +145,8 @@ class WidgetModelTest {
     fun sizeBuckets() {
         assertEquals(WidgetSize.COMPACT, WidgetSize.forSize(120f, 60f))
         assertEquals(WidgetSize.MEDIUM, WidgetSize.forSize(250f, 110f))
-        assertEquals(WidgetSize.LARGE, WidgetSize.forSize(300f, 250f))
+        assertEquals(WidgetSize.LARGE, WidgetSize.forSize(300f, 300f))
+        assertEquals(WidgetSize.MEDIUM, WidgetSize.forSize(330f, 186f)) // 4x2 on a Fold: the quote needs the room
         WidgetSize.BREAKPOINTS.forEach { (size, dims) -> assertEquals(size, WidgetSize.forSize(dims.first, dims.second)) }
     }
 }

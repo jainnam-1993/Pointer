@@ -59,6 +59,31 @@ class WidgetLayoutTest {
         assertEquals(emptyList<String>(), missing)
     }
 
+    /**
+     * A long quote must never push the teacher line out: the quote takes only the space left over
+     * (0dp height, weight 1) and the teacher line sits outside the quote's growing area.
+     */
+    @Test
+    fun quoteNeverDisplacesTheTeacherLine() {
+        val problems = mutableListOf<String>()
+        for (name in listOf("pointer_widget.xml", "pointer_widget_large.xml")) {
+            val doc = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }.newDocumentBuilder().parse(File("src/main/res/layout/$name"))
+            val ns = "http://schemas.android.com/apk/res/android"
+            fun find(e: Element, id: String): Element? {
+                if (e.getAttributeNS(ns, "id") == "@+id/$id") return e
+                val kids = e.childNodes
+                for (i in 0 until kids.length) (kids.item(i) as? Element)?.let { k -> find(k, id)?.let { return it } }
+                return null
+            }
+            val root = doc.documentElement
+            val content = find(root, "widget_content")!!
+            if (content.getAttributeNS(ns, "layout_height") != "0dp" || content.getAttributeNS(ns, "layout_weight") != "1") problems += "$name: quote is not 0dp/weight 1"
+            val area = find(root, "widget_content_area")!!
+            if (find(area, "widget_teacher") != null) problems += "$name: teacher line is inside the quote area"
+        }
+        assertEquals(emptyList<String>(), problems)
+    }
+
     @Test
     fun widgetLayoutsUseOnlyRemoteViewsClasses() {
         val layouts = widgetLayouts()
