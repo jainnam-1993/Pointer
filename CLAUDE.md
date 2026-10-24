@@ -99,6 +99,7 @@ The tokens live in `app_theme.dart`. Read colors through `context.colors` and gl
 
 ## Conventions
 
+- Build for global distribution. Everything must work for any user right after install, with no manual setup and no per-device or per-OEM steps: battery behavior, notifications, the widget's rotation and rendering adapt on their own. The maintainer's phone (a vivo foldable) is a test device, not the target. Rendering must be correct on every GPU and backend (Impeller Vulkan and OpenGLES, mediump GPUs) and at any devicePixelRatio. Verify UX on a real device by driving it and screenshotting each step, not only on the emulator.
 - Doc comments use `/** */`. The formatter page width is 150.
 - Conventional Commits, staged with explicit pathspecs. Do not commit `test/golden/overhaul/failures/`.
 - Use `context.colors`, `AppType`, `AppSpacing`, `Motion` and `AppIcons` instead of literals. Respect `Motion.reduce(context)`.
