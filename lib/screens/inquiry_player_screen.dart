@@ -56,6 +56,9 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
   /** Timer controlling automatic phase transitions. */
   Timer? _phaseTimer;
 
+  /** The phase wait in flight; completed with `false` when the sequence is cancelled. */
+  Completer<bool>? _phaseCompleter;
+
   /** Whether a timed sequence is currently running. */
   bool _isPlaying = false;
 
@@ -71,7 +74,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
 
   @override
   void dispose() {
-    _phaseTimer?.cancel();
+    _cancelSequence();
     _timerController?.dispose();
     super.dispose();
   }
@@ -121,8 +124,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
     // Setup phase - if inquiry has setup text, show it with visual timer
     if (_currentInquiry!.setup != null) {
       _startVisualTimer(InquiryPlayerScreen.setupDuration);
-      await _waitForDuration(InquiryPlayerScreen.setupDuration);
-      if (!mounted) return;
+      if (!await _waitForDuration(InquiryPlayerScreen.setupDuration) || !mounted) return;
     }
 
     // Question phase
@@ -135,8 +137,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
     _startVisualTimer(InquiryPlayerScreen.questionDuration);
 
     // Wait for the question duration
-    await _waitForDuration(InquiryPlayerScreen.questionDuration);
-    if (!mounted) return;
+    if (!await _waitForDuration(InquiryPlayerScreen.questionDuration) || !mounted) return;
 
     // Stop visual timer
     _stopVisualTimer();
@@ -154,15 +155,26 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
     _isPlaying = false;
   }
 
-  /** Waits for the given [duration] using a [Timer], returning a [Future] that completes when done. */
-  Future<void> _waitForDuration(Duration duration) async {
-    final completer = Completer<void>();
+  /**
+   * Waits for [duration]. Resolves `true` when the time elapsed, or `false` when
+   * [_cancelSequence] ended the sequence first, so the awaiting caller stops instead of hanging.
+   */
+  Future<bool> _waitForDuration(Duration duration) {
+    final completer = Completer<bool>();
+    _phaseCompleter = completer;
     _phaseTimer = Timer(duration, () {
-      if (mounted) {
-        completer.complete();
-      }
+      if (!completer.isCompleted) completer.complete(true);
     });
     return completer.future;
+  }
+
+  /** Cancels the running sequence: its phase timer, its pending wait, and its countdown ring. */
+  void _cancelSequence() {
+    _phaseTimer?.cancel();
+    final pending = _phaseCompleter;
+    if (pending != null && !pending.isCompleted) pending.complete(false);
+    _phaseCompleter = null;
+    _isPlaying = false;
   }
 
   void _triggerHaptic() async {
@@ -171,8 +183,8 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
 
   /** Loads a new random inquiry and restarts the sequence. */
   void _onAnother() {
-    _phaseTimer?.cancel();
-    _isPlaying = false;
+    _cancelSequence();
+    _stopVisualTimer();
 
     // Load a new random inquiry
     setState(() {
@@ -189,14 +201,16 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
 
   /** Cancels the current sequence and pops back to the inquiry list. */
   void _onDone() {
-    _phaseTimer?.cancel();
+    _cancelSequence();
     _triggerHaptic();
     context.pop();
   }
 
   /** Manually advance to the next phase (for testing or user skip) */
   void advancePhase() {
-    _phaseTimer?.cancel();
+    // Skipping hands control to the user: the timed sequence and its countdown end here.
+    _cancelSequence();
+    _stopVisualTimer();
 
     setState(() {
       switch (_phase) {
