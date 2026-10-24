@@ -101,7 +101,7 @@
             android:padding="13dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_heart_outline"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/widget_save_circle"
             android:contentDescription="@string/widget_save" />
 
         <LinearLayout

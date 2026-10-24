@@ -12,7 +12,7 @@ class FrostPaletteTest {
         "green" to 0xFF10A040.toInt(), "magenta" to 0xFFD000C0.toInt(),
     )
 
-    /** Pointing text 7:1 and secondary 4.5:1 over every shade of the card, for every wallpaper and mode. */
+    /** White pointing text 4.5:1 and 70% white secondary 3:1 over every shade of the card, for every wallpaper and mode. */
     @Test
     fun textContrastHoldsAcrossWallpapers() {
         val failures = mutableListOf<String>()
@@ -20,7 +20,7 @@ class FrostPaletteTest {
             val palette = FrostPalette.from(p, s, null, dark)
             val inkWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.ink, it) }
             val secWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.secondary, it) }
-            if (inkWorst < 7.0 || secWorst < 4.5) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
+            if (inkWorst < 4.5 || secWorst < 3.0) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
         }
         assertEquals(emptyList<String>(), failures)
     }
@@ -50,18 +50,22 @@ class FrostPaletteTest {
         }
     }
 
+    /** The target's mid-tone glass: never near-white or near-black, a little deeper in dark mode. */
     @Test
-    fun lightModeIsCalmPaperAndDarkModeIsDeepInk() {
-        for (c in sweep.values) {
-            assertTrue(FrostPalette.luminance(FrostPalette.from(c, null, null, dark = false).top) > 0.45)
-            assertTrue(FrostPalette.luminance(FrostPalette.from(c, null, null, dark = true).top) < 0.12)
+    fun cardIsAMidTonePanelWithWhiteText() {
+        for ((name, c) in sweep) for (dark in listOf(false, true)) {
+            val p = FrostPalette.from(c, null, null, dark)
+            val l = Oklch.of(p.top).l
+            val range = if (dark) 0.30..0.45 else 0.30..0.55
+            assertTrue("$name dark=$dark L=$l", l in range)
+            assertTrue("$name dark=$dark ink is white", p.lightInk && FrostPalette.luminance(p.ink) > 0.85)
         }
     }
 
     @Test
-    fun missingWallpaperColorsFallBackToTheAppPalette() {
+    fun missingWallpaperColorsFallBackToACalmVioletPanel() {
         val p = FrostPalette.from(null, null, null, dark = false)
-        assertEquals(0xFFF7F5F2.toInt(), p.top)
-        assertTrue(FrostPalette.contrast(p.ink, p.top) >= 4.5)
+        assertTrue(Oklch.of(p.top).l in 0.30..0.55)
+        assertTrue(p.cardExtremes().minOf { FrostPalette.contrast(p.ink, it) } >= 4.5)
     }
 }
