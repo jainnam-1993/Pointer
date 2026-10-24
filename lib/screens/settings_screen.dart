@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
+import '../widgets/pointer_toast.dart';
 import '../services/workmanager_service.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/pointer_scaffold.dart';
@@ -156,9 +157,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: const Text('Could not open link'), backgroundColor: Colors.red.shade700, behavior: SnackBarBehavior.floating));
+      PointerToast.show(context, 'Could not open link');
     }
   }
 
@@ -240,13 +239,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         _showDeveloperOptions = !_showDeveloperOptions;
         _versionTapCount = 0;
         Haptics.success();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_showDeveloperOptions ? 'Developer options enabled' : 'Developer options disabled'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        PointerToast.show(context, _showDeveloperOptions ? 'Developer options enabled' : 'Developer options disabled');
       }
     });
   }
@@ -454,9 +447,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       final notificationService = ref.read(notificationServiceProvider);
                       await notificationService.sendTestNotification();
                       if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
+                        PointerToast.show(context, 'Test notification sent');
                       }
                     },
                   ),
@@ -471,12 +462,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                         uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
                       );
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Background notification scheduled in 1 minute. You can close the app.'),
-                            duration: Duration(seconds: 4),
-                          ),
-                        );
+                        PointerToast.show(context, 'Background notification scheduled in 1 minute. You can close the app.');
                       }
                     },
                   ),
@@ -490,9 +476,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       await notificationService.debugPrintPendingNotifications();
                       final pending = await notificationService.getPendingNotifications();
                       if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Pending notifications: ${pending.length}'), duration: const Duration(seconds: 4)));
+                        PointerToast.show(context, 'Pending notifications: ${pending.length}');
                       }
                     },
                   ),

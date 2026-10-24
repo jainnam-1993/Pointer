@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/pointings.dart';
 import '../services/share_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/pointer_toast.dart';
 import '../utils/error_helpers.dart';
 import '../widgets/share_templates/share_card.dart';
 import '../utils/haptics.dart';
@@ -464,7 +465,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       case 'clipboard':
         await shareService.copyToClipboard(widget.pointing);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+          PointerToast.show(context, 'Copied to clipboard');
         }
         break;
       case 'text':
@@ -473,7 +474,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       case 'dayone':
         final success = await shareService.exportToDayOne(widget.pointing);
         if (!success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Day One app not installed')));
+          PointerToast.show(context, 'Day One app not installed');
         }
         break;
     }
