@@ -7,4 +7,6 @@
     <string name="widget_saved">Saved to favorites</string>
     <string name="widget_previous">Previous pointing</string>
     <string name="widget_next">Next pointing</string>
+    <string name="widget_preview_content">Rest doesn&apos;t come from stopping. Notice what has never been disturbed.</string>
+    <string name="widget_preview_teacher">— Papaji · Advaita Vedanta</string>
 </resources>

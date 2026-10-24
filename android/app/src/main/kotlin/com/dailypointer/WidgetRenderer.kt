@@ -78,7 +78,7 @@ object WidgetRenderer {
     }
 
     private fun views(context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState): RemoteViews {
-        val views = RemoteViews(context.packageName, R.layout.pointer_widget)
+        val views = RemoteViews(context.packageName, layoutFor(size))
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
             views.setViewVisibility(R.id.widget_header, View.GONE)
@@ -90,20 +90,35 @@ object WidgetRenderer {
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
         views.setTextViewText(R.id.widget_tradition, pointing.tradition)
         views.setViewVisibility(R.id.widget_header, if (size.showHeader) View.VISIBLE else View.GONE)
-        views.setTextViewText(R.id.widget_teacher, if (pointing.teacher.isEmpty()) "" else "- ${pointing.teacher}")
-        views.setViewVisibility(R.id.widget_teacher, if (size.showTeacher && pointing.teacher.isNotEmpty()) View.VISIBLE else View.GONE)
+        views.setTextViewText(R.id.widget_teacher, teacherLine(pointing, size))
+        views.setViewVisibility(R.id.widget_teacher, if (size.showTeacher && teacherLine(pointing, size).isNotEmpty()) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.widget_action_bar, if (size.showActions) View.VISIBLE else View.GONE)
 
-        val saved = state.isFavorite(pointing.id)
-        views.setImageViewResource(R.id.widget_save, if (saved) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
-        views.setContentDescription(R.id.widget_save, context.getString(if (saved) R.string.widget_saved else R.string.widget_save))
-
-        // Open and Save carry the id that is on screen, so they always act on the shown item.
+        // Open carries the id that is on screen, so it always acts on the shown item.
         views.setOnClickPendingIntent(R.id.widget_content_area, openIntent(context, widgetId, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_save, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_SAVE, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_prev, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_PREV, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_next, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_NEXT, pointing.id))
+        // The small layout has no controls; only sizes with an action bar wire Save, Previous and Next.
+        if (size.showActions) {
+            val saved = state.isFavorite(pointing.id)
+            views.setImageViewResource(R.id.widget_save, if (saved) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
+            views.setContentDescription(R.id.widget_save, context.getString(if (saved) R.string.widget_saved else R.string.widget_save))
+            views.setOnClickPendingIntent(R.id.widget_save, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_SAVE, pointing.id))
+            views.setOnClickPendingIntent(R.id.widget_prev, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_PREV, pointing.id))
+            views.setOnClickPendingIntent(R.id.widget_next, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_NEXT, pointing.id))
+        }
         return views
+    }
+
+    /** Each size has its own layout (small, medium, large) rather than one stretched layout. */
+    fun layoutFor(size: WidgetSize): Int = when (size) {
+        WidgetSize.COMPACT -> R.layout.pointer_widget_small
+        WidgetSize.MEDIUM -> R.layout.pointer_widget
+        WidgetSize.LARGE -> R.layout.pointer_widget_large
+    }
+
+    /** Medium has no tradition eyebrow, so its footer carries the tradition after the teacher. */
+    fun teacherLine(pointing: WidgetPointing, size: WidgetSize): String {
+        if (pointing.teacher.isEmpty()) return if (size == WidgetSize.MEDIUM) pointing.tradition else ""
+        return if (size == WidgetSize.MEDIUM) "\u2014 ${pointing.teacher} \u00b7 ${pointing.tradition}" else "\u2014 ${pointing.teacher}"
     }
 
     private fun openIntent(context: Context, widgetId: Int, pointingId: String): PendingIntent {

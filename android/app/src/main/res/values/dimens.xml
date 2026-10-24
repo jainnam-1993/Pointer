@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget geometry. values-v31 swaps the radii for the launcher's own, so the card matches
+     the system corner on Android 12+ and the inner pill stays concentric with it. -->
+<resources>
+    <dimen name="widget_corner_radius">24dp</dimen>
+    <dimen name="widget_inner_radius">16dp</dimen>
+    <dimen name="widget_padding">16dp</dimen>
+    <dimen name="widget_touch_target">48dp</dimen>
+    <dimen name="widget_min_width">250dp</dimen>
+    <dimen name="widget_min_height">110dp</dimen>
+    <dimen name="widget_min_resize_width">110dp</dimen>
+    <dimen name="widget_min_resize_height">40dp</dimen>
+    <dimen name="widget_max_resize_width">600dp</dimen>
+    <dimen name="widget_max_resize_height">420dp</dimen>
+</resources>
