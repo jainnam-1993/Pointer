@@ -40,6 +40,11 @@ class MainActivity : FlutterActivity() {
                         openNotificationSettings()
                         result.success(null)
                     }
+                    // Ambient clock drops to 15 fps while battery saver is on (UNVERIFIED on device).
+                    "isLowPowerMode" -> {
+                        val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+                        result.success(pm.isPowerSaveMode)
+                    }
                     else -> result.notImplemented()
                 }
             }

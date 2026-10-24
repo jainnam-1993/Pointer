@@ -126,7 +126,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       expect(find.text('Advaita Vedanta'), findsOneWidget);
-      expect(find.text('ॐ'), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.advaita]!.lineIcon), findsOneWidget);
       expect(find.text('The path of non-duality. You are already what you seek.'), findsOneWidget);
     });
 
@@ -134,7 +134,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       expect(find.text('Zen Buddhism'), findsOneWidget);
-      expect(find.text('◯'), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.zen]!.lineIcon), findsOneWidget);
       expect(find.text('Direct pointing. No words, no concepts.'), findsOneWidget);
     });
 
@@ -142,7 +142,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       expect(find.text('Direct Path'), findsOneWidget);
-      expect(find.text('◇'), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.direct]!.lineIcon), findsOneWidget);
       expect(find.text('Contemporary clarity. Awareness recognizing itself.'), findsOneWidget);
     });
 
@@ -150,7 +150,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       expect(find.text('Contemporary'), findsOneWidget);
-      expect(find.text('✦'), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.contemporary]!.lineIcon), findsOneWidget);
       expect(find.text('Modern teachers. Ancient truth, fresh words.'), findsOneWidget);
     });
 
@@ -158,7 +158,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       expect(find.text('Original'), findsOneWidget);
-      expect(find.text('∞'), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.original]!.lineIcon), findsOneWidget);
       expect(find.text('Written for now. This moment, this life.'), findsOneWidget);
     });
 
@@ -188,7 +188,7 @@ void main() {
         final info = entry.value;
         final count = getPointingsByTradition(entry.key).length;
 
-        expect(find.text(info.icon), findsOneWidget);
+        expect(find.byIcon(info.lineIcon), findsOneWidget);
         expect(find.text(info.name), findsOneWidget);
         expect(find.text(info.description), findsOneWidget);
         // Count text may appear multiple times if same count shared by traditions
@@ -225,7 +225,7 @@ void main() {
 
       // Bottom sheet should be visible - verify by checking for doubled content
       // Icon appears twice: in list + in sheet
-      expect(find.text('ॐ'), findsNWidgets(2));
+      expect(find.byIcon(traditions[Tradition.advaita]!.lineIcon), findsNWidgets(2));
       // Close button only appears in sheet
       expect(find.text('Close'), findsOneWidget);
     });
@@ -238,7 +238,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show icon in detail sheet (icon appears twice: in list + in sheet)
-      expect(find.text('ॐ'), findsNWidgets(2));
+      expect(find.byIcon(traditions[Tradition.advaita]!.lineIcon), findsNWidgets(2));
     });
 
     testWidgets('detail sheet shows tradition name', (tester) async {

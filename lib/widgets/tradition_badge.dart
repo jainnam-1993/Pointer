@@ -41,7 +41,7 @@ class TraditionBadge extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(info.icon, style: const TextStyle(fontSize: 18)),
+                Icon(info.lineIcon, size: 19.8),
                 const SizedBox(width: 8),
                 Text(
                   info.name,

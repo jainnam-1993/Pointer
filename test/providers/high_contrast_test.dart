@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,7 +106,7 @@ void main() {
         expect(find.byType(Container), findsWidgets);
       });
 
-      testWidgets('renders with BackdropFilter in normal mode', (tester) async {
+      testWidgets('renders analytic frost in normal mode', (tester) async {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
@@ -120,8 +121,9 @@ void main() {
           ),
         );
 
-        // Normal mode should have BackdropFilter for blur effect
-        expect(find.byType(BackdropFilter), findsOneWidget);
+        // Normal mode paints analytic frost; no live blur
+        expect(find.byType(BackdropFilter), findsNothing);
+        expect(find.byType(AmbientFrost), findsOneWidget);
       });
 
       testWidgets('has strong visible border in high contrast mode', (tester) async {

@@ -34,6 +34,7 @@ import 'library/lineage_teachings_screen.dart';
 import 'library/mood_teachings_screen.dart';
 import 'library/topic_teachings_screen.dart';
 import '../utils/haptics.dart';
+import '../theme/app_icons.dart';
 
 // Re-export all library subfiles for backward compatibility
 export 'library/library_models.dart';
@@ -508,7 +509,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: _BrowseCard(
-                  icon: '🙏',
+                  icon: AppIcons.teacher,
                   name: teacher,
                   description: lineage,
                   count: count,
@@ -562,7 +563,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: _BrowseCard(
-                  icon: data.info.icon,
+                  icon: data.info.lineIcon,
                   name: data.info.name,
                   description: data.info.description,
                   count: data.count,
@@ -830,7 +831,7 @@ class _BrowseModeSheet extends StatelessWidget {
 
 /** Generic browse card for teachers, lineages, moods */
 class _BrowseCard extends StatelessWidget {
-  final String icon;
+  final IconData icon;
   final String name;
   final String description;
   final int count;
@@ -854,9 +855,7 @@ class _BrowseCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-              child: Center(
-                child: Text(icon, style: TextStyle(fontSize: 20, color: colors.accent)),
-              ),
+              child: Center(child: Icon(icon, size: 22, color: colors.accent)),
             ),
             const SizedBox(width: 14),
 
@@ -932,11 +931,7 @@ class _FeaturedArticleCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                  child: Semantics(
-                    excludeSemantics: true,
-                    label: traditionInfo.name,
-                    child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
-                  ),
+                  child: Semantics(excludeSemantics: true, label: traditionInfo.name, child: Icon(traditionInfo.lineIcon, size: 13.2)),
                 ),
                 const SizedBox(width: 8),
                 Expanded(

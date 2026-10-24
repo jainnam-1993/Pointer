@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/theme/app_theme.dart';
 
@@ -56,64 +57,34 @@ void main() {
   });
 
   group('AnimatedGradient OLED Mode Tests', () {
-    testWidgets('a stuck OLED flag no longer forces a black background', (WidgetTester tester) async {
-      // Setup - Mock SharedPreferences with OLED mode enabled
-      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": true}'});
-      final prefs = await SharedPreferences.getInstance();
+    Widget app(bool oled) => ProviderScope(
+      overrides: [
+        oledModeProvider.overrideWith((ref) => oled),
+        themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
+        reduceMotionOverrideProvider.overrideWith((ref) => null),
+      ],
+      child: MaterialApp(
+        theme: AppTheme.dark,
+        home: const Scaffold(body: AnimatedGradient()),
+      ),
+    );
 
-      // Build widget with OLED mode enabled
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(body: AnimatedGradient()),
-          ),
-        ),
-      );
-
-      // Find the Container widget
-      final containerFinder = find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container));
-
-      expect(containerFinder, findsOneWidget);
-
-      // Get the Container widget
-      final Container container = tester.widget(containerFinder);
-
-      // Assert - Container should have pure black color, no gradient
-      expect(container.decoration, isA<BoxDecoration>());
-      expect(container.color, isNull);
+    testWidgets('OLED mode paints pure black with no aurora or motes', (WidgetTester tester) async {
+      await tester.pumpWidget(app(true));
+      final p = tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette;
+      expect(p, AmbientPalette.oled);
+      for (final c in [p.top, p.mid, p.bottom]) {
+        expect(c, const Color(0xFF000000));
+      }
+      expect(p.aurora, 0);
+      expect(p.motes, 0);
     });
 
-    testWidgets('returns gradient when OLED mode disabled', (WidgetTester tester) async {
-      // Setup - Mock SharedPreferences with OLED mode disabled
-      SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": false}'});
-      final prefs = await SharedPreferences.getInstance();
-
-      // Build widget with OLED mode disabled
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), reduceMotionOverrideProvider.overrideWith((ref) => null)],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: const Scaffold(body: AnimatedGradient()),
-          ),
-        ),
-      );
-
-      // Find the Container widget
-      final containerFinder = find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container));
-
-      expect(containerFinder, findsOneWidget);
-
-      // Get the Container widget
-      final Container container = tester.widget(containerFinder);
-
-      // Assert - Container should have gradient decoration (not pure black)
-      expect(container.decoration, isA<BoxDecoration>());
-      final decoration = container.decoration as BoxDecoration;
-      expect(decoration.gradient, isNotNull);
-      expect(decoration.gradient, isA<LinearGradient>());
+    testWidgets('non-OLED dark mode has aurora color', (WidgetTester tester) async {
+      await tester.pumpWidget(app(false));
+      final p = tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette;
+      expect(p, isNot(AmbientPalette.oled));
+      expect(p.aurora, greaterThan(0));
     });
   });
 
@@ -260,17 +231,14 @@ void main() {
       );
 
       // Initially should have gradient (OLED mode off)
-      Container container = tester.widget(find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)));
-      expect(container.decoration, isA<BoxDecoration>());
+      expect(tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette, isNot(AmbientPalette.oled));
 
       // Tap button to enable OLED mode
       await tester.tap(find.text('Enable OLED'));
       await tester.pumpAndSettle();
 
       // Now should be pure black (OLED mode on)
-      container = tester.widget(find.descendant(of: find.byType(AnimatedGradient), matching: find.byType(Container)));
-      expect(container.color, equals(Colors.black));
-      expect(container.decoration, isNull);
+      expect(tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette, AmbientPalette.oled);
     });
   });
 }

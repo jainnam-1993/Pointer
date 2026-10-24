@@ -326,9 +326,8 @@ class GlassLevel {
  *
  * Feeds the analytic-frost glass in [GlassCard], [GlassButton], and
  * [GlassDialog]; read it with [GlassMaterial.of]. [levels] holds the light,
- * standard, and heavy intensities in that order. [onSurfaceTop] and
- * [onSurfaceBottom] are the plain fill used where frost is suppressed (opaque
- * sheets). Contrast for every text color over every fill is enforced by
+ * standard, and heavy intensities in that order; [onSurfaceLevels] are the
+ * plain fills used where FrostScope suppresses frost (opaque sheets). Contrast for every text color over every fill is enforced by
  * test/theme/contrast_test.dart.
  */
 @immutable
@@ -339,11 +338,12 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   /** Light, standard, heavy. */
   final List<GlassLevel> levels;
 
-  /** Plain fill at the top-left when frost is suppressed. */
-  final Color onSurfaceTop;
+  /** Plain (unfrosted) fill per intensity where frost is suppressed (opaque sheets); frost is ignored. */
+  final List<GlassLevel> onSurfaceLevels;
 
-  /** Plain fill at the bottom-right when frost is suppressed. */
-  final Color onSurfaceBottom;
+  /** Fill for primary and secondary [GlassButton]s. */
+  final GlassLevel buttonPrimary;
+  final GlassLevel buttonSecondary;
 
   /** Rim (border) color at the lit top-left edge. */
   final Color rimTop;
@@ -375,8 +375,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   const GlassMaterial({
     required this.fill,
     required this.levels,
-    required this.onSurfaceTop,
-    required this.onSurfaceBottom,
+    required this.onSurfaceLevels,
+    required this.buttonPrimary,
+    required this.buttonSecondary,
     required this.rimTop,
     required this.rimBottom,
     this.rimWidth = 1.0,
@@ -391,10 +392,12 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   static const dark = GlassMaterial(
     fill: Colors.white,
     levels: [GlassLevel(0.6, 0.07, 0.03), GlassLevel(0.8, 0.10, 0.04), GlassLevel(1.0, 0.16, 0.07)],
-    onSurfaceTop: Color(0x24FFFFFF),
-    onSurfaceBottom: Color(0x0FFFFFFF),
-    rimTop: Color(0x47FFFFFF),
-    rimBottom: Color(0x0FFFFFFF),
+    onSurfaceLevels: [GlassLevel(0, 0.10, 0.05), GlassLevel(0, 0.14, 0.07), GlassLevel(0, 0.18, 0.09)],
+    buttonPrimary: GlassLevel(0.7, 0.30, 0.15),
+    buttonSecondary: GlassLevel(0.7, 0.22, 0.10),
+    rimTop: Color(0x38FFFFFF),
+    rimBottom: Color(0x11FFFFFF),
+    rimWidth: 1.5,
     highlight: Color(0x12FFFFFF),
     shadow: Color(0x52000000),
   );
@@ -402,8 +405,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   static const light = GlassMaterial(
     fill: Colors.white,
     levels: [GlassLevel(0.6, 0.16, 0.08), GlassLevel(0.8, 0.22, 0.12), GlassLevel(1.0, 0.34, 0.20)],
-    onSurfaceTop: Color(0x091A0A3A),
-    onSurfaceBottom: Color(0x051A0A3A),
+    onSurfaceLevels: [GlassLevel(0, 0.70, 0.45), GlassLevel(0, 0.85, 0.60), GlassLevel(0, 0.95, 0.75)],
+    buttonPrimary: GlassLevel(0.7, 0.92, 0.65),
+    buttonSecondary: GlassLevel(0.7, 0.85, 0.55),
     rimTop: Color(0x14000000),
     rimBottom: Color(0x08000000),
     highlight: Color(0x59FFFFFF),
@@ -414,8 +418,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   static const oled = GlassMaterial(
     fill: Colors.white,
     levels: [GlassLevel(0.5, 0.05, 0.02), GlassLevel(0.7, 0.07, 0.03), GlassLevel(0.9, 0.11, 0.05)],
-    onSurfaceTop: Color(0x1AFFFFFF),
-    onSurfaceBottom: Color(0x0AFFFFFF),
+    onSurfaceLevels: [GlassLevel(0, 0.08, 0.04), GlassLevel(0, 0.12, 0.06), GlassLevel(0, 0.16, 0.08)],
+    buttonPrimary: GlassLevel(0.6, 0.22, 0.10),
+    buttonSecondary: GlassLevel(0.6, 0.15, 0.07),
     rimTop: Color(0x33FFFFFF),
     rimBottom: Color(0x0AFFFFFF),
     highlight: Color(0x0DFFFFFF),
@@ -425,8 +430,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   static const highContrast = GlassMaterial(
     fill: Color(0xFF1A1A1A),
     levels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
-    onSurfaceTop: Color(0xFF1A1A1A),
-    onSurfaceBottom: Color(0xFF1A1A1A),
+    onSurfaceLevels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    buttonPrimary: GlassLevel(0, 1, 1),
+    buttonSecondary: GlassLevel(0, 1, 1),
     rimTop: Colors.white,
     rimBottom: Colors.white,
     rimWidth: 2,
@@ -474,8 +480,30 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     end: Alignment.bottomRight,
   );
 
-  /** Plain fill used where frost is suppressed (opaque sheets and dialogs). */
-  LinearGradient get onSurfaceFill => LinearGradient(colors: [onSurfaceTop, onSurfaceBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
+  /** Plain fill for [level] where frost is suppressed (opaque sheets and dialogs). */
+  LinearGradient onSurfaceAt(int level) => _gradient(onSurfaceLevels[level]);
+
+  /** Button fill. */
+  LinearGradient buttonFill({required bool primary}) => _gradient(primary ? buttonPrimary : buttonSecondary);
+
+  LinearGradient _gradient(GlassLevel l) => LinearGradient(
+    colors: [
+      fill.withValues(alpha: l.top),
+      fill.withValues(alpha: l.bottom),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** The rim gradient with a custom lit color (fades to 30%). */
+  LinearGradient rimWith(Color c) => LinearGradient(
+    colors: [
+      c,
+      c.withValues(alpha: c.a * 0.3),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   /** The rim gradient, lit from the top-left. */
   LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
@@ -496,8 +524,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     return GlassMaterial(
       fill: fill ?? this.fill,
       levels: levels ?? this.levels,
-      onSurfaceTop: onSurfaceTop,
-      onSurfaceBottom: onSurfaceBottom,
+      onSurfaceLevels: onSurfaceLevels,
+      buttonPrimary: buttonPrimary,
+      buttonSecondary: buttonSecondary,
       rimTop: rimTop ?? this.rimTop,
       rimBottom: rimBottom ?? this.rimBottom,
       rimWidth: rimWidth,
@@ -517,8 +546,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     return GlassMaterial(
       fill: Color.lerp(fill, other.fill, t)!,
       levels: [for (var i = 0; i < levels.length; i++) levels[i].lerp(other.levels[i], t)],
-      onSurfaceTop: Color.lerp(onSurfaceTop, other.onSurfaceTop, t)!,
-      onSurfaceBottom: Color.lerp(onSurfaceBottom, other.onSurfaceBottom, t)!,
+      onSurfaceLevels: [for (var i = 0; i < onSurfaceLevels.length; i++) onSurfaceLevels[i].lerp(other.onSurfaceLevels[i], t)],
+      buttonPrimary: buttonPrimary.lerp(other.buttonPrimary, t),
+      buttonSecondary: buttonSecondary.lerp(other.buttonSecondary, t),
       rimTop: Color.lerp(rimTop, other.rimTop, t)!,
       rimBottom: Color.lerp(rimBottom, other.rimBottom, t)!,
       rimWidth: l(rimWidth, other.rimWidth),

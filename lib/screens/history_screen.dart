@@ -177,11 +177,7 @@ class _HistoryCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Semantics(
-                        excludeSemantics: true,
-                        label: traditionInfo.name,
-                        child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 16)),
-                      ),
+                      Semantics(excludeSemantics: true, label: traditionInfo.name, child: Icon(traditionInfo.lineIcon, size: 17.6)),
                       const SizedBox(width: 8),
                       Text(
                         traditionInfo.name,

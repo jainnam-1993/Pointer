@@ -183,7 +183,7 @@ class _TraditionCard extends StatelessWidget {
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: isEnabled ? 1.0 : 0.5,
-                  child: Text(info.icon, style: const TextStyle(fontSize: 28)),
+                  child: Icon(info.lineIcon, size: 30.8),
                 ),
               ),
             ),
@@ -280,7 +280,7 @@ class _TraditionDetailSheet extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      child: BackdropFilter(
+      child: BackdropFilter.grouped(
         filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
         child: Container(
           decoration: BoxDecoration(
@@ -298,7 +298,7 @@ class _TraditionDetailSheet extends StatelessWidget {
                   const DragHandle(bottomMargin: 20),
                   Row(
                     children: [
-                      Text(info.icon, style: const TextStyle(fontSize: 32)),
+                      Icon(info.lineIcon, size: 35.2),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(

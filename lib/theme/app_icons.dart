@@ -38,6 +38,34 @@ class AppIcons {
   static const IconData share = PhosphorIconsLight.export;
   static const IconData info = PhosphorIconsLight.info;
 
+  /** A teacher (library browse card). */
+  static const IconData teacher = PhosphorIconsLight.quotes;
+
   /** Stands for timer-and-streak meditation apps on the onboarding contrast page. */
   static const IconData timer = PhosphorIconsLight.timer;
+
+  /** Every icon above by name, for tests and audits. */
+  static const Map<String, IconData> all = {
+    'home': home,
+    'homeActive': homeActive,
+    'inquiry': inquiry,
+    'inquiryActive': inquiryActive,
+    'library': library,
+    'libraryActive': libraryActive,
+    'settings': settings,
+    'settingsActive': settingsActive,
+    'tipTea': tipTea,
+    'tipCushion': tipCushion,
+    'tipIncense': tipIncense,
+    'tipRetreat': tipRetreat,
+    'tipFallback': tipFallback,
+    'heart': heart,
+    'chevronDown': chevronDown,
+    'check': check,
+    'close': close,
+    'share': share,
+    'info': info,
+    'timer': timer,
+    'teacher': teacher,
+  };
 }

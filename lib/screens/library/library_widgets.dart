@@ -193,7 +193,7 @@ class TeachingCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(traditionInfo.icon, style: const TextStyle(fontSize: 11)),
+                        Icon(traditionInfo.lineIcon, size: 12.1),
                         const SizedBox(width: 4),
                         Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 11)),
                       ],
@@ -254,7 +254,7 @@ class FilterSheet<T> extends StatelessWidget {
     return RepaintBoundary(
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
           child: Container(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),

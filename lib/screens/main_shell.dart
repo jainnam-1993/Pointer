@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 import '../theme/app_icons.dart';
 
@@ -12,7 +11,7 @@ import '../theme/app_icons.dart';
  * Root shell widget providing bottom navigation and tab management.
  *
  * Wraps the [StatefulNavigationShell] from GoRouter with horizontal swipe
- * gestures for tab switching, [FloatingParticles] background, and a
+ * gestures for tab switching (dust motes now come from the ambient shader), and a
  * glassmorphic [_BottomNavBar]. Hides the nav bar in zen mode.
  *
  * The [navigationShell] must NOT be wrapped in [AnimatedSwitcher] or
@@ -69,38 +68,26 @@ class _MainShellState extends ConsumerState<MainShell> {
           if (didPop) return;
           widget.navigationShell.goBranch(0);
         },
-        child: Scaffold(
-          body: Stack(
-            children: [
-              // Global particles effect (behind content) — RepaintBoundary isolates
-              // continuous particle animations from triggering full-tree repaints
-              const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-              content,
-            ],
-          ),
-          extendBody: true,
-        ),
+        child: Scaffold(body: Stack(children: [content]), extendBody: true),
       );
     }
 
+    // BackdropGroup lets the tab bar share one backdrop read with any other
+    // grouped blur in the shell (BackdropFilter.grouped).
     return PopScope(
       canPop: !shouldInterceptBack,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         widget.navigationShell.goBranch(0);
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            // Global particles effect (behind content)
-            const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-            content,
-          ],
-        ),
-        extendBody: true,
-        bottomNavigationBar: _BottomNavBar(
-          currentIndex: currentIndex,
-          onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+      child: BackdropGroup(
+        child: Scaffold(
+          body: Stack(children: [content]),
+          extendBody: true,
+          bottomNavigationBar: _BottomNavBar(
+            currentIndex: currentIndex,
+            onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+          ),
         ),
       ),
     );
@@ -196,7 +183,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
+        // Live blur stays here: the tab bar floats over scrolling content.
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
           child: Container(
             height: navHeight,

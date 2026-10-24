@@ -284,7 +284,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       key: key,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ExcludeSemantics(child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 13))),
+        ExcludeSemantics(child: Icon(traditionInfo.lineIcon, size: 14, color: colors.textMuted)),
         const SizedBox(width: 6),
         Flexible(
           child: Text(

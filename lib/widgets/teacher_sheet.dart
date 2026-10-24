@@ -54,7 +54,7 @@ class TeacherSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
-          child: BackdropFilter(
+          child: BackdropFilter.grouped(
             filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
             child: Container(
               decoration: BoxDecoration(
@@ -92,7 +92,7 @@ class TeacherSheet extends StatelessWidget {
                           Semantics(
                             excludeSemantics: true,
                             label: traditionInfo.name,
-                            child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12)),
+                            child: Icon(traditionInfo.lineIcon, size: 13.2, color: colors.accent),
                           ),
                           Text(
                             ' ${traditionInfo.name}',

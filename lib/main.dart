@@ -272,11 +272,14 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
         );
         // One text-scale clamp for the whole app; Text applies it once.
         // Fold the app's Animations toggle into disableAnimations so Motion.reduce is one check.
+        // One shared backdrop for every sheet blur (BackdropFilter.grouped).
         final media = MediaQuery.of(context);
         final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
-        return MediaQuery(
-          data: media.copyWith(disableAnimations: reduceMotion),
-          child: MediaQuery.withClampedTextScaling(minScaleFactor: 0.85, maxScaleFactor: 2.0, child: child ?? const SizedBox.shrink()),
+        return BackdropGroup(
+          child: MediaQuery(
+            data: media.copyWith(disableAnimations: reduceMotion),
+            child: MediaQuery.withClampedTextScaling(minScaleFactor: 0.85, maxScaleFactor: 2.0, child: child ?? const SizedBox.shrink()),
+          ),
         );
       },
     );

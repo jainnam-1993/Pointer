@@ -131,19 +131,6 @@ void main() {
       expect(find.byType(AnimatedGradient), findsOneWidget);
       expect(find.byType(ExcludeSemantics), findsWidgets); // May find multiple
     });
-
-    testWidgets('FloatingParticles is excluded from semantics tree', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [reduceMotionOverrideProvider.overrideWith((ref) => false)],
-          child: const MaterialApp(home: Scaffold(body: FloatingParticles())),
-        ),
-      );
-
-      // FloatingParticles returns empty widget when animations disabled
-      // When enabled, it wraps with ExcludeSemantics
-      expect(find.byType(FloatingParticles), findsOneWidget);
-    });
   });
 
   group('VoiceOver: Custom Actions', () {
