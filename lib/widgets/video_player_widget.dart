@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
@@ -62,7 +61,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (mounted) {
       await Navigator.push(
         context,
-        CupertinoPageRoute(
+        MaterialPageRoute(
           builder: (context) => _FullScreenVideoPlayer(player: _player!, videoController: _videoController!),
         ),
       );

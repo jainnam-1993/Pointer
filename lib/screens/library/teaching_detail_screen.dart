@@ -15,7 +15,7 @@ import '../../data/teaching.dart';
 import '../../models/article.dart';
 import '../../providers/core_providers.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/animated_gradient.dart';
+import '../../widgets/shared_ambient.dart';
 import '../../widgets/animated_transitions.dart';
 import 'package:go_router/go_router.dart';
 import 'library_models.dart';
@@ -83,7 +83,7 @@ class _TeachingDetailScreenState extends ConsumerState<TeachingDetailScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
           SafeArea(
             child: CustomScrollView(
               slivers: [

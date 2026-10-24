@@ -14,7 +14,7 @@ import '../data/pointings.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
+import '../widgets/shared_ambient.dart';
 import '../widgets/share_preview_helper.dart';
 import '../utils/haptics.dart';
 import '../utils/typography.dart';
@@ -85,7 +85,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
           SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {

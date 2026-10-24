@@ -10,7 +10,6 @@
  */
 library;
 
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -452,7 +451,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     Haptics.light();
     Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (context) => TopicTeachingsScreen(topic: topic, filter: filter),
       ),
     );
@@ -638,7 +637,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   void _openTeacher(BuildContext context, String teacher, ContentFilter filter) {
     Haptics.light();
     Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (context) => TeacherTeachingsScreen(teacher: teacher, filter: filter),
       ),
     );
@@ -647,7 +646,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info, ContentFilter filter) {
     Haptics.light();
     Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info, filter: filter),
       ),
     );
@@ -656,7 +655,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   void _openMood(BuildContext context, String mood, ContentFilter filter) {
     Haptics.light();
     Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (context) => MoodTeachingsScreen(mood: mood, filter: filter),
       ),
     );

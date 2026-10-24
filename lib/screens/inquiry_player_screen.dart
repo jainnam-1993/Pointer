@@ -12,7 +12,7 @@ import 'package:go_router/go_router.dart';
 import '../data/inquiries.dart';
 import '../models/inquiry.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
+import '../widgets/shared_ambient.dart';
 import '../widgets/inquiry_phase_content.dart';
 import '../utils/haptics.dart';
 
@@ -243,7 +243,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
       body: Stack(
         children: [
           // Background gradient
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
 
           // Main content
           SafeArea(

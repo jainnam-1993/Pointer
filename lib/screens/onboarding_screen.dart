@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
+import '../widgets/shared_ambient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/onboarding_animations.dart';
 import '../utils/haptics.dart';
@@ -153,7 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
           SafeArea(
             child: Column(
               children: [

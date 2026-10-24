@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
@@ -19,7 +18,7 @@ import '../theme/app_theme.dart';
 import '../utils/haptics.dart';
 import '../utils/typography.dart';
 import '../utils/motion.dart';
-import '../widgets/animated_gradient.dart';
+import '../widgets/shared_ambient.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
 import '../widgets/glass_card.dart';
@@ -487,7 +486,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       child: Scaffold(
         body: Stack(
           children: [
-            const Positioned.fill(child: AnimatedGradient()),
+            const Positioned.fill(child: RouteAmbient()),
             if (isZenMode)
               SafeArea(
                 child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
@@ -724,7 +723,7 @@ class _TeacherMatch extends _SourceMatch {
   void navigate(BuildContext context) {
     // Root navigator: a pushed reading screen covers the dock (design finding 22).
     Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         builder: (_) => TeacherTeachingsScreen(teacher: teacher, filter: ContentFilter.articles),
       ),
     );
