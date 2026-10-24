@@ -53,9 +53,6 @@ class LiquidLens {
 
   final double innerHighlight;
 
-  /** Frost radius inside the lens, logical px (the lens frosts the backdrop itself, in one read). */
-  final double frost;
-
   const LiquidLens({
     required this.radius,
     this.band = 5,
@@ -74,13 +71,12 @@ class LiquidLens {
     this.hairline = 0.10,
     this.hairlineWidth = 0.75,
     this.innerHighlight = 0.85,
-    this.frost = 10,
   });
 }
 
 /**
  * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uHalf, uShape, uLight, uRimColor,
- * uBody, uEdge, uFrost. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
+ * uBody, uEdge. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
  * the phone). Kept pure so tests can pin the layout and the range.
  */
 List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
@@ -108,10 +104,6 @@ List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
     lens.hairlineWidth / unit,
     lens.lightTheme ? lens.innerHighlight : 0,
     lens.lightTheme ? 1 : 0,
-    box.width <= 0 ? 0 : lens.frost / box.width,
-    box.height <= 0 ? 0 : lens.frost / box.height,
-    0,
-    0,
   ];
 }
 

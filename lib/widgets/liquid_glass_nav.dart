@@ -394,9 +394,10 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
           // corner. The bar and the rail are never on screen together, so this is still one backdrop read per frame.
           final lensFilter = LiquidGlassShader.lens(box: box, lens: lens);
           if (lensFilter == null) return BackdropFilter.grouped(filter: filter, child: inner);
-          // One backdrop read: the lens frosts the backdrop itself (12 taps) instead of a blur pass under it. Measured
-          // on the fold emulator, blur plus lens cost +1.6 to 4.6 ms at p90 over the blur alone.
-          return BackdropFilter(filter: lensFilter, child: inner);
+          return BackdropFilter(
+            filter: filter,
+            child: BackdropFilter(filter: lensFilter, child: inner),
+          );
         },
       );
     }
