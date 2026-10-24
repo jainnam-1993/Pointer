@@ -1,8 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
+import '../layout/adaptive.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/pointings.dart';
 import '../services/share_service.dart';
 import '../theme/app_theme.dart';
@@ -131,55 +135,57 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Preview card
-              Expanded(
-                child: Center(
-                  child: Padding(padding: const EdgeInsets.all(24), child: _buildPreview(template, format)),
-                ),
-              ),
-
-              // Template selector
-              _buildTemplateSelector(colors, template),
-              const SizedBox(height: 16),
-
-              // Format selector
-              _buildFormatSelector(colors, format),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Share button
-              Padding(
-                padding: AppSpacing.screenH,
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _isSharing ? null : () => _shareImage(template, format),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
-                    ),
-                    child: _isSharing
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
-                          )
-                        : const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.share),
-                              SizedBox(width: AppSpacing.sm),
-                              Text('Share Image', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
+          child: ContentWidth(
+            child: Column(
+              children: [
+                // Preview card
+                Expanded(
+                  child: Center(
+                    child: Padding(padding: const EdgeInsets.all(24), child: _buildPreview(template, format)),
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-            ],
+
+                // Template selector
+                _buildTemplateSelector(colors, template),
+                const SizedBox(height: 16),
+
+                // Format selector
+                _buildFormatSelector(colors, format),
+                const SizedBox(height: AppSpacing.xl),
+
+                // Share button
+                Padding(
+                  padding: AppSpacing.screenH,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _isSharing ? null : () => _shareImage(template, format),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+                      ),
+                      child: _isSharing
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
+                            )
+                          : const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.share),
+                                SizedBox(width: AppSpacing.sm),
+                                Text('Share Image', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+              ],
+            ),
           ),
         ),
       ),
@@ -383,9 +389,8 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
     final colors = context.colors;
     final isDark = context.isDarkMode;
 
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       builder: (context) => ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(

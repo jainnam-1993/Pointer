@@ -11,10 +11,13 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import '../layout/adaptive.dart';
 import 'article_reader_screen.dart';
+
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/articles.dart';
 import '../data/pointings.dart';
 import '../data/teaching.dart';
@@ -22,7 +25,9 @@ import '../models/article.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_transitions.dart';
+
 import 'package:go_router/go_router.dart';
+
 import '../widgets/empty_state.dart';
 import '../widgets/pointer_scaffold.dart';
 import '../widgets/share_preview_helper.dart';
@@ -747,9 +752,8 @@ class _BrowseModeDropdown extends StatelessWidget {
 
   void _showModeSelector(BuildContext context) {
     Haptics.selection();
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       builder: (context) => _BrowseModeSheet(
         currentMode: currentMode,
         onSelected: (mode) {
@@ -821,9 +825,8 @@ class _ContentTypeDropdown extends StatelessWidget {
 
   void _showFilterSelector(BuildContext context) {
     Haptics.selection();
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       builder: (context) => _ContentTypeSheet(
         currentFilter: currentFilter,
         onSelected: (filter) {
