@@ -444,10 +444,12 @@ void paintAmbient(
 }) {
   final program = AmbientShader.debugForceFallback ? null : AmbientShader.program;
   if (program != null && shader != null) {
-    AmbientShader.setUniforms(shader, size: rect.size, origin: origin, screen: screen, time: time, frost: frost, palette: palette);
+    AmbientShader.setUniforms(shader, size: rect.size, origin: Offset.zero, screen: screen, time: time, frost: frost, palette: palette);
+    // Draw in a global-aligned local space (origin uniform 0) so the shader's
+    // fragment coordinates mean the same thing for cards and the background.
     canvas.save();
-    canvas.translate(rect.left, rect.top);
-    canvas.drawRect(Offset.zero & rect.size, Paint()..shader = shader);
+    canvas.translate(rect.left - origin.dx, rect.top - origin.dy);
+    canvas.drawRect(origin & rect.size, Paint()..shader = shader);
     canvas.restore();
     return;
   }
@@ -710,4 +712,25 @@ class RenderAmbientFrost extends RenderBox {
       shader: _shader,
     );
   }
+}
+
+/**
+ * Declares that the subtree sits on an opaque surface that hides the ambient
+ * background (a sheet body, dialog, opaque panel). Glass inside it draws the
+ * plain glass material tuned for [surface] instead of sampling the shader.
+ * Modal routes (sheets, dialogs) imply it automatically, see [suppressesFrost].
+ */
+class FrostScope extends InheritedWidget {
+  /** Color of the opaque surface, when known. */
+  final Color? surface;
+
+  const FrostScope({super.key, this.surface, required super.child});
+
+  static FrostScope? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<FrostScope>();
+
+  /** True when glass at [context] must not sample the ambient background. */
+  static bool suppressesFrost(BuildContext context) => maybeOf(context) != null || ModalRoute.of(context) is PopupRoute;
+
+  @override
+  bool updateShouldNotify(FrostScope old) => old.surface != surface;
 }

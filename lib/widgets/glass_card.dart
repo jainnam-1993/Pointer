@@ -130,7 +130,7 @@ class GlassCard extends ConsumerWidget {
     final frost = blur;
 
     // iOS-style glass gradient
-    final glassGradient = LinearGradient(
+    var glassGradient = LinearGradient(
       colors: [
         Colors.white.withValues(alpha: topAlpha),
         Colors.white.withValues(alpha: bottomAlpha),
@@ -171,6 +171,17 @@ class GlassCard extends ConsumerWidget {
     final palette = ambientPaletteForTheme(context);
     final animate = ambientMotionEnabled(context, ref);
     final radius = BorderRadius.circular(borderRadius);
+    // On an opaque surface (sheet, dialog) the ambient is hidden: plain glass, no shader.
+    final onSurface = FrostScope.suppressesFrost(context);
+    if (onSurface) {
+      glassGradient = LinearGradient(
+        colors: isDark
+            ? [Colors.white.withValues(alpha: topAlpha + 0.04), Colors.white.withValues(alpha: bottomAlpha + 0.02)]
+            : [Colors.black.withValues(alpha: 0.035), Colors.black.withValues(alpha: 0.02)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
 
     final material = Container(
       padding: padding,
@@ -214,9 +225,10 @@ class GlassCard extends ConsumerWidget {
           borderRadius: radius,
           child: Stack(
             children: [
-              Positioned.fill(
-                child: AmbientFrost(frost: frost, palette: palette, animate: animate),
-              ),
+              if (!onSurface)
+                Positioned.fill(
+                  child: AmbientFrost(frost: frost, palette: palette, animate: animate),
+                ),
               material,
             ],
           ),
@@ -352,9 +364,10 @@ class GlassButton extends ConsumerWidget {
             // Analytic frost instead of a live blur (see GlassCard).
             child: Stack(
               children: [
-                Positioned.fill(
-                  child: AmbientFrost(frost: 0.7, palette: ambientPaletteForTheme(context), animate: ambientMotionEnabled(context, ref)),
-                ),
+                if (!FrostScope.suppressesFrost(context))
+                  Positioned.fill(
+                    child: AmbientFrost(frost: 0.7, palette: ambientPaletteForTheme(context), animate: ambientMotionEnabled(context, ref)),
+                  ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
                   decoration: BoxDecoration(

@@ -56,7 +56,8 @@ float field(vec2 p, vec2 c, float k) {
 void main() {
   vec2 frag = FlutterFragCoord().xy + uOrigin;
   vec2 screen = max(uScreen, vec2(1.0));
-  vec2 uv = clamp(frag / screen, 0.0, 1.0);
+  // No clamp: glass outside the screen bounds (horizontal lists) must not flatten.
+  vec2 uv = frag / screen;
   float aspect = screen.x / screen.y;
   float t = uTime;
 

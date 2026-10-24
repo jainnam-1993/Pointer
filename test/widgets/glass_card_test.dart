@@ -458,4 +458,57 @@ void main() {
       expect(find.text('Content Still Visible'), findsOneWidget);
     });
   });
+
+  group('Analytic frost placement', () {
+    testWidgets('GlassCard on a page paints frost; inside a modal sheet it does not', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Builder(
+              builder: (context) => Scaffold(
+                body: Column(
+                  children: [
+                    const GlassCard(child: Text('page card')),
+                    TextButton(
+                      onPressed: () => showModalBottomSheet<void>(
+                        context: context,
+                        builder: (_) => const GlassCard(child: Text('sheet card')),
+                      ),
+                      child: const Text('open'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.descendant(of: find.widgetWithText(GlassCard, 'page card'), matching: find.byType(AmbientFrost)), findsOneWidget);
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: find.widgetWithText(GlassCard, 'sheet card'), matching: find.byType(AmbientFrost)), findsNothing);
+    });
+
+    testWidgets('FrostScope suppresses frost for cards and buttons', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Scaffold(
+              body: FrostScope(
+                surface: Colors.white,
+                child: Column(
+                  children: [
+                    const GlassCard(child: Text('x')),
+                    GlassButton(label: 'b', onPressed: () {}),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(AmbientFrost), findsNothing);
+      expect(find.byType(BackdropFilter), findsNothing);
+    });
+  });
 }
