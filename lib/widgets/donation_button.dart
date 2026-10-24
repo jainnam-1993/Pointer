@@ -119,7 +119,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     return ContentWidth(
       maxWidth: kTipCardMaxWidth,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: Motion.standard,
         curve: Curves.easeInOut,
         child: GlassCard(padding: EdgeInsets.zero, intensity: GlassIntensity.standard, child: _buildContent(state, colors)),
       ),
@@ -128,7 +128,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
 
   Widget _buildContent(DonationState state, PointerColors colors) {
     return AnimatedSize(
-      duration: const Duration(milliseconds: 300),
+      duration: Motion.standard,
       curve: Curves.easeInOut,
       alignment: Alignment.topCenter,
       child: Padding(
@@ -142,10 +142,10 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
 
             // Expanded content
             AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
+              duration: Motion.quick,
               opacity: _isExpanded ? 1.0 : 0.0,
               child: AnimatedSize(
-                duration: const Duration(milliseconds: 300),
+                duration: Motion.standard,
                 curve: Curves.easeInOut,
                 child: _isExpanded ? _buildExpandedContent(state, colors) : const SizedBox.shrink(),
               ),
@@ -175,7 +175,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
           else
             AnimatedRotation(
               turns: _isExpanded ? 0.5 : 0.0,
-              duration: const Duration(milliseconds: 200),
+              duration: Motion.quick,
               child: Icon(AppIcons.chevronDown, color: colors.textMuted, size: 24),
             ),
         ],
@@ -281,8 +281,8 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-              border: Border.all(color: colors.glassBorder),
+              color: SelectionTint.fill(colors, selected: false, isDark: Theme.of(context).brightness == Brightness.dark),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
             ),
             child: Text(
               'Retry',
@@ -430,7 +430,6 @@ class _TipOptionCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: colors.glassBorder),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

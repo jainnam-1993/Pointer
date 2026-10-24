@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import '../utils/motion.dart';
 import 'package:go_router/go_router.dart';
 
 /**
@@ -12,10 +13,10 @@ import 'package:go_router/go_router.dart';
  */
 class AnimationDurations {
   /** Quick interactions (200ms): toggles, micro-feedback. */
-  static const Duration fast = Duration(milliseconds: 200);
+  static const Duration fast = Motion.quick;
 
   /** Standard transitions (300ms): page switches, content swaps. */
-  static const Duration normal = Duration(milliseconds: 300);
+  static const Duration normal = Motion.standard;
 
   /** Deliberate transitions (450ms): contemplative page navigation. */
   static const Duration slow = Duration(milliseconds: 450);
@@ -69,7 +70,7 @@ class StaggeredFadeIn extends StatefulWidget {
     required this.index,
     required this.child,
     this.delay = const Duration(milliseconds: 50),
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = Motion.standard,
     this.curve = Curves.easeInOutCubic,
   });
 
@@ -144,7 +145,7 @@ class AnimatedTextSwitcher extends StatelessWidget {
     required this.text,
     this.style,
     this.textAlign = TextAlign.center,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = Motion.standard,
     this.slideOffset = const Offset(0, 0.1),
   });
 
@@ -334,7 +335,7 @@ class FadeThroughSwitcher extends StatelessWidget {
   /** Duration of the complete fade-out + fade-in cycle. */
   final Duration duration;
 
-  const FadeThroughSwitcher({super.key, required this.child, this.duration = const Duration(milliseconds: 300)});
+  const FadeThroughSwitcher({super.key, required this.child, this.duration = Motion.standard});
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +370,7 @@ class SharedAxisSwitcher extends StatelessWidget {
     super.key,
     required this.child,
     this.transitionType = SharedAxisTransitionType.horizontal,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = Motion.standard,
   });
 
   @override

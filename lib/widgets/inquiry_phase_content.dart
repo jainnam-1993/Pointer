@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import '../utils/motion.dart';
 import '../models/inquiry.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
@@ -56,9 +57,9 @@ class InquiryPhaseContent extends StatelessWidget {
 
   Widget _buildSwitcher(BuildContext context, PointerColors colors) {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 500),
+      duration: Motion.slow,
       switchInCurve: Curves.easeOut,
-      switchOutCurve: Curves.easeIn,
+      switchOutCurve: Motion.exit,
       transitionBuilder: (child, animation) {
         return FadeTransition(
           opacity: animation,

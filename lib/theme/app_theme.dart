@@ -884,6 +884,94 @@ class TraditionAccentColors {
  * Naming follows t-shirt sizing (xs, sm, md, lg, xl, xxl)
  * with semantic aliases for common use cases.
  */
+/**
+ * Tint opacities for selectable chips. Selection reads as an accent-tinted fill plus a check mark instead of a drawn
+ * outline, so depth comes from the material and not from borders.
+ */
+class LiquidGlass {
+  // Tab bar and rail geometry (CalmGlassBrief 3.2). The bar is a capsule: radius is half its height.
+
+  /** Phone tab bar height. */
+  static const double barHeight = 64;
+
+  /** Tab bar height once minimized on scroll. */
+  static const double barMinimizedHeight = 48;
+
+  /** Widest the bar grows; wider windows centre it. */
+  static const double barMaxWidth = 440;
+
+  /** Gap between the bar and the screen edges. */
+  static const double edgeMargin = 16;
+
+  /** Gap between the bar and the bottom safe inset. */
+  static const double safeGap = 8;
+
+  /** Rail width (the content keeps [kRailWidth] of padding; the capsule is narrower). */
+  static const double railWidth = 72;
+
+  /** Rail inset from the left safe edge. */
+  static const double railInset = 12;
+
+  /** Rail cell height. */
+  static const double railCellHeight = 64;
+
+  /** Selection pill inset from the bar edge; the pill radius is the bar radius minus this (concentric). */
+  static const double pillInset = 6;
+
+  /** Selection pill is this much narrower than its cell. */
+  static const double pillCellGap = 8;
+
+  /** Minimized cell width (each icon gets this much). */
+  static const double minimizedCell = 48;
+
+  /** The one live blur behind the bar and rail (was 35; Liquid Glass is clearer so the field shows through). */
+  static const double blurSigma = 14;
+
+  /** Blur on OLED, where the field is mostly black. */
+  static const double blurSigmaOled = 10;
+
+  /** Largest stretch of the pill along its travel, and the speed (px/s) at which it is reached. */
+  static const double stretchMax = 0.22;
+
+  static const double stretchVelocity = 2400;
+
+  /** Pill squash across its travel, as a fraction of the stretch. */
+  static const double squash = 0.06;
+
+  /** Press glow: peak radius, grow time and fade time. */
+  static const double glowRadius = 72;
+
+  static const Duration glowGrow = Duration(milliseconds: 240);
+
+  static const Duration glowFade = Duration(milliseconds: 420);
+
+  /** Scroll distances that minimize (down) and restore (up) the bar. */
+  static const double minimizeAfter = 24;
+
+  static const double restoreAfter = 12;
+
+  /** Specular rim width. */
+  static const double rimWidth = 1.25;
+
+  /** How much the selection pill magnifies the icon and label under it. */
+  static const double pillMagnify = 1.08;
+}
+
+class SelectionTint {
+  /** Resting chip fill: text primary at this opacity. */
+  static const double resting = 0.08;
+
+  /** Selected chip fill in dark themes: accent at this opacity. */
+  static const double selectedDark = 0.30;
+
+  /** Selected chip fill in light themes: accent at this opacity. */
+  static const double selectedLight = 0.18;
+
+  /** The chip or tile fill for [selected], in place of an outline. */
+  static Color fill(PointerColors colors, {required bool selected, required bool isDark}) =>
+      selected ? colors.accent.withValues(alpha: isDark ? selectedDark : selectedLight) : colors.textPrimary.withValues(alpha: resting);
+}
+
 class AppSpacing {
   // -- Base spacing scale (8pt grid system) --
 
@@ -924,6 +1012,15 @@ class AppSpacing {
 
   /** Bottom inset to clear the floating navigation bar (120.0). */
   static const double navBarOffset = 120.0;
+
+  /** Minimum hit size for any control (44.0, Apple HIG; Android's 48 dp comes from Material's tap target padding). */
+  static const double minTouchTarget = 44.0;
+
+  /** Capsule radius for chips and pill controls; half of [minTouchTarget] so a one-line chip is a true capsule. */
+  static const double radiusPill = minTouchTarget / 2;
+
+  /** Chip insets: horizontal [lg], vertical [sm], so a one-line chip lands on [minTouchTarget] with the root text clamp. */
+  static const EdgeInsets chip = EdgeInsets.symmetric(horizontal: lg, vertical: sm);
 
   // -- Border radius constants --
 

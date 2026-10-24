@@ -211,12 +211,11 @@ class TeachingCard extends StatelessWidget {
                   children: teaching.topicTags.take(3).map((tag) {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: colors.glassBackground,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                        border: Border.all(color: colors.glassBorder),
+                      decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusPill)),
+                      child: Text(
+                        TopicTags.displayName(tag),
+                        style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
                       ),
-                      child: Text(TopicTags.displayName(tag), style: TextStyle(color: colors.textSecondary, fontSize: 11)),
                     );
                   }).toList(),
                 ),

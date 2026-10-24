@@ -288,15 +288,11 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
 
           // Tradition badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: colors.glassBackground,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colors.glassBorder),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusPill)),
             child: Text(
               _getTraditionLabel(_currentInquiry!.tradition),
-              style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w500),
+              style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w500),
             ),
           ),
 

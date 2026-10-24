@@ -33,6 +33,7 @@ class AppIcons {
   // Common
   static const IconData heart = PhosphorIconsLight.heart;
   static const IconData chevronDown = PhosphorIconsLight.caretDown;
+  static const IconData back = PhosphorIconsLight.caretLeft;
   static const IconData check = PhosphorIconsLight.check;
   static const IconData close = PhosphorIconsLight.x;
   static const IconData share = PhosphorIconsLight.export;

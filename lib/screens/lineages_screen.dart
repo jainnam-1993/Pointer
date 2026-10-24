@@ -1,10 +1,12 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/pointings.dart';
 import '../providers/content_providers.dart';
+import '../theme/app_icons.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/drag_handle.dart';
@@ -12,6 +14,7 @@ import '../widgets/glass_card.dart';
 import '../widgets/grouped_section.dart';
 import '../widgets/pointer_scaffold.dart';
 import '../utils/haptics.dart';
+import '../utils/motion.dart';
 import '../layout/adaptive.dart';
 
 /**
@@ -64,7 +67,7 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
                       Haptics.light();
                       context.pop();
                     },
-                    icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
+                    icon: Icon(AppIcons.back, color: colors.textPrimary, size: AppType.title),
                     tooltip: 'Back',
                   ),
                   const Spacer(),
@@ -76,7 +79,7 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
                     },
                     child: Text(
                       'Reset',
-                      style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
+                      style: TextStyle(color: colors.accent, fontSize: AppType.callout, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -85,11 +88,11 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
             // Content
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(left: 24, right: 24, bottom: 40 + bottomPadding),
+                padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: AppSpacing.xxl + AppSpacing.sm + bottomPadding),
                 children: [
                   Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
                   const SizedBox(height: 8),
-                  Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
+                  Text('Select the traditions you want to receive pointings from', style: AppTextStyles.bodyText(context)),
                   const SizedBox(height: 24),
 
                   // Traditions list with selection
@@ -140,7 +143,7 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
                   const SizedBox(height: 8),
                   Text(
                     'At least one tradition must remain selected',
-                    style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
+                    style: AppTextStyles.footerText(context).copyWith(color: colors.textMuted),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -176,14 +179,17 @@ class _TraditionDetailPane extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(info.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colors.textPrimary)),
-                    Text('$pointingsCount pointings available', style: TextStyle(color: colors.textSecondary, fontSize: 14)),
+                    Text(
+                      '$pointingsCount pointings available',
+                      style: TextStyle(color: colors.textSecondary, fontSize: AppType.callout),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Text(info.description, style: TextStyle(color: colors.textPrimary, fontSize: 16, height: 1.5)),
+          Text(info.description, style: AppTextStyles.bodyText(context).copyWith(color: colors.textPrimary)),
         ],
       ),
     );
@@ -238,16 +244,12 @@ class _TraditionCard extends StatelessWidget {
           children: [
             // Icon container
             AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+              duration: Motion.quick,
               width: 56,
               height: 56,
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: iconBgColor),
               child: Center(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: isEnabled ? 1.0 : 0.5,
-                  child: Icon(info.lineIcon, size: 30.8),
-                ),
+                child: AnimatedOpacity(duration: Motion.quick, opacity: isEnabled ? 1.0 : 0.5, child: Icon(info.lineIcon, size: 30.8)),
               ),
             ),
             const SizedBox(width: 16),
@@ -259,17 +261,20 @@ class _TraditionCard extends StatelessWidget {
                 children: [
                   Text(
                     info.name,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: textColor),
+                    style: TextStyle(fontSize: AppType.headline, fontWeight: FontWeight.w600, color: textColor),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     info.description,
-                    style: TextStyle(fontSize: 14, color: textColorSecondary),
+                    style: TextStyle(fontSize: AppType.callout, color: textColorSecondary),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Text('$pointingsCount pointings', style: TextStyle(fontSize: 12, color: textColorMuted)),
+                  Text(
+                    '$pointingsCount pointings',
+                    style: TextStyle(fontSize: AppType.caption, color: textColorMuted),
+                  ),
                 ],
               ),
             ),
@@ -284,7 +289,7 @@ class _TraditionCard extends StatelessWidget {
                 GestureDetector(
                   onTap: onToggle,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
+                    duration: Motion.quick,
                     width: 48,
                     height: 28,
                     decoration: BoxDecoration(
@@ -292,7 +297,7 @@ class _TraditionCard extends StatelessWidget {
                       color: isEnabled ? colors.accent : colors.textMuted.withValues(alpha: 0.3),
                     ),
                     child: AnimatedAlign(
-                      duration: const Duration(milliseconds: 200),
+                      duration: Motion.quick,
                       alignment: isEnabled ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         width: 24,
@@ -312,9 +317,11 @@ class _TraditionCard extends StatelessWidget {
                 GestureDetector(
                   onTap: onInfoTap,
                   child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: Center(child: Icon(Icons.info_outline, color: colors.textMuted, size: 20)),
+                    width: AppSpacing.minTouchTarget,
+                    height: AppSpacing.minTouchTarget,
+                    child: Center(
+                      child: Icon(AppIcons.info, color: colors.textMuted, size: AppType.title),
+                    ),
                   ),
                 ),
               ],

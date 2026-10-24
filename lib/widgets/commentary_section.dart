@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/motion.dart';
 import '../theme/app_theme.dart';
 
 /**
@@ -31,7 +32,7 @@ class _CommentarySectionState extends State<CommentarySection> with SingleTicker
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _controller = AnimationController(duration: Motion.standard, vsync: this);
     _heightFactor = _controller.drive(CurveTween(curve: Curves.easeInOut));
     _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5).chain(CurveTween(curve: Curves.easeInOut)));
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/widgets/grouped_section.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
@@ -200,7 +201,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // 5 traditions should have 5 info icons
-      expect(find.byIcon(Icons.info_outline), findsNWidgets(5));
+      expect(find.byIcon(AppIcons.info), findsNWidgets(5));
     });
 
     testWidgets('cards are tappable', (tester) async {
@@ -220,7 +221,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap the first info icon to open detail sheet
-      await tester.tap(find.byIcon(Icons.info_outline).first);
+      await tester.tap(find.byIcon(AppIcons.info).first);
       await tester.pumpAndSettle();
 
       // Bottom sheet should be visible - verify by checking for doubled content
@@ -234,7 +235,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap first info icon (Advaita)
-      await tester.tap(find.byIcon(Icons.info_outline).first);
+      await tester.tap(find.byIcon(AppIcons.info).first);
       await tester.pumpAndSettle();
 
       // Should show icon in detail sheet (icon appears twice: in list + in sheet)
@@ -245,7 +246,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap second info icon (Zen)
-      await tester.tap(find.byIcon(Icons.info_outline).at(1));
+      await tester.tap(find.byIcon(AppIcons.info).at(1));
       await tester.pumpAndSettle();
 
       // Name appears twice: in list + in detail sheet
@@ -256,7 +257,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap third info icon (Direct Path)
-      await tester.tap(find.byIcon(Icons.info_outline).at(2));
+      await tester.tap(find.byIcon(AppIcons.info).at(2));
       await tester.pumpAndSettle();
 
       // Description appears in detail sheet (may be truncated in list)
@@ -267,7 +268,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap fourth info icon (Contemporary)
-      await tester.tap(find.byIcon(Icons.info_outline).at(3));
+      await tester.tap(find.byIcon(AppIcons.info).at(3));
       await tester.pumpAndSettle();
 
       final count = getPointingsByTradition(Tradition.contemporary).length;
@@ -279,7 +280,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap first info icon (guaranteed to be visible)
-      await tester.tap(find.byIcon(Icons.info_outline).first);
+      await tester.tap(find.byIcon(AppIcons.info).first);
       await tester.pumpAndSettle();
 
       // Should have Close button
@@ -290,7 +291,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap first info icon to open sheet
-      await tester.tap(find.byIcon(Icons.info_outline).first);
+      await tester.tap(find.byIcon(AppIcons.info).first);
       await tester.pumpAndSettle();
 
       // Verify sheet is open
@@ -308,7 +309,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap second info icon
-      await tester.tap(find.byIcon(Icons.info_outline).at(1));
+      await tester.tap(find.byIcon(AppIcons.info).at(1));
       await tester.pumpAndSettle();
 
       // Verify sheet is open by checking for doubled content
@@ -321,7 +322,7 @@ void main() {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
       // Tap third info icon
-      await tester.tap(find.byIcon(Icons.info_outline).at(2));
+      await tester.tap(find.byIcon(AppIcons.info).at(2));
       await tester.pumpAndSettle();
 
       // Should have BackdropFilter in bottom sheet

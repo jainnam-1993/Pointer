@@ -62,6 +62,14 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        // Android has no public Reduce Transparency setting; Dart falls back to the high-contrast flag.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.dailypointer/accessibility")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isReduceTransparency" -> result.success(false)
+                    else -> result.notImplemented()
+                }
+            }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, widgetChannel)
             .setMethodCallHandler { call, result ->
                 when (call.method) {

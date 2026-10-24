@@ -409,7 +409,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 AnimatedSwitcher(
                   duration: Motion.of(context, const Duration(milliseconds: 400)),
                   switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
+                  switchOutCurve: Motion.exit,
                   transitionBuilder: (child, animation) => FadeTransition(
                     opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                     child: child,
