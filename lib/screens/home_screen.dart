@@ -52,6 +52,12 @@ class HomeScreen extends ConsumerStatefulWidget {
    */
   static bool disableAutoAdvanceForTesting = false;
 
+  /** The swipe hint is taught during this many sessions, then trusted to be known. */
+  static const int swipeHintSessions = 3;
+
+  /** SharedPreferences key counting Home sessions (one per app launch; the shell keeps Home alive). */
+  static const String sessionCountKey = 'home_session_count_v1';
+
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -65,6 +71,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
   /** Hides the swipe hint once the user has swiped in this session. */
   bool _hasSwipedThisSession = false;
+
+  /** Whether this session is one of the first [HomeScreen.swipeHintSessions]; only then is the swipe hint shown. */
+  bool _isEarlySession = true;
 
   /** Vertical card offset while dragging and settling; listened to by the card only. */
   final ValueNotifier<double> _dragOffset = ValueNotifier<double>(0);
@@ -86,6 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     _settle = AnimationController.unbounded(vsync: this)..addListener(() => _dragOffset.value = _settle.value);
+    _countSession();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final pointing = ref.read(currentPointingProvider);
@@ -100,6 +110,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     _settle.dispose();
     _dragOffset.dispose();
     super.dispose();
+  }
+
+  /** Counts this Home session and decides whether the swipe hint still teaches. */
+  void _countSession() {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final seen = prefs.getInt(HomeScreen.sessionCountKey) ?? 0;
+    _isEarlySession = seen < HomeScreen.swipeHintSessions;
+    if (seen <= HomeScreen.swipeHintSessions) prefs.setInt(HomeScreen.sessionCountKey, seen + 1);
   }
 
   /** Starts or restarts the auto-advance timer based on settings. */
@@ -526,7 +544,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                             ],
                           ),
                         ),
-                        if (!isSquareAspect && !_hasSwipedThisSession) ...[
+                        if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
                           const SizedBox(height: AppSpacing.sm),
                           ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
                         ],

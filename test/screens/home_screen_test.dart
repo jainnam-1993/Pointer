@@ -427,4 +427,21 @@ void main() {
       expect(find.byType(Semantics), findsWidgets);
     });
   });
+
+  group('Swipe hint (first 3 sessions)', () {
+    const hint = 'Swipe for another invitation to look';
+
+    testWidgets('shows during an early session and counts it', (tester) async {
+      when(() => mockPrefs.getInt(HomeScreen.sessionCountKey)).thenReturn(1);
+      await pumpHomeScreen(tester, createHomeScreen());
+      expect(find.text(hint), findsOneWidget);
+      verify(() => mockPrefs.setInt(HomeScreen.sessionCountKey, 2)).called(1);
+    });
+
+    testWidgets('is gone from the fourth session on', (tester) async {
+      when(() => mockPrefs.getInt(HomeScreen.sessionCountKey)).thenReturn(HomeScreen.swipeHintSessions);
+      await pumpHomeScreen(tester, createHomeScreen());
+      expect(find.text(hint), findsNothing);
+    });
+  });
 }
