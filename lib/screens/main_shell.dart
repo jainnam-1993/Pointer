@@ -9,6 +9,7 @@ import '../utils/motion.dart';
 import '../widgets/lens_tab_bar.dart';
 import '../theme/app_icons.dart';
 import '../layout/adaptive.dart';
+import '../layout/keyboard_shortcuts.dart';
 
 /**
  * Root shell widget providing bottom navigation and tab management.
@@ -63,8 +64,30 @@ class _MainShellState extends ConsumerState<MainShell> {
     return key.currentState?.canPop() ?? false;
   }
 
+  /**
+   * Cmd+1 to Cmd+4 (Ctrl on other keyboards) select the tabs. The autofocused
+   * node keeps the shortcuts live before anything else takes focus.
+   */
   @override
   Widget build(BuildContext context) {
+    final currentIndex = widget.navigationShell.currentIndex;
+    return Shortcuts(
+      shortcuts: tabShortcuts,
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          SelectTabIntent: CallbackAction<SelectTabIntent>(
+            onInvoke: (intent) {
+              _goBranch(intent.index, currentIndex);
+              return null;
+            },
+          ),
+        },
+        child: Focus(autofocus: true, skipTraversal: true, child: _buildShell(context)),
+      ),
+    );
+  }
+
+  Widget _buildShell(BuildContext context) {
     final isZenMode = ref.watch(zenModeProvider);
     final currentIndex = widget.navigationShell.currentIndex;
     final branchCanPop = _currentBranchCanPop();
@@ -142,7 +165,7 @@ class _MainShellState extends ConsumerState<MainShell> {
               padding: media.padding.copyWith(left: media.padding.left + kRailWidth),
               viewPadding: media.viewPadding.copyWith(left: media.viewPadding.left + kRailWidth),
             ),
-            child: content,
+            child: FocusTraversalGroup(child: content),
           ),
           Positioned(
             left: 0,
@@ -152,7 +175,9 @@ class _MainShellState extends ConsumerState<MainShell> {
             child: SafeArea(
               right: false,
               top: railTop == 0,
-              child: _SideRail(currentIndex: currentIndex, onTap: (index) => _goBranch(index, currentIndex)),
+              child: FocusTraversalGroup(
+                child: _SideRail(currentIndex: currentIndex, onTap: (index) => _goBranch(index, currentIndex)),
+              ),
             ),
           ),
         ],
