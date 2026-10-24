@@ -30,6 +30,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'layout/tab_crossfade.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/ambient.dart';
 import 'services/storage_service.dart';
@@ -203,10 +204,13 @@ GoRouter _createRouter() {
       ),
 
       // Main app with bottom navigation
-      StatefulShellRoute.indexedStack(
+      // Tabs cross-fade over the one shared ambient background instead of cutting (TabCrossFadeContainer).
+      StatefulShellRoute(
         builder: (context, state, navigationShell) {
           return MainShell(navigationShell: navigationShell);
         },
+        navigatorContainerBuilder: (context, navigationShell, children) =>
+            TabCrossFadeContainer(currentIndex: navigationShell.currentIndex, children: children),
         branches: [
           // Home tab
           StatefulShellBranch(
