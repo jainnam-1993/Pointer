@@ -395,6 +395,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       key: const ValueKey('library-list-detail'),
       primaryFlex: 2,
       secondaryFlex: 3,
+      // A 2:3 split leaves the list under 300 dp on an 815 dp unfolded fold,
+      // where topic names like "Awareness" broke mid-word.
+      primaryMinWidth: kListPaneMinWidth,
       primary: list,
       secondary: selected == null
           ? Center(

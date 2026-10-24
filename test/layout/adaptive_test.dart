@@ -96,6 +96,19 @@ void main() {
   });
 
   group('TwoPane', () {
+    testWidgets('primaryMinWidth floors a narrow flex split and caps at its share', (tester) async {
+      Future<double> primaryWidth(double width) async {
+        _setView(tester, Size(width, 918));
+        await tester.pumpWidget(const MaterialApp(
+          home: TwoPane(primaryFlex: 2, secondaryFlex: 3, primaryMinWidth: kListPaneMinWidth, primary: SizedBox.expand(), secondary: SizedBox.expand()),
+        ));
+        return tester.getSize(find.byKey(const ValueKey('pane-primary'))).width;
+      }
+
+      expect(await primaryWidth(841), kListPaneMinWidth, reason: '2/5 of 841 is 336, under the floor');
+      expect(await primaryWidth(1200), 480, reason: 'a wide window keeps its flex split');
+    });
+
     testWidgets('never puts content under an occluding hinge', (tester) async {
       _setView(tester, const Size(840, 884), [_hinge]);
       await tester.pumpWidget(
