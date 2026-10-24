@@ -1,4 +1,4 @@
-package com.dailypointer
+QUOTE_MIN + HEADROOM || secondaryContrast(behind, a) < SECONDARY_MIN + HEADROOM))package com.dailypointer
 
 /**
  * The see-through widget card: a dark glass tint over the live wallpaper, as translucent as the
@@ -25,8 +25,10 @@ object GlassRule {
     const val SECONDARY_MIN = 4.5
     /** The glassiest the card gets, and the most opaque it may become for a white wallpaper. */
     const val MIN_ALPHA = 0.40
-    const val MAX_ALPHA = 0.94
-    const val MARGIN = 0.35
+    const val MAX_ALPHA = 0.95
+    const val MARGIN = 0.60
+    /** Measured on a Fold: rendered glyphs and the system tint land up to about 0.5:1 under the model. */
+    const val HEADROOM = 0.6
 
     /** The brightest colour assumed behind the card. */
     fun worstCase(colors: List<Int>, supportsDarkText: Boolean): Int {
