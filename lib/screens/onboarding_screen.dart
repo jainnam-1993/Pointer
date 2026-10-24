@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -232,18 +234,28 @@ class _InterruptionPageState extends State<_InterruptionPage> {
   bool _showSubtext = false;
   bool _showIcon = false;
 
-  void _onMainTextComplete() {
-    if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) setState(() => _showSubtext = true);
+  /** Pending reveal step; cancelled on dispose so no timer outlives the page. */
+  Timer? _revealTimer;
+
+  void _revealAfterPause(VoidCallback reveal) {
+    _revealTimer?.cancel();
+    _revealTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) setState(reveal);
     });
   }
 
+  void _onMainTextComplete() {
+    if (mounted) _revealAfterPause(() => _showSubtext = true);
+  }
+
   void _onSubtextComplete() {
-    if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) setState(() => _showIcon = true);
-    });
+    if (mounted) _revealAfterPause(() => _showIcon = true);
+  }
+
+  @override
+  void dispose() {
+    _revealTimer?.cancel();
+    super.dispose();
   }
 
   @override
