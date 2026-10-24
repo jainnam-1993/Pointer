@@ -31,44 +31,98 @@ const String pointingNotificationTitle = "Today's Pointing";
 /** Android small icon resource for notifications. */
 const String notificationSmallIcon = '@drawable/ic_notification';
 
+/** Time-of-day slot for a delivery time. Boundaries match the pre-overhaul cache: 5-11 morning, 11-17 midday, else evening. */
+PointingContext notificationSlotFor(DateTime time) {
+  final hour = time.hour;
+  if (hour >= 5 && hour < 11) return PointingContext.morning;
+  if (hour >= 11 && hour < 17) return PointingContext.midday;
+  return PointingContext.evening;
+}
+
+/** Whether [pointing] may be delivered in [slot]: tagged for that slot or general. */
+bool isEligibleForSlot(Pointing pointing, PointingContext slot) =>
+    pointing.contexts.contains(slot) || pointing.contexts.contains(PointingContext.general);
+
 /**
- * No-repeat rotation over the full notification content pool.
+ * Slot-aware no-repeat rotation over the full notification content pool.
  *
- * The pool is sorted by id and shuffled with a persisted seed; a persisted
- * cursor walks that order. Every pointing is shown once before any repeats,
- * and a new seed starts the next cycle. iOS batches, the Android WorkManager
- * task, and the "Another" action all draw from this one rotation.
+ * Pointings fall into buckets: one per time-of-day slot (tagged for that
+ * slot) and one shared general bucket (tagged general and no time slot), so
+ * a general pointing is not repeated across slots within a cycle. A slot's
+ * eligible pool (see [isEligibleForSlot]) is its bucket plus the general one. Each bucket is sorted by id, shuffled with a persisted seed, and
+ * walked by a persisted cursor. A delivery picks the slot-tagged bucket with
+ * probability [taggedRate] while it has unseen items, otherwise the general
+ * bucket. A bucket restarts only when the slot has no unseen eligible item,
+ * so the whole eligible pool is shown once before any repeat. iOS batches, the
+ * Android WorkManager task, and "Another" all draw from this rotation.
  */
 class NotificationRotation {
   NotificationRotation._();
 
-  static const String seedKey = 'pointer_notification_rotation_seed';
-  static const String cursorKey = 'pointer_notification_rotation_cursor';
+  /** Share of deliveries drawn from slot-tagged pointings while unseen ones remain. */
+  static const double taggedRate = 0.25;
 
-  /** Take the next [count] pointings from [pool] and advance the persisted cursor. */
-  static Future<List<Pointing>> take(SharedPreferences prefs, List<Pointing> pool, int count, {Random? random}) async {
-    if (pool.isEmpty || count <= 0) return const [];
+  static String _key(String bucket, String field) => 'pointer_notification_rotation_${bucket}_$field';
+
+  /** Take the next pointing for [at] (default now), [count] times. */
+  static Future<List<Pointing>> take(SharedPreferences prefs, List<Pointing> pool, int count, {DateTime? at, Random? random}) =>
+      takeFor(prefs, pool, List.filled(count < 0 ? 0 : count, at ?? DateTime.now()), random: random);
+
+  /** Take one pointing per delivery time in [times], each matched to its slot. */
+  static Future<List<Pointing>> takeFor(SharedPreferences prefs, List<Pointing> pool, List<DateTime> times, {Random? random}) async {
+    if (pool.isEmpty || times.isEmpty) return const [];
     final rng = random ?? Random();
     final sorted = [...pool]..sort((a, b) => a.id.compareTo(b.id));
-
-    var seed = prefs.getInt(seedKey) ?? rng.nextInt(1 << 31);
-    var cursor = prefs.getInt(cursorKey) ?? 0;
-    var order = [...sorted]..shuffle(Random(seed));
+    const slots = {PointingContext.morning, PointingContext.midday, PointingContext.evening};
+    final buckets = <String, _Bucket>{};
+    _Bucket bucket(String name, bool Function(Pointing) test) => buckets[name] ??= _Bucket(
+      sorted.where(test).toList(),
+      prefs.getInt(_key(name, 'seed')) ?? rng.nextInt(1 << 31),
+      prefs.getInt(_key(name, 'cursor')) ?? 0,
+    );
+    final general = bucket('general', (p) => p.contexts.contains(PointingContext.general) && !p.contexts.any(slots.contains));
 
     final result = <Pointing>[];
-    while (result.length < count) {
-      if (cursor >= order.length) {
-        seed = rng.nextInt(1 << 31);
-        cursor = 0;
-        order = [...sorted]..shuffle(Random(seed));
+    for (final time in times) {
+      final slot = notificationSlotFor(time);
+      final tagged = bucket(slot.name, (p) => p.contexts.contains(slot));
+      if (tagged.items.isEmpty && general.items.isEmpty) continue;
+      if (!tagged.hasUnseen && !general.hasUnseen) {
+        tagged.restart(rng);
+        general.restart(rng);
+      } else if (!general.hasUnseen && general.items.isNotEmpty && tagged.items.isEmpty) {
+        general.restart(rng);
       }
-      result.add(order[cursor++]);
+      final useTagged = tagged.hasUnseen && (!general.hasUnseen || rng.nextDouble() < taggedRate);
+      result.add((useTagged ? tagged : general).take());
     }
-
-    await prefs.setInt(seedKey, seed);
-    await prefs.setInt(cursorKey, cursor);
+    for (final entry in buckets.entries) {
+      await prefs.setInt(_key(entry.key, 'seed'), entry.value.seed);
+      await prefs.setInt(_key(entry.key, 'cursor'), entry.value.cursor);
+    }
     return result;
   }
+}
+
+class _Bucket {
+  final List<Pointing> items;
+  int seed;
+  int cursor;
+  late List<Pointing> order;
+
+  _Bucket(this.items, this.seed, this.cursor) {
+    _shuffle();
+  }
+
+  bool get hasUnseen => cursor < items.length;
+  void _shuffle() => order = [...items]..shuffle(Random(seed));
+  void restart(Random rng) {
+    seed = rng.nextInt(1 << 31);
+    cursor = 0;
+    _shuffle();
+  }
+
+  Pointing take() => order[cursor++];
 }
 
 /** Android action buttons shown on every pointing notification. */

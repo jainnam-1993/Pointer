@@ -53,7 +53,8 @@ class _RecordingPlugin extends Fake implements FlutterLocalNotificationsPlugin {
 }
 
 List<Pointing> _pool(int n) => [
-  for (var i = 0; i < n; i++) Pointing(id: 'p${i.toString().padLeft(3, '0')}', content: 'Pointing $i', tradition: Tradition.zen, contexts: const []),
+  for (var i = 0; i < n; i++)
+    Pointing(id: 'p${i.toString().padLeft(3, '0')}', content: 'Pointing $i', tradition: Tradition.zen, contexts: const [PointingContext.general]),
 ];
 
 Future<SharedPreferences> _prefs([Map<String, Object> values = const {}]) async {
@@ -76,9 +77,59 @@ void main() {
     });
 
     test('order does not depend on pool order', () async {
-      final a = await NotificationRotation.take(await _prefs({NotificationRotation.seedKey: 7}), _pool(10), 10);
-      final b = await NotificationRotation.take(await _prefs({NotificationRotation.seedKey: 7}), _pool(10).reversed.toList(), 10);
+      final a = await NotificationRotation.take(await _prefs(), _pool(10), 10, random: Random(7));
+      final b = await NotificationRotation.take(await _prefs(), _pool(10).reversed.toList(), 10, random: Random(7));
       expect(a.map((p) => p.id), b.map((p) => p.id));
+    });
+  });
+
+  group('Slot-aware rotation', () {
+    Pointing tagged(String id, List<PointingContext> contexts) => Pointing(id: id, content: id, tradition: Tradition.zen, contexts: contexts);
+    final pool = [
+      for (var i = 0; i < 40; i++) tagged('g$i', const [PointingContext.general]),
+      for (var i = 0; i < 8; i++) tagged('m$i', const [PointingContext.morning]),
+      for (var i = 0; i < 8; i++) tagged('e$i', const [PointingContext.evening]),
+      for (var i = 0; i < 4; i++) tagged('s$i', const [PointingContext.stress]),
+    ];
+    final morning = DateTime(2026, 10, 23, 7);
+    final evening = DateTime(2026, 10, 23, 19);
+
+    test('slot boundaries match the old cache', () {
+      expect(notificationSlotFor(DateTime(2026, 1, 1, 4, 59)), PointingContext.evening);
+      expect(notificationSlotFor(DateTime(2026, 1, 1, 5)), PointingContext.morning);
+      expect(notificationSlotFor(DateTime(2026, 1, 1, 11)), PointingContext.midday);
+      expect(notificationSlotFor(DateTime(2026, 1, 1, 17)), PointingContext.evening);
+    });
+
+    test('no evening-only or other-slot pointing in a morning slot', () async {
+      final prefs = await _prefs();
+      final picks = await NotificationRotation.takeFor(prefs, pool, List.filled(144, morning), random: Random(3));
+      expect(picks.where((p) => p.id.startsWith('e') || p.id.startsWith('s')), isEmpty);
+    });
+
+    test('slot-tagged pointings surface early and each eligible pool is covered before repeating', () async {
+      final prefs = await _prefs();
+      final first = await NotificationRotation.takeFor(prefs, pool, List.filled(48, morning), random: Random(5));
+      expect(first.map((p) => p.id).toSet(), hasLength(48), reason: 'one full cycle of the 48 eligible, no repeats');
+      expect(first.take(20).where((p) => p.id.startsWith('m')), isNotEmpty, reason: 'morning ones are mixed in, not left to the end');
+      final eveningPicks = await NotificationRotation.takeFor(prefs, pool, List.filled(8, evening), random: Random(6));
+      expect(eveningPicks.map((p) => p.id).toSet(), {
+        for (var i = 0; i < 8; i++) 'e$i',
+      }, reason: 'general pool already seen this cycle, so evening shows its own first');
+    });
+
+    test('a general pointing is not repeated across slots within a cycle', () async {
+      final prefs = await _prefs();
+      final times = [for (var i = 0; i < 24; i++) i.isEven ? morning : evening];
+      final picks = await NotificationRotation.takeFor(prefs, pool, times, random: Random(9));
+      final general = picks.where((p) => p.id.startsWith('g')).map((p) => p.id).toList();
+      expect(general.toSet(), hasLength(general.length));
+    });
+
+    test('Another and the Android task use the delivery time slot', () async {
+      final prefs = await _prefs();
+      final picks = await NotificationRotation.take(prefs, pool, 30, at: evening, random: Random(8));
+      expect(picks.where((p) => p.id.startsWith('m')), isEmpty);
     });
   });
 

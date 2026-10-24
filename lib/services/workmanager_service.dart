@@ -96,7 +96,7 @@ Future<String?> postScheduledPointing({
   } catch (e) {
     debugPrint('[WorkManager] Pool load failed, using fallback: $e');
   }
-  final next = await NotificationRotation.take(prefs, pool.isEmpty ? _fallbackPointings : pool, 1);
+  final next = await NotificationRotation.take(prefs, pool.isEmpty ? _fallbackPointings : pool, 1, at: current);
   await initialize?.call(plugin);
   await showPointingNotification(plugin, next.first, now: current);
   return next.first.id;
@@ -108,9 +108,9 @@ const _fallbackPointings = <Pointing>[
     id: 'fallback_1',
     content: 'You are not the body, not the mind. You are the awareness in which both appear.',
     tradition: Tradition.advaita,
-    contexts: [],
+    contexts: [PointingContext.general],
   ),
-  Pointing(id: 'fallback_3', content: 'Before thought arises, what are you?', tradition: Tradition.zen, contexts: []),
+  Pointing(id: 'fallback_3', content: 'Before thought arises, what are you?', tradition: Tradition.zen, contexts: [PointingContext.general]),
 ];
 
 /**
