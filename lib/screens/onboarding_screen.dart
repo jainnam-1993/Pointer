@@ -234,14 +234,14 @@ class _InterruptionPageState extends State<_InterruptionPage> {
 
   void _onMainTextComplete() {
     if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) setState(() => _showSubtext = true);
     });
   }
 
   void _onSubtextComplete() {
     if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) setState(() => _showIcon = true);
     });
   }
@@ -268,8 +268,8 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               color: colors.textPrimary,
               letterSpacing: -0.5,
             ),
-            wordDelay: const Duration(milliseconds: 250),
-            startDelay: const Duration(milliseconds: 1500),
+            wordDelay: const Duration(milliseconds: 110),
+            startDelay: const Duration(milliseconds: 300),
             onComplete: reduceMotion ? null : _onMainTextComplete,
           ),
 
@@ -290,7 +290,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
                 fontStyle: FontStyle.italic,
                 color: colors.textSecondary,
               ),
-              wordDelay: const Duration(milliseconds: 200),
+              wordDelay: const Duration(milliseconds: 90),
               startDelay: Duration.zero,
               onComplete: reduceMotion ? null : _onSubtextComplete,
             ),
