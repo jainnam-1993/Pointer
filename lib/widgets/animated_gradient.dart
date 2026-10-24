@@ -63,6 +63,9 @@ bool ambientMotionEnabled(BuildContext context, WidgetRef ref) {
  * frost surfaces that may build outside the app's provider overrides.
  */
 AmbientPalette ambientPaletteForTheme(BuildContext context) {
+  final colors = context.colors;
+  if (identical(colors, PointerColors.highContrastLight)) return AmbientPalette.light.subdued();
+  if (identical(colors, PointerColors.highContrast)) return AmbientPalette.dark[currentAmbientPeriod().index].subdued();
   if (!context.isDarkMode) return AmbientPalette.light;
   if (identical(context.colors, PointerColors.oled)) return AmbientPalette.oled;
   return AmbientPalette.dark[currentAmbientPeriod().index];
@@ -77,8 +80,9 @@ AmbientPalette ambientPaletteFor(BuildContext context, WidgetRef ref, {TimeOfDay
   final isDark = themeMode == AppThemeMode.dark || (themeMode == AppThemeMode.system && MediaQuery.platformBrightnessOf(context) == Brightness.dark);
   // OLED wins regardless of theme, as before the shader.
   if (ref.watch(oledModeProvider)) return AmbientPalette.oled;
-  if (!isDark) return AmbientPalette.light;
-  return AmbientPalette.dark[(period ?? currentAmbientPeriod()).index];
+  final base = isDark ? AmbientPalette.dark[(period ?? currentAmbientPeriod()).index] : AmbientPalette.light;
+  // High contrast keeps the ambient but tones it down behind the opaque cards.
+  return GlassMaterial.of(context).opaque ? base.subdued() : base;
 }
 
 /**

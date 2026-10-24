@@ -20,6 +20,7 @@ void main() {
     'dark': (PointerColors.dark, GlassMaterial.dark),
     'light': (PointerColors.light, GlassMaterial.light),
     'highContrast': (PointerColors.highContrast, GlassMaterial.highContrast),
+    'highContrastLight': (PointerColors.highContrastLight, GlassMaterial.highContrastLight),
     'oled': (PointerColors.oled, GlassMaterial.oled),
   };
 
@@ -67,7 +68,24 @@ void main() {
         }
       });
 
-      if (name != 'highContrast') {
+      // High contrast is WCAG AAA: body text at least 7:1 on every surface it can sit on.
+      if (glass.opaque) {
+        for (final t in texts.entries) {
+          for (final s in surfaces.entries) {
+            test('${t.key} on ${s.key} is at least 7:1 (AAA)', () {
+              final ratio = contrast(t.value, s.value);
+              expect(ratio, greaterThanOrEqualTo(7), reason: '$name ${t.key} on ${s.key}: ${ratio.toStringAsFixed(2)}:1');
+            });
+          }
+        }
+        test('cards and buttons have a strong opaque rim', () {
+          expect(glass.rimWidth, greaterThanOrEqualTo(1));
+          expect(glass.rimTop.a, 1.0);
+          expect(contrast(glass.rimTop, glass.fill), greaterThanOrEqualTo(3), reason: '$name rim vs card');
+        });
+      }
+
+      if (!glass.opaque) {
         test('secondary and muted text are distinct steps', () {
           final p = _luminance(colors.textPrimary), s = _luminance(colors.textSecondary), m = _luminance(colors.textMuted);
           // Monotonic hierarchy away from the background, each step visibly apart.
@@ -81,7 +99,7 @@ void main() {
 
   test('palette no longer uses stock Tailwind violet or pink', () {
     const stock = [Color(0xFF8B5CF6), Color(0xFFEC4899)];
-    for (final c in [PointerColors.dark, PointerColors.light, PointerColors.oled, PointerColors.highContrast]) {
+    for (final c in [PointerColors.dark, PointerColors.light, PointerColors.oled, PointerColors.highContrast, PointerColors.highContrastLight]) {
       for (final s in stock) {
         expect([c.primary, c.secondary, c.accent].contains(s), isFalse);
       }

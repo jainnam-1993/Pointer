@@ -252,6 +252,19 @@ class AmbientPalette {
     required this.isDark,
   });
 
+  /** This palette toned down for high contrast: a quieter aurora and fewer motes behind opaque cards. */
+  AmbientPalette subdued() => AmbientPalette(
+    top: top,
+    mid: mid,
+    bottom: bottom,
+    fieldA: fieldA,
+    fieldB: fieldB,
+    fieldC: fieldC,
+    aurora: aurora * 0.35,
+    motes: motes * 0.35,
+    isDark: isDark,
+  );
+
   /** OLED: pure black, no aurora, no motes. */
   static const oled = AmbientPalette(
     top: Color(0xFF000000),

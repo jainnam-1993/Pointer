@@ -101,7 +101,7 @@ class GlassCard extends ConsumerWidget {
   }
 
   Widget _buildHighContrastCard(BuildContext context) {
-    const glass = GlassMaterial.highContrast;
+    final glass = GlassMaterial.of(context, highContrast: true);
 
     final card = Container(
       padding: padding,
@@ -260,8 +260,8 @@ class GlassButton extends ConsumerWidget {
   }
 
   Widget _buildHighContrastButton(BuildContext context) {
-    const glass = GlassMaterial.highContrast;
-    final hc = PointerColors.highContrast;
+    final glass = GlassMaterial.of(context, highContrast: true);
+    final hc = context.isDarkMode ? PointerColors.highContrast : PointerColors.highContrastLight;
     // 48x48 minimum touch target (WCAG 2.5.8); press-scale, no ripple.
     return PressScale(
       onTap: isLoading ? null : onPressed,
