@@ -19,7 +19,6 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
-import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
 // Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
@@ -29,7 +28,7 @@ import '../widgets/mini_inquiry_card.dart';
  * Daily pointing home screen with auto-advance timer and swipe navigation.
  *
  * Displays the current [Pointing] inside a [GlassCard] with tradition badge,
- * source citations, commentary, and optional audio/video players. Supports:
+ * source citations, commentary, and optional audio player. Supports:
  * - Vertical swipe navigation between pointings (with blur transition)
  * - Auto-advance timer (default 60s, configurable via [autoAdvanceDelayProvider])
  * - Long-press to save, double-tap for zen mode
@@ -258,7 +257,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14))),
+          Semantics(
+            excludeSemantics: true,
+            label: traditionInfo.name,
+            child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
+          ),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
@@ -476,7 +479,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                           if (favorites.contains(pointing.id)) {
                                                             HapticFeedback.mediumImpact();
                                                             await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-                                                            await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
+                                                            await ref
+                                                                .read(widgetServiceProvider)
+                                                                .updateFavorites(ref.read(favoritesProvider).toSet());
                                                           } else {
                                                             await _handleSave();
                                                           }
@@ -582,11 +587,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           if (pointing.audioUrl != null) ...[
                                             const SizedBox(height: AppSpacing.lg),
                                             AudioPlayerWidget(pointingId: pointing.id, audioUrl: pointing.audioUrl),
-                                          ],
-                                          // Video player
-                                          if (pointing.videoUrl != null) ...[
-                                            const SizedBox(height: AppSpacing.lg),
-                                            VideoPlayerWidget(pointingId: pointing.id, videoUrl: pointing.videoUrl),
                                           ],
                                         ],
                                       ),

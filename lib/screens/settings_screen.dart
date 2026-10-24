@@ -284,227 +284,228 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       body: ListView(
         padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
         children: [
-                StaggeredFadeIn(index: 0, child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge))),
-                const SizedBox(height: 24),
+          StaggeredFadeIn(
+            index: 0,
+            child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
+          ),
+          const SizedBox(height: 24),
 
-                // Notifications section
-                SettingsSectionHeader(title: 'NOTIFICATIONS'),
-                const SizedBox(height: 12),
-                if (!_permissionGranted) NotificationPermissionBanner(onEnable: _requestNotificationPermission),
-                GlassCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      SettingsRow(
-                        title: 'Daily Pointings',
-                        subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
-                        trailing: PointerSwitch(
-                          value: _notificationsEnabled && _permissionGranted,
-                          onChanged: (value) async {
-                            HapticFeedback.mediumImpact();
-
-                            if (value && !_permissionGranted) {
-                              await _requestNotificationPermission();
-                              return;
-                            }
-
-                            setState(() => _notificationsEnabled = value);
-                            await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
-                          },
-                        ),
-                      ),
-                      const SettingsDivider(),
-                      SettingsRow(
-                        title: 'Notification Times',
-                        trailing: LayoutBuilder(
-                          builder: (context, constraints) {
-                            const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
-                            final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: maxSummaryWidth),
-                                  child: Text(
-                                    _getScheduleTimeSummary(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(color: textColorMuted, fontSize: 14),
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                              ],
-                            );
-                          },
-                        ),
-                        onTap: _showNotificationTimesSheet,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Appearance section
-                const SizedBox(height: 24),
-                SettingsSectionHeader(title: 'APPEARANCE'),
-                const SizedBox(height: 12),
-                const AppearanceSelector(),
-
-                // Support section (prominent placement)
-                const SizedBox(height: 24),
-                const DonationButton(),
-
-                // Traditions section
-                const SizedBox(height: 24),
-                SettingsSectionHeader(title: 'TRADITIONS'),
-                const SizedBox(height: 12),
-                GlassCard(
-                  padding: EdgeInsets.zero,
-                  child: SettingsRow(
-                    title: 'Manage Lineages',
-                    trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                    onTap: () async {
+          // Notifications section
+          SettingsSectionHeader(title: 'NOTIFICATIONS'),
+          const SizedBox(height: 12),
+          if (!_permissionGranted) NotificationPermissionBanner(onEnable: _requestNotificationPermission),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                SettingsRow(
+                  title: 'Daily Pointings',
+                  subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
+                  trailing: PointerSwitch(
+                    value: _notificationsEnabled && _permissionGranted,
+                    onChanged: (value) async {
                       HapticFeedback.mediumImpact();
-                      // Navigate to lineages management screen
-                      if (context.mounted) {
-                        context.push('/lineages');
+
+                      if (value && !_permissionGranted) {
+                        await _requestNotificationPermission();
+                        return;
                       }
+
+                      setState(() => _notificationsEnabled = value);
+                      await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
                     },
                   ),
                 ),
+                const SettingsDivider(),
+                SettingsRow(
+                  title: 'Notification Times',
+                  trailing: LayoutBuilder(
+                    builder: (context, constraints) {
+                      const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
+                      final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxSummaryWidth),
+                            child: Text(
+                              _getScheduleTimeSummary(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(color: textColorMuted, fontSize: 14),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                        ],
+                      );
+                    },
+                  ),
+                  onTap: _showNotificationTimesSheet,
+                ),
+              ],
+            ),
+          ),
 
-                // History section
-                const SizedBox(height: 24),
-                SettingsSectionHeader(title: 'HISTORY'),
-                const SizedBox(height: 12),
-                GlassCard(
-                  padding: EdgeInsets.zero,
-                  child: SettingsRow(
-                    title: 'Past Pointings',
-                    trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+          // Appearance section
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'APPEARANCE'),
+          const SizedBox(height: 12),
+          const AppearanceSelector(),
+
+          // Support section (prominent placement)
+          const SizedBox(height: 24),
+          const DonationButton(),
+
+          // Traditions section
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'TRADITIONS'),
+          const SizedBox(height: 12),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: SettingsRow(
+              title: 'Manage Lineages',
+              trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+              onTap: () async {
+                HapticFeedback.mediumImpact();
+                // Navigate to lineages management screen
+                if (context.mounted) {
+                  context.push('/lineages');
+                }
+              },
+            ),
+          ),
+
+          // History section
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'HISTORY'),
+          const SizedBox(height: 12),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: SettingsRow(
+              title: 'Past Pointings',
+              trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+              onTap: () async {
+                HapticFeedback.mediumImpact();
+                if (context.mounted) {
+                  context.push('/history');
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
+          ),
+
+          // Experience section (auto-advance)
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'EXPERIENCE'),
+          const SizedBox(height: 12),
+          AutoAdvanceToggle(),
+
+          // About section
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'ABOUT'),
+          const SizedBox(height: 12),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                SettingsRow(
+                  title: 'About Here Now',
+                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                  onTap: _showAboutDialog,
+                ),
+                const SettingsDivider(),
+                SettingsRow(
+                  title: 'Privacy Policy',
+                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                  onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
+                ),
+                const SettingsDivider(),
+                SettingsRow(
+                  title: 'Terms of Service',
+                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                  onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
+                ),
+              ],
+            ),
+          ),
+          // Developer section (hidden until 7 taps on version)
+          if (_showDeveloperOptions) ...[
+            const SizedBox(height: 24),
+            SettingsSectionHeader(title: 'DEVELOPER'),
+            const SizedBox(height: 12),
+            GlassCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  SettingsRow(
+                    title: 'Test Notification',
+                    subtitle: 'Send a test pointing notification',
+                    trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
                     onTap: () async {
-                      HapticFeedback.mediumImpact();
+                      final notificationService = ref.read(notificationServiceProvider);
+                      await notificationService.sendTestNotification();
                       if (context.mounted) {
-                        context.push('/history');
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
                       }
                     },
                   ),
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
-                ),
-
-                // Experience section (ambient sounds, auto-advance)
-                const SizedBox(height: 24),
-                SettingsSectionHeader(title: 'EXPERIENCE'),
-                const SizedBox(height: 12),
-                AmbientSoundPicker(),
-                const SizedBox(height: 12),
-                AutoAdvanceToggle(),
-
-                // About section
-                const SizedBox(height: 24),
-                SettingsSectionHeader(title: 'ABOUT'),
-                const SizedBox(height: 12),
-                GlassCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      SettingsRow(
-                        title: 'About Here Now',
-                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                        onTap: _showAboutDialog,
-                      ),
-                      const SettingsDivider(),
-                      SettingsRow(
-                        title: 'Privacy Policy',
-                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                        onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
-                      ),
-                      const SettingsDivider(),
-                      SettingsRow(
-                        title: 'Terms of Service',
-                        trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                        onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
-                      ),
-                    ],
+                  const SettingsDivider(),
+                  SettingsRow(
+                    title: 'Test Background Notification',
+                    subtitle: 'Schedule via WorkManager (1 min delay)',
+                    trailing: Icon(Icons.schedule_send, color: textColorSubtle, size: 20),
+                    onTap: () async {
+                      await WorkManagerService.scheduleOneTimeNotification(
+                        delay: const Duration(minutes: 1),
+                        uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Background notification scheduled in 1 minute. You can close the app.'),
+                            duration: Duration(seconds: 4),
+                          ),
+                        );
+                      }
+                    },
                   ),
-                ),
-                // Developer section (hidden until 7 taps on version)
-                if (_showDeveloperOptions) ...[
-                  const SizedBox(height: 24),
-                  SettingsSectionHeader(title: 'DEVELOPER'),
-                  const SizedBox(height: 12),
-                  GlassCard(
-                    padding: EdgeInsets.zero,
-                    child: Column(
-                      children: [
-                        SettingsRow(
-                          title: 'Test Notification',
-                          subtitle: 'Send a test pointing notification',
-                          trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
-                          onTap: () async {
-                            final notificationService = ref.read(notificationServiceProvider);
-                            await notificationService.sendTestNotification();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(const SnackBar(content: Text('Test notification sent'), duration: Duration(seconds: 2)));
-                            }
-                          },
-                        ),
-                        const SettingsDivider(),
-                        SettingsRow(
-                          title: 'Test Background Notification',
-                          subtitle: 'Schedule via WorkManager (1 min delay)',
-                          trailing: Icon(Icons.schedule_send, color: textColorSubtle, size: 20),
-                          onTap: () async {
-                            await WorkManagerService.scheduleOneTimeNotification(
-                              delay: const Duration(minutes: 1),
-                              uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
-                            );
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Background notification scheduled in 1 minute. You can close the app.'),
-                                  duration: Duration(seconds: 4),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        const SettingsDivider(),
-                        SettingsRow(
-                          title: 'Debug Pending Notifications',
-                          subtitle: 'Check scheduled notifications (inexact mode)',
-                          trailing: Icon(Icons.bug_report, color: textColorSubtle, size: 20),
-                          onTap: () async {
-                            final notificationService = ref.read(notificationServiceProvider);
-                            await notificationService.debugPrintPendingNotifications();
-                            final pending = await notificationService.getPendingNotifications();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Pending notifications: ${pending.length}'), duration: const Duration(seconds: 4)),
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                  const SettingsDivider(),
+                  SettingsRow(
+                    title: 'Debug Pending Notifications',
+                    subtitle: 'Check scheduled notifications (inexact mode)',
+                    trailing: Icon(Icons.bug_report, color: textColorSubtle, size: 20),
+                    onTap: () async {
+                      final notificationService = ref.read(notificationServiceProvider);
+                      await notificationService.debugPrintPendingNotifications();
+                      final pending = await notificationService.getPendingNotifications();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Pending notifications: ${pending.length}'), duration: const Duration(seconds: 4)));
+                      }
+                    },
                   ),
                 ],
-
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: _onVersionTap,
-                  child: Center(
-                    child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
-                  ),
-                ),
+              ),
+            ),
           ],
-        ),
+
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: _onVersionTap,
+            child: Center(
+              child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

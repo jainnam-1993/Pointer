@@ -23,7 +23,6 @@ import 'package:go_router/go_router.dart';
 import 'package:home_widget/home_widget.dart';
 import 'providers/providers.dart';
 import 'router.dart';
-import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
 import 'debug/maestro_hooks.dart';
 import 'services/notification_service.dart';
@@ -162,7 +161,6 @@ void main() async {
  * - Reads [routerProvider] once (via `ref.read`, not `ref.watch`) to avoid [MaterialApp.router]
  *   rebuilds that would trigger [GlobalKey] conflicts in [StatefulShellRoute].
  * - Watches [flutterThemeModeProvider] to reactively switch between light and dark themes.
- * - Disposes the [AmbientSoundService] when the app is torn down.
  */
 class PointerApp extends ConsumerStatefulWidget {
   const PointerApp({super.key});
@@ -179,8 +177,6 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Opening bell sound is embedded in the splash video asset —
-    // no separate just_audio playback needed (avoids codec contention).
 
     _setupWidgetDeepLink();
   }
@@ -188,7 +184,6 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   @override
   void dispose() {
     _widgetClickSub?.cancel();
-    ref.read(ambientSoundServiceProvider).dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -276,16 +271,19 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
           MaestroHooks.setContext(context);
         }
 
+        // Edge-to-edge bars are transparent by default on Android 15+; set only
+        // icon brightness, declaratively, instead of calling the deprecated
+        // bar color setters on every rebuild.
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-            systemNavigationBarColor: Colors.transparent,
-            systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        final iconBrightness = isDark ? Brightness.light : Brightness.dark;
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarIconBrightness: iconBrightness,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            systemNavigationBarIconBrightness: iconBrightness,
           ),
+          child: child ?? const SizedBox.shrink(),
         );
-        return child ?? const SizedBox.shrink();
       },
     );
   }
