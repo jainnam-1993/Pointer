@@ -277,9 +277,11 @@ struct PointerWidgetEntryView: View {
     @Environment(\.colorScheme) var colorScheme
 
     /// Deep-link URL for widget taps — passes the pointing ID to the app.
+    /// home_widget treats an opened URL as a widget click only when it carries the
+    /// `homeWidget` query item; without it the tap never reaches HomeWidget.widgetClicked.
     private var widgetDeepLink: URL? {
         guard let id = entry.data.id else { return nil }
-        return URL(string: "dailypointer://pointing/\(id)")
+        return URL(string: "dailypointer://pointing/\(id)?homeWidget")
     }
 
     var body: some View {
