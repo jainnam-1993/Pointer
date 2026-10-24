@@ -174,15 +174,26 @@ class GlassCard extends ConsumerWidget {
     // On an opaque surface (sheet, dialog) the ambient is hidden: plain glass, no shader.
     final onSurface = FrostScope.suppressesFrost(context);
     if (onSurface) {
+      // Same fill as the pre-shader glass, which these surfaces were designed for.
+      final (double top, double bottom) = switch (intensity) {
+        GlassIntensity.light => isDark ? (0.15, 0.08) : (0.7, 0.45),
+        GlassIntensity.standard => isDark ? (0.25, 0.12) : (0.85, 0.6),
+        GlassIntensity.heavy => isDark ? (0.38, 0.20) : (0.95, 0.75),
+      };
       glassGradient = LinearGradient(
-        colors: isDark
-            ? [Colors.white.withValues(alpha: topAlpha + 0.04), Colors.white.withValues(alpha: bottomAlpha + 0.02)]
-            : [Colors.black.withValues(alpha: 0.035), Colors.black.withValues(alpha: 0.02)],
+        colors: [
+          Colors.white.withValues(alpha: top),
+          Colors.white.withValues(alpha: bottom),
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
 
+    // The old card drew its rim as a Container border, which also inset the child
+    // by the rim width. The rim is now a foreground layer, so add that inset back
+    // to keep every child exactly where it was.
+    final rimWidth = isDark ? 1.5 : 1.0;
     final material = Container(
       padding: padding,
       decoration: BoxDecoration(gradient: glassGradient, borderRadius: radius),
@@ -199,7 +210,7 @@ class GlassCard extends ConsumerWidget {
           ],
         ),
       ),
-      child: constrainedContent,
+      child: Padding(padding: EdgeInsets.all(rimWidth), child: constrainedContent),
     );
 
     final card = DecoratedBox(
@@ -219,11 +230,14 @@ class GlassCard extends ConsumerWidget {
         position: DecorationPosition.foreground,
         decoration: BoxDecoration(
           borderRadius: radius,
-          border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.0 : 1),
+          border: GradientBoxBorder(gradient: borderGradient, width: rimWidth),
         ),
         child: ClipRRect(
           borderRadius: radius,
           child: Stack(
+            // passthrough: the material gets the card's own constraints, exactly as the
+            // old Container did; a loose Stack shrank it to the child's intrinsic size.
+            fit: StackFit.passthrough,
             children: [
               if (!onSurface)
                 Positioned.fill(
@@ -363,6 +377,7 @@ class GlassButton extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppSpacing.xxl),
             // Analytic frost instead of a live blur (see GlassCard).
             child: Stack(
+              fit: StackFit.passthrough,
               children: [
                 if (!FrostScope.suppressesFrost(context))
                   Positioned.fill(

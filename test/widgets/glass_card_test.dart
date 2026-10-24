@@ -511,4 +511,123 @@ void main() {
       expect(find.byType(BackdropFilter), findsNothing);
     });
   });
+
+  group('GlassCard layout parity', () {
+    // GlassCard must lay its child out exactly like a plain Container with the
+    // same padding: the glass layers fill the card and never constrain the child.
+    Future<(Rect, Rect)> measure(WidgetTester tester, Widget Function(Widget child) wrap, Widget Function(Widget inner) content) async {
+      Future<(Rect, Rect)> one(Widget card) async {
+        await tester.pumpWidget(wrapWithProviderScope(MaterialApp(home: Scaffold(body: wrap(card)))));
+        return (tester.getRect(find.byKey(const ValueKey('probe'))), tester.getRect(find.byKey(const ValueKey('card'))));
+      }
+
+      final probe = content(const Text('8:00 AM', key: ValueKey('probe')));
+      final glass = await one(GlassCard(key: const ValueKey('card'), child: probe));
+      // The pre-shader GlassCard: padding plus a 1 px (light theme) border inset.
+      final plain = await one(
+        Container(
+          key: const ValueKey('card'),
+          padding: AppSpacing.cardAll,
+          decoration: BoxDecoration(border: Border.all(width: 1)),
+          child: probe,
+        ),
+      );
+      expect(glass.$1, plain.$1, reason: 'child rect');
+      expect(glass.$2, plain.$2, reason: 'card rect');
+      return glass;
+    }
+
+    testWidgets('tight width, centered child (Row > Expanded)', (tester) async {
+      await measure(
+        tester,
+        (c) => Row(
+          children: [
+            Expanded(child: c),
+            const SizedBox(width: 100),
+          ],
+        ),
+        (inner) => Center(child: inner),
+      );
+    });
+
+    testWidgets('tight box with Column(crossAxisAlignment: center)', (tester) async {
+      await measure(
+        tester,
+        (c) => SizedBox(width: 280, height: 140, child: c),
+        (inner) => Column(mainAxisSize: MainAxisSize.min, children: [const Text('Start'), inner]),
+      );
+    });
+
+    testWidgets('loose constraints keep intrinsic size', (tester) async {
+      await measure(tester, (c) => Center(child: c), (inner) => inner);
+    });
+
+    testWidgets('same parity inside a modal sheet (plain glass path)', (tester) async {
+      await tester.pumpWidget(
+        wrapWithProviderScope(
+          MaterialApp(
+            home: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => showModalBottomSheet<void>(
+                  context: context,
+                  builder: (_) => Row(
+                    children: [
+                      Expanded(
+                        child: GlassCard(
+                          key: const ValueKey('card'),
+                          child: Center(child: Text('8:00 AM', key: const ValueKey('probe'))),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          key: const ValueKey('plain'),
+                          padding: AppSpacing.cardAll,
+                          child: const Center(child: Text('9:00 PM', key: ValueKey('probe2'))),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      final card = tester.getRect(find.byKey(const ValueKey('card')));
+      final plain = tester.getRect(find.byKey(const ValueKey('plain')));
+      expect(card.size, plain.size);
+      final a = tester.getRect(find.byKey(const ValueKey('probe')));
+      final b = tester.getRect(find.byKey(const ValueKey('probe2')));
+      expect(a.center.dx - card.left, closeTo(b.center.dx - plain.left, 0.01));
+      expect(a.top, b.top);
+    });
+
+    testWidgets('dark theme insets the child by the 1.5 px rim like the old card', (tester) async {
+      Future<Rect> probeIn(Widget card) async {
+        await tester.pumpWidget(
+          wrapWithProviderScope(
+            MaterialApp(
+              theme: AppTheme.dark,
+              home: Scaffold(body: Center(child: card)),
+            ),
+          ),
+        );
+        return tester.getRect(find.byKey(const ValueKey('p')));
+      }
+
+      const t = Text('x', key: ValueKey('p'));
+      final glass = await probeIn(const GlassCard(child: t));
+      final plain = await probeIn(
+        Container(
+          padding: AppSpacing.cardAll,
+          decoration: BoxDecoration(border: Border.all(width: 1.5)),
+          child: t,
+        ),
+      );
+      expect(glass, plain);
+    });
+  });
 }
