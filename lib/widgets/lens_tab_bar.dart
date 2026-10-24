@@ -282,7 +282,7 @@ class _Lens extends StatelessWidget {
         saturation: 1.0,
         bevelSaturation: 0,
         dispersion: -0.10,
-        bandLift: dark ? 0.55 : 0.35,
+        bandLift: dark ? 0.60 : 0.55,
         bandLiftFrom: dark ? 0.04 : 0.15,
       ),
     );
