@@ -66,7 +66,11 @@ maestro/screenshots/
 # Build artifacts
 .gradle/
 android/app/local.properties
-android/gradle/
+# The wrapper version is pinned in git so every machine builds with the same Gradle.
+android/gradle/*
+!android/gradle/wrapper/
+android/gradle/wrapper/*
+!android/gradle/wrapper/gradle-wrapper.properties
 
 # Claude Code local state
 .claude/
