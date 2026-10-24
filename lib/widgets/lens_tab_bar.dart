@@ -44,10 +44,13 @@ abstract final class LensTabStyle {
   /** Corner radius of the lens as a share of its shorter side (a soft rounded square). */
   static const double lensRadius = 0.42;
 
-  static const List<BoxShadow> capsuleShadow = [
-    BoxShadow(color: Color(0x4D000000), blurRadius: 36, offset: Offset(0, 14)),
-    BoxShadow(color: Color(0x33000000), blurRadius: 10, offset: Offset(0, 3)),
-  ];
+  /** One soft, wide drop shadow (about 22% black, 32 px blur, 8 px down), never a hard band. */
+  static const List<BoxShadow> capsuleShadow = [BoxShadow(color: Color(0x38000000), blurRadius: 32, offset: Offset(0, 8))];
+
+  /** Lens bevel and refraction as shares of its shorter side. Negative refraction samples outward from the rim, so
+   * the background past the bar's edge is pulled into the lens as bright magnified crescents. */
+  static const double lensBand = 0.24;
+  static const double lensRefraction = -0.20;
 
   static const List<Shadow> activeGlow = [Shadow(color: Color(0x99FFFFFF), blurRadius: 12)];
 }
@@ -124,7 +127,11 @@ class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateM
         final showLabel = !(horizontal && widget.minimized);
 
         final capsule = DecoratedBox(
-          decoration: ShapeDecoration(color: LensTabStyle.capsule, shape: const StadiumBorder(), shadows: LensTabStyle.capsuleShadow),
+          decoration: BoxDecoration(
+            color: LensTabStyle.capsule,
+            borderRadius: BorderRadius.circular(thickness / 2),
+            boxShadow: LensTabStyle.capsuleShadow,
+          ),
         );
 
         Widget cellAt(int i, Widget child) => horizontal
@@ -167,7 +174,9 @@ class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateM
                   final stretch = reduce ? 0.0 : liquidStretch(_pos.velocity * cell);
                   final main = lensMain * (1 + stretch);
                   final cross = lensCross * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                  final centreMain = LensTabBar.pad + cell * (_pos.value + 0.5);
+                  // Clamp inside the capsule's rounded ends so the first and last lens never hang past them.
+                  final inset = thickness * 0.1;
+                  final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
                   final rect = horizontal
                       ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
                       : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
@@ -248,11 +257,11 @@ class _Lens extends StatelessWidget {
       box: size,
       lens: LiquidLens(
         radius: r,
-        band: size.shortestSide * 0.45,
-        refraction: size.shortestSide * 0.30,
+        band: size.shortestSide * LensTabStyle.lensBand,
+        refraction: size.shortestSide * LensTabStyle.lensRefraction,
         rimLit: 0.75,
         rimFar: 0.45,
-        fresnel: 0.06,
+        fresnel: 0.22,
         topInnerShadow: 0,
         bevelDarken: 0,
         saturation: 1.0,
