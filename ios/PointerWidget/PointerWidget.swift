@@ -279,7 +279,10 @@ struct PointerWidgetEntryView: View {
     /// Deep-link URL for widget taps — passes the pointing ID to the app.
     private var widgetDeepLink: URL? {
         guard let id = entry.data.id else { return nil }
-        return URL(string: "dailypointer://pointing/\(id)")
+        // home_widget only forwards URLs that carry a `homeWidget` query item
+        // (SwiftHomeWidgetPlugin.isWidgetUrl); without it the tap opened the app on
+        // its stored pointing instead of this one.
+        return URL(string: "dailypointer://pointing/\(id)?homeWidget")
     }
 
     var body: some View {
