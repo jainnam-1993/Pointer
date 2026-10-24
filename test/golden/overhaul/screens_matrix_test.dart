@@ -28,6 +28,7 @@ import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pointer/data/articles.dart';
+import 'package:pointer/data/pointings.dart';
 import 'package:pointer/layout/adaptive.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/models/article.dart';
@@ -309,6 +310,7 @@ final matrixScreens = <MatrixScreen>[
       // Same call as SettingsScreen._showNotificationTimesSheet.
       showModalBottomSheet<void>(
         context: tester.element(find.byType(_HostPage)),
+        anchorPoint: sheetAnchorPoint(tester.element(find.byType(_HostPage))),
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
         builder: (context) => const NotificationTimesSheet(),
@@ -486,6 +488,77 @@ void main() {
       await _pumpAt(tester, screen('library'), device('foldinner'));
       expect(find.byKey(const ValueKey('library-list-detail')), findsOneWidget);
       expect(find.byKey(const ValueKey('library-detail-empty')), findsOneWidget);
+    });
+
+    /// Fails if any text or icon straddles the vertical hinge at [hingeX].
+    void expectNothingUnderHinge(WidgetTester tester, String name) {
+      for (final finder in [find.byType(RichText), find.byType(Icon)]) {
+        for (final element in finder.evaluate()) {
+          final box = element.renderObject as RenderBox?;
+          if (box == null || !box.hasSize || !box.attached) continue;
+          final rect = box.localToGlobal(Offset.zero) & box.size;
+          expect(rect.left < hingeX && rect.right > hingeX, isFalse, reason: '$name: ${element.widget} at $rect crosses the hinge');
+        }
+      }
+    }
+
+    for (final name in ['article', 'lineages', 'onboarding']) {
+      testWidgets('$name: content stays off a vertical hinge', (tester) async {
+        await _pumpAt(tester, screen(name), device('foldhinge'));
+        expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX), reason: name);
+        expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX), reason: name);
+        expectNothingUnderHinge(tester, name);
+        // Phones and unfolded tablets keep the single column.
+        await _pumpAt(tester, screen(name), device('phone'));
+        expect(find.byKey(const ValueKey('pane-primary')), findsNothing, reason: name);
+      });
+    }
+
+    testWidgets('lineages: on a hinge, info selects the tradition in the detail pane', (tester) async {
+      await _pumpAt(tester, screen('lineages'), device('foldhinge'));
+      final first = traditions.keys.first;
+      expect(find.byKey(ValueKey('lineages-detail-${first.name}')), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.info_outline).at(1));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.byKey(ValueKey('lineages-detail-${traditions.keys.elementAt(1).name}')), findsOneWidget);
+    });
+
+    testWidgets('notificationsheet: tabletop opens below the hinge with Done reachable', (tester) async {
+      final sheet = screen('notificationsheet');
+      await _pumpAt(tester, sheet, device('tabletop'));
+      await sheet.drive!(tester);
+      final sheetRect = tester.getRect(find.byType(NotificationTimesSheet));
+      expect(sheetRect.top, greaterThanOrEqualTo(hingeY));
+      final done = tester.getRect(find.byKey(const ValueKey('notification-sheet-done')));
+      expect(done.top, greaterThanOrEqualTo(hingeY));
+      expect(done.bottom, lessThanOrEqualTo(device('tabletop').size.height));
+      await tester.tap(find.text('Done'));
+      await _settleTransient(tester);
+      expect(find.byType(NotificationTimesSheet), findsNothing);
+    });
+
+    testWidgets('notificationsheet: phone keeps the 70 percent sheet', (tester) async {
+      final sheet = screen('notificationsheet');
+      await _pumpAt(tester, sheet, device('phone'));
+      await sheet.drive!(tester);
+      expect(tester.getRect(find.byType(NotificationTimesSheet)).height, lessThanOrEqualTo(device('phone').size.height * 0.7 + 0.5));
+      expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
+    });
+
+    testWidgets('tip: the card is capped on wide windows and tiles keep phone proportions', (tester) async {
+      final tip = screen('tip');
+      for (final name in ['tablet', 'foldinner']) {
+        await _pumpAt(tester, tip, device(name));
+        await tip.drive!(tester);
+        expect(
+          tester.getSize(find.descendant(of: find.byType(DonationButton), matching: find.byType(GlassCard)).first).width,
+          lessThanOrEqualTo(kTipCardMaxWidth),
+          reason: name,
+        );
+        // Two columns at the fixed 1.4 aspect ratio inside a phone-wide card: tiles stay phone sized.
+        expect(tester.getSize(find.byType(GridView)).width, lessThanOrEqualTo(kTipCardMaxWidth), reason: name);
+      }
     });
   });
 }

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
+import '../layout/adaptive.dart';
 import '../data/pointings.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
@@ -89,144 +90,196 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
       body: Stack(
         children: [
           const Positioned.fill(child: RouteAmbient()),
-          SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // Width-driven reading measure: about 60-66 characters of 18 pt serif, centred on wide screens.
-                final side = math.max(AppSpacing.xl, (constraints.maxWidth - kReadingMeasure) / 2);
-                final gutter = EdgeInsets.symmetric(horizontal: side);
-                return CustomScrollView(
-                  slivers: [
-                    // App bar
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: side - AppSpacing.md, vertical: AppSpacing.lg),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.close, color: colors.textPrimary),
-                              onPressed: () => widget.onClose != null ? widget.onClose!() : Navigator.pop(context),
-                            ),
-                            const Spacer(),
-                            Consumer(
-                              builder: (context, ref, _) {
-                                final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
-                                return IconButton(
-                                  icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
-                                  onPressed: () {
-                                    Haptics.success();
-                                    ref.read(articleFavoritesProvider.notifier).toggle(article.id);
-                                  },
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.share_outlined, color: colors.textPrimary),
-                              onPressed: () => _shareArticle(context),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Article header
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: gutter,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: kReadingMeasure),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: colors.glassBackground,
-                                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                                  border: Border.all(color: colors.glassBorder),
-                                ),
-                                child: Text(
-                                  traditionInfo.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: colors.textMuted, fontSize: 12),
-                                ),
+          // On a vertical hinge the text takes its own pane and the title faces it; nothing sits under the fold.
+          HingeSplit(
+            companion: SafeArea(
+              child: _ArticleCompanion(title: article.title, subtitle: article.subtitle, tradition: traditionInfo.name),
+            ),
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Width-driven reading measure: about 60-66 characters of 18 pt serif, centred on wide screens.
+                  final side = math.max(AppSpacing.xl, (constraints.maxWidth - kReadingMeasure) / 2);
+                  final gutter = EdgeInsets.symmetric(horizontal: side);
+                  return CustomScrollView(
+                    slivers: [
+                      // App bar
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: side - AppSpacing.md, vertical: AppSpacing.lg),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.close, color: colors.textPrimary),
+                                onPressed: () => widget.onClose != null ? widget.onClose!() : Navigator.pop(context),
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            Text(
-                              smartPunctuation(article.title),
-                              style: TextStyle(
-                                fontFamily: AppFonts.serif,
-                                fontSize: AppType.display,
-                                fontWeight: FontWeight.w500,
-                                color: colors.textPrimary,
-                                height: 1.2,
+                              const Spacer(),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
+                                  return IconButton(
+                                    icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
+                                    onPressed: () {
+                                      Haptics.success();
+                                      ref.read(articleFavoritesProvider.notifier).toggle(article.id);
+                                    },
+                                  );
+                                },
                               ),
-                            ),
-                            if (article.subtitle != null) ...[
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(smartPunctuation(article.subtitle!), style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+                              IconButton(
+                                icon: Icon(Icons.share_outlined, color: colors.textPrimary),
+                                onPressed: () => _shareArticle(context),
+                              ),
                             ],
-                            const SizedBox(height: AppSpacing.md),
-                            Row(
-                              children: [
-                                Icon(Icons.schedule, size: 14, color: colors.textMuted),
-                                const SizedBox(width: AppSpacing.xs),
-                                Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
-                                if (article.teacher != null) ...[
-                                  const SizedBox(width: AppSpacing.lg),
-                                  Icon(Icons.person_outline, size: 14, color: colors.textMuted),
-                                  const SizedBox(width: AppSpacing.xs),
-                                  Flexible(
-                                    child: Text(
-                                      article.teacher!,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 13, color: colors.textMuted),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.xl),
-                            Divider(color: colors.glassBorder),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    // Article content (lazy-loaded)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: side, right: side, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
-                        child: FutureBuilder<String>(
-                          future: _contentFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-                                child: Center(child: CircularProgressIndicator(color: colors.accent)),
-                              );
-                            }
-                            if (snapshot.hasError) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-                                child: Center(
-                                  child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                      // Article header
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: gutter,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: kReadingMeasure),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: colors.glassBackground,
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                                    border: Border.all(color: colors.glassBorder),
+                                  ),
+                                  child: Text(
+                                    traditionInfo.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: colors.textMuted, fontSize: 12),
+                                  ),
                                 ),
-                              );
-                            }
-                            return _MarkdownContent(content: smartPunctuation(stripLeadingTitle(snapshot.data!, article.title)), colors: colors);
-                          },
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                smartPunctuation(article.title),
+                                style: TextStyle(
+                                  fontFamily: AppFonts.serif,
+                                  fontSize: AppType.display,
+                                  fontWeight: FontWeight.w500,
+                                  color: colors.textPrimary,
+                                  height: 1.2,
+                                ),
+                              ),
+                              if (article.subtitle != null) ...[
+                                const SizedBox(height: AppSpacing.sm),
+                                Text(smartPunctuation(article.subtitle!), style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+                              ],
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
+                                children: [
+                                  Icon(Icons.schedule, size: 14, color: colors.textMuted),
+                                  const SizedBox(width: AppSpacing.xs),
+                                  Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
+                                  if (article.teacher != null) ...[
+                                    const SizedBox(width: AppSpacing.lg),
+                                    Icon(Icons.person_outline, size: 14, color: colors.textMuted),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    Flexible(
+                                      child: Text(
+                                        article.teacher!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 13, color: colors.textMuted),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.xl),
+                              Divider(color: colors.glassBorder),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+
+                      // Article content (lazy-loaded)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: side, right: side, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
+                          child: FutureBuilder<String>(
+                            future: _contentFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                                  child: Center(child: CircularProgressIndicator(color: colors.accent)),
+                                );
+                              }
+                              if (snapshot.hasError) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                                  child: Center(
+                                    child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                                  ),
+                                );
+                              }
+                              return _MarkdownContent(content: smartPunctuation(stripLeadingTitle(snapshot.data!, article.title)), colors: colors);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/**
+ * Facing page for the reader in book posture: the tradition and title, set
+ * calmly in the pane across the hinge from the text.
+ */
+class _ArticleCompanion extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final String tradition;
+
+  const _ArticleCompanion({required this.title, required this.subtitle, required this.tradition});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Padding(
+      key: const ValueKey('article-companion'),
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            tradition,
+            style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            smartPunctuation(title),
+            style: TextStyle(
+              fontFamily: AppFonts.serif,
+              fontSize: AppType.display,
+              fontWeight: FontWeight.w500,
+              color: colors.textPrimary,
+              height: 1.2,
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(smartPunctuation(subtitle!), style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+          ],
         ],
       ),
     );

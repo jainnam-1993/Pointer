@@ -118,6 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     showModalBottomSheet(
       context: context,
+      anchorPoint: sheetAnchorPoint(context),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => const NotificationTimesSheet(),

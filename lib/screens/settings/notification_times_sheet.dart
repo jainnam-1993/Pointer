@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../services/notification_service.dart';
+import '../../layout/adaptive.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 
@@ -57,6 +58,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
 
     await showModalBottomSheet(
       context: context,
+      anchorPoint: sheetAnchorPoint(context),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
@@ -190,7 +192,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     final mutedColor = colors.textSecondary;
 
     return Container(
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+      constraints: BoxConstraints(maxHeight: sheetMaxHeight(MediaQuery.sizeOf(context).height)),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter.grouped(
@@ -201,142 +203,152 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             ),
             child: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: bottomPadding + 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Notification Schedule', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
-                      const SizedBox(height: 8),
-                      Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
-                      const SizedBox(height: 20),
+              // The schedule scrolls; Done stays pinned below it so it is reachable in any window height.
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Notification Schedule', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
+                            const SizedBox(height: 8),
+                            Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
+                            const SizedBox(height: 20),
 
-                      // Quick Presets (Phase 5.3)
-                      Text(
-                        'Quick Presets',
-                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: NotificationPreset.values.map((preset) {
-                          final isSelected = _matchesPreset(preset);
-                          return ChoiceChip(
-                            label: Text(preset.label),
-                            selected: isSelected,
-                            onSelected: (_) => _applyPreset(preset),
-                            selectedColor: context.colors.accent.withValues(alpha: 0.3),
-                            labelStyle: TextStyle(
-                              color: isSelected ? context.colors.accent : textColor,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            // Quick Presets (Phase 5.3)
+                            Text(
+                              'Quick Presets',
+                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
                             ),
-                            side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Time Window
-                      Text(
-                        'Time Window',
-                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GlassCard(
-                              padding: const EdgeInsets.all(16),
-                              onTap: () => _pickTime(true),
-                              child: Column(
-                                children: [
-                                  Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
-                                    style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: NotificationPreset.values.map((preset) {
+                                final isSelected = _matchesPreset(preset);
+                                return ChoiceChip(
+                                  label: Text(preset.label),
+                                  selected: isSelected,
+                                  onSelected: (_) => _applyPreset(preset),
+                                  selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                                  labelStyle: TextStyle(
+                                    color: isSelected ? context.colors.accent : textColor,
+                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                                   ),
-                                ],
-                              ),
+                                  side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
+                                );
+                              }).toList(),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: GlassCard(
-                              padding: const EdgeInsets.all(16),
-                              onTap: () => _pickTime(false),
-                              child: Column(
-                                children: [
-                                  Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
-                                    style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
+                            const SizedBox(height: 24),
 
-                      // Frequency
-                      Text(
-                        'Frequency',
-                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _frequencyOptions.map((minutes) {
-                          final isSelected = _schedule.frequencyMinutes == minutes;
-                          return GestureDetector(
-                            onTap: () async {
-                              setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
-                              await _saveSchedule();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
-                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
-                              ),
-                              child: Text(
-                                minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
-                                style: TextStyle(
-                                  color: isSelected ? textColor : mutedColor,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            // Time Window
+                            Text(
+                              'Time Window',
+                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GlassCard(
+                                    padding: const EdgeInsets.all(16),
+                                    onTap: () => _pickTime(true),
+                                    child: Column(
+                                      children: [
+                                        Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
+                                          style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: GlassCard(
+                                    padding: const EdgeInsets.all(16),
+                                    onTap: () => _pickTime(false),
+                                    child: Column(
+                                      children: [
+                                        Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
+                                          style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 24),
+                            const SizedBox(height: 20),
 
-                      // Close button
-                      SizedBox(
-                        width: double.infinity,
-                        child: GlassCard(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Center(
-                            child: Text(
-                              'Done',
-                              style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
+                            // Frequency
+                            Text(
+                              'Frequency',
+                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
                             ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: _frequencyOptions.map((minutes) {
+                                final isSelected = _schedule.frequencyMinutes == minutes;
+                                return GestureDetector(
+                                  onTap: () async {
+                                    setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
+                                    await _saveSchedule();
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                                    ),
+                                    child: Text(
+                                      minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
+                                      style: TextStyle(
+                                        color: isSelected ? textColor : mutedColor,
+                                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Close button, pinned below the scrolling schedule.
+                  Padding(
+                    padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: bottomPadding + 24),
+                    child: SizedBox(
+                      key: const ValueKey('notification-sheet-done'),
+                      width: double.infinity,
+                      child: GlassCard(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Center(
+                          child: Text(
+                            'Done',
+                            style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
