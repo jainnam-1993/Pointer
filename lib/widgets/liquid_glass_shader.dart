@@ -53,7 +53,7 @@ class LiquidLens {
 
   final double innerHighlight;
 
-  /** Colour split at the refracting edge (0 = none). Blue bends more, as in real glass. */
+  /** Colour split at the refracting edge (0 = none). Positive bends blue more; negative bends red more, which leaves a blue fringe where a dark edge meets a light one. */
   final double dispersion;
 
   const LiquidLens({

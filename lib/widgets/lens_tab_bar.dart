@@ -266,7 +266,7 @@ class _Lens extends StatelessWidget {
         bevelDarken: 0,
         saturation: 1.0,
         bevelSaturation: 0,
-        dispersion: 0.08,
+        dispersion: -0.10,
       ),
     );
     Widget body = DecoratedBox(decoration: rim, child: child);

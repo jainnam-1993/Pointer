@@ -66,7 +66,7 @@ void main() {
   vec2 q = p - n * uShape.z * bevel * bevel;
   vec4 col = sampleBackdrop(q / (2.0 * uHalf) + 0.5);
   // Dispersion: red bends a little less and blue a little more than green, only where the bevel bends light.
-  if (uLens.x > 0.0) {
+  if (abs(uLens.x) > 0.0) {
     vec2 bend = n * uShape.z * bevel * bevel;
     col.r = sampleBackdrop((p - bend * (1.0 - uLens.x)) / (2.0 * uHalf) + 0.5).r;
     col.b = sampleBackdrop((p - bend * (1.0 + uLens.x)) / (2.0 * uHalf) + 0.5).b;
