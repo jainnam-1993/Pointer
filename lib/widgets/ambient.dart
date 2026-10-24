@@ -423,7 +423,6 @@ class AmbientShader {
     f(origin.dy);
     f(screen.width);
     f(screen.height);
-    f(time);
     f(frost);
     f(palette.aurora);
     f(palette.motes);
@@ -434,6 +433,43 @@ class AmbientShader {
     c(palette.fieldA);
     c(palette.fieldB);
     c(palette.fieldC);
+    timeUniforms(time).forEach(f);
+  }
+
+  /** Period of the shader's hash lattice (kHashWrap in shaders/ambient.frag). */
+  static const double hashWrap = 32;
+
+  /**
+   * The time-driven uniforms (indices 28-49), computed in fp64 and kept small.
+   * GPUs that run the shader at fp16 resolve a raw clock of 300 s only to 0.25 s,
+   * so motion would stall into steps as a session ages. Every value here is a
+   * sine, a phase below 2 pi, or a lattice offset below [hashWrap], at any time.
+   */
+  static List<double> timeUniforms(double t) {
+    double wrap(double v, double period) => v % period;
+    final out = <double>[
+      math.sin(t * 0.031),
+      math.cos(t * 0.023),
+      math.cos(t * 0.027 + 1.3),
+      math.sin(t * 0.019 + 0.7),
+      math.sin(t * 0.017 + 2.1),
+      math.cos(t * 0.029 + 0.4),
+      wrap(t * 0.021, hashWrap),
+      wrap(t * 0.018, hashWrap),
+      wrap(t * 0.012, hashWrap),
+    ];
+    for (var l = 0; l < 3; l++) {
+      final scale = 9 - l * 2.5;
+      final k = (1 + l * 0.8) * t * scale;
+      for (final d in [0.006 * k, -0.012 * k]) {
+        out.add(d - d.floorToDouble());
+      }
+      for (final d in [0.006 * k, -0.012 * k]) {
+        out.add(wrap(d.floorToDouble(), hashWrap));
+      }
+    }
+    out.add(wrap(t * 0.5, 2 * math.pi));
+    return out;
   }
 }
 
