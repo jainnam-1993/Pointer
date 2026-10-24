@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Previous/Next pill: a second, lighter pane of the same glass. -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/widget_surface_variant" android:alpha="0.72" />
-</selector>

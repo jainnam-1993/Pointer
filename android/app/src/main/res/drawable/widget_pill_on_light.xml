@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Holds Previous and Next; its radius is the system inner radius, concentric with the card. -->
+<!-- Previous/Next pill on a light card: a lighter pane of the same glass, concentric with the card. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/widget_pill" />
+    <solid android:color="#66FFFFFF" />
     <corners android:radius="@dimen/widget_inner_radius" />
 </shape>

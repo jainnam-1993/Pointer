@@ -167,10 +167,10 @@ object PointingsCacheCodec {
 }
 
 /** Responsive size buckets (L5). Foldable-specific sizing is left to a later stream. */
-enum class WidgetSize(val contentLines: Int, val showHeader: Boolean, val showTeacher: Boolean, val showActions: Boolean) {
-    COMPACT(contentLines = 3, showHeader = false, showTeacher = false, showActions = false),
-    MEDIUM(contentLines = 5, showHeader = false, showTeacher = true, showActions = true),
-    LARGE(contentLines = 12, showHeader = true, showTeacher = true, showActions = true);
+enum class WidgetSize(val contentLines: Int, val showHeader: Boolean, val showTeacher: Boolean, val showActions: Boolean, val aspect: Float) {
+    COMPACT(contentLines = 3, showHeader = false, showTeacher = false, showActions = false, aspect = 2.2f),
+    MEDIUM(contentLines = 5, showHeader = false, showTeacher = true, showActions = true, aspect = 2f),
+    LARGE(contentLines = 12, showHeader = true, showTeacher = true, showActions = true, aspect = 1f);
 
     companion object {
         /** The layout breakpoints, in dp, as (width, height) minimums. */

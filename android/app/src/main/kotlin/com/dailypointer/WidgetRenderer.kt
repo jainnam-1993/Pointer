@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -61,25 +62,35 @@ object WidgetRenderer {
         val state = WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
+        // The wallpaper colors are read on every render, so a wallpaper change shows on the next redraw.
+        val palette = WallpaperTint.palette(context)
+        val cards = WidgetSize.values().associateWith { FrostCard.bitmap(palette, it.aspect) }
         for (id in ids) {
-            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state))
+            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, palette, cards))
         }
     }
 
-    private fun build(context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState): RemoteViews {
+    private fun build(
+        context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState,
+        palette: FrostPalette, cards: Map<WidgetSize, Bitmap>,
+    ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state)
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, palette, cards.getValue(size))
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return views(context, widgetId, WidgetSize.forSize(width, height), pointing, state)
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, palette, cards.getValue(it)) }
     }
 
-    private fun views(context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState): RemoteViews {
+    private fun views(
+        context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
+        palette: FrostPalette, card: Bitmap,
+    ): RemoteViews {
         val views = RemoteViews(context.packageName, layoutFor(size))
+        paint(views, size, palette, card)
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
             views.setViewVisibility(R.id.widget_header, View.GONE)
@@ -107,6 +118,18 @@ object WidgetRenderer {
             views.setOnClickPendingIntent(R.id.widget_next, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_NEXT, pointing.id))
         }
         return views
+    }
+
+    /** Card bitmap and the ink measured against it (FrostPalette guarantees 4.5:1 for the pointing). */
+    private fun paint(views: RemoteViews, size: WidgetSize, palette: FrostPalette, card: Bitmap) {
+        views.setImageViewBitmap(R.id.widget_frost_bg, card)
+        views.setTextColor(R.id.widget_content, palette.ink)
+        views.setTextColor(R.id.widget_teacher, palette.secondary)
+        views.setTextColor(R.id.widget_tradition, palette.secondary)
+        if (size.showActions) {
+            for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", palette.ink)
+            views.setInt(R.id.widget_pill, "setBackgroundResource", if (palette.lightInk) R.drawable.widget_pill_on_dark else R.drawable.widget_pill_on_light)
+        }
     }
 
     /** Each size has its own layout (small, medium, large) rather than one stretched layout. */

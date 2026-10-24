@@ -51,7 +51,7 @@ class WidgetLayoutTest {
     /** The renderer sets these ids on every size, so each live layout must declare all of them. */
     @Test
     fun liveLayoutsDeclareEveryRenderedId() {
-        val ids = listOf("widget_content_area", "widget_content", "widget_header", "widget_tradition", "widget_teacher", "widget_action_bar")
+        val ids = listOf("widget_frost_bg", "widget_content_area", "widget_content", "widget_header", "widget_tradition", "widget_teacher", "widget_action_bar")
         val missing = required.filter { it != "pointer_widget_preview.xml" }.flatMap { name ->
             val text = File("src/main/res/layout/$name").readText()
             ids.filter { "@+id/$it\"" !in text }.map { "$name: $it" }

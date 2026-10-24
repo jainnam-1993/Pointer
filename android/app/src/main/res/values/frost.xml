@@ -4,7 +4,5 @@
      Body opacities (color/, color-night/) are the floor that keeps 4.5:1 for the pointing text over any wallpaper. -->
 <resources>
     <color name="widget_highlight">#B3FFFFFF</color>
-    <color name="widget_sheen">#40FFFFFF</color>
     <color name="widget_rim">#40FFFFFF</color>
-    <color name="widget_shade">#0F000000</color>
 </resources>
