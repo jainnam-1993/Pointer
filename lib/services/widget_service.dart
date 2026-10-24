@@ -52,6 +52,17 @@ class WidgetService {
   bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
   bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
+  /**
+   * The widget URL that cold-started the app, if any. On iOS the App Group must be
+   * set first: home_widget answers `initiallyLaunchedFromHomeWidget` with
+   * PlatformException(-7, "AppGroupId not set") otherwise, and the tap was lost, so
+   * Home showed its stored pointing instead of the one the widget showed.
+   */
+  static Future<Uri?> initialLaunchUri() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS) await HomeWidget.setAppGroupId(iosAppGroup);
+    return HomeWidget.initiallyLaunchedFromHomeWidget();
+  }
+
   /** Initialize widget storage. */
   Future<void> initialize() async {
     if (_isIOS) {
