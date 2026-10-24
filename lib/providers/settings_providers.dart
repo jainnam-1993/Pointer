@@ -11,6 +11,8 @@
  */
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/motion.dart';
@@ -151,7 +153,21 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((r
 class SettingsNotifier extends StateNotifier<AppSettings> {
   final StorageService _storage;
 
-  SettingsNotifier(this._storage) : super(_storage.settings);
+  SettingsNotifier(this._storage) : super(_migrate(_storage));
+
+  /**
+   * One-time migration (design finding 17): the OLED toggle was removed, but a persisted
+   * `oledMode: true` still forced a black background ahead of the light/dark check, so a
+   * light-theme user could be stuck on black with dark text and no way out. Clear the flag
+   * once and persist it; with no toggle left, it can never be set again.
+   */
+  static AppSettings _migrate(StorageService storage) {
+    final settings = storage.settings;
+    if (!settings.oledMode) return settings;
+    final migrated = settings.copyWith(oledMode: false);
+    unawaited(storage.updateSettings(migrated));
+    return migrated;
+  }
 
   /**
    * Persists [newSettings] to [StorageService] and updates state.

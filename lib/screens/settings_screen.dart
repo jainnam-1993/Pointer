@@ -189,6 +189,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     final notificationService = ref.read(notificationServiceProvider);
     final granted = await notificationService.requestPermissions();
+    if (!mounted) return;
 
     if (granted) {
       setState(() {
