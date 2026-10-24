@@ -27,12 +27,14 @@ void main() {
     group('$name contrast', () {
       // Every surface text can sit on: the page, and glass at each intensity (both gradient stops).
       final surfaces = <String, Color>{'background': colors.background, 'surface': colors.surface};
-      for (final (label, factor) in [('light', GlassMaterial.lightFactor), ('standard', 1.0), ('heavy', GlassMaterial.heavyFactor)]) {
-        for (final (stop, alpha) in [('top', glass.fillTopAlpha), ('bottom', glass.fillBottomAlpha)]) {
-          final fill = glass.fill.withValues(alpha: (alpha * factor).clamp(0.0, 1.0));
-          surfaces['glass-$label-$stop'] = Color.alphaBlend(fill, colors.background);
+      for (final (i, label) in const [(0, 'light'), (1, 'standard'), (2, 'heavy')]) {
+        for (final (stop, alpha) in [('top', glass.levels[i].top), ('bottom', glass.levels[i].bottom)]) {
+          surfaces['glass-$label-$stop'] = Color.alphaBlend(glass.fill.withValues(alpha: alpha), colors.background);
         }
       }
+      // Frost suppressed (opaque sheets): plain glass over the sheet surface.
+      surfaces['onSurface-top'] = Color.alphaBlend(glass.onSurfaceTop, colors.surface);
+      surfaces['onSurface-bottom'] = Color.alphaBlend(glass.onSurfaceBottom, colors.surface);
       final texts = <String, Color>{
         'textPrimary': colors.textPrimary,
         'textSecondary': colors.textSecondary,

@@ -304,24 +304,46 @@ class InkPalette {
   static const Color inkDusk = Color(0xFF8E7CC3);
 }
 
+/** Frost amount and fill alphas for one glass intensity. */
+@immutable
+class GlassLevel {
+  /** Analytic frost amount (0..1) handed to the ambient frost shader. */
+  final double frost;
+
+  /** Fill alpha at the top-left gradient stop. */
+  final double top;
+
+  /** Fill alpha at the bottom-right gradient stop. */
+  final double bottom;
+
+  const GlassLevel(this.frost, this.top, this.bottom);
+
+  GlassLevel lerp(GlassLevel o, double t) => GlassLevel(frost + (o.frost - frost) * t, top + (o.top - top) * t, bottom + (o.bottom - bottom) * t);
+}
+
 /**
- * The one glass material: fill, rim, highlight, and shadow tokens per theme.
+ * The one glass material: frost, fill, rim, highlight, and shadow tokens per theme.
  *
- * Consumed by [GlassCard], [GlassButton], and [GlassDialog]; read it with
- * [GlassMaterial.of]. Fill alphas are the "standard" intensity; [fillFor]
- * scales them for light/heavy glass. Contrast for every text color over the
- * heaviest fill is enforced by test/theme/contrast_test.dart.
+ * Feeds the analytic-frost glass in [GlassCard], [GlassButton], and
+ * [GlassDialog]; read it with [GlassMaterial.of]. [levels] holds the light,
+ * standard, and heavy intensities in that order. [onSurfaceTop] and
+ * [onSurfaceBottom] are the plain fill used where frost is suppressed (opaque
+ * sheets). Contrast for every text color over every fill is enforced by
+ * test/theme/contrast_test.dart.
  */
 @immutable
 class GlassMaterial extends ThemeExtension<GlassMaterial> {
-  /** Fill tint (alpha is ignored; see [fillTopAlpha] and [fillBottomAlpha]). */
+  /** Fill tint (alpha comes from [levels]). */
   final Color fill;
 
-  /** Fill alpha at the top-left of the gradient for standard intensity. */
-  final double fillTopAlpha;
+  /** Light, standard, heavy. */
+  final List<GlassLevel> levels;
 
-  /** Fill alpha at the bottom-right of the gradient for standard intensity. */
-  final double fillBottomAlpha;
+  /** Plain fill at the top-left when frost is suppressed. */
+  final Color onSurfaceTop;
+
+  /** Plain fill at the bottom-right when frost is suppressed. */
+  final Color onSurfaceBottom;
 
   /** Rim (border) color at the lit top-left edge. */
   final Color rimTop;
@@ -332,29 +354,34 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   /** Rim stroke width. */
   final double rimWidth;
 
-  /** Specular highlight along the top edge. */
+  /** Top-edge sheen color (fades to transparent over [highlightExtent]). */
   final Color highlight;
 
-  /** Drop shadow color; transparent where shadows read as dirt (dark themes). */
+  /** Fraction of the height the sheen covers. */
+  final double highlightExtent;
+
+  /** Drop shadow color. */
   final Color shadow;
 
   /** Drop shadow blur radius. */
   final double shadowBlur;
 
-  /** Backdrop blur sigma for standard intensity. */
+  /** Blur sigma for the few surfaces that still use a live backdrop blur (dialogs, toasts). */
   final double blurSigma;
 
-  /** Whether the material is opaque (high contrast): no blur, solid fill. */
+  /** Whether the material is opaque (high contrast): no frost, solid fill. */
   final bool opaque;
 
   const GlassMaterial({
     required this.fill,
-    required this.fillTopAlpha,
-    required this.fillBottomAlpha,
+    required this.levels,
+    required this.onSurfaceTop,
+    required this.onSurfaceBottom,
     required this.rimTop,
     required this.rimBottom,
     this.rimWidth = 1.0,
     required this.highlight,
+    this.highlightExtent = 0.35,
     required this.shadow,
     this.shadowBlur = 24,
     this.blurSigma = 30,
@@ -363,38 +390,43 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
 
   static const dark = GlassMaterial(
     fill: Colors.white,
-    fillTopAlpha: 0.12,
-    fillBottomAlpha: 0.05,
+    levels: [GlassLevel(0.6, 0.07, 0.03), GlassLevel(0.8, 0.10, 0.04), GlassLevel(1.0, 0.16, 0.07)],
+    onSurfaceTop: Color(0x24FFFFFF),
+    onSurfaceBottom: Color(0x0FFFFFFF),
     rimTop: Color(0x47FFFFFF),
     rimBottom: Color(0x0FFFFFFF),
-    highlight: Color(0x24FFFFFF),
-    shadow: Colors.transparent,
+    highlight: Color(0x12FFFFFF),
+    shadow: Color(0x52000000),
   );
 
   static const light = GlassMaterial(
     fill: Colors.white,
-    fillTopAlpha: 0.82,
-    fillBottomAlpha: 0.58,
+    levels: [GlassLevel(0.6, 0.16, 0.08), GlassLevel(0.8, 0.22, 0.12), GlassLevel(1.0, 0.34, 0.20)],
+    onSurfaceTop: Color(0x091A0A3A),
+    onSurfaceBottom: Color(0x051A0A3A),
     rimTop: Color(0x14000000),
     rimBottom: Color(0x08000000),
-    highlight: Color(0xB3FFFFFF),
-    shadow: Color(0x0F1A0A3A),
+    highlight: Color(0x59FFFFFF),
+    shadow: Color(0x141A0A3A),
+    shadowBlur: 20,
   );
 
   static const oled = GlassMaterial(
     fill: Colors.white,
-    fillTopAlpha: 0.07,
-    fillBottomAlpha: 0.03,
+    levels: [GlassLevel(0.5, 0.05, 0.02), GlassLevel(0.7, 0.07, 0.03), GlassLevel(0.9, 0.11, 0.05)],
+    onSurfaceTop: Color(0x1AFFFFFF),
+    onSurfaceBottom: Color(0x0AFFFFFF),
     rimTop: Color(0x33FFFFFF),
     rimBottom: Color(0x0AFFFFFF),
-    highlight: Color(0x14FFFFFF),
+    highlight: Color(0x0DFFFFFF),
     shadow: Colors.transparent,
   );
 
   static const highContrast = GlassMaterial(
     fill: Color(0xFF1A1A1A),
-    fillTopAlpha: 1,
-    fillBottomAlpha: 1,
+    levels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    onSurfaceTop: Color(0xFF1A1A1A),
+    onSurfaceBottom: Color(0xFF1A1A1A),
     rimTop: Colors.white,
     rimBottom: Colors.white,
     rimWidth: 2,
@@ -404,19 +436,35 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     opaque: true,
   );
 
-  /** Intensity multipliers applied to fill alpha; heavy is the contrast worst case. */
+  /** Index of each intensity in [levels]. */
+  static const int lightLevel = 0, standardLevel = 1, heavyLevel = 2;
+
+  /** Legacy multipliers relative to the standard level (kept for older call sites). */
   static const double lightFactor = 0.7;
-  static const double heavyFactor = 1.4;
+  static const double heavyFactor = 1.6;
 
   /** Resolves the material for [context]; [highContrast] forces the opaque variant. */
   static GlassMaterial of(BuildContext context, {bool highContrast = false}) {
     if (highContrast) return GlassMaterial.highContrast;
-    final colors = context.colors;
-    if (identical(colors, PointerColors.oled) || colors == PointerColors.oled) return GlassMaterial.oled;
+    if (context.colors == PointerColors.oled) return GlassMaterial.oled;
     return Theme.of(context).extension<GlassMaterial>() ?? (context.isDarkMode ? GlassMaterial.dark : GlassMaterial.light);
   }
 
-  /** The fill gradient for an intensity factor (1.0 = standard). */
+  /** Standard-level fill alphas. */
+  double get fillTopAlpha => levels[standardLevel].top;
+  double get fillBottomAlpha => levels[standardLevel].bottom;
+
+  /** The frosted fill gradient for [level] (see [lightLevel], [standardLevel], [heavyLevel]). */
+  LinearGradient fillAt(int level) => LinearGradient(
+    colors: [
+      fill.withValues(alpha: levels[level].top),
+      fill.withValues(alpha: levels[level].bottom),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** The fill gradient scaled from the standard level by [factor] (1.0 = standard). */
   LinearGradient fillFor([double factor = 1.0]) => LinearGradient(
     colors: [
       fill.withValues(alpha: (fillTopAlpha * factor).clamp(0.0, 1.0)),
@@ -426,30 +474,35 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     end: Alignment.bottomRight,
   );
 
+  /** Plain fill used where frost is suppressed (opaque sheets and dialogs). */
+  LinearGradient get onSurfaceFill => LinearGradient(colors: [onSurfaceTop, onSurfaceBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
+
   /** The rim gradient, lit from the top-left. */
   LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
+
+  /** Top-edge sheen as a foreground gradient. */
+  LinearGradient get sheen => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0, highlightExtent],
+    colors: [highlight, highlight.withValues(alpha: 0)],
+  );
 
   /** Drop shadows, empty when [shadow] is transparent. */
   List<BoxShadow> get shadows => shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 6))];
 
   @override
-  GlassMaterial copyWith({
-    Color? fill,
-    double? fillTopAlpha,
-    double? fillBottomAlpha,
-    Color? rimTop,
-    Color? rimBottom,
-    Color? highlight,
-    Color? shadow,
-  }) {
+  GlassMaterial copyWith({Color? fill, List<GlassLevel>? levels, Color? rimTop, Color? rimBottom, Color? highlight, Color? shadow}) {
     return GlassMaterial(
       fill: fill ?? this.fill,
-      fillTopAlpha: fillTopAlpha ?? this.fillTopAlpha,
-      fillBottomAlpha: fillBottomAlpha ?? this.fillBottomAlpha,
+      levels: levels ?? this.levels,
+      onSurfaceTop: onSurfaceTop,
+      onSurfaceBottom: onSurfaceBottom,
       rimTop: rimTop ?? this.rimTop,
       rimBottom: rimBottom ?? this.rimBottom,
       rimWidth: rimWidth,
       highlight: highlight ?? this.highlight,
+      highlightExtent: highlightExtent,
       shadow: shadow ?? this.shadow,
       shadowBlur: shadowBlur,
       blurSigma: blurSigma,
@@ -463,12 +516,14 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     double l(double a, double b) => a + (b - a) * t;
     return GlassMaterial(
       fill: Color.lerp(fill, other.fill, t)!,
-      fillTopAlpha: l(fillTopAlpha, other.fillTopAlpha),
-      fillBottomAlpha: l(fillBottomAlpha, other.fillBottomAlpha),
+      levels: [for (var i = 0; i < levels.length; i++) levels[i].lerp(other.levels[i], t)],
+      onSurfaceTop: Color.lerp(onSurfaceTop, other.onSurfaceTop, t)!,
+      onSurfaceBottom: Color.lerp(onSurfaceBottom, other.onSurfaceBottom, t)!,
       rimTop: Color.lerp(rimTop, other.rimTop, t)!,
       rimBottom: Color.lerp(rimBottom, other.rimBottom, t)!,
       rimWidth: l(rimWidth, other.rimWidth),
       highlight: Color.lerp(highlight, other.highlight, t)!,
+      highlightExtent: l(highlightExtent, other.highlightExtent),
       shadow: Color.lerp(shadow, other.shadow, t)!,
       shadowBlur: l(shadowBlur, other.shadowBlur),
       blurSigma: l(blurSigma, other.blurSigma),
