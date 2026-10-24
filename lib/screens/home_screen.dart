@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../data/articles.dart';
+import '../data/inquiries.dart';
+import '../layout/adaptive.dart';
 import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/article.dart';
@@ -492,69 +494,227 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 onVerticalDragStart: _onDragStart,
                 onVerticalDragUpdate: _onDragUpdate,
                 onVerticalDragEnd: _onDragEnd,
-                child: SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: 20, bottom: navBarSpace),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: ConstrainedBox(
-                              // Width-driven measure: the plate never grows past a readable line length.
-                              constraints: const BoxConstraints(maxWidth: 600),
-                              child: ValueListenableBuilder<double>(
-                                valueListenable: _dragOffset,
-                                builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
-                                child: _buildCard(context, pointing, colors, size: size, isSquareAspect: isSquareAspect),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
-                        // Secondary actions, demoted to quiet text.
-                        Semantics(
-                          sortKey: const OrdinalSortKey(2.0),
-                          child: Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            spacing: AppSpacing.md,
-                            children: [
-                              _QuietTextAction(
-                                label: 'Take a moment',
-                                semanticsLabel: 'Take a moment - start guided inquiry',
-                                color: colors.accent,
-                                onTap: () {
-                                  Haptics.light();
-                                  context.push('/inquiry/random');
-                                },
-                              ),
-                              _QuietTextAction(
-                                label: 'Next',
-                                semanticsLabel: 'Show next pointing',
-                                color: colors.textSecondary,
-                                trailing: AppIcons.chevronDown,
-                                onTap: _handleNext,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
-                          const SizedBox(height: AppSpacing.sm),
-                          ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
+                child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
               ),
           ],
         ),
       ),
     );
   }
+
+  /**
+   * Lays the home body out for the window: one centered column on compact
+   * and medium, pointing plus context on expanded or across a vertical hinge,
+   * and pointing above / controls below the hinge in tabletop posture.
+   */
+  Widget _buildAdaptiveBody(
+    BuildContext context,
+    Pointing pointing,
+    PointerColors colors, {
+    required Size size,
+    required bool isSquareAspect,
+    required double navBarSpace,
+  }) {
+    final layout = WindowLayout.of(context);
+    final bottomSpace = layout.navigationType == NavigationType.rail ? AppSpacing.xl : navBarSpace;
+    final card = Center(
+      child: ConstrainedBox(
+        // Width-driven measure: the plate never grows past a readable line length.
+        constraints: const BoxConstraints(maxWidth: kContentMaxWidth),
+        child: ValueListenableBuilder<double>(
+          valueListenable: _dragOffset,
+          builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
+          child: _buildCard(context, pointing, colors, size: size, isSquareAspect: isSquareAspect),
+        ),
+      ),
+    );
+    final actions = _buildActions(context, colors);
+    if (layout.posture == Posture.tabletop) {
+      return TabletopSplit(
+        fallback: const SizedBox.shrink(),
+        top: SafeArea(
+          child: Padding(padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.md), child: card),
+        ),
+        bottom: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              key: const ValueKey('home-tabletop-controls'),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                actions,
+                const SizedBox(height: AppSpacing.lg),
+                _HomeContextPane(pointing: pointing, compact: true),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    final column = Column(
+      children: [
+        Expanded(child: card),
+        SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
+        actions,
+        if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
+          const SizedBox(height: AppSpacing.sm),
+          ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
+        ],
+      ],
+    );
+    final primary = SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: 20, bottom: bottomSpace),
+        child: column,
+      ),
+    );
+    return TwoPane(
+      primaryFlex: 3,
+      secondaryFlex: 2,
+      primary: primary,
+      secondary: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.xl, top: 20, bottom: bottomSpace),
+          child: Center(child: _HomeContextPane(pointing: pointing)),
+        ),
+      ),
+    );
+  }
+
+  /** Secondary actions, demoted to quiet text. */
+  Widget _buildActions(BuildContext context, PointerColors colors) {
+    return Semantics(
+      sortKey: const OrdinalSortKey(2.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: AppSpacing.md,
+        children: [
+          _QuietTextAction(
+            label: 'Take a moment',
+            semanticsLabel: 'Take a moment - start guided inquiry',
+            color: colors.accent,
+            onTap: () {
+              Haptics.light();
+              context.push('/inquiry/random');
+            },
+          ),
+          _QuietTextAction(
+            label: 'Next',
+            semanticsLabel: 'Show next pointing',
+            color: colors.textSecondary,
+            trailing: AppIcons.chevronDown,
+            onTap: _handleNext,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-/** A plain glyph with a 48 pt hit target and button semantics; no tinted chip. */
+/**
+ * Context for the current pointing on wide windows: its tradition, the
+ * teacher, and a related inquiry from the same tradition.
+ */
+class _HomeContextPane extends StatelessWidget {
+  final Pointing pointing;
+
+  /** Tabletop bottom half: one line of context, no teacher biography. */
+  final bool compact;
+
+  const _HomeContextPane({required this.pointing, this.compact = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final info = traditions[pointing.tradition]!;
+    final teacher = getTeacher(pointing.teacher);
+    final related = getInquiriesByTradition(pointing.tradition);
+    final inquiry = related.isEmpty ? null : related.first;
+    final label = TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w600, letterSpacing: 1.2);
+    final body = TextStyle(color: colors.textSecondary, fontSize: AppType.callout, height: 1.5);
+    if (compact) {
+      return Text(
+        [info.name, if (pointing.teacher != null) pointing.teacher!].join('  ·  '),
+        textAlign: TextAlign.center,
+        style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, letterSpacing: 0.4),
+      );
+    }
+    return ConstrainedBox(
+      key: const ValueKey('home-context-pane'),
+      constraints: const BoxConstraints(maxWidth: 420),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('TRADITION', style: label),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              ExcludeSemantics(child: Icon(info.lineIcon, size: 16, color: colors.textSecondary)),
+              const SizedBox(width: AppSpacing.sm),
+              Flexible(
+                child: Text(
+                  info.name,
+                  style: TextStyle(color: colors.textPrimary, fontSize: AppType.headline),
+                ),
+              ),
+            ],
+          ),
+          if (pointing.teacher != null) ...[
+            const SizedBox(height: AppSpacing.xl),
+            Text('TEACHER', style: label),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              pointing.teacher!,
+              style: TextStyle(fontFamily: AppFonts.serif, color: colors.textPrimary, fontSize: AppType.title),
+            ),
+            if (teacher?.dates != null) ...[
+              const SizedBox(height: 2),
+              Text(
+                teacher!.dates!,
+                style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
+              ),
+            ],
+            if (teacher?.bio != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(teacher!.bio!, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
+            ],
+          ],
+          if (inquiry != null) ...[
+            const SizedBox(height: AppSpacing.xl),
+            Text('RELATED INQUIRY', style: label),
+            const SizedBox(height: AppSpacing.sm),
+            Semantics(
+              button: true,
+              label: 'Start inquiry: ${inquiry.question}',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Haptics.light();
+                  context.push('/inquiry/${inquiry.id}');
+                },
+                child: Text(
+                  inquiry.question,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: AppFonts.serif,
+                    fontStyle: FontStyle.italic,
+                    color: colors.accent,
+                    fontSize: AppType.headline,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _QuietIconButton extends StatelessWidget {
   final IconData icon;
   final Color color;

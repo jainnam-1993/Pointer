@@ -274,9 +274,10 @@ class _InterruptionPageState extends State<_InterruptionPage> {
           TypewriterText(
             text: 'What is looking through your eyes right now?',
             style: TextStyle(
+              fontFamily: AppFonts.serif,
               fontSize: _responsiveFontSize(context, 28),
-              height: 1.5,
-              fontWeight: FontWeight.w300,
+              height: 1.4,
+              fontWeight: FontWeight.w400,
               color: colors.textPrimary,
               letterSpacing: -0.5,
             ),
@@ -315,11 +316,18 @@ class _InterruptionPageState extends State<_InterruptionPage> {
             opacity: reduceMotion || _showIcon ? 0.4 : 0.0,
             duration: const Duration(milliseconds: 1200),
             curve: Curves.easeOut,
-            child: BreathingGlow(
-              glowColor: colors.accent,
-              maxBlur: 15,
-              maxSpread: 3,
-              child: Icon(Icons.visibility_outlined, size: 32, color: colors.textMuted),
+            // A quiet glass circle: the glow follows the circle, never a square box.
+            child: Container(
+              key: const ValueKey('onboarding-eye'),
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colors.glassBackground,
+                border: Border.all(color: colors.glassBorder),
+                boxShadow: [BoxShadow(color: colors.accent.withValues(alpha: 0.25), blurRadius: 24, spreadRadius: 1)],
+              ),
+              child: Icon(Icons.visibility_outlined, size: 28, color: colors.textSecondary),
             ),
           ),
         ],

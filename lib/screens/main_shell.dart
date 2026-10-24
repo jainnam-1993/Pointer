@@ -6,6 +6,7 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/glass_card.dart';
 import '../theme/app_icons.dart';
+import '../layout/adaptive.dart';
 
 /**
  * Root shell widget providing bottom navigation and tab management.
@@ -81,12 +82,132 @@ class _MainShellState extends ConsumerState<MainShell> {
         widget.navigationShell.goBranch(0);
       },
       child: BackdropGroup(
-        child: Scaffold(
-          body: Stack(children: [content]),
-          extendBody: true,
-          bottomNavigationBar: _BottomNavBar(
-            currentIndex: currentIndex,
-            onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+        child: WindowLayout.of(context).navigationType == NavigationType.rail
+            ? _buildWithRail(context, content, currentIndex)
+            : Scaffold(
+                body: Stack(children: [content]),
+                extendBody: true,
+                bottomNavigationBar: _BottomNavBar(
+                  currentIndex: currentIndex,
+                  onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+                ),
+              ),
+      ),
+    );
+  }
+
+  /**
+   * Medium and expanded windows: a glass side rail replaces the bottom bar.
+   * Content keeps the full window (so the ambient, frost and hinge bounds stay
+   * in window coordinates) and gets the rail as extra left padding instead.
+   */
+  Widget _buildWithRail(BuildContext context, Widget content, int currentIndex) {
+    final media = MediaQuery.of(context);
+    final layout = WindowLayout.fromMediaQuery(media);
+    final railTop = layout.posture == Posture.tabletop ? layout.hinge!.bounds.bottom : 0.0;
+    return Scaffold(
+      body: Stack(
+        children: [
+          MediaQuery(
+            data: media.copyWith(
+              padding: media.padding.copyWith(left: media.padding.left + kRailWidth),
+              viewPadding: media.viewPadding.copyWith(left: media.viewPadding.left + kRailWidth),
+            ),
+            child: content,
+          ),
+          Positioned(
+            left: 0,
+            top: railTop,
+            bottom: 0,
+            width: kRailWidth + media.padding.left,
+            child: SafeArea(
+              right: false,
+              top: railTop == 0,
+              child: _SideRail(
+                currentIndex: currentIndex,
+                onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/** The four tabs, shared by the bottom bar and the side rail. */
+const _tabs = <(IconData, IconData, String)>[
+  (AppIcons.home, AppIcons.homeActive, 'Home'),
+  (AppIcons.inquiry, AppIcons.inquiryActive, 'Inquiry'),
+  (AppIcons.library, AppIcons.libraryActive, 'Library'),
+  (AppIcons.settings, AppIcons.settingsActive, 'Settings'),
+];
+
+/**
+ * Glass side rail for medium and expanded windows: a vertical pill centered
+ * on the left edge, sharing the shell's [BackdropGroup] (one live blur).
+ */
+class _SideRail extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  const _SideRail({required this.currentIndex, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isDark = context.isDarkMode;
+    final fill = isDark
+        ? [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)]
+        : [Colors.white.withValues(alpha: 0.95), Colors.white.withValues(alpha: 0.75)];
+    final border = isDark
+        ? [colors.glassBorder, colors.glassBorder.withValues(alpha: 0.2)]
+        : [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)];
+    const radius = 32.0;
+    return Center(
+      key: const ValueKey('side-rail'),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 8),
+        child: Container(
+          decoration: isDark
+              ? null
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(radius),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))],
+                ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radius),
+            child: BackdropFilter.grouped(
+              filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
+              child: Container(
+                width: kRailWidth - 24,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: fill, begin: Alignment.topLeft, end: Alignment.bottomRight),
+                  borderRadius: BorderRadius.circular(radius),
+                  border: GradientBoxBorder(
+                    gradient: LinearGradient(colors: border, begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    width: isDark ? 1.5 : 1,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = 0; i < _tabs.length; i++)
+                      SizedBox(
+                        height: 76,
+                        child: _NavItem(
+                          icon: _tabs[i].$1,
+                          activeIcon: _tabs[i].$2,
+                          label: _tabs[i].$3,
+                          isActive: currentIndex == i,
+                          onTap: () => onTap(i),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
