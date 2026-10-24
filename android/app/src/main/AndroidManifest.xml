@@ -5,6 +5,12 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- Background notifications via WorkManager (no exact alarm permissions needed) -->
+    <!-- The app makes no network calls. Play Billing's telemetry transport
+         (com.google.android.datatransport) is excluded in build.gradle.kts, and
+         this drops any INTERNET a library still merges in. Billing talks to the
+         Play Store app over Binder IPC, which needs no permission here.
+         src/debug keeps INTERNET for the Flutter tool. -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove"/>
 
     <application
         android:label="Here Now"

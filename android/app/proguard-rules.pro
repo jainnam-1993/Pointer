@@ -26,3 +26,8 @@
 -dontwarn com.google.android.play.core.tasks.OnFailureListener
 -dontwarn com.google.android.play.core.tasks.OnSuccessListener
 -dontwarn com.google.android.play.core.tasks.Task
+
+# Play Billing references Google's datatransport (CCT telemetry) classes, which
+# build.gradle.kts excludes so the app stays offline. R8 fails on the missing
+# references without this; scoped to the excluded package only.
+-dontwarn com.google.android.datatransport.**
