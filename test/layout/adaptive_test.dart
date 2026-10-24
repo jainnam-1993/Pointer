@@ -225,6 +225,17 @@ void main() {
       });
     }
 
+    for (final (size, swipes) in [(const Size(411, 923), true), (const Size(815, 918), false), (const Size(1024, 1366), false)]) {
+      testWidgets('a sideways fling ${swipes ? 'changes' : 'does not change'} tabs at ${size.width.toInt()} wide', (tester) async {
+        _setView(tester, size);
+        await tester.pumpWidget(shellApp());
+        await tester.pumpAndSettle();
+        await tester.fling(find.text('page /'), const Offset(-300, 0), 1500);
+        await tester.pumpAndSettle();
+        expect(find.text(swipes ? 'page /inquiry' : 'page /'), findsOneWidget);
+      });
+    }
+
     testWidgets('state survives a fold: bottom bar to rail keeps the selected tab', (tester) async {
       _setView(tester, const Size(411, 923));
       await tester.pumpWidget(shellApp());

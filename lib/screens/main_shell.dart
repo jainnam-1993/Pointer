@@ -93,19 +93,30 @@ class _MainShellState extends ConsumerState<MainShell> {
     final branchCanPop = _currentBranchCanPop();
     final shouldInterceptBack = currentIndex != 0 && !branchCanPop;
 
-    // Wrap content with horizontal swipe gesture and pure fade transition
-    // Pure fade creates contemplative, peaceful experience (no slides)
+    final navigationType = WindowLayout.of(context).navigationType;
+
+    // Swipe between tabs only when the visible navigation runs the same way
+    // as the swipe: the horizontal bottom bar, or zen mode, which hides all
+    // navigation. Beside the vertical rail a sideways swipe moved the selection
+    // up and down and fought horizontal gestures inside the panes; iPadOS
+    // doesn't swipe between tabs either.
+    final swipeBetweenTabs = isZenMode || navigationType == NavigationType.bottomBar;
+
+    // Pure fade transition: a contemplative, peaceful experience (no slides).
     final content = GestureDetector(
-      onHorizontalDragEnd: (details) {
-        // Swipe left (negative velocity) -> next tab
-        if (details.primaryVelocity! < -200 && currentIndex < 3) {
-          widget.navigationShell.goBranch(currentIndex + 1);
-        }
-        // Swipe right (positive velocity) -> previous tab
-        else if (details.primaryVelocity! > 200 && currentIndex > 0) {
-          widget.navigationShell.goBranch(currentIndex - 1);
-        }
-      },
+      key: const ValueKey('shell-swipe'),
+      onHorizontalDragEnd: !swipeBetweenTabs
+          ? null
+          : (details) {
+              // Swipe left (negative velocity) -> next tab
+              if (details.primaryVelocity! < -200 && currentIndex < 3) {
+                widget.navigationShell.goBranch(currentIndex + 1);
+              }
+              // Swipe right (positive velocity) -> previous tab
+              else if (details.primaryVelocity! > 200 && currentIndex > 0) {
+                widget.navigationShell.goBranch(currentIndex - 1);
+              }
+            },
       // Don't wrap navigationShell in AnimatedSwitcher/KeyedSubtree - it has
       // internal GlobalKeys that conflict when the widget tree changes.
       // The shell handles its own tab state; transitions happen at content level.
@@ -133,7 +144,7 @@ class _MainShellState extends ConsumerState<MainShell> {
         widget.navigationShell.goBranch(0);
       },
       child: BackdropGroup(
-        child: WindowLayout.of(context).navigationType == NavigationType.rail
+        child: navigationType == NavigationType.rail
             ? _buildWithRail(context, content, currentIndex)
             : Scaffold(
                 body: Stack(children: [content]),
