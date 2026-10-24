@@ -135,15 +135,25 @@ class LiquidGlassShader {
   /**
    * The backdrop filter for a glass box: lens over [blurSigma] when shaders are available, otherwise the blur alone.
    */
-  static ui.ImageFilter filter({required Size box, required LiquidLens lens, required double blurSigma}) {
-    final blur = ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma);
+  static ui.ImageFilter filter({required Size box, required LiquidLens lens, required double blurSigma}) =>
+      ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma);
+
+  /**
+   * The lens alone, for a second BackdropFilter inside the blurred one; null on the fallback path.
+   *
+   * Not composed with the blur: a blur's output is larger than its input by its kernel (and clipped at the screen
+   * edge), so a shader composed after it gets a texture whose bounds are not the glass's, and on the emulator the rim
+   * landed off the rail's top edge. Nested, the lens reads the already blurred backdrop at exactly its own bounds.
+   * Each call makes its own FragmentShader, so no instance is shared across draws.
+   */
+  static ui.ImageFilter? lens({required Size box, required LiquidLens lens}) {
     final program = _program;
-    if (program == null || !ui.ImageFilter.isShaderFilterSupported || box.isEmpty) return blur;
+    if (program == null || !ui.ImageFilter.isShaderFilterSupported || box.isEmpty) return null;
     final shader = program.fragmentShader();
     final values = liquidGlassUniforms(box, lens);
     for (var i = 0; i < values.length; i++) {
       shader.setFloat(kLiquidGlassFirstUniform + i, values[i]);
     }
-    return ui.ImageFilter.compose(outer: ui.ImageFilter.shader(shader), inner: blur);
+    return ui.ImageFilter.shader(shader);
   }
 }

@@ -392,7 +392,12 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
           // The lens needs its own backdrop read. A grouped backdrop hands the shader the shared full-screen texture
           // while FlutterFragCoord stays local to the glass, so on the phone the lens sampled the screen's top-left
           // corner. The bar and the rail are never on screen together, so this is still one backdrop read per frame.
-          return LiquidGlassShader.active ? BackdropFilter(filter: filter, child: inner) : BackdropFilter.grouped(filter: filter, child: inner);
+          final lensFilter = LiquidGlassShader.lens(box: box, lens: lens);
+          if (lensFilter == null) return BackdropFilter.grouped(filter: filter, child: inner);
+          return BackdropFilter(
+            filter: filter,
+            child: BackdropFilter(filter: lensFilter, child: inner),
+          );
         },
       );
     }
