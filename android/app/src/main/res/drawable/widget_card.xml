@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget card; the -night variant switches to the dark card. The launcher inflates
+     RemoteViews with its own configuration, so no theme tracking is needed. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/widget_card_light" />
+</layer-list>

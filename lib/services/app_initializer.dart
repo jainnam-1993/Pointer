@@ -96,8 +96,8 @@ class StartupCoordinator {
     try {
       final widgetService = WidgetService(_prefs);
       await widgetService.initialize();
-      await widgetService.populatePointingsCache();
       await widgetService.processPendingWidgetActions();
+      await widgetService.populatePointingsCache();
     } catch (e) {
       debugPrint('[AppInitializer] Widget init failed (non-fatal): $e');
     }

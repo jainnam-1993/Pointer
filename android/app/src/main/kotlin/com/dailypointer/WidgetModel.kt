@@ -1,0 +1,184 @@
+package com.dailypointer
+
+import org.json.JSONArray
+import org.json.JSONException
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.IOException
+
+/**
+ * Pure widget model: content, ordering, state transitions and size buckets.
+ *
+ * Nothing here touches Android framework classes, so the logic runs in JVM unit tests
+ * (android/app/src/test). The Android glue lives in WidgetStore.kt, PointingRepository.kt
+ * and WidgetRenderer.kt.
+ */
+data class WidgetPointing(
+    val id: String,
+    val content: String,
+    val tradition: String,
+    val teacher: String,
+)
+
+/**
+ * Persisted widget state.
+ *
+ * [position] indexes the seeded shuffle order (see [WidgetOrder]); it changes only on a
+ * timer tick or a Prev/Next tap. [favorites] is the app's own favorites list
+ * (`pointer_favorites`), or null when the stored value could not be parsed. A null list is
+ * never written back, so a corrupt value cannot wipe the user's favorites.
+ */
+data class WidgetState(
+    val seed: Long,
+    val position: Int,
+    val lastAdvanceAt: Long,
+    val favorites: List<String>?,
+) {
+    fun isFavorite(id: String?): Boolean = id != null && favorites?.contains(id) == true
+
+    /** Prev/Next tap. Restarts the timer so the chosen item stays on screen for a full period. */
+    fun step(delta: Int, now: Long): WidgetState = copy(position = position + delta, lastAdvanceAt = now)
+
+    /**
+     * APPWIDGET_UPDATE from the system (updatePeriodMillis timer, reboot, widget added).
+     * The first tick only stamps the clock; later ticks advance once per elapsed period.
+     */
+    fun tick(now: Long): WidgetState = when {
+        lastAdvanceAt <= 0L -> copy(lastAdvanceAt = now)
+        now - lastAdvanceAt >= TIMER_ADVANCE_MIN_MS -> copy(position = position + 1, lastAdvanceAt = now)
+        else -> this
+    }
+
+    /** Save is idempotent: it adds the id once and never removes it. */
+    fun withFavorite(id: String): WidgetState {
+        val current = favorites ?: return this
+        if (id.isEmpty() || id in current) return this
+        return copy(favorites = current + id)
+    }
+
+    companion object {
+        /** updatePeriodMillis is 30 min; allow early delivery without double-advancing. */
+        const val TIMER_ADVANCE_MIN_MS = 25 * 60 * 1000L
+    }
+}
+
+/** Stable, seeded shuffle order. The same seed and size always give the same order. */
+object WidgetOrder {
+    @Volatile
+    private var cache: Triple<Long, Int, IntArray>? = null
+
+    fun permutation(seed: Long, size: Int): IntArray {
+        cache?.let { (s, n, p) -> if (s == seed && n == size) return p }
+        val order = IntArray(size) { it }
+        val random = java.util.Random(seed)
+        for (i in size - 1 downTo 1) {
+            val j = random.nextInt(i + 1)
+            val tmp = order[i]
+            order[i] = order[j]
+            order[j] = tmp
+        }
+        cache = Triple(seed, size, order)
+        return order
+    }
+
+    /** Index into the content list for [position], or -1 when there is no content. */
+    fun indexAt(seed: Long, size: Int, position: Int): Int {
+        if (size <= 0) return -1
+        return permutation(seed, size)[Math.floorMod(position, size)]
+    }
+}
+
+/** Parsing of the bundled pointings asset and of the favorites value Dart writes. */
+object PointingsJson {
+    private val traditionNames = mapOf(
+        "advaita" to "Advaita Vedanta",
+        "zen" to "Zen Buddhism",
+        "direct" to "Direct Path",
+        "contemporary" to "Contemporary",
+        "original" to "Original",
+    )
+
+    fun traditionName(key: String): String =
+        traditionNames[key] ?: key.replaceFirstChar { it.uppercaseChar() }
+
+    /** Parses assets/data/pointings.json, keeping only the fields the widget renders. */
+    fun parse(json: String): List<WidgetPointing> {
+        val array = JSONArray(json)
+        return buildList(array.length()) {
+            for (i in 0 until array.length()) {
+                val obj = array.getJSONObject(i)
+                val id = obj.optString("id")
+                val content = obj.optString("content")
+                if (id.isEmpty() || content.isEmpty()) continue
+                add(WidgetPointing(id, content, traditionName(obj.optString("tradition")), obj.optString("teacher")))
+            }
+        }
+    }
+
+    /** Decodes `pointer_favorites` (a JSON array of ids). Missing -> empty; malformed -> null. */
+    fun decodeIds(value: String?): List<String>? {
+        if (value.isNullOrEmpty()) return emptyList()
+        return try {
+            val array = JSONArray(value)
+            List(array.length()) { array.getString(it) }
+        } catch (e: JSONException) {
+            null
+        }
+    }
+
+    fun encodeIds(ids: List<String>): String = JSONArray(ids).toString()
+}
+
+/**
+ * Compact binary cache of the parsed content, keyed by the APK's lastUpdateTime, so a cold
+ * process reads a few hundred KB of strings instead of re-parsing the JSON asset.
+ */
+object PointingsCacheCodec {
+    private const val MAGIC = 0x50574331 // "PWC1"
+
+    fun write(stamp: Long, pointings: List<WidgetPointing>, out: DataOutputStream) {
+        out.writeInt(MAGIC)
+        out.writeLong(stamp)
+        out.writeInt(pointings.size)
+        for (p in pointings) {
+            out.writeUTF(p.id)
+            out.writeUTF(p.content)
+            out.writeUTF(p.tradition)
+            out.writeUTF(p.teacher)
+        }
+    }
+
+    /** Returns null when the cache is from another build or unreadable. */
+    fun read(stamp: Long, input: DataInputStream): List<WidgetPointing>? = try {
+        if (input.readInt() != MAGIC || input.readLong() != stamp) {
+            null
+        } else {
+            val count = input.readInt()
+            List(count) { WidgetPointing(input.readUTF(), input.readUTF(), input.readUTF(), input.readUTF()) }
+        }
+    } catch (e: IOException) {
+        null
+    }
+}
+
+/** Responsive size buckets (L5). Foldable-specific sizing is left to a later stream. */
+enum class WidgetSize(val contentLines: Int, val showHeader: Boolean, val showTeacher: Boolean, val showActions: Boolean) {
+    COMPACT(contentLines = 3, showHeader = false, showTeacher = false, showActions = false),
+    MEDIUM(contentLines = 5, showHeader = false, showTeacher = true, showActions = true),
+    LARGE(contentLines = 12, showHeader = true, showTeacher = true, showActions = true);
+
+    companion object {
+        /** The layout breakpoints, in dp, as (width, height) minimums. */
+        val BREAKPOINTS: List<Pair<WidgetSize, Pair<Float, Float>>> = listOf(
+            COMPACT to (110f to 40f),
+            MEDIUM to (180f to 110f),
+            LARGE to (250f to 200f),
+        )
+
+        fun forSize(widthDp: Float, heightDp: Float): WidgetSize = when {
+            heightDp >= 200f && widthDp >= 250f -> LARGE
+            heightDp >= 110f && widthDp >= 180f -> MEDIUM
+            else -> COMPACT
+        }
+    }
+}

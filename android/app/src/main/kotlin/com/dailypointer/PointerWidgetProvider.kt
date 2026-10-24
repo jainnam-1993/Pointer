@@ -1,540 +1,60 @@
 package com.dailypointer
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.net.Uri
-import android.util.Log
-import android.widget.RemoteViews
-import android.widget.Toast
-import es.antonborri.home_widget.HomeWidgetBackgroundIntent
-import es.antonborri.home_widget.HomeWidgetPlugin
+import android.os.Bundle
 
 /**
- * Home screen widget provider for Pointer app.
- * Displays a scrollable StackView of pointings.
- * Auto-rotates every 30 minutes and supports manual refresh/save.
+ * Home-screen widget provider. Self-sufficient: content comes from the APK asset and state
+ * from [WidgetStore], so no action needs the Flutter engine or the app to have been opened.
+ *
+ * Platform limit (W3): on Android 15+ a force-stop (Settings > Force stop, or an OEM battery
+ * killer that force-stops) cancels the app's PendingIntents and disables its widgets until the
+ * user next launches the app. No code can restore interaction before that launch; a normal
+ * process kill (swipe away, low memory) does not have this effect.
  */
 class PointerWidgetProvider : AppWidgetProvider() {
-
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
-        Log.d(TAG, "onUpdate called for ${appWidgetIds.size} widgets")
-
-        // Check for theme change first - ensures widget shows correct theme
-        checkAndHandleThemeChange(context)
-
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        val pending = goAsync()
+        WidgetWork.runAsync(pending) {
+            WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
+            WidgetRenderer.render(context, appWidgetManager, appWidgetIds)
         }
-
-        // Auto-rotate: advance the displayed pointing on each update (every 30 min)
-        advanceStackPosition(context, appWidgetManager, appWidgetIds)
     }
 
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
+        val pending = goAsync()
+        WidgetWork.runAsync(pending) { WidgetRenderer.render(context, appWidgetManager, intArrayOf(appWidgetId)) }
+    }
+}
+
+/** Non-exported receiver for the widget's own buttons (M5). */
+class WidgetActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        Log.d(TAG, "onReceive: ${intent.action}")
-
-        when (intent.action) {
-            ACTION_REFRESH -> {
-                PointerWidgetState.requestRefresh(context, force = true)
-
-                // Show brief feedback
-                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
-
-                // Notify all widgets to refresh their data
-                notifyDataChanged(context)
-            }
-            ACTION_SAVE -> {
-                // Get the current pointing ID
-                val currentId = getCurrentPointingId(context)
-                Log.d(TAG, "Save action for pointing: $currentId")
-
-                // Toggle favorite status locally for immediate UI feedback
-                val wasAdded = toggleFavorite(context, currentId)
-
-                // Store current pointing ID for Flutter background callback to read
-                // Use HomeWidgetPlugin.getData() to write to the same SharedPreferences
-                // that Flutter's HomeWidget.getWidgetData() reads from
-                if (currentId != null) {
-                    val widgetPrefs = HomeWidgetPlugin.getData(context)
-                    widgetPrefs?.edit()?.putString(PointerWidgetState.KEY_SAVE_PENDING_ID, currentId)?.apply()
+        val action = intent.action ?: return
+        if (action !in ACTIONS) return
+        val shownId = intent.getStringExtra(WidgetRenderer.EXTRA_POINTING_ID)
+        val appContext = context.applicationContext
+        WidgetWork.runAsync(goAsync()) {
+            val now = System.currentTimeMillis()
+            WidgetStore.forContext(appContext).update { state ->
+                when (action) {
+                    ACTION_NEXT -> state.step(1, now)
+                    ACTION_PREV -> state.step(-1, now)
+                    else -> if (shownId != null) state.withFavorite(shownId) else state
                 }
-
-                // Send background intent to Flutter to persist the change
-                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-                    context,
-                    Uri.parse("pointer://widget/save")
-                )
-                backgroundIntent.send()
-
-                // Show appropriate feedback
-                val message = if (wasAdded) "Saved to favorites" else "Removed from favorites"
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
-                // Update all widgets to reflect the change
-                updateAllWidgets(context)
             }
-            ACTION_ITEM_CLICK -> {
-                // User tapped a stack item — pointing_id comes from factory's setOnClickFillInIntent
-                val pointingId = intent.getStringExtra(PointerRemoteViewsFactory.EXTRA_POINTING_ID)
-                    ?: getCurrentPointingId(context) // fallback to current flipper position
-                Log.d(TAG, "Item click: id=$pointingId")
-
-                val launchIntent = Intent(context, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    if (pointingId != null) {
-                        putExtra("pointing_id", pointingId)
-                    }
-                }
-                context.startActivity(launchIntent)
-            }
-            ACTION_PREV -> {
-                val now = System.currentTimeMillis()
-                if (now - lastNavTime < NAV_DEBOUNCE_MS) return
-                lastNavTime = now
-                Log.d(TAG, "Previous action - showing previous item")
-                showPreviousItem(context)
-            }
-            ACTION_NEXT -> {
-                val now = System.currentTimeMillis()
-                if (now - lastNavTime < NAV_DEBOUNCE_MS) return
-                lastNavTime = now
-                Log.d(TAG, "Next action - showing next item")
-                showNextItem(context)
-            }
-            Intent.ACTION_CONFIGURATION_CHANGED -> {
-                Log.d(TAG, "Configuration changed - updating widgets for theme change")
-                updateAllWidgets(context)
-            }
-            Intent.ACTION_BOOT_COMPLETED,
-            "android.intent.action.QUICKBOOT_POWERON" -> {
-                Log.d(TAG, "Boot completed - refreshing widget data")
-                updateAllWidgets(context)
-                notifyDataChanged(context)
-            }
+            WidgetRenderer.renderAll(appContext)
         }
-    }
-
-    /**
-     * Show previous item in all widget flippers
-     */
-    private fun showPreviousItem(context: Context) {
-        // Check for theme change first - if changed, full update was triggered
-        if (checkAndHandleThemeChange(context)) {
-            Log.d(TAG, "showPrevious: Theme changed, full update triggered")
-        }
-
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val componentName = ComponentName(context, PointerWidgetProvider::class.java)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-        val isDarkMode = isSystemInDarkMode(context)
-        val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
-
-        val snapshot = PointerWidgetState.loadSnapshot(context)
-        val totalCount = snapshot.pointings.size
-        if (totalCount <= 0) return
-
-        val currentPosition = PointerWidgetState.setCurrentIndex(
-            context,
-            PointerWidgetState.getCurrentIndex(context, totalCount) - 1,
-            totalCount
-        )
-        PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
-
-        Log.d(TAG, "showPrevious: position=$currentPosition of $totalCount")
-
-        for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(context.packageName, layoutId)
-            views.setDisplayedChild(R.id.widget_flipper, currentPosition)
-            // Update save button to reflect favorite status of new position
-            updateSaveButton(context, views)
-            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
-        }
-    }
-
-    /**
-     * Show next item in all widget flippers
-     */
-    private fun showNextItem(context: Context) {
-        // Check for theme change first - if changed, full update was triggered
-        if (checkAndHandleThemeChange(context)) {
-            Log.d(TAG, "showNext: Theme changed, full update triggered")
-        }
-
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val componentName = ComponentName(context, PointerWidgetProvider::class.java)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-        val isDarkMode = isSystemInDarkMode(context)
-        val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
-
-        val snapshot = PointerWidgetState.loadSnapshot(context)
-        val totalCount = snapshot.pointings.size
-        if (totalCount <= 0) return
-
-        val currentPosition = PointerWidgetState.setCurrentIndex(
-            context,
-            PointerWidgetState.getCurrentIndex(context, totalCount) + 1,
-            totalCount
-        )
-        PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
-
-        Log.d(TAG, "showNext: position=$currentPosition of $totalCount")
-
-        for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(context.packageName, layoutId)
-            views.setDisplayedChild(R.id.widget_flipper, currentPosition)
-            // Update save button to reflect favorite status of new position
-            updateSaveButton(context, views)
-            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
-        }
-    }
-
-    override fun onEnabled(context: Context) {
-        Log.d(TAG, "onEnabled: First widget placed")
-        PointerWidgetState.requestRefresh(context, force = true)
-    }
-
-    override fun onDisabled(context: Context) {
-        Log.d(TAG, "onDisabled: Last widget removed")
     }
 
     companion object {
-        private const val TAG = "PointerWidget"
-        private const val PREFS_NAME = "widget_prefs"
-        private const val KEY_LAST_DARK_MODE = "last_dark_mode"
-
-        /** Timestamp of the last prev/next navigation, for debounce. */
-        private var lastNavTime = 0L
-
-        /** Minimum interval between prev/next taps (milliseconds). */
-        private const val NAV_DEBOUNCE_MS = 500L
-
-        // Heart icons for favorite/non-favorite states
-        private const val HEART_EMPTY = "♡"
-        private const val HEART_FILLED = "♥"
-
-        const val ACTION_REFRESH = "com.pointer.widget.ACTION_REFRESH"
-        const val ACTION_SAVE = "com.pointer.widget.ACTION_SAVE"
-        const val ACTION_ITEM_CLICK = "com.pointer.widget.ACTION_ITEM_CLICK"
-        const val ACTION_PREV = "com.pointer.widget.ACTION_PREV"
-        const val ACTION_NEXT = "com.pointer.widget.ACTION_NEXT"
-
-        const val EXTRA_POINTING_ID = "pointing_id"
-
-        /**
-         * Check if system is in dark mode
-         */
-        fun isSystemInDarkMode(context: Context): Boolean {
-            val nightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            return nightMode == Configuration.UI_MODE_NIGHT_YES
-        }
-
-        /**
-         * Get the pointing ID at the current flipper position
-         */
-        private fun getCurrentPointingId(context: Context): String? {
-            return PointerWidgetState.getCurrentPointing(context)?.id
-        }
-
-        /**
-         * Toggle favorite status for a pointing ID.
-         * Updates the widget_favorites in SharedPreferences for immediate UI feedback.
-         * Returns true if the pointing was added to favorites, false if removed.
-         */
-        private fun toggleFavorite(context: Context, pointingId: String?): Boolean {
-            if (pointingId == null) return false
-            try {
-                // Read current favorites from home_widget SharedPreferences
-                val widgetData = HomeWidgetPlugin.getData(context)
-                val favoritesJson = widgetData?.getString(PointerWidgetState.KEY_FAVORITES, "[]") ?: "[]"
-
-                val favorites = mutableListOf<String>()
-                val jsonArray = org.json.JSONArray(favoritesJson)
-                for (i in 0 until jsonArray.length()) {
-                    favorites.add(jsonArray.getString(i))
-                }
-
-                // Toggle: add if not present, remove if present
-                val wasAdded = if (favorites.contains(pointingId)) {
-                    favorites.remove(pointingId)
-                    false
-                } else {
-                    favorites.add(pointingId)
-                    true
-                }
-
-                // Save back to the same SharedPreferences that HomeWidgetPlugin reads from
-                val newJsonArray = org.json.JSONArray(favorites)
-                widgetData?.edit()?.putString(PointerWidgetState.KEY_FAVORITES, newJsonArray.toString())?.apply()
-
-                Log.d(TAG, "toggleFavorite: $pointingId -> ${if (wasAdded) "added" else "removed"}, total=${favorites.size}")
-                return wasAdded
-            } catch (e: Exception) {
-                Log.e(TAG, "Error toggling favorite: ${e.message}")
-                return false
-            }
-        }
-
-        /**
-         * Check if a pointing ID is in the favorites list
-         */
-        private fun isPointingFavorite(context: Context, pointingId: String?): Boolean {
-            if (pointingId == null) return false
-            try {
-                val widgetData = HomeWidgetPlugin.getData(context)
-                val favoritesJson = widgetData?.getString(PointerWidgetState.KEY_FAVORITES, null) ?: return false
-
-                val jsonArray = org.json.JSONArray(favoritesJson)
-                for (i in 0 until jsonArray.length()) {
-                    if (jsonArray.getString(i) == pointingId) return true
-                }
-                return false
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking favorite status: ${e.message}")
-                return false
-            }
-        }
-
-        /**
-         * Update the save button to show filled or empty heart based on favorite status
-         */
-        fun updateSaveButton(context: Context, views: RemoteViews) {
-            val currentId = getCurrentPointingId(context)
-            val isFavorite = isPointingFavorite(context, currentId)
-            val heartDrawable = if (isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
-            val contentDesc = if (isFavorite) "Already saved to favorites" else "Save to favorites"
-
-            views.setImageViewResource(R.id.widget_save, heartDrawable)
-            views.setContentDescription(R.id.widget_save, contentDesc)
-            Log.d(TAG, "Save button updated: drawable=$heartDrawable (favorite=$isFavorite, id=$currentId)")
-        }
-
-        /**
-         * Check if theme changed since last widget update and handle accordingly.
-         * Returns true if theme changed and widgets were updated.
-         */
-        fun checkAndHandleThemeChange(context: Context): Boolean {
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            val lastDarkMode = prefs.getBoolean(KEY_LAST_DARK_MODE, true)
-            val currentDarkMode = isSystemInDarkMode(context)
-
-            if (lastDarkMode != currentDarkMode) {
-                Log.d(TAG, "Theme changed: ${if (lastDarkMode) "dark" else "light"} -> ${if (currentDarkMode) "dark" else "light"}")
-                prefs.edit().putBoolean(KEY_LAST_DARK_MODE, currentDarkMode).apply()
-
-                // Theme changed - force full widget update with data reload
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                val componentName = ComponentName(context, PointerWidgetProvider::class.java)
-                val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-
-                // Update all widgets with new theme layout
-                for (appWidgetId in appWidgetIds) {
-                    updateAppWidget(context, appWidgetManager, appWidgetId)
-                    // Force factory to reload data with new theme
-                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
-                }
-                return true
-            }
-            return false
-        }
-
-        /**
-         * Update all widget instances.
-         * Also reloads data to ensure theme-specific layouts are used.
-         */
-        fun updateAllWidgets(context: Context) {
-            // Check and handle theme change first
-            checkAndHandleThemeChange(context)
-
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val componentName = ComponentName(context, PointerWidgetProvider::class.java)
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-            Log.d(TAG, "updateAllWidgets: Found ${appWidgetIds.size} widgets")
-            for (appWidgetId in appWidgetIds) {
-                updateAppWidget(context, appWidgetManager, appWidgetId)
-                // Force factory to reload data with current theme
-                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
-            }
-        }
-
-        /**
-         * Notify widgets that data has changed (triggers onDataSetChanged in factory)
-         */
-        fun notifyDataChanged(context: Context) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val componentName = ComponentName(context, PointerWidgetProvider::class.java)
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-            Log.d(TAG, "notifyDataChanged: ${appWidgetIds.size} widgets")
-            for (appWidgetId in appWidgetIds) {
-                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_flipper)
-            }
-        }
-
-        /**
-         * Advance the stack position on auto-update (every 30 minutes).
-         * This creates the auto-rotation effect by incrementing flipper_position.
-         */
-        private fun advanceStackPosition(
-            context: Context,
-            appWidgetManager: AppWidgetManager,
-            appWidgetIds: IntArray
-        ) {
-            try {
-                val snapshot = PointerWidgetState.loadSnapshot(context)
-                val totalCount = snapshot.pointings.size
-
-                if (totalCount <= 1) {
-                    Log.d(TAG, "advanceStackPosition: Only $totalCount items, skipping advance")
-                    return
-                }
-
-                val currentPosition = PointerWidgetState.setCurrentIndex(
-                    context,
-                    PointerWidgetState.getCurrentIndex(context, totalCount) + 1,
-                    totalCount
-                )
-                PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
-
-                Log.d(TAG, "advanceStackPosition: Advanced to position $currentPosition of $totalCount")
-
-                // Determine theme for correct layout
-                val isDarkMode = isSystemInDarkMode(context)
-                val layoutId = if (isDarkMode) R.layout.pointer_widget else R.layout.pointer_widget_light
-
-                // Update all widgets to show the new position
-                for (appWidgetId in appWidgetIds) {
-                    val views = RemoteViews(context.packageName, layoutId)
-                    views.setDisplayedChild(R.id.widget_flipper, currentPosition)
-                    appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error advancing stack: ${e.message}", e)
-            }
-        }
-
-        fun updateAppWidget(
-            context: Context,
-            appWidgetManager: AppWidgetManager,
-            appWidgetId: Int
-        ) {
-            Log.d(TAG, "updateAppWidget START: widgetId=$appWidgetId")
-
-            // Auto-detect system theme
-            val isDarkMode = isSystemInDarkMode(context)
-            Log.d(TAG, "System theme: ${if (isDarkMode) "DARK" else "LIGHT"}")
-
-            // Choose layout based on system theme
-            val layoutId = if (isDarkMode) {
-                R.layout.pointer_widget
-            } else {
-                R.layout.pointer_widget_light
-            }
-
-            val views = RemoteViews(context.packageName, layoutId)
-            val snapshot = PointerWidgetState.loadSnapshot(context)
-            val currentPosition = PointerWidgetState.getCurrentIndex(context, snapshot.pointings.size)
-            PointerWidgetState.syncCurrentPointing(context, snapshot.pointings)
-
-            // Set up AdapterViewFlipper with RemoteViewsService
-            val serviceIntent = Intent(context, PointerWidgetService::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                // Make intent unique per widget
-                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
-            }
-            views.setRemoteAdapter(R.id.widget_flipper, serviceIntent)
-
-            // Set empty view for when no data
-            views.setEmptyView(R.id.widget_flipper, R.id.widget_empty_state)
-
-            // Set empty state text
-            views.setTextViewText(R.id.widget_empty_text, "Open app to sync pointings")
-            views.setDisplayedChild(R.id.widget_flipper, currentPosition)
-
-            // Tap content area to open app with current pointing.
-            // Flipper has clickable=false and stack items have no clickable/focusable
-            // so touches pass through to the parent FrameLayout.
-            val openIntent = Intent(context, MainActivity::class.java).apply {
-                action = "com.pointer.widget.OPEN_FROM_WIDGET"
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-            val openPendingIntent = PendingIntent.getActivity(
-                context, appWidgetId, openIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_content_area, openPendingIntent)
-
-            // Set up Previous button
-            val prevIntent = Intent(context, PointerWidgetProvider::class.java).apply {
-                action = ACTION_PREV
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val prevPendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId * 10 + 3,
-                prevIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_prev, prevPendingIntent)
-
-            // Set up Next button
-            val nextIntent = Intent(context, PointerWidgetProvider::class.java).apply {
-                action = ACTION_NEXT
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val nextPendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId * 10 + 4,
-                nextIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_next, nextPendingIntent)
-
-            // Set refresh button action
-            val refreshIntent = Intent(context, PointerWidgetProvider::class.java).apply {
-                action = ACTION_REFRESH
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val refreshPendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId * 10 + 1,
-                refreshIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_refresh, refreshPendingIntent)
-
-            // Set save button action
-            val saveIntent = Intent(context, PointerWidgetProvider::class.java).apply {
-                action = ACTION_SAVE
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val savePendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId * 10 + 2,
-                saveIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_save, savePendingIntent)
-
-            // Update save button to show filled/empty heart based on favorite status
-            updateSaveButton(context, views)
-
-            // Update the widget
-            Log.d(TAG, "Calling appWidgetManager.updateAppWidget for $appWidgetId")
-            try {
-                appWidgetManager.updateAppWidget(appWidgetId, views)
-                Log.d(TAG, "updateAppWidget COMPLETED SUCCESSFULLY for $appWidgetId")
-            } catch (e: Exception) {
-                Log.e(TAG, "EXCEPTION in updateAppWidget: ${e.message}", e)
-            }
-        }
+        const val ACTION_SAVE = "com.dailypointer.widget.SAVE"
+        const val ACTION_PREV = "com.dailypointer.widget.PREV"
+        const val ACTION_NEXT = "com.dailypointer.widget.NEXT"
+        val ACTIONS = listOf(ACTION_SAVE, ACTION_PREV, ACTION_NEXT)
     }
 }

@@ -73,7 +73,7 @@ void main() {
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final storage = ref.watch(storageServiceProvider);
-            final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+            final notifier = CurrentPointingNotifier(storage);
             notifier.setPointing(initialPointing);
             return notifier;
           }),
@@ -168,7 +168,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
 
     testWidgets('long press does not add duplicate favorites', (tester) async {
@@ -234,7 +233,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
   });
 
@@ -257,7 +255,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),

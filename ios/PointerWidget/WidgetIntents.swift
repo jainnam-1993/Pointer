@@ -49,52 +49,50 @@ struct NextPointingIntent: AppIntent {
     }
 }
 
-/// Intent to save the current pointing to favorites
+/// Intent to save a pointing to favorites.
+///
+/// Each timeline entry builds its own intent with the id it shows, so the heart always saves
+/// the pointing on screen, not the one the timeline started from. Saves add and never remove:
+/// the id joins `widget_favorites` (heart state) and the `pending_saves` queue, which the app
+/// merges idempotently into its favorites on the next launch or resume.
 @available(iOS 17.0, *)
 struct SavePointingIntent: AppIntent {
     static var title: LocalizedStringResource = "Save Pointing"
     static var description = IntentDescription("Save this pointing to your favorites")
 
+    @Parameter(title: "Pointing ID")
+    var pointingId: String
+
+    init() {}
+
+    init(pointingId: String) {
+        self.pointingId = pointingId
+    }
+
     func perform() async throws -> some IntentResult {
-        guard let defaults = UserDefaults(suiteName: appGroupId) else {
+        guard !pointingId.isEmpty, let defaults = UserDefaults(suiteName: appGroupId) else {
             return .result()
         }
 
-        // Get current pointing ID and content
-        let currentId = defaults.string(forKey: "pointing_id")
+        appendUnique(pointingId, toJsonArrayAt: "widget_favorites", in: defaults)
+        appendUnique(pointingId, toJsonArrayAt: "pending_saves", in: defaults)
 
-        // Store pending save by ID so both platforms use the same Flutter reconciliation path.
-        if let pointingId = currentId, !pointingId.isEmpty {
-            defaults.set(pointingId, forKey: "save_pending_id")
-        }
-
-        // Update widget_favorites immediately for instant UI feedback (optimistic update)
-        if let pointingId = currentId, !pointingId.isEmpty {
-            // Load current favorites from JSON
-            var favorites: [String] = []
-            if let favoritesJson = defaults.string(forKey: "widget_favorites"),
-               let data = favoritesJson.data(using: .utf8),
-               let array = try? JSONSerialization.jsonObject(with: data) as? [String] {
-                favorites = array
-            }
-
-            // Toggle favorite: add if not present, remove if present
-            if favorites.contains(pointingId) {
-                favorites.removeAll { $0 == pointingId }
-            } else {
-                favorites.append(pointingId)
-            }
-
-            // Save back as JSON
-            if let jsonData = try? JSONSerialization.data(withJSONObject: favorites),
-               let jsonString = String(data: jsonData, encoding: .utf8) {
-                defaults.set(jsonString, forKey: "widget_favorites")
-            }
-        }
-
-        // Reload widget timeline to refresh UI
         WidgetCenter.shared.reloadAllTimelines()
-
         return .result()
+    }
+
+    private func appendUnique(_ id: String, toJsonArrayAt key: String, in defaults: UserDefaults) {
+        var ids: [String] = []
+        if let json = defaults.string(forKey: key),
+           let data = json.data(using: .utf8),
+           let array = try? JSONSerialization.jsonObject(with: data) as? [String] {
+            ids = array
+        }
+        guard !ids.contains(id) else { return }
+        ids.append(id)
+        if let data = try? JSONSerialization.data(withJSONObject: ids),
+           let json = String(data: data, encoding: .utf8) {
+            defaults.set(json, forKey: key)
+        }
     }
 }
