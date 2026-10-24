@@ -533,6 +533,8 @@ void main() {
       final done = tester.getRect(find.byKey(const ValueKey('notification-sheet-done')));
       expect(done.top, greaterThanOrEqualTo(hingeY));
       expect(done.bottom, lessThanOrEqualTo(device('tabletop').size.height));
+      // The schedule overflows the lower half: a soft bottom edge marks it as scrollable.
+      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsOneWidget);
       await tester.tap(find.text('Done'));
       await _settleTransient(tester);
       expect(find.byType(NotificationTimesSheet), findsNothing);
@@ -544,6 +546,24 @@ void main() {
       await sheet.drive!(tester);
       expect(tester.getRect(find.byType(NotificationTimesSheet)).height, lessThanOrEqualTo(device('phone').size.height * 0.7 + 0.5));
       expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
+      // Scrolled to the end nothing is hidden below, so the fade goes away.
+      final position = tester
+          .state<ScrollableState>(
+            find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first,
+          )
+          .position;
+      position.jumpTo(position.maxScrollExtent);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await _settleTransient(tester);
+      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsNothing);
+    });
+
+    testWidgets('notificationsheet: no fade when the schedule fits', (tester) async {
+      final sheet = screen('notificationsheet');
+      await _pumpAt(tester, sheet, device('tablet'));
+      await sheet.drive!(tester);
+      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsNothing);
     });
 
     testWidgets('tip: the card is capped on wide windows and tiles keep phone proportions', (tester) async {

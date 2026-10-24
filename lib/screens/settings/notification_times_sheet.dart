@@ -9,6 +9,7 @@ import '../../providers/providers.dart';
 import '../../services/notification_service.dart';
 import '../../layout/adaptive.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/motion.dart';
 import '../../widgets/glass_card.dart';
 
 /**
@@ -28,6 +29,64 @@ class NotificationTimesSheet extends ConsumerStatefulWidget {
 class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet> {
   /** The current notification schedule being edited. */
   late NotificationSchedule _schedule;
+
+  /** Whether the schedule has content below the visible area; drives the bottom fade. */
+  bool _moreBelow = false;
+
+  /**
+   * Keeps the schedule's scroll state when the fade mask is added or removed
+   * around it; without it the scroll view would be rebuilt and jump to the top.
+   */
+  final GlobalKey _scrollKey = GlobalKey(debugLabel: 'notification-sheet-scroll');
+
+  /** Height of the soft bottom edge shown while the schedule scrolls under Done. */
+  static const double _fadeExtent = 24;
+
+  bool _onScrollMetrics(Notification n) {
+    final metrics = switch (n) {
+      ScrollMetricsNotification m => m.metrics,
+      ScrollNotification m => m.metrics,
+      _ => null,
+    };
+    if (metrics == null || metrics.axis != Axis.vertical) return false;
+    final more = metrics.extentAfter > 0.5;
+    if (more != _moreBelow) setState(() => _moreBelow = more);
+    return false;
+  }
+
+  /**
+   * Fades the last [_fadeExtent] px of [child] while more schedule sits below, so the
+   * cut reads as scrollable. The fade eases in and out unless motion is reduced; with
+   * nothing below no mask is built at all.
+   */
+  Widget _bottomFade(BuildContext context, Widget child) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(end: _moreBelow ? 1 : 0),
+      duration: Motion.of(context, const Duration(milliseconds: 200)),
+      child: child,
+      builder: (context, strength, child) {
+        if (strength <= 0) return child!;
+        return ShaderMask(
+          key: const ValueKey('notification-sheet-fade'),
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (bounds) {
+            final start = bounds.height <= 0 ? 0.0 : ((bounds.height - _fadeExtent) / bounds.height).clamp(0.0, 1.0);
+            return LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.white,
+                Colors.white,
+                Colors.white.withValues(alpha: 1 - strength),
+              ],
+              stops: [0, start, 1],
+            ).createShader(bounds);
+          },
+          child: child,
+        );
+      },
+    );
+  }
 
   /** Available frequency options in minutes (30m, 1h, 2h, 3h, 4h, 6h, 8h, 12h). */
   static const _frequencyOptions = [30, 60, 120, 180, 240, 360, 480, 720];
@@ -208,131 +267,142 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Notification Schedule', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
-                            const SizedBox(height: 8),
-                            Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
-                            const SizedBox(height: 20),
+                    child: NotificationListener<Notification>(
+                      onNotification: _onScrollMetrics,
+                      child: _bottomFade(
+                        context,
+                        KeyedSubtree(
+                          key: const ValueKey('notification-sheet-scroll'),
+                          child: SingleChildScrollView(
+                            key: _scrollKey,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: AppSpacing.sm),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Notification Schedule', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor)),
+                                  const SizedBox(height: 8),
+                                  Text(_schedule.summary, style: TextStyle(color: mutedColor, fontSize: 14)),
+                                  const SizedBox(height: 20),
 
-                            // Quick Presets (Phase 5.3)
-                            Text(
-                              'Quick Presets',
-                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: NotificationPreset.values.map((preset) {
-                                final isSelected = _matchesPreset(preset);
-                                return ChoiceChip(
-                                  label: Text(preset.label),
-                                  selected: isSelected,
-                                  onSelected: (_) => _applyPreset(preset),
-                                  selectedColor: context.colors.accent.withValues(alpha: 0.3),
-                                  labelStyle: TextStyle(
-                                    color: isSelected ? context.colors.accent : textColor,
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                  // Quick Presets (Phase 5.3)
+                                  Text(
+                                    'Quick Presets',
+                                    style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
                                   ),
-                                  side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
-                                );
-                              }).toList(),
-                            ),
-                            const SizedBox(height: 24),
-
-                            // Time Window
-                            Text(
-                              'Time Window',
-                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GlassCard(
-                                    padding: const EdgeInsets.all(16),
-                                    onTap: () => _pickTime(true),
-                                    child: Column(
-                                      children: [
-                                        Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
-                                          style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: NotificationPreset.values.map((preset) {
+                                      final isSelected = _matchesPreset(preset);
+                                      return ChoiceChip(
+                                        label: Text(preset.label),
+                                        selected: isSelected,
+                                        onSelected: (_) => _applyPreset(preset),
+                                        selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                                        labelStyle: TextStyle(
+                                          color: isSelected ? context.colors.accent : textColor,
+                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                                         ),
-                                      ],
-                                    ),
+                                        side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
+                                      );
+                                    }).toList(),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: GlassCard(
-                                    padding: const EdgeInsets.all(16),
-                                    onTap: () => _pickTime(false),
-                                    child: Column(
-                                      children: [
-                                        Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
-                                          style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
+                                  const SizedBox(height: 24),
 
-                            // Frequency
-                            Text(
-                              'Frequency',
-                              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: _frequencyOptions.map((minutes) {
-                                final isSelected = _schedule.frequencyMinutes == minutes;
-                                return GestureDetector(
-                                  onTap: () async {
-                                    setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
-                                    await _saveSchedule();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
-                                    ),
-                                    child: Text(
-                                      minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
-                                      style: TextStyle(
-                                        color: isSelected ? textColor : mutedColor,
-                                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                  // Time Window
+                                  Text(
+                                    'Time Window',
+                                    style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GlassCard(
+                                          padding: const EdgeInsets.all(16),
+                                          onTap: () => _pickTime(true),
+                                          child: Column(
+                                            children: [
+                                              Text('Start', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                NotificationSchedule.formatTime(_schedule.startHour, _schedule.startMinute),
+                                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: GlassCard(
+                                          padding: const EdgeInsets.all(16),
+                                          onTap: () => _pickTime(false),
+                                          child: Column(
+                                            children: [
+                                              Text('End', style: TextStyle(color: mutedColor, fontSize: 12)),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                NotificationSchedule.formatTime(_schedule.endHour, _schedule.endMinute),
+                                                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              }).toList(),
+                                  const SizedBox(height: 20),
+
+                                  // Frequency
+                                  Text(
+                                    'Frequency',
+                                    style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: _frequencyOptions.map((minutes) {
+                                      final isSelected = _schedule.frequencyMinutes == minutes;
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          setState(() => _schedule = _schedule.copyWith(frequencyMinutes: minutes));
+                                          await _saveSchedule();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
+                                          decoration: BoxDecoration(
+                                            color: isSelected ? colors.primary.withValues(alpha: isDark ? 0.3 : 0.2) : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                            border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                                          ),
+                                          child: Text(
+                                            minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h',
+                                            style: TextStyle(
+                                              color: isSelected ? textColor : mutedColor,
+                                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                   // Close button, pinned below the scrolling schedule.
                   Padding(
-                    padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: bottomPadding + 24),
+                    // One spacing token between the faded scroll edge and Done, so Done never looks glued to the cut.
+                    padding: EdgeInsets.only(left: 24, right: 24, top: AppSpacing.lg, bottom: bottomPadding + 24),
                     child: SizedBox(
                       key: const ValueKey('notification-sheet-done'),
                       width: double.infinity,
