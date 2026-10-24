@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/main.dart';
-import 'package:pointer/providers/providers.dart';
+import 'package:pointer/services/app_initializer.dart';
 
 /// Test tags for categorizing integration tests
 class TestTags {
@@ -38,9 +38,11 @@ Future<Widget> createTestApp({bool onboardingCompleted = true, bool isPremium = 
   }
 
   SharedPreferences.setMockInitialValues(prefs);
-  final sharedPreferences = await SharedPreferences.getInstance();
 
-  return ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences)], child: const PointerApp());
+  // Same bootstrap as main(): the splash reads AppInitializer.startupCoordinator,
+  // which only initialize() creates.
+  final result = await AppInitializer.initialize(onNotificationAction: (_) {});
+  return UncontrolledProviderScope(container: result.container, child: const PointerApp());
 }
 
 /// Clears all app state by resetting SharedPreferences
