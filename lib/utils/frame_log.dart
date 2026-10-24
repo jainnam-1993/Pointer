@@ -40,9 +40,17 @@ class FrameLog {
       _windowStart = DateTime.now();
       final mean = xs.isEmpty ? 0 : xs.reduce((a, b) => a + b) / xs.length / 1000;
       final p90 = xs.isEmpty ? 0 : xs[(xs.length * 0.9).floor().clamp(0, xs.length - 1)] / 1000;
+      final clock = AmbientClock.instance.isRunning;
       debugPrint(
-        '[FrameLog] frames=${xs.length} seconds=${secs.toStringAsFixed(1)} rasterMeanMs=${mean.toStringAsFixed(2)} rasterP90Ms=${p90.toStringAsFixed(2)}',
+        '[FrameLog] frames=${xs.length} seconds=${secs.toStringAsFixed(1)} rasterMeanMs=${mean.toStringAsFixed(2)} '
+        'rasterP90Ms=${p90.toStringAsFixed(2)} clockRunning=$clock',
       );
+      if (kDebugMode && xs.isNotEmpty && !clock) {
+        // Frames while the ambient clock is stopped: print who schedules them, for one second.
+        debugPrintScheduleFrameStacks = true;
+        await Future<void>.delayed(const Duration(seconds: 1));
+        debugPrintScheduleFrameStacks = false;
+      }
     }
   }
 }
