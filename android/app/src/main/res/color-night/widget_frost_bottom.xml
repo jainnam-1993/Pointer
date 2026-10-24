@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frost body, bottom: a touch denser, so the text sits on the most opaque part. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/widget_surface_variant" android:alpha="0.88" />
+</selector>

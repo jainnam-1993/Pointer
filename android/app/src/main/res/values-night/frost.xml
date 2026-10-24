@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_highlight">#38FFFFFF</color>
+    <color name="widget_sheen">#12FFFFFF</color>
+    <color name="widget_rim">#1FFFFFFF</color>
+    <color name="widget_shade">#26000000</color>
+</resources>
