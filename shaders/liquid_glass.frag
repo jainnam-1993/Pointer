@@ -17,7 +17,7 @@ uniform vec4 uLight;    // 8-11: rim alpha on the lit (top-left) edge, rim alpha
 uniform vec4 uRimColor; // 12-15: rim rgb, bevel darkening
 uniform vec4 uBody;     // 16-19: body saturation, bevel saturation, light direction x, light direction y
 uniform vec4 uEdge;     // 20-23: hairline darkness, hairline width (units), inner top highlight, light-theme mode (0 or 1)
-uniform vec4 uLens;     // 24-27: dispersion (0 none; blue bends more), unused x3
+uniform vec4 uLens;     // 24-27: dispersion (sign picks the fringe colour), band lift, band lift threshold, unused
 
 uniform sampler2D uTexture;
 
@@ -92,6 +92,10 @@ void main() {
   // Dark theme: the bright specular rim is the main cue (additive light on a dark field).
   rgb = mix(rgb, uRimColor.rgb, (1.0 - light) * clamp(rim + fres, 0.0, 1.0));
   rgb *= 1.0 - inner;
+  // Band lift: what the bevel bends in from past the bar's edge is lifted toward white, so the crescents read as lit
+  // glass. Only luminous samples are lifted (the dark bar under the lens stays dark); the threshold is lower in dark.
+  float lum = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
+  rgb = mix(rgb, vec3(1.0), uLens.y * (0.4 + 0.6 * bevel) * smoothstep(uLens.z, uLens.z + 0.35, lum));
 
   // Light theme: a light field leaves no headroom for an additive rim, so the edge is drawn with darker cues: the
   // bevel multiplies (darkens) the backdrop above, a thin dark hairline closes the edge, and the specular survives only

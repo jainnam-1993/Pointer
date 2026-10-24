@@ -31,6 +31,7 @@ import 'services/widget_service.dart';
 import 'debug/maestro_hooks.dart';
 import 'services/notification_content.dart';
 import 'theme/app_theme.dart';
+import 'theme/contrast_level.dart';
 
 /**
  * Global [ProviderContainer] reference for top-level deep-link and
@@ -239,8 +240,8 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
       // High contrast (in-app setting or OS) is a full theme that follows light and dark mode.
       theme: highContrast ? AppTheme.highContrastLight : AppTheme.light,
       darkTheme: highContrast ? AppTheme.highContrastDark : AppTheme.dark,
-      highContrastTheme: AppTheme.highContrastLight,
-      highContrastDarkTheme: AppTheme.highContrastDark,
+      // No system high-contrast theme: the system contrast setting is ContrastLevel.increased (glass kept, see builder);
+      // only the in-app High contrast switch gives the solid theme.
       themeMode: themeMode,
       routerConfig: router,
       builder: (context, child) {
@@ -258,6 +259,7 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
         // Fold the app's Animations toggle into disableAnimations so Motion.reduce is one check.
         // One shared backdrop for every sheet blur (BackdropFilter.grouped).
         final media = MediaQuery.of(context);
+        final contrast = resolveContrastLevel(inApp: highContrast, system: media.highContrast);
         final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
@@ -272,7 +274,10 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
               child: MediaQuery.withClampedTextScaling(
                 minScaleFactor: 0.85,
                 maxScaleFactor: 2.0,
-                child: SharedAmbientHost(child: child ?? const SizedBox.shrink()),
+                child: Theme(
+                  data: themeForContrast(Theme.of(context), contrast),
+                  child: SharedAmbientHost(child: child ?? const SizedBox.shrink()),
+                ),
               ),
             ),
           ),

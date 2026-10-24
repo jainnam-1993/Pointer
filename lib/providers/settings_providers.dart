@@ -123,14 +123,10 @@ final highContrastProvider = Provider<bool>((ref) {
 });
 
 /**
- * Helper to check if high contrast is enabled (either via provider or system setting)
- * Usage: isHighContrastEnabled(context, ref)
+ * Whether the solid high-contrast look is on: the in-app High contrast switch only (ContrastLevel.maximum). The system
+ * contrast setting is ContrastLevel.increased, which keeps the glass (see lib/theme/contrast_level.dart).
  */
-bool isHighContrastEnabled(BuildContext context, WidgetRef ref) {
-  final providerEnabled = ref.watch(highContrastProvider);
-  final systemEnabled = MediaQuery.of(context).highContrast;
-  return providerEnabled || systemEnabled;
-}
+bool isHighContrastEnabled(BuildContext context, WidgetRef ref) => ref.watch(highContrastProvider);
 
 // ============================================================
 // App Settings State

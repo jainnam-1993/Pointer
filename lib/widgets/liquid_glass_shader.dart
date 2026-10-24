@@ -56,6 +56,11 @@ class LiquidLens {
   /** Colour split at the refracting edge (0 = none). Positive bends blue more; negative bends red more, which leaves a blue fringe where a dark edge meets a light one. */
   final double dispersion;
 
+  /** Lift toward white of luminous samples in the bevel (the lens crescents), and the luminance it starts from. */
+  final double bandLift;
+
+  final double bandLiftFrom;
+
   const LiquidLens({
     required this.radius,
     this.band = 5,
@@ -75,6 +80,8 @@ class LiquidLens {
     this.hairlineWidth = 0.75,
     this.innerHighlight = 0.85,
     this.dispersion = 0,
+    this.bandLift = 0,
+    this.bandLiftFrom = 0.15,
   });
 }
 
@@ -109,8 +116,8 @@ List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
     lens.lightTheme ? lens.innerHighlight : 0,
     lens.lightTheme ? 1 : 0,
     lens.dispersion,
-    0,
-    0,
+    lens.bandLift,
+    lens.bandLiftFrom,
     0,
   ];
 }
