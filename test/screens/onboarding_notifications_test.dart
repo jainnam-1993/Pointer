@@ -7,6 +7,7 @@ import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
 import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/services/storage_service.dart';
+import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -72,11 +73,21 @@ void main() {
     await reachLastPageAndTapEnable(tester);
 
     final continueText = find.descendant(of: find.byType(Dialog), matching: find.text('Continue'));
-    expect(
-      tester.getSemantics(continueText),
-      isSemantics(label: 'Continue', isButton: true, hasTapAction: true),
-    );
+    expect(tester.getSemantics(continueText), isSemantics(label: 'Continue', isButton: true, hasTapAction: true));
     handle.dispose();
+  });
+
+  testWidgets('rationale dialog sits on the opaque theme surface', (tester) async {
+    when(() => notifications.requestPermissions()).thenAnswer((_) async => true);
+    await reachLastPageAndTapEnable(tester);
+
+    final box = tester.widget<DecoratedBox>(find.byKey(const ValueKey('rationale-surface')));
+    final color = (box.decoration as BoxDecoration).color!;
+    final context = tester.element(find.byKey(const ValueKey('rationale-surface')));
+    // contrast_test.dart rates onSurface glass over colors.surface, so the dialog
+    // must paint exactly that, fully opaque, or the page behind shows through.
+    expect(color, context.colors.surface);
+    expect(color.a, 1.0);
   });
 
   testWidgets('rationale, then granting permission enables notifications', (tester) async {
