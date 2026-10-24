@@ -42,16 +42,13 @@ dependencies:
   # Home Screen Widget
   home_widget: ^0.7.0
 
-  # Audio Playback
-  just_audio: ^0.9.40
-
   # Video Playback
 
   # URL Launching (for privacy/terms links)
   url_launcher: ^6.3.0
 
-  # AWS Polly TTS
-  path_provider: ^2.1.0                 # Temp file for audio
+  # Temp files for share images
+  path_provider: ^2.1.0
 
   # SVG Support (for Ensō icon)
   flutter_svg: ^2.0.10
@@ -83,7 +80,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/audio/
     - assets/data/
     - assets/articles/
     - assets/icons/

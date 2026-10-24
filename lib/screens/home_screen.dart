@@ -14,14 +14,12 @@ import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/article.dart';
 import '../providers/providers.dart';
-import '../services/audio_pointing_service.dart';
 import '../theme/app_icons.dart';
 import '../theme/app_theme.dart';
 import '../utils/haptics.dart';
 import '../utils/typography.dart';
 import '../utils/motion.dart';
 import '../widgets/shared_ambient.dart';
-import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/share_preview_helper.dart';
@@ -142,9 +140,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     return lifecycle == null || lifecycle == AppLifecycleState.resumed;
   }
 
-  /** True while a pointing's guided audio is playing, so auto-advance never cuts it off. */
-  bool get _isMediaPlaying => ref.read(audioPointingServiceProvider).currentState == AudioPlaybackState.playing;
-
   /**
    * Core advance logic shared by auto-advance and manual next.
    *
@@ -186,7 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       return;
     }
     // Pause, do not advance, while Home is hidden or audio plays.
-    if (!_isHomeVisible || _isMediaPlaying) return;
+    if (!_isHomeVisible) return;
     await _advancePointing();
   }
 
@@ -449,11 +444,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 if (pointing.commentary != null) ...[
                   const SizedBox(height: AppSpacing.lg),
                   CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
-                ],
-                // Keyed per pointing so a new pointing never inherits the previous player's State.
-                if (pointing.audioUrl != null) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  AudioPlayerWidget(key: ValueKey('audio-${pointing.id}'), pointingId: pointing.id, audioUrl: pointing.audioUrl),
                 ],
               ],
             ),
