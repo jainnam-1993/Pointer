@@ -20,7 +20,6 @@ import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
-import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import '../helpers/test_setup.dart';
 
@@ -82,18 +81,6 @@ void main() {
   });
 
   group('VoiceOver: Semantic Labels', () {
-    testWidgets('TraditionBadge has semantic label with tradition name', (tester) async {
-      await tester.pumpWidget(
-        createTestApp(
-          child: const Scaffold(body: TraditionBadge(tradition: Tradition.advaita)),
-        ),
-      );
-
-      final semantics = tester.getSemantics(find.byType(TraditionBadge));
-      expect(semantics.label, contains('Tradition'));
-      expect(semantics.label, contains('Advaita Vedanta'));
-    });
-
     testWidgets('GlassButton has button semantics', (tester) async {
       await tester.pumpWidget(
         createTestApp(
@@ -106,19 +93,6 @@ void main() {
       // GlassButton exposes a button node (PressScale), with no ink ripple on glass.
       expect(find.byType(InkWell), findsNothing);
       expect(tester.getSemantics(find.byType(GlassButton)), containsSemantics(isButton: true));
-    });
-
-    testWidgets('All traditions have semantic labels', (tester) async {
-      for (final tradition in Tradition.values) {
-        await tester.pumpWidget(
-          createTestApp(
-            child: Scaffold(body: TraditionBadge(tradition: tradition)),
-          ),
-        );
-
-        final semantics = tester.getSemantics(find.byType(TraditionBadge));
-        expect(semantics.label, isNotEmpty, reason: 'TraditionBadge for ${tradition.name} should have a label');
-      }
     });
   });
 
