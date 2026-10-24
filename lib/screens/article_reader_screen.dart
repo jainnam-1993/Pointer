@@ -17,6 +17,7 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/share_preview_helper.dart';
 import '../utils/haptics.dart';
+import '../utils/typography.dart';
 
 /**
  * Full article reader screen with markdown rendering and share support.
@@ -151,7 +152,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                             ),
                             const SizedBox(height: AppSpacing.md),
                             Text(
-                              article.title,
+                              smartPunctuation(article.title),
                               style: TextStyle(
                                 fontFamily: AppFonts.serif,
                                 fontSize: AppType.display,
@@ -162,7 +163,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                             ),
                             if (article.subtitle != null) ...[
                               const SizedBox(height: AppSpacing.sm),
-                              Text(article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+                              Text(smartPunctuation(article.subtitle!), style: TextStyle(fontSize: 16, color: colors.textSecondary)),
                             ],
                             const SizedBox(height: AppSpacing.md),
                             Row(
@@ -213,7 +214,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                                 ),
                               );
                             }
-                            return _MarkdownContent(content: stripLeadingTitle(snapshot.data!, article.title), colors: colors);
+                            return _MarkdownContent(content: smartPunctuation(stripLeadingTitle(snapshot.data!, article.title)), colors: colors);
                           },
                         ),
                       ),

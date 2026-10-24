@@ -17,6 +17,7 @@ import '../services/audio_pointing_service.dart';
 import '../theme/app_icons.dart';
 import '../theme/app_theme.dart';
 import '../utils/haptics.dart';
+import '../utils/typography.dart';
 import '../utils/motion.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/audio_player_widget.dart';
@@ -316,7 +317,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           child: SingleChildScrollView(
-            child: Text(pointing.content, style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
+            child: Text(smartPunctuation(pointing.content), style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
           ),
         ),
       ),
@@ -400,11 +401,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                     opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                     child: child,
                   ),
-                  child: Text(pointing.content, key: ValueKey(pointing.id), style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
+                  child: Text(
+                    smartPunctuation(pointing.content),
+                    key: ValueKey(pointing.id),
+                    style: AppTextStyles.pointingText(context),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 if (pointing.instruction != null) ...[
                   const SizedBox(height: AppSpacing.xl),
-                  Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
+                  Text(smartPunctuation(pointing.instruction!), style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
                 ],
                 if (pointing.teacher != null) ...[
                   const SizedBox(height: AppSpacing.sm),
