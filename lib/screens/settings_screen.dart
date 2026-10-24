@@ -15,6 +15,7 @@ import '../widgets/pointer_switch.dart';
 import '../widgets/donation_button.dart';
 import '../widgets/glass_card.dart';
 import 'settings/settings_widgets.dart';
+import 'settings/widget_section.dart';
 import 'settings/settings_banners.dart';
 import 'settings/appearance_section.dart';
 import 'settings/experience_section.dart';
@@ -358,6 +359,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         SettingsSectionHeader(title: 'APPEARANCE'),
         const SizedBox(height: 12),
         const AppearanceSelector(),
+        const AddWidgetRow(),
 
         // Support section (prominent placement)
         const SizedBox(height: 24),

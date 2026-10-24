@@ -45,6 +45,9 @@ class AppIcons {
   /** Stands for timer-and-streak meditation apps on the onboarding contrast page. */
   static const IconData timer = PhosphorIconsLight.timer;
 
+  /** The Home Screen widget (Settings: Add widget). */
+  static const IconData widget = PhosphorIconsLight.squaresFour;
+
   /** Every icon above by name, for tests and audits. */
   static const Map<String, IconData> all = {
     'home': home,
@@ -67,6 +70,7 @@ class AppIcons {
     'share': share,
     'info': info,
     'timer': timer,
+    'widget': widget,
     'teacher': teacher,
   };
 }
