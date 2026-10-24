@@ -388,14 +388,43 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
         },
       );
     }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: shape,
-        boxShadow: look.shadow == null ? null : [BoxShadow(color: look.shadow!, blurRadius: look.shadowBlur, offset: Offset(0, look.shadowY))],
-      ),
+    // The shadow is painted only outside the capsule: a BoxShadow under translucent glass shows through and greys the
+    // body (the emulator showed the light body 13 levels darker than the background).
+    return CustomPaint(
+      painter: look.shadow == null ? null : _OuterShadowPainter(radius: radius, color: look.shadow!, blur: look.shadowBlur, dy: look.shadowY),
       child: ClipRRect(borderRadius: shape, child: glass),
     );
   }
+}
+
+class _OuterShadowPainter extends CustomPainter {
+  final double radius;
+  final Color color;
+  final double blur;
+  final double dy;
+
+  _OuterShadowPainter({required this.radius, required this.color, required this.blur, required this.dy});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final body = RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius));
+    final outside = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect((Offset.zero & size).inflate(blur * 2 + dy.abs()))
+      ..addRRect(body);
+    canvas.save();
+    canvas.clipPath(outside);
+    canvas.drawRRect(
+      body.shift(Offset(0, dy)),
+      Paint()
+        ..color = color
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur / 2),
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_OuterShadowPainter old) => old.radius != radius || old.color != color || old.blur != blur || old.dy != dy;
 }
 
 class _GlowPainter extends CustomPainter {
