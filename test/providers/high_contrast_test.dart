@@ -254,7 +254,7 @@ void main() {
       expect(find.text('HC: true'), findsOneWidget);
     });
 
-    testWidgets('returns true when system highContrast is true', (tester) async {
+    testWidgets('system highContrast alone is ContrastLevel.increased, not the solid look', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -278,7 +278,7 @@ void main() {
         ),
       );
 
-      expect(find.text('HC: true'), findsOneWidget);
+      expect(find.text('HC: false'), findsOneWidget);
     });
 
     testWidgets('returns false when both provider and system are false', (tester) async {

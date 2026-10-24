@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_theme.dart';
+import 'package:pointer/theme/contrast_level.dart';
 
 double _channel(double c) => c <= 0.03928 ? c / 12.92 : math.pow((c + 0.055) / 1.055, 2.4).toDouble();
 
@@ -22,6 +23,10 @@ void main() {
     'highContrast': (PointerColors.highContrast, GlassMaterial.highContrast),
     'highContrastLight': (PointerColors.highContrastLight, GlassMaterial.highContrastLight),
     'oled': (PointerColors.oled, GlassMaterial.oled),
+    // System increased contrast keeps the colours and glass, with more frost and a stronger rim.
+    'darkIncreased': (PointerColors.dark, increasedContrastGlass(GlassMaterial.dark, dark: true)),
+    'lightIncreased': (PointerColors.light, increasedContrastGlass(GlassMaterial.light, dark: false)),
+    'oledIncreased': (PointerColors.oled, increasedContrastGlass(GlassMaterial.oled, dark: true)),
   };
 
   for (final MapEntry(key: name, value: (colors, glass)) in themes.entries) {
