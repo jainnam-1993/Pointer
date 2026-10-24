@@ -186,7 +186,22 @@ class TwoPane extends StatelessWidget {
   /** Gap between the panes when no hinge sets it. */
   final double gap;
 
-  const TwoPane({super.key, required this.primary, required this.secondary, this.primaryFlex = 1, this.secondaryFlex = 1, this.gap = 0});
+  /**
+   * Narrowest the primary pane gets when the flex split would make it
+   * narrower, so a list keeps at least a phone's width. Capped at
+   * [kPrimaryPaneMaxShare] of the width so the secondary pane stays usable.
+   */
+  final double primaryMinWidth;
+
+  const TwoPane({
+    super.key,
+    required this.primary,
+    required this.secondary,
+    this.primaryFlex = 1,
+    this.secondaryFlex = 1,
+    this.gap = 0,
+    this.primaryMinWidth = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -221,16 +236,30 @@ class TwoPane extends StatelessWidget {
         },
       );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(flex: primaryFlex, child: left),
-        if (gap > 0) SizedBox(width: gap),
-        Expanded(flex: secondaryFlex, child: right),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final available = constraints.maxWidth - gap;
+        final flexWidth = available * primaryFlex / (primaryFlex + secondaryFlex);
+        final floor = primaryMinWidth.clamp(0.0, available * kPrimaryPaneMaxShare);
+        final primaryWidth = flexWidth < floor ? floor : flexWidth;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(width: primaryWidth, child: left),
+            if (gap > 0) SizedBox(width: gap),
+            Expanded(child: right),
+          ],
+        );
+      },
     );
   }
 }
+
+/** Largest share of a [TwoPane]'s width that [TwoPane.primaryMinWidth] may claim. */
+const double kPrimaryPaneMaxShare = 0.55;
+
+/** Narrowest a list pane gets beside its detail: a compact phone's list width. */
+const double kListPaneMinWidth = 360;
 
 /**
  * Tabletop split: [top] fills the area above the horizontal hinge and

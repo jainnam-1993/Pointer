@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +9,9 @@ import 'package:pointer/data/articles.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:pointer/layout/adaptive.dart';
+
+import '../helpers/app_fonts.dart';
 
 late SharedPreferences prefs;
 
@@ -34,6 +38,47 @@ void main() {
     resetArticlesForTesting();
     await loadArticles();
   });
+  group('LibraryScreen two-pane list width', () {
+    // Real fonts: the test font draws every glyph 1 em wide, which would wrap any word.
+    setUpAll(loadAppFonts);
+    // vivo V2330 unfolded at the user's 432 dpi display size: about 815 x 918 dp,
+    // with the side rail on the left, as main_shell lays it out.
+    testWidgets('topic names never break mid-word beside the detail pane', (tester) async {
+      tester.view.physicalSize = const Size(815, 918);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        wrapWithProviderScope(
+          MaterialApp(
+            theme: AppTheme.dark,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.3)),
+              child: child!,
+            ),
+            home: const Scaffold(
+              body: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [SizedBox(width: kRailWidth), Expanded(child: LibraryScreen())],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 2));
+
+      expect(find.byKey(const ValueKey('library-list-detail')), findsOneWidget);
+      final listPane = tester.getSize(find.byKey(const ValueKey('pane-primary')));
+      expect(listPane.width, greaterThanOrEqualTo(kListPaneMinWidth));
+
+      final names = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.text('Awareness'));
+      expect(names, findsWidgets);
+      final paragraph = tester.renderObject<RenderParagraph>(names.first);
+      final lines = paragraph.getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: 'Awareness'.length)).map((b) => b.top).toSet();
+      expect(lines.length, 1, reason: '"Awareness" must sit on one line');
+    });
+  });
+
   group('LibraryScreen', () {
     testWidgets('renders header with title and subtitle', (tester) async {
       // Use a larger surface to avoid overflow in featured cards
