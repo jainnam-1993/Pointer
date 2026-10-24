@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../utils/motion.dart';
-import '../widgets/liquid_glass_nav.dart';
+import '../widgets/lens_tab_bar.dart';
 import '../theme/app_icons.dart';
 import '../layout/adaptive.dart';
 
@@ -162,11 +162,11 @@ class _MainShellState extends ConsumerState<MainShell> {
 }
 
 /** The four tabs, shared by the bottom bar and the side rail. */
-const _tabs = <LiquidTab>[
-  (AppIcons.home, AppIcons.homeActive, 'Home'),
-  (AppIcons.inquiry, AppIcons.inquiryActive, 'Inquiry'),
-  (AppIcons.library, AppIcons.libraryActive, 'Library'),
-  (AppIcons.settings, AppIcons.settingsActive, 'Settings'),
+const _tabs = <LensTab>[
+  (AppIcons.homeFilled, 'Home'),
+  (AppIcons.inquiryFilled, 'Inquiry'),
+  (AppIcons.libraryFilled, 'Library'),
+  (AppIcons.settingsFilled, 'Settings'),
 ];
 
 /**
@@ -187,7 +187,7 @@ class _SideRail extends StatelessWidget {
         padding: const EdgeInsets.only(left: LiquidGlass.railInset),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: LiquidGlassNav(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
+          child: LensTabBar(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
         ),
       ),
     );
@@ -223,9 +223,9 @@ class _BottomNavBar extends StatelessWidget {
         child: AnimatedContainer(
           duration: reduce ? Duration.zero : Motion.standard,
           curve: SpringCurve(Motion.settle, Motion.standard),
-          width: minimized ? LiquidGlassNav.minimizedWidth(_tabs.length) : full,
+          width: minimized ? LensTabBar.minimizedWidth(_tabs.length) : full,
           height: minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight,
-          child: LiquidGlassNav(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.horizontal, minimized: minimized),
+          child: LensTabBar(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.horizontal, minimized: minimized),
         ),
       ),
     );

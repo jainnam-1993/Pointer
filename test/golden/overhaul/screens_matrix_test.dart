@@ -469,7 +469,7 @@ void main() {
     testWidgets('shell: bottom bar on compact, rail on medium and up, clear of the hinge', (tester) async {
       await _pumpAt(tester, screen('shell'), device('foldouter'));
       expect(find.byKey(const ValueKey('side-rail')), findsNothing);
-      expect(find.text('Library'), findsOneWidget);
+      expect(find.bySemanticsLabel('Library tab'), findsOneWidget);
       for (final d in [medium, device('foldinner'), device('tablet')]) {
         await _pumpAt(tester, screen('shell'), d);
         expect(find.byKey(const ValueKey('side-rail')), findsOneWidget, reason: d.name);
@@ -478,7 +478,7 @@ void main() {
       expect(tester.getRect(find.byKey(const ValueKey('side-rail'))).right, lessThanOrEqualTo(hingeX));
       await _pumpAt(tester, screen('shell'), device('tabletop'));
       final rail = tester.getRect(find.byKey(const ValueKey('side-rail')));
-      expect(tester.getRect(find.text('Library')).top, greaterThanOrEqualTo(hingeY));
+      expect(tester.getRect(find.bySemanticsLabel('Library tab')).top, greaterThanOrEqualTo(hingeY));
       expect(rail.top, greaterThanOrEqualTo(hingeY));
     });
 

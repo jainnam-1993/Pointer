@@ -53,6 +53,9 @@ class LiquidLens {
 
   final double innerHighlight;
 
+  /** Colour split at the refracting edge (0 = none). Blue bends more, as in real glass. */
+  final double dispersion;
+
   const LiquidLens({
     required this.radius,
     this.band = 5,
@@ -71,12 +74,13 @@ class LiquidLens {
     this.hairline = 0.10,
     this.hairlineWidth = 0.75,
     this.innerHighlight = 0.85,
+    this.dispersion = 0,
   });
 }
 
 /**
  * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uHalf, uShape, uLight, uRimColor,
- * uBody, uEdge. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
+ * uBody, uEdge, uLens. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
  * the phone). Kept pure so tests can pin the layout and the range.
  */
 List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
@@ -104,6 +108,10 @@ List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
     lens.hairlineWidth / unit,
     lens.lightTheme ? lens.innerHighlight : 0,
     lens.lightTheme ? 1 : 0,
+    lens.dispersion,
+    0,
+    0,
+    0,
   ];
 }
 

@@ -65,4 +65,8 @@ abstract final class PhosphorIconsRegular {
 /** Phosphor Fill weight (font family PhosphorFill). */
 abstract final class PhosphorIconsFill {
   static const IconData heart = IconData(0xe2a8, fontFamily: 'PhosphorFill', fontPackage: _package, matchTextDirection: true);
+  static const IconData bookOpen = IconData(0xe0e6, fontFamily: 'PhosphorFill', fontPackage: _package, matchTextDirection: true);
+  static const IconData question = IconData(0xe3e8, fontFamily: 'PhosphorFill', fontPackage: _package, matchTextDirection: true);
+  static const IconData slidersHorizontal = IconData(0xe434, fontFamily: 'PhosphorFill', fontPackage: _package, matchTextDirection: true);
+  static const IconData sunHorizon = IconData(0xe5b6, fontFamily: 'PhosphorFill', fontPackage: _package, matchTextDirection: true);
 }

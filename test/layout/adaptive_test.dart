@@ -154,11 +154,11 @@ void main() {
         await tester.pumpWidget(shellApp());
         await tester.pumpAndSettle();
         expect(find.byKey(const ValueKey('side-rail')), rail ? findsOneWidget : findsNothing);
-        expect(find.text('Library'), findsOneWidget);
+        expect(find.bySemanticsLabel('Library tab'), findsOneWidget);
         if (rail) {
           // Content is padded clear of the rail; tapping a rail item switches tabs.
           expect(tester.getRect(find.text('page /')).center.dx, greaterThan(kRailWidth));
-          await tester.tap(find.text('Library'));
+          await tester.tap(find.bySemanticsLabel('Library tab'));
           await tester.pumpAndSettle();
           expect(find.text('page /library'), findsOneWidget);
         }
@@ -169,7 +169,7 @@ void main() {
       _setView(tester, const Size(411, 923));
       await tester.pumpWidget(shellApp());
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Settings'));
+      await tester.tap(find.bySemanticsLabel('Settings tab'));
       await tester.pumpAndSettle();
       _setView(tester, const Size(841, 884));
       await tester.pumpAndSettle();
