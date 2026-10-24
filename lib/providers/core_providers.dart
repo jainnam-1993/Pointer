@@ -9,6 +9,7 @@
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/notification_service.dart';
@@ -69,3 +70,15 @@ final onboardingCompletedProvider = Provider<bool>((ref) {
   final storage = ref.watch(storageServiceProvider);
   return storage.hasCompletedOnboarding;
 });
+
+// ============================================================
+// App version
+// ============================================================
+
+/**
+ * Installed app version and build number from the platform package info.
+ *
+ * Errors (no platform channel, as in widget tests) surface as an error state;
+ * callers read `valueOrNull` and omit the version rather than show a stale one.
+ */
+final packageInfoProvider = FutureProvider<PackageInfo>((ref) => PackageInfo.fromPlatform());
