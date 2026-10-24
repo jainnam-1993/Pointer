@@ -1,43 +1,46 @@
 import 'dart:async';
-import 'dart:ui';
 
+import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../data/articles.dart';
 import '../data/pointings.dart';
-import '../models/article.dart';
-import 'package:go_router/go_router.dart';
-import '../widgets/share_preview_helper.dart';
 import '../data/teachers.dart';
-import 'library_screen.dart';
-import '../widgets/teacher_sheet.dart';
+import '../models/article.dart';
 import '../providers/providers.dart';
+import '../services/audio_pointing_service.dart';
+import '../theme/app_icons.dart';
 import '../theme/app_theme.dart';
+import '../utils/haptics.dart';
+import '../utils/motion.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/commentary_section.dart';
-import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
-import '../widgets/mini_inquiry_card.dart';
-import '../utils/haptics.dart';
-// Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
-// import '../widgets/tradition_badge.dart';
+import '../widgets/share_preview_helper.dart';
+import '../widgets/teacher_sheet.dart';
+import '../widgets/video_player_widget.dart';
+import 'library_screen.dart';
 
 /**
  * Daily pointing home screen with auto-advance timer and swipe navigation.
  *
- * Displays the current [Pointing] inside a [GlassCard] with tradition badge,
- * source citations, commentary, and optional audio/video players. Supports:
- * - Vertical swipe navigation between pointings (with blur transition)
- * - Auto-advance timer (default 60s, configurable via [autoAdvanceDelayProvider])
- * - Long-press to save, double-tap for zen mode
- * - Share via [SharePreviewScreen] modal
- * - Responsive layout for foldables (aspect ratio < 1.3)
+ * The pointing owns the screen: one quiet glass plate holds the sentence, its
+ * attribution and any media; everything else (inquiry link, next, swipe hint) is
+ * demoted to quiet text below it. Supports:
+ * - Vertical swipe that follows the finger and settles back on a spring. The drag
+ *   offset lives in a [ValueNotifier], so a pointer move repaints only the card.
+ * - Auto-advance (default 60 s, [autoAdvanceDelayProvider]) that runs only while Home
+ *   is visible, the app is resumed, and no pointing audio is playing.
+ * - Long-press to save, double-tap for focus (zen) mode, share sheet.
+ * - Screen reader custom actions: next, previous, focus mode, save, share.
  *
- * Uses [CurrentPointingNotifier] for round-robin content delivery and
- * [AffinityService] for tradition preference tracking.
+ * Layout is width-driven (no phone-width breakpoints) so adaptive layouts can extend it.
  */
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -52,15 +55,21 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProviderStateMixin {
   /** Whether a pointing transition animation is in progress. */
   bool _isAnimating = false;
 
-  /** Accumulated vertical drag offset for the swipe blur effect. */
-  double _swipeOffset = 0.0;
-
   /** Whether the user is currently mid-swipe (suppresses auto-advance). */
   bool _isSwipeInProgress = false;
+
+  /** Hides the swipe hint once the user has swiped in this session. */
+  bool _hasSwipedThisSession = false;
+
+  /** Vertical card offset while dragging and settling; listened to by the card only. */
+  final ValueNotifier<double> _dragOffset = ValueNotifier<double>(0);
+
+  /** Drives the spring settle of [_dragOffset] back to rest. */
+  late final AnimationController _settle;
 
   /** Periodic timer that auto-advances to the next pointing. */
   Timer? _autoAdvanceTimer;
@@ -69,17 +78,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final current = ref.read(zenModeProvider);
     final newValue = !current;
     ref.read(settingsProvider.notifier).setZenMode(newValue);
-    if (newValue) {
-      // Entering zen mode - haptic feedback
-      Haptics.light();
-    }
+    if (newValue) Haptics.light();
   }
 
   @override
   void initState() {
     super.initState();
-    // Schedule initial announcement, widget update, and auto-advance timer after first frame
+    _settle = AnimationController.unbounded(vsync: this)..addListener(() => _dragOffset.value = _settle.value);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final pointing = ref.read(currentPointingProvider);
       _announcePointingContent(context, pointing);
       _startAutoAdvanceTimer();
@@ -89,34 +96,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void dispose() {
     _autoAdvanceTimer?.cancel();
+    _settle.dispose();
+    _dragOffset.dispose();
     super.dispose();
   }
 
-  /** Starts or restarts the auto-advance timer based on settings */
+  /** Starts or restarts the auto-advance timer based on settings. */
   void _startAutoAdvanceTimer() {
     _autoAdvanceTimer?.cancel();
-
-    // Skip in tests to prevent timer issues
     if (HomeScreen.disableAutoAdvanceForTesting) return;
-
-    final isEnabled = ref.read(autoAdvanceProvider);
-    if (!isEnabled) return;
-
+    if (!ref.read(autoAdvanceProvider)) return;
     final delaySeconds = ref.read(autoAdvanceDelayProvider);
     _autoAdvanceTimer = Timer.periodic(Duration(seconds: delaySeconds), (_) => _handleAutoAdvance());
   }
 
   /**
+   * True when Home is what the user sees: its tab is active and nothing covers it
+   * (inactive shell branches and covered routes run under `TickerMode(enabled: false)`),
+   * and the app is in the foreground.
+   */
+  bool get _isHomeVisible {
+    if (!mounted || !TickerMode.of(context)) return false;
+    final route = ModalRoute.of(context);
+    if (route != null && !route.isCurrent) return false;
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    return lifecycle == null || lifecycle == AppLifecycleState.resumed;
+  }
+
+  /** True while a pointing's guided audio is playing, so auto-advance never cuts it off. */
+  bool get _isMediaPlaying => ref.read(audioPointingServiceProvider).currentState == AudioPlaybackState.playing;
+
+  /**
    * Core advance logic shared by auto-advance and manual next.
    *
-   * Advances the pointing, waits for transition animation, announces
-   * to screen readers, updates widget, records view history and
-   * affinity, then restarts the auto-advance timer.
-   *
-   * [withHaptic] triggers medium haptic feedback (manual advance only).
+   * [userInitiated] adds haptics and records tradition affinity; timer-driven
+   * advances are passive and must not skew personalization.
    */
-  Future<void> _advancePointing({bool withHaptic = false}) async {
-    if (withHaptic) Haptics.light();
+  Future<void> _advancePointing({bool userInitiated = false}) async {
+    if (userInitiated) Haptics.light();
 
     setState(() => _isAnimating = true);
 
@@ -124,175 +141,175 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(dailyUsageProvider.notifier).recordView();
 
     await Future.delayed(300.ms);
-
     if (!mounted) return;
     setState(() => _isAnimating = false);
 
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(context, newPointing);
 
-    final storage = ref.read(storageServiceProvider);
-    await storage.markPointingAsViewed(newPointing.id);
+    await ref.read(storageServiceProvider).markPointingAsViewed(newPointing.id);
+    if (!mounted) return;
 
-    // Track tradition affinity for personalization
-    final affinity = ref.read(affinityServiceProvider);
-    await affinity.recordView(newPointing.tradition);
+    if (userInitiated) {
+      await ref.read(affinityServiceProvider).recordView(newPointing.tradition);
+      if (!mounted) return;
+    }
 
-    // Restart timer for the new pointing (gives full 60s with new content)
+    // Restart timer for the new pointing (gives the full delay with new content)
     _startAutoAdvanceTimer();
   }
 
-  /** Handles automatic advancement to next pointing */
+  /** Handles automatic advancement to next pointing. */
   Future<void> _handleAutoAdvance() async {
-    // Skip if currently animating or swiping
     if (_isAnimating || _isSwipeInProgress) return;
-
-    // Check if auto-advance is still enabled (user might have toggled it)
-    final isEnabled = ref.read(autoAdvanceProvider);
-    if (!isEnabled) {
+    if (!ref.read(autoAdvanceProvider)) {
       _autoAdvanceTimer?.cancel();
       return;
     }
-
+    // Pause, do not advance, while Home is hidden or audio plays.
+    if (!_isHomeVisible || _isMediaPlaying) return;
     await _advancePointing();
   }
 
-  /** Announces pointing content to screen readers */
+  /** Announces pointing content to screen readers. */
   void _announcePointingContent(BuildContext context, Pointing pointing) {
     final traditionInfo = traditions[pointing.tradition]!;
     final announcement = StringBuffer();
     announcement.write('New pointing from ${traditionInfo.name}. ');
     announcement.write(pointing.content);
-    if (pointing.teacher != null) {
-      announcement.write('. By ${pointing.teacher}');
-    }
-    if (pointing.source != null) {
-      announcement.write('. From ${pointing.source}');
-    }
+    if (pointing.teacher != null) announcement.write('. By ${pointing.teacher}');
+    if (pointing.source != null) announcement.write('. From ${pointing.source}');
     SemanticsService.sendAnnouncement(View.of(context), announcement.toString(), TextDirection.ltr);
   }
 
-  /**
-   * Handles manual advance to the next pointing with haptic feedback.
-   *
-   * Records view history and tradition affinity, then restarts auto-advance timer.
-   */
+  /** Handles manual advance to the next pointing. */
   Future<void> _handleNext() async {
     if (_isAnimating) return;
-    await _advancePointing(withHaptic: true);
+    await _advancePointing(userInitiated: true);
   }
 
-  /** Handles navigation to the previous pointing with haptic feedback. */
+  /** Handles navigation to the previous pointing. */
   Future<void> _handlePrevious() async {
     if (_isAnimating) return;
-
-    // Haptic feedback
     Haptics.light();
-
     setState(() => _isAnimating = true);
-
-    // Get previous pointing
     ref.read(currentPointingProvider.notifier).previousPointing();
 
-    // Wait for transition animation to complete
     await Future.delayed(300.ms);
-
+    if (!mounted) return;
     setState(() => _isAnimating = false);
 
-    // Announce new pointing to screen readers and update widget
-    final newPointing = ref.read(currentPointingProvider);
-    if (mounted) _announcePointingContent(context, newPointing);
-
-    // Restart timer for the new pointing (gives full 60s with new content)
+    _announcePointingContent(context, ref.read(currentPointingProvider));
     _startAutoAdvanceTimer();
   }
 
-  /** Opens the [SharePreviewScreen] as a modal bottom sheet for the current pointing. */
+  /** Opens the share preview for the current pointing. */
   Future<void> _handleShare() async {
     final pointing = ref.read(currentPointingProvider);
     Haptics.light();
     showSharePreview(context, pointing);
   }
 
-  /**
-   * Saves the current pointing to favorites with affinity tracking.
-   *
-   * First saves trigger a celebration with heavy haptic feedback.
-   * Updates the home screen widget and records tradition affinity
-   * (saves are weighted 3x in the [AffinityService] algorithm).
-   */
+  /** Saves the current pointing to favorites (saves are weighted 3x in affinity). */
   Future<void> _handleSave() async {
     final pointing = ref.read(currentPointingProvider);
-    final favorites = ref.read(favoritesProvider);
-
-    // Don't save if already a favorite
-    if (favorites.contains(pointing.id)) {
-      return;
-    }
+    if (ref.read(favoritesProvider).contains(pointing.id)) return;
 
     Haptics.light();
-
-    // Save to favorites
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-
-    // Sync widget heart state/cache with latest app favorites
+    if (!mounted) return;
     await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
-
-    // Track tradition affinity (saves weighted 3x in affinity algorithm)
-    final affinity = ref.read(affinityServiceProvider);
-    await affinity.recordSave(pointing.tradition);
+    if (!mounted) return;
+    await ref.read(affinityServiceProvider).recordSave(pointing.tradition);
   }
 
-  /** Inline tradition badge for card header (Phase 5.11) */
-  Widget _buildInlineTraditionBadge(Tradition tradition, PointerColors colors, {Key? key}) {
+  /** Toggles the favorite state of the current pointing from the heart button. */
+  Future<void> _handleToggleFavorite() async {
+    final pointing = ref.read(currentPointingProvider);
+    if (!ref.read(favoritesProvider).contains(pointing.id)) {
+      await _handleSave();
+      return;
+    }
+    Haptics.light();
+    await ref.read(favoritesProvider.notifier).toggle(pointing.id);
+    if (!mounted) return;
+    await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
+  }
+
+  // ---------------------------------------------------------------------------
+  // Swipe: follows the finger, settles on a spring
+  // ---------------------------------------------------------------------------
+
+  void _onDragStart(DragStartDetails _) {
+    _settle.stop();
+    _isSwipeInProgress = true;
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    // Light resistance so the card tracks the finger without running away from it.
+    _dragOffset.value += details.delta.dy * 0.6;
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    final velocity = details.primaryVelocity ?? 0;
+    final offset = _dragOffset.value;
+    _isSwipeInProgress = false;
+    _settleBack(velocity);
+
+    final goNext = velocity < -200 || offset < -50;
+    final goPrevious = !goNext && (velocity > 200 || offset > 50);
+    if (!goNext && !goPrevious) return;
+    if (!_hasSwipedThisSession) setState(() => _hasSwipedThisSession = true);
+    goNext ? _handleNext() : _handlePrevious();
+  }
+
+  void _settleBack(double velocity) {
+    if (Motion.reduce(context)) {
+      _dragOffset.value = 0;
+      return;
+    }
+    final from = _dragOffset.value;
+    _settle.value = from;
+    _settle.animateWith(SpringSimulation(Motion.settle, from, 0, velocity * 0.6));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------------------
+
+  /** Quiet tradition label for the card header. */
+  Widget _buildTraditionLabel(Tradition tradition, PointerColors colors, {Key? key}) {
     final traditionInfo = traditions[tradition]!;
-    final maxBadgeWidth = MediaQuery.of(context).size.width < 360 ? 150.0 : 190.0;
-    return Container(
+    return Row(
       key: key,
-      constraints: BoxConstraints(maxWidth: maxBadgeWidth),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Semantics(
-            excludeSemantics: true,
-            label: traditionInfo.name,
-            child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ExcludeSemantics(child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 13))),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            traditionInfo.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w500, letterSpacing: 0.4),
           ),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(
-              traditionInfo.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: colors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  /**
-   * Builds the minimal zen mode view with only the pointing text.
-   *
-   * Tap exits zen mode, vertical swipes navigate between pointings.
-   */
+  /** Minimal focus (zen) mode view with only the pointing text. */
   Widget _buildZenModeView(Pointing pointing) {
     return GestureDetector(
       onTap: _toggleZenMode,
       onVerticalDragEnd: (details) {
-        // Swipe up (negative velocity) -> next
-        if (details.primaryVelocity! < -200) {
+        final velocity = details.primaryVelocity ?? 0;
+        if (velocity < -200) {
           _handleNext();
-        }
-        // Swipe down (positive velocity) -> previous
-        else if (details.primaryVelocity! > 200) {
+        } else if (velocity > 200) {
           _handlePrevious();
         }
       },
-      // B.5: Removed horizontal swipe to allow main_shell tab navigation
       behavior: HitTestBehavior.opaque,
       child: Center(
         key: const ValueKey('zen-mode'),
@@ -306,321 +323,205 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Widget _buildCard(BuildContext context, Pointing pointing, PointerColors colors, {required Size size, required bool isSquareAspect}) {
+    final isFavorite = ref.watch(favoritesProvider.select((f) => f.contains(pointing.id)));
+    final cardPadding = (size.width * 0.06).clamp(20.0, 28.0);
+    final teacher = getTeacher(pointing.teacher);
+
+    return Semantics(
+      sortKey: const OrdinalSortKey(1.0),
+      label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
+      hint: 'Actions available: next, previous, focus mode, save, share',
+      customSemanticsActions: {
+        const CustomSemanticsAction(label: 'Next pointing'): _handleNext,
+        const CustomSemanticsAction(label: 'Previous pointing'): _handlePrevious,
+        const CustomSemanticsAction(label: 'Enter focus mode'): _toggleZenMode,
+        const CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
+        const CustomSemanticsAction(label: 'Share pointing'): _handleShare,
+      },
+      child: GestureDetector(
+        onLongPress: _handleSave,
+        onDoubleTap: _toggleZenMode,
+        child: GlassCard(
+          padding: EdgeInsets.fromLTRB(cardPadding, 12, cardPadding, 24),
+          borderRadius: 32,
+          minHeight: isSquareAspect ? size.height * 0.25 : size.height * 0.15,
+          maxHeight: isSquareAspect ? size.height * 0.40 : size.height * 0.58,
+          enableScrolling: true,
+          enableBreathingAnimation: true,
+          // Height changes between pointings ease instead of snapping.
+          child: AnimatedSize(
+            duration: Motion.of(context, Motion.standard),
+            curve: Motion.inOut,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header: quiet tradition label, then heart and share as plain glyphs.
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Semantics(
+                            label: traditions[pointing.tradition]!.name,
+                            excludeSemantics: true,
+                            child: AnimatedSwitcher(
+                              duration: Motion.of(context, Motion.quick),
+                              switchInCurve: Motion.enter,
+                              switchOutCurve: Motion.exit,
+                              // Enters with a fade and a slight lift, never from scale 0.
+                              transitionBuilder: (child, animation) => FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(scale: Tween<double>(begin: 0.94, end: 1).animate(animation), child: child),
+                              ),
+                              child: _buildTraditionLabel(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
+                            ),
+                          ),
+                        ),
+                      ),
+                      _QuietIconButton(
+                        icon: isFavorite ? PhosphorIconsFill.heart : AppIcons.heart,
+                        color: isFavorite ? colors.accent : colors.textSecondary,
+                        label: isFavorite ? 'Remove from favorites' : 'Save to favorites',
+                        onTap: _handleToggleFavorite,
+                      ),
+                      _QuietIconButton(icon: AppIcons.share, color: colors.textSecondary, label: 'Share this pointing', onTap: _handleShare),
+                    ],
+                  ),
+                ),
+                AnimatedSwitcher(
+                  duration: Motion.of(context, const Duration(milliseconds: 400)),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                    child: child,
+                  ),
+                  child: Text(pointing.content, key: ValueKey(pointing.id), style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
+                ),
+                if (pointing.instruction != null) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
+                ],
+                if (pointing.teacher != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  AnimatedSwitcher(
+                    duration: Motion.of(context, Motion.quick),
+                    transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+                    child: _AttributionLink(
+                      key: ValueKey('${pointing.id}-teacher'),
+                      text: '— ${pointing.teacher}',
+                      style: AppTextStyles.teacherText(context),
+                      semanticsLabel: pointing.teacher!,
+                      hint: 'Opens teacher profile',
+                      onTap: teacher == null ? null : () => showTeacherSheet(context, teacher),
+                    ),
+                  ),
+                ],
+                if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
+                if (pointing.commentary != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
+                ],
+                // Keyed per pointing so a new pointing never inherits the previous player's State.
+                if (pointing.audioUrl != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  AudioPlayerWidget(key: ValueKey('audio-${pointing.id}'), pointingId: pointing.id, audioUrl: pointing.audioUrl),
+                ],
+                if (pointing.videoUrl != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  VideoPlayerWidget(key: ValueKey('video-${pointing.id}'), pointingId: pointing.id, videoUrl: pointing.videoUrl),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pointing = ref.watch(currentPointingProvider);
     final isZenMode = ref.watch(zenModeProvider);
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final size = MediaQuery.sizeOf(context);
     final colors = context.colors;
-    final isCompactWidth = screenWidth < 360;
-    final cardHorizontalPadding = isCompactWidth ? 20.0 : 24.0;
-    final headerGap = isCompactWidth ? 6.0 : 8.0;
-    final actionIconGap = isCompactWidth ? 6.0 : 8.0;
 
-    // Detect foldable/tablet with square-ish aspect ratio (< 1.3)
-    final aspectRatio = screenHeight / screenWidth;
-    final isSquareAspect = aspectRatio < 1.3;
-
-    // Responsive bottom padding: accounts for nav bar (~72px) + margin
-    // For square-aspect foldables, reduce padding since content has more vertical room
-    final navBarSpace = isSquareAspect
-        ? 80.0 // Minimal space for foldables
-        : (screenHeight * 0.08).clamp(80.0, 120.0);
+    // Square-ish aspect (foldables, tablets) has more width than height to spare.
+    final isSquareAspect = size.height / size.width < 1.3;
+    final navBarSpace = isSquareAspect ? 80.0 : (size.height * 0.08).clamp(80.0, 120.0);
 
     return PopScope(
       canPop: !isZenMode,
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        if (!mounted) return;
+        if (didPop || !mounted) return;
         ref.read(settingsProvider.notifier).setZenMode(false);
       },
       child: Scaffold(
         body: Stack(
           children: [
-            // Background
             const Positioned.fill(child: AnimatedGradient()),
-
-            // Content - switches between zen mode and full view
             if (isZenMode)
               SafeArea(
                 child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
               )
             else
-              // B.4 Fix: GestureDetector wraps entire screen area for full swipe coverage
               GestureDetector(
-                behavior: HitTestBehavior.opaque, // Capture gestures on empty space too
-                onVerticalDragStart: (_) {
-                  setState(() {
-                    _isSwipeInProgress = true;
-                    _swipeOffset = 0.0;
-                  });
-                },
-                onVerticalDragUpdate: (details) {
-                  setState(() {
-                    // Accumulate the delta, negative = swipe up, positive = swipe down
-                    _swipeOffset += details.delta.dy;
-                  });
-                },
-                onVerticalDragEnd: (details) {
-                  final wasSwipingUp = _swipeOffset < -50;
-                  final wasSwipingDown = _swipeOffset > 50;
-
-                  // Reset swipe state with animation
-                  setState(() {
-                    _isSwipeInProgress = false;
-                    _swipeOffset = 0.0;
-                  });
-
-                  // Swipe up (negative velocity) -> next
-                  if (details.primaryVelocity! < -200 || wasSwipingUp) {
-                    _handleNext();
-                  }
-                  // Swipe down (positive velocity) -> previous
-                  else if (details.primaryVelocity! > 200 || wasSwipingDown) {
-                    _handlePrevious();
-                  }
-                },
-                // B.5: Removed horizontal swipe to allow main_shell tab navigation
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragStart: _onDragStart,
+                onVerticalDragUpdate: _onDragUpdate,
+                onVerticalDragEnd: _onDragEnd,
                 child: SafeArea(
-                  // SafeArea already handles system UI padding (taskbar, etc.)
-                  // We only need to add space for our custom nav bar
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: AppSpacing.xl,
-                      right: AppSpacing.xl,
-                      top: 20,
-                      bottom: navBarSpace, // Just nav bar space, SafeArea handles system padding
-                    ),
+                    padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: 20, bottom: navBarSpace),
                     child: Column(
-                      // Fixed layout: card area expands, bottom buttons stay anchored
                       children: [
-                        // Expanded card area - card centered within, bottom stays fixed
                         Expanded(
                           child: Center(
-                            // Swipe blur effect: blur entire card during vertical drag
-                            child: ImageFiltered(
-                              imageFilter: ImageFilter.blur(
-                                sigmaX: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
-                                sigmaY: (_swipeOffset.abs() / 50).clamp(0.0, 8.0),
+                            child: ConstrainedBox(
+                              // Width-driven measure: the plate never grows past a readable line length.
+                              constraints: const BoxConstraints(maxWidth: 600),
+                              child: ValueListenableBuilder<double>(
+                                valueListenable: _dragOffset,
+                                builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
+                                child: _buildCard(context, pointing, colors, size: size, isSquareAspect: isSquareAspect),
                               ),
-                              child: AnimatedOpacity(
-                                duration: _isSwipeInProgress ? Duration.zero : const Duration(milliseconds: 200),
-                                opacity: 1.0 - (_swipeOffset.abs() / 200).clamp(0.0, 0.4),
-                                child: GestureDetector(
-                                  onLongPress: _handleSave,
-                                  onDoubleTap: _toggleZenMode,
-                                  child: Semantics(
-                                    sortKey: const OrdinalSortKey(1.0),
-                                    label: 'Current pointing: ${pointing.content}${pointing.teacher != null ? ' by ${pointing.teacher}' : ''}',
-                                    hint: 'Double tap to focus. Swipe up for next pointing, down for previous',
-                                    customSemanticsActions: {
-                                      CustomSemanticsAction(label: 'Save to favorites'): _handleSave,
-                                      CustomSemanticsAction(label: 'Share pointing'): _handleShare,
-                                    },
-                                    child: GlassCard(
-                                      padding: EdgeInsets.fromLTRB(cardHorizontalPadding, 20, cardHorizontalPadding, 28),
-                                      borderRadius: 32,
-                                      // Enable scrolling for large text / accessibility
-                                      // On foldables (square aspect), enforce minimum height to use more space
-                                      // Otherwise, let card size dynamically based on content
-                                      minHeight: isSquareAspect ? screenHeight * 0.25 : screenHeight * 0.15,
-                                      maxHeight: isSquareAspect ? screenHeight * 0.40 : screenHeight * 0.55,
-                                      enableScrolling: true,
-                                      // Subtle breathing animation syncs with "Ethereal Liquid Glass" design
-                                      enableBreathingAnimation: true,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Header row: tradition badge + share icon (Phase 5.11)
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
-                                            child: Row(
-                                              children: [
-                                                // Inline tradition badge with animation
-                                                Expanded(
-                                                  child: Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: AnimatedSwitcher(
-                                                      duration: const Duration(milliseconds: 200),
-                                                      switchInCurve: Curves.easeInOutCubic,
-                                                      switchOutCurve: Curves.easeInOutCubic,
-                                                      transitionBuilder: (child, animation) {
-                                                        return FadeTransition(
-                                                          opacity: animation,
-                                                          child: ScaleTransition(scale: animation, child: child),
-                                                        );
-                                                      },
-                                                      child: _buildInlineTraditionBadge(
-                                                        pointing.tradition,
-                                                        colors,
-                                                        key: ValueKey('${pointing.id}-badge'),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: headerGap),
-                                                // Heart + Share icons
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    // Save/favorite icon
-                                                    Semantics(
-                                                      button: true,
-                                                      label: ref.watch(favoritesProvider).contains(pointing.id)
-                                                          ? 'Remove from favorites'
-                                                          : 'Save to favorites',
-                                                      focusable: true,
-                                                      child: GestureDetector(
-                                                        onTap: () async {
-                                                          final favorites = ref.read(favoritesProvider);
-                                                          if (favorites.contains(pointing.id)) {
-                                                            Haptics.light();
-                                                            await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-                                                            await ref
-                                                                .read(widgetServiceProvider)
-                                                                .updateFavorites(ref.read(favoritesProvider).toSet());
-                                                          } else {
-                                                            await _handleSave();
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          padding: const EdgeInsets.all(AppSpacing.sm),
-                                                          decoration: BoxDecoration(
-                                                            color: colors.accent.withValues(alpha: 0.1),
-                                                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                                          ),
-                                                          child: Icon(
-                                                            ref.watch(favoritesProvider).contains(pointing.id)
-                                                                ? Icons.favorite
-                                                                : Icons.favorite_border,
-                                                            size: 18,
-                                                            color: ref.watch(favoritesProvider).contains(pointing.id)
-                                                                ? colors.accent
-                                                                : colors.textSecondary,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: actionIconGap),
-                                                    // Share icon
-                                                    Semantics(
-                                                      button: true,
-                                                      label: 'Share this pointing',
-                                                      focusable: true,
-                                                      child: GestureDetector(
-                                                        onTap: _handleShare,
-                                                        child: Container(
-                                                          padding: const EdgeInsets.all(AppSpacing.sm),
-                                                          decoration: BoxDecoration(
-                                                            color: colors.accent.withValues(alpha: 0.1),
-                                                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                                          ),
-                                                          child: Icon(Icons.ios_share, size: 18, color: colors.textSecondary),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          AnimatedSwitcher(
-                                            duration: const Duration(milliseconds: 400),
-                                            switchInCurve: Curves.easeOut,
-                                            switchOutCurve: Curves.easeIn,
-                                            transitionBuilder: (child, animation) {
-                                              // Pure fade - calm and unhurried
-                                              return FadeTransition(
-                                                opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                                                child: child,
-                                              );
-                                            },
-                                            child: Text(
-                                              pointing.content,
-                                              key: ValueKey(pointing.id),
-                                              style: AppTextStyles.pointingText(context),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                          if (pointing.instruction != null) ...[
-                                            const SizedBox(height: AppSpacing.xl),
-                                            Text(pointing.instruction!, style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
-                                          ],
-                                          if (pointing.teacher != null) ...[
-                                            const SizedBox(height: AppSpacing.lg),
-                                            AnimatedSwitcher(
-                                              duration: const Duration(milliseconds: 250),
-                                              switchInCurve: Curves.easeInOutCubic,
-                                              switchOutCurve: Curves.easeInOutCubic,
-                                              transitionBuilder: (child, animation) {
-                                                return FadeTransition(opacity: animation, child: child);
-                                              },
-                                              child: GestureDetector(
-                                                key: ValueKey('${pointing.id}-teacher'),
-                                                onTap: () {
-                                                  final teacher = getTeacher(pointing.teacher);
-                                                  if (teacher != null) {
-                                                    showTeacherSheet(context, teacher);
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '- ${pointing.teacher}',
-                                                  style: AppTextStyles.teacherText(context).copyWith(
-                                                    decoration: TextDecoration.underline,
-                                                    decorationColor: AppTextStyles.teacherText(context).color?.withValues(alpha: 0.5),
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                          if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
-                                          // Extended commentary
-                                          if (pointing.commentary != null) ...[
-                                            const SizedBox(height: AppSpacing.lg),
-                                            CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
-                                          ],
-                                          // Audio player
-                                          if (pointing.audioUrl != null) ...[
-                                            const SizedBox(height: AppSpacing.lg),
-                                            AudioPlayerWidget(pointingId: pointing.id, audioUrl: pointing.audioUrl),
-                                          ],
-                                          // Video player
-                                          if (pointing.videoUrl != null) ...[
-                                            const SizedBox(height: AppSpacing.lg),
-                                            VideoPlayerWidget(pointingId: pointing.id, videoUrl: pointing.videoUrl),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ), // Close GestureDetector
-                              ), // Close AnimatedOpacity
-                            ), // Close ImageFiltered
-                          ), // Close Center
-                        ), // Close Expanded
-
-                        SizedBox(height: isSquareAspect ? 12 : 20),
-
-                        // Mini-inquiry entry point (hide in landscape to save space)
-                        if (!isSquareAspect) ...[const MiniInquiryCard(), const SizedBox(height: AppSpacing.xl)],
-
-                        // Action button - Next only (Share moved to card header in Phase 5.11)
-                        Semantics(
-                          sortKey: const OrdinalSortKey(2.0),
-                          button: true,
-                          label: 'Show next pointing',
-                          child: GlassButton(
-                            label: 'Next',
-                            onPressed: _handleNext,
-                            icon: Icon(Icons.keyboard_arrow_down, color: colors.iconColor, size: 18),
+                            ),
                           ),
                         ),
-
-                        // Footer - decorative hint text (hide in landscape)
-                        if (!isSquareAspect) ...[
-                          const SizedBox(height: AppSpacing.xl),
+                        SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
+                        // Secondary actions, demoted to quiet text.
+                        Semantics(
+                          sortKey: const OrdinalSortKey(2.0),
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: AppSpacing.md,
+                            children: [
+                              _QuietTextAction(
+                                label: 'Take a moment',
+                                semanticsLabel: 'Take a moment - start guided inquiry',
+                                color: colors.accent,
+                                onTap: () {
+                                  Haptics.light();
+                                  context.push('/inquiry/random');
+                                },
+                              ),
+                              _QuietTextAction(
+                                label: 'Next',
+                                semanticsLabel: 'Show next pointing',
+                                color: colors.textSecondary,
+                                trailing: AppIcons.chevronDown,
+                                onTap: _handleNext,
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (!isSquareAspect && !_hasSwipedThisSession) ...[
+                          const SizedBox(height: AppSpacing.sm),
                           ExcludeSemantics(child: Text('Swipe for another invitation to look', style: AppTextStyles.footerText(context))),
                         ],
                       ],
@@ -635,11 +536,117 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
+/** A plain glyph with a 48 pt hit target and button semantics; no tinted chip. */
+class _QuietIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuietIconButton({required this.icon, required this.color, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: SizedBox.square(dimension: 48, child: Icon(icon, size: 20, color: color)),
+      ),
+    );
+  }
+}
+
+/** A quiet text action with a 48 pt minimum target, used for demoted secondary actions. */
+class _QuietTextAction extends StatelessWidget {
+  final String label;
+  final String semanticsLabel;
+  final Color color;
+  final IconData? trailing;
+  final VoidCallback onTap;
+
+  const _QuietTextAction({required this.label, required this.semanticsLabel, required this.color, required this.onTap, this.trailing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      onTap: onTap,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ExcludeSemantics(
+                  child: Text(
+                    label,
+                    style: TextStyle(color: color, fontSize: AppType.callout, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                if (trailing != null) ...[const SizedBox(width: 4), Icon(trailing, size: 16, color: color)],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /**
- * Two-tier citation link:
- * 1. If an article title matches the source → open that article
- * 2. Else if the teacher has articles → open teacher's teaching screen
- * 3. Else → plain text (no tap affordance)
+ * Attribution line (teacher or source): quiet text, no underline, a 48 pt target,
+ * and link semantics when it navigates. Plain text when [onTap] is null.
+ */
+class _AttributionLink extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final String semanticsLabel;
+  final String hint;
+  final VoidCallback? onTap;
+
+  const _AttributionLink({super.key, required this.text, required this.style, required this.semanticsLabel, required this.hint, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final label = Text(text, style: style, textAlign: TextAlign.center);
+    if (onTap == null) return Padding(padding: const EdgeInsets.only(top: 4), child: label);
+    void activate() {
+      Haptics.light();
+      onTap!();
+    }
+
+    return Semantics(
+      link: true,
+      label: semanticsLabel,
+      hint: hint,
+      onTap: activate,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: activate,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+          child: Center(widthFactor: 1, heightFactor: 1, child: ExcludeSemantics(child: label)),
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * Source citation:
+ * 1. If an article title matches the source, it opens that article.
+ * 2. Else if the teacher has articles, it opens the teacher's teachings.
+ * 3. Else plain text.
  */
 class _SourceCitation extends StatelessWidget {
   final String source;
@@ -649,52 +656,22 @@ class _SourceCitation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     final match = _resolveSource();
-
-    final style = TextStyle(
-      fontSize: 12,
-      fontStyle: FontStyle.italic,
-      color: colors.textMuted,
-      decoration: match != null ? TextDecoration.underline : null,
-      decorationColor: match != null ? colors.textMuted.withValues(alpha: 0.5) : null,
-    );
-
-    if (match == null) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(source, style: style, textAlign: TextAlign.center),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: GestureDetector(
-        onTap: () {
-          Haptics.light();
-          match.navigate(context);
-        },
-        child: Text(source, style: style, textAlign: TextAlign.center),
-      ),
+    final style = TextStyle(fontSize: AppType.caption, fontStyle: FontStyle.italic, color: context.colors.textMuted);
+    return _AttributionLink(
+      text: source,
+      style: style,
+      semanticsLabel: 'Source: $source',
+      hint: match is _ArticleMatch ? 'Opens the article' : 'Opens related teachings',
+      onTap: match == null ? null : () => match.navigate(context),
     );
   }
 
   _SourceMatch? _resolveSource() {
-    // Tier 1: direct article title match
     final lowerSource = source.toLowerCase();
     final directMatch = articles.cast<Article?>().firstWhere((a) => a!.title.toLowerCase() == lowerSource, orElse: () => null);
-    if (directMatch != null) {
-      return _ArticleMatch(directMatch);
-    }
-
-    // Tier 2: teacher has articles
-    if (teacher != null) {
-      final teacherArticles = getArticlesByTeacher(teacher!);
-      if (teacherArticles.isNotEmpty) {
-        return _TeacherMatch(teacher!);
-      }
-    }
-
+    if (directMatch != null) return _ArticleMatch(directMatch);
+    if (teacher != null && getArticlesByTeacher(teacher!).isNotEmpty) return _TeacherMatch(teacher!);
     return null;
   }
 }
@@ -711,9 +688,7 @@ class _ArticleMatch extends _SourceMatch {
   _ArticleMatch(this.article);
 
   @override
-  void navigate(BuildContext context) {
-    context.push('/article/${article.id}');
-  }
+  void navigate(BuildContext context) => context.push('/article/${article.id}');
 }
 
 /** Source citation that matched a teacher who has articles in the library. */
@@ -723,8 +698,9 @@ class _TeacherMatch extends _SourceMatch {
 
   @override
   void navigate(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    // Root navigator: a pushed reading screen covers the dock (design finding 22).
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (_) => TeacherTeachingsScreen(teacher: teacher, filter: ContentFilter.articles),
       ),
     );

@@ -215,7 +215,7 @@ void main() {
       // Verify content is visible
       expect(find.text(testPointing.content), findsOneWidget);
       expect(find.text(testPointing.instruction!), findsOneWidget);
-      expect(find.text('- ${testPointing.teacher}'), findsOneWidget);
+      expect(find.text('— ${testPointing.teacher}'), findsOneWidget);
 
       // Verify zen mode view is not present
       expect(find.byKey(const ValueKey('zen-mode')), findsNothing);
@@ -235,7 +235,7 @@ void main() {
 
       // Verify instruction and teacher are hidden in zen mode
       expect(find.text(testPointing.instruction!), findsNothing);
-      expect(find.text('- ${testPointing.teacher}'), findsNothing);
+      expect(find.text('— ${testPointing.teacher}'), findsNothing);
 
       // Verify zen mode view is present
       expect(find.byKey(const ValueKey('zen-mode')), findsOneWidget);
