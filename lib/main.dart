@@ -24,6 +24,7 @@ import 'package:go_router/go_router.dart';
 import 'package:home_widget/home_widget.dart';
 import 'providers/providers.dart';
 import 'router.dart';
+import 'widgets/shared_ambient.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
 import 'debug/maestro_hooks.dart';
@@ -276,9 +277,14 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
         final media = MediaQuery.of(context);
         final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
         return BackdropGroup(
+          // One ambient background under every route (design 9): pushes slide over it, never cross-fade it.
           child: MediaQuery(
             data: media.copyWith(disableAnimations: reduceMotion),
-            child: MediaQuery.withClampedTextScaling(minScaleFactor: 0.85, maxScaleFactor: 2.0, child: child ?? const SizedBox.shrink()),
+            child: MediaQuery.withClampedTextScaling(
+              minScaleFactor: 0.85,
+              maxScaleFactor: 2.0,
+              child: SharedAmbientHost(child: child ?? const SizedBox.shrink()),
+            ),
           ),
         );
       },

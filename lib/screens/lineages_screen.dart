@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/drag_handle.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/grouped_section.dart';
 import '../widgets/pointer_scaffold.dart';
 import '../utils/haptics.dart';
 
@@ -72,38 +73,43 @@ class LineagesScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Traditions list with selection
-                ...traditionEntries.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final tradition = entry.value.key;
-                  final info = entry.value.value;
-                  final count = getPointingsByTradition(tradition).length;
-                  final isEnabled = preferredTraditions.contains(tradition);
+                // One grouped plate instead of a blurred card per tradition (design 22/24).
+                GroupedSection(
+                  itemCount: traditionEntries.length,
+                  separatorIndent: 92,
+                  itemBuilder: (context, index) {
+                    final tradition = traditionEntries[index].key;
+                    final info = traditionEntries[index].value;
+                    final count = getPointingsByTradition(tradition).length;
+                    final isEnabled = preferredTraditions.contains(tradition);
 
-                  return StaggeredFadeIn(
-                    index: index,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: _TraditionCard(
-                        tradition: tradition,
-                        info: info,
-                        pointingsCount: count,
-                        isEnabled: isEnabled,
-                        onToggle: () {
-                          Haptics.selection();
-                          ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
-                        },
-                        onInfoTap: () {
-                          Haptics.selection();
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
-                          );
-                        },
+                    return StaggeredFadeIn(
+                      index: index,
+                      child: Padding(
+                        padding: EdgeInsets.zero,
+                        child: _TraditionCard(
+                          tradition: tradition,
+                          info: info,
+                          pointingsCount: count,
+                          isEnabled: isEnabled,
+                          onToggle: () {
+                            Haptics.selection();
+                            ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
+                          },
+                          onInfoTap: () {
+                            Haptics.selection();
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
 
                 // Helper text
                 const SizedBox(height: 8),
@@ -162,8 +168,8 @@ class _TraditionCard extends StatelessWidget {
       button: true,
       toggled: isEnabled,
       label: '${info.name} tradition. ${isEnabled ? "Enabled" : "Disabled"}. $pointingsCount pointings available.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(20),
+      child: GroupedRow(
+        padding: const EdgeInsets.all(16),
         onTap: onToggle,
         child: Row(
           children: [

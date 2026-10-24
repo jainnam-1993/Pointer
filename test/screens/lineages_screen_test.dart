@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/widgets/grouped_section.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -116,8 +117,9 @@ void main() {
     testWidgets('shows all 5 tradition cards', (tester) async {
       await pumpLineagesScreen(tester, createLineagesScreen());
 
-      // Should have 5 GlassCards for the 5 traditions
-      expect(find.byType(GlassCard), findsNWidgets(5));
+      // One grouped plate holds the 5 tradition rows (design 22/24)
+      expect(find.byType(GlassCard), findsOneWidget);
+      expect(find.byType(GroupedRow), findsNWidgets(5));
     });
 
     testWidgets('shows Advaita Vedanta tradition', (tester) async {
@@ -335,8 +337,8 @@ void main() {
       // We have 5 tradition cards, so we should find at least 5 Semantics widgets
       expect(find.byType(Semantics), findsWidgets);
 
-      // Verify at least 5 GlassCards exist (one per tradition)
-      expect(find.byType(GlassCard), findsNWidgets(5));
+      // One grouped plate, one row per tradition
+      expect(find.byType(GroupedRow), findsNWidgets(5));
     });
 
     testWidgets('all text is visible', (tester) async {

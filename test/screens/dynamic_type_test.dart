@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/theme/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -419,7 +420,7 @@ void main() {
         // Buttons should still be present and tappable
         // Phase 5.11: Share button is now an icon in card header
         expect(find.text('Next'), findsOneWidget);
-        expect(find.byIcon(Icons.ios_share), findsOneWidget);
+        expect(find.byIcon(AppIcons.share), findsOneWidget);
 
         // Should be able to tap buttons
         await tester.tap(find.text('Next'));
@@ -435,12 +436,11 @@ void main() {
 
         await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 1.5, initialPointing: testPointing));
 
-        // Find the GlassButton widgets
-        // Phase 5.11: Only Next button is GlassButton now
-        final buttons = find.byType(GlassButton);
+        // Quiet secondary actions keep a 48 pt minimum target at every scale.
+        final buttons = find.ancestor(of: find.text('Next'), matching: find.byType(ConstrainedBox)).first;
         expect(buttons, findsOneWidget);
 
-        // Each button should have at least 44pt touch target
+        // Each action should have at least a 48 pt touch target
         for (final element in tester.elementList(buttons)) {
           final renderBox = element.renderObject as RenderBox;
           expect(renderBox.size.height, greaterThanOrEqualTo(44.0));

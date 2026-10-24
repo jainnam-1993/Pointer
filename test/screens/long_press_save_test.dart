@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -215,7 +216,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Verify heart icon is shown (card header heart + save confirmation heart)
-      expect(find.byIcon(Icons.favorite), findsAtLeastNWidgets(1));
+      expect(find.byIcon(PhosphorIconsFill.heart), findsAtLeastNWidgets(1));
     });
 
     testWidgets('confirmation shows "Saved" text', (tester) async {

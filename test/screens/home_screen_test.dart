@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/theme/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -141,21 +142,21 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // Phase 5.11: Share moved to icon in card header
-      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      expect(find.byIcon(AppIcons.share), findsOneWidget);
     });
 
     testWidgets('shows GlassCard for pointing content', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // Two GlassCards: one for pointing content, one for mini-inquiry
-      expect(find.byType(GlassCard), findsNWidgets(2));
+      expect(find.byType(GlassCard), findsOneWidget); // One plate: the inquiry entry is a quiet text action
     });
 
-    testWidgets('shows one GlassButton (Next)', (tester) async {
+    testWidgets('Next is a quiet text action, not a glass button', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
-
-      // Phase 5.11: Only Next button is GlassButton, Share is icon in card header
-      expect(find.byType(GlassButton), findsOneWidget);
+      // Design 7: secondary actions are demoted; no glass button competes with the pointing.
+      expect(find.byType(GlassButton), findsNothing);
+      expect(find.text('Next'), findsOneWidget);
     });
 
     testWidgets('has animated gradient background', (tester) async {
@@ -180,14 +181,14 @@ void main() {
     testWidgets('Next button has arrow icon', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
+      expect(find.byIcon(AppIcons.chevronDown), findsOneWidget);
     });
 
     testWidgets('Share icon exists in card header', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // Phase 5.11: Share icon is in card header, not a button
-      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      expect(find.byIcon(AppIcons.share), findsOneWidget);
     });
 
     testWidgets('pointing card is flexible height', (tester) async {
@@ -217,7 +218,7 @@ void main() {
 
       expect(find.text('Simple pointing without instruction'), findsOneWidget);
       // Two GlassCards: pointing card + mini-inquiry card
-      expect(find.byType(GlassCard), findsNWidgets(2));
+      expect(find.byType(GlassCard), findsOneWidget); // One plate: the inquiry entry is a quiet text action
     });
 
     testWidgets('handles pointing without teacher', (tester) async {
@@ -271,7 +272,7 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen());
 
       // Phase 5.11: Share is now an icon in card header
-      final icon = find.byIcon(Icons.ios_share);
+      final icon = find.byIcon(AppIcons.share);
       expect(icon, findsOneWidget);
 
       // Tapping should not throw (share dialog won't open in tests)
@@ -407,12 +408,12 @@ void main() {
     testWidgets('buttons are accessible', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Phase 5.11: Only Next button is GlassButton
-      final buttons = find.byType(GlassButton);
-      expect(buttons, findsOneWidget);
+      // Next and Take a moment are quiet text actions with 48 pt targets.
+      expect(find.byType(GlassButton), findsNothing);
+      expect(find.text('Take a moment'), findsOneWidget);
 
       // Share icon should be tappable
-      await tester.tap(find.byIcon(Icons.ios_share));
+      await tester.tap(find.byIcon(AppIcons.share));
       await tester.pump(const Duration(milliseconds: 200)); // Clear timers
 
       // Verify Next button exists and is tappable
@@ -424,6 +425,23 @@ void main() {
 
       // The pointing card has Semantics wrapper
       expect(find.byType(Semantics), findsWidgets);
+    });
+  });
+
+  group('Swipe hint (first 3 sessions)', () {
+    const hint = 'Swipe for another invitation to look';
+
+    testWidgets('shows during an early session and counts it', (tester) async {
+      when(() => mockPrefs.getInt(HomeScreen.sessionCountKey)).thenReturn(1);
+      await pumpHomeScreen(tester, createHomeScreen());
+      expect(find.text(hint), findsOneWidget);
+      verify(() => mockPrefs.setInt(HomeScreen.sessionCountKey, 2)).called(1);
+    });
+
+    testWidgets('is gone from the fourth session on', (tester) async {
+      when(() => mockPrefs.getInt(HomeScreen.sessionCountKey)).thenReturn(HomeScreen.swipeHintSessions);
+      await pumpHomeScreen(tester, createHomeScreen());
+      expect(find.text(hint), findsNothing);
     });
   });
 }

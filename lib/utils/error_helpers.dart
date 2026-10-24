@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import '../theme/app_icons.dart';
+import '../widgets/pointer_toast.dart';
 
-/// Shows a floating error snackbar with the given [message].
+/// Shows a calm, floating error message with the given [message].
 ///
-/// Uses [ScaffoldMessenger] so it works from any widget context within
-/// the scaffold tree. Styled with the current theme's error color.
+/// Uses the app's [PointerToast] rather than a Material snackbar, so errors share
+/// the same quiet surface as every other transient message.
 void showErrorSnackBar(BuildContext context, String message) {
-  ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(message), behavior: SnackBarBehavior.floating, backgroundColor: Theme.of(context).colorScheme.error));
+  PointerToast.show(context, message, icon: AppIcons.info);
 }

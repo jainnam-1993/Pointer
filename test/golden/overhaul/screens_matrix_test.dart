@@ -156,6 +156,15 @@ Future<void> _loadSdkFonts() async {
   if (icons.existsSync()) {
     await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)))).load();
   }
+  // Phosphor icon fonts ship in the package; without them every glyph renders as tofu.
+  for (final (family, file) in const [
+    ('Phosphor', 'Phosphor.ttf'),
+    ('PhosphorRegular', 'Phosphor.ttf'),
+    ('PhosphorLight', 'Phosphor-Light.ttf'),
+    ('PhosphorFill', 'Phosphor-Fill.ttf'),
+  ]) {
+    await (FontLoader('packages/phosphor_flutter/$family')..addFont(rootBundle.load('packages/phosphor_flutter/lib/fonts/$file'))).load();
+  }
 }
 
 /// Initializes articles and preloads the reader article body so no asset IO is needed.
@@ -312,6 +321,9 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
   try {
     await tester.pumpWidget(_app(home: screen.build(), prefs: prefs, theme: theme));
     await tester.pump(const Duration(seconds: 2));
+    // A single long pump renders only the first frame of entrance animations (the
+    // Library featured row stayed at opacity 0); step frames so they finish.
+    await _settleTransient(tester);
     if (screen.drive != null) await screen.drive!(tester);
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/${screen.name}_${device.name}_${theme.name}.png'));
     // Unmount so pending timers and repeating animations are disposed.

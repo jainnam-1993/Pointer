@@ -21,7 +21,7 @@ void main() {
   });
 
   group('OLED Mode Provider Tests', () {
-    test('oledModeProvider reads from settings', () async {
+    test('a persisted oledMode is migrated off on load (design 17)', () async {
       // Setup - Mock SharedPreferences with OLED mode enabled
       SharedPreferences.setMockInitialValues({StorageKeys.settings: '{"oledMode": true}'});
       final prefs = await SharedPreferences.getInstance();
@@ -35,7 +35,7 @@ void main() {
       final oledMode = container.read(oledModeProvider);
 
       // Assert - Should be true from settings
-      expect(oledMode, isTrue);
+      expect(oledMode, isFalse, reason: 'one-time migration clears a stuck OLED flag');
     });
 
     test('oledModeProvider defaults to false when not set', () async {
@@ -192,8 +192,8 @@ void main() {
       addTearDown(newContainer.dispose);
 
       // Assert - OLED mode should still be enabled after "restart"
-      expect(newContainer.read(oledModeProvider), isTrue);
-      expect(newContainer.read(settingsProvider).oledMode, isTrue);
+      expect(newContainer.read(oledModeProvider), isFalse); // migrated off on restart (design 17)
+      expect(newContainer.read(settingsProvider).oledMode, isFalse);
     });
   });
 

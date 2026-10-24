@@ -25,6 +25,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/pointer_scaffold.dart';
 import '../widgets/share_preview_helper.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/grouped_section.dart';
 import 'library/library_models.dart';
 import 'library/library_widgets.dart';
 import 'library/teacher_teachings_screen.dart';
@@ -128,11 +129,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ),
               ),
               if (favorites.isEmpty && savedArticleIds.isEmpty)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: EmptyStateWidget(
                     icon: Icons.bookmark_border,
-                    title: 'Nothing saved yet',
-                    subtitle: 'Long-press a pointing or bookmark an article',
+                    title: 'Nothing saved yet.',
+                    subtitle: 'Long-press a pointing to keep it here.',
+                    actionLabel: 'Back to today',
+                    onAction: () => context.go('/'),
                   ),
                 ),
 
@@ -416,26 +419,30 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final entry = sortedTopics[index];
-          final topic = entry.key;
-          final count = entry.value;
+      sliver: SliverToBoxAdapter(
+        child: GroupedSection(
+          separatorIndent: 74,
+          itemBuilder: (context, index) {
+            final entry = sortedTopics[index];
+            final topic = entry.key;
+            final count = entry.value;
 
-          return StaggeredFadeIn(
-            index: index,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: TopicTags.icon(topic),
-                name: TopicTags.displayName(topic),
-                description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
-                count: count,
-                onTap: () => _openTopic(context, topic, contentFilter),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: _BrowseCard(
+                  icon: TopicTags.icon(topic),
+                  name: TopicTags.displayName(topic),
+                  description: 'Explore ${TopicTags.displayName(topic).toLowerCase()} teachings',
+                  count: count,
+                  onTap: () => _openTopic(context, topic, contentFilter),
+                ),
               ),
-            ),
-          );
-        }, childCount: sortedTopics.length),
+            );
+          },
+          itemCount: sortedTopics.length,
+        ),
       ),
     );
   }
@@ -443,7 +450,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /** Navigates to [TopicTeachingsScreen] for the given topic with the active filter. */
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => TopicTeachingsScreen(topic: topic, filter: filter),
       ),
@@ -478,36 +485,40 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     if (sortedTeachers.isEmpty) {
       return const SliverToBoxAdapter(
-        child: EmptyStateWidget(icon: Icons.person_outline, title: 'No teachers found', subtitle: 'Try a different content filter'),
+        child: EmptyStateWidget(title: 'No teachers here yet.', subtitle: 'Try another filter above.'),
       );
     }
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final entry = sortedTeachers[index];
-          final teacher = entry.key;
-          final count = entry.value;
+      sliver: SliverToBoxAdapter(
+        child: GroupedSection(
+          separatorIndent: 74,
+          itemBuilder: (context, index) {
+            final entry = sortedTeachers[index];
+            final teacher = entry.key;
+            final count = entry.value;
 
-          // Get lineage for this teacher (from first teaching)
-          final teachingsSample = TeachingRepository.byTeacher(teacher);
-          final lineage = teachingsSample.isNotEmpty ? traditions[teachingsSample.first.lineage]?.name ?? '' : '';
+            // Get lineage for this teacher (from first teaching)
+            final teachingsSample = TeachingRepository.byTeacher(teacher);
+            final lineage = teachingsSample.isNotEmpty ? traditions[teachingsSample.first.lineage]?.name ?? '' : '';
 
-          return StaggeredFadeIn(
-            index: index,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: AppIcons.teacher,
-                name: teacher,
-                description: lineage,
-                count: count,
-                onTap: () => _openTeacher(context, teacher, contentFilter),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: _BrowseCard(
+                  icon: AppIcons.teacher,
+                  name: teacher,
+                  description: lineage,
+                  count: count,
+                  onTap: () => _openTeacher(context, teacher, contentFilter),
+                ),
               ),
-            ),
-          );
-        }, childCount: sortedTeachers.length),
+            );
+          },
+          itemCount: sortedTeachers.length,
+        ),
       ),
     );
   }
@@ -540,24 +551,28 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final data = lineageData[index];
+      sliver: SliverToBoxAdapter(
+        child: GroupedSection(
+          separatorIndent: 74,
+          itemBuilder: (context, index) {
+            final data = lineageData[index];
 
-          return StaggeredFadeIn(
-            index: index,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: data.info.lineIcon,
-                name: data.info.name,
-                description: data.info.description,
-                count: data.count,
-                onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: _BrowseCard(
+                  icon: data.info.lineIcon,
+                  name: data.info.name,
+                  description: data.info.description,
+                  count: data.count,
+                  onTap: () => _openLineage(context, data.tradition, data.info, contentFilter),
+                ),
               ),
-            ),
-          );
-        }, childCount: lineageData.length),
+            );
+          },
+          itemCount: lineageData.length,
+        ),
       ),
     );
   }
@@ -591,33 +606,37 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     return SliverPadding(
       padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final entry = sortedMoods[index];
-          final mood = entry.key;
-          final count = entry.value;
+      sliver: SliverToBoxAdapter(
+        child: GroupedSection(
+          separatorIndent: 74,
+          itemBuilder: (context, index) {
+            final entry = sortedMoods[index];
+            final mood = entry.key;
+            final count = entry.value;
 
-          return StaggeredFadeIn(
-            index: index,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BrowseCard(
-                icon: MoodTags.icon(mood),
-                name: MoodTags.displayName(mood),
-                description: 'Best for ${mood.toLowerCase()} moments',
-                count: count,
-                onTap: () => _openMood(context, mood, contentFilter),
+            return StaggeredFadeIn(
+              index: index,
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: _BrowseCard(
+                  icon: MoodTags.icon(mood),
+                  name: MoodTags.displayName(mood),
+                  description: 'Best for ${mood.toLowerCase()} moments',
+                  count: count,
+                  onTap: () => _openMood(context, mood, contentFilter),
+                ),
               ),
-            ),
-          );
-        }, childCount: sortedMoods.length),
+            );
+          },
+          itemCount: sortedMoods.length,
+        ),
       ),
     );
   }
 
   void _openTeacher(BuildContext context, String teacher, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => TeacherTeachingsScreen(teacher: teacher, filter: filter),
       ),
@@ -626,7 +645,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info, filter: filter),
       ),
@@ -635,7 +654,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openMood(BuildContext context, String mood, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => MoodTeachingsScreen(mood: mood, filter: filter),
       ),
@@ -826,8 +845,7 @@ class _BrowseCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: '$name. $description. $count teachings.',
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
+      child: GroupedRow(
         onTap: onTap,
         child: Row(
           children: [
@@ -860,15 +878,16 @@ class _BrowseCard extends StatelessWidget {
               ),
             ),
 
-            // Count and arrow
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            // Count and chevron on one baseline (design 24)
+            Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   '$count',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.textMuted),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 12, color: colors.textMuted),
+                const SizedBox(width: 4),
+                Icon(Icons.chevron_right, size: 18, color: colors.textMuted),
               ],
             ),
           ],

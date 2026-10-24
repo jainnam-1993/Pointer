@@ -53,6 +53,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       _player = Player();
       _videoController = VideoController(_player!);
       await _player!.open(Media(widget.videoUrl!), play: false);
+      if (!mounted) return;
       setState(() => _isInitialized = true);
     }
 

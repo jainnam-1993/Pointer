@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
+import '../widgets/shared_ambient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/onboarding_animations.dart';
 import '../utils/haptics.dart';
@@ -151,7 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
           SafeArea(
             child: Column(
               children: [
@@ -232,18 +234,28 @@ class _InterruptionPageState extends State<_InterruptionPage> {
   bool _showSubtext = false;
   bool _showIcon = false;
 
-  void _onMainTextComplete() {
-    if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _showSubtext = true);
+  /** Pending reveal step; cancelled on dispose so no timer outlives the page. */
+  Timer? _revealTimer;
+
+  void _revealAfterPause(VoidCallback reveal) {
+    _revealTimer?.cancel();
+    _revealTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) setState(reveal);
     });
   }
 
+  void _onMainTextComplete() {
+    if (mounted) _revealAfterPause(() => _showSubtext = true);
+  }
+
   void _onSubtextComplete() {
-    if (!mounted) return;
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) setState(() => _showIcon = true);
-    });
+    if (mounted) _revealAfterPause(() => _showIcon = true);
+  }
+
+  @override
+  void dispose() {
+    _revealTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -268,8 +280,8 @@ class _InterruptionPageState extends State<_InterruptionPage> {
               color: colors.textPrimary,
               letterSpacing: -0.5,
             ),
-            wordDelay: const Duration(milliseconds: 250),
-            startDelay: const Duration(milliseconds: 1500),
+            wordDelay: const Duration(milliseconds: 110),
+            startDelay: const Duration(milliseconds: 300),
             onComplete: reduceMotion ? null : _onMainTextComplete,
           ),
 
@@ -290,7 +302,7 @@ class _InterruptionPageState extends State<_InterruptionPage> {
                 fontStyle: FontStyle.italic,
                 color: colors.textSecondary,
               ),
-              wordDelay: const Duration(milliseconds: 200),
+              wordDelay: const Duration(milliseconds: 90),
               startDelay: Duration.zero,
               onComplete: reduceMotion ? null : _onSubtextComplete,
             ),

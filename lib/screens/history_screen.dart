@@ -74,7 +74,12 @@ class HistoryScreen extends ConsumerWidget {
 
   /** Builds the empty state shown when no pointings have been viewed yet. */
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
-    return const EmptyStateWidget(icon: Icons.history, title: 'No pointings yet', subtitle: 'Your viewed pointings will appear here');
+    return EmptyStateWidget(
+      title: 'Nothing here yet.',
+      subtitle: 'Pointings you read will gather here.',
+      actionLabel: 'Back to today',
+      onAction: () => context.go('/'),
+    );
   }
 
   /** Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations. */

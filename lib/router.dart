@@ -27,7 +27,6 @@
  */
 library;
 
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -167,11 +166,10 @@ GoRouter _createRouter() {
         pageBuilder: (context, state) => FadeThroughPage(key: state.pageKey, child: const OnboardingScreen()),
       ),
 
-      // History route (outside shell) - horizontal for related content
+      // History route (outside shell) - native page push keeps the iOS edge-swipe back
       GoRoute(
         path: '/history',
-        pageBuilder: (context, state) =>
-            SharedAxisPage(key: state.pageKey, transitionType: SharedAxisTransitionType.horizontal, child: const HistoryScreen()),
+        pageBuilder: (context, state) => MaterialPage<void>(key: state.pageKey, child: const HistoryScreen()),
       ),
 
       // Inquiry player route (outside shell - full screen experience)
@@ -186,19 +184,18 @@ GoRouter _createRouter() {
         },
       ),
 
-      // Lineages route (outside shell - preferences screen)
+      // Lineages route (outside shell) - native page push keeps the iOS edge-swipe back
       GoRoute(
         path: '/lineages',
-        pageBuilder: (context, state) =>
-            SharedAxisPage(key: state.pageKey, transitionType: SharedAxisTransitionType.horizontal, child: const LineagesScreen()),
+        pageBuilder: (context, state) => MaterialPage<void>(key: state.pageKey, child: const LineagesScreen()),
       ),
 
-      // Article reader route (outside shell - full screen reading)
+      // Article reader (outside shell, so the dock hides while reading) - native page push
       GoRoute(
         path: '/article/:id',
         pageBuilder: (context, state) {
           final articleId = state.pathParameters['id']!;
-          return CalmPageTransition(
+          return MaterialPage<void>(
             key: state.pageKey,
             child: ArticleReaderScreen(articleId: articleId),
           );

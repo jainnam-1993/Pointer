@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_gradient.dart';
+import 'shared_ambient.dart';
 
 /// Standardized scaffold that layers [AnimatedGradient] behind content.
 ///
@@ -40,7 +41,7 @@ class PointerScaffold extends StatelessWidget {
       bottomNavigationBar: bottomNavigationBar,
       body: Stack(
         children: [
-          const Positioned.fill(child: AnimatedGradient()),
+          const Positioned.fill(child: RouteAmbient()),
           if (useSafeArea) SafeArea(child: body) else body,
         ],
       ),
