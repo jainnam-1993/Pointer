@@ -1,5 +1,7 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
 import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/teacher.dart';
@@ -96,7 +98,7 @@ class TeacherSheet extends StatelessWidget {
                           ),
                           Text(
                             ' ${traditionInfo.name}',
-                            style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
+                            style: TextStyle(color: colors.accent, fontSize: AppType.caption, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -119,9 +121,12 @@ class TeacherSheet extends StatelessWidget {
                       children: teacher.tags
                           .map(
                             (tag) => Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                               decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
-                              child: Text(tag, style: TextStyle(color: colors.textSecondary, fontSize: 11)),
+                              child: Text(
+                                tag,
+                                style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
+                              ),
                             ),
                           )
                           .toList(),
@@ -167,7 +172,7 @@ class _PointingTile extends StatelessWidget {
         ),
         child: Text(
           pointing.content.length > 120 ? '${pointing.content.substring(0, 120)}...' : pointing.content,
-          style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.5),
+          style: TextStyle(color: colors.textSecondary, fontSize: AppType.callout, height: 1.5),
         ),
       ),
     );
