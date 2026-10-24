@@ -1,4 +1,4 @@
-QUOTE_MIN + HEADROOM || secondaryContrast(behind, a) < SECONDARY_MIN + HEADROOM))package com.dailypointer
+package com.dailypointer
 
 /**
  * The see-through widget card: a dark glass tint over the live wallpaper, as translucent as the
@@ -13,7 +13,7 @@ QUOTE_MIN + HEADROOM || secondaryContrast(behind, a) < SECONDARY_MIN + HEADROOM)
  *
  * The alpha is the least that keeps the white quote at [QUOTE_MIN] and the 80% white teacher line
  * at [SECONDARY_MIN] over the brightest colour the wallpaper is likely to put behind the card.
- * WallpaperColors are dominant colours, not the brightest pixels, so each is pushed [MARGIN] toward
+ * WallpaperColors are dominant colours, not the brightest pixels, so the brightest is pushed [MARGIN] toward
  * white; a wallpaper that supports dark text (a light wallpaper) is treated as white outright.
  * Pure Kotlin (ARGB ints), so the rule runs as a JVM unit test.
  */
@@ -50,7 +50,7 @@ object GlassRule {
     fun alpha(colors: List<Int>, supportsDarkText: Boolean): Double {
         val behind = worstCase(colors, supportsDarkText)
         var a = MIN_ALPHA
-        while (a < MAX_ALPHA && (quoteContrast(behind, a) < QUOTE_MIN || secondaryContrast(behind, a) < SECONDARY_MIN)) a += 0.01
+        while (a < MAX_ALPHA && (quoteContrast(behind, a) < QUOTE_MIN + HEADROOM || secondaryContrast(behind, a) < SECONDARY_MIN + HEADROOM)) a += 0.01
         return a.coerceAtMost(MAX_ALPHA)
     }
 }
