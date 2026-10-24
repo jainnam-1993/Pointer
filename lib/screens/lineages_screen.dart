@@ -177,7 +177,7 @@ class _TraditionCard extends StatelessWidget {
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: isEnabled ? 1.0 : 0.5,
-                  child: Text(info.icon, style: const TextStyle(fontSize: 28)),
+                  child: Icon(info.lineIcon, size: 30.8),
                 ),
               ),
             ),
@@ -292,7 +292,7 @@ class _TraditionDetailSheet extends StatelessWidget {
                   const DragHandle(bottomMargin: 20),
                   Row(
                     children: [
-                      Text(info.icon, style: const TextStyle(fontSize: 32)),
+                      Icon(info.lineIcon, size: 35.2),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(

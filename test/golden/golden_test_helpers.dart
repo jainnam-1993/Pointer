@@ -23,6 +23,7 @@ import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:mocktail/mocktail.dart';
+import '../helpers/app_fonts.dart';
 import '../helpers/test_setup.dart';
 
 /// Mock NotificationService for testing
@@ -45,6 +46,9 @@ class GoldenDevices {
 
 /// Setup for golden tests - call in setUpAll
 Future<void> setupGoldenTests() async {
+  // Real glyphs for bundled and package fonts (Inter, Newsreader, Phosphor, Material Icons).
+  await loadAppFonts();
+
   // Disable animations for consistent screenshots
   AnimatedGradient.disableAnimations = true;
 

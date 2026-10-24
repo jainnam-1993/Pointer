@@ -255,11 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(
-            excludeSemantics: true,
-            label: traditionInfo.name,
-            child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
-          ),
+          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Icon(traditionInfo.lineIcon, size: 15.4)),
           const SizedBox(width: 6),
           Flexible(
             child: Text(

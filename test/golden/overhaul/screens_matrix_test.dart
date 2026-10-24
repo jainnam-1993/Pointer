@@ -134,8 +134,8 @@ final _tipProducts = [
 
 late _MockNotificationService _notifications;
 
-/// Loads Roboto and Material Icons from the Flutter SDK so goldens show real
-/// glyphs instead of the test font's boxes.
+/// Loads Roboto and Material Icons from the Flutter SDK; the app's bundled and
+/// package fonts come from [loadAppFonts] in setupGoldenTests.
 Future<void> _loadSdkFonts() async {
   final exe = Platform.resolvedExecutable;
   final idx = exe.indexOf('${Platform.pathSeparator}bin${Platform.pathSeparator}cache${Platform.pathSeparator}');
@@ -151,16 +151,6 @@ Future<void> _loadSdkFonts() async {
     }
   }
   await roboto.load();
-  for (final (family, files) in const [
-    ('Inter', ['assets/fonts/Inter-Variable.ttf']),
-    ('Newsreader', ['assets/fonts/Newsreader-Variable.ttf', 'assets/fonts/Newsreader-Italic-Variable.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final path in files) {
-      loader.addFont(Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
   final icons = File('${dir.path}/MaterialIcons-Regular.otf');
   if (icons.existsSync()) {
     await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)))).load();

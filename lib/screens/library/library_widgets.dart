@@ -193,7 +193,7 @@ class TeachingCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(traditionInfo.icon, style: const TextStyle(fontSize: 11)),
+                        Icon(traditionInfo.lineIcon, size: 12.1),
                         const SizedBox(width: 4),
                         Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 11)),
                       ],

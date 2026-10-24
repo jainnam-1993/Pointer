@@ -283,7 +283,7 @@ class _TraditionBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(info.icon, style: TextStyle(fontSize: 20, color: badgeColor)),
+          Icon(info.lineIcon, size: 22, color: badgeColor),
           const SizedBox(width: 8),
           Text(
             info.name,

@@ -184,6 +184,22 @@ void main() {
       expect(tips.any(tabs.contains), isFalse);
     });
 
+    test('no color emoji remain in lib/ (tags, tabs, badges use line icons)', () {
+      final emoji = RegExp('[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2728}\u{FE0F}]', unicode: true);
+      final hits = Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.dart'))
+          .expand(
+            (f) => f
+                .readAsLinesSync()
+                .where((l) => emoji.hasMatch(l) && !l.trimLeft().startsWith('*') && !l.trimLeft().startsWith('//'))
+                .map((l) => '${f.path}: $l'),
+          )
+          .toList();
+      expect(hits, isEmpty);
+    });
+
     test('no lotus or seated-figure glyphs remain in lib/', () {
       for (final banned in ['Icons.self_improvement', 'Icons.spa', 'flowerLotus']) {
         expect(_libContains(banned), isFalse, reason: banned);

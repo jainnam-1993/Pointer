@@ -28,7 +28,7 @@ class TopicTeachingsScreen extends StatelessWidget {
     final teachings = TeachingRepository.byTopic(topic);
 
     return TeachingDetailScreen(
-      title: '${TopicTags.icon(topic)} ${TopicTags.displayName(topic)}',
+      title: TopicTags.displayName(topic),
       subtitle: '${articles.length} articles, ${teachings.length} quotes',
       articles: articles,
       teachings: teachings,

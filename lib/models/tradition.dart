@@ -7,6 +7,9 @@
  */
 library;
 
+import 'package:flutter/widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
 /** Spiritual lineage/tradition a pointing originates from. */
 enum Tradition {
   /** Advaita Vedanta — the path of non-duality. */
@@ -54,14 +57,42 @@ class TraditionInfo {
   /** Short description of the tradition's essence. */
   final String description;
 
-  const TraditionInfo({required this.name, required this.icon, required this.description});
+  /** Thin line icon from the app icon set; render this instead of [icon] (which needs font fallback). */
+  final IconData lineIcon;
+
+  const TraditionInfo({required this.name, required this.icon, required this.description, this.lineIcon = PhosphorIconsLight.dot});
 }
 
 /** Map of [Tradition] to its [TraditionInfo] display metadata. */
 const traditions = <Tradition, TraditionInfo>{
-  Tradition.advaita: TraditionInfo(name: 'Advaita Vedanta', icon: 'ॐ', description: 'The path of non-duality. You are already what you seek.'),
-  Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.'),
-  Tradition.direct: TraditionInfo(name: 'Direct Path', icon: '◇', description: 'Contemporary clarity. Awareness recognizing itself.'),
-  Tradition.contemporary: TraditionInfo(name: 'Contemporary', icon: '✦', description: 'Modern teachers. Ancient truth, fresh words.'),
-  Tradition.original: TraditionInfo(name: 'Original', icon: '∞', description: 'Written for now. This moment, this life.'),
+  Tradition.advaita: TraditionInfo(
+    name: 'Advaita Vedanta',
+    icon: 'ॐ',
+    description: 'The path of non-duality. You are already what you seek.',
+    lineIcon: PhosphorIconsLight.sun,
+  ),
+  Tradition.zen: TraditionInfo(
+    name: 'Zen Buddhism',
+    icon: '◯',
+    description: 'Direct pointing. No words, no concepts.',
+    lineIcon: PhosphorIconsLight.circle,
+  ),
+  Tradition.direct: TraditionInfo(
+    name: 'Direct Path',
+    icon: '◇',
+    description: 'Contemporary clarity. Awareness recognizing itself.',
+    lineIcon: PhosphorIconsLight.diamond,
+  ),
+  Tradition.contemporary: TraditionInfo(
+    name: 'Contemporary',
+    icon: '✦',
+    description: 'Modern teachers. Ancient truth, fresh words.',
+    lineIcon: PhosphorIconsLight.sparkle,
+  ),
+  Tradition.original: TraditionInfo(
+    name: 'Original',
+    icon: '∞',
+    description: 'Written for now. This moment, this life.',
+    lineIcon: PhosphorIconsLight.infinity,
+  ),
 };
