@@ -33,8 +33,18 @@ void main() {
         }
       }
       // Frost suppressed (opaque sheets): plain glass over the sheet surface.
-      surfaces['onSurface-top'] = Color.alphaBlend(glass.onSurfaceTop, colors.surface);
-      surfaces['onSurface-bottom'] = Color.alphaBlend(glass.onSurfaceBottom, colors.surface);
+      for (final (i, label) in const [(0, 'light'), (1, 'standard'), (2, 'heavy')]) {
+        final l = glass.onSurfaceLevels[i];
+        surfaces['onSurface-$label-top'] = Color.alphaBlend(glass.fill.withValues(alpha: l.top), colors.surface);
+        surfaces['onSurface-$label-bottom'] = Color.alphaBlend(glass.fill.withValues(alpha: l.bottom), colors.surface);
+      }
+      // Button labels are textPrimary: check that alone over both button fills.
+      for (final (label, l) in [('primary', glass.buttonPrimary), ('secondary', glass.buttonSecondary)]) {
+        final bg = Color.alphaBlend(glass.fill.withValues(alpha: l.top), colors.background);
+        test('button label on $label button is at least 4.5:1', () {
+          expect(contrast(colors.textPrimary, bg), greaterThanOrEqualTo(4.5), reason: '$name button-$label');
+        });
+      }
       final texts = <String, Color>{
         'textPrimary': colors.textPrimary,
         'textSecondary': colors.textSecondary,
