@@ -884,6 +884,21 @@ class TraditionAccentColors {
  * Naming follows t-shirt sizing (xs, sm, md, lg, xl, xxl)
  * with semantic aliases for common use cases.
  */
+/**
+ * Tint opacities for selectable chips. Selection reads as an accent-tinted fill plus a check mark instead of a drawn
+ * outline, so depth comes from the material and not from borders.
+ */
+class SelectionTint {
+  /** Resting chip fill: text primary at this opacity. */
+  static const double resting = 0.08;
+
+  /** Selected chip fill in dark themes: accent at this opacity. */
+  static const double selectedDark = 0.30;
+
+  /** Selected chip fill in light themes: accent at this opacity. */
+  static const double selectedLight = 0.18;
+}
+
 class AppSpacing {
   // -- Base spacing scale (8pt grid system) --
 
@@ -924,6 +939,15 @@ class AppSpacing {
 
   /** Bottom inset to clear the floating navigation bar (120.0). */
   static const double navBarOffset = 120.0;
+
+  /** Minimum hit size for any control (44.0, Apple HIG; Android's 48 dp comes from Material's tap target padding). */
+  static const double minTouchTarget = 44.0;
+
+  /** Capsule radius for chips and pill controls; half of [minTouchTarget] so a one-line chip is a true capsule. */
+  static const double radiusPill = minTouchTarget / 2;
+
+  /** Chip insets: horizontal [lg], vertical [sm], so a one-line chip lands on [minTouchTarget] with the root text clamp. */
+  static const EdgeInsets chip = EdgeInsets.symmetric(horizontal: lg, vertical: sm);
 
   // -- Border radius constants --
 
