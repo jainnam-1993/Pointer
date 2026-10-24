@@ -30,7 +30,7 @@ class MockDonationService extends DonationService {
   Stream<List<PurchaseDetails>> get purchaseUpdates => const Stream.empty();
 
   @override
-  Future<void> purchaseProduct(ProductDetails product) async {}
+  Future<bool> purchaseProduct(ProductDetails product) async => true;
 
   @override
   Future<void> completePurchase(PurchaseDetails purchase) async {}
