@@ -260,6 +260,7 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
         // One shared backdrop for every sheet blur (BackdropFilter.grouped).
         final media = MediaQuery.of(context);
         final contrast = resolveContrastLevel(inApp: highContrast, system: media.highContrast);
+        logContrastLevel(contrast);
         final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
