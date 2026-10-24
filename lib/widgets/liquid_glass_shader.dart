@@ -35,6 +35,19 @@ class LiquidLens {
   /** Direction toward the light in screen space (y down): the upper left. */
   final Offset lightDir;
 
+  /**
+   * Light theme: the edge is drawn with darker cues (main review of 2026-10-24), a [hairline] of black at this alpha and
+   * [hairlineWidth] px, the bevel multiply ([bevelDarken]), and a 1 px inner top [innerHighlight]. Dark keeps the
+   * additive rim.
+   */
+  final bool lightTheme;
+
+  final double hairline;
+
+  final double hairlineWidth;
+
+  final double innerHighlight;
+
   const LiquidLens({
     required this.radius,
     this.band = 5,
@@ -49,12 +62,16 @@ class LiquidLens {
     this.saturation = 1.18,
     this.bevelSaturation = 0.25,
     this.lightDir = const Offset(-0.6, -0.8),
+    this.lightTheme = false,
+    this.hairline = 0.10,
+    this.hairlineWidth = 0.75,
+    this.innerHighlight = 0.85,
   });
 }
 
 /**
  * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uHalf, uShape, uLight, uRimColor,
- * uBody. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
+ * uBody, uEdge. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
  * the phone). Kept pure so tests can pin the layout and the range.
  */
 List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
@@ -78,6 +95,10 @@ List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
     lens.bevelSaturation,
     lens.lightDir.dx,
     lens.lightDir.dy,
+    lens.lightTheme ? lens.hairline : 0,
+    lens.hairlineWidth / unit,
+    lens.lightTheme ? lens.innerHighlight : 0,
+    lens.lightTheme ? 1 : 0,
   ];
 }
 

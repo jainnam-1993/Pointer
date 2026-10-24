@@ -377,7 +377,9 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
             refraction: widget.minimized ? 3 : 4,
             rimLit: dark ? 0.75 : 0.95,
             rimFar: dark ? 0.28 : 0.45,
-            bevelDarken: dark ? 0.04 : 0.09,
+            bevelDarken: dark ? 0.04 : 0.14,
+            bevelSaturation: dark ? 0.25 : 0.45,
+            lightTheme: !dark,
             topInnerShadow: dark ? 0.10 : 0.06,
           );
           final filter = LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma);

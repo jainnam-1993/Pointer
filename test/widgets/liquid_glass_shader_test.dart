@@ -19,10 +19,17 @@ void main() {
     const lens = LiquidLens(radius: 32, band: 5, refraction: 4, rimWidth: 1.25);
     final u = liquidGlassUniforms(const Size(358, 64), lens);
     expect(kLiquidGlassFirstUniform, 2);
-    expect(u, hasLength(18));
+    expect(u, hasLength(22));
     expect(u[0], closeTo(358 / 2 / 64, 1e-9)); // uHalf.x
     expect(u[1], closeTo(0.5, 1e-9)); // uHalf.y
     expect(u.sublist(2, 6), [32 / 64, 5 / 64, 4 / 64, 1.25 / 64]); // uShape
+  });
+
+  test('light theme switches on the darker edge cues; dark leaves them off', () {
+    final dark = liquidGlassUniforms(const Size(72, 268), const LiquidLens(radius: 36));
+    final light = liquidGlassUniforms(const Size(72, 268), const LiquidLens(radius: 36, lightTheme: true));
+    expect(dark.sublist(18), [0, 0.75 / 72, 0, 0]);
+    expect(light.sublist(18), [0.10, 0.75 / 72, 0.85, 1]);
   });
 
   test('uniforms are independent of devicePixelRatio and resolution: the same shape gives the same numbers', () {
@@ -68,6 +75,7 @@ void main() {
       'uniform vec4 uLight',
       'uniform vec4 uRimColor',
       'uniform vec4 uBody',
+      'uniform vec4 uEdge',
       'uniform sampler2D uTexture',
     ];
     var at = -1;

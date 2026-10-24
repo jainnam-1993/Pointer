@@ -16,6 +16,7 @@ uniform vec4 uShape;    // 4-7: corner radius, bevel band, refraction, rim width
 uniform vec4 uLight;    // 8-11: rim alpha on the lit (top-left) edge, rim alpha on the far edge, fresnel, top inner shadow
 uniform vec4 uRimColor; // 12-15: rim rgb, bevel darkening
 uniform vec4 uBody;     // 16-19: body saturation, bevel saturation, light direction x, light direction y
+uniform vec4 uEdge;     // 20-23: hairline darkness, hairline width (units), inner top highlight, light-theme mode (0 or 1)
 
 uniform sampler2D uTexture;
 
@@ -80,7 +81,19 @@ void main() {
   float under = smoothstep(rimW, rimW * 2.0, depth) * (1.0 - smoothstep(rimW * 2.0, band * 1.6, depth));
   float inner = uLight.w * under * max(-n.y, 0.0);
 
-  rgb = mix(rgb, uRimColor.rgb, clamp(rim + fres, 0.0, 1.0));
+  float light = step(0.5, uEdge.w);
+  // Dark theme: the bright specular rim is the main cue (additive light on a dark field).
+  rgb = mix(rgb, uRimColor.rgb, (1.0 - light) * clamp(rim + fres, 0.0, 1.0));
   rgb *= 1.0 - inner;
+
+  // Light theme: a light field leaves no headroom for an additive rim, so the edge is drawn with darker cues: the
+  // bevel multiplies (darkens) the backdrop above, a thin dark hairline closes the edge, and the specular survives only
+  // as a 1 px inner line along the top, where the darkened bevel gives it room to show.
+  float hairW = max(uEdge.y, 0.002);
+  float hair = 1.0 - smoothstep(hairW * 0.5, hairW, depth);
+  float topLine = smoothstep(hairW, hairW + rimW * 0.5, depth) * (1.0 - smoothstep(hairW + rimW * 0.5, hairW + rimW, depth));
+  float topFacing = smoothstep(0.1, 0.9, -n.y);
+  rgb *= 1.0 - light * uEdge.x * hair;
+  rgb = mix(rgb, vec3(1.0), light * uEdge.z * topLine * topFacing);
   fragColor = vec4(rgb * col.a, col.a);
 }
