@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/app_settings.dart';
 export '../models/app_settings.dart';
@@ -232,11 +233,28 @@ class StorageService {
   /** Persist the user's preferred [Tradition] names. */
   Future<void> setPreferredTraditions(List<String> traditions) => _prefs.setString(StorageKeys.preferredTraditions, jsonEncode(traditions));
 
-  /** Current [AppSettings], returning defaults if nothing is persisted. */
+  /**
+   * Current [AppSettings], returning defaults if nothing is persisted.
+   *
+   * A stored value that is not a JSON object (an interrupted write, an older
+   * schema, a manual edit) also yields defaults instead of throwing. The bad
+   * value stays in place until the next [updateSettings] overwrites it.
+   */
   AppSettings get settings {
     final stored = _prefs.getString(StorageKeys.settings);
     if (stored == null) return const AppSettings();
-    return AppSettings.fromJson(jsonDecode(stored));
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(stored);
+    } on FormatException catch (error) {
+      debugPrint('StorageService: saved settings are not valid JSON ($error); using defaults');
+      return const AppSettings();
+    }
+    if (decoded is! Map<String, dynamic>) {
+      debugPrint('StorageService: saved settings are a ${decoded.runtimeType}, not a JSON object; using defaults');
+      return const AppSettings();
+    }
+    return AppSettings.fromJson(decoded);
   }
 
   /** Persist updated [AppSettings] as JSON. */
