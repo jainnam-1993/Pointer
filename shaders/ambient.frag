@@ -11,7 +11,18 @@
 #version 460 core
 #include <flutter/runtime_effect.glsl>
 
-precision mediump float;
+// fp16 safety is load-bearing. Mobile GPUs can run this shader at half
+// precision (the vivo V2330's Adreno 750 under Impeller on Vulkan does, even
+// with highp declared), and fp16's largest finite value is 65504. hash() used
+// to scale raw fragment coordinates by up to 456.21, so it overflowed to
+// inf/NaN past x = 65504 / 123.34 = 531 and y = 65504 / 456.21 = 144 logical
+// px, and everything beyond painted black. hash() now wraps its input to
+// (-128, 128) first (identity for small lattice ids, so the motes and aurora
+// are unchanged), so every intermediate stays below 58,400 at any precision;
+// that also keeps the time-driven noise lattice finite on long sessions.
+// Desktop GPUs and the emulator run in fp32, which is why only the phone
+// showed it. test/widgets/ambient_shader_precision_test.dart guards this.
+precision highp float;
 
 uniform vec2 uSize;     // 0-1   paint size (logical px)
 uniform vec2 uOrigin;   // 2-3   global offset of this paint (logical px)
@@ -30,7 +41,10 @@ uniform vec3 uAccC;     // 26-28
 
 out vec4 fragColor;
 
+const float kHashWrap = 128.0;
+
 float hash(vec2 p) {
+  p -= kHashWrap * trunc(p / kHashWrap);
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
   return fract(p.x * p.y);
