@@ -11,7 +11,6 @@
 library;
 
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -21,6 +20,7 @@ import '../theme/app_theme.dart';
 import '../utils/haptics.dart';
 import '../utils/motion.dart';
 import 'glass_card.dart' show GradientBoxBorder;
+import 'liquid_glass_shader.dart';
 
 /** One tab: inactive icon, active icon (Regular weight) and label. */
 typedef LiquidTab = (IconData icon, IconData activeIcon, String label);
@@ -225,6 +225,10 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
   void initState() {
     super.initState();
     ReduceTransparency.instance.addListener(_onReduceTransparency);
+    LiquidGlassShader.ensureLoaded();
+    LiquidGlassShader.loaded.then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   void _onReduceTransparency() => setState(() {});
@@ -336,15 +340,35 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
       borderRadius: shape,
       gradient: LinearGradient(colors: look.tint, begin: Alignment.topCenter, end: Alignment.bottomCenter),
       border: GradientBoxBorder(
-        gradient: LinearGradient(colors: look.rim, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(
+          colors: LiquidGlassShader.active && !look.opaque ? const [Color(0x00000000), Color(0x00000000)] : look.rim,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         width: look.rimWidth,
       ),
     );
     Widget glass = DecoratedBox(decoration: tint, child: body);
     if (!look.opaque) {
-      glass = BackdropFilter.grouped(
-        filter: ImageFilter.blur(sigmaX: look.sigma, sigmaY: look.sigma),
-        child: glass,
+      final inner = glass;
+      glass = LayoutBuilder(
+        builder: (context, c) {
+          final box = horizontal
+              ? Size(c.maxWidth, c.maxHeight)
+              : Size(LiquidGlass.railWidth, widget.tabs.length * LiquidGlass.railCellHeight + 2 * LiquidGlassNav.padMain);
+          final lens = LiquidLens(
+            radius: radius,
+            band: widget.minimized ? 7 : 9,
+            refraction: Theme.of(context).brightness == Brightness.dark ? 6 : 5,
+            rimFacing: look.rim.first.a,
+            rimOpposite: look.rim.last.a,
+            rimColor: look.rim.first.withValues(alpha: 1),
+          );
+          return BackdropFilter.grouped(
+            filter: LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma),
+            child: inner,
+          );
+        },
       );
     }
     return DecoratedBox(
