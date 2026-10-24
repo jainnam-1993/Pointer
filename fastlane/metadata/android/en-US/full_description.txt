@@ -9,9 +9,10 @@ WHAT'S INSIDE
 • Guided self-inquiry sessions that unfold one question at a time
 • Favorites and recent history
 • Gentle reminders at the times you choose
-• Home-screen widget that shows and changes pointings without opening the app
+• Home-screen widget that follows your wallpaper's colors and changes pointings without opening the app; add it from Settings in one tap
 • Share a pointing as a designed card or as text, or export it to your journal
-• Calm design with light, dark, high-contrast, and true-black themes, large text support, and screen-reader labels
+• Calm design with a Liquid Glass tab bar, light, dark, high-contrast, and true-black themes, large text support, and screen-reader labels
+• Made for phones, tablets, and foldables, with a side rail, two-pane screens, and keyboard shortcuts
 
 PRIVATE BY DESIGN
 • No account, no sign-up
