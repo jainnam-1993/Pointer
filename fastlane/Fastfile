@@ -50,6 +50,16 @@ end
 # iOS lanes. Every lane here uploads to App Store Connect, so each needs the
 # user's explicit approval first. None of them submits for App Review.
 platform :ios do
+  # Team API key on the Studio; the issuer ID (not secret) sits beside it.
+  before_all do
+    asc = File.expand_path('~/.appstoreconnect')
+    app_store_connect_api_key(
+      key_id: 'J72393HTF4',
+      issuer_id: File.read(File.join(asc, 'J72393HTF4.issuer')).strip,
+      key_filepath: File.join(asc, 'private_keys', 'AuthKey_J72393HTF4.p8')
+    )
+  end
+
   desc "Upload build/ios/ipa/*.ipa to TestFlight (no external testers, no review)"
   lane :beta do
     upload_to_testflight(
