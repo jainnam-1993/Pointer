@@ -38,7 +38,11 @@ class _PressScaleState extends State<PressScale> {
   Widget build(BuildContext context) {
     final enabled = widget.onTap != null;
     final reduce = Motion.reduce(context);
+    // container: without it the button annotation merges into the nearest
+    // ancestor node, so inside a card (the notification rationale dialog) the
+    // button vanished into the dialog text and VoiceOver could not focus it.
     return Semantics(
+      container: true,
       button: enabled,
       enabled: enabled,
       label: widget.semanticLabel,

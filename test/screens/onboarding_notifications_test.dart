@@ -66,6 +66,19 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('rationale Continue is its own tappable button node', (tester) async {
+    when(() => notifications.requestPermissions()).thenAnswer((_) async => true);
+    final handle = tester.ensureSemantics();
+    await reachLastPageAndTapEnable(tester);
+
+    final continueText = find.descendant(of: find.byType(Dialog), matching: find.text('Continue'));
+    expect(
+      tester.getSemantics(continueText),
+      containsSemantics(label: 'Continue', isButton: true, hasTapAction: true),
+    );
+    handle.dispose();
+  });
+
   testWidgets('rationale, then granting permission enables notifications', (tester) async {
     when(() => notifications.requestPermissions()).thenAnswer((_) async => true);
     await reachLastPageAndTapEnable(tester);
