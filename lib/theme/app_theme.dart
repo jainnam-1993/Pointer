@@ -952,6 +952,9 @@ class LiquidGlass {
 
   /** Specular rim width. */
   static const double rimWidth = 1.25;
+
+  /** How much the selection pill magnifies the icon and label under it. */
+  static const double pillMagnify = 1.08;
 }
 
 class SelectionTint {

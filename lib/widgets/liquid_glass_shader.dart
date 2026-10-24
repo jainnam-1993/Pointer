@@ -12,54 +12,74 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-/** Optical values for one glass shape (CalmGlassBrief 3.3, layers 4, 6, 7 and 8). */
+/**
+ * Optical values for one glass shape, in logical px where a length is meant (CalmGlassBrief 3.3 and the main review of
+ * 2026-10-24): a 1.25 px specular rim lit from the upper left, a 5 px bevel that bends and slightly darkens the
+ * backdrop, a faint far-edge rim, a top inner shadow, and a saturation lift (vibrancy).
+ */
 @immutable
 class LiquidLens {
   final double radius;
   final double band;
   final double refraction;
-  final double lightAngle;
-  final double rimFacing;
-  final double rimOpposite;
-  final double fresnel;
-  final double innerShadow;
-  final Color rimColor;
   final double rimWidth;
+  final double rimLit;
+  final double rimFar;
+  final double fresnel;
+  final double topInnerShadow;
+  final Color rimColor;
+  final double bevelDarken;
+  final double saturation;
+  final double bevelSaturation;
+
+  /** Direction toward the light in screen space (y down): the upper left. */
+  final Offset lightDir;
 
   const LiquidLens({
     required this.radius,
-    this.band = 9,
-    this.refraction = 6,
-    this.lightAngle = -2.0944, // -120 degrees: light from the upper left
-    this.rimFacing = 0.55,
-    this.rimOpposite = 0.22,
-    this.fresnel = 0.14,
-    this.innerShadow = 0.10,
-    this.rimColor = const Color(0xFFFFF8F0),
+    this.band = 5,
+    this.refraction = 4,
     this.rimWidth = 1.25,
+    this.rimLit = 0.9,
+    this.rimFar = 0.35,
+    this.fresnel = 0.10,
+    this.topInnerShadow = 0.06,
+    this.rimColor = const Color(0xFFFFFFFF),
+    this.bevelDarken = 0.08,
+    this.saturation = 1.18,
+    this.bevelSaturation = 0.25,
+    this.lightDir = const Offset(-0.6, -0.8),
   });
 }
 
 /**
- * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uBox, uShape, uLight, uRimColor.
- * Kept pure so a unit test can pin the layout to the shader.
+ * The float uniforms after the engine's `uSize` (indices 0 and 1), in shader order: uHalf, uShape, uLight, uRimColor,
+ * uBody. Every length is divided by the box's shorter side, so the shader only sees values of a few units (fp16-safe on
+ * the phone). Kept pure so tests can pin the layout and the range.
  */
-List<double> liquidGlassUniforms(Size box, LiquidLens lens) => [
-  box.width,
-  box.height,
-  lens.radius,
-  lens.band,
-  lens.refraction,
-  lens.lightAngle,
-  lens.rimFacing,
-  lens.rimOpposite,
-  lens.fresnel,
-  lens.innerShadow,
-  lens.rimColor.r,
-  lens.rimColor.g,
-  lens.rimColor.b,
-  lens.rimWidth,
-];
+List<double> liquidGlassUniforms(Size box, LiquidLens lens) {
+  final unit = box.shortestSide <= 0 ? 1.0 : box.shortestSide;
+  return [
+    box.width / 2 / unit,
+    box.height / 2 / unit,
+    lens.radius / unit,
+    lens.band / unit,
+    lens.refraction / unit,
+    lens.rimWidth / unit,
+    lens.rimLit,
+    lens.rimFar,
+    lens.fresnel,
+    lens.topInnerShadow,
+    lens.rimColor.r,
+    lens.rimColor.g,
+    lens.rimColor.b,
+    lens.bevelDarken,
+    lens.saturation,
+    lens.bevelSaturation,
+    lens.lightDir.dx,
+    lens.lightDir.dy,
+  ];
+}
 
 /** First float index the app sets; 0 and 1 belong to the engine. */
 const int kLiquidGlassFirstUniform = 2;

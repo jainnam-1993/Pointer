@@ -114,7 +114,7 @@ class LiquidGlassLook {
     }
     if (isDark) {
       return LiquidGlassLook(
-        tint: [Colors.white.withValues(alpha: 0.15), Colors.white.withValues(alpha: 0.12)],
+        tint: [Colors.white.withValues(alpha: 0.10), Colors.white.withValues(alpha: 0.07)],
         rim: [warmWhite.withValues(alpha: 0.55), Colors.white.withValues(alpha: 0.22)],
         shadow: Colors.black.withValues(alpha: 0.22),
         shadowBlur: 28,
@@ -129,13 +129,13 @@ class LiquidGlassLook {
     }
     return LiquidGlassLook(
       // Mostly clear so the field shows through; the lens, rim and shadow carry the glass (fill 0.08 to 0.18).
-      tint: [Colors.white.withValues(alpha: 0.20), Colors.white.withValues(alpha: 0.14)],
+      tint: [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.12)],
       rim: [Colors.white.withValues(alpha: 0.85), InkPalette.ink.withValues(alpha: 0.10)],
-      shadow: InkPalette.ink.withValues(alpha: 0.08),
-      shadowBlur: 24,
-      shadowY: 6,
+      shadow: Colors.black.withValues(alpha: 0.10),
+      shadowBlur: 8,
+      shadowY: 3,
       sigma: LiquidGlass.blurSigma,
-      pillFill: Colors.white.withValues(alpha: 0.70),
+      pillFill: Colors.white.withValues(alpha: 0.45),
       pillRim: Colors.white.withValues(alpha: 0.90),
       pillShadow: InkPalette.ink.withValues(alpha: 0.06),
       glow: Colors.white.withValues(alpha: 0.18),
@@ -290,7 +290,20 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
                           decoration: BoxDecoration(
                             color: look.pillFill,
                             borderRadius: BorderRadius.circular(pr),
-                            border: Border.all(color: look.pillRim, width: 0.75),
+                            // Its own specular rim, lit from the upper left like the capsule, so the pill reads as a lens.
+                            border: GradientBoxBorder(
+                              gradient: LinearGradient(
+                                colors: [
+                                  look.pillRim,
+                                  look.pillRim.withValues(alpha: look.pillRim.a * 0.25),
+                                  look.pillRim.withValues(alpha: look.pillRim.a * 0.6),
+                                ],
+                                stops: const [0, 0.6, 1],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              width: 1,
+                            ),
                             boxShadow: look.pillShadow == null
                                 ? null
                                 : [BoxShadow(color: look.pillShadow!, blurRadius: 8, offset: const Offset(0, 2))],
@@ -357,13 +370,15 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
           final box = horizontal
               ? Size(c.maxWidth, c.maxHeight)
               : Size(LiquidGlass.railWidth, widget.tabs.length * LiquidGlass.railCellHeight + 2 * LiquidGlassNav.padMain);
+          final dark = Theme.of(context).brightness == Brightness.dark;
           final lens = LiquidLens(
             radius: radius,
-            band: widget.minimized ? 7 : 9,
-            refraction: Theme.of(context).brightness == Brightness.dark ? 6 : 5,
-            rimFacing: look.rim.first.a,
-            rimOpposite: look.rim.last.a,
-            rimColor: look.rim.first.withValues(alpha: 1),
+            band: widget.minimized ? 4 : 5,
+            refraction: widget.minimized ? 3 : 4,
+            rimLit: dark ? 0.75 : 0.95,
+            rimFar: dark ? 0.28 : 0.45,
+            bevelDarken: dark ? 0.04 : 0.09,
+            topInnerShadow: dark ? 0.10 : 0.06,
           );
           final filter = LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma);
           // The lens needs its own backdrop read. A grouped backdrop hands the shader the shared full-screen texture
@@ -435,26 +450,32 @@ class _LiquidItem extends StatelessWidget {
         onTap: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: AppSpacing.minTouchTarget, minHeight: AppSpacing.minTouchTarget),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(isActive ? tab.$2 : tab.$1, color: color, size: 24),
-              AnimatedSize(
-                duration: reduce ? Duration.zero : Motion.quick,
-                curve: Motion.inOut,
-                child: showLabel
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(
-                          tab.$3,
-                          maxLines: 1,
-                          style: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.caption, fontWeight: FontWeight.w500, color: color),
-                        ),
-                      )
-                    : const SizedBox(width: 0),
-              ),
-            ],
+          child: AnimatedScale(
+            // The pill magnifies what sits under it, like a lens.
+            scale: isActive ? LiquidGlass.pillMagnify : 1.0,
+            duration: reduce ? Duration.zero : Motion.quick,
+            curve: Motion.inOut,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(isActive ? tab.$2 : tab.$1, color: color, size: 24),
+                AnimatedSize(
+                  duration: reduce ? Duration.zero : Motion.quick,
+                  curve: Motion.inOut,
+                  child: showLabel
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            tab.$3,
+                            maxLines: 1,
+                            style: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.caption, fontWeight: FontWeight.w500, color: color),
+                          ),
+                        )
+                      : const SizedBox(width: 0),
+                ),
+              ],
+            ),
           ),
         ),
       ),

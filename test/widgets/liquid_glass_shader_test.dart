@@ -1,43 +1,78 @@
 import 'dart:io';
-
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/widgets/liquid_glass_shader.dart';
 
-/** Pins the Dart uniform layout to shaders/liquid_glass.frag, and the frosted fallback. */
+/**
+ * Pins the Dart uniform layout to shaders/liquid_glass.frag, the frosted fallback, and the fp16 range.
+ *
+ * The phone (Adreno 750, Impeller Vulkan) runs shaders at half precision even when highp is declared, and emulators
+ * run fp32, so precision bugs only show here: every uniform and every geometric intermediate must stay small.
+ */
 void main() {
-  test('uniforms follow the shader order after the engine size, in logical px', () {
-    const lens = LiquidLens(radius: 32, band: 9, refraction: 6, lightAngle: -2, rimFacing: 0.55, rimOpposite: 0.22, rimColor: Color(0xFFFFFFFF));
+  final code = File('shaders/liquid_glass.frag').readAsStringSync().split('\n').where((l) => !l.trimLeft().startsWith('//')).join('\n');
+
+  test('uniforms follow the shader order after the engine size, in units of the shorter side', () {
+    const lens = LiquidLens(radius: 32, band: 5, refraction: 4, rimWidth: 1.25);
     final u = liquidGlassUniforms(const Size(358, 64), lens);
     expect(kLiquidGlassFirstUniform, 2);
-    expect(u, hasLength(14));
-    expect(u.sublist(0, 2), [358, 64]); // uBox
-    expect(u.sublist(2, 6), [32, 9, 6, -2]); // uShape
-    expect(u.sublist(6, 10), [0.55, 0.22, 0.14, 0.10]); // uLight
-    expect(u.sublist(10, 14), [1, 1, 1, 1.25]); // uRimColor
+    expect(u, hasLength(18));
+    expect(u[0], closeTo(358 / 2 / 64, 1e-9)); // uHalf.x
+    expect(u[1], closeTo(0.5, 1e-9)); // uHalf.y
+    expect(u.sublist(2, 6), [32 / 64, 5 / 64, 4 / 64, 1.25 / 64]); // uShape
   });
 
-  test('uniforms do not scale with devicePixelRatio: the box is logical', () {
+  test('uniforms are independent of devicePixelRatio and resolution: the same shape gives the same numbers', () {
     final a = liquidGlassUniforms(const Size(358, 64), const LiquidLens(radius: 32));
-    expect(a.first, 358);
+    final b = liquidGlassUniforms(const Size(716, 128), const LiquidLens(radius: 64, band: 10, refraction: 8, rimWidth: 2.5));
+    for (var i = 0; i < 6; i++) {
+      expect(a[i], closeTo(b[i], 1e-9));
+    }
   });
 
-  test('the shader declares the same uniform blocks, highp, and is registered', () {
-    final src = File('shaders/liquid_glass.frag').readAsStringSync();
-    expect(src, contains('precision highp float;'));
+  group('fp16 range', () {
+    const fp16Precise = 32.0; // below this, fp16 resolves at least 1/64
+    for (final box in const [Size(358, 64), Size(440, 64), Size(204, 48), Size(72, 268), Size(1200, 64)]) {
+      test('all uniforms stay small for a ${box.width.toInt()} x ${box.height.toInt()} glass', () {
+        final u = liquidGlassUniforms(box, LiquidLens(radius: box.shortestSide / 2));
+        for (final v in u) {
+          expect(v.abs(), lessThan(fp16Precise));
+        }
+        // The largest geometric intermediate is length(p) at a corner: |uHalf| plus the refraction offset.
+        final corner = math.sqrt(u[0] * u[0] + u[1] * u[1]) + u[4];
+        expect(corner, lessThan(fp16Precise));
+      });
+    }
+
+    test('FlutterFragCoord is only ever divided by uSize, never scaled', () {
+      final uses = RegExp(r'FlutterFragCoord\(\)[^;]*;').allMatches(code).map((m) => m.group(0)!).toList();
+      expect(uses, hasLength(1));
+      expect(uses.single.replaceAll(' ', ''), 'FlutterFragCoord().xy/uSize;');
+    });
+
+    test('no raw time or pixel-sized uniform', () {
+      expect(code, isNot(contains('uTime')));
+      expect(code, isNot(contains('uBox')));
+    });
+  });
+
+  test('the shader declares the uniform blocks in Dart order, highp, and is registered', () {
+    expect(code, contains('precision highp float;'));
     final order = [
       'uniform vec2 uSize',
-      'uniform vec2 uBox',
+      'uniform vec2 uHalf',
       'uniform vec4 uShape',
       'uniform vec4 uLight',
       'uniform vec4 uRimColor',
+      'uniform vec4 uBody',
       'uniform sampler2D uTexture',
     ];
     var at = -1;
     for (final decl in order) {
-      final i = src.indexOf(decl);
+      final i = code.indexOf(decl);
       expect(i, greaterThan(at), reason: decl);
       at = i;
     }
