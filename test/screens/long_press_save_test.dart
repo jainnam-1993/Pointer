@@ -34,6 +34,7 @@ void main() {
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
+    when(() => mockPrefs.reload()).thenAnswer((_) async {});
     hapticCalls = [];
 
     // Setup default mock returns
@@ -168,7 +169,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
 
     testWidgets('long press does not add duplicate favorites', (tester) async {
@@ -234,7 +234,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
   });
 

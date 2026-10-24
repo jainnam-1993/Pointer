@@ -170,7 +170,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     // instead of a stale snapshot that an in-flight write has not applied yet.
     state = newSettings;
     // Serialize writes so they land in call order; the last write always wins.
-    final write = _pendingWrite.catchError((Object _) {}).then((_) => _storage.updateSettings(state));
+    final write = _pendingWrite.catchError((Object _) {}).then((_) => _storage.updateSettings(newSettings));
     _pendingWrite = write;
     return write;
   }
