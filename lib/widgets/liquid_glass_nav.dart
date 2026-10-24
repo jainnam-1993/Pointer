@@ -16,6 +16,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
+import '../services/reduce_transparency.dart';
 import '../theme/app_theme.dart';
 import '../utils/haptics.dart';
 import '../utils/motion.dart';
@@ -37,8 +38,10 @@ class LiquidGlassLook {
   final Color? pillShadow;
   final Color glow;
 
-  /** High contrast (opaque material): no blur, a solid fill and a clear border. */
+  /** High contrast or Reduce Transparency: no blur, a solid fill. */
   final bool opaque;
+
+  final double rimWidth;
 
   const LiquidGlassLook({
     required this.tint,
@@ -52,6 +55,7 @@ class LiquidGlassLook {
     required this.pillShadow,
     required this.glow,
     required this.opaque,
+    this.rimWidth = LiquidGlass.rimWidth,
   });
 
   factory LiquidGlassLook.of(BuildContext context) {
@@ -73,6 +77,24 @@ class LiquidGlassLook {
         pillShadow: null,
         glow: Colors.transparent,
         opaque: true,
+        rimWidth: 1.5,
+      );
+    }
+    if (ReduceTransparency.of(context)) {
+      // Reduce Transparency (CalmGlassBrief 3.3): no blur, no lens; a frosted, nearly opaque surface and a quiet rim.
+      return LiquidGlassLook(
+        tint: [colors.surface.withValues(alpha: 0.94), colors.surface.withValues(alpha: 0.94)],
+        rim: [colors.textPrimary.withValues(alpha: 0.20), colors.textPrimary.withValues(alpha: 0.20)],
+        shadow: isDark ? null : InkPalette.ink.withValues(alpha: 0.08),
+        shadowBlur: 24,
+        shadowY: 6,
+        sigma: 0,
+        pillFill: colors.textPrimary.withValues(alpha: isDark ? 0.12 : 0.08),
+        pillRim: colors.textPrimary.withValues(alpha: 0.20),
+        pillShadow: null,
+        glow: Colors.transparent,
+        opaque: true,
+        rimWidth: 1,
       );
     }
     if (isOled) {
@@ -177,6 +199,7 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
 
   @override
   void dispose() {
+    ReduceTransparency.instance.removeListener(_onReduceTransparency);
     _pill.dispose();
     _glow.dispose();
     super.dispose();
@@ -197,6 +220,14 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
     if (index != widget.currentIndex) Haptics.selection();
     widget.onTap(index);
   }
+
+  @override
+  void initState() {
+    super.initState();
+    ReduceTransparency.instance.addListener(_onReduceTransparency);
+  }
+
+  void _onReduceTransparency() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +337,7 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
       gradient: LinearGradient(colors: look.tint, begin: Alignment.topCenter, end: Alignment.bottomCenter),
       border: GradientBoxBorder(
         gradient: LinearGradient(colors: look.rim, begin: Alignment.topLeft, end: Alignment.bottomRight),
-        width: look.opaque ? 1.5 : LiquidGlass.rimWidth,
+        width: look.rimWidth,
       ),
     );
     Widget glass = DecoratedBox(decoration: tint, child: body);

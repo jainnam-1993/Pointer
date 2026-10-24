@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/services/reduce_transparency.dart';
 import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/liquid_glass_nav.dart';
@@ -15,12 +16,12 @@ void main() {
     (AppIcons.settings, AppIcons.settingsActive, 'Settings'),
   ];
 
-  Future<void> pumpBar(WidgetTester tester, int index, {bool reduceMotion = false, bool minimized = false}) {
+  Future<void> pumpBar(WidgetTester tester, int index, {bool reduceMotion = false, bool minimized = false, bool highContrast = false}) {
     return tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.dark,
         home: MediaQuery(
-          data: MediaQueryData(size: const Size(390, 844), disableAnimations: reduceMotion),
+          data: MediaQueryData(size: const Size(390, 844), disableAnimations: reduceMotion, highContrast: highContrast),
           child: Scaffold(
             body: BackdropGroup(
               child: Align(
@@ -104,5 +105,18 @@ void main() {
       expect(size.width, greaterThanOrEqualTo(AppSpacing.minTouchTarget), reason: label);
       expect(size.height, greaterThanOrEqualTo(AppSpacing.minTouchTarget), reason: label);
     }
+  });
+
+  testWidgets('Reduce Transparency drops the live blur and keeps the pill', (tester) async {
+    ReduceTransparency.instance.debugSet(true);
+    addTearDown(() => ReduceTransparency.instance.debugSet(false));
+    await pumpBar(tester, 1);
+    expect(find.byType(BackdropFilter), findsNothing);
+    expect(find.byKey(const ValueKey('liquid-pill')), findsOneWidget);
+  });
+
+  testWidgets('Android fallback: high contrast also drops the live blur', (tester) async {
+    await pumpBar(tester, 1, highContrast: true);
+    expect(find.byType(BackdropFilter), findsNothing);
   });
 }

@@ -48,6 +48,24 @@ import flutter_local_notifications
       settingsChannel.invokeMethod("lowPowerModeChanged", arguments: ProcessInfo.processInfo.isLowPowerModeEnabled)
     }
 
+    // Reduce Transparency: the tab bar and rail drop their glass for a frosted, opaque fill.
+    let accessibilityChannel = FlutterMethodChannel(
+      name: "com.dailypointer/accessibility",
+      binaryMessenger: controller.binaryMessenger
+    )
+    accessibilityChannel.setMethodCallHandler { (call, result) in
+      if call.method == "isReduceTransparency" {
+        result(UIAccessibility.isReduceTransparencyEnabled)
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    }
+    NotificationCenter.default.addObserver(
+      forName: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil, queue: .main
+    ) { _ in
+      accessibilityChannel.invokeMethod("reduceTransparencyChanged", arguments: UIAccessibility.isReduceTransparencyEnabled)
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
