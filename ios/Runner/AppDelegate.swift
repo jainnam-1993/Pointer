@@ -32,9 +32,8 @@ import flutter_local_notifications
 
     GeneratedPluginRegistrant.register(with: self)
 
-    // Enable background fetch for WorkManager periodic notifications
-    // WorkManager's Flutter plugin automatically registers BGTaskScheduler handlers
-    UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+    // No background modes on iOS: reminders are local notifications scheduled
+    // by flutter_local_notifications; WorkManager runs on Android only.
 
     // MethodChannel for opening app notification settings
     let controller = window?.rootViewController as! FlutterViewController
