@@ -69,18 +69,10 @@ struct Provider: TimelineProvider {
         var entries: [PointingEntry] = []
         let currentDate = Date()
 
-        // Generate 12 entries (6 hours worth at 30-min intervals)
-        // Starting from the user-selected index
-        for i in 0..<12 {
-            let entryDate = Calendar.current.date(
-                byAdding: .minute,
-                value: i * rotationIntervalMinutes,
-                to: currentDate
-            ) ?? currentDate.addingTimeInterval(Double(i * rotationIntervalMinutes * 60))
-
-            // Start from current index and advance
-            let index = (normalizedIndex + i) % allPointings.count
-            let pointing = allPointings[index]
+        // Twelve entries (six hours at 30-minute slots) from the user-selected index; see PointerSchedule.
+        for slot in PointerSchedule.slots(start: currentDate, currentIndex: normalizedIndex, total: allPointings.count, intervalMinutes: rotationIntervalMinutes) {
+            let entryDate = slot.date
+            let pointing = allPointings[slot.index]
             let pointingId = pointing["id"] as? String
 
             let data = PointingData(
@@ -227,7 +219,7 @@ private struct WidgetEnvironmentReader16<Content: View>: View {
 
 /// Reads the rendering mode where the OS has it (iOS 16+) and the background state (iOS 17+).
 struct WidgetEnvironmentReader<Content: View>: View {
-    let content: (WidgetEnvironment) -> Content
+    @ViewBuilder let content: (WidgetEnvironment) -> Content
 
     var body: some View {
         if #available(iOS 17.0, *) {
@@ -399,6 +391,7 @@ struct PointerWidgetEntryView: View {
                         .font(.footnote)
                         .foregroundStyle(palette.secondary)
                         .lineLimit(1)
+                        .pointerAccentable()
                         .accessibilityHidden(true)
                 }
                 Spacer(minLength: 0)
@@ -427,6 +420,7 @@ struct PointerWidgetEntryView: View {
                         .font(.subheadline)
                         .foregroundStyle(palette.secondary)
                         .lineLimit(1)
+                        .pointerAccentable()
                 }
                 Spacer(minLength: 0)
             }
@@ -540,8 +534,17 @@ struct WidgetCardBackground: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
+        // Tinted, clear and accented modes: draw nothing, so only the system glass shows.
+        WidgetEnvironmentReader { env in
+            if env.fullColor { card }
+        }
+    }
+
+    /// Full colour: the palette gradient, a soft violet light, a 1 pt inner top highlight
+    /// (white 0.25 fading out over the top 40%) and a static 2% grain.
+    private var card: some View {
         let dark = colorScheme == .dark
-        ZStack {
+        return ZStack {
             LinearGradient(
                 colors: dark ? [Color(hex: "242229"), Color(hex: "1C1B1F")] : [Color(hex: "FBFAF7"), Color(hex: "F1EEE8")],
                 startPoint: .top,
@@ -553,6 +556,26 @@ struct WidgetCardBackground: View {
                 startRadius: 0,
                 endRadius: 260
             )
+            LinearGradient(colors: [.white.opacity(0.25), .clear], startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.4))
+                .mask(ContainerRelativeShape().strokeBorder(lineWidth: 1))
+            WidgetGrain().opacity(0.02)
+        }
+    }
+}
+
+/// Static grain: a fixed pseudo-random dot field, the same on every render (no animation).
+struct WidgetGrain: View {
+    var body: some View {
+        Canvas { context, size in
+            var seed: UInt64 = 0x9E3779B97F4A7C15
+            let count = Int(size.width * size.height / 6)
+            for _ in 0..<count {
+                seed = seed &* 6364136223846793005 &+ 1442695040888963407
+                let x = CGFloat(seed >> 40 & 0xFFFF) / 65535 * size.width
+                let y = CGFloat(seed >> 20 & 0xFFFF) / 65535 * size.height
+                let light = (seed >> 8) & 1 == 0
+                context.fill(Path(CGRect(x: x, y: y, width: 1, height: 1)), with: .color(light ? .white : .black))
+            }
         }
     }
 }
