@@ -50,12 +50,7 @@ void main() {
 
       await pumpForGolden(
         tester,
-        createGoldenTestApp(
-          child: const HomeScreen(),
-          prefs: prefs,
-          initialPointing: goldenTestPointing,
-          size: GoldenDevices.iPhoneSE,
-        ),
+        createGoldenTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: goldenTestPointing, size: GoldenDevices.iPhoneSE),
         size: GoldenDevices.iPhoneSE,
       );
 

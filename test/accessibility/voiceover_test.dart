@@ -103,8 +103,9 @@ void main() {
         ),
       );
 
-      // Verify InkWell exists (GlassButton uses InkWell internally)
-      expect(find.byType(InkWell), findsOneWidget);
+      // GlassButton exposes a button node (PressScale), with no ink ripple on glass.
+      expect(find.byType(InkWell), findsNothing);
+      expect(tester.getSemantics(find.byType(GlassButton)), containsSemantics(isButton: true));
     });
 
     testWidgets('All traditions have semantic labels', (tester) async {
@@ -252,7 +253,7 @@ void main() {
 
       // GlassButton should render with InkWell for tap handling
       expect(find.byType(GlassButton), findsOneWidget);
-      expect(find.byType(InkWell), findsOneWidget);
+      expect(find.byType(InkWell), findsNothing); // press-scale, no ripple on glass
 
       // Should display the label text
       expect(find.text('Press me'), findsOneWidget);

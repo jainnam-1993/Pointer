@@ -8,7 +8,6 @@ library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/pointings.dart';
 import '../../data/teaching.dart';
@@ -17,6 +16,7 @@ import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/share_preview_helper.dart';
+import '../../utils/haptics.dart';
 
 /** Section header for separated content sections */
 class SectionHeader extends StatelessWidget {
@@ -118,18 +118,14 @@ class ArticleListItem extends ConsumerWidget {
             // Bookmark
             GestureDetector(
               onTap: () {
-                HapticFeedback.lightImpact();
+                Haptics.light();
                 ref.read(articleFavoritesProvider.notifier).toggle(article.id);
               },
               child: SizedBox(
                 width: 44,
                 height: 44,
                 child: Center(
-                  child: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_border,
-                    size: 22,
-                    color: isSaved ? colors.accent : colors.textMuted,
-                  ),
+                  child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted),
                 ),
               ),
             ),
@@ -186,9 +182,7 @@ class TeachingCard extends StatelessWidget {
                       child: SizedBox(
                         width: 44,
                         height: 44,
-                        child: Center(
-                          child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
-                        ),
+                        child: Center(child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted)),
                       ),
                     ),
                   ],
@@ -237,7 +231,7 @@ class TeachingCard extends StatelessWidget {
 
 /** Show share sheet for a teaching */
 void showLibraryShareSheet(BuildContext context, Teaching teaching) {
-  HapticFeedback.mediumImpact();
+  Haptics.light();
   showSharePreview(context, teaching.toPointing());
 }
 
@@ -300,7 +294,7 @@ class FilterSheet<T> extends StatelessWidget {
                     ),
                     trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                     onTap: () {
-                      HapticFeedback.lightImpact();
+                      Haptics.selection();
                       onSelected(option.value);
                     },
                   );
@@ -324,4 +318,3 @@ class FilterOption<T> {
 
   const FilterOption({required this.value, required this.label, required this.icon});
 }
-

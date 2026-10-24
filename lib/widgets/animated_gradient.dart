@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
+import '../utils/motion.dart';
 
 /**
  * Time-of-day period for the 24-hour gradient cycle.
@@ -225,8 +226,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     }
 
     // Check reduce motion preference
-    final appOverride = ref.watch(reduceMotionOverrideProvider);
-    final reduceMotion = shouldReduceMotion(context, appOverride);
+    final reduceMotion = Motion.reduce(context);
 
     // Time-based gradient for 24h cycle (dark mode) or light theme gradient
     final gradient = isDark ? _getTimeBasedGradient(_currentPeriod) : AppGradients.backgroundLight;
@@ -276,8 +276,7 @@ class FloatingParticles extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Check reduce motion preference
-    final appOverride = ref.watch(reduceMotionOverrideProvider);
-    final reduceMotion = shouldReduceMotion(context, appOverride);
+    final reduceMotion = Motion.reduce(context);
 
     // Skip animations when:
     // 1. Static flag is set (for testing)

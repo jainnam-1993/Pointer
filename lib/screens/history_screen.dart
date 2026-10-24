@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../data/pointings.dart';
@@ -9,6 +8,7 @@ import '../widgets/animated_transitions.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/pointer_scaffold.dart';
+import '../utils/haptics.dart';
 
 /**
  * Screen showing chronological history of previously viewed pointings.
@@ -40,7 +40,7 @@ class HistoryScreen extends ConsumerWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    HapticFeedback.lightImpact();
+                    Haptics.light();
                     context.pop();
                   },
                   icon: Icon(Icons.arrow_back_ios, color: colors.textPrimary, size: 20),
@@ -74,11 +74,7 @@ class HistoryScreen extends ConsumerWidget {
 
   /** Builds the empty state shown when no pointings have been viewed yet. */
   Widget _buildEmptyState(BuildContext context, PointerColors colors) {
-    return const EmptyStateWidget(
-      icon: Icons.history,
-      title: 'No pointings yet',
-      subtitle: 'Your viewed pointings will appear here',
-    );
+    return const EmptyStateWidget(icon: Icons.history, title: 'No pointings yet', subtitle: 'Your viewed pointings will appear here');
   }
 
   /** Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations. */
@@ -110,7 +106,7 @@ class HistoryScreen extends ConsumerWidget {
               pointing: pointing,
               viewedAt: viewedAt,
               onTap: () {
-                HapticFeedback.mediumImpact();
+                Haptics.light();
                 // Set this pointing as current and go back to home
                 ref.read(currentPointingProvider.notifier).setPointing(pointing);
                 context.go('/');
@@ -176,39 +172,43 @@ class _HistoryCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 16))),
+                      Semantics(
+                        excludeSemantics: true,
+                        label: traditionInfo.name,
+                        child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 16)),
+                      ),
                       const SizedBox(width: 8),
-                    Text(
-                      traditionInfo.name,
-                      style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                Text(_formatDate(viewedAt), style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12)),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Pointing content (truncated)
-            Text(
-              pointing.content,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.4),
-            ),
-
-            // Teacher attribution
-            if (pointing.teacher != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                '— ${pointing.teacher}',
-                style: TextStyle(color: colors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
+                      Text(
+                        traditionInfo.name,
+                        style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  Text(_formatDate(viewedAt), style: TextStyle(color: colors.textSecondary.withValues(alpha: 0.7), fontSize: 12)),
+                ],
               ),
+              const SizedBox(height: 12),
+
+              // Pointing content (truncated)
+              Text(
+                pointing.content,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.4),
+              ),
+
+              // Teacher attribution
+              if (pointing.teacher != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '— ${pointing.teacher}',
+                  style: TextStyle(color: colors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
-    ),
     );
   }
 }

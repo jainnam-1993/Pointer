@@ -221,10 +221,7 @@ class _ShareTemplate extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          if (style.showBadge) ...[
-            _TraditionBadge(tradition: pointing.tradition, color: style.badgeColor),
-            const SizedBox(height: 40),
-          ],
+          if (style.showBadge) ...[_TraditionBadge(tradition: pointing.tradition, color: style.badgeColor), const SizedBox(height: 40)],
           Text(
             '"${pointing.content}"',
             style: TextStyle(

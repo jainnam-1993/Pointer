@@ -145,7 +145,7 @@ void main() {
       await tester.pump();
 
       // Verify haptic feedback was triggered
-      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.mediumImpact'), isNotEmpty);
+      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact'), isNotEmpty);
     });
 
     testWidgets('long press shows save confirmation overlay', (tester) async {
@@ -168,7 +168,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
 
     testWidgets('long press does not add duplicate favorites', (tester) async {
@@ -234,7 +233,6 @@ void main() {
       await tester.longPress(pointingCardGesture);
       // Use pump(Duration) instead of pumpAndSettle due to confetti animation
       await tester.pump(const Duration(seconds: 2));
-
     });
   });
 

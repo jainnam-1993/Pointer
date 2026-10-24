@@ -82,12 +82,22 @@ class TeacherSheet extends StatelessWidget {
                   Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
-                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+                      decoration: BoxDecoration(
+                        color: colors.accent.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12))),
-                          Text(' ${traditionInfo.name}', style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500)),
+                          Semantics(
+                            excludeSemantics: true,
+                            label: traditionInfo.name,
+                            child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12)),
+                          ),
+                          Text(
+                            ' ${traditionInfo.name}',
+                            style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),

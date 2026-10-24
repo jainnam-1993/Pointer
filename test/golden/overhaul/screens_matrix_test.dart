@@ -151,6 +151,16 @@ Future<void> _loadSdkFonts() async {
     }
   }
   await roboto.load();
+  for (final (family, files) in const [
+    ('Inter', ['assets/fonts/Inter-Variable.ttf']),
+    ('Newsreader', ['assets/fonts/Newsreader-Variable.ttf', 'assets/fonts/Newsreader-Italic-Variable.ttf']),
+  ]) {
+    final loader = FontLoader(family);
+    for (final path in files) {
+      loader.addFont(Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
+    }
+    await loader.load();
+  }
   final icons = File('${dir.path}/MaterialIcons-Regular.otf');
   if (icons.existsSync()) {
     await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)))).load();
@@ -180,44 +190,8 @@ void _loadArticlesWithReaderContent() {
   initArticlesForTest(parsed);
 }
 
-/// Mirror of [AppTheme.dark]/[AppTheme.light] with Roboto in place of GoogleFonts Inter.
-///
-/// AppTheme calls GoogleFonts, which throws in tests (no runtime fetching, no
-/// bundled Inter). Keep this in sync when AppTheme changes.
-ThemeData _theme(MatrixTheme theme) {
-  final isDark = theme == MatrixTheme.dark;
-  final colors = isDark ? PointerColors.dark : PointerColors.light;
-  final base = isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme;
-  return ThemeData(
-    useMaterial3: true,
-    brightness: isDark ? Brightness.dark : Brightness.light,
-    scaffoldBackgroundColor: colors.background,
-    fontFamily: 'Roboto',
-    colorScheme: isDark
-        ? ColorScheme.dark(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFEF4444))
-        : ColorScheme.light(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFDC2626)),
-    extensions: [colors],
-    textTheme: base
-        .apply(fontFamily: 'Roboto')
-        .copyWith(
-          displayLarge: TextStyle(fontFamily: 'Roboto', fontSize: 32, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-          headlineMedium: TextStyle(fontFamily: 'Roboto', fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-          titleLarge: TextStyle(fontFamily: 'Roboto', fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
-          bodyLarge: TextStyle(fontFamily: 'Roboto', fontSize: 16, color: colors.textPrimary),
-          bodyMedium: TextStyle(fontFamily: 'Roboto', fontSize: 14, color: colors.textSecondary),
-          labelSmall: TextStyle(fontFamily: 'Roboto', fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-        ),
-    appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
-    switchTheme: SwitchThemeData(
-      thumbColor: WidgetStateProperty.all(isDark ? Colors.white : colors.primary),
-      trackColor: WidgetStateProperty.resolveWith((states) {
-        final selected = states.contains(WidgetState.selected);
-        if (isDark) return Colors.white.withValues(alpha: selected ? 0.4 : 0.2);
-        return selected ? colors.primary.withValues(alpha: 0.4) : colors.textMuted.withValues(alpha: 0.3);
-      }),
-    ),
-  );
-}
+/// The real app themes; fonts are bundled, so goldens render Inter and Newsreader.
+ThemeData _theme(MatrixTheme theme) => theme == MatrixTheme.dark ? AppTheme.dark : AppTheme.light;
 
 Widget _app({required Widget home, required SharedPreferences prefs, required MatrixTheme theme}) {
   final mode = theme == MatrixTheme.dark ? AppThemeMode.dark : AppThemeMode.light;

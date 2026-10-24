@@ -6,7 +6,6 @@ library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +14,7 @@ import '../models/inquiry.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/inquiry_phase_content.dart';
+import '../utils/haptics.dart';
 
 /**
  * Inquiry Player Screen - Guides users through a timed inquiry session
@@ -166,7 +166,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
   }
 
   void _triggerHaptic() async {
-    HapticFeedback.lightImpact();
+    Haptics.success();
   }
 
   /** Loads a new random inquiry and restarts the sequence. */

@@ -40,8 +40,7 @@ void main() {
       final updated = DailyUsage(viewCount: 1, lastResetDate: _todayString());
 
       when(() => mockService.getUsage()).thenReturn(initial);
-      when(() => mockService.incrementViewCount())
-          .thenAnswer((_) async => updated);
+      when(() => mockService.incrementViewCount()).thenAnswer((_) async => updated);
 
       notifier = DailyUsageNotifier(mockService);
       expect(notifier.state.viewCount, 0);
@@ -54,10 +53,8 @@ void main() {
 
     test('recordView updates state with each call', () async {
       final initial = DailyUsage(viewCount: 1, lastResetDate: _todayString());
-      final afterSecond =
-          DailyUsage(viewCount: 2, lastResetDate: _todayString());
-      final afterThird =
-          DailyUsage(viewCount: 3, lastResetDate: _todayString());
+      final afterSecond = DailyUsage(viewCount: 2, lastResetDate: _todayString());
+      final afterThird = DailyUsage(viewCount: 3, lastResetDate: _todayString());
 
       when(() => mockService.getUsage()).thenReturn(initial);
       var callCount = 0;
@@ -80,8 +77,7 @@ void main() {
 
     test('reset clears usage to zero', () async {
       final initial = DailyUsage(viewCount: 5, lastResetDate: _todayString());
-      final resetUsage =
-          DailyUsage(viewCount: 0, lastResetDate: _todayString());
+      final resetUsage = DailyUsage(viewCount: 0, lastResetDate: _todayString());
 
       var callCount = 0;
       when(() => mockService.getUsage()).thenAnswer((_) {
@@ -101,10 +97,8 @@ void main() {
 
     test('reset then recordView starts from zero', () async {
       final initial = DailyUsage(viewCount: 3, lastResetDate: _todayString());
-      final resetUsage =
-          DailyUsage(viewCount: 0, lastResetDate: _todayString());
-      final afterRecord =
-          DailyUsage(viewCount: 1, lastResetDate: _todayString());
+      final resetUsage = DailyUsage(viewCount: 0, lastResetDate: _todayString());
+      final afterRecord = DailyUsage(viewCount: 1, lastResetDate: _todayString());
 
       var getCallCount = 0;
       when(() => mockService.getUsage()).thenAnswer((_) {
@@ -113,8 +107,7 @@ void main() {
         return getCallCount == 1 ? initial : resetUsage;
       });
       when(() => mockService.resetUsage()).thenAnswer((_) async {});
-      when(() => mockService.incrementViewCount())
-          .thenAnswer((_) async => afterRecord);
+      when(() => mockService.incrementViewCount()).thenAnswer((_) async => afterRecord);
 
       notifier = DailyUsageNotifier(mockService);
       expect(notifier.state.viewCount, 3);

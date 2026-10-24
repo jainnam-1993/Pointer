@@ -211,9 +211,9 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
     required List<String> Function() load,
     required Future<void> Function(String) add,
     required Future<void> Function(String) remove,
-  })  : _add = add,
-        _remove = remove,
-        super(load());
+  }) : _add = add,
+       _remove = remove,
+       super(load());
 
   /** Whether the given [id] is currently in the favorites list. */
   bool isFavorite(String id) => state.contains(id);
@@ -243,11 +243,7 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
  */
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(
-    load: () => storage.favorites,
-    add: storage.addFavorite,
-    remove: storage.removeFavorite,
-  );
+  return FavoritesNotifier(load: () => storage.favorites, add: storage.addFavorite, remove: storage.removeFavorite);
 });
 
 /**
@@ -255,11 +251,7 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>
  */
 final articleFavoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(
-    load: () => storage.favoriteArticles,
-    add: storage.addFavoriteArticle,
-    remove: storage.removeFavoriteArticle,
-  );
+  return FavoritesNotifier(load: () => storage.favoriteArticles, add: storage.addFavoriteArticle, remove: storage.removeFavoriteArticle);
 });
 
 // ============================================================

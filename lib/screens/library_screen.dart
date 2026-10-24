@@ -11,7 +11,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
@@ -32,6 +31,7 @@ import 'library/teacher_teachings_screen.dart';
 import 'library/lineage_teachings_screen.dart';
 import 'library/mood_teachings_screen.dart';
 import 'library/topic_teachings_screen.dart';
+import '../utils/haptics.dart';
 
 // Re-export all library subfiles for backward compatibility
 export 'library/library_models.dart';
@@ -85,292 +85,288 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       child: PointerScaffold(
         body: CustomScrollView(
           slivers: [
-                  // Header with filter
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Semantics(header: true, child: Text('Library', style: Theme.of(context).textTheme.displayLarge)),
-                          const SizedBox(height: 4),
-                          Text(
-                            _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
-                            style: TextStyle(color: colors.textSecondary, fontSize: 16),
-                          ),
-                        ],
-                      ),
+            // Header with filter
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Semantics(header: true, child: Text('Library', style: Theme.of(context).textTheme.displayLarge)),
+                    const SizedBox(height: 4),
+                    Text(
+                      _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
+                      style: TextStyle(color: colors.textSecondary, fontSize: 16),
                     ),
-                  ),
+                  ],
+                ),
+              ),
+            ),
 
-                  // Show saved pointings if browsing saved
-                  if (_browseMode == LibraryBrowseMode.saved) ...[
-                    // Browse Mode dropdown (so user can switch back)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'BROWSE BY',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                              ),
-                              const SizedBox(width: 12),
-                              _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (favorites.isEmpty && savedArticleIds.isEmpty)
-                      const SliverFillRemaining(
-                        child: EmptyStateWidget(
-                          icon: Icons.bookmark_border,
-                          title: 'Nothing saved yet',
-                          subtitle: 'Long-press a pointing or bookmark an article',
-                        ),
-                      ),
-
-                    // Saved articles section
-                    if (savedArticleIds.isNotEmpty) ...[
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                          child: Text(
-                            'ARTICLES',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                          ),
-                        ),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate((context, index) {
-                            final articleId = savedArticleIds[index];
-                            final article = articles.cast<Article?>().firstWhere((a) => a?.id == articleId, orElse: () => null);
-                            if (article == null) return const SizedBox.shrink();
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: GlassCard(
-                                padding: const EdgeInsets.all(20),
-                                onTap: () => _openArticle(context, article),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      article.title,
-                                      style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
-                                    ),
-                                    if (article.subtitle != null) ...[
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        article.subtitle!,
-                                        style: TextStyle(color: colors.textSecondary, fontSize: 13),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Text('${article.readingTimeMinutes} min read', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-                                        if (article.teacher != null) ...[
-                                          Text('  ·  ', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-                                          Expanded(
-                                            child: Text(
-                                              article.teacher!,
-                                              style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ] else
-                                          const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            HapticFeedback.lightImpact();
-                                            ref.read(articleFavoritesProvider.notifier).toggle(articleId);
-                                          },
-                                          child: Icon(Icons.bookmark, size: 22, color: colors.accent),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }, childCount: savedArticleIds.length),
-                        ),
-                      ),
-                    ],
-
-                    // Saved pointings section
-                    if (favorites.isNotEmpty) ...[
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                          child: Text(
-                            'POINTINGS',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                          ),
-                        ),
-                      ),
-                      SliverPadding(
-                        padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate((context, index) {
-                            final pointingId = favorites[index];
-                            final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: GlassCard(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      pointing.content,
-                                      style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        if (pointing.teacher != null)
-                                          Expanded(
-                                            child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
-                                          )
-                                        else
-                                          const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            HapticFeedback.lightImpact();
-                                            showSharePreview(context, pointing);
-                                          },
-                                          child: SizedBox(
-                                            width: 44,
-                                            height: 44,
-                                            child: Center(
-                                              child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            HapticFeedback.lightImpact();
-                                            ref.read(favoritesProvider.notifier).toggle(pointingId);
-                                          },
-                                          child: SizedBox(
-                                            width: 44,
-                                            height: 44,
-                                            child: Center(
-                                              child: Icon(Icons.favorite, size: 22, color: colors.accent),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }, childCount: favorites.length),
-                        ),
-                      ),
-                    ],
-                  ] else ...[
-                    // Featured Section
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                        child: Text(
-                          'FEATURED',
+            // Show saved pointings if browsing saved
+            if (_browseMode == LibraryBrowseMode.saved) ...[
+              // Browse Mode dropdown (so user can switch back)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'BROWSE BY',
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
+                      ],
                     ),
+                  ),
+                ),
+              ),
+              if (favorites.isEmpty && savedArticleIds.isEmpty)
+                const SliverFillRemaining(
+                  child: EmptyStateWidget(
+                    icon: Icons.bookmark_border,
+                    title: 'Nothing saved yet',
+                    subtitle: 'Long-press a pointing or bookmark an article',
+                  ),
+                ),
 
-                    // Featured articles horizontal scroll with peek indicator
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble(),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final screenWidth = constraints.maxWidth;
-                            // Card takes ~70% of screen, leaving ~30% for peek
-                            // Peek shows ~24px of next card edge
-                            final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                            final cardSpacing = 8.0;
-                            // Calculate padding: 24px left, enough right for last card + peek area
-                            final horizontalPadding = 24.0;
-                            // Extra right padding ensures smooth scroll end (peek area width)
-                            final rightPadding = screenWidth - cardWidth - horizontalPadding;
-
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.only(left: horizontalPadding, right: rightPadding.clamp(24.0, 80.0)),
-                              itemCount: featured.length,
-                              itemBuilder: (context, index) {
-                                final article = featured[index];
-                                final isLast = index == featured.length - 1;
-                                return StaggeredFadeIn(
-                                  index: index,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
-                                    child: SizedBox(
-                                      width: cardWidth,
-                                      child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
+              // Saved articles section
+              if (savedArticleIds.isNotEmpty) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Text(
+                      'ARTICLES',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                     ),
-
-                    // Browse Mode Section with Dropdown
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                        // FittedBox scales content down proportionally on small screens
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final articleId = savedArticleIds[index];
+                      final article = articles.cast<Article?>().firstWhere((a) => a?.id == articleId, orElse: () => null);
+                      if (article == null) return const SizedBox.shrink();
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(20),
+                          onTap: () => _openArticle(context, article),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'BROWSE BY',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                                article.title,
+                                style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(width: 12),
-                              _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
-                              const SizedBox(width: 8),
-                              _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
+                              if (article.subtitle != null) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  article.subtitle!,
+                                  style: TextStyle(color: colors.textSecondary, fontSize: 13),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Text('${article.readingTimeMinutes} min read', style: TextStyle(color: colors.textMuted, fontSize: 12)),
+                                  if (article.teacher != null) ...[
+                                    Text('  ·  ', style: TextStyle(color: colors.textMuted, fontSize: 12)),
+                                    Expanded(
+                                      child: Text(
+                                        article.teacher!,
+                                        style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ] else
+                                    const Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Haptics.light();
+                                      ref.read(articleFavoritesProvider.notifier).toggle(articleId);
+                                    },
+                                    child: Icon(Icons.bookmark, size: 22, color: colors.accent),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }, childCount: savedArticleIds.length),
+                  ),
+                ),
+              ],
 
-                    // Dynamic browse list based on mode
-                    _buildBrowseList(colors, bottomPadding, _contentFilter),
-                  ], // end else
-                ],
+              // Saved pointings section
+              if (favorites.isNotEmpty) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Text(
+                      'POINTINGS',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final pointingId = favorites[index];
+                      final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                pointing.content,
+                                style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  if (pointing.teacher != null)
+                                    Expanded(
+                                      child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
+                                    )
+                                  else
+                                    const Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Haptics.light();
+                                      showSharePreview(context, pointing);
+                                    },
+                                    child: SizedBox(
+                                      width: 44,
+                                      height: 44,
+                                      child: Center(child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted)),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Haptics.light();
+                                      ref.read(favoritesProvider.notifier).toggle(pointingId);
+                                    },
+                                    child: SizedBox(
+                                      width: 44,
+                                      height: 44,
+                                      child: Center(child: Icon(Icons.favorite, size: 22, color: colors.accent)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }, childCount: favorites.length),
+                  ),
+                ),
+              ],
+            ] else ...[
+              // Featured Section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                  child: Text(
+                    'FEATURED',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                  ),
+                ),
               ),
+
+              // Featured articles horizontal scroll with peek indicator
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble(),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final screenWidth = constraints.maxWidth;
+                      // Card takes ~70% of screen, leaving ~30% for peek
+                      // Peek shows ~24px of next card edge
+                      final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                      final cardSpacing = 8.0;
+                      // Calculate padding: 24px left, enough right for last card + peek area
+                      final horizontalPadding = 24.0;
+                      // Extra right padding ensures smooth scroll end (peek area width)
+                      final rightPadding = screenWidth - cardWidth - horizontalPadding;
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.only(left: horizontalPadding, right: rightPadding.clamp(24.0, 80.0)),
+                        itemCount: featured.length,
+                        itemBuilder: (context, index) {
+                          final article = featured[index];
+                          final isLast = index == featured.length - 1;
+                          return StaggeredFadeIn(
+                            index: index,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
+                              child: SizedBox(
+                                width: cardWidth,
+                                child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // Browse Mode Section with Dropdown
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+                  // FittedBox scales content down proportionally on small screens
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'BROWSE BY',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                        ),
+                        const SizedBox(width: 12),
+                        _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
+                        const SizedBox(width: 8),
+                        _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Dynamic browse list based on mode
+              _buildBrowseList(colors, bottomPadding, _contentFilter),
+            ], // end else
+          ],
+        ),
       ),
     );
   }
 
   /** Navigates to the [ArticleReaderScreen] for the given article. */
   void _openArticle(BuildContext context, Article article) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     context.push('/article/${article.id}');
   }
 
@@ -445,7 +441,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   /** Navigates to [TopicTeachingsScreen] for the given topic with the active filter. */
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => TopicTeachingsScreen(topic: topic, filter: filter),
@@ -481,11 +477,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     if (sortedTeachers.isEmpty) {
       return const SliverToBoxAdapter(
-        child: EmptyStateWidget(
-          icon: Icons.person_outline,
-          title: 'No teachers found',
-          subtitle: 'Try a different content filter',
-        ),
+        child: EmptyStateWidget(icon: Icons.person_outline, title: 'No teachers found', subtitle: 'Try a different content filter'),
       );
     }
 
@@ -623,7 +615,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   void _openTeacher(BuildContext context, String teacher, ContentFilter filter) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => TeacherTeachingsScreen(teacher: teacher, filter: filter),
@@ -632,7 +624,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info, ContentFilter filter) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info, filter: filter),
@@ -641,7 +633,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   void _openMood(BuildContext context, String mood, ContentFilter filter) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => MoodTeachingsScreen(mood: mood, filter: filter),
@@ -687,7 +679,7 @@ class _BrowseModeDropdown extends StatelessWidget {
   }
 
   void _showModeSelector(BuildContext context) {
-    HapticFeedback.lightImpact();
+    Haptics.selection();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -761,7 +753,7 @@ class _ContentTypeDropdown extends StatelessWidget {
   }
 
   void _showFilterSelector(BuildContext context) {
-    HapticFeedback.lightImpact();
+    Haptics.selection();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -920,7 +912,11 @@ class _FeaturedArticleCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                  child: Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12))),
+                  child: Semantics(
+                    excludeSemantics: true,
+                    label: traditionInfo.name,
+                    child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 12)),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(

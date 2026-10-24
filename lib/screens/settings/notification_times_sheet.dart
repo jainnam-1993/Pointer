@@ -225,20 +225,19 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                         spacing: 8,
                         runSpacing: 8,
                         children: NotificationPreset.values.map((preset) {
-                              final isSelected = _matchesPreset(preset);
-                              return ChoiceChip(
-                                label: Text(preset.label),
-                                selected: isSelected,
-                                onSelected: (_) => _applyPreset(preset),
-                                selectedColor: context.colors.accent.withValues(alpha: 0.3),
-                                labelStyle: TextStyle(
-                                  color: isSelected ? context.colors.accent : textColor,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                ),
-                                side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
-                              );
-                            })
-                            .toList(),
+                          final isSelected = _matchesPreset(preset);
+                          return ChoiceChip(
+                            label: Text(preset.label),
+                            selected: isSelected,
+                            onSelected: (_) => _applyPreset(preset),
+                            selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                            labelStyle: TextStyle(
+                              color: isSelected ? context.colors.accent : textColor,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            ),
+                            side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
+                          );
+                        }).toList(),
                       ),
                       const SizedBox(height: 24),
 

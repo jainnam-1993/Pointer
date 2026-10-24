@@ -18,10 +18,7 @@ class DragHandle extends StatelessWidget {
         width: 40,
         height: 4,
         margin: bottomMargin > 0 ? EdgeInsets.only(bottom: bottomMargin) : null,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(2),
-        ),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
       ),
     );
   }

@@ -149,7 +149,6 @@ void main() {
 
         expect(service.isNotificationsEnabled, true);
       });
-
     });
 
     group('Permission Checking', () {

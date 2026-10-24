@@ -88,14 +88,7 @@ Future<void> loadArticles() async {
   _searchIndex = {};
   for (var i = 0; i < articles.length; i++) {
     final a = articles[i];
-    final tokens = _tokenize([
-      a.title,
-      a.subtitle,
-      a.excerpt,
-      a.teacher,
-      ...a.topicTags,
-      ...a.moodTags,
-    ]);
+    final tokens = _tokenize([a.title, a.subtitle, a.excerpt, a.teacher, ...a.topicTags, ...a.moodTags]);
     for (final token in tokens) {
       _searchIndex.putIfAbsent(token, () => {}).add(i);
     }
@@ -109,7 +102,7 @@ Set<String> _tokenize(List<String?> fields) {
   final tokens = <String>{};
   for (final field in fields) {
     if (field == null) continue;
-    for (final word in field.toLowerCase().split(RegExp(r'[\s\-_/,.:;!?()]+' ))) {
+    for (final word in field.toLowerCase().split(RegExp(r'[\s\-_/,.:;!?()]+'))) {
       if (word.length >= 3) tokens.add(word);
     }
   }

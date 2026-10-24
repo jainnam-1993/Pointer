@@ -18,32 +18,20 @@ class MaestroHooks {
 
   /// Register all VM Service extensions. Call once in main(), guarded by kDebugMode.
   static void init() {
-    registerExtension(
-      'ext.flutter.maestro_mcp.interactiveElements',
-      _getInteractiveElements,
-    );
+    registerExtension('ext.flutter.maestro_mcp.interactiveElements', _getInteractiveElements);
     registerExtension('ext.flutter.maestro_mcp.tap', _tap);
     registerExtension('ext.flutter.maestro_mcp.enterText', _enterText);
     registerExtension('ext.flutter.maestro_mcp.scrollTo', _scrollTo);
-    registerExtension(
-      'ext.flutter.maestro_mcp.takeScreenshots',
-      _takeScreenshots,
-    );
+    registerExtension('ext.flutter.maestro_mcp.takeScreenshots', _takeScreenshots);
     registerExtension('ext.flutter.maestro_mcp.getLogs', _getLogs);
     registerExtension('ext.flutter.maestro_mcp.restart', _restart);
 
     debugPrint('[MaestroHooks] Initialized');
   }
 
-  static Future<ServiceExtensionResponse> _getInteractiveElements(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _getInteractiveElements(String method, Map<String, String> parameters) async {
     if (_appContext == null) {
-      return ServiceExtensionResponse.error(
-        ServiceExtensionResponse.extensionError,
-        'No app context available',
-      );
+      return ServiceExtensionResponse.error(ServiceExtensionResponse.extensionError, 'No app context available');
     }
 
     final elements = <Map<String, dynamic>>[];
@@ -78,10 +66,7 @@ class MaestroHooks {
         elements.add(map);
       }
 
-      if (widget is ElevatedButton ||
-          widget is TextButton ||
-          widget is IconButton ||
-          widget is OutlinedButton) {
+      if (widget is ElevatedButton || widget is TextButton || widget is IconButton || widget is OutlinedButton) {
         final map = <String, dynamic>{'type': widget.runtimeType.toString()};
         if (widget.key is ValueKey) {
           map['key'] = (widget.key as ValueKey).value.toString();
@@ -97,10 +82,7 @@ class MaestroHooks {
           widget is! TextButton &&
           widget is! IconButton &&
           widget is! OutlinedButton) {
-        final map = <String, dynamic>{
-          'type': widget.runtimeType.toString(),
-          'key': (widget.key as ValueKey).value.toString(),
-        };
+        final map = <String, dynamic>{'type': widget.runtimeType.toString(), 'key': (widget.key as ValueKey).value.toString()};
         elements.add(map);
       }
 
@@ -113,16 +95,10 @@ class MaestroHooks {
     return ServiceExtensionResponse.result(jsonEncode(result));
   }
 
-  static Future<ServiceExtensionResponse> _tap(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _tap(String method, Map<String, String> parameters) async {
     try {
       if (_appContext == null) {
-        return ServiceExtensionResponse.error(
-          ServiceExtensionResponse.extensionError,
-          'No app context available',
-        );
+        return ServiceExtensionResponse.error(ServiceExtensionResponse.extensionError, 'No app context available');
       }
 
       Element? targetElement;
@@ -151,8 +127,7 @@ class MaestroHooks {
             targetElement = element;
             return;
           }
-          if (widget is FloatingActionButton &&
-              widget.tooltip == parameters['tooltip']) {
+          if (widget is FloatingActionButton && widget.tooltip == parameters['tooltip']) {
             targetElement = element;
             return;
           }
@@ -175,12 +150,7 @@ class MaestroHooks {
       _appContext!.visitChildElements(visitor);
 
       if (targetElement == null) {
-        return ServiceExtensionResponse.result(
-          jsonEncode({
-            'status': 'Error',
-            'error': 'Widget not found with criteria: $parameters',
-          }),
-        );
+        return ServiceExtensionResponse.result(jsonEncode({'status': 'Error', 'error': 'Widget not found with criteria: $parameters'}));
       }
 
       // Try to invoke the tap handler
@@ -232,60 +202,36 @@ class MaestroHooks {
 
       return ServiceExtensionResponse.result(jsonEncode({'status': 'success', 'tapped': tapped}));
     } catch (e, stackTrace) {
-      return ServiceExtensionResponse.result(
-        jsonEncode({'status': 'Error', 'error': e.toString(), 'stackTrace': stackTrace.toString()}),
-      );
+      return ServiceExtensionResponse.result(jsonEncode({'status': 'Error', 'error': e.toString(), 'stackTrace': stackTrace.toString()}));
     }
   }
 
-  static Future<ServiceExtensionResponse> _enterText(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _enterText(String method, Map<String, String> parameters) async {
     debugPrint('[MaestroHooks] Enter text: $parameters');
     return ServiceExtensionResponse.result(jsonEncode({'status': 'success'}));
   }
 
-  static Future<ServiceExtensionResponse> _scrollTo(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _scrollTo(String method, Map<String, String> parameters) async {
     debugPrint('[MaestroHooks] Scroll: $parameters');
     return ServiceExtensionResponse.result(jsonEncode({'status': 'success'}));
   }
 
-  static Future<ServiceExtensionResponse> _takeScreenshots(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _takeScreenshots(String method, Map<String, String> parameters) async {
     // Return a 1x1 pixel base64 png placeholder
-    const emptyPng =
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    return ServiceExtensionResponse.result(
-      jsonEncode({'status': 'success', 'data': emptyPng}),
-    );
+    const emptyPng = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    return ServiceExtensionResponse.result(jsonEncode({'status': 'success', 'data': emptyPng}));
   }
 
-  static Future<ServiceExtensionResponse> _getLogs(
-    String method,
-    Map<String, String> parameters,
-  ) async {
-    return ServiceExtensionResponse.result(
-      jsonEncode({'status': 'success', 'logs': []}),
-    );
+  static Future<ServiceExtensionResponse> _getLogs(String method, Map<String, String> parameters) async {
+    return ServiceExtensionResponse.result(jsonEncode({'status': 'success', 'logs': []}));
   }
 
-  static Future<ServiceExtensionResponse> _restart(
-    String method,
-    Map<String, String> parameters,
-  ) async {
+  static Future<ServiceExtensionResponse> _restart(String method, Map<String, String> parameters) async {
     try {
       WidgetsBinding.instance.reassembleApplication();
       return ServiceExtensionResponse.result(jsonEncode({'status': 'success'}));
     } catch (e) {
-      return ServiceExtensionResponse.result(
-        jsonEncode({'status': 'Error', 'error': e.toString()}),
-      );
+      return ServiceExtensionResponse.result(jsonEncode({'status': 'Error', 'error': e.toString()}));
     }
   }
 }

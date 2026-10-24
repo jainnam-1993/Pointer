@@ -2,12 +2,12 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/pointer_switch.dart';
+import '../../utils/haptics.dart';
 
 /**
  * Appearance settings card containing theme selection, zen mode toggle, and animation toggle.
@@ -183,7 +183,7 @@ class ThemeOption extends StatelessWidget {
         label: '$label theme${isSelected ? ', selected' : ''}',
         child: GestureDetector(
           onTap: () async {
-            HapticFeedback.mediumImpact();
+            Haptics.selection();
             onTap();
           },
           child: AnimatedContainer(

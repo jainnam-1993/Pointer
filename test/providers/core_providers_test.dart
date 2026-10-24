@@ -136,9 +136,7 @@ void main() {
       when(() => mockPrefs.getBool('pointer_onboarding_completed')).thenReturn(true);
 
       // Create a new container to pick up the changed storage
-      final newContainer = ProviderContainer(
-        overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)],
-      );
+      final newContainer = ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(mockPrefs)]);
       addTearDown(newContainer.dispose);
 
       expect(newContainer.read(onboardingCompletedProvider), true);

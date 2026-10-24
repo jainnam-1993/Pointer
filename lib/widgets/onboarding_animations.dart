@@ -3,12 +3,12 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../providers/settings_providers.dart';
 import '../theme/app_theme.dart';
 import 'notification_preview.dart';
+import '../utils/haptics.dart';
+import '../utils/motion.dart';
 
 /**
  * Animation duration constants for onboarding -- deliberately slower for a contemplative feel.
@@ -112,7 +112,7 @@ class _TypewriterTextState extends State<TypewriterText> {
     _wordDelayTimer?.cancel();
 
     // Check if animations are disabled for accessibility
-    if (shouldReduceMotion(context)) {
+    if (Motion.reduce(context)) {
       setState(() {
         _visibleWordCount = _words.length;
         _isComplete = true;
@@ -136,7 +136,7 @@ class _TypewriterTextState extends State<TypewriterText> {
 
     if (_visibleWordCount >= _words.length) {
       // Final word - trigger haptic and callback
-      HapticFeedback.lightImpact();
+      Haptics.light();
       _isComplete = true;
       widget.onComplete?.call();
     } else {
@@ -157,7 +157,7 @@ class _TypewriterTextState extends State<TypewriterText> {
     final defaultStyle = widget.style ?? TextStyle(fontSize: 20, height: 1.7, fontWeight: FontWeight.w400, color: colors.textPrimary);
 
     // If reduced motion, show all text immediately
-    if (shouldReduceMotion(context) || _isComplete && _visibleWordCount == _words.length) {
+    if (Motion.reduce(context) || _isComplete && _visibleWordCount == _words.length) {
       return Text(widget.text, style: defaultStyle, textAlign: widget.textAlign);
     }
 
@@ -283,7 +283,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (shouldReduceMotion(context)) {
+      if (Motion.reduce(context)) {
         // Skip animation, show second child immediately
         _controller.value = 1.0;
         widget.onComplete?.call();
@@ -292,7 +292,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
 
       _holdTimer = Timer(widget.holdDuration, () {
         if (!mounted) return;
-        HapticFeedback.lightImpact();
+        Haptics.success();
         _hasStarted = true;
         _controller.forward();
       });
@@ -309,7 +309,7 @@ class _DissolveTransitionState extends State<DissolveTransition> with SingleTick
   @override
   Widget build(BuildContext context) {
     // Immediate switch for reduced motion
-    if (shouldReduceMotion(context)) {
+    if (Motion.reduce(context)) {
       return widget.secondChild;
     }
 
@@ -404,7 +404,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (shouldReduceMotion(context)) {
+      if (Motion.reduce(context)) {
         // Show all items at once in reduced motion mode
         setState(() {
           _currentIndex = widget.items.length - 1;
@@ -435,7 +435,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
       _scheduleTimer(widget.strikeDelay, () {
         if (!mounted) return;
 
-        HapticFeedback.lightImpact();
+        Haptics.light();
         setState(() {
           _phase = _StrikePhase.striking;
         });
@@ -495,7 +495,7 @@ class _StrikeThroughRevealState extends State<StrikeThroughReveal> with TickerPr
     final currentItem = widget.items[_currentIndex];
 
     // Reduced motion: show all items as a column
-    if (shouldReduceMotion(context)) {
+    if (Motion.reduce(context)) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: widget.items
@@ -641,7 +641,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      if (shouldReduceMotion(context)) {
+      if (Motion.reduce(context)) {
         setState(() => _isVisible = true);
         _controller.value = 1.0;
         widget.onComplete?.call();
@@ -650,7 +650,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 
       _appearanceTimer = Timer(widget.delay, () {
         if (!mounted) return;
-        HapticFeedback.mediumImpact();
+        Haptics.success();
         setState(() => _isVisible = true);
         _controller.forward();
       });
@@ -666,7 +666,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 
   @override
   Widget build(BuildContext context) {
-    if (!_isVisible && !shouldReduceMotion(context)) {
+    if (!_isVisible && !Motion.reduce(context)) {
       return const SizedBox.shrink();
     }
 
@@ -735,7 +735,7 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
     // Start animation after frame is built (to check reduced motion)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (!shouldReduceMotion(context)) {
+      if (!Motion.reduce(context)) {
         _controller.repeat();
       }
     });
@@ -750,7 +750,7 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     // No glow effect for reduced motion
-    if (shouldReduceMotion(context)) {
+    if (Motion.reduce(context)) {
       return widget.child;
     }
 

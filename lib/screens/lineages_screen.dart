@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,6 +10,7 @@ import '../widgets/animated_transitions.dart';
 import '../widgets/drag_handle.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/pointer_scaffold.dart';
+import '../utils/haptics.dart';
 
 /**
  * Tradition/lineage management screen for filtering which traditions appear.
@@ -40,7 +40,7 @@ class LineagesScreen extends ConsumerWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    HapticFeedback.lightImpact();
+                    Haptics.light();
                     context.pop();
                   },
                   icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
@@ -50,7 +50,7 @@ class LineagesScreen extends ConsumerWidget {
                 // Reset button
                 TextButton(
                   onPressed: () {
-                    HapticFeedback.mediumImpact();
+                    Haptics.light();
                     ref.read(preferredTraditionsProvider.notifier).enableAll();
                   },
                   child: Text(
@@ -89,11 +89,11 @@ class LineagesScreen extends ConsumerWidget {
                         pointingsCount: count,
                         isEnabled: isEnabled,
                         onToggle: () {
-                          HapticFeedback.mediumImpact();
+                          Haptics.selection();
                           ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
                         },
                         onInfoTap: () {
-                          HapticFeedback.lightImpact();
+                          Haptics.selection();
                           showModalBottomSheet(
                             context: context,
                             backgroundColor: Colors.transparent,
@@ -245,9 +245,7 @@ class _TraditionCard extends StatelessWidget {
                   child: SizedBox(
                     width: 44,
                     height: 44,
-                    child: Center(
-                      child: Icon(Icons.info_outline, color: colors.textMuted, size: 20),
-                    ),
+                    child: Center(child: Icon(Icons.info_outline, color: colors.textMuted, size: 20)),
                   ),
                 ),
               ],

@@ -13,6 +13,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../utils/motion.dart';
 
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
@@ -81,7 +82,7 @@ final reduceMotionOverrideProvider = Provider<bool?>((ref) {
 });
 
 /**
- * Helper function to determine if motion should be reduced.
+ * Legacy wrapper around [Motion.reduce], the single reduce-motion check.
  *
  * Returns true if:
  * - System disableAnimations is enabled (MediaQuery.disableAnimations), OR
@@ -90,15 +91,7 @@ final reduceMotionOverrideProvider = Provider<bool?>((ref) {
  * The system setting always takes precedence when it requires reduced motion.
  */
 bool shouldReduceMotion(BuildContext context, [bool? appOverride]) {
-  final systemReduceMotion = MediaQuery.of(context).disableAnimations;
-
-  // System accessibility setting always takes precedence
-  if (systemReduceMotion) {
-    return true;
-  }
-
-  // App override can enable reduce motion (but not disable system setting)
-  return appOverride == true;
+  return Motion.reduce(context) || appOverride == true;
 }
 
 /**
@@ -222,4 +215,3 @@ final flutterThemeModeProvider = Provider<ThemeMode>((ref) {
   final appThemeMode = ref.watch(themeModeProvider);
   return AppTheme.toThemeMode(appThemeMode);
 });
-

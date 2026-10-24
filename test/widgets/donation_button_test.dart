@@ -10,6 +10,7 @@ import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/donation_button.dart';
 import 'package:pointer/widgets/glass_card.dart';
+import 'package:pointer/theme/app_icons.dart';
 
 /// Mock donation service for testing
 class MockDonationService extends DonationService {
@@ -111,10 +112,10 @@ void main() {
 
       // Should show header
       expect(find.text('Support Development'), findsOneWidget);
-      expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
+      expect(find.byIcon(AppIcons.heart), findsOneWidget);
 
       // Should show dropdown arrow
-      expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
+      expect(find.byIcon(AppIcons.chevronDown), findsOneWidget);
 
       // Should not show expanded content
       expect(find.text('Here Now is free forever. If you find value, consider supporting development.'), findsNothing);
@@ -174,10 +175,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show product icons
-      expect(find.byIcon(Icons.local_cafe_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.self_improvement_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.spa_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.park_outlined), findsOneWidget);
+      expect(find.byIcon(AppIcons.tipTea), findsOneWidget);
+      expect(find.byIcon(AppIcons.tipCushion), findsOneWidget);
+      expect(find.byIcon(AppIcons.tipIncense), findsOneWidget);
+      expect(find.byIcon(AppIcons.tipRetreat), findsOneWidget);
     });
 
     testWidgets('hides when not available and not loading', (tester) async {

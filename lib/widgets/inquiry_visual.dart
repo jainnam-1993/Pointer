@@ -7,8 +7,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/providers.dart';
 import '../theme/app_theme.dart';
+import '../utils/motion.dart';
 
 /**
  * A breathing/pulsing visual element for inquiry pauses
@@ -39,8 +39,7 @@ class InquiryVisual extends ConsumerWidget {
     final isDark = context.isDarkMode;
 
     // Check reduce motion preference
-    final appOverride = ref.watch(reduceMotionOverrideProvider);
-    final reduceMotion = shouldReduceMotion(context, appOverride);
+    final reduceMotion = Motion.reduce(context);
 
     final visualColor = color ?? colors.accent;
     final glowColor = visualColor.withValues(alpha: 0.3);

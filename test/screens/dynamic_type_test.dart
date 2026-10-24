@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/screens/home_screen.dart';
@@ -24,7 +23,6 @@ void main() {
     loadTestArticles();
     HomeScreen.disableAutoAdvanceForTesting = true;
     // Allow pending fonts in tests to prevent network errors
-    GoogleFonts.config.allowRuntimeFetching = false;
   });
 
   tearDownAll(() {
@@ -107,11 +105,11 @@ void main() {
         );
 
         // Base font size is 20, at 1.0x scale it should be ~20
-        expect(style.fontSize, closeTo(20.0, 0.1));
-        expect(style.height, 1.7);
+        expect(style.fontSize, AppType.display);
+        expect(style.height, 1.36);
       });
 
-      testWidgets('pointingText scales with system text scale (1.5x)', (tester) async {
+      testWidgets('pointingText is not pre-scaled at 1.5x', (tester) async {
         late TextStyle style;
 
         await tester.pumpWidget(
@@ -133,10 +131,10 @@ void main() {
         );
 
         // At 1.5x scale, font size should be 20 * 1.5 = 30
-        expect(style.fontSize, closeTo(30.0, 0.1));
+        expect(style.fontSize, AppType.display); // Text applies the scale once; styles are unscaled.
       });
 
-      testWidgets('pointingText clamps scale to maximum 1.5x', (tester) async {
+      testWidgets('pointingText is not pre-scaled at 3x', (tester) async {
         late TextStyle style;
 
         await tester.pumpWidget(
@@ -160,10 +158,10 @@ void main() {
         );
 
         // Should clamp to 1.5x: 20 * 1.5 = 30
-        expect(style.fontSize, closeTo(30.0, 0.1));
+        expect(style.fontSize, AppType.display); // The clamp lives at the app root.
       });
 
-      testWidgets('pointingText clamps scale to minimum 0.8x', (tester) async {
+      testWidgets('pointingText is not pre-scaled at 0.5x', (tester) async {
         late TextStyle style;
 
         await tester.pumpWidget(
@@ -187,10 +185,10 @@ void main() {
         );
 
         // Should clamp to 0.8x: 20 * 0.8 = 16
-        expect(style.fontSize, closeTo(16.0, 0.1));
+        expect(style.fontSize, AppType.display);
       });
 
-      testWidgets('instructionText scales with system text scale', (tester) async {
+      testWidgets('instructionText is not pre-scaled', (tester) async {
         late TextStyle style;
 
         await tester.pumpWidget(
@@ -212,10 +210,10 @@ void main() {
         );
 
         // Base font size is 16, at 1.25x scale it should be 16 * 1.25 = 20
-        expect(style.fontSize, closeTo(20.0, 0.1));
+        expect(style.fontSize, AppType.headline);
       });
 
-      testWidgets('teacherText scales with system text scale', (tester) async {
+      testWidgets('teacherText is not pre-scaled', (tester) async {
         late TextStyle style;
 
         await tester.pumpWidget(
@@ -237,7 +235,7 @@ void main() {
         );
 
         // Base font size is 14, at 1.25x scale it should be 14 * 1.25 = 17.5
-        expect(style.fontSize, closeTo(17.5, 0.1));
+        expect(style.fontSize, AppType.callout);
       });
     });
 

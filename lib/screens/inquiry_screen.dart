@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/inquiry_sessions.dart';
@@ -8,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_transitions.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/pointer_scaffold.dart';
+import '../utils/haptics.dart';
 
 /**
  * Self-inquiry session selection screen.
@@ -73,7 +73,7 @@ class InquiryScreen extends StatelessWidget {
                   session: session,
                   index: index,
                   onTap: () async {
-                    HapticFeedback.mediumImpact();
+                    Haptics.selection();
                     if (context.mounted) {
                       context.push('/inquiry/${session.id}');
                     }
