@@ -12,7 +12,7 @@ class FrostPaletteTest {
         "green" to 0xFF10A040.toInt(), "magenta" to 0xFFD000C0.toInt(),
     )
 
-    /** Pointing text 4.5:1 and secondary 3:1 over every shade of the card, for every wallpaper and mode. */
+    /** Pointing text 7:1 and secondary 4.5:1 over every shade of the card, for every wallpaper and mode. */
     @Test
     fun textContrastHoldsAcrossWallpapers() {
         val failures = mutableListOf<String>()
@@ -20,7 +20,7 @@ class FrostPaletteTest {
             val palette = FrostPalette.from(p, s, null, dark)
             val inkWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.ink, it) }
             val secWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.secondary, it) }
-            if (inkWorst < 4.5 || secWorst < 3.0) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
+            if (inkWorst < 7.0 || secWorst < 4.5) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
         }
         assertEquals(emptyList<String>(), failures)
     }
@@ -33,6 +33,21 @@ class FrostPaletteTest {
         assertNotEquals(red.top, blue.top)
         assertTrue("red wallpaper tints the card warm", (red.top shr 16 and 0xFF) > (red.top and 0xFF))
         assertTrue("blue wallpaper tints the card cool", (blue.top and 0xFF) > (blue.top shr 16 and 0xFF))
+    }
+
+    /** A colored wallpaper visibly tints the card toward its own hue, in both modes. */
+    @Test
+    fun cardCarriesTheWallpaperHue() {
+        for ((name, c) in sweep) {
+            val src = Oklch.of(c)
+            if (src.c < 0.02) continue
+            for (dark in listOf(false, true)) {
+                val card = Oklch.of(FrostPalette.from(c, null, null, dark).top)
+                assertTrue("$name dark=$dark chroma ${card.c}", card.c >= 0.025)
+                val dh = Math.abs(((card.h - src.h + 540) % 360) - 180)
+                assertTrue("$name dark=$dark hue off by $dh", dh <= 25)
+            }
+        }
     }
 
     @Test

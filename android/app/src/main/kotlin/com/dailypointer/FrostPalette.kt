@@ -29,14 +29,8 @@ data class FrostPalette(
     companion object {
         const val WHITE = 0xFFFFFFFF.toInt()
         const val BLACK = 0xFF000000.toInt()
-        private const val PAPER = 0xFFF6F3EE.toInt()
-        private const val DEEP = 0xFF16151B.toInt()
         private const val INK_DARK = 0xFF1D1B20.toInt()
         private const val INK_LIGHT = 0xFFF5F2EE.toInt()
-
-        /** Share of the wallpaper color kept in each stop; the rest is the calm tint. */
-        private const val LIGHT_KEEP = 0.30
-        private const val DARK_KEEP = 0.36
 
         /** Sheen (upper half) and shade (lower edge) strengths drawn by the card renderer. */
         const val SHEEN = 0.10
@@ -51,35 +45,25 @@ data class FrostPalette(
          * [dark] follows the system night mode.
          */
         fun from(primary: Int?, secondary: Int?, tertiary: Int?, dark: Boolean): FrostPalette {
-            val (top, bottom) = if (primary == null) {
+            if (primary == null) {
                 val f = if (dark) FALLBACK_DARK else FALLBACK_LIGHT
-                f[0] to f[1]
-            } else {
-                val second = secondary ?: tertiary ?: primary
-                val tint = if (dark) DEEP else PAPER
-                val keep = if (dark) DARK_KEEP else LIGHT_KEEP
-                val settle = { c: Int -> settle(c, tint, dark) }
-                settle(mix(tint, primary, keep)) to settle(mix(tint, mix(second, tertiary ?: second, 0.5), keep))
+                return withInk(f[0], f[1])
             }
-            return withInk(opaque(top), opaque(bottom))
+            // Tint source: the wallpaper's most colorful of primary/secondary/tertiary, so a white
+            // or grey primary over a colored wallpaper still tints the card.
+            val source = listOfNotNull(primary, secondary, tertiary).maxByOrNull { Oklch.of(it).c } ?: primary
+            val lch = Oklch.of(source)
+            val neutral = lch.c < NEUTRAL_CHROMA
+            // Visible but calm: light frost carries 0.035-0.06 OKLCH chroma toward the wallpaper hue,
+            // deep frost 0.03-0.055. A neutral wallpaper keeps a whisper of warmth instead.
+            val c = if (neutral) 0.008 else if (dark) (lch.c * 0.45).coerceIn(0.03, 0.055) else (lch.c * 0.5).coerceIn(0.035, 0.06)
+            val h = if (neutral) 70.0 else lch.h
+            val (lTop, lBottom) = if (dark) 0.27 to 0.22 else 0.925 to 0.885
+            return withInk(Oklch(lTop, c, h).toArgb(), Oklch(lBottom, c * 1.1, h + 8).toArgb())
         }
 
-        /**
-         * Keeps a stop inside the calm band: light cards at least 0.78 luminance, dark cards at most
-         * 0.045, by easing toward the tint. A white or neon wallpaper then still gives a frost, not a glare.
-         */
-        private fun settle(c: Int, tint: Int, dark: Boolean): Int {
-            var out = c
-            repeat(24) {
-                val l = luminance(out)
-                if (if (dark) l <= MAX_DARK_LUMINANCE else l >= MIN_LIGHT_LUMINANCE) return out
-                out = mix(out, tint, 0.15)
-            }
-            return tint
-        }
-
-        private const val MIN_LIGHT_LUMINANCE = 0.78
-        private const val MAX_DARK_LUMINANCE = 0.045
+        /** Below this OKLCH chroma a wallpaper reads as white, grey or black. */
+        private const val NEUTRAL_CHROMA = 0.02
 
         /** Picks the ink with the higher worst-case contrast over every shade the card shows. */
         fun withInk(top: Int, bottom: Int): FrostPalette {
@@ -120,3 +104,56 @@ data class FrostPalette(
             listOf(primary, secondary, tertiary, dark).hashCode()
     }
 }
+
+/** OKLCH (Björn Ottosson's OKLab in polar form), for perceptual tinting with gamut clamping. */
+data class Oklch(val l: Double, val c: Double, val h: Double) {
+    fun toArgb(): Int {
+        var chroma = c
+        repeat(30) {
+            val rgb = toLinear(l, chroma, h)
+            if (rgb.all { it in -0.0005..1.0005 }) return pack(rgb)
+            chroma *= 0.9
+        }
+        return pack(toLinear(l, 0.0, h))
+    }
+
+    companion object {
+        fun of(argb: Int): Oklch {
+            fun lin(v: Int): Double {
+                val s = v / 255.0
+                return if (s <= 0.04045) s / 12.92 else Math.pow((s + 0.055) / 1.055, 2.4)
+            }
+            val r = lin((argb shr 16) and 0xFF); val g = lin((argb shr 8) and 0xFF); val b = lin(argb and 0xFF)
+            val l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+            val m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+            val s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+            val okL = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+            val okA = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+            val okB = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+            val h = Math.toDegrees(Math.atan2(okB, okA)).let { if (it < 0) it + 360 else it }
+            return Oklch(okL, Math.hypot(okA, okB), h)
+        }
+
+        private fun toLinear(L: Double, c: Double, hDeg: Double): DoubleArray {
+            val a = c * Math.cos(Math.toRadians(hDeg)); val b = c * Math.sin(Math.toRadians(hDeg))
+            val l = Math.pow(L + 0.3963377774 * a + 0.2158037573 * b, 3.0)
+            val m = Math.pow(L - 0.1055613458 * a - 0.0638541728 * b, 3.0)
+            val s = Math.pow(L - 0.0894841775 * a - 1.2914855480 * b, 3.0)
+            return doubleArrayOf(
+                4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+                -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+                -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s,
+            )
+        }
+
+        private fun pack(rgb: DoubleArray): Int {
+            fun enc(v: Double): Int {
+                val x = v.coerceIn(0.0, 1.0)
+                val s = if (x <= 0.0031308) 12.92 * x else 1.055 * Math.pow(x, 1 / 2.4) - 0.055
+                return (s * 255 + 0.5).toInt().coerceIn(0, 255)
+            }
+            return (0xFF shl 24) or (enc(rgb[0]) shl 16) or (enc(rgb[1]) shl 8) or enc(rgb[2])
+        }
+    }
+}
+

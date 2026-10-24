@@ -4,5 +4,6 @@
      Body opacities (color/, color-night/) are the floor that keeps 4.5:1 for the pointing text over any wallpaper. -->
 <resources>
     <color name="widget_highlight">#B3FFFFFF</color>
-    <color name="widget_rim">#40FFFFFF</color>
+    <!-- Light cards need a dark hairline: on a white wallpaper the edge carries the glass. -->
+    <color name="widget_rim">#17000000</color>
 </resources>
