@@ -92,7 +92,7 @@ class TeacherSheet extends StatelessWidget {
                           Semantics(
                             excludeSemantics: true,
                             label: traditionInfo.name,
-                            child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12)),
+                            child: Icon(traditionInfo.lineIcon, size: 13.2, color: colors.accent),
                           ),
                           Text(
                             ' ${traditionInfo.name}',

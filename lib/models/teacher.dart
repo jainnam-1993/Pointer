@@ -65,10 +65,7 @@ class Teacher {
       name: json['name'] as String,
       bio: json['bio'] as String?,
       dates: json['dates'] as String?,
-      tradition: Tradition.values.firstWhere(
-        (t) => t.name == json['tradition'],
-        orElse: () => Tradition.contemporary,
-      ),
+      tradition: Tradition.values.firstWhere((t) => t.name == json['tradition'], orElse: () => Tradition.contemporary),
       tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? const [],
       imageAsset: json['imageAsset'] as String?,
       keyTeachings: (json['keyTeachings'] as List<dynamic>?)?.cast<String>() ?? const [],
@@ -89,8 +86,7 @@ class Teacher {
   bool isFromTradition(Tradition t) => tradition == t;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is Teacher && runtimeType == other.runtimeType && name == other.name;
+  bool operator ==(Object other) => identical(this, other) || other is Teacher && runtimeType == other.runtimeType && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

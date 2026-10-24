@@ -74,9 +74,7 @@ class _CommentarySectionState extends State<CommentarySection> with SingleTicker
               children: [
                 Text(
                   'Extended Commentary',
-                  style: AppTextStyles.footerText(
-                    context,
-                  ).copyWith(color: colors.textSecondary, fontWeight: FontWeight.w500),
+                  style: AppTextStyles.footerText(context).copyWith(color: colors.textSecondary, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(width: 8),
                 RotationTransition(

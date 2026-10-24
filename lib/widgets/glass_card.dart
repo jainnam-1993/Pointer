@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../providers/providers.dart';
 import 'ambient.dart';
 import 'animated_gradient.dart';
+import 'press_scale.dart';
 
 /**
  * Glass effect intensity levels matching iOS Control Center aesthetic.
@@ -100,57 +101,28 @@ class GlassCard extends ConsumerWidget {
   }
 
   Widget _buildHighContrastCard(BuildContext context) {
-    final highContrastColors = PointerColors.highContrast;
+    const glass = GlassMaterial.highContrast;
 
     final card = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: highContrastColors.cardBackground,
+        color: glass.fill,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: highContrastColors.glassBorder, width: 2),
+        border: Border.all(color: glass.rimTop, width: glass.rimWidth),
       ),
       child: child,
     );
 
-    if (onTap != null) {
-      return GestureDetector(onTap: onTap, child: card);
-    }
-    return card;
+    return onTap == null ? card : PressScale(onTap: onTap, child: card);
   }
 
   Widget _buildGlassCard(BuildContext context, WidgetRef ref, PointerColors colors, bool isDark) {
-    // Get blur and opacity values based on intensity - iOS Control Center style
-    final (double blur, double topAlpha, double bottomAlpha) = switch (intensity) {
-      // First value is now the analytic frost amount (0..1), not a blur sigma.
-      // Fills are thinner than the old blur-era values so the frost shows through.
-      GlassIntensity.light => isDark ? (0.6, 0.07, 0.03) : (0.6, 0.16, 0.08),
-      GlassIntensity.standard => isDark ? (0.8, 0.10, 0.04) : (0.8, 0.22, 0.12),
-      GlassIntensity.heavy => isDark ? (1.0, 0.16, 0.07) : (1.0, 0.34, 0.20),
-    };
-    final frost = blur;
-
-    // iOS-style glass gradient
-    var glassGradient = LinearGradient(
-      colors: [
-        Colors.white.withValues(alpha: topAlpha),
-        Colors.white.withValues(alpha: bottomAlpha),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
-
-    final effectiveBorderColor = borderColor ?? colors.glassBorder;
-    final borderGradient = isDark
-        ? LinearGradient(
-            colors: [effectiveBorderColor, effectiveBorderColor.withValues(alpha: 0.3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : LinearGradient(
-            colors: [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
+    // All values come from the theme's GlassMaterial tokens (lib/theme/app_theme.dart).
+    final glass = GlassMaterial.of(context);
+    final level = intensity.index; // light, standard, heavy
+    final frost = glass.levels[level].frost;
+    var glassGradient = glass.fillAt(level);
+    final borderGradient = borderColor == null ? glass.rim : glass.rimWith(borderColor!);
 
     Widget innerContent = child;
     if (maxHeight != null && enableScrolling) {
@@ -174,57 +146,25 @@ class GlassCard extends ConsumerWidget {
     // On an opaque surface (sheet, dialog) the ambient is hidden: plain glass, no shader.
     final onSurface = FrostScope.suppressesFrost(context);
     if (onSurface) {
-      // Same fill as the pre-shader glass, which these surfaces were designed for.
-      final (double top, double bottom) = switch (intensity) {
-        GlassIntensity.light => isDark ? (0.15, 0.08) : (0.7, 0.45),
-        GlassIntensity.standard => isDark ? (0.25, 0.12) : (0.85, 0.6),
-        GlassIntensity.heavy => isDark ? (0.38, 0.20) : (0.95, 0.75),
-      };
-      glassGradient = LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: top),
-          Colors.white.withValues(alpha: bottom),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+      // Plain glass for opaque sheets (white and raised in light).
+      glassGradient = glass.onSurfaceAt(level);
     }
 
     // The old card drew its rim as a Container border, which also inset the child
     // by the rim width. The rim is now a foreground layer, so add that inset back
     // to keep every child exactly where it was.
-    final rimWidth = isDark ? 1.5 : 1.0;
+    final rimWidth = glass.rimWidth;
     final material = Container(
       padding: padding,
       decoration: BoxDecoration(gradient: glassGradient, borderRadius: radius),
       // Top-edge highlight: a soft sheen across the upper third.
-      foregroundDecoration: BoxDecoration(
-        borderRadius: radius,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0, 0.35],
-          colors: [
-            Colors.white.withValues(alpha: isDark ? 0.07 : 0.35),
-            Colors.white.withValues(alpha: 0),
-          ],
-        ),
-      ),
+      foregroundDecoration: BoxDecoration(borderRadius: radius, gradient: glass.sheen),
       child: Padding(padding: EdgeInsets.all(rimWidth), child: constrainedContent),
     );
 
     final card = DecoratedBox(
       // Soft shadow in both themes, plus the hairline rim drawn outside the clip.
-      decoration: BoxDecoration(
-        borderRadius: radius,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.32 : 0.08),
-            blurRadius: isDark ? 24 : 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
+      decoration: BoxDecoration(borderRadius: radius, boxShadow: glass.shadows),
       position: DecorationPosition.background,
       child: DecoratedBox(
         position: DecorationPosition.foreground,
@@ -250,10 +190,8 @@ class GlassCard extends ConsumerWidget {
       ),
     );
 
-    if (onTap != null) {
-      return GestureDetector(onTap: onTap, child: card);
-    }
-    return card;
+    // Press-scale feedback instead of an ink ripple.
+    return onTap == null ? card : PressScale(onTap: onTap, child: card);
   }
 }
 
@@ -300,114 +238,81 @@ class GlassButton extends ConsumerWidget {
     return _buildGlassButton(context, ref, colors, isDark);
   }
 
-  Widget _buildHighContrastButton(BuildContext context) {
-    final highContrastColors = PointerColors.highContrast;
-
-    // Wrap with ConstrainedBox to ensure 48px touch target (WCAG 2.5.8)
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 48),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: isLoading ? null : onPressed,
-          borderRadius: BorderRadius.circular(AppSpacing.xxl),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
-            decoration: BoxDecoration(
-              color: highContrastColors.cardBackground,
-              borderRadius: BorderRadius.circular(AppSpacing.xxl),
-              border: Border.all(color: highContrastColors.glassBorder, width: 2),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (isLoading)
-                  SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: highContrastColors.textPrimary))
-                else ...[
-                  Text(
-                    label,
-                    style: TextStyle(color: highContrastColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
-                  ),
-                  if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
-                ],
-              ],
+  Widget _label(BuildContext context, Color textColor, Color spinnerColor) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (isLoading)
+          SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor))
+        else ...[
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.buttonLabel(context).copyWith(color: textColor),
             ),
           ),
+          if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
+        ],
+      ],
+    );
+  }
+
+  Widget _buildHighContrastButton(BuildContext context) {
+    const glass = GlassMaterial.highContrast;
+    final hc = PointerColors.highContrast;
+    // 48x48 minimum touch target (WCAG 2.5.8); press-scale, no ripple.
+    return PressScale(
+      onTap: isLoading ? null : onPressed,
+      semanticLabel: isLoading ? label : null,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
+          decoration: BoxDecoration(
+            color: glass.fill,
+            borderRadius: BorderRadius.circular(AppSpacing.xxl),
+            border: Border.all(color: glass.rimTop, width: glass.rimWidth),
+          ),
+          child: _label(context, hc.textPrimary, hc.textPrimary),
         ),
       ),
     );
   }
 
   Widget _buildGlassButton(BuildContext context, WidgetRef ref, PointerColors colors, bool isDark) {
-    final spinnerColor = colors.primary;
+    final glass = GlassMaterial.of(context);
+    final level = isPrimary ? glass.buttonPrimary : glass.buttonSecondary;
+    final borderGradient = glass.rimWith(isPrimary ? colors.glassBorderActive : colors.glassBorder);
+    final radius = BorderRadius.circular(AppSpacing.xxl);
 
-    final glassGradient = isDark
-        ? LinearGradient(
-            colors: isPrimary
-                ? [Colors.white.withValues(alpha: 0.30), Colors.white.withValues(alpha: 0.15)]
-                : [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : LinearGradient(
-            colors: isPrimary
-                ? [Colors.white.withValues(alpha: 0.92), Colors.white.withValues(alpha: 0.65)]
-                : [Colors.white.withValues(alpha: 0.85), Colors.white.withValues(alpha: 0.55)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
-
-    final borderColor = isPrimary ? colors.glassBorderActive : colors.glassBorder;
-    final borderGradient = LinearGradient(
-      colors: [borderColor, borderColor.withValues(alpha: 0.3)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
-
-    // Wrap with ConstrainedBox to ensure 48px touch target (WCAG 2.5.8)
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 48),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: isLoading ? null : onPressed,
-          borderRadius: BorderRadius.circular(AppSpacing.xxl),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppSpacing.xxl),
-            // Analytic frost instead of a live blur (see GlassCard).
-            child: Stack(
-              fit: StackFit.passthrough,
-              children: [
-                if (!FrostScope.suppressesFrost(context))
-                  Positioned.fill(
-                    child: AmbientFrost(frost: 0.7, palette: ambientPaletteForTheme(context), animate: ambientMotionEnabled(context, ref)),
-                  ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
-                  decoration: BoxDecoration(
-                    gradient: glassGradient,
-                    borderRadius: BorderRadius.circular(AppSpacing.xxl),
-                    border: GradientBoxBorder(gradient: borderGradient, width: 1),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isLoading)
-                        SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor))
-                      else ...[
-                        Text(
-                          label,
-                          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
-                        ),
-                        if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
-                      ],
-                    ],
-                  ),
+    // 48x48 minimum touch target (WCAG 2.5.8); press-scale instead of an ink ripple.
+    return PressScale(
+      onTap: isLoading ? null : onPressed,
+      semanticLabel: isLoading ? label : null,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+        child: ClipRRect(
+          borderRadius: radius,
+          // Analytic frost instead of a live blur (see GlassCard).
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: [
+              if (!FrostScope.suppressesFrost(context))
+                Positioned.fill(
+                  child: AmbientFrost(frost: level.frost, palette: ambientPaletteForTheme(context), animate: ambientMotionEnabled(context, ref)),
                 ),
-              ],
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: glass.buttonFill(primary: isPrimary),
+                  borderRadius: radius,
+                  border: GradientBoxBorder(gradient: borderGradient, width: 1),
+                ),
+                child: _label(context, colors.textPrimary, colors.accent),
+              ),
+            ],
           ),
         ),
       ),
@@ -437,18 +342,19 @@ class GlassDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final isDark = context.isDarkMode;
+    final glass = GlassMaterial.of(context);
 
     return Dialog(
       backgroundColor: Colors.transparent,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+          filter: ImageFilter.blur(sigmaX: glass.blurSigma * 1.6, sigmaY: glass.blurSigma * 1.6),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: isDark ? 0.28 : 0.92),
+              color: glass.opaque ? glass.fill : colors.surface.withValues(alpha: 0.78),
               borderRadius: BorderRadius.circular(20),
+              border: GradientBoxBorder(gradient: glass.rim, width: glass.rimWidth),
             ),
             padding: AppSpacing.cardAll,
             child: Column(
@@ -459,7 +365,7 @@ class GlassDialog extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                     child: Text(
                       title!,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
+                      style: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.headline, fontWeight: FontWeight.w600, color: colors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                   ),

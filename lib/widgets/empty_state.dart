@@ -18,13 +18,7 @@ class EmptyStateWidget extends StatelessWidget {
   /// Icon size. Defaults to 64.
   final double iconSize;
 
-  const EmptyStateWidget({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    this.iconSize = 64,
-  });
+  const EmptyStateWidget({super.key, required this.icon, required this.title, this.subtitle, this.iconSize = 64});
 
   @override
   Widget build(BuildContext context) {

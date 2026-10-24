@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +7,8 @@ import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/onboarding_animations.dart';
+import '../utils/haptics.dart';
+import '../theme/app_icons.dart';
 
 /**
  * Contemplative onboarding experience for Pointer app.
@@ -20,15 +21,14 @@ import '../widgets/onboarding_animations.dart';
  */
 
 /**
- * Responsive font size that scales with screen width and respects text scaling.
+ * Responsive font size that scales with screen width; [Text] applies the user's text scale.
  * Base sizes scale down on screens < 375px (iPhone SE) for WCAG compliance.
  */
 double _responsiveFontSize(BuildContext context, double baseSize) {
   final screenWidth = MediaQuery.of(context).size.width;
-  final textScaler = MediaQuery.textScalerOf(context);
   // Scale factor: 1.0 at 375px+, scales down linearly to 0.8 at 320px
   final widthFactor = ((screenWidth - 320) / 55).clamp(0.8, 1.0);
-  return textScaler.scale(baseSize * widthFactor);
+  return baseSize * widthFactor; // Text applies the (root-clamped) text scale once.
 }
 
 /**
@@ -98,13 +98,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   /** Animates to the specified page with haptic feedback. No-ops if [page] > 3. */
   void _advanceToPage(int page) {
     if (!mounted || page > 3) return;
-    HapticFeedback.lightImpact();
+    Haptics.light();
     _pageController.animateToPage(page, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
   }
 
   /** Advances to the next page or finishes onboarding on the last page. */
   Future<void> _handleContinue() async {
-    HapticFeedback.lightImpact();
+    Haptics.success();
     if (_currentPage < 3) {
       _advanceToPage(_currentPage + 1);
     } else {
@@ -118,7 +118,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
    * Dismissing the rationale stays on the page.
    */
   Future<void> _handleEnableNotifications() async {
-    HapticFeedback.mediumImpact();
+    Haptics.light();
     final proceed = await showDialog<bool>(context: context, builder: (context) => const _PermissionRationaleDialog());
     if (proceed != true || !mounted) return;
     final notificationService = ref.read(notificationServiceProvider);
@@ -160,7 +160,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: PageView(
                     controller: _pageController,
                     onPageChanged: (page) {
-                      HapticFeedback.lightImpact();
+                      Haptics.light();
                       setState(() => _currentPage = page);
                     },
                     children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
@@ -341,7 +341,7 @@ class _ContrastPage extends StatelessWidget {
             firstChild: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.self_improvement_outlined, size: 48, color: colors.textMuted),
+                Icon(AppIcons.timer, size: 48, color: colors.textMuted),
                 SizedBox(height: betweenIconAndCopy),
                 Text(
                   'Meditation apps teach you to become a better meditator.',

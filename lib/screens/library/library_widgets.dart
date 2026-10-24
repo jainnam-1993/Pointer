@@ -8,7 +8,6 @@ library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/pointings.dart';
 import '../../data/teaching.dart';
@@ -17,6 +16,7 @@ import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/share_preview_helper.dart';
+import '../../utils/haptics.dart';
 
 /** Section header for separated content sections */
 class SectionHeader extends StatelessWidget {
@@ -118,7 +118,7 @@ class ArticleListItem extends ConsumerWidget {
             // Bookmark
             GestureDetector(
               onTap: () {
-                HapticFeedback.lightImpact();
+                Haptics.light();
                 ref.read(articleFavoritesProvider.notifier).toggle(article.id);
               },
               child: SizedBox(
@@ -193,7 +193,7 @@ class TeachingCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(traditionInfo.icon, style: const TextStyle(fontSize: 11)),
+                        Icon(traditionInfo.lineIcon, size: 12.1),
                         const SizedBox(width: 4),
                         Text(traditionInfo.name, style: TextStyle(color: colors.textMuted, fontSize: 11)),
                       ],
@@ -231,7 +231,7 @@ class TeachingCard extends StatelessWidget {
 
 /** Show share sheet for a teaching */
 void showLibraryShareSheet(BuildContext context, Teaching teaching) {
-  HapticFeedback.mediumImpact();
+  Haptics.light();
   showSharePreview(context, teaching.toPointing());
 }
 
@@ -294,7 +294,7 @@ class FilterSheet<T> extends StatelessWidget {
                     ),
                     trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                     onTap: () {
-                      HapticFeedback.lightImpact();
+                      Haptics.selection();
                       onSelected(option.value);
                     },
                   );

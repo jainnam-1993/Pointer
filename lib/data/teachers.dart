@@ -46,30 +46,24 @@ void _clearIndexes() {
   _teacherSearchCorpus = null;
 }
 
-Map<String, Teacher> get _byLowerName =>
-    _teachersByLowerName ??= {for (final t in teachers.values) t.name.toLowerCase(): t};
+Map<String, Teacher> get _byLowerName => _teachersByLowerName ??= {for (final t in teachers.values) t.name.toLowerCase(): t};
 
 Map<Tradition, List<Teacher>> get _byTradition => _teachersByTradition ??= {
-      for (final tradition in Tradition.values)
-        tradition: List<Teacher>.unmodifiable(
-          teachers.values.where((t) => t.tradition == tradition).toList(growable: false),
-        ),
-    };
+  for (final tradition in Tradition.values)
+    tradition: List<Teacher>.unmodifiable(teachers.values.where((t) => t.tradition == tradition).toList(growable: false)),
+};
 
-List<Teacher> get _withArticles => _teachersWithArticles ??= List<Teacher>.unmodifiable(
-      teachers.values.where((t) => t.articleIds.isNotEmpty).toList(growable: false),
-    );
+List<Teacher> get _withArticles =>
+    _teachersWithArticles ??= List<Teacher>.unmodifiable(teachers.values.where((t) => t.articleIds.isNotEmpty).toList(growable: false));
 
-List<Teacher> get _withPointings => _teachersWithPointings ??= List<Teacher>.unmodifiable(
-      teachers.values.where((t) => t.pointingIds.isNotEmpty).toList(growable: false),
-    );
+List<Teacher> get _withPointings =>
+    _teachersWithPointings ??= List<Teacher>.unmodifiable(teachers.values.where((t) => t.pointingIds.isNotEmpty).toList(growable: false));
 
-List<String> get _names =>
-    _allTeacherNames ??= List<String>.unmodifiable(teachers.values.map((t) => t.name).toList(growable: false));
+List<String> get _names => _allTeacherNames ??= List<String>.unmodifiable(teachers.values.map((t) => t.name).toList(growable: false));
 
 Map<String, String> get _searchCorpus => _teacherSearchCorpus ??= {
-      for (final t in teachers.values) t.name: [t.name, t.bio ?? '', ...t.keyTeachings].join('\n').toLowerCase(),
-    };
+  for (final t in teachers.values) t.name: [t.name, t.bio ?? '', ...t.keyTeachings].join('\n').toLowerCase(),
+};
 
 // ---------------------------------------------------------------------------
 // Loader
@@ -138,7 +132,5 @@ List<Teacher> getTeachersWithPointings() {
 List<Teacher> searchTeacherProfiles(String query) {
   final normalizedQuery = query.toLowerCase().trim();
   if (normalizedQuery.isEmpty) return const <Teacher>[];
-  return teachers.values
-      .where((t) => (_searchCorpus[t.name] ?? '').contains(normalizedQuery))
-      .toList(growable: false);
+  return teachers.values.where((t) => (_searchCorpus[t.name] ?? '').contains(normalizedQuery)).toList(growable: false);
 }

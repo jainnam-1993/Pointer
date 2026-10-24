@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import 'ambient.dart';
+import '../utils/motion.dart';
 
 /**
  * Time-of-day period for the 24-hour gradient cycle.
@@ -52,7 +53,7 @@ TimeOfDayPeriod currentAmbientPeriod() => AnimatedGradient.debugPeriodOverride ?
 
 /** Whether ambient motion should run in this context (reduce motion, tests, flags). */
 bool ambientMotionEnabled(BuildContext context, WidgetRef ref) {
-  final reduceMotion = shouldReduceMotion(context, ref.watch(reduceMotionOverrideProvider));
+  final reduceMotion = Motion.reduce(context);
   if (reduceMotion || AnimatedGradient.disableAnimations) return false;
   return AnimatedGradient.forceMotionInTests || !AnimatedGradient.isTestEnvironment();
 }
@@ -186,7 +187,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   Widget _buildGradient(BuildContext context, AppThemeMode themeMode) {
     // One shader pass: time-of-day gradient, aurora flow, dust motes, dither.
     // Falls back to a gradient painter if the FragmentProgram cannot load.
-    final reduceMotion = shouldReduceMotion(context, ref.watch(reduceMotionOverrideProvider));
+    final reduceMotion = Motion.reduce(context);
     AmbientClock.instance.setReduceMotion(reduceMotion);
     final palette = ambientPaletteFor(context, ref, period: _currentPeriod);
     return AmbientBackground(palette: palette, animate: ambientMotionEnabled(context, ref));

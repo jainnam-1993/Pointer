@@ -22,7 +22,6 @@ dependencies:
 
   # UI Components
   cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.0
   flutter_animate: ^4.5.0
   # Glass effects implemented via BackdropFilter in glass_card.dart
   # Enhanced glass morphism implemented via GradientBoxBorder in glass_card.dart
@@ -67,6 +66,7 @@ dependencies:
   flutter_svg: ^2.0.10
   flutter_markdown_plus: ^1.0.6
   animations: ^2.1.1
+  phosphor_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +97,17 @@ flutter:
     - assets/icons/
     - assets/sounds/
     - assets/videos/
+
+  # Bundled OFL fonts (licenses in assets/fonts); no runtime fetching.
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+    - family: Newsreader
+      fonts:
+        - asset: assets/fonts/Newsreader-Variable.ttf
+        - asset: assets/fonts/Newsreader-Italic-Variable.ttf
+          style: italic
 
 # App Icon Configuration
 flutter_launcher_icons:

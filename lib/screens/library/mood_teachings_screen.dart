@@ -27,7 +27,7 @@ class MoodTeachingsScreen extends StatelessWidget {
     final teachings = TeachingRepository.byMood(mood);
 
     return TeachingDetailScreen(
-      title: '${MoodTags.icon(mood)} ${MoodTags.displayName(mood)}',
+      title: MoodTags.displayName(mood),
       subtitle: '${articles.length} articles, ${teachings.length} quotes',
       articles: articles,
       teachings: teachings,

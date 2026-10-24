@@ -14,7 +14,7 @@ void main() {
       );
 
       expect(find.text('Advaita Vedanta'), findsOneWidget);
-      expect(find.text(traditions[Tradition.advaita]!.icon), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.advaita]!.lineIcon), findsOneWidget);
     });
 
     testWidgets('renders Zen tradition correctly', (tester) async {
@@ -25,7 +25,7 @@ void main() {
       );
 
       expect(find.text('Zen Buddhism'), findsOneWidget);
-      expect(find.text(traditions[Tradition.zen]!.icon), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.zen]!.lineIcon), findsOneWidget);
     });
 
     testWidgets('renders Direct Path tradition correctly', (tester) async {
@@ -36,7 +36,7 @@ void main() {
       );
 
       expect(find.text('Direct Path'), findsOneWidget);
-      expect(find.text(traditions[Tradition.direct]!.icon), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.direct]!.lineIcon), findsOneWidget);
     });
 
     testWidgets('renders Contemporary tradition correctly', (tester) async {
@@ -47,7 +47,7 @@ void main() {
       );
 
       expect(find.text('Contemporary'), findsOneWidget);
-      expect(find.text(traditions[Tradition.contemporary]!.icon), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.contemporary]!.lineIcon), findsOneWidget);
     });
 
     testWidgets('renders Original tradition correctly', (tester) async {
@@ -58,7 +58,7 @@ void main() {
       );
 
       expect(find.text('Original'), findsOneWidget);
-      expect(find.text(traditions[Tradition.original]!.icon), findsOneWidget);
+      expect(find.byIcon(traditions[Tradition.original]!.lineIcon), findsOneWidget);
     });
 
     testWidgets('uses pill shape (high borderRadius)', (tester) async {
@@ -141,8 +141,8 @@ void main() {
         ),
       );
 
-      final iconText = tester.widget<Text>(find.text(traditions[Tradition.zen]!.icon));
-      expect(iconText.style?.fontSize, 18);
+      final icon = tester.widget<Icon>(find.byIcon(traditions[Tradition.zen]!.lineIcon));
+      expect(icon.size, closeTo(19.8, 0.01));
     });
 
     testWidgets('name text has correct styling', (tester) async {
@@ -167,7 +167,7 @@ void main() {
 
         final info = traditions[tradition]!;
         expect(find.text(info.name), findsOneWidget);
-        expect(find.text(info.icon), findsOneWidget);
+        expect(find.byIcon(info.lineIcon), findsOneWidget);
 
         // Reset for next iteration
         await tester.pumpWidget(const SizedBox());

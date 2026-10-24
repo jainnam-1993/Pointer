@@ -153,6 +153,15 @@ void _drainPendingWidgetUri() {
  * Delegates initialization to [AppInitializer.initialize] and launches
  * [PointerApp] inside an [UncontrolledProviderScope].
  */
+/** Adds the bundled OFL font licenses to the license page. */
+void _registerFontLicenses() {
+  LicenseRegistry.addLicense(() async* {
+    for (final (name, path) in const [('Inter', 'assets/fonts/Inter-OFL.txt'), ('Newsreader', 'assets/fonts/Newsreader-OFL.txt')]) {
+      yield LicenseEntryWithLineBreaks([name], await rootBundle.loadString(path));
+    }
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -180,6 +189,7 @@ void main() async {
         }),
   );
 
+  _registerFontLicenses();
   runApp(UncontrolledProviderScope(container: result.container, child: const PointerApp()));
 }
 
@@ -236,6 +246,7 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   Widget build(BuildContext context) {
     final router = ref.read(routerProvider);
     final themeMode = ref.watch(flutterThemeModeProvider);
+    final reduceMotionOverride = ref.watch(reduceMotionOverrideProvider);
 
     return MaterialApp.router(
       title: 'Here Now',
@@ -259,8 +270,17 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
             systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
           ),
         );
+        // One text-scale clamp for the whole app; Text applies it once.
+        // Fold the app's Animations toggle into disableAnimations so Motion.reduce is one check.
         // One shared backdrop for every sheet blur (BackdropFilter.grouped).
-        return BackdropGroup(child: child ?? const SizedBox.shrink());
+        final media = MediaQuery.of(context);
+        final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
+        return BackdropGroup(
+          child: MediaQuery(
+            data: media.copyWith(disableAnimations: reduceMotion),
+            child: MediaQuery.withClampedTextScaling(minScaleFactor: 0.85, maxScaleFactor: 2.0, child: child ?? const SizedBox.shrink()),
+          ),
+        );
       },
     );
   }

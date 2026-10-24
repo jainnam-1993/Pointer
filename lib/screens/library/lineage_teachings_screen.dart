@@ -34,7 +34,7 @@ class LineageTeachingsScreen extends StatelessWidget {
     final teachings = TeachingRepository.byLineage(tradition);
 
     return TeachingDetailScreen(
-      title: '${info.icon} ${info.name}',
+      title: info.name,
       subtitle: '${articles.length} articles, ${teachings.length} quotes',
       descriptionWidget: SliverToBoxAdapter(
         child: Padding(

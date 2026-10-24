@@ -2,11 +2,11 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
+import '../utils/haptics.dart';
 
 /**
  * Compact card that invites users to try a guided self-inquiry session
@@ -29,7 +29,7 @@ class MiniInquiryCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         borderRadius: 20,
         onTap: () {
-          HapticFeedback.lightImpact();
+          Haptics.light();
           context.push('/inquiry/random');
         },
         child: Row(

@@ -490,7 +490,7 @@ class NotificationService {
 
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      "🧪 Test Notification",
+      "Test notification",
       pointing.content,
       NotificationDetails(
         iOS: DarwinNotificationDetails(
@@ -510,7 +510,7 @@ class NotificationService {
           enableVibration: true,
           playSound: true,
           sound: const RawResourceAndroidNotificationSound('bell_chime'),
-          styleInformation: BigTextStyleInformation(pointing.content, contentTitle: "🧪 Test Notification", summaryText: subtitle),
+          styleInformation: BigTextStyleInformation(pointing.content, contentTitle: "Test notification", summaryText: subtitle),
         ),
       ),
       payload: pointing.id,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/glass_card.dart';
+import '../theme/app_icons.dart';
 
 /**
  * Root shell widget providing bottom navigation and tab management.
@@ -199,8 +200,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                   children: [
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.spa_outlined,
-                        activeIcon: Icons.spa,
+                        icon: AppIcons.home,
+                        activeIcon: AppIcons.homeActive,
                         label: 'Home',
                         isActive: widget.currentIndex == 0,
                         onTap: () => widget.onTap(0),
@@ -208,8 +209,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                     ),
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.self_improvement_outlined,
-                        activeIcon: Icons.self_improvement,
+                        icon: AppIcons.inquiry,
+                        activeIcon: AppIcons.inquiryActive,
                         label: 'Inquiry',
                         isActive: widget.currentIndex == 1,
                         onTap: () => widget.onTap(1),
@@ -217,8 +218,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                     ),
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.menu_book_outlined,
-                        activeIcon: Icons.menu_book,
+                        icon: AppIcons.library,
+                        activeIcon: AppIcons.libraryActive,
                         label: 'Library',
                         isActive: widget.currentIndex == 2,
                         onTap: () => widget.onTap(2),
@@ -226,8 +227,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
                     ),
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.settings_outlined,
-                        activeIcon: Icons.settings,
+                        icon: AppIcons.settings,
+                        activeIcon: AppIcons.settingsActive,
                         label: 'Settings',
                         isActive: widget.currentIndex == 3,
                         onTap: () => widget.onTap(3),

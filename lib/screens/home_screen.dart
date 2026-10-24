@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
@@ -22,6 +21,7 @@ import '../widgets/commentary_section.dart';
 import '../widgets/video_player_widget.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/mini_inquiry_card.dart';
+import '../utils/haptics.dart';
 // Phase 5.11: TraditionBadge no longer imported - using inline badge in card header
 // import '../widgets/tradition_badge.dart';
 
@@ -71,7 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(settingsProvider.notifier).setZenMode(newValue);
     if (newValue) {
       // Entering zen mode - haptic feedback
-      HapticFeedback.lightImpact();
+      Haptics.light();
     }
   }
 
@@ -116,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
    * [withHaptic] triggers medium haptic feedback (manual advance only).
    */
   Future<void> _advancePointing({bool withHaptic = false}) async {
-    if (withHaptic) HapticFeedback.mediumImpact();
+    if (withHaptic) Haptics.light();
 
     setState(() => _isAnimating = true);
 
@@ -187,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (_isAnimating) return;
 
     // Haptic feedback
-    HapticFeedback.mediumImpact();
+    Haptics.light();
 
     setState(() => _isAnimating = true);
 
@@ -210,7 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /** Opens the [SharePreviewScreen] as a modal bottom sheet for the current pointing. */
   Future<void> _handleShare() async {
     final pointing = ref.read(currentPointingProvider);
-    HapticFeedback.mediumImpact();
+    Haptics.light();
     showSharePreview(context, pointing);
   }
 
@@ -230,7 +230,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return;
     }
 
-    HapticFeedback.mediumImpact();
+    Haptics.light();
 
     // Save to favorites
     await ref.read(favoritesProvider.notifier).toggle(pointing.id);
@@ -255,11 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(
-            excludeSemantics: true,
-            label: traditionInfo.name,
-            child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
-          ),
+          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Icon(traditionInfo.lineIcon, size: 15.4)),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
@@ -475,7 +471,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                         onTap: () async {
                                                           final favorites = ref.read(favoritesProvider);
                                                           if (favorites.contains(pointing.id)) {
-                                                            HapticFeedback.mediumImpact();
+                                                            Haptics.light();
                                                             await ref.read(favoritesProvider.notifier).toggle(pointing.id);
                                                             await ref
                                                                 .read(widgetServiceProvider)
@@ -671,7 +667,7 @@ class _SourceCitation extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4),
       child: GestureDetector(
         onTap: () {
-          HapticFeedback.lightImpact();
+          Haptics.light();
           match.navigate(context);
         },
         child: Text(source, style: style, textAlign: TextAlign.center),

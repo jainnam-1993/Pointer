@@ -2,13 +2,13 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../services/ambient_sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/pointer_switch.dart';
+import '../../utils/haptics.dart';
 
 /** Auto-advance toggle for automatic pointing rotation */
 class AutoAdvanceToggle extends ConsumerWidget {
@@ -44,7 +44,7 @@ class AutoAdvanceToggle extends ConsumerWidget {
               PointerSwitch(
                 value: isEnabled,
                 onChanged: (value) {
-                  HapticFeedback.lightImpact();
+                  Haptics.selection();
                   ref.read(settingsProvider.notifier).setAutoAdvance(value);
                 },
               ),
@@ -96,7 +96,7 @@ class AmbientSoundPicker extends ConsumerWidget {
               final isSelected = currentSound == sound;
               return GestureDetector(
                 onTap: () {
-                  HapticFeedback.lightImpact();
+                  Haptics.selection();
                   ref.read(ambientSoundProvider.notifier).setSound(sound);
                 },
                 child: Container(

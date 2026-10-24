@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/glass_card.dart';
+import 'package:pointer/widgets/press_scale.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
 
@@ -292,7 +293,7 @@ void main() {
       expect(find.byIcon(Icons.arrow_forward), findsNothing);
     });
 
-    testWidgets('uses InkWell for tap effect', (tester) async {
+    testWidgets('uses press-scale instead of an ink ripple', (tester) async {
       await tester.pumpWidget(
         wrapWithProviderScope(
           MaterialApp(
@@ -303,7 +304,8 @@ void main() {
         ),
       );
 
-      expect(find.byType(InkWell), findsOneWidget);
+      expect(find.byType(InkWell), findsNothing);
+      expect(find.byType(PressScale), findsOneWidget);
     });
 
     testWidgets('uses correct border radius for pill shape', (tester) async {

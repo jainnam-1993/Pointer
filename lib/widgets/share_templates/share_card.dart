@@ -221,10 +221,7 @@ class _ShareTemplate extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          if (style.showBadge) ...[
-            _TraditionBadge(tradition: pointing.tradition, color: style.badgeColor),
-            const SizedBox(height: 40),
-          ],
+          if (style.showBadge) ...[_TraditionBadge(tradition: pointing.tradition, color: style.badgeColor), const SizedBox(height: 40)],
           Text(
             '"${pointing.content}"',
             style: TextStyle(
@@ -286,7 +283,7 @@ class _TraditionBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(info.icon, style: TextStyle(fontSize: 20, color: badgeColor)),
+          Icon(info.lineIcon, size: 22, color: badgeColor),
           const SizedBox(width: 8),
           Text(
             info.name,

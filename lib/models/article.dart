@@ -99,19 +99,10 @@ class Article {
       excerpt: json['excerpt'] as String?,
       tradition: Tradition.values.byName(json['tradition'] as String),
       teacher: json['teacher'] as String?,
-      categories: (json['categories'] as List<dynamic>?)
-              ?.map((c) => ArticleCategory.values.byName(c as String))
-              .toList() ??
-          const [],
+      categories: (json['categories'] as List<dynamic>?)?.map((c) => ArticleCategory.values.byName(c as String)).toList() ?? const [],
       readingTimeMinutes: json['readingTimeMinutes'] as int? ?? 3,
-      topicTags: (json['topicTags'] as List<dynamic>?)
-              ?.map((t) => t as String)
-              .toSet() ??
-          const {},
-      moodTags: (json['moodTags'] as List<dynamic>?)
-              ?.map((m) => m as String)
-              .toSet() ??
-          const {},
+      topicTags: (json['topicTags'] as List<dynamic>?)?.map((t) => t as String).toSet() ?? const {},
+      moodTags: (json['moodTags'] as List<dynamic>?)?.map((m) => m as String).toSet() ?? const {},
     );
   }
 

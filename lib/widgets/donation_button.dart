@@ -12,13 +12,16 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../providers/donation_providers.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
+import '../utils/haptics.dart';
+import '../theme/app_icons.dart';
+import '../utils/motion.dart';
+import 'press_scale.dart';
 
 /** Product display configuration pairing a product ID with its label and icon. */
 class _TipProduct {
@@ -30,11 +33,11 @@ class _TipProduct {
 
 /** Map product IDs to display labels and icons */
 const _tipProducts = <String, _TipProduct>{
-  'tip_small': _TipProduct('Tea', Icons.local_cafe_outlined),
-  // Icons avoid the tab bar's lotus (Home) and meditating figure (Inquiry).
-  'tip_medium': _TipProduct('Cushion', Icons.weekend_outlined),
-  'tip_large': _TipProduct('Incense', Icons.local_fire_department_outlined),
-  'tip_generous': _TipProduct('Retreat', Icons.landscape_outlined),
+  // Phosphor Light line icons, distinct from the tab icons.
+  'tip_small': _TipProduct('Tea', AppIcons.tipTea),
+  'tip_medium': _TipProduct('Cushion', AppIcons.tipCushion),
+  'tip_large': _TipProduct('Incense', AppIcons.tipIncense),
+  'tip_generous': _TipProduct('Retreat', AppIcons.tipRetreat),
 };
 
 /**
@@ -68,31 +71,29 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
   bool _isExpanded = false;
 
   void _toggleExpanded() {
-    HapticFeedback.lightImpact();
+    Haptics.selection();
     setState(() {
       _isExpanded = !_isExpanded;
     });
   }
 
   void _onTipSelected(ProductDetails product) {
-    HapticFeedback.mediumImpact();
+    Haptics.light();
     ref.read(donationProvider.notifier).purchaseTip(product);
   }
 
   void _retry() {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     ref.read(donationProvider.notifier).initialize();
   }
 
   /** Light, 60 ms, light: the success pattern for a completed tip. */
   Future<void> _successHaptic() async {
-    await HapticFeedback.lightImpact();
-    await Future<void>.delayed(const Duration(milliseconds: 60));
-    await HapticFeedback.lightImpact();
+    await Haptics.success();
   }
 
   void _dismissResult() {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     ref.read(donationProvider.notifier).clearResult();
   }
 
@@ -153,12 +154,12 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       behavior: HitTestBehavior.opaque,
       child: Row(
         children: [
-          Icon(Icons.favorite_outline, color: colors.accent, size: 20),
+          Icon(AppIcons.heart, color: colors.accent, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Support Development',
-              style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w600),
+              style: TextStyle(color: colors.textPrimary, fontFamily: AppFonts.sans, fontSize: AppType.body, fontWeight: FontWeight.w600),
             ),
           ),
           if (state.isLoading && !_isExpanded)
@@ -167,7 +168,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
             AnimatedRotation(
               turns: _isExpanded ? 0.5 : 0.0,
               duration: const Duration(milliseconds: 200),
-              child: Icon(Icons.keyboard_arrow_down, color: colors.textMuted, size: 24),
+              child: Icon(AppIcons.chevronDown, color: colors.textMuted, size: 24),
             ),
         ],
       ),
@@ -181,10 +182,13 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
         const SizedBox(height: AppSpacing.md),
         Text(
           'Here Now is free forever. If you find value, consider supporting development.',
-          style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.4),
+          style: TextStyle(color: colors.textSecondary, fontFamily: AppFonts.sans, fontSize: AppType.callout, height: 1.45),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text('Tips do not unlock features.', style: TextStyle(color: colors.textMuted, fontSize: 12, height: 1.4)),
+        Text(
+          'Tips do not unlock features.',
+          style: TextStyle(fontFamily: AppFonts.sans, color: colors.textMuted, fontSize: AppType.caption, height: 1.4),
+        ),
         const SizedBox(height: AppSpacing.lg),
         _buildProductGrid(state, colors),
       ],
@@ -216,7 +220,10 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Text('No donation options available', style: TextStyle(color: colors.textMuted, fontSize: 14)),
+          child: Text(
+            'No donation options available',
+            style: TextStyle(fontFamily: AppFonts.sans, color: colors.textMuted, fontSize: AppType.callout),
+          ),
         ),
       );
     }
@@ -231,7 +238,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
             liveRegion: true,
             child: Text(
               note,
-              style: TextStyle(color: colors.textSecondary, fontSize: 13, height: 1.4),
+              style: TextStyle(fontFamily: AppFonts.sans, color: colors.textSecondary, fontSize: AppType.callout, height: 1.45),
               textAlign: TextAlign.center,
             ),
           ),
@@ -257,7 +264,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       children: [
         Text(
           state.error ?? 'An error occurred',
-          style: TextStyle(color: colors.textSecondary, fontSize: 13),
+          style: TextStyle(fontFamily: AppFonts.sans, color: colors.textSecondary, fontSize: AppType.callout),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -271,7 +278,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
             ),
             child: Text(
               'Retry',
-              style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(color: colors.accent, fontFamily: AppFonts.sans, fontSize: AppType.callout, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -295,7 +302,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
         return _TipOptionCard(
           product: product,
           label: config?.label ?? product.title,
-          icon: config?.icon ?? Icons.card_giftcard_outlined,
+          icon: config?.icon ?? AppIcons.tipFallback,
           colors: colors,
           onTap: isPurchasing ? null : () => _onTipSelected(product),
           isDisabled: isPurchasing,
@@ -308,7 +315,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
 /**
  * Thank-you moment shown in place of the tier grid after a completed tip.
  *
- * An ink enso draws itself once (900 ms), then the gratitude copy and a Done
+ * An ink enso draws itself once ([Motion.calm]), then the gratitude copy and a Done
  * control that returns to the tiers. No blur or repeating animation.
  */
 class _ThankYou extends StatelessWidget {
@@ -327,7 +334,7 @@ class _ThankYou extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           TweenAnimationBuilder<double>(
             tween: Tween(begin: reduceMotion ? 1 : 0, end: 1),
-            duration: const Duration(milliseconds: 900),
+            duration: Motion.calm,
             curve: Curves.easeInOutCubic,
             builder: (context, progress, _) => CustomPaint(
               size: const Size.square(56),
@@ -337,7 +344,7 @@ class _ThankYou extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             'Thank you. This keeps Here Now free.',
-            style: TextStyle(color: colors.textPrimary, fontSize: 15, fontWeight: FontWeight.w500),
+            style: AppTextStyles.quoteText(context).copyWith(color: colors.textPrimary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
@@ -351,7 +358,7 @@ class _ThankYou extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Done',
-                    style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontFamily: AppFonts.sans, color: colors.accent, fontSize: AppType.callout, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -403,14 +410,15 @@ class _TipOptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
 
-    return GestureDetector(
+    return PressScale(
       onTap: onTap,
+      haptic: false,
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 150),
+        duration: Motion.instant,
         opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
-          constraints: const BoxConstraints(minHeight: 44),
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
           decoration: BoxDecoration(
             color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -423,10 +431,13 @@ class _TipOptionCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(color: colors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500),
+                style: TextStyle(color: colors.textPrimary, fontFamily: AppFonts.sans, fontSize: AppType.callout, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 2),
-              Text(product.price, style: TextStyle(color: colors.textMuted, fontSize: 12)),
+              Text(
+                product.price,
+                style: TextStyle(fontFamily: AppFonts.sans, color: colors.textMuted, fontSize: AppType.caption),
+              ),
             ],
           ),
         ),

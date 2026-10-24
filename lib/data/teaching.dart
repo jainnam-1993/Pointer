@@ -97,16 +97,10 @@ class Teaching {
       instruction: json['instruction'] as String?,
       teacher: json['teacher'] as String,
       source: json['source'] as String?,
-      lineage: Tradition.values.firstWhere(
-        (t) => t.name == json['lineage'],
-        orElse: () => Tradition.contemporary,
-      ),
+      lineage: Tradition.values.firstWhere((t) => t.name == json['lineage'], orElse: () => Tradition.contemporary),
       topicTags: (json['topicTags'] as List<dynamic>?)?.cast<String>().toSet() ?? const <String>{},
       moodTags: (json['moodTags'] as List<dynamic>?)?.cast<String>().toSet() ?? const <String>{},
-      type: TeachingType.values.firstWhere(
-        (t) => t.name == json['type'],
-        orElse: () => TeachingType.extract,
-      ),
+      type: TeachingType.values.firstWhere((t) => t.name == json['type'], orElse: () => TeachingType.extract),
       sourceUrl: json['sourceUrl'] as String?,
       dateAdded: json['dateAdded'] != null ? DateTime.tryParse(json['dateAdded'] as String) : null,
     );

@@ -3,7 +3,7 @@
  *
  * This file defines the complete visual identity: color palettes ([PointerColors]),
  * gradient backgrounds ([AppGradients]), accessibility-aware text styles ([AppTextStyles]),
- * Material [ThemeData] configurations ([AppTheme]), and layout spacing constants ([AppSpacing]).
+ * Material [ThemeData] configurations ([AppTheme]), the glass material ([GlassMaterial]), the type scale ([AppType]), and layout spacing constants ([AppSpacing]).
  *
  * Access the active color scheme from any widget via the [ThemeCheck] extension:
  * ```dart
@@ -14,7 +14,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /**
  * User-facing theme mode selection persisted in [SharedPreferences].
@@ -129,46 +128,50 @@ class PointerColors extends ThemeExtension<PointerColors> {
     this.cardBackground = const Color(0xFF1A1A1A),
   });
 
-  /** Dark theme colors - Enhanced liquid glass morphism for black background */
+  /**
+   * Dark theme: sumi ink on black. The accent is the enso's indigo ink
+   * (#1A0A3A) lifted to a readable lavender; text steps are opaque so contrast
+   * holds on any glass (see test/theme/contrast_test.dart).
+   */
   static const dark = PointerColors(
     background: Color(0xFF000000),
-    surface: Color(0xFF0A0A0A),
-    primary: Color(0xFF8B5CF6),
-    secondary: Color(0xFFEC4899),
-    textPrimary: Colors.white,
-    textSecondary: Color(0x99FFFFFF), // white with 0.6 alpha
-    textMuted: Color(0x99FFFFFF), // white with 0.6 alpha
-    glassBorder: Color(0x4DFFFFFF), // 30% opacity for visible liquid glass border
-    glassBackground: Color(0x1AFFFFFF), // 10% opacity for glass fill
-    glassBorderActive: Color(0x66FFFFFF), // 40% opacity for active state
-    gold: Color(0xFFFFD700),
-    accent: Color(0xFF8B5CF6), // Violet accent
-    iconColor: Colors.white,
-    glassHighlight: Color(0x33FFFFFF), // Stronger top-left highlight
-    glassGlow: Color(0x1A8B5CF6), // Subtle purple accent glow
-    shimmerColor: Color(0x338B5CF6), // Purple shimmer accent
-    cardBackground: Color(0xFF0A0A0A), // Near black for dark mode cards
+    surface: Color(0xFF0B0A10),
+    primary: InkPalette.inkLavender,
+    secondary: InkPalette.inkDusk,
+    textPrimary: Color(0xFFF5F3FA),
+    textSecondary: Color(0xFFC9C5D3),
+    textMuted: Color(0xFFA8A3B3),
+    glassBorder: Color(0x38FFFFFF),
+    glassBackground: Color(0x1FFFFFFF),
+    glassBorderActive: Color(0x5CFFFFFF),
+    gold: Color(0xFFD9B26F),
+    accent: InkPalette.inkLavender,
+    iconColor: Color(0xFFF5F3FA),
+    glassHighlight: Color(0x29FFFFFF),
+    glassGlow: Color(0x14A597E0),
+    shimmerColor: Color(0x29A597E0),
+    cardBackground: Color(0xFF0B0A10),
   );
 
-  /** Light theme colors - Subtle liquid glass aesthetic */
+  /** Light theme: ink on warm paper. */
   static const light = PointerColors(
-    background: Color(0xFFF5F5F7), // Apple-style neutral gray
+    background: Color(0xFFF6F4F1),
     surface: Color(0xFFFFFFFF),
-    primary: Color(0xFF5B5B5B), // Neutral dark gray
-    secondary: Color(0xFF8E8E93), // iOS gray
-    textPrimary: Color(0xFF1C1C1E), // Near black
-    textSecondary: Color(0xFF636366), // Medium gray
-    textMuted: Color(0xFF8E8E93), // iOS gray
-    glassBorder: Color(0x15000000), // Very subtle border
-    glassBackground: Color(0x08FFFFFF), // Frosted glass fill
-    glassBorderActive: Color(0x22000000),
-    gold: Color(0xFFB8860B), // Darker gold
-    accent: Color(0xFF8B5CF6), // Violet accent
-    iconColor: Color(0xFF3C3C43), // Dark gray icons
-    glassHighlight: Color(0x60FFFFFF), // Soft white highlight
-    glassGlow: Color(0x088B5CF6), // Subtle violet glow
-    shimmerColor: Color(0x108B5CF6), // Violet shimmer
-    cardBackground: Color(0xFFFFFFFF), // Pure white cards
+    primary: InkPalette.ink,
+    secondary: Color(0xFF6F6585),
+    textPrimary: Color(0xFF1A1622),
+    textSecondary: Color(0xFF45404F),
+    textMuted: Color(0xFF69636F),
+    glassBorder: Color(0x14000000),
+    glassBackground: Color(0xCCFFFFFF),
+    glassBorderActive: Color(0x24000000),
+    gold: Color(0xFF8A6420),
+    accent: InkPalette.inkDeep,
+    iconColor: Color(0xFF2A2533),
+    glassHighlight: Color(0x99FFFFFF),
+    glassGlow: Color(0x0A4B3D8F),
+    shimmerColor: Color(0x104B3D8F),
+    cardBackground: Color(0xFFFFFFFF),
   );
 
   /**
@@ -182,41 +185,38 @@ class PointerColors extends ThemeExtension<PointerColors> {
     secondary: Colors.white,
     textPrimary: Colors.white,
     textSecondary: Colors.white,
-    textMuted: Color(0xFFCCCCCC), // Light gray, still high contrast on black
-    glassBorder: Colors.white, // Strong white border for clear boundaries
-    glassBackground: Colors.black, // Solid black, no transparency
+    textMuted: Color(0xFFCCCCCC),
+    glassBorder: Colors.white,
+    glassBackground: Colors.black,
     glassBorderActive: Colors.white,
     gold: Color(0xFFFFD700),
-    accent: Color(0xFF8B5CF6), // Violet accent
+    accent: Color(0xFFD4CBF5),
     iconColor: Colors.white,
     glassHighlight: Colors.white,
-    glassGlow: Colors.transparent, // No glow effects in high contrast
-    shimmerColor: Colors.transparent, // No shimmer in high contrast
-    cardBackground: Color(0xFF1A1A1A), // Solid dark gray for cards
+    glassGlow: Colors.transparent,
+    shimmerColor: Colors.transparent,
+    cardBackground: Color(0xFF1A1A1A),
   );
 
-  /**
-   * OLED black mode - Pure black (#000000) for OLED displays
-   * Battery savings + eye comfort while maintaining glass aesthetic
-   */
+  /** OLED black mode: pure black surfaces, same ink palette as [dark]. */
   static const oled = PointerColors(
     background: Colors.black,
     surface: Colors.black,
-    primary: Color(0xFF8B5CF6),
-    secondary: Color(0xFFEC4899),
-    textPrimary: Colors.white,
-    textSecondary: Color(0xB3FFFFFF), // 70% white
-    textMuted: Color(0x80FFFFFF), // 50% white
-    glassBorder: Color(0x33FFFFFF), // 20% border for subtle glass effect
-    glassBackground: Color(0x0DFFFFFF), // 5% glass fill - very subtle on black
-    glassBorderActive: Color(0x4DFFFFFF), // 30% for active state
-    gold: Color(0xFFFFD700),
-    accent: Color(0xFF8B5CF6), // Violet accent
-    iconColor: Colors.white,
-    glassHighlight: Color(0x1AFFFFFF), // Very subtle highlight
-    glassGlow: Color(0x0D8B5CF6), // Minimal purple glow
-    shimmerColor: Color(0x1A8B5CF6), // Subtle shimmer
-    cardBackground: Colors.black, // Pure black for OLED
+    primary: InkPalette.inkLavender,
+    secondary: InkPalette.inkDusk,
+    textPrimary: Color(0xFFF5F3FA),
+    textSecondary: Color(0xFFC9C5D3),
+    textMuted: Color(0xFFA8A3B3),
+    glassBorder: Color(0x2EFFFFFF),
+    glassBackground: Color(0x0FFFFFFF),
+    glassBorderActive: Color(0x4DFFFFFF),
+    gold: Color(0xFFD9B26F),
+    accent: InkPalette.inkLavender,
+    iconColor: Color(0xFFF5F3FA),
+    glassHighlight: Color(0x1AFFFFFF),
+    glassGlow: Color(0x0DA597E0),
+    shimmerColor: Color(0x1AA597E0),
+    cardBackground: Colors.black,
   );
 
   @override
@@ -286,6 +286,323 @@ class PointerColors extends ThemeExtension<PointerColors> {
 }
 
 /**
+ * Brand hues derived from the enso mark's ink (#1A0A3A in assets/icons/enso_icon.svg).
+ *
+ * Replaces the stock Tailwind violet (#8B5CF6) and pink (#EC4899).
+ */
+class InkPalette {
+  /** The enso ink itself: deep indigo, used for light-theme primary surfaces. */
+  static const Color ink = Color(0xFF2A2238);
+
+  /** Ink diluted for light-theme accents and links (9:1 on white). */
+  static const Color inkDeep = Color(0xFF4B3D8F);
+
+  /** Ink lifted for dark-theme accents (7:1 on black). */
+  static const Color inkLavender = Color(0xFFA597E0);
+
+  /** Softer companion hue for gradients. */
+  static const Color inkDusk = Color(0xFF8E7CC3);
+}
+
+/** Frost amount and fill alphas for one glass intensity. */
+@immutable
+class GlassLevel {
+  /** Analytic frost amount (0..1) handed to the ambient frost shader. */
+  final double frost;
+
+  /** Fill alpha at the top-left gradient stop. */
+  final double top;
+
+  /** Fill alpha at the bottom-right gradient stop. */
+  final double bottom;
+
+  const GlassLevel(this.frost, this.top, this.bottom);
+
+  GlassLevel lerp(GlassLevel o, double t) => GlassLevel(frost + (o.frost - frost) * t, top + (o.top - top) * t, bottom + (o.bottom - bottom) * t);
+}
+
+/**
+ * The one glass material: frost, fill, rim, highlight, and shadow tokens per theme.
+ *
+ * Feeds the analytic-frost glass in [GlassCard], [GlassButton], and
+ * [GlassDialog]; read it with [GlassMaterial.of]. [levels] holds the light,
+ * standard, and heavy intensities in that order; [onSurfaceLevels] are the
+ * plain fills used where FrostScope suppresses frost (opaque sheets). Contrast for every text color over every fill is enforced by
+ * test/theme/contrast_test.dart.
+ */
+@immutable
+class GlassMaterial extends ThemeExtension<GlassMaterial> {
+  /** Fill tint (alpha comes from [levels]). */
+  final Color fill;
+
+  /** Light, standard, heavy. */
+  final List<GlassLevel> levels;
+
+  /** Plain (unfrosted) fill per intensity where frost is suppressed (opaque sheets); frost is ignored. */
+  final List<GlassLevel> onSurfaceLevels;
+
+  /** Fill for primary and secondary [GlassButton]s. */
+  final GlassLevel buttonPrimary;
+  final GlassLevel buttonSecondary;
+
+  /** Rim (border) color at the lit top-left edge. */
+  final Color rimTop;
+
+  /** Rim color at the bottom-right edge. */
+  final Color rimBottom;
+
+  /** Rim stroke width. */
+  final double rimWidth;
+
+  /** Top-edge sheen color (fades to transparent over [highlightExtent]). */
+  final Color highlight;
+
+  /** Fraction of the height the sheen covers. */
+  final double highlightExtent;
+
+  /** Drop shadow color. */
+  final Color shadow;
+
+  /** Drop shadow blur radius. */
+  final double shadowBlur;
+
+  /** Blur sigma for the few surfaces that still use a live backdrop blur (dialogs, toasts). */
+  final double blurSigma;
+
+  /** Whether the material is opaque (high contrast): no frost, solid fill. */
+  final bool opaque;
+
+  const GlassMaterial({
+    required this.fill,
+    required this.levels,
+    required this.onSurfaceLevels,
+    required this.buttonPrimary,
+    required this.buttonSecondary,
+    required this.rimTop,
+    required this.rimBottom,
+    this.rimWidth = 1.0,
+    required this.highlight,
+    this.highlightExtent = 0.35,
+    required this.shadow,
+    this.shadowBlur = 24,
+    this.blurSigma = 30,
+    this.opaque = false,
+  });
+
+  static const dark = GlassMaterial(
+    fill: Colors.white,
+    levels: [GlassLevel(0.6, 0.07, 0.03), GlassLevel(0.8, 0.10, 0.04), GlassLevel(1.0, 0.16, 0.07)],
+    onSurfaceLevels: [GlassLevel(0, 0.10, 0.05), GlassLevel(0, 0.14, 0.07), GlassLevel(0, 0.18, 0.09)],
+    buttonPrimary: GlassLevel(0.7, 0.30, 0.15),
+    buttonSecondary: GlassLevel(0.7, 0.22, 0.10),
+    rimTop: Color(0x38FFFFFF),
+    rimBottom: Color(0x11FFFFFF),
+    rimWidth: 1.5,
+    highlight: Color(0x12FFFFFF),
+    shadow: Color(0x52000000),
+  );
+
+  static const light = GlassMaterial(
+    fill: Colors.white,
+    levels: [GlassLevel(0.6, 0.16, 0.08), GlassLevel(0.8, 0.22, 0.12), GlassLevel(1.0, 0.34, 0.20)],
+    onSurfaceLevels: [GlassLevel(0, 0.70, 0.45), GlassLevel(0, 0.85, 0.60), GlassLevel(0, 0.95, 0.75)],
+    buttonPrimary: GlassLevel(0.7, 0.92, 0.65),
+    buttonSecondary: GlassLevel(0.7, 0.85, 0.55),
+    rimTop: Color(0x14000000),
+    rimBottom: Color(0x08000000),
+    highlight: Color(0x59FFFFFF),
+    shadow: Color(0x141A0A3A),
+    shadowBlur: 20,
+  );
+
+  static const oled = GlassMaterial(
+    fill: Colors.white,
+    levels: [GlassLevel(0.5, 0.05, 0.02), GlassLevel(0.7, 0.07, 0.03), GlassLevel(0.9, 0.11, 0.05)],
+    onSurfaceLevels: [GlassLevel(0, 0.08, 0.04), GlassLevel(0, 0.12, 0.06), GlassLevel(0, 0.16, 0.08)],
+    buttonPrimary: GlassLevel(0.6, 0.22, 0.10),
+    buttonSecondary: GlassLevel(0.6, 0.15, 0.07),
+    rimTop: Color(0x33FFFFFF),
+    rimBottom: Color(0x0AFFFFFF),
+    highlight: Color(0x0DFFFFFF),
+    shadow: Colors.transparent,
+  );
+
+  static const highContrast = GlassMaterial(
+    fill: Color(0xFF1A1A1A),
+    levels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    onSurfaceLevels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    buttonPrimary: GlassLevel(0, 1, 1),
+    buttonSecondary: GlassLevel(0, 1, 1),
+    rimTop: Colors.white,
+    rimBottom: Colors.white,
+    rimWidth: 2,
+    highlight: Colors.transparent,
+    shadow: Colors.transparent,
+    blurSigma: 0,
+    opaque: true,
+  );
+
+  /** Index of each intensity in [levels]. */
+  static const int lightLevel = 0, standardLevel = 1, heavyLevel = 2;
+
+  /** Legacy multipliers relative to the standard level (kept for older call sites). */
+  static const double lightFactor = 0.7;
+  static const double heavyFactor = 1.6;
+
+  /** Resolves the material for [context]; [highContrast] forces the opaque variant. */
+  static GlassMaterial of(BuildContext context, {bool highContrast = false}) {
+    if (highContrast) return GlassMaterial.highContrast;
+    if (context.colors == PointerColors.oled) return GlassMaterial.oled;
+    return Theme.of(context).extension<GlassMaterial>() ?? (context.isDarkMode ? GlassMaterial.dark : GlassMaterial.light);
+  }
+
+  /** Standard-level fill alphas. */
+  double get fillTopAlpha => levels[standardLevel].top;
+  double get fillBottomAlpha => levels[standardLevel].bottom;
+
+  /** The frosted fill gradient for [level] (see [lightLevel], [standardLevel], [heavyLevel]). */
+  LinearGradient fillAt(int level) => LinearGradient(
+    colors: [
+      fill.withValues(alpha: levels[level].top),
+      fill.withValues(alpha: levels[level].bottom),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** The fill gradient scaled from the standard level by [factor] (1.0 = standard). */
+  LinearGradient fillFor([double factor = 1.0]) => LinearGradient(
+    colors: [
+      fill.withValues(alpha: (fillTopAlpha * factor).clamp(0.0, 1.0)),
+      fill.withValues(alpha: (fillBottomAlpha * factor).clamp(0.0, 1.0)),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** Plain fill for [level] where frost is suppressed (opaque sheets and dialogs). */
+  LinearGradient onSurfaceAt(int level) => _gradient(onSurfaceLevels[level]);
+
+  /** Button fill. */
+  LinearGradient buttonFill({required bool primary}) => _gradient(primary ? buttonPrimary : buttonSecondary);
+
+  LinearGradient _gradient(GlassLevel l) => LinearGradient(
+    colors: [
+      fill.withValues(alpha: l.top),
+      fill.withValues(alpha: l.bottom),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** The rim gradient with a custom lit color (fades to 30%). */
+  LinearGradient rimWith(Color c) => LinearGradient(
+    colors: [
+      c,
+      c.withValues(alpha: c.a * 0.3),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /** The rim gradient, lit from the top-left. */
+  LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
+
+  /** Top-edge sheen as a foreground gradient. */
+  LinearGradient get sheen => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0, highlightExtent],
+    colors: [highlight, highlight.withValues(alpha: 0)],
+  );
+
+  /** Drop shadows, empty when [shadow] is transparent. */
+  List<BoxShadow> get shadows => shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 6))];
+
+  @override
+  GlassMaterial copyWith({Color? fill, List<GlassLevel>? levels, Color? rimTop, Color? rimBottom, Color? highlight, Color? shadow}) {
+    return GlassMaterial(
+      fill: fill ?? this.fill,
+      levels: levels ?? this.levels,
+      onSurfaceLevels: onSurfaceLevels,
+      buttonPrimary: buttonPrimary,
+      buttonSecondary: buttonSecondary,
+      rimTop: rimTop ?? this.rimTop,
+      rimBottom: rimBottom ?? this.rimBottom,
+      rimWidth: rimWidth,
+      highlight: highlight ?? this.highlight,
+      highlightExtent: highlightExtent,
+      shadow: shadow ?? this.shadow,
+      shadowBlur: shadowBlur,
+      blurSigma: blurSigma,
+      opaque: opaque,
+    );
+  }
+
+  @override
+  GlassMaterial lerp(ThemeExtension<GlassMaterial>? other, double t) {
+    if (other is! GlassMaterial) return this;
+    double l(double a, double b) => a + (b - a) * t;
+    return GlassMaterial(
+      fill: Color.lerp(fill, other.fill, t)!,
+      levels: [for (var i = 0; i < levels.length; i++) levels[i].lerp(other.levels[i], t)],
+      onSurfaceLevels: [for (var i = 0; i < onSurfaceLevels.length; i++) onSurfaceLevels[i].lerp(other.onSurfaceLevels[i], t)],
+      buttonPrimary: buttonPrimary.lerp(other.buttonPrimary, t),
+      buttonSecondary: buttonSecondary.lerp(other.buttonSecondary, t),
+      rimTop: Color.lerp(rimTop, other.rimTop, t)!,
+      rimBottom: Color.lerp(rimBottom, other.rimBottom, t)!,
+      rimWidth: l(rimWidth, other.rimWidth),
+      highlight: Color.lerp(highlight, other.highlight, t)!,
+      highlightExtent: l(highlightExtent, other.highlightExtent),
+      shadow: Color.lerp(shadow, other.shadow, t)!,
+      shadowBlur: l(shadowBlur, other.shadowBlur),
+      blurSigma: l(blurSigma, other.blurSigma),
+      opaque: t < 0.5 ? opaque : other.opaque,
+    );
+  }
+}
+
+/**
+ * Bundled font families (assets/fonts, OFL). No runtime fetching.
+ */
+class AppFonts {
+  /** Refined serif for pointings and quotes. */
+  static const String serif = 'Newsreader';
+
+  /** UI sans. */
+  static const String sans = 'Inter';
+}
+
+/**
+ * The six-size type scale. Every shared style uses one of these sizes.
+ *
+ * Sizes are logical pixels before the user's text scale; [Text] applies the
+ * scale once, clamped at the app root.
+ */
+class AppType {
+  /** 28: pointings (serif). */
+  static const double display = 28;
+
+  /** 22: screen titles and headings. */
+  static const double title = 22;
+
+  /** 18: card titles, quotes, instructions. */
+  static const double headline = 18;
+
+  /** 16: body copy and button labels. */
+  static const double body = 16;
+
+  /** 14: supporting text, attributions. */
+  static const double callout = 14;
+
+  /** 12: captions, section labels, footers. */
+  static const double caption = 12;
+
+  /** All six sizes, largest first. */
+  static const List<double> scale = [display, title, headline, body, callout, caption];
+}
+
+/**
  * Pre-defined [LinearGradient] backgrounds and animated color sets for the liquid glass aesthetic.
  *
  * Provides separate dark and light variants for both static backgrounds and shimmer animation
@@ -323,192 +640,125 @@ class AppGradients {
   static const animatedColorsLight = [Color(0xFFFAFAFA), Color(0xFFF0F0F2), Color(0xFFF5F5F7), Color(0xFFEDEDEF)];
 
   /** Dark mode glass gradient for cards and overlays - Enhanced liquid glass */
-  static LinearGradient get glassDark => LinearGradient(
-    colors: [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.08)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  static LinearGradient get glassDark => GlassMaterial.dark.fillFor();
 
   /** Light mode glass gradient for cards and overlays */
-  static LinearGradient get glassLight => LinearGradient(
-    colors: [Colors.white.withValues(alpha: 0.7), Colors.white.withValues(alpha: 0.4)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  static LinearGradient get glassLight => GlassMaterial.light.fillFor();
 }
 
 /**
- * Scale-aware text styles for Dynamic Type / Accessibility support
+ * Shared text styles on the [AppType] scale.
  *
- * These styles respect system text scale settings while clamping to
- * reasonable bounds (0.8x - 1.5x) to prevent layout breakage.
+ * Sizes are unscaled: [Text] applies the user's text scale once, and the app
+ * root clamps it with [MediaQuery.withClampedTextScaling]. Do not multiply by
+ * the text scale here or in callers (that scaled text twice).
  */
 class AppTextStyles {
-  /**
-   * Set to true in tests to use system fonts instead of Google Fonts.
-   * This avoids network requests and font loading issues in test environment.
-   */
+  /** Retained for older tests; fonts are bundled so there is nothing to switch. */
   static bool useSystemFonts = false;
 
-  /** Get the clamped text scale factor from MediaQuery */
-  static double _getClampedScale(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    // Scale a reference value of 1.0 to get the effective scale factor
-    final scale = textScaler.scale(1.0);
-    return scale.clamp(0.8, 1.5);
-  }
+  static PointerColors _colors(BuildContext context) => Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
 
-  /**
-   * Main pointing text style - contemplative reading
-   * Base: 20pt, scales 16-30pt
-   */
-  static TextStyle pointingText(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 20 * scale,
-        height: 1.7,
-        letterSpacing: 0.3,
-        fontWeight: FontWeight.w400,
-        color: colors.textPrimary,
-      );
-    }
-    return GoogleFonts.inter(fontSize: 20 * scale, height: 1.7, letterSpacing: 0.3, fontWeight: FontWeight.w400, color: colors.textPrimary);
-  }
+  /** Pointing text: Newsreader at [AppType.display] with a reading line height. */
+  static TextStyle pointingText(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.serif,
+    fontSize: AppType.display,
+    height: 1.36,
+    letterSpacing: -0.2,
+    fontWeight: FontWeight.w400,
+    color: _colors(context).textPrimary,
+  );
 
-  /**
-   * Instruction text style - subtle guidance
-   * Base: 16pt, scales 12.8-24pt
-   */
-  static TextStyle instructionText(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 16 * scale,
-        height: 1.6,
-        letterSpacing: 0.2,
-        fontWeight: FontWeight.w300,
-        fontStyle: FontStyle.italic,
-        color: colors.textSecondary,
-      );
-    }
-    return GoogleFonts.inter(
-      fontSize: 16 * scale,
-      height: 1.6,
-      letterSpacing: 0.2,
-      fontWeight: FontWeight.w300,
-      fontStyle: FontStyle.italic,
-      color: colors.textSecondary,
-    );
-  }
+  /** Quote text: Newsreader italic at [AppType.headline]. */
+  static TextStyle quoteText(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.serif,
+    fontSize: AppType.headline,
+    height: 1.5,
+    fontStyle: FontStyle.italic,
+    fontWeight: FontWeight.w400,
+    color: _colors(context).textSecondary,
+  );
 
-  /**
-   * Teacher attribution text style
-   * Base: 14pt, scales 11.2-21pt
-   */
-  static TextStyle teacherText(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 14 * scale,
-        height: 1.5,
-        letterSpacing: 0.5,
-        fontWeight: FontWeight.w500,
-        color: colors.textMuted,
-      );
-    }
-    return GoogleFonts.inter(fontSize: 14 * scale, height: 1.5, letterSpacing: 0.5, fontWeight: FontWeight.w500, color: colors.textMuted);
-  }
+  /** Instruction text: quiet serif italic guidance. */
+  static TextStyle instructionText(BuildContext context) => quoteText(context);
 
-  /**
-   * Footer / hint text style
-   * Base: 12pt, scales 9.6-18pt
-   */
-  static TextStyle footerText(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 12 * scale,
-        height: 1.4,
-        letterSpacing: 0.3,
-        fontWeight: FontWeight.w400,
-        color: colors.textMuted,
-      );
-    }
-    return GoogleFonts.inter(fontSize: 12 * scale, height: 1.4, letterSpacing: 0.3, fontWeight: FontWeight.w400, color: colors.textMuted);
-  }
+  /** Teacher attribution. */
+  static TextStyle teacherText(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.sans,
+    fontSize: AppType.callout,
+    height: 1.45,
+    letterSpacing: 0.2,
+    fontWeight: FontWeight.w500,
+    color: _colors(context).textMuted,
+  );
 
-  /**
-   * Heading text style - for titles and headers
-   * Base: 24pt, scales 19-36pt
-   */
-  static TextStyle heading(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 24 * scale,
-        height: 1.3,
-        letterSpacing: -0.5,
-        fontWeight: FontWeight.w600,
-        color: colors.textPrimary,
-      );
-    }
-    return GoogleFonts.inter(fontSize: 24 * scale, height: 1.3, letterSpacing: -0.5, fontWeight: FontWeight.w600, color: colors.textPrimary);
-  }
+  /** Footer and hint text. */
+  static TextStyle footerText(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.sans,
+    fontSize: AppType.caption,
+    height: 1.4,
+    letterSpacing: 0.2,
+    fontWeight: FontWeight.w400,
+    color: _colors(context).textMuted,
+  );
 
-  /**
-   * Body text style - for content and descriptions
-   * Base: 16pt, scales 13-24pt
-   */
-  static TextStyle bodyText(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 16 * scale,
-        height: 1.5,
-        letterSpacing: 0.1,
-        fontWeight: FontWeight.w400,
-        color: colors.textSecondary,
-      );
-    }
-    return GoogleFonts.inter(fontSize: 16 * scale, height: 1.5, letterSpacing: 0.1, fontWeight: FontWeight.w400, color: colors.textSecondary);
-  }
+  /** Headings and screen titles. */
+  static TextStyle heading(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.sans,
+    fontSize: AppType.title,
+    height: 1.3,
+    letterSpacing: -0.3,
+    fontWeight: FontWeight.w600,
+    color: _colors(context).textPrimary,
+  );
 
-  /**
-   * Section header text style - for section titles
-   * Base: 14pt, scales 11-21pt
-   */
-  static TextStyle sectionHeader(BuildContext context) {
-    final scale = _getClampedScale(context);
-    final colors = Theme.of(context).extension<PointerColors>() ?? PointerColors.dark;
-    if (useSystemFonts) {
-      return TextStyle(
-        fontFamily: 'Roboto',
-        fontSize: 14 * scale,
-        height: 1.4,
-        letterSpacing: 0.5,
-        fontWeight: FontWeight.w600,
-        color: colors.textMuted,
+  /** Body copy. */
+  static TextStyle bodyText(BuildContext context) =>
+      TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.body, height: 1.5, fontWeight: FontWeight.w400, color: _colors(context).textSecondary);
+
+  /** Section labels. */
+  static TextStyle sectionHeader(BuildContext context) => TextStyle(
+    fontFamily: AppFonts.sans,
+    fontSize: AppType.caption,
+    height: 1.4,
+    letterSpacing: 1.0,
+    fontWeight: FontWeight.w600,
+    color: _colors(context).textMuted,
+  );
+
+  /** Button labels. */
+  static TextStyle buttonLabel(BuildContext context) =>
+      TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.body, height: 1.25, fontWeight: FontWeight.w600, color: _colors(context).textPrimary);
+}
+
+/** Builds the Material [TextTheme] from the [AppType] scale. */
+TextTheme _textTheme(TextTheme base, PointerColors colors) {
+  return base
+      .apply(fontFamily: AppFonts.sans, bodyColor: colors.textPrimary, displayColor: colors.textPrimary)
+      .copyWith(
+        displayLarge: TextStyle(fontFamily: AppFonts.serif, fontSize: AppType.display, height: 1.36, color: colors.textPrimary),
+        headlineMedium: TextStyle(
+          fontFamily: AppFonts.sans,
+          fontSize: AppType.title,
+          fontWeight: FontWeight.w600,
+          color: colors.textPrimary,
+          letterSpacing: -0.3,
+        ),
+        titleLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.headline, fontWeight: FontWeight.w600, color: colors.textPrimary),
+        bodyLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.body, color: colors.textPrimary),
+        bodyMedium: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.callout, color: colors.textSecondary),
+        labelSmall: TextStyle(
+          fontFamily: AppFonts.sans,
+          fontSize: AppType.caption,
+          fontWeight: FontWeight.w600,
+          color: colors.textMuted,
+          letterSpacing: 1,
+        ),
       );
-    }
-    return GoogleFonts.inter(fontSize: 14 * scale, height: 1.4, letterSpacing: 0.5, fontWeight: FontWeight.w600, color: colors.textMuted);
-  }
 }
 
 /**
- * Factory for complete [ThemeData] instances wired with [PointerColors], [GoogleFonts], and
+ * Factory for complete [ThemeData] instances wired with [PointerColors], [GlassMaterial], bundled fonts, and
  * Material 3 component overrides (switches, app bar transparency).
  *
  * Usage in `MaterialApp`:
@@ -521,62 +771,52 @@ class AppTextStyles {
  * ```
  */
 class AppTheme {
-  /** Dark [ThemeData] using [PointerColors.dark] with Inter font family and transparent app bars. */
+  /** Dark [ThemeData]: bundled Inter, ink palette, one glass material, no ink splashes. */
   static ThemeData get dark {
     const colors = PointerColors.dark;
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: AppFonts.sans,
       scaffoldBackgroundColor: colors.background,
       colorScheme: ColorScheme.dark(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFEF4444)),
-      extensions: const [PointerColors.dark],
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-        displayLarge: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-        headlineMedium: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-        titleLarge: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
-        bodyLarge: GoogleFonts.inter(fontSize: 16, color: colors.textPrimary),
-        bodyMedium: GoogleFonts.inter(fontSize: 14, color: colors.textSecondary),
-        labelSmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-      ),
+      extensions: const [PointerColors.dark, GlassMaterial.dark],
+      textTheme: _textTheme(ThemeData.dark().textTheme, colors),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
       appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.all(Colors.white),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return Colors.white.withValues(alpha: 0.4);
-          }
-          return Colors.white.withValues(alpha: 0.2);
+          if (states.contains(WidgetState.selected)) return colors.accent;
+          return colors.textMuted.withValues(alpha: 0.32);
         }),
+        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
     );
   }
 
-  /** Light [ThemeData] using [PointerColors.light] with Inter font family and transparent app bars. */
+  /** Light [ThemeData]: bundled Inter, ink-on-paper palette, one glass material. */
   static ThemeData get light {
     const colors = PointerColors.light;
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: AppFonts.sans,
       scaffoldBackgroundColor: colors.background,
-      colorScheme: ColorScheme.light(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFDC2626)),
-      extensions: const [PointerColors.light],
-      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).copyWith(
-        displayLarge: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-        headlineMedium: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, letterSpacing: -0.5),
-        titleLarge: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: colors.textPrimary),
-        bodyLarge: GoogleFonts.inter(fontSize: 16, color: colors.textPrimary),
-        bodyMedium: GoogleFonts.inter(fontSize: 14, color: colors.textSecondary),
-        labelSmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-      ),
+      colorScheme: ColorScheme.light(primary: colors.primary, secondary: colors.secondary, surface: colors.surface, error: const Color(0xFFB42318)),
+      extensions: const [PointerColors.light, GlassMaterial.light],
+      textTheme: _textTheme(ThemeData.light().textTheme, colors),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
       appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.all(colors.primary),
+        thumbColor: WidgetStateProperty.all(Colors.white),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return colors.primary.withValues(alpha: 0.4);
-          }
-          return colors.textMuted.withValues(alpha: 0.3);
+          if (states.contains(WidgetState.selected)) return colors.accent;
+          return colors.textMuted.withValues(alpha: 0.32);
         }),
+        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
     );
   }
@@ -625,7 +865,7 @@ class TraditionAccentColors {
   static const Color zen = Color(0xFF4DD0E1);
 
   /** Purple accent for Direct Path tradition (matches app primary) */
-  static const Color direct = Color(0xFF8B5CF6);
+  static const Color direct = InkPalette.inkLavender;
 
   /** Cyan/Teal accent for Contemporary teachings */
   static const Color contemporary = Color(0xFF06B6D4);

@@ -83,9 +83,7 @@ class Pointing {
       content: json['content'] as String,
       instruction: json['instruction'] as String?,
       tradition: Tradition.values.byName(json['tradition'] as String),
-      contexts: (json['contexts'] as List<dynamic>)
-          .map((c) => PointingContext.values.byName(c as String))
-          .toList(),
+      contexts: (json['contexts'] as List<dynamic>).map((c) => PointingContext.values.byName(c as String)).toList(),
       teacher: json['teacher'] as String?,
       source: json['source'] as String?,
       commentary: json['commentary'] as String?,

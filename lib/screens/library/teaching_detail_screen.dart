@@ -10,7 +10,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
@@ -21,6 +20,7 @@ import '../../widgets/animated_transitions.dart';
 import 'package:go_router/go_router.dart';
 import 'library_models.dart';
 import 'library_widgets.dart';
+import '../../utils/haptics.dart';
 
 /**
  * A parameterized screen that renders articles and quotes for any
@@ -106,11 +106,7 @@ class _TeachingDetailScreenState extends ConsumerState<TeachingDetailScreen> {
                                 widget.title,
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
                               ),
-                              if (widget.subtitle != null)
-                                Text(
-                                  widget.subtitle!,
-                                  style: TextStyle(fontSize: 14, color: colors.textSecondary),
-                                ),
+                              if (widget.subtitle != null) Text(widget.subtitle!, style: TextStyle(fontSize: 14, color: colors.textSecondary)),
                             ],
                           ),
                         ),
@@ -142,7 +138,7 @@ class _TeachingDetailScreenState extends ConsumerState<TeachingDetailScreen> {
                             child: ArticleListItem(
                               article: article,
                               onTap: () {
-                                HapticFeedback.lightImpact();
+                                Haptics.selection();
                                 context.push('/article/${article.id}');
                               },
                             ),
@@ -175,7 +171,7 @@ class _TeachingDetailScreenState extends ConsumerState<TeachingDetailScreen> {
                               teaching: teaching,
                               isViewed: isViewed,
                               onTap: () async {
-                                HapticFeedback.lightImpact();
+                                Haptics.light();
                                 await storage.markTeachingAsViewed(teaching.id);
                                 if (context.mounted) setState(() {});
                               },

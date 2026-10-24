@@ -5,7 +5,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/articles.dart';
@@ -15,6 +14,7 @@ import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/animated_gradient.dart';
 import '../widgets/share_preview_helper.dart';
+import '../utils/haptics.dart';
 
 /**
  * Full article reader screen with markdown rendering and share support.
@@ -37,7 +37,6 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
   /** Resolved article from [widget.articleId], or null if not found. */
   late final Article? _article = getArticleById(widget.articleId);
 
-
   /** Lazy-loaded article content future. */
   late final Future<String> _contentFuture;
 
@@ -47,14 +46,12 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
     // If the article already has content (e.g. from tests), use it directly;
     // otherwise lazy-load from the Markdown asset file.
     final existingContent = _article?.content;
-    _contentFuture = existingContent != null
-        ? Future.value(existingContent)
-        : loadArticleContent(_article!.id);
+    _contentFuture = existingContent != null ? Future.value(existingContent) : loadArticleContent(_article!.id);
   }
 
   /** Creates a [Pointing] from the article excerpt and opens the [SharePreviewScreen]. */
   void _shareArticle(BuildContext context) {
-    HapticFeedback.mediumImpact();
+    Haptics.light();
     final article = _article!;
     final pointing = Pointing(
       id: 'article_${article.id}',
@@ -106,7 +103,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                             return IconButton(
                               icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
                               onPressed: () {
-                                HapticFeedback.lightImpact();
+                                Haptics.success();
                                 ref.read(articleFavoritesProvider.notifier).toggle(article.id);
                               },
                             );

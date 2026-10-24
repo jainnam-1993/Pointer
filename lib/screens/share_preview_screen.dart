@@ -8,6 +8,7 @@ import '../services/share_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/error_helpers.dart';
 import '../widgets/share_templates/share_card.dart';
+import '../utils/haptics.dart';
 
 /**
  * Share preview screen with template style and format selection.
@@ -261,7 +262,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                 label: '${template.displayName} style',
                 child: GestureDetector(
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    Haptics.selection();
                     ref.read(shareTemplateProvider.notifier).setTemplate(template);
                   },
                   child: Container(
@@ -317,7 +318,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                 label: '${format.displayName} format',
                 child: GestureDetector(
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    Haptics.selection();
                     ref.read(shareFormatProvider.notifier).setFormat(format);
                   },
                   child: Container(
@@ -358,7 +359,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   /** Captures the share card at full resolution and invokes the system share sheet. */
   Future<void> _shareImage(ShareTemplate template, ShareFormat format) async {
     setState(() => _isSharing = true);
-    HapticFeedback.mediumImpact();
+    Haptics.light();
 
     try {
       final shareService = ref.read(shareServiceProvider);
@@ -385,7 +386,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
 
   /** Shows a glass bottom sheet with additional export options (clipboard, text, Day One). */
   void _showExportSheet(BuildContext context) {
-    HapticFeedback.lightImpact();
+    Haptics.light();
     final colors = context.colors;
     final isDark = context.isDarkMode;
 
@@ -453,7 +454,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   /** Handles the selected export option (clipboard, text share, or Day One journal). */
   Future<void> _handleExportOption(String option) async {
     final shareService = ref.read(shareServiceProvider);
-    HapticFeedback.lightImpact();
+    Haptics.selection();
 
     // Get screen bounds for iPad popover positioning
     final box = context.findRenderObject() as RenderBox?;

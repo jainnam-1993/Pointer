@@ -145,7 +145,7 @@ void main() {
       await tester.pump();
 
       // Verify haptic feedback was triggered
-      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.mediumImpact'), isNotEmpty);
+      expect(hapticCalls.where((call) => call.method == 'HapticFeedback.vibrate' && call.arguments == 'HapticFeedbackType.lightImpact'), isNotEmpty);
     });
 
     testWidgets('long press shows save confirmation overlay', (tester) async {

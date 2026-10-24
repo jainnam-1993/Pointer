@@ -6,6 +6,9 @@
  */
 library;
 
+import 'package:flutter/widgets.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
 /**
  * Predefined topic tag constants for consistent content classification.
  *
@@ -135,47 +138,47 @@ class TopicTags {
     }
   }
 
-  /** Icon for topic */
-  static String icon(String tag) {
+  /** Thin line icon for the topic (AppIcons set; no emoji). */
+  static IconData icon(String tag) {
     switch (tag) {
       case selfInquiry:
-        return '?';
+        return PhosphorIconsLight.question;
       case awareness:
-        return '◯';
+        return PhosphorIconsLight.circle;
       case meditation:
-        return '🧘';
+        return PhosphorIconsLight.circleDashed;
       case relationship:
-        return '♡';
+        return PhosphorIconsLight.heart;
       case mind:
-        return '🧠';
+        return PhosphorIconsLight.brain;
       case freedom:
-        return '🕊';
+        return PhosphorIconsLight.bird;
       case devotion:
-        return '🙏';
+        return PhosphorIconsLight.handHeart;
       case silence:
-        return '🤫';
+        return PhosphorIconsLight.speakerSlash;
       case death:
-        return '☽';
+        return PhosphorIconsLight.moon;
       case rebirth:
-        return '∞';
+        return PhosphorIconsLight.infinity;
       case practice:
-        return '⚡';
+        return PhosphorIconsLight.lightning;
       case enlightenment:
-        return '✦';
+        return PhosphorIconsLight.sparkle;
       case life:
-        return '🌱';
+        return PhosphorIconsLight.plant;
       case truth:
-        return '◇';
+        return PhosphorIconsLight.diamond;
       case presence:
-        return '•';
+        return PhosphorIconsLight.dot;
       case surrender:
-        return '🌊';
+        return PhosphorIconsLight.waves;
       case ego:
-        return '👤';
+        return PhosphorIconsLight.userCircle;
       case nature:
-        return 'ॐ';
+        return PhosphorIconsLight.leaf;
       default:
-        return '•';
+        return PhosphorIconsLight.dot;
     }
   }
 }
@@ -240,27 +243,27 @@ class MoodTags {
     }
   }
 
-  /** Icon for mood */
-  static String icon(String tag) {
+  /** Thin line icon for the mood (AppIcons set; no emoji). */
+  static IconData icon(String tag) {
     switch (tag) {
       case morning:
-        return '🌅';
+        return PhosphorIconsLight.cloudSun;
       case midday:
-        return '☀️';
+        return PhosphorIconsLight.sun;
       case evening:
-        return '🌙';
+        return PhosphorIconsLight.moonStars;
       case stress:
-        return '🌊';
+        return PhosphorIconsLight.waves;
       case general:
-        return '◯';
+        return PhosphorIconsLight.circle;
       case contemplative:
-        return '🪷';
+        return PhosphorIconsLight.drop;
       case uplifting:
-        return '✨';
+        return PhosphorIconsLight.sparkle;
       case challenging:
-        return '🔥';
+        return PhosphorIconsLight.fire;
       default:
-        return '•';
+        return PhosphorIconsLight.dot;
     }
   }
 }
