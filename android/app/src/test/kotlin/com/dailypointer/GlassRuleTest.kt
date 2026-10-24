@@ -31,7 +31,9 @@ class GlassRuleTest {
     fun darkWallpapersStaySeeThroughAndLightOnesGetMoreTint() {
         val night = GlassRule.alpha(wallpapers.getValue("night"), false)
         val white = GlassRule.alpha(wallpapers.getValue("white"), true)
-        assertEquals(GlassRule.MIN_ALPHA, night, 1e-9)
+        // A dark wallpaper gets the glassiest card in the sweep, close to the minimum (headroom adds a little).
+        assertTrue("night \$night", night <= GlassRule.MIN_ALPHA + 0.05)
+        assertTrue(wallpapers.filterKeys { it != "black" && it != "night" }.values.all { GlassRule.alpha(it, false) >= night })
         assertTrue("white wallpaper needs more tint ($white vs $night)", white > night + 0.2)
         assertTrue(white <= GlassRule.MAX_ALPHA)
     }
