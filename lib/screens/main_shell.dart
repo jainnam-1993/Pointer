@@ -1,10 +1,12 @@
-import 'dart:ui';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/glass_card.dart';
+import '../utils/motion.dart';
+import '../widgets/liquid_glass_nav.dart';
 import '../theme/app_icons.dart';
 import '../layout/adaptive.dart';
 
@@ -30,6 +32,32 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
+  /** The bar minimizes on scroll down in lists (never on Home) and restores on scroll up, at the top, or on a tap. */
+  bool _minimized = false;
+  double _scrollRun = 0;
+
+  bool _onScroll(ScrollNotification n) {
+    if (n.metrics.axis != Axis.vertical || n.depth > 2) return false;
+    if (widget.navigationShell.currentIndex == 0) return false;
+    if (n is ScrollUpdateNotification && n.scrollDelta != null) {
+      final d = n.scrollDelta!;
+      _scrollRun = (d > 0) == (_scrollRun > 0) ? _scrollRun + d : d;
+      final atTop = n.metrics.pixels <= n.metrics.minScrollExtent;
+      if (!_minimized && _scrollRun > LiquidGlass.minimizeAfter && !atTop) {
+        setState(() => _minimized = true);
+      } else if (_minimized && (atTop || _scrollRun < -LiquidGlass.restoreAfter)) {
+        setState(() => _minimized = false);
+      }
+    }
+    return false;
+  }
+
+  void _goBranch(int index, int currentIndex) {
+    if (_minimized) setState(() => _minimized = false);
+    _scrollRun = 0;
+    widget.navigationShell.goBranch(index, initialLocation: index == currentIndex);
+  }
+
   bool _currentBranchCanPop() {
     final key = widget.navigationShell.shellRouteContext.navigatorKey;
     return key.currentState?.canPop() ?? false;
@@ -58,7 +86,7 @@ class _MainShellState extends ConsumerState<MainShell> {
       // Don't wrap navigationShell in AnimatedSwitcher/KeyedSubtree - it has
       // internal GlobalKeys that conflict when the widget tree changes.
       // The shell handles its own tab state; transitions happen at content level.
-      child: widget.navigationShell,
+      child: NotificationListener<ScrollNotification>(onNotification: _onScroll, child: widget.navigationShell),
     );
 
     // In zen mode, hide bottom nav bar
@@ -89,7 +117,8 @@ class _MainShellState extends ConsumerState<MainShell> {
                 extendBody: true,
                 bottomNavigationBar: _BottomNavBar(
                   currentIndex: currentIndex,
-                  onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+                  minimized: _minimized && currentIndex != 0,
+                  onTap: (index) => _goBranch(index, currentIndex),
                 ),
               ),
       ),
@@ -123,10 +152,7 @@ class _MainShellState extends ConsumerState<MainShell> {
             child: SafeArea(
               right: false,
               top: railTop == 0,
-              child: _SideRail(
-                currentIndex: currentIndex,
-                onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
-              ),
+              child: _SideRail(currentIndex: currentIndex, onTap: (index) => _goBranch(index, currentIndex)),
             ),
           ),
         ],
@@ -136,7 +162,7 @@ class _MainShellState extends ConsumerState<MainShell> {
 }
 
 /** The four tabs, shared by the bottom bar and the side rail. */
-const _tabs = <(IconData, IconData, String)>[
+const _tabs = <LiquidTab>[
   (AppIcons.home, AppIcons.homeActive, 'Home'),
   (AppIcons.inquiry, AppIcons.inquiryActive, 'Inquiry'),
   (AppIcons.library, AppIcons.libraryActive, 'Library'),
@@ -144,8 +170,8 @@ const _tabs = <(IconData, IconData, String)>[
 ];
 
 /**
- * Glass side rail for medium and expanded windows: a vertical pill centered
- * on the left edge, sharing the shell's [BackdropGroup] (one live blur).
+ * Liquid Glass side rail for medium and expanded windows: a vertical capsule centred on the left edge, sharing the
+ * shell's [BackdropGroup] (one live blur).
  */
 class _SideRail extends StatelessWidget {
   final int currentIndex;
@@ -155,60 +181,13 @@ class _SideRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-    final fill = isDark
-        ? [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)]
-        : [Colors.white.withValues(alpha: 0.95), Colors.white.withValues(alpha: 0.75)];
-    final border = isDark
-        ? [colors.glassBorder, colors.glassBorder.withValues(alpha: 0.2)]
-        : [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)];
-    const radius = 32.0;
     return Center(
       key: const ValueKey('side-rail'),
       child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 8),
-        child: Container(
-          decoration: isDark
-              ? null
-              : BoxDecoration(
-                  borderRadius: BorderRadius.circular(radius),
-                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))],
-                ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: BackdropFilter.grouped(
-              filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
-              child: Container(
-                width: kRailWidth - 24,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: fill, begin: Alignment.topLeft, end: Alignment.bottomRight),
-                  borderRadius: BorderRadius.circular(radius),
-                  border: GradientBoxBorder(
-                    gradient: LinearGradient(colors: border, begin: Alignment.topLeft, end: Alignment.bottomRight),
-                    width: isDark ? 1.5 : 1,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (var i = 0; i < _tabs.length; i++)
-                      SizedBox(
-                        height: 96,
-                        child: _NavItem(
-                          icon: _tabs[i].$1,
-                          activeIcon: _tabs[i].$2,
-                          label: _tabs[i].$3,
-                          isActive: currentIndex == i,
-                          onTap: () => onTap(i),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        padding: const EdgeInsets.only(left: LiquidGlass.railInset),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: LiquidGlassNav(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
         ),
       ),
     );
@@ -216,229 +195,37 @@ class _SideRail extends StatelessWidget {
 }
 
 /**
- * iOS Control Center-style glassmorphic bottom navigation bar.
- *
- * Features a backdrop blur, gradient glass effect, animated sliding indicator,
- * and 3-tier responsive breakpoints (phone <600, tablet 600-900, large tablet >900).
- * Constrained to [maxNavWidth] on large screens to prevent over-stretching.
+ * Liquid Glass tab bar for compact windows: a floating 64 px capsule, [LiquidGlass.edgeMargin] from the screen edges and
+ * at most [LiquidGlass.barMaxWidth] wide. It minimizes to an icon-only 48 px capsule while a list scrolls down.
  */
-class _BottomNavBar extends StatefulWidget {
+class _BottomNavBar extends StatelessWidget {
   /** Index of the currently selected tab (0-3). */
   final int currentIndex;
 
   /** Callback when a tab is tapped. */
   final ValueChanged<int> onTap;
 
-  const _BottomNavBar({required this.currentIndex, required this.onTap});
+  final bool minimized;
 
-  @override
-  State<_BottomNavBar> createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<_BottomNavBar> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final isDark = context.isDarkMode;
-
-    // Enhanced iOS-style glass gradient
-    final glassGradient = isDark
-        ? LinearGradient(
-            colors: [Colors.white.withValues(alpha: 0.22), Colors.white.withValues(alpha: 0.10)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : LinearGradient(
-            colors: [Colors.white.withValues(alpha: 0.95), Colors.white.withValues(alpha: 0.75)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
-
-    final borderGradient = isDark
-        ? LinearGradient(
-            colors: [colors.glassBorder, colors.glassBorder.withValues(alpha: 0.2)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : LinearGradient(
-            colors: [Colors.black.withValues(alpha: 0.08), Colors.black.withValues(alpha: 0.03)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
-
-    // Responsive sizing for tablet support
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    // Three-tier breakpoints: phone (<600), tablet (600-900), large tablet (>900)
-    final isLargeTablet = screenWidth >= 900;
-    final isTablet = screenWidth >= 600;
-
-    // Scale navigation dimensions based on device class
-    final navHeight = isLargeTablet ? 80.0 : (isTablet ? 72.0 : 64.0);
-    final horizontalPadding = isLargeTablet ? 24.0 : (isTablet ? 16.0 : 8.0);
-    final borderRadius = isLargeTablet ? 32.0 : (isTablet ? 28.0 : 24.0);
-
-    // Constrain max width on large screens to prevent over-stretching
-    final maxNavWidth = isLargeTablet ? 560.0 : (isTablet ? 480.0 : double.infinity);
-    final horizontalMargin = isLargeTablet
-        ? (screenWidth - maxNavWidth) /
-              2 // Center with calculated margins
-        : (isTablet ? 48.0 : 24.0);
-
-    // Responsive bottom margin:
-    // - Consistent 16px margin across all devices for visible gap (doubled from 8px)
-    const double bottomMargin = 16.0;
-
-    return Container(
-      margin: EdgeInsets.only(
-        left: horizontalMargin,
-        right: horizontalMargin,
-        top: 8.0, // Top padding for separation from content (doubled from 4px)
-        bottom: bottomMargin,
-      ),
-      decoration: isDark
-          ? null
-          : BoxDecoration(
-              borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 4))],
-            ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        // Live blur stays here: the tab bar floats over scrolling content.
-        child: BackdropFilter.grouped(
-          filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
-          child: Container(
-            height: navHeight,
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            decoration: BoxDecoration(
-              gradient: glassGradient,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.5 : 1),
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: _NavItem(
-                        icon: AppIcons.home,
-                        activeIcon: AppIcons.homeActive,
-                        label: 'Home',
-                        isActive: widget.currentIndex == 0,
-                        onTap: () => widget.onTap(0),
-                      ),
-                    ),
-                    Expanded(
-                      child: _NavItem(
-                        icon: AppIcons.inquiry,
-                        activeIcon: AppIcons.inquiryActive,
-                        label: 'Inquiry',
-                        isActive: widget.currentIndex == 1,
-                        onTap: () => widget.onTap(1),
-                      ),
-                    ),
-                    Expanded(
-                      child: _NavItem(
-                        icon: AppIcons.library,
-                        activeIcon: AppIcons.libraryActive,
-                        label: 'Library',
-                        isActive: widget.currentIndex == 2,
-                        onTap: () => widget.onTap(2),
-                      ),
-                    ),
-                    Expanded(
-                      child: _NavItem(
-                        icon: AppIcons.settings,
-                        activeIcon: AppIcons.settingsActive,
-                        label: 'Settings',
-                        isActive: widget.currentIndex == 3,
-                        onTap: () => widget.onTap(3),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/**
- * A single navigation item with icon, label, and active/inactive states.
- *
- * Responsive sizing adapts across 3-tier breakpoints (phone/tablet/large tablet).
- */
-class _NavItem extends StatelessWidget {
-  /** Icon shown when this tab is not selected. */
-  final IconData icon;
-
-  /** Icon shown when this tab is selected (typically a filled variant). */
-  final IconData activeIcon;
-
-  /** Text label displayed below the icon. */
-  final String label;
-
-  /** Whether this tab is currently selected. */
-  final bool isActive;
-
-  /** Callback when this nav item is tapped. */
-  final VoidCallback onTap;
-
-  const _NavItem({required this.icon, required this.activeIcon, required this.label, required this.isActive, required this.onTap});
+  const _BottomNavBar({required this.currentIndex, required this.onTap, this.minimized = false});
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final activeColor = colors.textPrimary;
-    final inactiveColor = colors.textMuted;
-
-    // Responsive sizing for tablet support (three-tier: phone, tablet, large tablet)
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isLargeTablet = screenWidth >= 900;
-    final isTablet = screenWidth >= 600;
-
-    final iconSize = isLargeTablet ? 30.0 : (isTablet ? 28.0 : 24.0);
-    final fontSize = isLargeTablet ? 13.0 : (isTablet ? 12.0 : 10.0);
-    final verticalPadding = isLargeTablet ? 12.0 : (isTablet ? 10.0 : 8.0);
-
-    final indicatorWidth = isLargeTablet ? 56.0 : (isTablet ? 52.0 : 48.0);
-
-    return Semantics(
-      button: true,
-      selected: isActive,
-      label: '$label tab${isActive ? ', selected' : ''}',
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: verticalPadding),
-              Icon(isActive ? activeIcon : icon, color: isActive ? activeColor : inactiveColor, size: iconSize),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                  color: isActive ? activeColor : inactiveColor,
-                ),
-              ),
-              const SizedBox(height: 4),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeOutCubic,
-                width: isActive ? indicatorWidth : 0,
-                height: 3,
-                decoration: BoxDecoration(color: isActive ? colors.accent : Colors.transparent, borderRadius: BorderRadius.circular(1.5)),
-              ),
-              const SizedBox(height: 4),
-            ],
-          ),
+    final media = MediaQuery.of(context);
+    final full = math.min(media.size.width - 2 * LiquidGlass.edgeMargin, LiquidGlass.barMaxWidth);
+    final bottom = math.max(media.padding.bottom + LiquidGlass.safeGap, LiquidGlass.edgeMargin);
+    final reduce = Motion.reduce(context);
+    return Padding(
+      key: const ValueKey('liquid-tab-bar'),
+      padding: EdgeInsets.fromLTRB(LiquidGlass.edgeMargin, AppSpacing.sm, LiquidGlass.edgeMargin, bottom),
+      child: Center(
+        heightFactor: 1,
+        child: AnimatedContainer(
+          duration: reduce ? Duration.zero : Motion.standard,
+          curve: SpringCurve(Motion.settle, Motion.standard),
+          width: minimized ? LiquidGlassNav.minimizedWidth(_tabs.length) : full,
+          height: minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight,
+          child: LiquidGlassNav(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.horizontal, minimized: minimized),
         ),
       ),
     );
