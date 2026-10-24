@@ -12,7 +12,7 @@ class FrostPaletteTest {
         "green" to 0xFF10A040.toInt(), "magenta" to 0xFFD000C0.toInt(),
     )
 
-    /** White pointing text 4.5:1 and 70% white secondary 3:1 over every shade of the card, for every wallpaper and mode. */
+    /** White pointing text 4.5:1 and the teacher line (small text) 4.5:1 over every shade of the card, for every wallpaper and mode. */
     @Test
     fun textContrastHoldsAcrossWallpapers() {
         val failures = mutableListOf<String>()
@@ -20,7 +20,7 @@ class FrostPaletteTest {
             val palette = FrostPalette.from(p, s, null, dark)
             val inkWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.ink, it) }
             val secWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.secondary, it) }
-            if (inkWorst < 4.5 || secWorst < 3.0) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
+            if (inkWorst < 4.5 || secWorst < 4.5) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
         }
         assertEquals(emptyList<String>(), failures)
     }
@@ -47,6 +47,17 @@ class FrostPaletteTest {
                 val dh = Math.abs(((card.h - src.h + 540) % 360) - 180)
                 assertTrue("$name dark=$dark hue off by $dh", dh <= 25)
             }
+        }
+    }
+
+    /** The teacher line keeps a margin over 4.5:1 for every palette, including the no-colors fallback. */
+    @Test
+    fun secondaryTextClearsSmallTextContrastWithMargin() {
+        val cases = sweep.values.map { it as Int? } + listOf(null)
+        for (c in cases) for (dark in listOf(false, true)) {
+            val p = FrostPalette.from(c, null, null, dark)
+            val worst = p.cardExtremes().minOf { FrostPalette.contrast(p.secondary, it) }
+            assertTrue("$c dark=$dark secondary $worst", worst >= FrostPalette.SECONDARY_MIN)
         }
     }
 

@@ -57,7 +57,7 @@ data class FrostPalette(
             while (true) {
                 val p = withWhiteInk(Oklch(lTop, c, h).toArgb(), Oklch(lTop - 0.05, c * 1.1, h + 8).toArgb())
                 val probe = p.cardExtremes()
-                val ok = probe.minOf { contrast(p.ink, it) } >= 4.6 && probe.minOf { contrast(p.secondary, it) } >= 3.1
+                val ok = probe.minOf { contrast(p.ink, it) } >= 4.6 && probe.minOf { contrast(p.secondary, it) } >= SECONDARY_MIN
                 if (ok || lTop <= 0.30) return p
                 lTop -= 0.01
             }
@@ -66,9 +66,25 @@ data class FrostPalette(
         /** Below this OKLCH chroma a wallpaper reads as white, grey or black. */
         private const val NEUTRAL_CHROMA = 0.02
 
-        /** White ink, and secondary text as white at 70% over the card (the target's two levels). */
-        fun withWhiteInk(top: Int, bottom: Int): FrostPalette =
-            FrostPalette(top, bottom, INK_LIGHT, mix(mix(top, bottom, 0.5), INK_LIGHT, 0.70), lightInk = true)
+        /**
+         * White ink, and secondary text as the dimmest white (from 70%, the target's second level)
+         * that still clears [SECONDARY_MIN] over every shade of the card. The teacher line is small
+         * text, so it needs WCAG AA 4.5:1; the margin covers grain and glyph antialiasing.
+         */
+        fun withWhiteInk(top: Int, bottom: Int): FrostPalette {
+            val probe = FrostPalette(top, bottom, 0, 0, true).cardExtremes()
+            val base = mix(top, bottom, 0.5)
+            var t = 0.70
+            var secondary = mix(base, INK_LIGHT, t)
+            while (t < 1.0 && probe.minOf { contrast(secondary, it) } < SECONDARY_MIN) {
+                t += 0.02
+                secondary = mix(base, INK_LIGHT, t.coerceAtMost(1.0))
+            }
+            return FrostPalette(top, bottom, INK_LIGHT, secondary, lightInk = true)
+        }
+
+        /** Secondary (teacher line) floor: 4.5:1 for small text plus margin. */
+        const val SECONDARY_MIN = 5.0
 
         /** Picks the ink with the higher worst-case contrast over every shade the card shows. */
         fun withInk(top: Int, bottom: Int): FrostPalette {
