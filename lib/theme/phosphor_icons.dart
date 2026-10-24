@@ -43,6 +43,7 @@ abstract final class PhosphorIconsLight {
   static const IconData question = IconData(0xe3e8, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData quotes = IconData(0xe660, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData slidersHorizontal = IconData(0xe434, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
+  static const IconData squaresFour = IconData(0xe464, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData sparkle = IconData(0xe6a2, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData speakerSlash = IconData(0xe45a, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData sun = IconData(0xe472, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);

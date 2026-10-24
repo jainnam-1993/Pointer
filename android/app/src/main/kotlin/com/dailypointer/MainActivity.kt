@@ -1,6 +1,8 @@
 package com.dailypointer
 
 import android.app.WallpaperManager
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -73,6 +75,15 @@ class MainActivity : FlutterActivity() {
         intent?.getStringExtra(WidgetRenderer.EXTRA_POINTING_ID)?.takeIf { it.isNotEmpty() }?.let { pendingPointingId = it }
     }
 
+    private fun isPinWidgetSupported(): Boolean =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && AppWidgetManager.getInstance(this).isRequestPinAppWidgetSupported
+
+    /** Asks the launcher to pin the widget; the launcher shows its own confirmation. False if unsupported. */
+    private fun requestPinWidget(): Boolean {
+        if (!isPinWidgetSupported()) return false
+        return AppWidgetManager.getInstance(this).requestPinAppWidget(ComponentName(this, PointerWidgetProvider::class.java), null, null)
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
@@ -83,6 +94,9 @@ class MainActivity : FlutterActivity() {
                         openNotificationSettings()
                         result.success(null)
                     }
+                    // "Add widget to Home Screen" (Settings): Android 8+ launchers that support pinning.
+                    "isPinWidgetSupported" -> result.success(isPinWidgetSupported())
+                    "requestPinWidget" -> result.success(requestPinWidget())
                     // Ambient clock drops to 15 fps while battery saver is on.
                     "isLowPowerMode" -> result.success(isPowerSaveMode())
                     else -> result.notImplemented()
