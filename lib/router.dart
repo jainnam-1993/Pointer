@@ -32,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'widgets/ambient.dart';
 import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/inquiry_screen.dart';
@@ -117,6 +118,8 @@ GoRouter _createRouter() {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
+    // Pauses the ambient clock while a modal sheet or dialog is open.
+    observers: [AmbientRouteObserver()],
     redirect: (context, state) {
       final location = state.matchedLocation;
       final isSplash = location == '/splash';
@@ -210,24 +213,28 @@ GoRouter _createRouter() {
         branches: [
           // Home tab
           StatefulShellBranch(
+            observers: [AmbientRouteObserver()],
             navigatorKey: _homeNavigatorKey,
             routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
           ),
 
           // Inquiry tab
           StatefulShellBranch(
+            observers: [AmbientRouteObserver()],
             navigatorKey: _inquiryNavigatorKey,
             routes: [GoRoute(path: '/inquiry', builder: (context, state) => const InquiryScreen())],
           ),
 
           // Library tab
           StatefulShellBranch(
+            observers: [AmbientRouteObserver()],
             navigatorKey: _libraryNavigatorKey,
             routes: [GoRoute(path: '/library', builder: (context, state) => const LibraryScreen())],
           ),
 
           // Settings tab
           StatefulShellBranch(
+            observers: [AmbientRouteObserver()],
             navigatorKey: _settingsNavigatorKey,
             routes: [GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen())],
           ),

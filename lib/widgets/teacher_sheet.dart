@@ -54,7 +54,7 @@ class TeacherSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
-          child: BackdropFilter(
+          child: BackdropFilter.grouped(
             filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
             child: Container(
               decoration: BoxDecoration(

@@ -254,7 +254,7 @@ class FilterSheet<T> extends StatelessWidget {
     return RepaintBoundary(
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
           child: Container(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),

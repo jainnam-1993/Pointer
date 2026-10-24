@@ -3,215 +3,63 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
 import 'package:pointer/theme/app_theme.dart';
 
 void main() {
   group('Reduced Motion - AnimatedGradient', () {
-    testWidgets('renders static gradient when system disableAnimations is true', (tester) async {
-      // Arrange: Create a MediaQuery with disableAnimations = true
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: true),
-              child: const Scaffold(body: AnimatedGradient()),
-            ),
-          ),
-        ),
-      );
-
-      // Assert: Should render a static Container with gradient (no shimmer animation)
-      expect(find.byType(Container), findsWidgets);
-
-      // The gradient container should exist
-      final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.where((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
-      expect(gradientContainer.isNotEmpty, true, reason: 'Should have a container with gradient decoration');
+    setUp(() {
+      AnimatedGradient.forceMotionInTests = true;
+      AmbientClock.instance.debugReset();
+    });
+    tearDown(() {
+      AnimatedGradient.forceMotionInTests = false;
+      AmbientClock.instance.debugReset();
     });
 
-    testWidgets('renders animated gradient when system disableAnimations is false', (tester) async {
-      // Reset static flag for this test
-      AnimatedGradient.disableAnimations = false;
+    Future<void> unmount(WidgetTester tester) => tester.pumpWidget(const SizedBox());
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: false),
-              child: const Scaffold(body: AnimatedGradient()),
-            ),
-          ),
-        ),
-      );
-
-      // Assert: Container with gradient should exist
-      expect(find.byType(Container), findsWidgets);
-
-      // Clean up
-      AnimatedGradient.disableAnimations = true;
+    testWidgets('system reduce motion freezes the clock on the still frame', (tester) async {
+      await tester.pumpWidget(_gradientApp(oled: false, mode: AppThemeMode.dark, systemDisable: true));
+      final bg = tester.widget<AmbientBackground>(find.byType(AmbientBackground));
+      expect(bg.animate, isFalse);
+      expect(AmbientClock.instance.isRunning, isFalse);
+      expect(AmbientClock.instance.value, kAmbientStillTime);
+      await unmount(tester);
     });
 
-    testWidgets('respects reduceMotionOverrideProvider when set to true', (tester) async {
-      // Arrange: Create a provider override
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => true),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: false),
-              child: const Scaffold(body: AnimatedGradient()),
-            ),
-          ),
-        ),
-      );
-
-      // Assert: Should render static gradient even though system setting is false
-      expect(find.byType(Container), findsWidgets);
-
-      final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.where((c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null);
-      expect(gradientContainer.isNotEmpty, true);
+    testWidgets('animates when motion is allowed', (tester) async {
+      await tester.pumpWidget(_gradientApp(oled: false, mode: AppThemeMode.dark));
+      expect(tester.widget<AmbientBackground>(find.byType(AmbientBackground)).animate, isTrue);
+      expect(AmbientClock.instance.isRunning, isTrue);
+      await unmount(tester);
+      expect(AmbientClock.instance.isRunning, isFalse, reason: 'clock stops with no listeners');
     });
 
-    testWidgets('static gradient uses correct colors for dark theme', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: true),
-              child: const Scaffold(body: AnimatedGradient()),
-            ),
-          ),
-        ),
-      );
-
-      final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.firstWhere(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient is LinearGradient,
-        orElse: () => throw TestFailure('No gradient container found'),
-      );
-
-      final gradient = (gradientContainer.decoration as BoxDecoration).gradient as LinearGradient;
-
-      // Verify it uses dark theme colors (very dark gray/black tones)
-      expect(gradient.colors.isNotEmpty, true);
-      expect(gradient.colors.first.toARGB32(), lessThan(0xFF202020), reason: 'Dark theme gradient should use very dark colors');
+    testWidgets('app override true freezes the clock', (tester) async {
+      await tester.pumpWidget(_gradientApp(oled: false, mode: AppThemeMode.dark, reduceOverride: true));
+      expect(tester.widget<AmbientBackground>(find.byType(AmbientBackground)).animate, isFalse);
+      expect(AmbientClock.instance.isRunning, isFalse);
+      expect(AmbientClock.instance.value, kAmbientStillTime);
+      await unmount(tester);
     });
 
-    testWidgets('static gradient uses correct colors for light theme', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.light),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: true),
-              child: const Scaffold(body: AnimatedGradient()),
-            ),
-          ),
-        ),
-      );
-
-      final containers = tester.widgetList<Container>(find.byType(Container));
-      final gradientContainer = containers.firstWhere(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient is LinearGradient,
-        orElse: () => throw TestFailure('No gradient container found'),
-      );
-
-      final gradient = (gradientContainer.decoration as BoxDecoration).gradient as LinearGradient;
-
-      // Verify it uses light theme colors (lavender/soft tones)
-      expect(gradient.colors.isNotEmpty, true);
-      expect(gradient.colors.first.toARGB32(), greaterThan(0xFFE0E0E0), reason: 'Light theme gradient should use light colors');
-    });
-  });
-
-  group('Reduced Motion - FloatingParticles', () {
-    testWidgets('renders nothing when system disableAnimations is true', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => null),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: true),
-              child: const Scaffold(body: FloatingParticles()),
-            ),
-          ),
-        ),
-      );
-
-      // Assert: Should render SizedBox.shrink() (effectively nothing)
-      expect(find.byType(SizedBox), findsOneWidget);
-      final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox));
-      expect(sizedBox.width, 0);
-      expect(sizedBox.height, 0);
+    testWidgets('dark theme uses a dark time-of-day palette with aurora', (tester) async {
+      await tester.pumpWidget(_gradientApp(oled: false, mode: AppThemeMode.dark));
+      final p = tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette;
+      expect(p.isDark, isTrue);
+      expect(p.top.toARGB32(), lessThan(0xFF202020));
+      expect(p.aurora, greaterThan(0));
+      await unmount(tester);
     });
 
-    // Note: In test environment, FloatingParticles always returns SizedBox.shrink()
-    // due to the _isTestEnvironment() check (prevents timer issues in tests).
-    // This test verifies the reduce motion logic is correctly applied by testing
-    // that system disableAnimations true results in SizedBox.shrink (even
-    // though test environment already triggers this).
-    //
-    // The actual particle rendering behavior is tested via integration tests
-    // or manual testing on devices.
-
-    testWidgets('respects reduceMotionOverrideProvider when set to true', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oledModeProvider.overrideWith((ref) => false),
-            themeModeProvider.overrideWith((ref) => AppThemeMode.dark),
-            reduceMotionOverrideProvider.overrideWith((ref) => true),
-          ],
-          child: MaterialApp(
-            theme: AppTheme.dark,
-            home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: false),
-              child: const Scaffold(body: FloatingParticles()),
-            ),
-          ),
-        ),
-      );
-
-      // Should render nothing even though system setting is false
-      expect(find.byType(SizedBox), findsOneWidget);
-      final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox));
-      expect(sizedBox.width, 0);
-      expect(sizedBox.height, 0);
+    testWidgets('light theme uses the light palette', (tester) async {
+      await tester.pumpWidget(_gradientApp(oled: false, mode: AppThemeMode.light));
+      final p = tester.widget<AmbientBackground>(find.byType(AmbientBackground)).palette;
+      expect(p, AmbientPalette.light);
+      expect(p.top.toARGB32(), greaterThan(0xFFE0E0E0));
+      await unmount(tester);
     });
   });
 
@@ -373,4 +221,21 @@ void main() {
       expect(result, true, reason: 'System accessibility setting should always be respected');
     });
   });
+}
+
+Widget _gradientApp({required bool oled, required AppThemeMode mode, bool? reduceOverride, bool systemDisable = false}) {
+  return ProviderScope(
+    overrides: [
+      oledModeProvider.overrideWith((ref) => oled),
+      themeModeProvider.overrideWith((ref) => mode),
+      reduceMotionOverrideProvider.overrideWith((ref) => reduceOverride),
+    ],
+    child: MaterialApp(
+      theme: mode == AppThemeMode.light ? AppTheme.light : AppTheme.dark,
+      home: MediaQuery(
+        data: MediaQueryData(disableAnimations: systemDisable),
+        child: const Scaffold(body: AnimatedGradient()),
+      ),
+    ),
+  );
 }

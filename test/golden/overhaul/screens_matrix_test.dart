@@ -40,6 +40,7 @@ import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/donation_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -335,6 +336,8 @@ void main() {
     await setupGoldenTests();
     AnimatedGradient.disableAnimations = true;
     AnimatedGradient.debugPeriodOverride = TimeOfDayPeriod.night;
+    // Load the ambient FragmentProgram up front so goldens show the shader, not the fallback.
+    expect(await AmbientShader.ensureLoaded(), isNotNull, reason: 'shaders/ambient.frag must load under flutter test');
     _loadArticlesWithReaderContent();
     registerFallbackValue(const NotificationSchedule());
     _notifications = _MockNotificationService();
