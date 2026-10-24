@@ -58,7 +58,7 @@ abstract final class LensTabStyle {
   /** Lens bevel and refraction as shares of its shorter side. The rim samples inward by about the overhang, so the edge shows a dark rim and
    * the overhang shows the background as bright crescents. */
   static const double lensBand = 0.16;
-  static const double lensRefraction = 0.06;
+  static const double lensRefraction = 0.03;
 
   static const List<Shadow> activeGlow = [Shadow(color: Color(0x99FFFFFF), blurRadius: 12)];
 }
