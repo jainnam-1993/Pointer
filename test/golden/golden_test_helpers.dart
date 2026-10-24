@@ -51,6 +51,9 @@ Future<void> setupGoldenTests() async {
 
   // Disable animations for consistent screenshots
   AnimatedGradient.disableAnimations = true;
+  // Freeze the time-of-day palette: the ambient background and the glass frost both follow the wall clock otherwise,
+  // so goldens rendered at dusk failed at night.
+  AnimatedGradient.debugPeriodOverride = TimeOfDayPeriod.night;
 
   // Load data from JSON assets for tests
   loadTestPointings();
@@ -95,6 +98,7 @@ Future<void> setupGoldenTests() async {
 /// Teardown for golden tests
 void teardownGoldenTests() {
   AnimatedGradient.disableAnimations = false;
+  AnimatedGradient.debugPeriodOverride = null;
 }
 
 /// Test-friendly theme that uses system fonts instead of Google Fonts
