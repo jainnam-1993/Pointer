@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -63,34 +62,34 @@ object WidgetRenderer {
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
         // The wallpaper colors are read on every render, so a wallpaper change shows on the next redraw.
-        val palette = WallpaperTint.palette(context)
-        val cards = WidgetSize.values().associateWith { FrostCard.bitmap(palette, it.aspect) }
+        // Glass alpha for the current wallpaper; the wallpaper itself shows through the card.
+        val glass = WallpaperTint.glassAlpha(context)
         for (id in ids) {
-            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, palette, cards))
+            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, glass))
         }
     }
 
     private fun build(
         context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState,
-        palette: FrostPalette, cards: Map<WidgetSize, Bitmap>,
+        glass: Double,
     ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, palette, cards.getValue(size))
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, glass)
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, palette, cards.getValue(it)) }
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, glass) }
     }
 
     private fun views(
         context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
-        palette: FrostPalette, card: Bitmap,
+        glass: Double,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, layoutFor(size))
-        paint(views, size, palette, card)
+        paint(views, size, glass)
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
             views.setViewVisibility(R.id.widget_header, View.GONE)
@@ -120,15 +119,16 @@ object WidgetRenderer {
         return views
     }
 
-    /** Card bitmap and the ink measured against it (FrostPalette guarantees 4.5:1 for the pointing). */
-    private fun paint(views: RemoteViews, size: WidgetSize, palette: FrostPalette, card: Bitmap) {
-        views.setImageViewBitmap(R.id.widget_frost_bg, card)
-        views.setTextColor(R.id.widget_content, palette.ink)
-        views.setTextColor(R.id.widget_teacher, palette.secondary)
-        views.setTextColor(R.id.widget_tradition, palette.secondary)
+    /** Glass alpha (GlassRule) and the two text levels: white quote, 80% white teacher line. */
+    private fun paint(views: RemoteViews, size: WidgetSize, glass: Double) {
+        views.setInt(R.id.widget_frost_bg, "setImageAlpha", (glass * 255).toInt().coerceIn(0, 255))
+        val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
+        views.setTextColor(R.id.widget_content, GlassRule.INK)
+        views.setTextColor(R.id.widget_teacher, secondary)
+        views.setTextColor(R.id.widget_tradition, secondary)
         if (size.showActions) {
-            for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", palette.ink)
-            views.setInt(R.id.widget_pill, "setBackgroundResource", if (palette.lightInk) R.drawable.widget_pill_on_dark else R.drawable.widget_pill_on_light)
+            for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", GlassRule.INK)
+            views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_on_dark)
         }
     }
 
