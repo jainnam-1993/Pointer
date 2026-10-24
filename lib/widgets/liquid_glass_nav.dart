@@ -129,7 +129,11 @@ class LiquidGlassLook {
     }
     return LiquidGlassLook(
       // Mostly clear so the field shows through; the lens, rim and shadow carry the glass (fill 0.08 to 0.18).
-      tint: [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.12)],
+      // With the lens drawing the edge, the fill stays very light: a white wash above the shader would lift the darker
+      // edge cues straight back to the background (measured: hairline 210 washed to 218).
+      tint: LiquidGlassShader.active
+          ? [Colors.white.withValues(alpha: 0.08), Colors.white.withValues(alpha: 0.05)]
+          : [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.12)],
       rim: [Colors.white.withValues(alpha: 0.85), InkPalette.ink.withValues(alpha: 0.10)],
       shadow: Colors.black.withValues(alpha: 0.10),
       shadowBlur: 8,
@@ -380,6 +384,8 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
             bevelDarken: dark ? 0.04 : 0.14,
             bevelSaturation: dark ? 0.25 : 0.45,
             lightTheme: !dark,
+            hairline: 0.14,
+            hairlineWidth: 1,
             topInnerShadow: dark ? 0.10 : 0.06,
           );
           final filter = LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma);
