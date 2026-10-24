@@ -38,7 +38,7 @@ lib/
   data/                   Pointing, article, teacher, inquiry models and loaders over assets/data/*.json
   screens/                home, inquiry (+player), library (+library/*), lineages, article reader, settings (+settings/*),
                           share preview, onboarding, splash, main_shell
-  layout/                 (arriving from ovh/fold) size classes, hinge/fold helpers, adaptive scaffolds
+  layout/adaptive.dart    WindowSizeClass, WindowLayout (posture, hinge, rail vs bottom bar), ContentWidth, TwoPane, TabletopSplit
 shaders/ambient.frag      The one fragment shader: gradient, aurora fields, dust motes, frost
 android/app/src/main/kotlin/com/dailypointer/   MainActivity + self-sufficient widget
 ios/Runner, ios/PointerWidget                     App delegate, privacy manifests, WidgetKit extension
@@ -79,7 +79,14 @@ The tokens live in `app_theme.dart`. Read colors through `context.colors` and gl
 
 ### Adaptive layouts
 
-The adaptive-layout work is in progress on `ovh/fold`. `lib/layout/` is the home for size classes, hinge and fold helpers, and adaptive scaffolds. Screens should ask it for the layout instead of comparing raw widths. The golden matrix already covers smallphone, phone, foldouter, foldinner, foldhinge, tabletop and tablet.
+`lib/layout/adaptive.dart` owns every layout decision; screens ask `WindowLayout.of(context)` instead of comparing raw widths or device models.
+
+- Size classes follow the Android window size class breakpoints on window width: compact under 600, medium 600 to 839, expanded 840 and up.
+- Navigation: compact windows keep the glass bottom bar; medium and expanded windows get the glass side rail (`kRailWidth` 96) in `main_shell.dart`.
+- Panes: expanded windows, and any window split by a vertical hinge (book posture), use `TwoPane`, which keeps both panes off the hinge. Home, Library and Settings split into two panes; single columns on medium and larger windows are capped at `kContentMaxWidth` (600) by `ContentWidth`.
+- Hinge and posture: `WindowLayout.separatingFeature` mirrors Android's `FoldingFeature.isSeparating`. A horizontal half-opened hinge is tabletop posture, where Home uses `TabletopSplit` (content above the fold, controls below).
+- Android declares `resizeableActivity="true"` and handles size and layout config changes, so fold, unfold and multi-window resizes reflow without a restart.
+- The golden matrix covers smallphone, phone, foldouter, foldinner, foldhinge, tabletop and tablet; `shell_*.png` goldens render the shell with the rail or bottom bar. `test/layout/adaptive_test.dart` covers size classes, hinges, tabletop and rail placement.
 
 ## Testing
 
