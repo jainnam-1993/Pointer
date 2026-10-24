@@ -128,7 +128,8 @@ class LiquidGlassLook {
       );
     }
     return LiquidGlassLook(
-      tint: [Colors.white.withValues(alpha: 0.45), Colors.white.withValues(alpha: 0.42)],
+      // Mostly clear so the field shows through; the lens, rim and shadow carry the glass (fill 0.08 to 0.18).
+      tint: [Colors.white.withValues(alpha: 0.20), Colors.white.withValues(alpha: 0.14)],
       rim: [Colors.white.withValues(alpha: 0.85), InkPalette.ink.withValues(alpha: 0.10)],
       shadow: InkPalette.ink.withValues(alpha: 0.08),
       shadowBlur: 24,
@@ -364,10 +365,11 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
             rimOpposite: look.rim.last.a,
             rimColor: look.rim.first.withValues(alpha: 1),
           );
-          return BackdropFilter.grouped(
-            filter: LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma),
-            child: inner,
-          );
+          final filter = LiquidGlassShader.filter(box: box, lens: lens, blurSigma: look.sigma);
+          // The lens needs its own backdrop read. A grouped backdrop hands the shader the shared full-screen texture
+          // while FlutterFragCoord stays local to the glass, so on the phone the lens sampled the screen's top-left
+          // corner. The bar and the rail are never on screen together, so this is still one backdrop read per frame.
+          return LiquidGlassShader.active ? BackdropFilter(filter: filter, child: inner) : BackdropFilter.grouped(filter: filter, child: inner);
         },
       );
     }

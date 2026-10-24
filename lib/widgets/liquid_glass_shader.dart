@@ -70,10 +70,16 @@ class LiquidGlassShader {
 
   /** Starts loading once; safe to call from every build. */
   static void ensureLoaded() {
-    if (_program != null || _loading != null || !ui.ImageFilter.isShaderFilterSupported) return;
+    if (_program != null || _loading != null) return;
+    if (!ui.ImageFilter.isShaderFilterSupported) {
+      _loading = Future<void>.value();
+      debugPrint('[LiquidGlass] path=fallback-blur reason=shader filters unsupported (not Impeller)');
+      return;
+    }
     _loading = () async {
       try {
         _program = await ui.FragmentProgram.fromAsset('shaders/liquid_glass.frag');
+        debugPrint('[LiquidGlass] path=lens (program loaded, ungrouped backdrop)');
       } catch (e) {
         debugPrint('[LiquidGlassShader] load failed, keeping the frosted fallback: $e');
       }
