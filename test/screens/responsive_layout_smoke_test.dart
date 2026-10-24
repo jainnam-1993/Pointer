@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/data/articles.dart';
+import 'package:pointer/data/inquiries.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/screens/history_screen.dart';
@@ -11,6 +12,7 @@ import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
+import 'package:pointer/widgets/inquiry_phase_content.dart';
 
 import '../golden/golden_test_helpers.dart';
 
@@ -87,7 +89,8 @@ void main() {
     const _ScreenCase(name: 'inquiry', builder: InquiryScreen.new),
     _ScreenCase(
       name: 'inquiry_player',
-      builder: () => const InquiryPlayerScreen(inquiryId: '1'),
+      // A real id: an unknown id falls back to getRandomInquiry(), which made this case depend on which inquiry was drawn.
+      builder: () => const InquiryPlayerScreen(inquiryId: 'si_001'),
     ),
     const _ScreenCase(name: 'library', builder: LibraryScreen.new),
     const _ScreenCase(name: 'lineages', builder: LineagesScreen.new),
@@ -107,6 +110,45 @@ void main() {
           await _pumpAndAssertResponsive(tester, screen: screen, device: device);
         });
       }
+    }
+  });
+
+  group('Responsive layout - every inquiry in every phase', () {
+    // The player can show any inquiry (random draws, "Another"), so each one must fit the smallest supported screen.
+    const device = _ResponsiveDevice('iphone_se_1', Size(320, 568));
+    for (final phase in InquiryPhase.values) {
+      testWidgets('all inquiries fit in the ${phase.name} phase on ${device.name}', (tester) async {
+        final prefs = await createMockPrefs();
+        for (final inquiry in inquiries) {
+          await pumpForGolden(
+            tester,
+            createGoldenTestApp(
+              prefs: prefs,
+              size: device.size,
+              child: Scaffold(
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 64), // top bar: 48 icon button + 2 x 8 padding
+                      Expanded(
+                        child: Center(
+                          child: InquiryPhaseContent(key: ValueKey(inquiry.id), inquiry: inquiry, phase: phase),
+                        ),
+                      ),
+                      const SizedBox(height: 84), // progress ring 44 + gap 16 + dots 8 + bottom padding 16
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            size: device.size,
+          );
+          final exception = tester.takeException();
+          if (exception != null) {
+            fail('${inquiry.id} should fit in the ${phase.name} phase on ${device.name}\n$exception');
+          }
+        }
+      });
     }
   });
 
