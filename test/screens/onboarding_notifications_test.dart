@@ -74,7 +74,7 @@ void main() {
     final continueText = find.descendant(of: find.byType(Dialog), matching: find.text('Continue'));
     expect(
       tester.getSemantics(continueText),
-      containsSemantics(label: 'Continue', isButton: true, hasTapAction: true),
+      isSemantics(label: 'Continue', isButton: true, hasTapAction: true),
     );
     handle.dispose();
   });
