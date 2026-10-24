@@ -12,6 +12,11 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+import '../utils/frame_log.dart';
+
+/** Build with `--dart-define=POINTER_LIQUID_LENS=false` to measure the glass without the lens (blur only). */
+const bool kLiquidLens = bool.fromEnvironment('POINTER_LIQUID_LENS', defaultValue: true);
+
 /**
  * Optical values for one glass shape, in logical px where a length is meant (CalmGlassBrief 3.3 and the main review of
  * 2026-10-24): a 1.25 px specular rim lit from the upper left, a 5 px bevel that bends and slightly darkens the
@@ -112,6 +117,12 @@ class LiquidGlassShader {
   /** Starts loading once; safe to call from every build. */
   static void ensureLoaded() {
     if (_program != null || _loading != null) return;
+    FrameLog.ensureStarted();
+    if (!kLiquidLens) {
+      _loading = Future<void>.value();
+      debugPrint('[LiquidGlass] path=fallback-blur reason=POINTER_LIQUID_LENS=false');
+      return;
+    }
     if (!ui.ImageFilter.isShaderFilterSupported) {
       _loading = Future<void>.value();
       debugPrint('[LiquidGlass] path=fallback-blur reason=shader filters unsupported (not Impeller)');
