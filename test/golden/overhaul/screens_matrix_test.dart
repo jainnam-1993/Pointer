@@ -27,6 +27,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/layout/adaptive.dart';
@@ -40,6 +41,7 @@ import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
+import 'package:pointer/screens/share_preview_screen.dart';
 import 'package:pointer/services/donation_service.dart';
 import 'package:pointer/services/notification_service.dart';
 import 'package:pointer/services/storage_service.dart';
@@ -318,6 +320,7 @@ final matrixScreens = <MatrixScreen>[
       await _settleTransient(tester);
     },
   ),
+  MatrixScreen('sharepreview', () => const SharePreviewScreen(pointing: goldenTestPointing)),
   MatrixScreen(
     'tip',
     () => const _HostPage(body: SingleChildScrollView(child: DonationButton())),
@@ -518,7 +521,7 @@ void main() {
       await _pumpAt(tester, screen('lineages'), device('foldhinge'));
       final first = traditions.keys.first;
       expect(find.byKey(ValueKey('lineages-detail-${first.name}')), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.info_outline).at(1));
+      await tester.tap(find.byIcon(AppIcons.info).at(1));
       await tester.pump(const Duration(milliseconds: 400));
       expect(find.byType(BottomSheet), findsNothing);
       expect(find.byKey(ValueKey('lineages-detail-${traditions.keys.elementAt(1).name}')), findsOneWidget);
