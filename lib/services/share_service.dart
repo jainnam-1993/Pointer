@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -177,6 +178,18 @@ class ShareService {
     return false;
   }
 
+  /** App Store listing (Apple ID 6757376352). */
+  static const appStoreUrl = 'https://apps.apple.com/app/id6757376352';
+
+  /** Google Play listing for applicationId com.dailypointer. */
+  static const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.dailypointer';
+
+  /** Store link for the platform the share comes from. */
+  static String storeUrl([TargetPlatform? platform]) {
+    final p = platform ?? defaultTargetPlatform;
+    return p == TargetPlatform.iOS || p == TargetPlatform.macOS ? appStoreUrl : playStoreUrl;
+  }
+
   /** Copy pointing as formatted text to clipboard */
   Future<void> copyToClipboard(Pointing pointing) async {
     final text = _formatForClipboard(pointing);
@@ -240,7 +253,7 @@ class ShareService {
     }
     buffer.writeln('\n━━━━━━━━━━━━━━━━━━━━');
     buffer.writeln('Here Now - Daily Awareness Pointings');
-    buffer.writeln('Download: https://pointer.app/download');
+    buffer.writeln('Download: ${storeUrl()}');
     buffer.writeln('━━━━━━━━━━━━━━━━━━━━');
     return buffer.toString();
   }

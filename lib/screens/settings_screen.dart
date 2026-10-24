@@ -3,6 +3,7 @@ import '../layout/adaptive.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -135,8 +136,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         title: 'About Here Now',
         content: Text(
           'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
-          'Each pointing is a direct invitation to recognize what you already are.\n\n'
-          'Version 1.1.0',
+          'Each pointing is a direct invitation to recognize what you already are.'
+          '${_versionLine()}',
           style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
         ),
         actions: [
@@ -147,6 +148,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         ],
       ),
     );
+  }
+
+  /** "\n\nVersion 1.2.0 (15)" from the installed package, or empty when unknown. */
+  String _versionLine() {
+    final info = ref.read(packageInfoProvider).valueOrNull;
+    return info == null ? '' : '\n\nVersion ${info.version} (${info.buildNumber})';
   }
 
   /** Launches an external URL in the system browser via `url_launcher`. */
@@ -231,6 +238,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       ),
     );
   }
+
+  /** Footer label: "Here Now v1.2.0", or just the app name before package info loads. */
+  static String _footerLabel(PackageInfo? info) => info == null ? 'Here Now' : 'Here Now v${info.version}';
 
   /** Increments version tap counter; toggles developer options every 7 taps. */
   void _onVersionTap() {
@@ -489,7 +499,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         GestureDetector(
           onTap: _onVersionTap,
           child: Center(
-            child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
+            child: Text(_footerLabel(ref.watch(packageInfoProvider).valueOrNull), style: TextStyle(color: textColorVersion, fontSize: 12)),
           ),
         ),
       ]),

@@ -1,114 +1,81 @@
-# Privacy Policy
+# Privacy Policy for Here Now
 
-**Effective Date:** January 2, 2025
-**Last Updated:** January 2, 2025
+**Effective Date:** October 23, 2026
+**Last Updated:** October 23, 2026
 
-Here Now ("we," "our," or "the app") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use the Here Now mobile application.
+Here Now ("the app", "we") shows daily awareness pointings from contemplative traditions. This policy describes what the app does with information. The short version: the app keeps everything on your device and sends nothing to us.
 
 ## Summary
 
-- **No account required** - Use Here Now without creating an account
-- **Local storage** - Your preferences and favorites stay on your device
-- **Minimal data sharing** - Only purchase data (RevenueCat) and TTS audio requests (AWS Polly, premium only)
-- **No tracking** - No analytics, no advertising, no behavioral tracking
+- **No account.** There is no sign-up, login, or user profile.
+- **On-device only.** Your settings, favorites, history, and notification times are stored on your device and never leave it.
+- **No analytics, advertising, or tracking.** The app contains no analytics, crash-reporting, advertising, or tracking SDKs, and it does not track you across apps or websites.
+- **No servers.** The app has no backend. It does not make network requests of its own; all content, fonts, and images are bundled with the app.
+- **Tips are handled by the store.** Optional tips are processed entirely by Apple or Google. We never see your payment details.
 
----
+## 1. Information stored on your device
 
-## Information We Collect
+The app stores the following only in local app storage on your device (SharedPreferences on Android, UserDefaults on iOS) and in the shared container used by the home-screen widget:
 
-### Information Stored Locally on Your Device
+| Data | Purpose |
+| --- | --- |
+| Settings (theme, text size, zen mode, auto-advance, onboarding state) | Remember your preferences |
+| Favorites and recently viewed pointings | Show your saved and recent pointings |
+| Notification schedule | Deliver the reminders you chose |
+| Daily view count and tradition preferences learned from your favorites | Choose which pointing to show next, entirely on the device |
+| A small cache of pointings for the home-screen widget | Let the widget display and change pointings without opening the app |
 
-The following data is stored only on your device and never transmitted to us:
+This data is not transmitted to us or to any third party. We cannot access it. Deleting the app deletes it. Your device's own backup service (iCloud Backup or Android backup) may include app data under the settings you chose for that service; that is governed by Apple's or Google's policies.
 
-| Data Type | Purpose | Storage |
-|-----------|---------|---------|
-| App preferences | Theme, font size, notification settings | SharedPreferences |
-| Favorites | Pointings you've saved | SharedPreferences |
-| Reading history | Recently viewed pointings | SharedPreferences |
-| Daily usage | Pointing view counts | SharedPreferences |
-| TTS credentials | Authentication for text-to-speech (premium) | Device Keychain |
+## 2. Notifications
 
-### Information Shared with Third Parties
+Reminders are scheduled and delivered locally by your device's operating system. No push notification service, device token, or server is involved. You can turn notifications off in the app or in system settings at any time.
 
-#### RevenueCat (In-App Purchases)
+## 3. Home-screen widget
 
-When you make a purchase, RevenueCat processes the transaction:
+The Android and iOS widgets read the pointing cache described above from storage shared only between the app and its own widget. They do not use the network.
 
-- **Data shared:** Anonymous device identifier, purchase history, transaction details
-- **Purpose:** Process purchases, restore purchases across devices, prevent fraud
-- **Retention:** Per RevenueCat's privacy policy
-- **Privacy policy:** [https://www.revenuecat.com/privacy](https://www.revenuecat.com/privacy)
+## 4. Tips (optional in-app purchases)
 
-#### AWS Polly (Text-to-Speech, Premium Only)
+The app offers optional one-time tips. They unlock nothing and are not subscriptions.
 
-When you use the audio playback feature:
+- Purchases are processed by the Apple App Store or Google Play under their terms and privacy policies.
+- We do not receive or store your name, email address, or payment information.
+- The app receives only the store's confirmation that a purchase completed, so it can thank you and finish the transaction.
 
-- **Data shared:** Text content of the article being read
-- **Purpose:** Convert text to speech audio
-- **Retention:** Not retained after processing
-- **Privacy policy:** [https://aws.amazon.com/privacy](https://aws.amazon.com/privacy)
+Apple privacy policy: https://www.apple.com/legal/privacy/
+Google privacy policy: https://policies.google.com/privacy
 
----
+## 5. Sharing and exports
 
-## Information We Do NOT Collect
+When you share a pointing, export it to a journal app (for example Day One or Notes), or open a link, the app hands the content to the app or browser you choose through the operating system. What that app does with it is governed by its own privacy policy. Share images are rendered on the device and written only to a temporary file for the share sheet.
 
-We do not collect, store, or have access to:
+## 6. Permissions
 
-- Personal information (name, email, phone number)
-- Location data
-- Contacts
-- Photos or media
-- Browsing history
-- Device sensor data
-- Advertising identifiers
+| Permission | Why |
+| --- | --- |
+| Notifications | Deliver the reminders you schedule |
+| Run at startup / boot completed (Android) | Restore scheduled reminders after the device restarts |
+| Vibration (Android) | Haptic feedback |
 
----
+The app does not request access to your location, contacts, photos, camera, or microphone.
 
-## Data Security
+## 7. What we do not collect
 
-- **Local encryption:** TTS credentials are stored in your device's secure keychain (iOS Keychain, Android EncryptedSharedPreferences)
-- **Transit encryption:** All network communications use HTTPS/TLS encryption
-- **No server storage:** We do not operate servers that store your personal data
+We do not collect, receive, sell, or share any personal information, device identifiers, usage analytics, crash reports, or advertising identifiers. The app contains no third-party analytics, advertising, or tracking code.
 
----
+## 8. Children
 
-## Children's Privacy
+The app is suitable for general audiences. Because it collects no personal information from anyone, it collects none from children.
 
-Here Now is not directed at children under 13. We do not knowingly collect information from children under 13. If you believe a child has provided us with personal information, please contact us.
+## 9. Your rights
 
----
+Because we hold no data about you, there is nothing for us to access, correct, export, or delete on your behalf. You control all app data on your device: clear it from the system settings or by deleting the app. This applies to rights under the GDPR, CCPA/CPRA, and similar laws.
 
-## Your Rights
+## 10. Changes to this policy
 
-Since your data is stored locally on your device, you have full control:
+If the app's handling of information changes, we will update this policy and its "Last Updated" date before the change ships.
 
-- **Access:** View your data in app settings
-- **Delete:** Uninstall the app to remove all local data
-- **Export:** Favorites can be shared via the share feature
+## 11. Contact
 
----
-
-## Changes to This Policy
-
-We may update this Privacy Policy periodically. We will notify you of significant changes by updating the "Last Updated" date and, where appropriate, through in-app notification.
-
----
-
-## Contact Us
-
-If you have questions about this Privacy Policy:
-
-- **Email:** pointer.app.contact@gmail.com
-- **GitHub:** [https://github.com/pointer-app/pointer](https://github.com/pointer-app/pointer)
-
----
-
-## Third-Party Services
-
-This app uses the following third-party services:
-
-| Service | Purpose | Privacy Policy |
-|---------|---------|----------------|
-| RevenueCat | Purchase processing | [revenuecat.com/privacy](https://www.revenuecat.com/privacy) |
-| AWS Polly | Text-to-speech (premium) | [aws.amazon.com/privacy](https://aws.amazon.com/privacy) |
-| Google Play | App distribution | [policies.google.com/privacy](https://policies.google.com/privacy) |
+Questions about this policy: pointer.app.contact@gmail.com
