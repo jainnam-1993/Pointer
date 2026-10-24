@@ -74,7 +74,8 @@ AmbientPalette ambientPaletteForTheme(BuildContext context) {
 AmbientPalette ambientPaletteFor(BuildContext context, WidgetRef ref, {TimeOfDayPeriod? period}) {
   final themeMode = ref.watch(themeModeProvider);
   final isDark = themeMode == AppThemeMode.dark || (themeMode == AppThemeMode.system && MediaQuery.platformBrightnessOf(context) == Brightness.dark);
-  if (isDark && ref.watch(oledModeProvider)) return AmbientPalette.oled;
+  // OLED wins regardless of theme, as before the shader.
+  if (ref.watch(oledModeProvider)) return AmbientPalette.oled;
   if (!isDark) return AmbientPalette.light;
   return AmbientPalette.dark[(period ?? currentAmbientPeriod()).index];
 }
@@ -190,16 +191,4 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     final palette = ambientPaletteFor(context, ref, period: _currentPeriod);
     return AmbientBackground(palette: palette, animate: ambientMotionEnabled(context, ref));
   }
-}
-
-/**
- * Former particle layer. Dust motes are now drawn by the ambient shader inside
- * [AnimatedGradient], where screens no longer hide them behind opaque fills.
- * Kept as an empty decorative widget so existing layouts and tests compile.
- */
-class FloatingParticles extends StatelessWidget {
-  const FloatingParticles({super.key});
-
-  @override
-  Widget build(BuildContext context) => const ExcludeSemantics(child: SizedBox.shrink());
 }

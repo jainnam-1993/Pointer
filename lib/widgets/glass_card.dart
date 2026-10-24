@@ -123,9 +123,9 @@ class GlassCard extends ConsumerWidget {
     final (double blur, double topAlpha, double bottomAlpha) = switch (intensity) {
       // First value is now the analytic frost amount (0..1), not a blur sigma.
       // Fills are thinner than the old blur-era values so the frost shows through.
-      GlassIntensity.light => isDark ? (0.6, 0.07, 0.03) : (0.6, 0.42, 0.26),
-      GlassIntensity.standard => isDark ? (0.8, 0.10, 0.04) : (0.8, 0.52, 0.34),
-      GlassIntensity.heavy => isDark ? (1.0, 0.16, 0.07) : (1.0, 0.66, 0.48),
+      GlassIntensity.light => isDark ? (0.6, 0.07, 0.03) : (0.6, 0.16, 0.08),
+      GlassIntensity.standard => isDark ? (0.8, 0.10, 0.04) : (0.8, 0.22, 0.12),
+      GlassIntensity.heavy => isDark ? (1.0, 0.16, 0.07) : (1.0, 0.34, 0.20),
     };
     final frost = blur;
 

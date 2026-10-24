@@ -275,7 +275,8 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
             systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
           ),
         );
-        return child ?? const SizedBox.shrink();
+        // One shared backdrop for every sheet blur (BackdropFilter.grouped).
+        return BackdropGroup(child: child ?? const SizedBox.shrink());
       },
     );
   }

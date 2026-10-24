@@ -339,8 +339,8 @@ class AmbientPalette {
       fieldA: Color(0xFF4A3488),
       fieldB: Color(0xFF26467A),
       fieldC: Color(0xFF6A3658),
-      aurora: 0.46,
-      motes: 0.55,
+      aurora: 0.42,
+      motes: 0.48,
       isDark: true,
     ),
     // night: indigo, teal, violet
@@ -351,8 +351,8 @@ class AmbientPalette {
       fieldA: Color(0xFF34358A),
       fieldB: Color(0xFF1B5560),
       fieldC: Color(0xFF52327E),
-      aurora: 0.48,
-      motes: 0.6,
+      aurora: 0.40,
+      motes: 0.45,
       isDark: true,
     ),
   ];
@@ -600,7 +600,8 @@ class AmbientFrost extends LeafRenderObjectWidget {
       ..frost = frost
       ..palette = palette
       ..animate = animate && TickerMode.of(context)
-      ..screen = MediaQuery.sizeOf(context);
+      ..screen = MediaQuery.sizeOf(context)
+      ..scroll = Scrollable.maybeOf(context)?.position;
   }
 }
 
@@ -636,6 +637,16 @@ class RenderAmbientFrost extends RenderBox {
     markNeedsPaint();
   }
 
+  Listenable? _scroll;
+
+  /** Scroll position of the enclosing Scrollable: frost must follow the card while the clock is still. */
+  set scroll(Listenable? v) {
+    if (identical(v, _scroll)) return;
+    if (attached) _scroll?.removeListener(markNeedsPaint);
+    _scroll = v;
+    if (attached) _scroll?.addListener(markNeedsPaint);
+  }
+
   set animate(bool v) {
     if (v == _animate) return;
     _animate = v;
@@ -648,6 +659,7 @@ class RenderAmbientFrost extends RenderBox {
   void attach(PipelineOwner owner) {
     super.attach(owner);
     if (_animate) AmbientClock.instance.addListener(markNeedsPaint);
+    _scroll?.addListener(markNeedsPaint);
     final program = AmbientShader.program;
     if (program != null) {
       _shader ??= program.fragmentShader();
@@ -664,6 +676,7 @@ class RenderAmbientFrost extends RenderBox {
   @override
   void detach() {
     if (_animate) AmbientClock.instance.removeListener(markNeedsPaint);
+    _scroll?.removeListener(markNeedsPaint);
     super.detach();
   }
 

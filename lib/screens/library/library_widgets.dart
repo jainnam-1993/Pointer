@@ -125,11 +125,7 @@ class ArticleListItem extends ConsumerWidget {
                 width: 44,
                 height: 44,
                 child: Center(
-                  child: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_border,
-                    size: 22,
-                    color: isSaved ? colors.accent : colors.textMuted,
-                  ),
+                  child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted),
                 ),
               ),
             ),
@@ -186,9 +182,7 @@ class TeachingCard extends StatelessWidget {
                       child: SizedBox(
                         width: 44,
                         height: 44,
-                        child: Center(
-                          child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted),
-                        ),
+                        child: Center(child: Icon(Icons.share_outlined, size: 18, color: colors.textMuted)),
                       ),
                     ),
                   ],
@@ -260,7 +254,7 @@ class FilterSheet<T> extends StatelessWidget {
     return RepaintBoundary(
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
           child: Container(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
@@ -324,4 +318,3 @@ class FilterOption<T> {
 
   const FilterOption({required this.value, required this.label, required this.icon});
 }
-

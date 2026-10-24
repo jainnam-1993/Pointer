@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
+import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/providers/providers.dart';
@@ -97,7 +98,7 @@ void main() {
       expect(clipRRect.borderRadius, BorderRadius.circular(16));
     });
 
-    testWidgets('applies BackdropFilter with blur', (tester) async {
+    testWidgets('paints analytic frost instead of BackdropFilter', (tester) async {
       await tester.pumpWidget(
         wrapWithProviderScope(
           const MaterialApp(
@@ -108,9 +109,9 @@ void main() {
         ),
       );
 
-      final backdropFilter = tester.widget<BackdropFilter>(find.byType(BackdropFilter));
-      // BackdropFilter uses ImageFilter
-      expect(backdropFilter.filter, isNotNull);
+      // Analytic frost replaces the live blur over the ambient background.
+      expect(find.byType(BackdropFilter), findsNothing);
+      expect(tester.widget<AmbientFrost>(find.byType(AmbientFrost)).frost, 1.0);
     });
 
     testWidgets('has glass gradient in decoration', (tester) async {
@@ -140,14 +141,11 @@ void main() {
         ),
       );
 
-      // Find all containers within GlassCard and check if any has GradientBoxBorder
-      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Container)));
-
-      final containerWithBorder = containers.firstWhere(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).border is GradientBoxBorder,
-      );
-      expect(containerWithBorder.decoration, isA<BoxDecoration>());
-      expect((containerWithBorder.decoration as BoxDecoration).border, isA<GradientBoxBorder>());
+      // The hairline rim is a foreground decoration so the clip does not cut it.
+      final boxes = tester.widgetList<DecoratedBox>(find.descendant(of: find.byType(GlassCard), matching: find.byType(DecoratedBox)));
+      final rim = boxes.where((b) => b.decoration is BoxDecoration && (b.decoration as BoxDecoration).border is GradientBoxBorder);
+      expect(rim, hasLength(1));
+      expect(rim.single.position, DecorationPosition.foreground);
     });
 
     testWidgets('wraps in GestureDetector when onTap provided', (tester) async {
@@ -323,7 +321,7 @@ void main() {
       expect(clipRRect.borderRadius, BorderRadius.circular(32));
     });
 
-    testWidgets('has BackdropFilter for glass effect', (tester) async {
+    testWidgets('uses analytic frost, not BackdropFilter', (tester) async {
       await tester.pumpWidget(
         wrapWithProviderScope(
           MaterialApp(
@@ -334,7 +332,8 @@ void main() {
         ),
       );
 
-      expect(find.descendant(of: find.byType(GlassButton), matching: find.byType(BackdropFilter)), findsOneWidget);
+      expect(find.descendant(of: find.byType(GlassButton), matching: find.byType(BackdropFilter)), findsNothing);
+      expect(find.descendant(of: find.byType(GlassButton), matching: find.byType(AmbientFrost)), findsOneWidget);
     });
 
     testWidgets('has gradient border for glass effect', (tester) async {
@@ -399,9 +398,8 @@ void main() {
       );
 
       // By default, animation is disabled, so no Stack overlay
-      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
-      // Should not find a Stack (animation overlay not added)
-      expect(stacks.length, 0);
+      // Frost is still (no clock listener) when motion is off.
+      expect(tester.widget<AmbientFrost>(find.byType(AmbientFrost)).animate, isFalse);
     });
 
     testWidgets('does not render animation overlay when disableAnimations is true', (tester) async {
@@ -415,13 +413,15 @@ void main() {
       );
 
       // Even with enableBreathingAnimation: true, no Stack because disableAnimations is true
-      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
-      expect(stacks.length, 0);
+      // Frost is still (no clock listener) when motion is off.
+      expect(tester.widget<AmbientFrost>(find.byType(AmbientFrost)).animate, isFalse);
     });
 
     testWidgets('respects reduceMotion accessibility setting', (tester) async {
-      // Force enable animations temporarily
+      // Force enable animations temporarily, including under the test binding
       AnimatedGradient.disableAnimations = false;
+      AnimatedGradient.forceMotionInTests = true;
+      addTearDown(() => AnimatedGradient.forceMotionInTests = false);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -438,8 +438,8 @@ void main() {
       );
 
       // reduceMotion is enabled, so animation should not render Stack overlay
-      final stacks = tester.widgetList<Stack>(find.descendant(of: find.byType(GlassCard), matching: find.byType(Stack)));
-      expect(stacks.length, 0);
+      // Frost is still (no clock listener) when motion is off.
+      expect(tester.widget<AmbientFrost>(find.byType(AmbientFrost)).animate, isFalse);
 
       // Restore
       AnimatedGradient.disableAnimations = true;

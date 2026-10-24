@@ -91,16 +91,16 @@ void main() {
     vec2 id = floor(cell);
     vec2 gv = fract(cell) - 0.5;
     float h = hash(id + fl * 17.13);
-    if (h > 0.62) {
+    if (h > mix(0.74, 0.8, uDark)) {
       vec2 off = (vec2(hash(id + 3.1), hash(id + 5.7)) - 0.5) * 0.5;
-      float rad = mix(0.03, 0.055, hash(id + 9.3)) * (1.0 + uFrost * 2.2);
+      float rad = mix(0.016, 0.03, hash(id + 9.3)) * (1.0 + uFrost * 0.5);
       float d = length(gv - off);
       float core = smoothstep(rad, rad * mix(0.25, 0.0, uFrost), d);
       float twinkle = 0.65 + 0.35 * sin(t * (0.5 + h) + h * 40.0);
       motes += core * twinkle * (0.45 + fl * 0.3);
     }
   }
-  motes *= uMotes * mix(1.0, 0.55, uFrost);
+  motes *= uMotes * mix(1.0, 0.15, uFrost);
   vec3 moteColor = uDark > 0.5 ? vec3(1.0, 0.95, 0.86) : vec3(1.0);
   col = mix(col, moteColor, clamp(motes, 0.0, 1.0));
 
@@ -108,7 +108,7 @@ void main() {
   if (uFrost > 0.0) {
     float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));
     col = mix(vec3(lum), col, 1.0 + 0.35 * uFrost);
-    col += uFrost * mix(0.12, 0.035, uDark) * (1.0 - col);
+    col += uFrost * mix(0.06, 0.035, uDark) * (1.0 - col);
   }
 
   // Static hash dither (+-0.5 LSB) against 8-bit banding in dark gradients.
