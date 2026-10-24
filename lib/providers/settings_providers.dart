@@ -55,10 +55,14 @@ final zenModeProvider = Provider<bool>((ref) {
 });
 
 // ============================================================
-// OLED Black Mode - True black for OLED displays
+// OLED flag (legacy) - kept only for the one-time migration
 // ============================================================
 
-/** OLED mode provider - pure black background for battery savings */
+/**
+ * Legacy OLED flag. Settings no longer offers the toggle; the stored value
+ * survives only so [SettingsNotifier]'s one-time migration can clear a stuck
+ * `oledMode: true`. After that it is always false.
+ */
 final oledModeProvider = Provider<bool>((ref) {
   final settings = ref.watch(settingsProvider);
   return settings.oledMode;
