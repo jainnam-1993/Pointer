@@ -1,11 +1,14 @@
 package com.dailypointer
 
+import android.app.WallpaperManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
@@ -32,9 +35,32 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    /**
+     * Redraws the widget when the wallpaper colors change while the app process is alive. Each
+     * render also reads the colors afresh, so a change made while the app was closed shows on the
+     * next redraw (timer, wake, tap or resize). ACTION_WALLPAPER_CHANGED is deprecated and cannot
+     * reach a manifest receiver on Android 8+, so nothing depends on it.
+     */
+    private var wallpaperListener: Any? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         captureWidgetTap(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            val app = applicationContext
+            val listener = WallpaperManager.OnColorsChangedListener { _, which ->
+                if (which and WallpaperManager.FLAG_SYSTEM != 0) WidgetWork.run { WidgetRenderer.renderAll(app) }
+            }
+            WallpaperManager.getInstance(this).addOnColorsChangedListener(listener, Handler(Looper.getMainLooper()))
+            wallpaperListener = listener
+        }
+    }
+
+    override fun onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            (wallpaperListener as? WallpaperManager.OnColorsChangedListener)?.let { WallpaperManager.getInstance(this).removeOnColorsChangedListener(it) }
+        }
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent) {

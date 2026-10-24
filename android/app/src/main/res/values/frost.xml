@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frost opacities and light. RemoteViews cannot blur the wallpaper, so the widget imitates
+     frosted glass: a translucent tinted body, a top highlight, a soft lower shade and static grain.
+     Body opacities (color/, color-night/) are the floor that keeps 4.5:1 for the pointing text over any wallpaper. -->
+<resources>
+    <color name="widget_highlight">#B3FFFFFF</color>
+    <!-- Light cards need a dark hairline: on a white wallpaper the edge carries the glass. -->
+    <color name="widget_rim">#17000000</color>
+</resources>

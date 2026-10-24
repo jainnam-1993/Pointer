@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -57,28 +58,39 @@ object WidgetRenderer {
 
     fun render(context: Context, manager: AppWidgetManager, ids: IntArray) {
         val pointings = PointingRepository.load(context)
-        val state = WidgetStore.forContext(context).read()
+        // Every render first catches up with the clock, so any update shows the current pointing.
+        val state = WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
+        // The wallpaper colors are read on every render, so a wallpaper change shows on the next redraw.
+        val palette = WallpaperTint.palette(context)
+        val cards = WidgetSize.values().associateWith { FrostCard.bitmap(palette, it.aspect) }
         for (id in ids) {
-            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state))
+            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, palette, cards))
         }
     }
 
-    private fun build(context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState): RemoteViews {
+    private fun build(
+        context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState,
+        palette: FrostPalette, cards: Map<WidgetSize, Bitmap>,
+    ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state)
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, palette, cards.getValue(size))
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return views(context, widgetId, WidgetSize.forSize(width, height), pointing, state)
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, palette, cards.getValue(it)) }
     }
 
-    private fun views(context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState): RemoteViews {
-        val views = RemoteViews(context.packageName, R.layout.pointer_widget)
+    private fun views(
+        context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
+        palette: FrostPalette, card: Bitmap,
+    ): RemoteViews {
+        val views = RemoteViews(context.packageName, layoutFor(size))
+        paint(views, size, palette, card)
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
             views.setViewVisibility(R.id.widget_header, View.GONE)
@@ -90,20 +102,47 @@ object WidgetRenderer {
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
         views.setTextViewText(R.id.widget_tradition, pointing.tradition)
         views.setViewVisibility(R.id.widget_header, if (size.showHeader) View.VISIBLE else View.GONE)
-        views.setTextViewText(R.id.widget_teacher, if (pointing.teacher.isEmpty()) "" else "- ${pointing.teacher}")
-        views.setViewVisibility(R.id.widget_teacher, if (size.showTeacher && pointing.teacher.isNotEmpty()) View.VISIBLE else View.GONE)
+        views.setTextViewText(R.id.widget_teacher, teacherLine(pointing, size))
+        views.setViewVisibility(R.id.widget_teacher, if (size.showTeacher && teacherLine(pointing, size).isNotEmpty()) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.widget_action_bar, if (size.showActions) View.VISIBLE else View.GONE)
 
-        val saved = state.isFavorite(pointing.id)
-        views.setImageViewResource(R.id.widget_save, if (saved) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
-        views.setContentDescription(R.id.widget_save, context.getString(if (saved) R.string.widget_saved else R.string.widget_save))
-
-        // Open and Save carry the id that is on screen, so they always act on the shown item.
+        // Open carries the id that is on screen, so it always acts on the shown item.
         views.setOnClickPendingIntent(R.id.widget_content_area, openIntent(context, widgetId, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_save, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_SAVE, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_prev, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_PREV, pointing.id))
-        views.setOnClickPendingIntent(R.id.widget_next, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_NEXT, pointing.id))
+        // The small layout has no controls; only sizes with an action bar wire Save, Previous and Next.
+        if (size.showActions) {
+            val saved = state.isFavorite(pointing.id)
+            views.setImageViewResource(R.id.widget_save, if (saved) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
+            views.setContentDescription(R.id.widget_save, context.getString(if (saved) R.string.widget_saved else R.string.widget_save))
+            views.setOnClickPendingIntent(R.id.widget_save, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_SAVE, pointing.id))
+            views.setOnClickPendingIntent(R.id.widget_prev, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_PREV, pointing.id))
+            views.setOnClickPendingIntent(R.id.widget_next, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_NEXT, pointing.id))
+        }
         return views
+    }
+
+    /** Card bitmap and the ink measured against it (FrostPalette guarantees 4.5:1 for the pointing). */
+    private fun paint(views: RemoteViews, size: WidgetSize, palette: FrostPalette, card: Bitmap) {
+        views.setImageViewBitmap(R.id.widget_frost_bg, card)
+        views.setTextColor(R.id.widget_content, palette.ink)
+        views.setTextColor(R.id.widget_teacher, palette.secondary)
+        views.setTextColor(R.id.widget_tradition, palette.secondary)
+        if (size.showActions) {
+            for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", palette.ink)
+            views.setInt(R.id.widget_pill, "setBackgroundResource", if (palette.lightInk) R.drawable.widget_pill_on_dark else R.drawable.widget_pill_on_light)
+        }
+    }
+
+    /** Each size has its own layout (small, medium, large) rather than one stretched layout. */
+    fun layoutFor(size: WidgetSize): Int = when (size) {
+        WidgetSize.COMPACT -> R.layout.pointer_widget_small
+        WidgetSize.MEDIUM -> R.layout.pointer_widget
+        WidgetSize.LARGE -> R.layout.pointer_widget_large
+    }
+
+    /** Medium has no tradition eyebrow, so its footer carries the tradition after the teacher. */
+    fun teacherLine(pointing: WidgetPointing, size: WidgetSize): String {
+        if (pointing.teacher.isEmpty()) return if (size == WidgetSize.MEDIUM) pointing.tradition else ""
+        return if (size == WidgetSize.MEDIUM) "\u2014 ${pointing.teacher} \u00b7 ${pointing.tradition}" else "\u2014 ${pointing.teacher}"
     }
 
     private fun openIntent(context: Context, widgetId: Int, pointingId: String): PendingIntent {
