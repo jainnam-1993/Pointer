@@ -17,6 +17,7 @@ uniform vec4 uLight;    // 8-11: rim alpha on the lit (top-left) edge, rim alpha
 uniform vec4 uRimColor; // 12-15: rim rgb, bevel darkening
 uniform vec4 uBody;     // 16-19: body saturation, bevel saturation, light direction x, light direction y
 uniform vec4 uEdge;     // 20-23: hairline darkness, hairline width (units), inner top highlight, light-theme mode (0 or 1)
+uniform vec4 uFrost;    // 24-27: frost radius x, y (uv of the glass box), unused, unused
 
 uniform sampler2D uTexture;
 
@@ -38,6 +39,19 @@ vec4 sampleBackdrop(vec2 uv) {
   uv.y = 1.0 - uv.y;
 #endif
   return texture(uTexture, clamp(uv, vec2(0.0), vec2(1.0)));
+}
+
+// Frost inside the lens: a 12-tap golden-angle disc, so the glass needs one backdrop read instead of a blur pass plus
+// a lens pass. Offsets are in uv of the glass box (0..1), fp16-safe.
+vec4 frosted(vec2 uv) {
+  vec4 acc = vec4(0.0);
+  for (int i = 0; i < 12; i++) {
+    float fi = float(i);
+    float r = sqrt((fi + 0.5) / 12.0);
+    float a = fi * 2.39996;
+    acc += sampleBackdrop(uv + vec2(cos(a), sin(a)) * r * uFrost.xy);
+  }
+  return acc / 12.0;
 }
 
 vec3 saturateBy(vec3 c, float s) {
@@ -63,7 +77,7 @@ void main() {
 
   // Bevel: the edge band bends the backdrop inward (a convex lens), so content near the edge is magnified.
   vec2 q = p - n * uShape.z * bevel * bevel;
-  vec4 col = sampleBackdrop(q / (2.0 * uHalf) + 0.5);
+  vec4 col = frosted(q / (2.0 * uHalf) + 0.5);
 
   // Vibrancy: the body lifts the colour of what is behind it; the bevel adds a touch more and darkens slightly (thickness).
   vec3 base = col.a > 0.0 ? col.rgb / col.a : col.rgb;  // unpremultiply
