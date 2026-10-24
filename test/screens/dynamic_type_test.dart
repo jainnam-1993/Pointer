@@ -50,7 +50,7 @@ void main() {
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final storage = ref.watch(storageServiceProvider);
-            final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+            final notifier = CurrentPointingNotifier(storage);
             notifier.setPointing(initialPointing);
             return notifier;
           }),

@@ -81,7 +81,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointing = ref.read(currentPointingProvider);
       _announcePointingContent(context, pointing);
-      ref.read(widgetServiceProvider).updateWidget(pointing);
       _startAutoAdvanceTimer();
     });
   }
@@ -130,7 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(context, newPointing);
-    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
@@ -203,7 +201,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
     if (mounted) _announcePointingContent(context, newPointing);
-    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     // Restart timer for the new pointing (gives full 60s with new content)
     _startAutoAdvanceTimer();

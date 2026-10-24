@@ -1,264 +1,175 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:pointer/data/pointings.dart';
+import 'package:pointer/services/storage_service.dart';
 import 'package:pointer/services/widget_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_setup.dart';
 
-class MockSharedPreferences extends Mock implements SharedPreferences {}
+/** Fake App Group / HomeWidgetPreferences store behind the `home_widget` channel. */
+class _FakeHomeWidget {
+  final data = <String, Object?>{};
+  final calls = <String>[];
+
+  Future<Object?> handle(MethodCall call) async {
+    calls.add(call.method);
+    final args = call.arguments is Map ? Map<String, Object?>.from(call.arguments as Map) : const <String, Object?>{};
+    switch (call.method) {
+      case 'saveWidgetData':
+        final id = args['id']! as String;
+        if (args['data'] == null) {
+          data.remove(id);
+        } else {
+          data[id] = args['data'];
+        }
+        return true;
+      case 'getWidgetData':
+        return data[args['id']] ?? args['defaultValue'];
+      default:
+        return true;
+    }
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadTestPointings);
 
-  group('WidgetService constants', () {
-    test('has correct iOS App Group', () {
-      expect(WidgetService.iosAppGroup, 'group.com.dailypointer.widget');
-    });
+  late _FakeHomeWidget homeWidget;
+  late List<String> nativeCalls;
+  String? pendingTapId;
 
-    test('has correct Android widget name', () {
-      expect(WidgetService.androidWidgetName, 'PointerWidgetProvider');
-    });
+  final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
-    test('has correct default update interval', () {
-      expect(WidgetService.defaultUpdateIntervalHours, 3);
-    });
-  });
-
-  group('WidgetPointing', () {
-    test('creates with required fields', () {
-      const pointing = WidgetPointing(content: 'Test content', tradition: 'Zen');
-
-      expect(pointing.content, 'Test content');
-      expect(pointing.tradition, 'Zen');
-      expect(pointing.teacher, isNull);
-      expect(pointing.lastUpdated, isNull);
-    });
-
-    test('creates with all fields', () {
-      final now = DateTime.now();
-      final pointing = WidgetPointing(content: 'Test content', teacher: 'Papaji', tradition: 'Advaita', lastUpdated: now);
-
-      expect(pointing.content, 'Test content');
-      expect(pointing.teacher, 'Papaji');
-      expect(pointing.tradition, 'Advaita');
-      expect(pointing.lastUpdated, now);
-    });
-
-    test('teacher can be empty string', () {
-      const pointing = WidgetPointing(content: 'Test content', teacher: '', tradition: 'Zen');
-
-      expect(pointing.teacher, '');
-    });
-  });
-
-  group('_WidgetKeys (via widget data flow)', () {
-    // These tests verify the keys used by the widget service
-    // by checking the expected JSON structure
-
-    test('pointings cache stores correct structure', () {
-      // Verify the expected JSON format for widget pointings
-      final testPointings = [
-        {'id': 'test1', 'content': 'Test content 1', 'tradition': 'Zen', 'teacher': 'Teacher 1'},
-        {'id': 'test2', 'content': 'Test content 2', 'tradition': 'Advaita', 'teacher': ''},
-      ];
-
-      final jsonString = jsonEncode(testPointings);
-      final decoded = jsonDecode(jsonString) as List;
-
-      expect(decoded.length, 2);
-      expect(decoded[0]['id'], 'test1');
-      expect(decoded[0]['content'], 'Test content 1');
-      expect(decoded[0]['tradition'], 'Zen');
-      expect(decoded[0]['teacher'], 'Teacher 1');
-      expect(decoded[1]['teacher'], ''); // Empty teacher allowed
-    });
-
-    test('favorites stores list of pointing IDs', () {
-      final favorites = ['pointing1', 'pointing2', 'pointing3'];
-      final jsonString = jsonEncode(favorites);
-      final decoded = jsonDecode(jsonString) as List;
-
-      expect(decoded.length, 3);
-      expect(decoded, containsAll(['pointing1', 'pointing2', 'pointing3']));
-    });
-  });
-
-  group('Pointings data integration', () {
-    test('all pointings have required fields for widget', () {
-      // Verify that all pointings in the database have the fields
-      // needed by the widget service
-      for (final pointing in pointings) {
-        expect(pointing.id, isNotNull);
-        expect(pointing.id, isNotEmpty);
-        expect(pointing.content, isNotNull);
-        expect(pointing.content, isNotEmpty);
-        expect(pointing.tradition, isNotNull);
-        // teacher can be null
+  setUp(() {
+    homeWidget = _FakeHomeWidget();
+    nativeCalls = [];
+    pendingTapId = null;
+    messenger.setMockMethodCallHandler(const MethodChannel('home_widget'), homeWidget.handle);
+    messenger.setMockMethodCallHandler(WidgetService.widgetChannel, (call) async {
+      nativeCalls.add(call.method);
+      if (call.method == 'takePendingPointingId') {
+        final id = pendingTapId;
+        pendingTapId = null;
+        return id;
       }
-    });
-
-    test('traditions map contains all referenced traditions', () {
-      // Verify that all traditions used by pointings exist in the map
-      for (final pointing in pointings) {
-        expect(traditions.containsKey(pointing.tradition), true, reason: 'Tradition ${pointing.tradition} should exist in traditions map');
-      }
-    });
-
-    test('getRandomPointing returns valid pointing', () {
-      final random = getRandomPointing();
-      expect(random, isNotNull);
-      expect(pointings.contains(random), true);
+      return null;
     });
   });
 
-  group('Widget interleaving algorithm verification', () {
-    // Test the favorite interleaving algorithm logic
-    // that's used in populatePointingsCache()
+  tearDown(() {
+    debugDefaultTargetPlatformOverride = null;
+    messenger.setMockMethodCallHandler(const MethodChannel('home_widget'), null);
+    messenger.setMockMethodCallHandler(WidgetService.widgetChannel, null);
+  });
 
-    test('interleaving places favorites at regular intervals', () {
-      // Simulate the interleaving algorithm
-      final favorites = ['f1', 'f2', 'f3'];
-      final others = ['o1', 'o2', 'o3', 'o4', 'o5', 'o6', 'o7', 'o8', 'o9'];
-      final interleaved = <String>[];
+  Future<SharedPreferences> prefsWith(List<String> favorites) async {
+    SharedPreferences.setMockInitialValues({StorageKeys.favoritePointings: jsonEncode(favorites)});
+    return SharedPreferences.getInstance();
+  }
 
-      int favIndex = 0;
-      int otherIndex = 0;
-      const othersBetweenFavorites = 3;
+  List<String> favoritesIn(SharedPreferences prefs) => List<String>.from(jsonDecode(prefs.getString(StorageKeys.favoritePointings)!));
 
-      while (otherIndex < others.length || favIndex < favorites.length) {
-        if (favIndex < favorites.length) {
-          interleaved.add(favorites[favIndex]);
-          favIndex++;
-        }
-        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
-          interleaved.add(others[otherIndex]);
-          otherIndex++;
-        }
-      }
+  group('Android (self-sufficient native widget)', () {
+    setUp(() => debugDefaultTargetPlatformOverride = TargetPlatform.android);
 
-      // Verify pattern: f, o, o, o, f, o, o, o, f, o, o, o
-      expect(interleaved.length, 12);
-      expect(interleaved[0], 'f1');
-      expect(interleaved[1], 'o1');
-      expect(interleaved[4], 'f2');
-      expect(interleaved[8], 'f3');
+    test('a native widget save is visible after resume because prefs are reloaded', () async {
+      final prefs = await prefsWith(['adv-1']);
+      // The Kotlin widget writes flutter.pointer_favorites while the app is in the background.
+      SharedPreferences.setMockInitialValues({
+        StorageKeys.favoritePointings: jsonEncode(['adv-1', 'zen-1']),
+      });
+      expect(favoritesIn(prefs), ['adv-1'], reason: 'stale plugin cache before reload');
+
+      await WidgetService(prefs).processPendingWidgetActions();
+
+      expect(favoritesIn(prefs), ['adv-1', 'zen-1']);
+      expect(StorageService(prefs).favorites, ['adv-1', 'zen-1']);
     });
 
-    test('interleaving handles empty favorites', () {
-      final favorites = <String>[];
-      final others = ['o1', 'o2', 'o3'];
-      final interleaved = <String>[];
+    test('initialize drops the legacy pointings blob and never writes a new one', () async {
+      final prefs = await prefsWith([]);
+      homeWidget.data['pointings_cache'] = '[{"id":"x"}]';
+      final service = WidgetService(prefs);
 
-      int favIndex = 0;
-      int otherIndex = 0;
-      const othersBetweenFavorites = 3;
+      await service.initialize();
+      await service.populatePointingsCache();
 
-      while (otherIndex < others.length || favIndex < favorites.length) {
-        if (favIndex < favorites.length) {
-          interleaved.add(favorites[favIndex]);
-          favIndex++;
-        }
-        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
-          interleaved.add(others[otherIndex]);
-          otherIndex++;
-        }
-      }
-
-      expect(interleaved, ['o1', 'o2', 'o3']);
+      expect(homeWidget.data.containsKey('pointings_cache'), isFalse);
+      expect(homeWidget.calls, isNot(contains('updateWidget')));
     });
 
-    test('interleaving handles more favorites than others', () {
-      final favorites = ['f1', 'f2', 'f3', 'f4'];
-      final others = ['o1', 'o2'];
-      final interleaved = <String>[];
+    test('legacy single-slot pending save is added once, never toggled off', () async {
+      final prefs = await prefsWith(['adv-1']);
+      homeWidget.data['save_pending_id'] = 'adv-1';
 
-      int favIndex = 0;
-      int otherIndex = 0;
-      const othersBetweenFavorites = 3;
+      final changed = await WidgetService(prefs).processPendingWidgetActions();
 
-      while (otherIndex < others.length || favIndex < favorites.length) {
-        if (favIndex < favorites.length) {
-          interleaved.add(favorites[favIndex]);
-          favIndex++;
-        }
-        for (int i = 0; i < othersBetweenFavorites && otherIndex < others.length; i++) {
-          interleaved.add(others[otherIndex]);
-          otherIndex++;
-        }
-      }
+      expect(changed, isFalse);
+      expect(favoritesIn(prefs), ['adv-1']);
+      expect(homeWidget.data.containsKey('save_pending_id'), isFalse);
+    });
 
-      // Should get: f1, o1, o2, f2, f3, f4
-      expect(interleaved.length, 6);
-      expect(interleaved.where((e) => e.startsWith('f')).length, 4);
-      expect(interleaved.where((e) => e.startsWith('o')).length, 2);
+    test('favorites change asks the native widget to re-render, with no data copy', () async {
+      final prefs = await prefsWith([]);
+      await WidgetService(prefs).updateFavorites({'adv-1'});
+
+      expect(nativeCalls, ['renderWidgets']);
+      expect(homeWidget.data.containsKey('widget_favorites'), isFalse);
+    });
+
+    test('widget tap id is pulled once from MainActivity', () async {
+      final service = WidgetService(await prefsWith([]));
+      pendingTapId = 'zen-3';
+
+      expect(await service.takePendingWidgetPointingId(), 'zen-3');
+      expect(await service.takePendingWidgetPointingId(), isNull);
     });
   });
 
-  group('Widget URI callback format', () {
-    // Test the URI format expected by widgetBackgroundCallback
+  group('iOS (App Group store)', () {
+    setUp(() => debugDefaultTargetPlatformOverride = TargetPlatform.iOS);
 
-    test('refresh URI format is correct', () {
-      final refreshUri = Uri.parse('pointer://widget/refresh');
-      expect(refreshUri.scheme, 'pointer');
-      expect(refreshUri.host, 'widget');
-      expect(refreshUri.path, '/refresh');
+    test('queued Save intent ids are added idempotently and the queue is cleared', () async {
+      final prefs = await prefsWith(['adv-1']);
+      homeWidget.data['pending_saves'] = jsonEncode(['zen-1', 'adv-1', 'zen-1']);
+
+      final changed = await WidgetService(prefs).processPendingWidgetActions();
+
+      expect(changed, isTrue);
+      expect(favoritesIn(prefs), ['adv-1', 'zen-1']);
+      expect(homeWidget.data.containsKey('pending_saves'), isFalse);
+      expect(jsonDecode(homeWidget.data['widget_favorites']! as String), unorderedEquals(['adv-1', 'zen-1']));
     });
 
-    test('prefetch URI format is correct', () {
-      final prefetchUri = Uri.parse('pointer://widget/prefetch');
-      expect(prefetchUri.path, '/prefetch');
+    test('save then save again with the app closed keeps the pointing saved', () async {
+      final prefs = await prefsWith([]);
+      final service = WidgetService(prefs);
+      homeWidget.data['pending_saves'] = jsonEncode(['adv-2']);
+      await service.processPendingWidgetActions();
+      homeWidget.data['pending_saves'] = jsonEncode(['adv-2']);
+      await service.processPendingWidgetActions();
+
+      expect(favoritesIn(prefs), ['adv-2']);
     });
 
-    test('save URI format is correct', () {
-      final saveUri = Uri.parse('pointer://widget/save');
-      expect(saveUri.path, '/save');
+    test('populatePointingsCache writes every pointing with id and display tradition', () async {
+      final prefs = await prefsWith([]);
+      await WidgetService(prefs).populatePointingsCache();
+
+      final cache = (jsonDecode(homeWidget.data['pointings_cache']! as String) as List).cast<Map<String, dynamic>>();
+      expect(cache, isNotEmpty);
+      expect(cache.every((p) => (p['id'] as String).isNotEmpty), isTrue);
+      expect(nativeCalls, isEmpty);
+      expect(homeWidget.calls, contains('updateWidget'));
     });
 
-    test('open URI format is correct', () {
-      final openUri = Uri.parse('pointer://open');
-      expect(openUri.host, 'open');
-    });
-
-    test('alternate refresh format (host-based)', () {
-      final refreshUri = Uri.parse('pointer://refresh');
-      expect(refreshUri.host, 'refresh');
-    });
-
-    test('alternate save format (host-based)', () {
-      final saveUri = Uri.parse('pointer://save');
-      expect(saveUri.host, 'save');
-    });
-  });
-
-  group('Favorites JSON format', () {
-    test('can serialize favorites set to JSON', () {
-      final favoriteIds = {'id1', 'id2', 'id3'};
-      final jsonString = jsonEncode(favoriteIds.toList());
-      expect(jsonString, contains('id1'));
-      expect(jsonString, contains('id2'));
-      expect(jsonString, contains('id3'));
-    });
-
-    test('can deserialize favorites JSON to list', () {
-      const jsonString = '["id1", "id2", "id3"]';
-      final decoded = List<String>.from(jsonDecode(jsonString));
-      expect(decoded.length, 3);
-      expect(decoded, containsAll(['id1', 'id2', 'id3']));
-    });
-
-    test('empty favorites serializes correctly', () {
-      final favoriteIds = <String>{};
-      final jsonString = jsonEncode(favoriteIds.toList());
-      expect(jsonString, '[]');
+    test('tap pull is Android-only', () async {
+      pendingTapId = 'zen-3';
+      expect(await WidgetService(await prefsWith([])).takePendingWidgetPointingId(), isNull);
     });
   });
-
-  // Note: Methods like initialize(), setPremiumStatus(), populatePointingsCache(),
-  // etc. require the home_widget plugin which cannot be unit tested without mocking.
-  // The Maestro flows (10_widget_test.yaml, 16_widget_interactions.yaml) provide
-  // integration test coverage for widget functionality.
 }
