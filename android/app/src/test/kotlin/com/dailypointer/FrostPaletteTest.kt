@@ -12,7 +12,7 @@ class FrostPaletteTest {
         "green" to 0xFF10A040.toInt(), "magenta" to 0xFFD000C0.toInt(),
     )
 
-    /** White pointing text 4.5:1 and the teacher line (small text) 4.5:1 over every shade of the card, for every wallpaper and mode. */
+    /** Quote 7:1 and the teacher line 5:1 (small text 4.5:1 plus margin) over every shade of the card, for every wallpaper and mode. */
     @Test
     fun textContrastHoldsAcrossWallpapers() {
         val failures = mutableListOf<String>()
@@ -20,7 +20,7 @@ class FrostPaletteTest {
             val palette = FrostPalette.from(p, s, null, dark)
             val inkWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.ink, it) }
             val secWorst = palette.cardExtremes().minOf { FrostPalette.contrast(palette.secondary, it) }
-            if (inkWorst < 4.5 || secWorst < 4.5) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
+            if (inkWorst < FrostPalette.QUOTE_MIN || secWorst < FrostPalette.SECONDARY_MIN) failures += "$pName/$sName dark=$dark ink=%.2f secondary=%.2f".format(inkWorst, secWorst)
         }
         assertEquals(emptyList<String>(), failures)
     }
@@ -58,6 +58,8 @@ class FrostPaletteTest {
             val p = FrostPalette.from(c, null, null, dark)
             val worst = p.cardExtremes().minOf { FrostPalette.contrast(p.secondary, it) }
             assertTrue("$c dark=$dark secondary $worst", worst >= FrostPalette.SECONDARY_MIN)
+            // A real second level: the teacher line is visibly dimmer than the quote.
+            assertTrue("$c dark=$dark hierarchy", FrostPalette.luminance(p.secondary) < 0.8 * FrostPalette.luminance(p.ink))
         }
     }
 
@@ -67,7 +69,7 @@ class FrostPaletteTest {
         for ((name, c) in sweep) for (dark in listOf(false, true)) {
             val p = FrostPalette.from(c, null, null, dark)
             val l = Oklch.of(p.top).l
-            val range = if (dark) 0.30..0.45 else 0.30..0.55
+            val range = if (dark) 0.26..0.45 else 0.26..0.55
             assertTrue("$name dark=$dark L=$l", l in range)
             assertTrue("$name dark=$dark ink is white", p.lightInk && FrostPalette.luminance(p.ink) > 0.85)
         }
@@ -76,7 +78,7 @@ class FrostPaletteTest {
     @Test
     fun missingWallpaperColorsFallBackToACalmVioletPanel() {
         val p = FrostPalette.from(null, null, null, dark = false)
-        assertTrue(Oklch.of(p.top).l in 0.30..0.55)
+        assertTrue(Oklch.of(p.top).l in 0.26..0.55)
         assertTrue(p.cardExtremes().minOf { FrostPalette.contrast(p.ink, it) } >= 4.5)
     }
 }

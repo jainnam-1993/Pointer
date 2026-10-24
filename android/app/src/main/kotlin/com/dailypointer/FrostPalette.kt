@@ -51,14 +51,14 @@ data class FrostPalette(
             // Moderate chroma (0.035-0.075) at the wallpaper hue; neutral wallpapers stay a soft grey.
             val c = if (neutral) 0.012 else (lch.c * 0.55).coerceIn(0.035, 0.075)
             val h = if (neutral) 70.0 else lch.h
-            // Start at the target lightness and step down until white text clears 4.5:1 over every
-            // shade the card shows (sheen included) and 70% white clears 3:1.
+            // Start at the target lightness and step down until the quote clears QUOTE_MIN and the
+            // dimmer teacher line SECONDARY_MIN over every shade the card shows (sheen included).
             var lTop = if (dark) 0.44 else 0.54
             while (true) {
                 val p = withWhiteInk(Oklch(lTop, c, h).toArgb(), Oklch(lTop - 0.05, c * 1.1, h + 8).toArgb())
                 val probe = p.cardExtremes()
-                val ok = probe.minOf { contrast(p.ink, it) } >= 4.6 && probe.minOf { contrast(p.secondary, it) } >= SECONDARY_MIN
-                if (ok || lTop <= 0.30) return p
+                val ok = probe.minOf { contrast(p.ink, it) } >= QUOTE_MIN && probe.minOf { contrast(p.secondary, it) } >= SECONDARY_MIN
+                if (ok || lTop <= 0.26) return p
                 lTop -= 0.01
             }
         }
@@ -67,23 +67,21 @@ data class FrostPalette(
         private const val NEUTRAL_CHROMA = 0.02
 
         /**
-         * White ink, and secondary text as the dimmest white (from 70%, the target's second level)
-         * that still clears [SECONDARY_MIN] over every shade of the card. The teacher line is small
-         * text, so it needs WCAG AA 4.5:1; the margin covers grain and glyph antialiasing.
+         * White ink for the quote, and the teacher line as a dimmer second level: white at
+         * [SECONDARY_WHITE] over the card, like the target's two text levels. The panel lightness
+         * search (above) deepens the card until both floors hold, instead of brightening the
+         * teacher line, so the hierarchy survives.
          */
-        fun withWhiteInk(top: Int, bottom: Int): FrostPalette {
-            val probe = FrostPalette(top, bottom, 0, 0, true).cardExtremes()
-            val base = mix(top, bottom, 0.5)
-            var t = 0.70
-            var secondary = mix(base, INK_LIGHT, t)
-            while (t < 1.0 && probe.minOf { contrast(secondary, it) } < SECONDARY_MIN) {
-                t += 0.02
-                secondary = mix(base, INK_LIGHT, t.coerceAtMost(1.0))
-            }
-            return FrostPalette(top, bottom, INK_LIGHT, secondary, lightInk = true)
-        }
+        fun withWhiteInk(top: Int, bottom: Int): FrostPalette =
+            FrostPalette(top, bottom, INK_LIGHT, mix(mix(top, bottom, 0.5), INK_LIGHT, SECONDARY_WHITE), lightInk = true)
 
-        /** Secondary (teacher line) floor: 4.5:1 for small text plus margin. */
+        /** The teacher line's white level over the card: visibly dimmer than the quote. */
+        const val SECONDARY_WHITE = 0.80
+
+        /** Quote floor over every card shade: 7:1 (AAA), so the pointing reads at a glance. */
+        const val QUOTE_MIN = 7.0
+
+        /** Secondary (teacher line) floor: small text needs 4.5:1; 5.0 leaves margin for grain and antialiasing. */
         const val SECONDARY_MIN = 5.0
 
         /** Picks the ink with the higher worst-case contrast over every shade the card shows. */
