@@ -96,7 +96,7 @@ Future<String?> postScheduledPointing({
   } catch (e) {
     debugPrint('[WorkManager] Pool load failed, using fallback: $e');
   }
-  final next = await NotificationRotation.take(prefs, pool.isEmpty ? _fallbackPointings : pool, 1, at: current);
+  final next = await NotificationRotation.takeSelectedFor(prefs, pool.isEmpty ? _fallbackPointings : pool, [current]);
   await initialize?.call(plugin);
   await showPointingNotification(plugin, next.first, now: current);
   return next.first.id;

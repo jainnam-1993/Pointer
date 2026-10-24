@@ -449,7 +449,7 @@ class NotificationService {
       day = day.add(const Duration(days: 1));
     }
 
-    final batch = await NotificationRotation.takeFor(_prefs, pointings, scheduledTimes);
+    final batch = await NotificationRotation.takeSelectedFor(_prefs, pointings, scheduledTimes);
     for (var i = 0; i < batch.length; i++) {
       final localTime = scheduledTimes[i];
       final scheduledAtUtc = tz.TZDateTime.from(localTime.toUtc(), tz.UTC);

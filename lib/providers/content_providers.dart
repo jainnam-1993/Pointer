@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pointings.dart';
 import '../data/teaching.dart';
+import '../services/pointing_selection.dart';
 import '../services/affinity_service.dart';
 import '../services/storage_service.dart';
 import '../services/widget_service.dart';
@@ -39,7 +40,11 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 /** Current pointing state - persists across app restarts with round-robin order */
 final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return CurrentPointingNotifier(storage);
+  PointingSelection selection() => PointingSelection.of(ref.read(preferredTraditionsProvider), ref.read(affinityServiceProvider));
+  final notifier = CurrentPointingNotifier(storage, selection);
+  // Manage Lineages changes take effect immediately, not on the next cycle.
+  ref.listen<Set<Tradition>>(preferredTraditionsProvider, (_, _) => notifier.applySelection());
+  return notifier;
 });
 
 /**
@@ -53,8 +58,37 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
   late List<String> _order; // Shuffled pointing IDs
   late int _index; // Current position in order
 
-  CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
+  /** Enabled traditions and affinity, read fresh each time the order is rebuilt. */
+  final PointingSelection Function() _selection;
+
+  CurrentPointingNotifier(this._storage, [PointingSelection Function()? selection])
+    : _selection = selection ?? (() => PointingSelection.all),
+      super(_initializePointing(_storage)) {
     _initializeOrder();
+    if (!_selection().isEligible(state)) applySelection();
+  }
+
+  /**
+   * Re-filter the order after the enabled traditions change: drop pointings
+   * from disabled traditions, add newly enabled ones (affinity-weighted), and
+   * move off the current pointing if its tradition was disabled.
+   */
+  void applySelection() {
+    final selection = _selection();
+    final eligibleIds = selection.eligible(pointings).map((p) => p.id).toSet();
+    final kept = _order.where(eligibleIds.contains).toList();
+    final added = selection.order(pointings, Random()).where((id) => !kept.contains(id));
+    _order = [...kept, ...added];
+    final idx = _order.indexOf(state.id);
+    if (idx >= 0) {
+      _index = idx;
+    } else {
+      _index = 0;
+      state = getPointingById(_order.first) ?? pointings.first;
+      _persist(state);
+    }
+    _storage.setPointingOrder(_order);
+    _storage.setPointingIndex(_index);
   }
 
   /** Initialize or load persisted pointing order */
@@ -63,13 +97,13 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
 
     if (savedOrder != null && savedOrder.isNotEmpty) {
       // Validate saved order against current pointings (in case content changed)
-      final validIds = pointings.map((p) => p.id).toSet();
+      final validIds = _selection().eligible(pointings).map((p) => p.id).toSet();
       final validOrder = savedOrder.where((id) => validIds.contains(id)).toList();
 
       // Add any new pointings not in saved order
       final newIds = validIds.difference(validOrder.toSet());
       if (newIds.isNotEmpty) {
-        validOrder.addAll(newIds.toList()..shuffle(Random()));
+        validOrder.addAll(_selection().order(pointings, Random()).where(newIds.contains));
       }
 
       _order = validOrder;
@@ -81,7 +115,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
       }
     } else {
       // First launch: create shuffled order
-      _order = pointings.map((p) => p.id).toList()..shuffle(Random());
+      _order = _selection().order(pointings, Random());
       _index = 0;
       _storage.setPointingOrder(_order);
       _storage.setPointingIndex(_index);
@@ -163,7 +197,8 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
   /** Reshuffle order for next cycle (keeps current pointing at index 0) */
   void _reshuffleOrder() {
     final current = _order[_index];
-    _order.shuffle(Random());
+    // New cycle: re-read enabled traditions and the latest affinity.
+    _order = _selection().order(pointings, Random());
     // Move current to front so it's not immediately repeated
     _order.remove(current);
     _order.insert(0, current);

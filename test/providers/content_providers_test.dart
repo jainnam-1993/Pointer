@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/data/teaching.dart';
@@ -465,9 +466,17 @@ void main() {
       // Widget service mock
     });
 
-    test('currentPointingProvider creates notifier', () {
+    test('currentPointingProvider creates notifier', () async {
+      // The notifier reads enabled traditions and affinity, which need prefs.
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      when(() => mockStorage.preferredTraditions).thenReturn(const []);
       final container = ProviderContainer(
-        overrides: [storageServiceProvider.overrideWithValue(mockStorage), widgetServiceProvider.overrideWithValue(mockWidgetService)],
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+          storageServiceProvider.overrideWithValue(mockStorage),
+          widgetServiceProvider.overrideWithValue(mockWidgetService),
+        ],
       );
       addTearDown(container.dispose);
 
