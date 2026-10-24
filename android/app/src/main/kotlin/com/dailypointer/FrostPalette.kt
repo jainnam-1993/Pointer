@@ -65,7 +65,7 @@ data class FrostPalette(
         }
 
         /**
-         * Keeps a stop inside the calm band: light cards at least 0.55 luminance, dark cards at most
+         * Keeps a stop inside the calm band: light cards at least 0.78 luminance, dark cards at most
          * 0.045, by easing toward the tint. A white or neon wallpaper then still gives a frost, not a glare.
          */
         private fun settle(c: Int, tint: Int, dark: Boolean): Int {
@@ -78,7 +78,7 @@ data class FrostPalette(
             return tint
         }
 
-        private const val MIN_LIGHT_LUMINANCE = 0.55
+        private const val MIN_LIGHT_LUMINANCE = 0.78
         private const val MAX_DARK_LUMINANCE = 0.045
 
         /** Picks the ink with the higher worst-case contrast over every shade the card shows. */

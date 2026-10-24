@@ -18,6 +18,7 @@ object WallpaperTint {
     fun palette(context: Context): FrostPalette {
         val dark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val colors = read(context)
+        Log.i("PointerWidget", "Wallpaper colors primary=${colors?.primaryColor} secondary=${colors?.secondaryColor} tertiary=${colors?.tertiaryColor} dark=$dark")
         return FrostPalette.from(colors?.primaryColor?.toArgb(), colors?.secondaryColor?.toArgb(), colors?.tertiaryColor?.toArgb(), dark)
     }
 

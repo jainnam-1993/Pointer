@@ -4,4 +4,15 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Debug builds only (ManifestSafetyTest keeps both out of main and release): lets the widget
+         wallpaper sweep set wallpapers on an EMULATOR. Exported only to callers holding DUMP, which
+         adb shell has and no installable app can get; the receiver also refuses real devices. -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <application>
+        <receiver
+            android:name="com.dailypointer.DebugWallpaperReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP" />
+    </application>
 </manifest>
