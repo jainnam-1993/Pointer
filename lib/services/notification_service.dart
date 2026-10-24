@@ -277,7 +277,7 @@ class NotificationService {
     if (enabled) {
       await scheduleAllNotifications();
     } else {
-      await cancelAllNotifications();
+      await cancelScheduledNotifications();
     }
   }
 
@@ -358,7 +358,7 @@ class NotificationService {
   }
 
   // ============================================================
-  // Scheduling (via WorkManager)
+  // Scheduling
   // ============================================================
 
   /** Minimum time between automatic iOS batch refills. */
@@ -366,6 +366,20 @@ class NotificationService {
 
   /** Epoch millis of the last iOS batch build. */
   static const String lastRefillKey = 'pointer_notification_last_refill_ms';
+
+  /** JSON map of each pending iOS request id this service owns to its fire time (epoch millis). */
+  static const String iosScheduledKey = 'pointer_notification_ios_scheduled';
+
+  /** Next iOS request id to hand out; ids rotate through [_iosIdSpan] values and are never reused while pending. */
+  static const String _iosNextIdKey = 'pointer_notification_ios_next_id';
+
+  /**
+   * Size of the iOS id range. Ids are not reused soon, because cancelling or
+   * replacing an id on iOS also removes a delivered notification with that id.
+   */
+  static const int _iosIdSpan = 10000;
+
+  static bool _ownsIosId(int id) => id >= _iosScheduleIdBase && id < _iosScheduleIdBase + _iosIdSpan;
 
   /** Test-only platform override; null means use [Platform]. */
   @visibleForTesting
@@ -378,6 +392,10 @@ class NotificationService {
    * Top up the iOS pending batch when it is due. The one entry point for
    * automatic refills, called at startup and on every app resume.
    *
+   * A refill never touches delivered notifications and keeps every pending
+   * request: it schedules only the tail after the last pending time, so the
+   * rotation advances by exactly the number of new requests.
+   *
    * Throttled to once per [refillInterval]. Returns whether a refill ran.
    * Android needs no refill: its WorkManager task is periodic.
    */
@@ -389,15 +407,21 @@ class NotificationService {
       final elapsed = current.difference(DateTime.fromMillisecondsSinceEpoch(last));
       if (!elapsed.isNegative && elapsed < refillInterval) return false;
     }
-    await scheduleAllNotifications(now: current);
+    final schedule = getSchedule();
+    if (!schedule.isEnabled) return false;
+    final count = await _topUpIosBatch(schedule, current);
+    await _prefs.setInt(lastRefillKey, current.millisecondsSinceEpoch);
+    debugPrint('[NotificationService] iOS refill scheduled $count new notifications');
     return true;
   }
 
+  /**
+   * Rebuild the schedule after an explicit change from Settings: cancel the
+   * pending pointings and schedule afresh. Delivered notifications stay in
+   * Notification Center.
+   */
   Future<void> scheduleAllNotifications({DateTime? now}) async {
-    await _localNotifications.cancelAll();
-    if (_isAndroid) {
-      await WorkManagerService.cancelAll();
-    }
+    await cancelScheduledNotifications();
 
     if (!isNotificationsEnabled) return;
 
@@ -406,11 +430,12 @@ class NotificationService {
 
     if (_isIOS) {
       final current = now ?? DateTime.now();
-      final count = await _scheduleIosBatchNotifications(schedule, current);
+      final count = await _topUpIosBatch(schedule, current);
       await _prefs.setInt(lastRefillKey, current.millisecondsSinceEpoch);
       debugPrint('[NotificationService] iOS batch scheduled: $count notifications');
       return;
     }
+    if (!_isAndroid) return;
 
     debugPrint(
       '[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00',
@@ -431,43 +456,88 @@ class NotificationService {
     _timeZonesInitialized = true;
   }
 
-  Future<int> _scheduleIosBatchNotifications(NotificationSchedule schedule, DateTime now) async {
+  Map<int, int> _readIosScheduled() {
+    final stored = _prefs.getString(iosScheduledKey);
+    if (stored == null) return {};
+    try {
+      return (jsonDecode(stored) as Map<String, dynamic>).map((k, v) => MapEntry(int.parse(k), v as int));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<void> _writeIosScheduled(Map<int, int> scheduled) =>
+      _prefs.setString(iosScheduledKey, jsonEncode(scheduled.map((k, v) => MapEntry('$k', v))));
+
+  /**
+   * Keep the pending requests this service owns and schedule pointings for the
+   * delivery times after the last one, up to [_iosScheduleBatchLimit] pending
+   * within 14 days of [now]. Owned pending requests with no recorded time
+   * (from an older build) are cancelled one by one and rebuilt. Returns the
+   * number of new requests.
+   */
+  Future<int> _topUpIosBatch(NotificationSchedule schedule, DateTime now) async {
     _initializeTimeZonesIfNeeded();
 
-    final windowStart = DateTime(now.year, now.month, now.day);
-    final windowEnd = windowStart.add(const Duration(days: 14));
-    final scheduledTimes = <DateTime>[];
-
-    var day = windowStart;
-    while (day.isBefore(windowEnd) && scheduledTimes.length < _iosScheduleBatchLimit) {
-      final timesForDay = schedule.getNotificationTimes(day);
-      for (final time in timesForDay) {
-        if (!time.isAfter(now)) continue;
-        scheduledTimes.add(time);
-        if (scheduledTimes.length >= _iosScheduleBatchLimit) break;
+    final recorded = _readIosScheduled();
+    final kept = <int, int>{};
+    for (final request in await _localNotifications.pendingNotificationRequests()) {
+      if (!_ownsIosId(request.id)) continue;
+      final at = recorded[request.id];
+      if (at != null) {
+        kept[request.id] = at;
+      } else {
+        await _localNotifications.cancel(request.id);
       }
-      day = day.add(const Duration(days: 1));
     }
 
-    final batch = await NotificationRotation.takeSelectedFor(_prefs, pointings, scheduledTimes);
-    for (var i = 0; i < batch.length; i++) {
-      final localTime = scheduledTimes[i];
-      final scheduledAtUtc = tz.TZDateTime.from(localTime.toUtc(), tz.UTC);
-      final pointing = batch[i];
+    var after = now;
+    for (final at in kept.values) {
+      final time = DateTime.fromMillisecondsSinceEpoch(at);
+      if (time.isAfter(after)) after = time;
+    }
+    final times = _iosDeliveryTimes(schedule, now, after, _iosScheduleBatchLimit - kept.length);
 
+    final batch = await NotificationRotation.takeSelectedFor(_prefs, pointings, times);
+    var nextId = _prefs.getInt(_iosNextIdKey) ?? _iosScheduleIdBase;
+    for (var i = 0; i < batch.length; i++) {
+      while (!_ownsIosId(nextId) || kept.containsKey(nextId)) {
+        nextId = _ownsIosId(nextId) ? nextId + 1 : _iosScheduleIdBase;
+      }
+      final id = nextId++;
+      final pointing = batch[i];
       await _localNotifications.zonedSchedule(
-        _iosScheduleIdBase + i,
+        id,
         pointingNotificationTitle,
         pointing.content,
-        scheduledAtUtc,
+        tz.TZDateTime.from(times[i].toUtc(), tz.UTC),
         _buildRichNotificationDetails(pointing),
         payload: pointing.id,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
+      kept[id] = times[i].millisecondsSinceEpoch;
     }
-
+    await _prefs.setInt(_iosNextIdKey, nextId);
+    await _writeIosScheduled(kept);
     return batch.length;
+  }
+
+  /** Up to [limit] delivery times strictly after [after], within 14 days of the day of [now]. */
+  static List<DateTime> _iosDeliveryTimes(NotificationSchedule schedule, DateTime now, DateTime after, int limit) {
+    final times = <DateTime>[];
+    if (limit <= 0) return times;
+    final windowEnd = DateTime(now.year, now.month, now.day).add(const Duration(days: 14));
+    var day = DateTime(after.year, after.month, after.day);
+    while (day.isBefore(windowEnd) && times.length < limit) {
+      for (final time in schedule.getNotificationTimes(day)) {
+        if (!time.isAfter(after)) continue;
+        times.add(time);
+        if (times.length >= limit) break;
+      }
+      day = day.add(const Duration(days: 1));
+    }
+    return times;
   }
 
   Future<void> showImmediateNotification(Pointing pointing) async {
@@ -522,9 +592,18 @@ class NotificationService {
     await _localNotifications.cancel(id);
   }
 
-  Future<void> cancelAllNotifications() async {
-    await _localNotifications.cancelAll();
-    if (_isAndroid) {
+  /**
+   * Stop future pointings: cancel the pending iOS requests this service owns,
+   * one id at a time, or the Android WorkManager task. Never calls the
+   * plugin's cancelAll, which on iOS also clears delivered notifications.
+   */
+  Future<void> cancelScheduledNotifications() async {
+    if (_isIOS) {
+      for (final request in await _localNotifications.pendingNotificationRequests()) {
+        if (_ownsIosId(request.id)) await _localNotifications.cancel(request.id);
+      }
+      await _prefs.remove(iosScheduledKey);
+    } else if (_isAndroid) {
       await WorkManagerService.cancelAll();
     }
   }

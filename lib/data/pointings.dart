@@ -58,9 +58,6 @@ class Pointing {
   /** Optional explanatory commentary. */
   final String? commentary;
 
-  /** Asset path for a pre-recorded audio reading. */
-  final String? audioUrl;
-
   /** Asset path for an associated video. */
   final String? videoUrl;
 
@@ -73,7 +70,6 @@ class Pointing {
     this.teacher,
     this.source,
     this.commentary,
-    this.audioUrl,
     this.videoUrl,
   });
 
@@ -88,7 +84,6 @@ class Pointing {
       teacher: json['teacher'] as String?,
       source: json['source'] as String?,
       commentary: json['commentary'] as String?,
-      audioUrl: json['audioUrl'] as String?,
       videoUrl: json['videoUrl'] as String?,
     );
   }
@@ -104,7 +99,6 @@ class Pointing {
       if (teacher != null) 'teacher': teacher,
       if (source != null) 'source': source,
       if (commentary != null) 'commentary': commentary,
-      if (audioUrl != null) 'audioUrl': audioUrl,
       if (videoUrl != null) 'videoUrl': videoUrl,
     };
   }

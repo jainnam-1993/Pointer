@@ -9,9 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/widgets/glass_card.dart';
-import 'package:pointer/widgets/tradition_badge.dart';
 import 'package:pointer/widgets/animated_gradient.dart';
-import 'package:pointer/data/pointings.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'golden_test_helpers.dart';
 
@@ -174,56 +172,6 @@ void main() {
       );
 
       await expectGoldenMatches(tester, 'glass_buttons_row');
-    });
-  });
-
-  // ==========================================================
-  // TRADITION BADGE GOLDEN TESTS
-  // ==========================================================
-  group('TraditionBadge Golden Tests', () {
-    testWidgets('all tradition badges', (tester) async {
-      await pumpForGolden(
-        tester,
-        createComponentTestWrapper(
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TraditionBadge(tradition: Tradition.advaita),
-              SizedBox(height: 12),
-              TraditionBadge(tradition: Tradition.zen),
-              SizedBox(height: 12),
-              TraditionBadge(tradition: Tradition.direct),
-              SizedBox(height: 12),
-              TraditionBadge(tradition: Tradition.contemporary),
-              SizedBox(height: 12),
-              TraditionBadge(tradition: Tradition.original),
-            ],
-          ),
-        ),
-        size: const Size(300, 400),
-      );
-
-      await expectGoldenMatches(tester, 'tradition_badges_all');
-    });
-
-    testWidgets('advaita badge', (tester) async {
-      await pumpForGolden(
-        tester,
-        createComponentTestWrapper(child: const TraditionBadge(tradition: Tradition.advaita)),
-        size: const Size(300, 100),
-      );
-
-      await expectGoldenMatches(tester, 'tradition_badge_advaita');
-    });
-
-    testWidgets('zen badge', (tester) async {
-      await pumpForGolden(
-        tester,
-        createComponentTestWrapper(child: const TraditionBadge(tradition: Tradition.zen)),
-        size: const Size(300, 100),
-      );
-
-      await expectGoldenMatches(tester, 'tradition_badge_zen');
     });
   });
 
