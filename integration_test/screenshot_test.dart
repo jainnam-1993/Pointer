@@ -14,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:pointer/main.dart';
 import 'package:pointer/providers/providers.dart';
+import 'package:pointer/services/app_initializer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -49,6 +50,8 @@ void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({'pointer_onboarding_completed': true});
     prefs = await SharedPreferences.getInstance();
+    // The splash reads AppInitializer.startupCoordinator, which only initialize() creates.
+    await AppInitializer.initialize(onNotificationAction: (_) {});
   });
 
   setUp(() {
