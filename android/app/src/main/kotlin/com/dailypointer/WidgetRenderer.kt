@@ -57,7 +57,8 @@ object WidgetRenderer {
 
     fun render(context: Context, manager: AppWidgetManager, ids: IntArray) {
         val pointings = PointingRepository.load(context)
-        val state = WidgetStore.forContext(context).read()
+        // Every render first catches up with the clock, so any update shows the current pointing.
+        val state = WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
         for (id in ids) {

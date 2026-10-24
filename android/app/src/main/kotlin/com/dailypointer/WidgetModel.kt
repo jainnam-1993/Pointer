@@ -40,13 +40,18 @@ data class WidgetState(
     fun step(delta: Int, now: Long): WidgetState = copy(position = position + delta, lastAdvanceAt = now)
 
     /**
-     * APPWIDGET_UPDATE from the system (updatePeriodMillis timer, reboot, widget added).
-     * The first tick only stamps the clock; later ticks advance once per elapsed period.
+     * Wall-clock advance, applied at every render. The pointing on screen is a function of time:
+     * one step per whole [PERIOD_MS] since the anchor, however many periods passed. So a widget
+     * whose timer an OEM battery manager held for hours shows the right pointing on the next
+     * render (the deferred updatePeriodMillis alarm on wake, an app resume, a resize, a tap), and
+     * never looks stuck. The anchor moves by whole periods, so early or late timer delivery
+     * neither double-advances nor drifts. The first tick only stamps the clock.
      */
-    fun tick(now: Long): WidgetState = when {
-        lastAdvanceAt <= 0L -> copy(lastAdvanceAt = now)
-        now - lastAdvanceAt >= TIMER_ADVANCE_MIN_MS -> copy(position = position + 1, lastAdvanceAt = now)
-        else -> this
+    fun tick(now: Long): WidgetState {
+        if (lastAdvanceAt <= 0L || now < lastAdvanceAt) return copy(lastAdvanceAt = now)
+        val periods = (now - lastAdvanceAt) / PERIOD_MS
+        if (periods == 0L) return this
+        return copy(position = position + periods.coerceAtMost(Int.MAX_VALUE.toLong() / 2).toInt(), lastAdvanceAt = lastAdvanceAt + periods * PERIOD_MS)
     }
 
     /** Save is idempotent: it adds the id once and never removes it. */
@@ -57,8 +62,8 @@ data class WidgetState(
     }
 
     companion object {
-        /** updatePeriodMillis is 30 min; allow early delivery without double-advancing. */
-        const val TIMER_ADVANCE_MIN_MS = 25 * 60 * 1000L
+        /** One pointing per 30 minutes, the same cadence as updatePeriodMillis and the iOS timeline. */
+        const val PERIOD_MS = 30 * 60 * 1000L
     }
 }
 

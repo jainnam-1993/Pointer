@@ -98,11 +98,9 @@ struct Provider: TimelineProvider {
         // Each entry carries its own pointing id into SavePointingIntent (see the heart button),
         // so no "current id" is stored here.
 
-        // Request refresh after all entries are shown
-        let lastEntryDate = entries.last?.date ?? currentDate
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: rotationIntervalMinutes, to: lastEntryDate) ?? lastEntryDate.addingTimeInterval(1800)
-
-        let timeline = Timeline(entries: entries, policy: .after(nextUpdate))
+        // Twelve distinct pointings, one per 30-minute slot (six hours); WidgetKit asks for a new
+        // timeline once the last one is on screen.
+        let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
 

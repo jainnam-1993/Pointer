@@ -51,6 +51,29 @@ class WidgetModelTest {
         assertEquals(6, s2.position)
     }
 
+    /** A battery manager held the timer for 5 h 10 min: the next render catches up 10 steps at once. */
+    @Test
+    fun contentAdvancesWithWallClockAfterAHeldTimer() {
+        val start = 1_000 * minute
+        val s0 = WidgetState(seed = 42, position = 0, lastAdvanceAt = start, favorites = emptyList())
+        val later = s0.tick(start + 310 * minute)
+        assertEquals(10, later.position)
+        assertEquals(start + 300 * minute, later.lastAdvanceAt) // anchor stays on the 30-minute grid
+        assertEquals(11, later.tick(start + 330 * minute).position)
+        // The shown pointing really changes from one period to the next.
+        val shown = (0..3).map { WidgetOrder.indexAt(42L, 50, s0.tick(start + it * 30 * minute).position) }
+        assertEquals(4, shown.toSet().size)
+    }
+
+    /** Early or repeated deliveries inside a period never double-advance; a clock set back re-anchors. */
+    @Test
+    fun earlyDeliveryDoesNotDoubleAdvanceAndClockSkewReanchors() {
+        val s = WidgetState(seed = 1, position = 3, lastAdvanceAt = 600 * minute, favorites = emptyList())
+        assertEquals(s, s.tick(629 * minute))
+        assertEquals(4, s.tick(630 * minute).tick(631 * minute).tick(659 * minute).position)
+        assertEquals(WidgetState(1, 3, 500 * minute, emptyList()), s.tick(500 * minute))
+    }
+
     @Test
     fun tapStepsAndRestartsTimer() {
         val s = WidgetState(1, 5, 100 * minute, emptyList()).step(1, 110 * minute)

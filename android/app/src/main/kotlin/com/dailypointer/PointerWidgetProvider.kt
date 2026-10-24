@@ -20,7 +20,6 @@ class PointerWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val pending = goAsync()
         WidgetWork.runAsync(pending) {
-            WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
             WidgetRenderer.render(context, appWidgetManager, appWidgetIds)
         }
     }
