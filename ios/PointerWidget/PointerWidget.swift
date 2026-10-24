@@ -94,11 +94,8 @@ struct Provider: TimelineProvider {
             entries.append(PointingEntry(date: entryDate, data: data))
         }
 
-        // Store current pointing content and ID for save intent
-        if let firstPointing = allPointings[safe: normalizedIndex] {
-            sharedDefaults?.set(firstPointing["content"] as? String ?? "", forKey: "pointing_content")
-            sharedDefaults?.set(firstPointing["id"] as? String ?? "", forKey: "pointing_id")
-        }
+        // Each entry carries its own pointing id into SavePointingIntent (see the heart button),
+        // so no "current id" is stored here.
 
         // Request refresh after all entries are shown
         let lastEntryDate = entries.last?.date ?? currentDate
@@ -484,7 +481,7 @@ struct PointerWidgetEntryView: View {
         if #available(iOS 17.0, *) {
             HStack(spacing: 0) {
                 // Save button on left (like Android) - filled heart if already saved
-                Button(intent: SavePointingIntent()) {
+                Button(intent: SavePointingIntent(pointingId: entry.data.id ?? "")) {
                     Image(systemName: entry.data.isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: iconSize, weight: .medium))
                         .foregroundColor(entry.data.isFavorite ? accentColor : mutedTextColor)

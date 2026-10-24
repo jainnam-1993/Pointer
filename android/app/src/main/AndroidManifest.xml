@@ -43,20 +43,11 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/pointer_widget_info" />
         </receiver>
-
-        <!-- Widget RemoteViewsService for StackView data -->
-        <service
-            android:name=".PointerWidgetService"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <!-- flutter_local_notifications receivers: action buttons (Save, Another),
              scheduled delivery, and rescheduling after reboot or update. -->
@@ -71,15 +62,10 @@
             </intent-filter>
         </receiver>
 
-        <!-- Boot receiver to reschedule notifications after device restart -->
+        <!-- Widget buttons (save, previous, next). Only this app's PendingIntents reach it. -->
         <receiver
-            android:name=".BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-            </intent-filter>
-        </receiver>
+            android:name=".WidgetActionReceiver"
+            android:exported="false" />
 
     </application>
     <!-- Required to query activities that can process text, see:

@@ -234,7 +234,7 @@ Widget _app({required Widget home, required SharedPreferences prefs, required Ma
       zenModeProvider.overrideWith((ref) => false),
       donationProvider.overrideWith((ref) => _FixedDonationNotifier(_FakeDonationService())),
       currentPointingProvider.overrideWith((ref) {
-        final notifier = CurrentPointingNotifier(ref.watch(storageServiceProvider), ref.watch(widgetServiceProvider));
+        final notifier = CurrentPointingNotifier(ref.watch(storageServiceProvider));
         notifier.setPointing(goldenTestPointing);
         return notifier;
       }),

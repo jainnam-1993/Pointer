@@ -107,6 +107,9 @@ tasks.matching { it.name == "compileReleaseJavaWithJavac" || it.name == "compile
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // JVM unit tests for the widget model (org.json is stubbed in android.jar)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 }
 
 // Configuration for Kotlin Gradle Plugin 2.x

@@ -102,12 +102,27 @@ void _setupWidgetDeepLink() {
     }
   });
 
-  // Listen for widget clicks while the app is running.
+  // Listen for widget clicks while the app is running (iOS widgetURL). This is the only
+  // widget-tap listener; Android taps are pulled by [_pullAndroidWidgetTap].
   HomeWidget.widgetClicked.listen((uri) {
     if (uri == null) return;
     _pendingWidgetUri = uri.toString();
     _drainPendingWidgetUri();
   });
+}
+
+/**
+ * Pull the pointing id of an Android widget tap from MainActivity and route it through
+ * the same buffered path. Called once startup content is ready and on every resume, so
+ * cold and warm taps both land; native clears the id when it is taken.
+ */
+Future<void> _pullAndroidWidgetTap() async {
+  final container = _globalContainer;
+  if (container == null) return;
+  final id = await container.read(widgetServiceProvider).takePendingWidgetPointingId();
+  if (id == null || id.isEmpty) return;
+  _pendingWidgetUri = 'dailypointer://pointing/$id';
+  _drainPendingWidgetUri();
 }
 
 /**
@@ -158,6 +173,7 @@ void main() async {
     AppInitializer.criticalContentReady
         .then((_) {
           _drainPendingWidgetUri();
+          return _pullAndroidWidgetTap();
         })
         .catchError((error, stackTrace) {
           debugPrint('[AppInitializer] Critical startup failed: $error');
@@ -187,87 +203,33 @@ class PointerApp extends ConsumerStatefulWidget {
 }
 
 class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObserver {
-  static const _widgetChannel = MethodChannel('com.dailypointer/widget');
-  StreamSubscription? _widgetClickSub;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // Opening bell sound is embedded in the splash video asset —
     // no separate just_audio playback needed (avoids codec contention).
-
-    _setupWidgetDeepLink();
   }
 
   @override
   void dispose() {
-    _widgetClickSub?.cancel();
     ref.read(ambientSoundServiceProvider).dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  /// Set up listeners for widget deep-link taps from both platforms.
-  void _setupWidgetDeepLink() {
-    // Android: MethodChannel from MainActivity
-    _widgetChannel.setMethodCallHandler((call) async {
-      if (call.method == 'onWidgetPointingTap') {
-        final pointingId = call.arguments as String?;
-        if (pointingId != null) {
-          debugPrint('[WidgetDeepLink] Android tap: $pointingId');
-          _navigateToPointing(pointingId);
-        }
-      }
-    });
-
-    // iOS: widgetURL deep-link via home_widget
-    _widgetClickSub = HomeWidget.widgetClicked.listen((uri) {
-      if (uri == null) return;
-      debugPrint('[WidgetDeepLink] iOS tap: $uri');
-      // URI format: dailypointer://pointing/{id}
-      if (uri.host == 'pointing' && uri.pathSegments.isNotEmpty) {
-        _navigateToPointing(uri.pathSegments.first);
-      }
-    });
-  }
-
-  /// Navigate to the home tab and set the current pointing by ID.
-  void _navigateToPointing(String pointingId) {
-    if (!AppInitializer.isCriticalContentReady) {
-      _pendingWidgetUri = 'dailypointer://pointing/$pointingId';
-      debugPrint('[WidgetDeepLink] Buffered until startup ready: $pointingId');
-      return;
-    }
-
-    final found = ref.read(currentPointingProvider.notifier).setPointingById(pointingId);
-    if (found) {
-      // Navigate to home tab
-      final router = ref.read(routerProvider);
-      router.go('/');
-      debugPrint('[WidgetDeepLink] Navigated to pointing: $pointingId');
-    } else {
-      debugPrint('[WidgetDeepLink] Pointing not found: $pointingId');
-    }
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      final widgetService = ref.read(widgetServiceProvider);
-      widgetService.refreshWidget();
-      widgetService.processPendingWidgetActions().then((_) async {
-        // Pick up favourites saved by the notification action isolate.
-        await ref.read(sharedPreferencesProvider).reload();
+      // Reloads SharedPreferences first, so favorites saved from the widget or from the
+      // notification action isolate while the app was in the background are visible
+      // before favorites are re-read.
+      ref.read(widgetServiceProvider).processPendingWidgetActions().then((_) {
         ref.invalidate(favoritesProvider);
       });
       unawaited(ref.read(notificationServiceProvider).refillIfDue());
+      _pullAndroidWidgetTap();
     }
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    ref.read(widgetServiceProvider).refreshWidget();
   }
 
   @override

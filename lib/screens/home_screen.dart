@@ -82,7 +82,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pointing = ref.read(currentPointingProvider);
       _announcePointingContent(context, pointing);
-      ref.read(widgetServiceProvider).updateWidget(pointing);
       _startAutoAdvanceTimer();
     });
   }
@@ -131,7 +130,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final newPointing = ref.read(currentPointingProvider);
     _announcePointingContent(context, newPointing);
-    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     final storage = ref.read(storageServiceProvider);
     await storage.markPointingAsViewed(newPointing.id);
@@ -204,7 +202,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Announce new pointing to screen readers and update widget
     final newPointing = ref.read(currentPointingProvider);
     if (mounted) _announcePointingContent(context, newPointing);
-    ref.read(widgetServiceProvider).updateWidget(newPointing);
 
     // Restart timer for the new pointing (gives full 60s with new content)
     _startAutoAdvanceTimer();
@@ -258,7 +255,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14))),
+          Semantics(
+            excludeSemantics: true,
+            label: traditionInfo.name,
+            child: Text(traditionInfo.icon, style: const TextStyle(fontSize: 14)),
+          ),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
@@ -476,7 +477,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                           if (favorites.contains(pointing.id)) {
                                                             HapticFeedback.mediumImpact();
                                                             await ref.read(favoritesProvider.notifier).toggle(pointing.id);
-                                                            await ref.read(widgetServiceProvider).updateFavorites(ref.read(favoritesProvider).toSet());
+                                                            await ref
+                                                                .read(widgetServiceProvider)
+                                                                .updateFavorites(ref.read(favoritesProvider).toSet());
                                                           } else {
                                                             await _handleSave();
                                                           }

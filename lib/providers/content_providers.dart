@@ -39,8 +39,7 @@ final affinityServiceProvider = Provider<AffinityService>((ref) {
 /** Current pointing state - persists across app restarts with round-robin order */
 final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, Pointing>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  final widgetService = ref.watch(widgetServiceProvider);
-  return CurrentPointingNotifier(storage, widgetService);
+  return CurrentPointingNotifier(storage);
 });
 
 /**
@@ -51,13 +50,11 @@ final currentPointingProvider = StateNotifierProvider<CurrentPointingNotifier, P
  */
 class CurrentPointingNotifier extends StateNotifier<Pointing> {
   final StorageService _storage;
-  final WidgetService _widgetService;
   late List<String> _order; // Shuffled pointing IDs
   late int _index; // Current position in order
 
-  CurrentPointingNotifier(this._storage, this._widgetService) : super(_initializePointing(_storage)) {
+  CurrentPointingNotifier(this._storage) : super(_initializePointing(_storage)) {
     _initializeOrder();
-    _updateWidget(state);
   }
 
   /** Initialize or load persisted pointing order */
@@ -132,14 +129,14 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     }
 
     state = getPointingById(_order[_index]) ?? pointings.first;
-    _persistAndUpdateWidget(state);
+    _persist(state);
   }
 
   /** Move to previous pointing in round-robin order */
   void previousPointing() {
     _index = (_index - 1 + _order.length) % _order.length;
     state = getPointingById(_order[_index]) ?? pointings.first;
-    _persistAndUpdateWidget(state);
+    _persist(state);
   }
 
   /** Jump to a specific pointing (e.g., from favorites or teacher sheet) */
@@ -152,7 +149,7 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     // If not in order (shouldn't happen), just update state without changing index
 
     state = pointing;
-    _persistAndUpdateWidget(state);
+    _persist(state);
   }
 
   /** Jump to a pointing by ID (e.g., from widget deep-link). Returns true if found. */
@@ -174,16 +171,10 @@ class CurrentPointingNotifier extends StateNotifier<Pointing> {
     _storage.setPointingOrder(_order);
   }
 
-  /** Persist current state and update widget */
-  void _persistAndUpdateWidget(Pointing pointing) {
+  /** Persist current state */
+  void _persist(Pointing pointing) {
     _storage.setCurrentPointingId(pointing.id);
     _storage.setPointingIndex(_index);
-    _updateWidget(pointing);
-  }
-
-  /** Update home screen widget with current pointing */
-  void _updateWidget(Pointing pointing) {
-    _widgetService.updateWidget(pointing);
   }
 
   /** Get current position info (for UI display if needed) */
@@ -211,9 +202,9 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
     required List<String> Function() load,
     required Future<void> Function(String) add,
     required Future<void> Function(String) remove,
-  })  : _add = add,
-        _remove = remove,
-        super(load());
+  }) : _add = add,
+       _remove = remove,
+       super(load());
 
   /** Whether the given [id] is currently in the favorites list. */
   bool isFavorite(String id) => state.contains(id);
@@ -243,11 +234,7 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
  */
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(
-    load: () => storage.favorites,
-    add: storage.addFavorite,
-    remove: storage.removeFavorite,
-  );
+  return FavoritesNotifier(load: () => storage.favorites, add: storage.addFavorite, remove: storage.removeFavorite);
 });
 
 /**
@@ -255,11 +242,7 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>
  */
 final articleFavoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(
-    load: () => storage.favoriteArticles,
-    add: storage.addFavoriteArticle,
-    remove: storage.removeFavoriteArticle,
-  );
+  return FavoritesNotifier(load: () => storage.favoriteArticles, add: storage.addFavoriteArticle, remove: storage.removeFavoriteArticle);
 });
 
 // ============================================================
