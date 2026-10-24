@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 
 /**
  * App Store / Play Store product identifiers for tip jar consumable purchases.
@@ -34,7 +37,6 @@ class DonationProductIds {
  */
 class DonationService {
   final InAppPurchase _iap;
-  StreamSubscription<List<PurchaseDetails>>? _subscription;
 
   DonationService([InAppPurchase? iap]) : _iap = iap ?? InAppPurchase.instance;
 
@@ -79,26 +81,27 @@ class DonationService {
   }
 
   /**
-   * Initiate a donation purchase
+   * Initiate a donation purchase.
    *
-   * The purchase result will be delivered via [purchaseUpdates] stream.
+   * Returns `false` when the store refused to start the purchase flow; the
+   * caller must then clear any loading state itself, because no update will
+   * arrive on [purchaseUpdates]. On Android the tip is consumed by
+   * [finishPurchase] rather than by the plugin, so the same code path handles
+   * a purchase delivered in this session, after a restart, or after a pending
+   * payment is approved.
    */
-  Future<void> purchaseProduct(ProductDetails product) async {
-    try {
-      final purchaseParam = PurchaseParam(productDetails: product);
-      // Donations are consumable - can be purchased multiple times
-      await _iap.buyConsumable(purchaseParam: purchaseParam);
-    } catch (e) {
-      // Purchase initiation failed - error will surface through stream
-      rethrow;
-    }
+  Future<bool> purchaseProduct(ProductDetails product) {
+    final purchaseParam = PurchaseParam(productDetails: product);
+    return _iap.buyConsumable(purchaseParam: purchaseParam, autoConsume: defaultTargetPlatform != TargetPlatform.android);
   }
 
   /**
    * Complete a purchase to acknowledge receipt with the store
    *
-   * CRITICAL: Must be called for consumable products after successful purchase.
-   * Failure to call this will result in the store refunding the purchase.
+   * Called for every status, including error and canceled, whenever the
+   * store reports [PurchaseDetails.pendingCompletePurchase]. An unfinished
+   * StoreKit transaction is redelivered on every launch, and an
+   * unacknowledged Play purchase is refunded after three days.
    */
   Future<void> completePurchase(PurchaseDetails purchase) async {
     if (purchase.pendingCompletePurchase) {
@@ -107,22 +110,60 @@ class DonationService {
   }
 
   /**
-   * Listen to purchase updates and handle completion
+   * Deliver and finish one purchase update.
    *
-   * Returns a subscription that should be cancelled when no longer needed.
+   * On Android a paid tip is consumed first, which also acknowledges it and
+   * lets the user buy the same tier again. If consumption fails, the purchase
+   * is still acknowledged so Play does not refund it, and the next startup
+   * recovery retries the consumption. Everything else goes to
+   * [completePurchase].
    */
-  StreamSubscription<List<PurchaseDetails>> listenToPurchases(void Function(PurchaseDetails) onPurchase) {
-    _subscription = _iap.purchaseStream.listen((purchases) {
-      for (final purchase in purchases) {
-        onPurchase(purchase);
-      }
-    });
-    return _subscription!;
+  Future<void> finishPurchase(PurchaseDetails purchase) async {
+    // A purchase still waiting on payment cannot be acknowledged or consumed;
+    // the store delivers it again once it is paid.
+    if (isAwaitingPayment(purchase)) return;
+    if (_isUnconsumedAndroidTip(purchase)) {
+      final addition = _iap.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+      final result = await addition.consumePurchase(purchase);
+      if (result.responseCode == BillingResponse.ok) return;
+    }
+    await completePurchase(purchase);
+  }
+
+  /**
+   * Whether the store is still waiting on payment or approval for [purchase].
+   *
+   * Play reports a pending purchase found at startup as
+   * [PurchaseStatus.restored], so its purchase state is checked too.
+   */
+  static bool isAwaitingPayment(PurchaseDetails purchase) {
+    if (purchase.status == PurchaseStatus.pending) return true;
+    return purchase is GooglePlayPurchaseDetails && purchase.billingClientPurchase.purchaseState == PurchaseStateWrapper.pending;
+  }
+
+  bool _isUnconsumedAndroidTip(PurchaseDetails purchase) {
+    if (purchase is! GooglePlayPurchaseDetails) return false;
+    if (purchase.status != PurchaseStatus.purchased && purchase.status != PurchaseStatus.restored) return false;
+    if (!DonationProductIds.all.contains(purchase.productID)) return false;
+    return purchase.billingClientPurchase.purchaseState == PurchaseStateWrapper.purchased;
+  }
+
+  /**
+   * Ask the store to redeliver purchases left unfinished by an earlier run.
+   *
+   * Play does not push a purchase that completed while the app was not
+   * running (an interrupted flow, or a pending payment approved later), so on
+   * Android the owned purchases are queried and arrive on [purchaseUpdates]
+   * as [PurchaseStatus.restored]. StoreKit redelivers unfinished transactions
+   * by itself once the stream is listened to, and a restore there would ask
+   * the user to sign in, so iOS does nothing here.
+   */
+  Future<void> recoverUnfinishedPurchases() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+    if (!await isAvailable()) return;
+    await _iap.restorePurchases();
   }
 
   /** Clean up resources */
-  void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
-  }
+  void dispose() {}
 }

@@ -41,6 +41,20 @@ class InquiryPhaseContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
 
+    // Centered when the phase fits; scrolls instead of overflowing when a long inquiry meets a small screen or large text.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight.isFinite ? constraints.maxHeight : 0),
+            child: Center(child: _buildSwitcher(context, colors)),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSwitcher(BuildContext context, PointerColors colors) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       switchInCurve: Curves.easeOut,
@@ -173,13 +187,13 @@ class InquiryPhaseContent extends StatelessWidget {
   Widget _buildActionButtons(BuildContext context, PointerColors colors) {
     final isDark = context.isDarkMode;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    // Wrap keeps both buttons on one line when they fit and stacks them on narrow screens instead of overflowing.
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 16,
+      runSpacing: 12,
       children: [
-        // Another button
         _ActionButton(label: 'Another', onTap: onAnother, isPrimary: false, isDark: isDark, colors: colors),
-        const SizedBox(width: 16),
-        // Done button
         _ActionButton(label: 'Done', onTap: onDone, isPrimary: true, isDark: isDark, colors: colors),
       ],
     );

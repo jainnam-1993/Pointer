@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
@@ -156,34 +157,60 @@ void main() {
   group('DonationService - purchaseProduct', () {
     late MockInAppPurchase mockIap;
     late DonationService donationService;
-    late StreamController<List<PurchaseDetails>> purchaseController;
 
     setUp(() {
       mockIap = MockInAppPurchase();
-      purchaseController = StreamController<List<PurchaseDetails>>.broadcast();
-      when(() => mockIap.purchaseStream).thenAnswer((_) => purchaseController.stream);
       donationService = DonationService(mockIap);
     });
 
-    tearDown(() {
-      purchaseController.close();
-      donationService.dispose();
+    test('initiates consumable purchase and returns the store result', () async {
+      final product = _createMockProduct('tip_small', 0.99);
+      when(
+        () => mockIap.buyConsumable(
+          purchaseParam: any(named: 'purchaseParam'),
+          autoConsume: any(named: 'autoConsume'),
+        ),
+      ).thenAnswer((_) async => true);
+
+      expect(await donationService.purchaseProduct(product), isTrue);
     });
 
-    test('initiates consumable purchase', () async {
+    test('returns false when the store refuses to start the purchase', () async {
       final product = _createMockProduct('tip_small', 0.99);
+      when(
+        () => mockIap.buyConsumable(
+          purchaseParam: any(named: 'purchaseParam'),
+          autoConsume: any(named: 'autoConsume'),
+        ),
+      ).thenAnswer((_) async => false);
 
-      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).thenAnswer((_) async => true);
+      expect(await donationService.purchaseProduct(product), isFalse);
+    });
+
+    test('Android purchases are consumed by the app, not the plugin', () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      final product = _createMockProduct('tip_small', 0.99);
+      when(
+        () => mockIap.buyConsumable(
+          purchaseParam: any(named: 'purchaseParam'),
+          autoConsume: any(named: 'autoConsume'),
+        ),
+      ).thenAnswer((_) async => true);
 
       await donationService.purchaseProduct(product);
 
-      verify(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).called(1);
+      verify(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'), autoConsume: false)).called(1);
     });
 
     test('rethrows error on purchase failure', () async {
       final product = _createMockProduct('tip_small', 0.99);
-
-      when(() => mockIap.buyConsumable(purchaseParam: any(named: 'purchaseParam'))).thenThrow(Exception('Purchase failed'));
+      when(
+        () => mockIap.buyConsumable(
+          purchaseParam: any(named: 'purchaseParam'),
+          autoConsume: any(named: 'autoConsume'),
+        ),
+      ).thenThrow(Exception('boom'));
 
       expect(() => donationService.purchaseProduct(product), throwsException);
     });
@@ -245,64 +272,6 @@ void main() {
 
     test('exposes purchase stream from IAP', () {
       expect(donationService.purchaseUpdates, isA<Stream<List<PurchaseDetails>>>());
-    });
-
-    test('listenToPurchases receives purchase updates', () async {
-      final purchases = <PurchaseDetails>[];
-      final purchase = MockPurchaseDetails();
-
-      donationService.listenToPurchases((p) => purchases.add(p));
-
-      purchaseController.add([purchase]);
-      await Future.delayed(Duration.zero);
-
-      expect(purchases, hasLength(1));
-      expect(purchases[0], purchase);
-    });
-
-    test('listenToPurchases handles multiple purchases in batch', () async {
-      final purchases = <PurchaseDetails>[];
-      final purchase1 = MockPurchaseDetails();
-      final purchase2 = MockPurchaseDetails();
-
-      donationService.listenToPurchases((p) => purchases.add(p));
-
-      purchaseController.add([purchase1, purchase2]);
-      await Future.delayed(Duration.zero);
-
-      expect(purchases, hasLength(2));
-    });
-  });
-
-  group('DonationService - dispose', () {
-    late MockInAppPurchase mockIap;
-    late DonationService donationService;
-    late StreamController<List<PurchaseDetails>> purchaseController;
-
-    setUp(() {
-      mockIap = MockInAppPurchase();
-      purchaseController = StreamController<List<PurchaseDetails>>.broadcast();
-      when(() => mockIap.purchaseStream).thenAnswer((_) => purchaseController.stream);
-      donationService = DonationService(mockIap);
-    });
-
-    tearDown(() {
-      purchaseController.close();
-    });
-
-    test('cancels subscription on dispose', () async {
-      final purchases = <PurchaseDetails>[];
-      final purchase = MockPurchaseDetails();
-
-      donationService.listenToPurchases((p) => purchases.add(p));
-
-      donationService.dispose();
-
-      // Adding after dispose should not trigger callback
-      purchaseController.add([purchase]);
-      await Future.delayed(Duration.zero);
-
-      expect(purchases, isEmpty);
     });
   });
 }
