@@ -796,6 +796,25 @@ class AppTheme {
     );
   }
 
+  /**
+   * High-contrast [ThemeData]: white on black with opaque glass (AAA). Used for
+   * the in-app High contrast setting and whenever the OS reports high contrast
+   * (MaterialApp.highContrastTheme). Every color the app reads comes from
+   * [PointerColors.highContrast], so text stays white on the opaque cards.
+   * Before this theme existed, only cards switched to the opaque near-black
+   * surface while text kept the light theme's dark ink.
+   */
+  static ThemeData get highContrast {
+    const colors = PointerColors.highContrast;
+    final base = dark;
+    return base.copyWith(
+      scaffoldBackgroundColor: colors.background,
+      colorScheme: base.colorScheme.copyWith(primary: colors.primary, secondary: colors.secondary, surface: colors.surface),
+      extensions: const [PointerColors.highContrast, GlassMaterial.highContrast],
+      textTheme: _textTheme(ThemeData.dark().textTheme, colors),
+    );
+  }
+
   /** Light [ThemeData]: bundled Inter, ink-on-paper palette, one glass material. */
   static ThemeData get light {
     const colors = PointerColors.light;

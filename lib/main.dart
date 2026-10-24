@@ -231,12 +231,16 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     final router = ref.read(routerProvider);
     final themeMode = ref.watch(flutterThemeModeProvider);
     final reduceMotionOverride = ref.watch(reduceMotionOverrideProvider);
+    final highContrast = ref.watch(highContrastProvider);
 
     return MaterialApp.router(
       title: 'Here Now',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      // High contrast is one coherent theme, never opaque cards over the light palette.
+      theme: highContrast ? AppTheme.highContrast : AppTheme.light,
+      darkTheme: highContrast ? AppTheme.highContrast : AppTheme.dark,
+      highContrastTheme: AppTheme.highContrast,
+      highContrastDarkTheme: AppTheme.highContrast,
       themeMode: themeMode,
       routerConfig: router,
       builder: (context, child) {
