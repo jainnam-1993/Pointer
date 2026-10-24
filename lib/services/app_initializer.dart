@@ -21,6 +21,7 @@ import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../data/teaching.dart';
 import '../providers/core_providers.dart';
+import '../providers/donation_providers.dart';
 import '../router.dart';
 import 'notification_service.dart';
 import 'widget_service.dart';
@@ -146,6 +147,8 @@ class AppInitializer {
     _startupCoordinator = StartupCoordinator(prefs: prefs, notificationService: notificationService, onNotificationAction: onNotificationAction);
 
     final container = _createContainer(prefs, notificationService);
+    // Finish interrupted and pending tips from launch, not when Settings opens.
+    container.read(tipPurchaseListenerProvider);
     return InitResult(container: container);
   }
 

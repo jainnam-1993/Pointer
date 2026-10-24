@@ -30,7 +30,7 @@ class MockDonationService extends DonationService {
   Stream<List<PurchaseDetails>> get purchaseUpdates => _purchaseController.stream;
 
   @override
-  Future<void> purchaseProduct(ProductDetails product) async {}
+  Future<bool> purchaseProduct(ProductDetails product) async => true;
 
   @override
   Future<void> completePurchase(PurchaseDetails purchase) async {}
@@ -175,9 +175,12 @@ void main() {
 
       // Should show product icons
       expect(find.byIcon(Icons.local_cafe_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.self_improvement_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.spa_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.park_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.weekend_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.local_fire_department_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.landscape_outlined), findsOneWidget);
+      // Never the tab bar's Home lotus or Inquiry figure.
+      expect(find.byIcon(Icons.self_improvement_outlined), findsNothing);
+      expect(find.byIcon(Icons.spa_outlined), findsNothing);
     });
 
     testWidgets('hides when not available and not loading', (tester) async {
@@ -281,6 +284,79 @@ void main() {
       // The button should still be visible but product cards should be disabled
       // (indicated by opacity reduction)
       expect(find.text('Support Development'), findsOneWidget);
+    });
+
+    group('purchase outcomes', () {
+      final products = [createMockProduct(id: 'tip_small', title: 'Small', price: '\$0.99')];
+
+      Future<TestDonationNotifier> pumpExpanded(WidgetTester tester) async {
+        tester.view.physicalSize = const Size(1080, 2400);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(wrapWithProviders(const DonationButton(), products: products));
+        await tester.tap(find.text('Support Development'));
+        await tester.pumpAndSettle();
+        final container = ProviderScope.containerOf(tester.element(find.byType(DonationButton)));
+        return container.read(donationProvider.notifier) as TestDonationNotifier;
+      }
+
+      testWidgets('states that tips do not unlock features', (tester) async {
+        await pumpExpanded(tester);
+        expect(find.text('Tips do not unlock features.'), findsOneWidget);
+      });
+
+      testWidgets('success shows the thank-you moment, Done returns to the tiers', (tester) async {
+        final notifier = await pumpExpanded(tester);
+        notifier.setTestState(DonationState(isAvailable: true, isLoading: false, products: products, lastResult: DonationResult.success));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Thank you. This keeps Here Now free.'), findsOneWidget);
+        expect(find.text('\$0.99'), findsNothing);
+
+        await tester.tap(find.text('Done'));
+        await tester.pumpAndSettle();
+        expect(find.text('Thank you. This keeps Here Now free.'), findsNothing);
+        expect(find.text('\$0.99'), findsOneWidget);
+      });
+
+      testWidgets('success expands a collapsed card so the thanks is seen', (tester) async {
+        await tester.pumpWidget(wrapWithProviders(const DonationButton(), products: products));
+        final container = ProviderScope.containerOf(tester.element(find.byType(DonationButton)));
+        (container.read(donationProvider.notifier) as TestDonationNotifier).setTestState(
+          DonationState(isAvailable: true, isLoading: false, products: products, lastResult: DonationResult.success),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Thank you. This keeps Here Now free.'), findsOneWidget);
+      });
+
+      testWidgets('pending shows a calm waiting note and keeps tiers usable', (tester) async {
+        final notifier = await pumpExpanded(tester);
+        notifier.setTestState(DonationState(isAvailable: true, isLoading: false, products: products, lastResult: DonationResult.pending));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('waiting for approval'), findsOneWidget);
+        expect(find.text('\$0.99'), findsOneWidget);
+      });
+
+      testWidgets('error and cancel are surfaced inline', (tester) async {
+        final notifier = await pumpExpanded(tester);
+        notifier.setTestState(DonationState(isAvailable: true, isLoading: false, products: products, lastResult: DonationResult.error));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('did not go through'), findsOneWidget);
+
+        notifier.setTestState(DonationState(isAvailable: true, isLoading: false, products: products, lastResult: DonationResult.cancelled));
+        await tester.pumpAndSettle();
+        expect(find.text('Purchase cancelled. You were not charged.'), findsOneWidget);
+      });
+
+      testWidgets('the header still collapses while a purchase is in flight', (tester) async {
+        final notifier = await pumpExpanded(tester);
+        notifier.setTestState(DonationState(isAvailable: true, isLoading: true, products: products));
+        await tester.pump();
+        await tester.tap(find.text('Support Development'));
+        await tester.pump(const Duration(milliseconds: 600)); // spinner never settles
+        expect(find.text('Tips do not unlock features.'), findsNothing);
+      });
     });
   });
 }

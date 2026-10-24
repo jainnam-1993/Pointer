@@ -1,21 +1,18 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pointer/providers/donation_providers.dart';
 import 'package:pointer/services/donation_service.dart';
 
-class MockDonationService extends Mock implements DonationService {}
+import '../helpers/fake_in_app_purchase.dart';
 
 class MockProductDetails extends Mock implements ProductDetails {}
-
-class MockPurchaseDetails extends Mock implements PurchaseDetails {}
 
 void main() {
   group('DonationResult', () {
     test('has correct values', () {
-      expect(DonationResult.values.length, 3);
+      expect(DonationResult.values.length, 4);
+      expect(DonationResult.values, contains(DonationResult.pending));
       expect(DonationResult.values, contains(DonationResult.success));
       expect(DonationResult.values, contains(DonationResult.cancelled));
       expect(DonationResult.values, contains(DonationResult.error));
@@ -77,223 +74,104 @@ void main() {
     });
   });
 
-  group('DonationNotifier', () {
-    late MockDonationService mockService;
+  group('DonationNotifier (real service over a fake store)', () {
+    late FakeInAppPurchase iap;
     late DonationNotifier notifier;
-    late StreamController<List<PurchaseDetails>> purchaseController;
+    final tea = tipProduct(DonationProductIds.tipSmall);
 
-    setUp(() {
-      mockService = MockDonationService();
-      purchaseController = StreamController<List<PurchaseDetails>>.broadcast();
-
-      when(() => mockService.purchaseUpdates).thenAnswer((_) => purchaseController.stream);
-      when(() => mockService.dispose()).thenReturn(null);
+    setUp(() async {
+      iap = FakeInAppPurchase()..products = [tea, tipProduct(DonationProductIds.tipMedium, price: 4.99)];
+      notifier = DonationNotifier(DonationService(iap));
+      await Future<void>.delayed(Duration.zero);
     });
 
-    tearDown(() {
-      purchaseController.close();
+    tearDown(() async {
+      notifier.dispose();
+      await iap.close();
     });
 
-    test('initializes and loads products when available', () async {
-      final products = [_createMockProduct('tip_small', 0.99), _createMockProduct('tip_medium', 4.99)];
+    Future<void> settle() => Future<void>.delayed(Duration.zero);
 
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => products);
+    test('initializes and loads products sorted by price', () {
+      expect(notifier.state.isAvailable, isTrue);
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.products.map((p) => p.id), [DonationProductIds.tipSmall, DonationProductIds.tipMedium]);
+    });
 
-      notifier = DonationNotifier(mockService);
-
-      // Wait for async initialization
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.isAvailable, true);
-      expect(notifier.state.isLoading, false);
-      expect(notifier.state.products, products);
+    test('unavailable store hides the tip jar without an error', () async {
+      iap.available = false;
+      await notifier.initialize();
+      expect(notifier.state.isAvailable, isFalse);
+      expect(notifier.state.isLoading, isFalse);
       expect(notifier.state.error, isNull);
     });
 
-    test('sets isAvailable false when IAP unavailable', () async {
-      when(() => mockService.isAvailable()).thenAnswer((_) async => false);
+    test('is loading while the purchase sheet is up, then success', () async {
+      await notifier.purchaseTip(tea);
+      expect(notifier.state.isLoading, isTrue);
 
-      notifier = DonationNotifier(mockService);
-
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.isAvailable, false);
-      expect(notifier.state.isLoading, false);
-      expect(notifier.state.products, isEmpty);
-      verifyNever(() => mockService.loadProducts());
-    });
-
-    test('handles initialization error gracefully', () async {
-      when(() => mockService.isAvailable()).thenThrow(Exception('Init failed'));
-
-      notifier = DonationNotifier(mockService);
-
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.isAvailable, false);
-      expect(notifier.state.isLoading, false);
-      expect(notifier.state.error, contains('Failed to load'));
-    });
-
-    test('purchaseTip initiates purchase', () async {
-      final product = _createMockProduct('tip_small', 0.99);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product)).thenAnswer((_) async {});
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      await notifier.purchaseTip(product);
-
-      verify(() => mockService.purchaseProduct(product)).called(1);
-    });
-
-    test('purchaseTip sets loading state', () async {
-      final product = _createMockProduct('tip_small', 0.99);
-      final completer = Completer<void>();
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product)).thenAnswer((_) => completer.future);
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      // Start purchase but don't complete
-      final purchaseFuture = notifier.purchaseTip(product);
-
-      // Should be loading
-      expect(notifier.state.isLoading, true);
-
-      completer.complete();
-      await purchaseFuture;
-    });
-
-    test('handles purchase error', () async {
-      final product = _createMockProduct('tip_small', 0.99);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => [product]);
-      when(() => mockService.purchaseProduct(product)).thenThrow(Exception('Purchase failed'));
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      await notifier.purchaseTip(product);
-
-      expect(notifier.state.isLoading, false);
-      expect(notifier.state.lastResult, DonationResult.error);
-      expect(notifier.state.error, contains('Failed to initiate'));
-    });
-
-    test('processes successful purchase from stream', () async {
-      final purchase = MockPurchaseDetails();
-      when(() => purchase.status).thenReturn(PurchaseStatus.purchased);
-      when(() => purchase.pendingCompletePurchase).thenReturn(true);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => []);
-      when(() => mockService.completePurchase(purchase)).thenAnswer((_) async {});
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      // Simulate purchase update
-      purchaseController.add([purchase]);
-      await Future.delayed(const Duration(milliseconds: 50));
-
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.purchased)]);
+      await settle();
+      expect(notifier.state.isLoading, isFalse);
       expect(notifier.state.lastResult, DonationResult.success);
-      expect(notifier.state.isLoading, false);
-      verify(() => mockService.completePurchase(purchase)).called(1);
+      expect(iap.completed, hasLength(1));
     });
 
-    test('processes cancelled purchase from stream', () async {
-      final purchase = MockPurchaseDetails();
-      when(() => purchase.status).thenReturn(PurchaseStatus.canceled);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => []);
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      purchaseController.add([purchase]);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.lastResult, DonationResult.cancelled);
-      expect(notifier.state.isLoading, false);
-    });
-
-    test('processes error purchase from stream', () async {
-      final purchase = MockPurchaseDetails();
-      final error = IAPError(source: 'test', code: 'error', message: 'Something went wrong');
-      when(() => purchase.status).thenReturn(PurchaseStatus.error);
-      when(() => purchase.error).thenReturn(error);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => []);
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      purchaseController.add([purchase]);
-      await Future.delayed(const Duration(milliseconds: 50));
-
+    test('buyConsumable returning false clears loading and reports an error', () async {
+      iap.buyResult = false;
+      await notifier.purchaseTip(tea);
+      expect(notifier.state.isLoading, isFalse);
       expect(notifier.state.lastResult, DonationResult.error);
-      expect(notifier.state.error, 'Something went wrong');
-      expect(notifier.state.isLoading, false);
+      expect(notifier.state.resultMessage, isNotNull);
     });
 
-    test('handles pending purchase status', () async {
-      final purchase = MockPurchaseDetails();
-      when(() => purchase.status).thenReturn(PurchaseStatus.pending);
-
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => []);
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      purchaseController.add([purchase]);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.isLoading, true);
+    test('buyConsumable throwing clears loading and reports an error', () async {
+      iap.buyError = Exception('billing unavailable');
+      await notifier.purchaseTip(tea);
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.lastResult, DonationResult.error);
     });
 
-    test('clearResult clears last result', () async {
-      when(() => mockService.isAvailable()).thenAnswer((_) async => true);
-      when(() => mockService.loadProducts()).thenAnswer((_) async => []);
+    test('pending does not lock the card, and a later approval succeeds', () async {
+      await notifier.purchaseTip(tea);
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.pending, pendingComplete: false)]);
+      await settle();
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.lastResult, DonationResult.pending);
 
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.purchased)]);
+      await settle();
+      expect(notifier.state.lastResult, DonationResult.success);
+    });
 
-      // Manually set a result state
-      final purchase = MockPurchaseDetails();
-      when(() => purchase.status).thenReturn(PurchaseStatus.canceled);
-      purchaseController.add([purchase]);
-      await Future.delayed(const Duration(milliseconds: 50));
+    test('error from the store is surfaced with its message, products stay', () async {
+      await notifier.purchaseTip(tea);
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.error, errorMessage: 'Card declined')]);
+      await settle();
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.lastResult, DonationResult.error);
+      expect(notifier.state.resultMessage, 'Card declined');
+      expect(notifier.state.error, isNull);
+      expect(notifier.state.products, isNotEmpty);
+    });
 
+    test('cancelled, then clearResult', () async {
+      await notifier.purchaseTip(tea);
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.canceled)]);
+      await settle();
       expect(notifier.state.lastResult, DonationResult.cancelled);
+      expect(notifier.state.isLoading, isFalse);
 
       notifier.clearResult();
-
       expect(notifier.state.lastResult, isNull);
+      expect(notifier.state.resultMessage, isNull);
     });
 
-    test('clearError clears error state', () async {
-      when(() => mockService.isAvailable()).thenThrow(Exception('Test error'));
-
-      notifier = DonationNotifier(mockService);
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      expect(notifier.state.error, isNotNull);
-
-      notifier.clearError();
-
-      expect(notifier.state.error, isNull);
+    test('a new purchase clears the previous result', () async {
+      iap.emit([purchaseUpdate(tea.id, PurchaseStatus.canceled)]);
+      await settle();
+      await notifier.purchaseTip(tea);
+      expect(notifier.state.lastResult, isNull);
     });
   });
 }
