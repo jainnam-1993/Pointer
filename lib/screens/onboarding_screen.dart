@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../layout/adaptive.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/shared_ambient.dart';
@@ -154,58 +155,62 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       body: Stack(
         children: [
           const Positioned.fill(child: RouteAmbient()),
-          SafeArea(
-            child: Column(
-              children: [
-                // Page view - allows swiping
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (page) {
-                      Haptics.light();
-                      setState(() => _currentPage = page);
-                    },
-                    children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
+          // On a vertical hinge the pages and buttons take one pane and the other stays a calm, empty field.
+          HingeSplit(
+            companion: const SizedBox.expand(key: ValueKey('onboarding-calm-pane')),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // Page view - allows swiping
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (page) {
+                        Haptics.light();
+                        setState(() => _currentPage = page);
+                      },
+                      children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
+                    ),
                   ),
-                ),
 
-                // Page indicators
-                _PageIndicators(currentPage: _currentPage, pageCount: 4),
+                  // Page indicators
+                  _PageIndicators(currentPage: _currentPage, pageCount: 4),
 
-                SizedBox(height: isLandscape ? 16 : 32),
+                  SizedBox(height: isLandscape ? 16 : 32),
 
-                // Buttons
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
-                  child: Column(
-                    children: [
-                      if (isLastPage) ...[
-                        SizedBox(
-                          width: double.infinity,
-                          child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
-                        ),
-                        const SizedBox(height: 16),
-                        Builder(
-                          builder: (context) {
-                            final textColor = context.colors.textMuted;
-                            return TextButton(
-                              onPressed: () => _finishOnboarding(false),
-                              child: Text(
-                                'Maybe Later',
-                                style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
-                              ),
-                            );
-                          },
-                        ),
-                      ] else
-                        SizedBox(
-                          width: double.infinity,
-                          child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
-                        ),
-                    ],
+                  // Buttons
+                  Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
+                    child: Column(
+                      children: [
+                        if (isLastPage) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
+                          ),
+                          const SizedBox(height: 16),
+                          Builder(
+                            builder: (context) {
+                              final textColor = context.colors.textMuted;
+                              return TextButton(
+                                onPressed: () => _finishOnboarding(false),
+                                child: Text(
+                                  'Maybe Later',
+                                  style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
+                                ),
+                              );
+                            },
+                          ),
+                        ] else
+                          SizedBox(
+                            width: double.infinity,
+                            child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

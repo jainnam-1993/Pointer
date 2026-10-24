@@ -12,6 +12,7 @@ import '../widgets/glass_card.dart';
 import '../widgets/grouped_section.dart';
 import '../widgets/pointer_scaffold.dart';
 import '../utils/haptics.dart';
+import '../layout/adaptive.dart';
 
 /**
  * Tradition/lineage management screen for filtering which traditions appear.
@@ -21,106 +22,168 @@ import '../utils/haptics.dart';
  * Users can enable/disable traditions (at least one must remain selected).
  * The "Reset" button re-enables all traditions via [PreferredTraditionsNotifier.enableAll].
  */
-class LineagesScreen extends ConsumerWidget {
+class LineagesScreen extends ConsumerStatefulWidget {
   const LineagesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LineagesScreen> createState() => _LineagesScreenState();
+}
+
+class _LineagesScreenState extends ConsumerState<LineagesScreen> {
+  /** Tradition shown in the detail pane on a vertical hinge; the first one until the user picks. */
+  Tradition? _selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final isBook = WindowLayout.of(context).posture == Posture.book;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionEntries = traditions.entries.toList();
     final colors = context.colors;
     final preferredTraditions = ref.watch(preferredTraditionsProvider);
 
+    final selected = _selected ?? traditionEntries.first.key;
+    final selectedInfo = traditions[selected]!;
     return PointerScaffold(
-      body: Column(
-        children: [
-          // Custom AppBar with back button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Haptics.light();
-                    context.pop();
-                  },
-                  icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
-                  tooltip: 'Back',
-                ),
-                const Spacer(),
-                // Reset button
-                TextButton(
-                  onPressed: () {
-                    Haptics.light();
-                    ref.read(preferredTraditionsProvider.notifier).enableAll();
-                  },
-                  child: Text(
-                    'Reset',
-                    style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
+      // On a vertical hinge the list and the selected tradition's detail sit on either side; nothing under the fold.
+      body: HingeSplit(
+        childFirst: true,
+        companion: _TraditionDetailPane(
+          key: ValueKey('lineages-detail-${selected.name}'),
+          info: selectedInfo,
+          pointingsCount: getPointingsByTradition(selected).length,
+        ),
+        child: Column(
+          children: [
+            // Custom AppBar with back button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Haptics.light();
+                      context.pop();
+                    },
+                    icon: Icon(Icons.arrow_back_ios_new, color: colors.textPrimary, size: 22),
+                    tooltip: 'Back',
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  // Reset button
+                  TextButton(
+                    onPressed: () {
+                      Haptics.light();
+                      ref.read(preferredTraditionsProvider.notifier).enableAll();
+                    },
+                    child: Text(
+                      'Reset',
+                      style: TextStyle(color: colors.accent, fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Content
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(left: 24, right: 24, bottom: 40 + bottomPadding),
-              children: [
-                Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
-                const SizedBox(height: 8),
-                Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
-                const SizedBox(height: 24),
+            // Content
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(left: 24, right: 24, bottom: 40 + bottomPadding),
+                children: [
+                  Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
+                  const SizedBox(height: 8),
+                  Text('Select the traditions you want to receive pointings from', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
+                  const SizedBox(height: 24),
 
-                // Traditions list with selection
-                // One grouped plate instead of a blurred card per tradition (design 22/24).
-                GroupedSection(
-                  itemCount: traditionEntries.length,
-                  separatorIndent: 92,
-                  itemBuilder: (context, index) {
-                    final tradition = traditionEntries[index].key;
-                    final info = traditionEntries[index].value;
-                    final count = getPointingsByTradition(tradition).length;
-                    final isEnabled = preferredTraditions.contains(tradition);
+                  // Traditions list with selection
+                  // One grouped plate instead of a blurred card per tradition (design 22/24).
+                  GroupedSection(
+                    itemCount: traditionEntries.length,
+                    separatorIndent: 92,
+                    itemBuilder: (context, index) {
+                      final tradition = traditionEntries[index].key;
+                      final info = traditionEntries[index].value;
+                      final count = getPointingsByTradition(tradition).length;
+                      final isEnabled = preferredTraditions.contains(tradition);
 
-                    return StaggeredFadeIn(
-                      index: index,
-                      child: Padding(
-                        padding: EdgeInsets.zero,
-                        child: _TraditionCard(
-                          tradition: tradition,
-                          info: info,
-                          pointingsCount: count,
-                          isEnabled: isEnabled,
-                          onToggle: () {
-                            Haptics.selection();
-                            ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
-                          },
-                          onInfoTap: () {
-                            Haptics.selection();
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
-                            );
-                          },
+                      return StaggeredFadeIn(
+                        index: index,
+                        child: Padding(
+                          padding: EdgeInsets.zero,
+                          child: _TraditionCard(
+                            tradition: tradition,
+                            info: info,
+                            pointingsCount: count,
+                            isEnabled: isEnabled,
+                            onToggle: () {
+                              Haptics.selection();
+                              ref.read(preferredTraditionsProvider.notifier).toggle(tradition);
+                            },
+                            onInfoTap: () {
+                              Haptics.selection();
+                              if (isBook) {
+                                setState(() => _selected = tradition);
+                                return;
+                              }
+                              showModalBottomSheet(
+                                context: context,
+                                anchorPoint: sheetAnchorPoint(context),
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
 
-                // Helper text
-                const SizedBox(height: 8),
-                Text(
-                  'At least one tradition must remain selected',
-                  style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  // Helper text
+                  const SizedBox(height: 8),
+                  Text(
+                    'At least one tradition must remain selected',
+                    style: TextStyle(color: colors.textMuted, fontSize: 13, fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/** Detail pane for one tradition, shown beside the list in book posture. */
+class _TraditionDetailPane extends StatelessWidget {
+  final TraditionInfo info;
+  final int pointingsCount;
+
+  const _TraditionDetailPane({super.key, required this.info, required this.pointingsCount});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(24, 72, 24, 40),
+        children: [
+          Row(
+            children: [
+              Icon(info.lineIcon, size: 35.2, color: colors.textPrimary),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(info.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colors.textPrimary)),
+                    Text('$pointingsCount pointings available', style: TextStyle(color: colors.textSecondary, fontSize: 14)),
+                  ],
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 16),
+          Text(info.description, style: TextStyle(color: colors.textPrimary, fontSize: 16, height: 1.5)),
         ],
       ),
     );

@@ -230,3 +230,54 @@ class TabletopSplit extends StatelessWidget {
     );
   }
 }
+
+/**
+ * Keeps a single-column screen off a vertical hinge.
+ *
+ * In book posture the window splits at the hinge through [TwoPane]: [child]
+ * takes one pane and [companion] (a title, a detail, or a calm empty pane) the
+ * other, so no content sits under the fold. Everywhere else it builds [child]
+ * alone, so phone, tablet and tabletop layouts are unchanged. [childFirst]
+ * puts [child] in the left pane; otherwise [companion] leads, like a book's
+ * facing page.
+ */
+class HingeSplit extends StatelessWidget {
+  final Widget child;
+  final Widget companion;
+  final bool childFirst;
+
+  const HingeSplit({super.key, required this.child, required this.companion, this.childFirst = false});
+
+  @override
+  Widget build(BuildContext context) {
+    if (WindowLayout.of(context).posture != Posture.book) return child;
+    return childFirst ? TwoPane(primary: child, secondary: companion) : TwoPane(primary: companion, secondary: child);
+  }
+}
+
+/**
+ * Anchor for a modal route so it opens on the right side of a hinge.
+ *
+ * Flutter's modal routes place themselves in one [DisplayFeatureSubScreen];
+ * without an anchor that is the top-left one, which in tabletop posture puts a
+ * bottom sheet in the upper half. Sheets belong with the controls below the
+ * fold, so in tabletop this returns the bottom center of the window. Elsewhere
+ * it returns null and the default placement holds.
+ */
+Offset? sheetAnchorPoint(BuildContext context) {
+  // Read the whole window, not the nearest MediaQuery: a sheet opened from
+  // inside another sheet only sees its own sub-screen.
+  final layout = WindowLayout.fromMediaQuery(MediaQueryData.fromView(View.of(context)));
+  if (layout.posture != Posture.tabletop) return null;
+  return Offset(layout.size.width / 2, layout.size.height);
+}
+
+/**
+ * Height cap for a modal sheet in a window of [windowHeight]: 70 percent on
+ * normal windows, nearly all of it on short ones (the lower half of a tabletop
+ * fold, a phone in landscape) where 70 percent would leave too little room.
+ */
+double sheetMaxHeight(double windowHeight) => windowHeight * (windowHeight < kShortWindowHeight ? 0.94 : 0.7);
+
+/** Windows shorter than this get a taller sheet cap; see [sheetMaxHeight]. */
+const double kShortWindowHeight = 520;

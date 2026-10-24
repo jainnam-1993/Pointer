@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+import '../layout/adaptive.dart';
 import '../providers/donation_providers.dart';
 import '../theme/app_theme.dart';
 import 'glass_card.dart';
@@ -50,6 +51,9 @@ _TipProduct? _resolveTipProduct(String productId) {
   final suffix = productId.split('.').last;
   return _tipProducts[suffix];
 }
+
+/** Widest the tip card grows: about a large phone, so tier tiles keep their phone proportions. */
+const double kTipCardMaxWidth = 440;
 
 /**
  * Floating donation button with expandable tip options
@@ -111,10 +115,14 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     }
     final colors = context.colors;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      child: GlassCard(padding: EdgeInsets.zero, intensity: GlassIntensity.standard, child: _buildContent(state, colors)),
+    // Capped at a phone-sized width so the two-column tier grid keeps its phone proportions on wide windows.
+    return ContentWidth(
+      maxWidth: kTipCardMaxWidth,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: GlassCard(padding: EdgeInsets.zero, intensity: GlassIntensity.standard, child: _buildContent(state, colors)),
+      ),
     );
   }
 
