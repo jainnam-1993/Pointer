@@ -11,6 +11,7 @@
  */
 library;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -51,4 +52,14 @@ ThemeData themeForContrast(ThemeData theme, ContrastLevel level) {
         if (e is GlassMaterial) increasedContrastGlass(e, dark: dark) else e,
     ],
   );
+}
+
+ContrastLevel? _logged;
+
+/** Debug builds log the resolved level once per change (`[Contrast] level=...`), so a device run proves what the system
+ * setting resolved to. Release and profile builds log nothing. */
+void logContrastLevel(ContrastLevel level) {
+  if (!kDebugMode || level == _logged) return;
+  _logged = level;
+  debugPrint('[Contrast] level=${level.name}');
 }
