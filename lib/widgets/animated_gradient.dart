@@ -131,6 +131,14 @@ class AnimatedGradient extends ConsumerStatefulWidget {
   /** Disable animations globally (for testing) */
   static bool disableAnimations = false;
 
+  /**
+   * Global fixed period used when [periodOverride] is null (for golden tests).
+   *
+   * Screens build `const AnimatedGradient()`, so tests cannot pass [periodOverride]
+   * through them; setting this freezes the wall-clock-dependent gradient instead.
+   */
+  static TimeOfDayPeriod? debugPeriodOverride;
+
   /** Optional fixed period for deterministic rendering in tests/previews. */
   final TimeOfDayPeriod? periodOverride;
 
@@ -151,7 +159,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   @override
   void initState() {
     super.initState();
-    _currentPeriod = widget.periodOverride ?? _getCurrentTimePeriod();
+    _currentPeriod = widget.periodOverride ?? AnimatedGradient.debugPeriodOverride ?? _getCurrentTimePeriod();
     _configureTimeCheckTimer();
   }
 
@@ -165,7 +173,7 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
   void didUpdateWidget(covariant AnimatedGradient oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.periodOverride != widget.periodOverride) {
-      _currentPeriod = widget.periodOverride ?? _getCurrentTimePeriod();
+      _currentPeriod = widget.periodOverride ?? AnimatedGradient.debugPeriodOverride ?? _getCurrentTimePeriod();
       _configureTimeCheckTimer();
     }
   }
@@ -174,7 +182,10 @@ class _AnimatedGradientState extends ConsumerState<AnimatedGradient> {
     _timeCheckTimer?.cancel();
     // Check time period every 5 minutes for 24h gradient cycle.
     // Skip timer when a fixed period is requested or tests disable animation.
-    if (widget.periodOverride != null || AnimatedGradient.disableAnimations || AnimatedGradient.isTestEnvironment()) {
+    if (widget.periodOverride != null ||
+        AnimatedGradient.debugPeriodOverride != null ||
+        AnimatedGradient.disableAnimations ||
+        AnimatedGradient.isTestEnvironment()) {
       return;
     }
 
