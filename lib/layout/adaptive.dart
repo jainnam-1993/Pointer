@@ -61,11 +61,19 @@ class WindowLayout {
   /** The separating fold or hinge, or null when nothing splits the window. */
   final DisplayFeature? hinge;
 
-  const WindowLayout({required this.size, required this.sizeClass, this.hinge});
+  const WindowLayout({required this.size, required this.sizeClass, this.hinge, this.hasVerticalFold = false});
 
   factory WindowLayout.fromMediaQuery(MediaQueryData data) {
-    return WindowLayout(size: data.size, sizeClass: WindowSizeClass.fromWidth(data.size.width), hinge: separatingFeature(data.displayFeatures));
+    return WindowLayout(
+      size: data.size,
+      sizeClass: WindowSizeClass.fromWidth(data.size.width),
+      hinge: separatingFeature(data.displayFeatures),
+      hasVerticalFold: data.displayFeatures.any(_isVerticalFold),
+    );
   }
+
+  static bool _isVerticalFold(DisplayFeature f) =>
+      (f.type == DisplayFeatureType.fold || f.type == DisplayFeatureType.hinge) && f.bounds.height > 0 && f.bounds.height >= f.bounds.width;
 
   static WindowLayout of(BuildContext context) => WindowLayout.fromMediaQuery(MediaQuery.of(context));
 
@@ -101,8 +109,36 @@ class WindowLayout {
 
   NavigationType get navigationType => sizeClass == WindowSizeClass.compact ? NavigationType.bottomBar : NavigationType.rail;
 
-  /** Two panes on expanded windows and whenever a vertical hinge splits the window. */
-  int get paneCount => (sizeClass == WindowSizeClass.expanded || posture == Posture.book) ? 2 : 1;
+  /**
+   * True when a vertical fold runs top to bottom through the window in any
+   * state, flat included. Unlike [hinge], a flat fold does not separate
+   * content, but it says the window is an unfolded foldable's inner screen.
+   */
+  final bool hasVerticalFold;
+
+  /** Narrowest window that gets two panes because of its shape rather than its width. */
+  static const double foldableTwoPaneMinWidth = 720;
+
+  /** Widest long-to-short side ratio still counted as a near-square, unfolded inner screen. */
+  static const double foldableMaxAspect = 1.25;
+
+  /**
+   * Two panes on expanded windows, whenever a vertical hinge splits the window,
+   * and on an unfolded foldable's near-square inner screen. The last case
+   * matters when the user raises display size: the vivo V2330 at a 432 dpi display size
+   * setting is about 815 dp wide, under [WindowSizeClass.expandedMinWidth],
+   * yet it is the same device that gets two panes at the default density.
+   */
+  int get paneCount {
+    if (sizeClass == WindowSizeClass.expanded || posture == Posture.book) return 2;
+    if (sizeClass == WindowSizeClass.medium && (hasVerticalFold || _isNearSquareInnerScreen)) return 2;
+    return 1;
+  }
+
+  bool get _isNearSquareInnerScreen {
+    if (size.shortestSide < foldableTwoPaneMinWidth) return false;
+    return size.longestSide / size.shortestSide < foldableMaxAspect;
+  }
 
   bool get isTwoPane => paneCount == 2;
 }

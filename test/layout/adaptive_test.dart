@@ -68,6 +68,33 @@ void main() {
     });
   });
 
+  group('foldable inner screen two panes', () {
+    // vivo V2330 unfolded at the user's 432 dpi display size: 2200x2480 px at DPR 2.7.
+    const vivo = Size(815, 918);
+
+    test('a flat vertical fold makes a medium window two pane', () {
+      const flat = DisplayFeature(bounds: Rect.fromLTWH(407, 0, 0, 918), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureFlat);
+      final layout = _layout(vivo, [flat]);
+      expect(layout.sizeClass, WindowSizeClass.medium);
+      expect(layout.posture, Posture.flat, reason: 'a flat fold still does not separate content');
+      expect(layout.paneCount, 2);
+    });
+
+    test('a near-square inner screen is two pane even with no reported fold', () {
+      expect(_layout(vivo).paneCount, 2);
+    });
+
+    test('the same width with a phone aspect and no fold stays one pane', () {
+      expect(_layout(const Size(815, 1300)).paneCount, 1);
+      expect(_layout(const Size(815, 400)).paneCount, 1, reason: 'a landscape phone is not an inner screen');
+    });
+
+    test('a horizontal flat fold does not add a pane', () {
+      const tableFlat = DisplayFeature(bounds: Rect.fromLTWH(0, 600, 700, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureFlat);
+      expect(_layout(const Size(700, 1200), [tableFlat]).paneCount, 1);
+    });
+  });
+
   group('TwoPane', () {
     testWidgets('never puts content under an occluding hinge', (tester) async {
       _setView(tester, const Size(840, 884), [_hinge]);
