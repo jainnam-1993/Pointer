@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../layout/adaptive.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -276,222 +277,269 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return PointerScaffold(
-      body: ListView(
-        padding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 120 + bottomPadding),
-        children: [
-          StaggeredFadeIn(
-            index: 0,
-            child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
-          ),
-          const SizedBox(height: 24),
+      body: _layoutColumns(context, bottomPadding, [
+        StaggeredFadeIn(
+          index: 0,
+          child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
+        ),
+        const SizedBox(height: 24),
 
-          // Notifications section
-          SettingsSectionHeader(title: 'NOTIFICATIONS'),
-          const SizedBox(height: 12),
-          if (!_permissionGranted) NotificationPermissionBanner(onEnable: _requestNotificationPermission),
-          GlassCard(
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: [
-                SettingsRow(
-                  title: 'Daily Pointings',
-                  subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
-                  trailing: PointerSwitch(
-                    value: _notificationsEnabled && _permissionGranted,
-                    onChanged: (value) async {
-                      Haptics.selection();
+        // Notifications section
+        SettingsSectionHeader(title: 'NOTIFICATIONS'),
+        const SizedBox(height: 12),
+        if (!_permissionGranted) NotificationPermissionBanner(onEnable: _requestNotificationPermission),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              SettingsRow(
+                title: 'Daily Pointings',
+                subtitle: _permissionGranted ? _getNotificationCountSummary() : 'Permission required',
+                trailing: PointerSwitch(
+                  value: _notificationsEnabled && _permissionGranted,
+                  onChanged: (value) async {
+                    Haptics.selection();
 
-                      if (value && !_permissionGranted) {
-                        await _requestNotificationPermission();
-                        return;
-                      }
+                    if (value && !_permissionGranted) {
+                      await _requestNotificationPermission();
+                      return;
+                    }
 
-                      setState(() => _notificationsEnabled = value);
-                      await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
-                    },
-                  ),
+                    setState(() => _notificationsEnabled = value);
+                    await ref.read(notificationServiceProvider).setNotificationsEnabled(value);
+                  },
                 ),
-                const SettingsDivider(),
-                SettingsRow(
-                  title: 'Notification Times',
-                  trailing: LayoutBuilder(
-                    builder: (context, constraints) {
-                      const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
-                      final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: maxSummaryWidth),
-                            child: Text(
-                              _getScheduleTimeSummary(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(color: textColorMuted, fontSize: 14),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                        ],
-                      );
-                    },
-                  ),
-                  onTap: _showNotificationTimesSheet,
-                ),
-              ],
-            ),
-          ),
-
-          // Appearance section
-          const SizedBox(height: 24),
-          SettingsSectionHeader(title: 'APPEARANCE'),
-          const SizedBox(height: 12),
-          const AppearanceSelector(),
-
-          // Support section (prominent placement)
-          const SizedBox(height: 24),
-          const DonationButton(),
-
-          // Traditions section
-          const SizedBox(height: 24),
-          SettingsSectionHeader(title: 'TRADITIONS'),
-          const SizedBox(height: 12),
-          GlassCard(
-            padding: EdgeInsets.zero,
-            child: SettingsRow(
-              title: 'Manage Lineages',
-              trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-              onTap: () async {
-                Haptics.light();
-                // Navigate to lineages management screen
-                if (context.mounted) {
-                  context.push('/lineages');
-                }
-              },
-            ),
-          ),
-
-          // History section
-          const SizedBox(height: 24),
-          SettingsSectionHeader(title: 'HISTORY'),
-          const SizedBox(height: 12),
-          GlassCard(
-            padding: EdgeInsets.zero,
-            child: SettingsRow(
-              title: 'Past Pointings',
-              trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-              onTap: () async {
-                Haptics.light();
-                if (context.mounted) {
-                  context.push('/history');
-                }
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
-          ),
-
-          // Experience section (auto-advance)
-          const SizedBox(height: 24),
-          SettingsSectionHeader(title: 'EXPERIENCE'),
-          const SizedBox(height: 12),
-          AutoAdvanceToggle(),
-
-          // About section
-          const SizedBox(height: 24),
-          SettingsSectionHeader(title: 'ABOUT'),
-          const SizedBox(height: 12),
-          GlassCard(
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: [
-                SettingsRow(
-                  title: 'About Here Now',
-                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                  onTap: _showAboutDialog,
-                ),
-                const SettingsDivider(),
-                SettingsRow(
-                  title: 'Privacy Policy',
-                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                  onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
-                ),
-                const SettingsDivider(),
-                SettingsRow(
-                  title: 'Terms of Service',
-                  trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                  onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
-                ),
-              ],
-            ),
-          ),
-          // Developer section (hidden until 7 taps on version)
-          if (_showDeveloperOptions) ...[
-            const SizedBox(height: 24),
-            SettingsSectionHeader(title: 'DEVELOPER'),
-            const SizedBox(height: 12),
-            GlassCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  SettingsRow(
-                    title: 'Test Notification',
-                    subtitle: 'Send a test pointing notification',
-                    trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
-                    onTap: () async {
-                      final notificationService = ref.read(notificationServiceProvider);
-                      await notificationService.sendTestNotification();
-                      if (context.mounted) {
-                        PointerToast.show(context, 'Test notification sent');
-                      }
-                    },
-                  ),
-                  const SettingsDivider(),
-                  SettingsRow(
-                    title: 'Test Background Notification',
-                    subtitle: 'Schedule via WorkManager (1 min delay)',
-                    trailing: Icon(Icons.schedule_send, color: textColorSubtle, size: 20),
-                    onTap: () async {
-                      await WorkManagerService.scheduleOneTimeNotification(
-                        delay: const Duration(minutes: 1),
-                        uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
-                      );
-                      if (context.mounted) {
-                        PointerToast.show(context, 'Background notification scheduled in 1 minute. You can close the app.');
-                      }
-                    },
-                  ),
-                  const SettingsDivider(),
-                  SettingsRow(
-                    title: 'Debug Pending Notifications',
-                    subtitle: 'Check scheduled notifications (inexact mode)',
-                    trailing: Icon(Icons.bug_report, color: textColorSubtle, size: 20),
-                    onTap: () async {
-                      final notificationService = ref.read(notificationServiceProvider);
-                      await notificationService.debugPrintPendingNotifications();
-                      final pending = await notificationService.getPendingNotifications();
-                      if (context.mounted) {
-                        PointerToast.show(context, 'Pending notifications: ${pending.length}');
-                      }
-                    },
-                  ),
-                ],
               ),
-            ),
-          ],
+              const SettingsDivider(),
+              SettingsRow(
+                title: 'Notification Times',
+                trailing: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
+                    final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: maxSummaryWidth),
+                          child: Text(
+                            _getScheduleTimeSummary(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(color: textColorMuted, fontSize: 14),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                      ],
+                    );
+                  },
+                ),
+                onTap: _showNotificationTimesSheet,
+              ),
+            ],
+          ),
+        ),
 
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: _onVersionTap,
-            child: Center(
-              child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
+        // Appearance section
+        const SizedBox(height: 24),
+        SettingsSectionHeader(title: 'APPEARANCE'),
+        const SizedBox(height: 12),
+        const AppearanceSelector(),
+
+        // Support section (prominent placement)
+        const SizedBox(height: 24),
+        const DonationButton(),
+
+        // Second column starts here on two-pane windows.
+        const _ColumnBreak(),
+
+        // Traditions section
+        const SizedBox(height: 24),
+        SettingsSectionHeader(title: 'TRADITIONS'),
+        const SizedBox(height: 12),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: SettingsRow(
+            title: 'Manage Lineages',
+            trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+            onTap: () async {
+              Haptics.light();
+              // Navigate to lineages management screen
+              if (context.mounted) {
+                context.push('/lineages');
+              }
+            },
+          ),
+        ),
+
+        // History section
+        const SizedBox(height: 24),
+        SettingsSectionHeader(title: 'HISTORY'),
+        const SizedBox(height: 12),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: SettingsRow(
+            title: 'Past Pointings',
+            trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+            onTap: () async {
+              Haptics.light();
+              if (context.mounted) {
+                context.push('/history');
+              }
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
+        ),
+
+        // Experience section (auto-advance)
+        const SizedBox(height: 24),
+        SettingsSectionHeader(title: 'EXPERIENCE'),
+        const SizedBox(height: 12),
+        AutoAdvanceToggle(),
+
+        // About section
+        const SizedBox(height: 24),
+        SettingsSectionHeader(title: 'ABOUT'),
+        const SizedBox(height: 12),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              SettingsRow(
+                title: 'About Here Now',
+                trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                onTap: _showAboutDialog,
+              ),
+              const SettingsDivider(),
+              SettingsRow(
+                title: 'Privacy Policy',
+                trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/privacy.html'),
+              ),
+              const SettingsDivider(),
+              SettingsRow(
+                title: 'Terms of Service',
+                trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
+                onTap: () => _launchUrl('https://jainnam-1993.github.io/Pointer/legal/terms.html'),
+              ),
+            ],
+          ),
+        ),
+        // Developer section (hidden until 7 taps on version)
+        if (_showDeveloperOptions) ...[
+          const SizedBox(height: 24),
+          SettingsSectionHeader(title: 'DEVELOPER'),
+          const SizedBox(height: 12),
+          GlassCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                SettingsRow(
+                  title: 'Test Notification',
+                  subtitle: 'Send a test pointing notification',
+                  trailing: Icon(Icons.notifications_active, color: textColorSubtle, size: 20),
+                  onTap: () async {
+                    final notificationService = ref.read(notificationServiceProvider);
+                    await notificationService.sendTestNotification();
+                    if (context.mounted) {
+                      PointerToast.show(context, 'Test notification sent');
+                    }
+                  },
+                ),
+                const SettingsDivider(),
+                SettingsRow(
+                  title: 'Test Background Notification',
+                  subtitle: 'Schedule via WorkManager (1 min delay)',
+                  trailing: Icon(Icons.schedule_send, color: textColorSubtle, size: 20),
+                  onTap: () async {
+                    await WorkManagerService.scheduleOneTimeNotification(
+                      delay: const Duration(minutes: 1),
+                      uniqueName: 'test_background_${DateTime.now().millisecondsSinceEpoch}',
+                    );
+                    if (context.mounted) {
+                      PointerToast.show(context, 'Background notification scheduled in 1 minute. You can close the app.');
+                    }
+                  },
+                ),
+                const SettingsDivider(),
+                SettingsRow(
+                  title: 'Debug Pending Notifications',
+                  subtitle: 'Check scheduled notifications (inexact mode)',
+                  trailing: Icon(Icons.bug_report, color: textColorSubtle, size: 20),
+                  onTap: () async {
+                    final notificationService = ref.read(notificationServiceProvider);
+                    await notificationService.debugPrintPendingNotifications();
+                    final pending = await notificationService.getPendingNotifications();
+                    if (context.mounted) {
+                      PointerToast.show(context, 'Pending notifications: ${pending.length}');
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ],
+
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: _onVersionTap,
+          child: Center(
+            child: Text('Here Now v1.1.0', style: TextStyle(color: textColorVersion, fontSize: 12)),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  /**
+   * One scrolling column on compact and medium windows (capped and centered
+   * on medium), two columns split at [_ColumnBreak] on two-pane windows; a
+   * vertical hinge falls between the columns.
+   */
+  Widget _layoutColumns(BuildContext context, double bottomPadding, List<Widget> children) {
+    final layout = WindowLayout.of(context);
+    final bottom = (layout.navigationType == NavigationType.rail ? 32.0 : 120.0) + bottomPadding;
+    final breakAt = children.indexWhere((w) => w is _ColumnBreak);
+    if (!layout.isTwoPane || breakAt < 0) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final side = layout.sizeClass == WindowSizeClass.compact
+              ? 24.0
+              : ((constraints.maxWidth - kContentMaxWidth) / 2).clamp(24.0, double.infinity);
+          return ListView(
+            padding: EdgeInsets.only(left: side, right: side, top: 20, bottom: bottom),
+            children: [
+              for (final w in children)
+                if (w is! _ColumnBreak) w,
+            ],
+          );
+        },
+      );
+    }
+    return TwoPane(
+      key: const ValueKey('settings-two-column'),
+      primary: ListView(
+        padding: EdgeInsets.only(left: 24, right: 16, top: 20, bottom: bottom),
+        children: children.sublist(0, breakAt),
+      ),
+      // Top padding lines the first section up with the left column's first section.
+      secondary: ListView(
+        padding: EdgeInsets.only(left: 16, right: 24, top: 60, bottom: bottom),
+        children: children.sublist(breakAt + 1),
       ),
     );
   }
+}
+
+/** Marks where the second settings column begins on two-pane windows. */
+class _ColumnBreak extends StatelessWidget {
+  const _ColumnBreak();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

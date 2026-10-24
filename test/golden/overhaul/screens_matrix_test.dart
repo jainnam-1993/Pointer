@@ -24,13 +24,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pointer/data/articles.dart';
+import 'package:pointer/layout/adaptive.dart';
+import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/main_shell.dart';
 import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
@@ -238,6 +242,42 @@ class _HostPage extends StatelessWidget {
 }
 
 /// A screen in the matrix: how to build it and how to drive it into the captured state.
+/// Hosts the real [MainShell] under a GoRouter so shell goldens show the navigation chrome.
+class _ShellHost extends StatefulWidget {
+  const _ShellHost();
+
+  @override
+  State<_ShellHost> createState() => _ShellHostState();
+}
+
+class _ShellHostState extends State<_ShellHost> {
+  late final GoRouter _router = GoRouter(
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => MainShell(navigationShell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+          ),
+          for (final path in ['/inquiry', '/library', '/settings'])
+            StatefulShellBranch(
+              routes: [GoRoute(path: path, builder: (context, state) => const SizedBox.shrink())],
+            ),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Router.withConfig(config: _router);
+}
+
 class MatrixScreen {
   final String name;
   final bool onboardingCompleted;
@@ -256,6 +296,8 @@ final matrixScreens = <MatrixScreen>[
     drive: (tester) => _settleTransient(tester, frames: 80),
   ),
   MatrixScreen('home', () => const HomeScreen()),
+  // The real MainShell (bottom bar on compact, side rail on medium and up) around Home.
+  MatrixScreen('shell', () => const _ShellHost()),
   MatrixScreen('library', () => const Scaffold(body: LibraryScreen())),
   MatrixScreen('settings', () => const SettingsScreen()),
   MatrixScreen('lineages', () => const LineagesScreen()),
@@ -374,6 +416,100 @@ void main() {
         }
       }
     });
+  }
+
+  group('adaptive layout', () {
+    MatrixDevice device(String name) => matrixDevices.firstWhere((d) => d.name == name);
+    MatrixScreen screen(String name) => matrixScreens.firstWhere((s) => s.name == name);
+    const medium = MatrixDevice('medium', Size(700, 900), 1);
+    const hingeX = 420.0;
+    const hingeY = 442.0;
+
+    testWidgets('home: one pane on compact and medium, pointing plus context on expanded', (tester) async {
+      for (final d in [device('phone'), device('foldouter'), medium]) {
+        await _pumpAt(tester, screen('home'), d);
+        expect(find.byKey(const ValueKey('home-context-pane')), findsNothing, reason: d.name);
+      }
+      for (final d in [device('foldinner'), device('tablet')]) {
+        await _pumpAt(tester, screen('home'), d);
+        expect(find.byKey(const ValueKey('pane-primary')), findsOneWidget, reason: d.name);
+        expect(find.byKey(const ValueKey('home-context-pane')), findsOneWidget, reason: d.name);
+      }
+    });
+
+    testWidgets('home: panes sit on either side of a vertical hinge', (tester) async {
+      await _pumpAt(tester, screen('home'), device('foldhinge'));
+      expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX));
+      expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX));
+      expect(tester.getRect(find.byType(GlassCard).first).right, lessThanOrEqualTo(hingeX));
+    });
+
+    testWidgets('home: tabletop puts the pointing above the hinge and controls below', (tester) async {
+      await _pumpAt(tester, screen('home'), device('tabletop'));
+      expect(tester.getRect(find.byType(GlassCard).first).bottom, lessThanOrEqualTo(hingeY));
+      expect(tester.getRect(find.byKey(const ValueKey('home-tabletop-controls'))).top, greaterThanOrEqualTo(hingeY));
+      expect(tester.getRect(find.text('Next')).top, greaterThanOrEqualTo(hingeY));
+    });
+
+    testWidgets('settings: two columns on expanded, split at the hinge', (tester) async {
+      await _pumpAt(tester, screen('settings'), device('foldouter'));
+      expect(find.byKey(const ValueKey('settings-two-column')), findsNothing);
+      await _pumpAt(tester, screen('settings'), device('foldinner'));
+      expect(find.byKey(const ValueKey('settings-two-column')), findsOneWidget);
+      await _pumpAt(tester, screen('settings'), device('foldhinge'));
+      expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX));
+      expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX));
+    });
+
+    testWidgets('shell: bottom bar on compact, rail on medium and up, clear of the hinge', (tester) async {
+      await _pumpAt(tester, screen('shell'), device('foldouter'));
+      expect(find.byKey(const ValueKey('side-rail')), findsNothing);
+      expect(find.text('Library'), findsOneWidget);
+      for (final d in [medium, device('foldinner'), device('tablet')]) {
+        await _pumpAt(tester, screen('shell'), d);
+        expect(find.byKey(const ValueKey('side-rail')), findsOneWidget, reason: d.name);
+      }
+      await _pumpAt(tester, screen('shell'), device('foldhinge'));
+      expect(tester.getRect(find.byKey(const ValueKey('side-rail'))).right, lessThanOrEqualTo(hingeX));
+      await _pumpAt(tester, screen('shell'), device('tabletop'));
+      final rail = tester.getRect(find.byKey(const ValueKey('side-rail')));
+      expect(tester.getRect(find.text('Library')).top, greaterThanOrEqualTo(hingeY));
+      expect(rail.top, greaterThanOrEqualTo(hingeY));
+    });
+
+    testWidgets('library: list and detail on expanded only', (tester) async {
+      await _pumpAt(tester, screen('library'), device('foldouter'));
+      expect(find.byKey(const ValueKey('library-list-detail')), findsNothing);
+      await _pumpAt(tester, screen('library'), medium);
+      expect(find.byKey(const ValueKey('library-list-detail')), findsNothing);
+      expect(find.byType(ContentWidth), findsOneWidget);
+      await _pumpAt(tester, screen('library'), device('foldinner'));
+      expect(find.byKey(const ValueKey('library-list-detail')), findsOneWidget);
+      expect(find.byKey(const ValueKey('library-detail-empty')), findsOneWidget);
+    });
+  });
+}
+
+/// Pumps [screen] at [device] in the dark theme for layout assertions (no golden).
+Future<void> _pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice device) async {
+  final view = tester.view;
+  view.physicalSize = device.size;
+  view.devicePixelRatio = 1.0;
+  final pad = FakeViewPadding(left: device.safeArea.left, top: device.safeArea.top, right: device.safeArea.right, bottom: device.safeArea.bottom);
+  view.padding = pad;
+  view.viewPadding = pad;
+  view.displayFeatures = device.displayFeatures;
+  addTearDown(view.reset);
+  final prefs = await createMockPrefs(onboardingCompleted: screen.onboardingCompleted);
+  final previous = FlutterError.onError;
+  FlutterError.onError = (d) => _isLayoutOverflow(d) ? null : previous?.call(d);
+  try {
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(_app(home: screen.build(), prefs: prefs, theme: MatrixTheme.dark));
+    await tester.pump(const Duration(seconds: 2));
+    await _settleTransient(tester);
+  } finally {
+    FlutterError.onError = previous;
   }
 }
 

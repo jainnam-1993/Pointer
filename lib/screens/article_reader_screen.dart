@@ -30,7 +30,10 @@ class ArticleReaderScreen extends ConsumerStatefulWidget {
   /** The article ID used to look up the article from the data layer. */
   final String articleId;
 
-  const ArticleReaderScreen({super.key, required this.articleId});
+  /** Closes an embedded reader (Library detail pane) instead of popping the route. */
+  final VoidCallback? onClose;
+
+  const ArticleReaderScreen({super.key, required this.articleId, this.onClose});
 
   @override
   ConsumerState<ArticleReaderScreen> createState() => _ArticleReaderScreenState();
@@ -102,7 +105,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                           children: [
                             IconButton(
                               icon: Icon(Icons.close, color: colors.textPrimary),
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => widget.onClose != null ? widget.onClose!() : Navigator.pop(context),
                             ),
                             const Spacer(),
                             Consumer(
