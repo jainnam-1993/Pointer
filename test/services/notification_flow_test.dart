@@ -26,7 +26,6 @@ class _Posted {
 class _RecordingPlugin extends Fake implements FlutterLocalNotificationsPlugin {
   final shown = <_Posted>[];
   final scheduled = <_Posted>[];
-  int cancelAllCalls = 0;
 
   @override
   Future<void> show(int id, String? title, String? body, NotificationDetails? notificationDetails, {String? payload}) async {
@@ -45,12 +44,42 @@ class _RecordingPlugin extends Fake implements FlutterLocalNotificationsPlugin {
     String? payload,
     DateTimeComponents? matchDateTimeComponents,
   }) async {
-    scheduled.add(_Posted(id, title, body, notificationDetails, payload, DateTime.fromMillisecondsSinceEpoch(scheduledDate.millisecondsSinceEpoch)));
+    final posted = _Posted(id, title, body, notificationDetails, payload, DateTime.fromMillisecondsSinceEpoch(scheduledDate.millisecondsSinceEpoch));
+    scheduled.add(posted);
+    pending[id] = posted;
+  }
+
+  /** iOS model: requests waiting to fire, and notifications in Notification Center. */
+  final pending = <int, _Posted>{};
+  final delivered = <_Posted>[];
+
+  /** Fire every pending request due by [time], as iOS would while the app is closed. */
+  void deliverUntil(DateTime time) {
+    final due = pending.values.where((p) => !p.at!.isAfter(time)).toList();
+    for (final p in due) {
+      pending.remove(p.id);
+      delivered.add(p);
+    }
   }
 
   @override
-  Future<void> cancelAll() async => cancelAllCalls++;
+  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async => [
+    for (final p in pending.values) PendingNotificationRequest(p.id, p.title, p.body, p.payload),
+  ];
+
+  /** Like iOS: removes the pending request and any delivered notification with this id. */
+  @override
+  Future<void> cancel(int id, {String? tag}) async {
+    pending.remove(id);
+    delivered.removeWhere((p) => p.id == id);
+  }
+
+  @override
+  Future<void> cancelAll() async => throw StateError('cancelAll also clears delivered notifications on iOS');
 }
+
+int _rotationTaken(SharedPreferences prefs) =>
+    prefs.getKeys().where((k) => k.startsWith('pointer_notification_rotation_') && k.endsWith('_cursor')).fold(0, (sum, k) => sum + prefs.getInt(k)!);
 
 List<Pointing> _pool(int n) => [
   for (var i = 0; i < n; i++)
@@ -170,25 +199,113 @@ void main() {
     });
     tearDown(() => NotificationService.platformOverride = null);
 
-    test('refills at most once per 6 hours and rotates content', () async {
+    test('refills at most once per 6 hours, only topping up what was delivered', () async {
       final prefs = await _prefs({StorageKeys.notificationsEnabled: true});
       final service = NotificationService(prefs, plugin);
       final t0 = DateTime(2026, 10, 23, 7);
 
       expect(await service.refillIfDue(now: t0), isTrue);
-      final first = plugin.scheduled.length;
-      expect(first, 60);
+      expect(plugin.scheduled, hasLength(60));
       expect(plugin.scheduled.map((p) => p.payload).toSet(), hasLength(60));
       expect(plugin.scheduled.every((p) => const NotificationSchedule().allows(p.at!)), isTrue);
       expect(plugin.scheduled.every((p) => p.at!.isAfter(t0)), isTrue);
 
       expect(await service.refillIfDue(now: t0.add(const Duration(hours: 5, minutes: 59))), isFalse);
-      expect(plugin.scheduled.length, first);
+      expect(plugin.scheduled, hasLength(60));
 
-      expect(await service.refillIfDue(now: t0.add(const Duration(hours: 6))), isTrue);
-      expect(plugin.scheduled.length, 120);
-      expect(plugin.scheduled.map((p) => p.payload).toSet(), hasLength(120), reason: 'no repeats across refills');
-      expect(plugin.cancelAllCalls, 2);
+      final t1 = t0.add(const Duration(hours: 6));
+      plugin.deliverUntil(t1);
+      final deliveredCount = plugin.delivered.length;
+      expect(deliveredCount, greaterThan(0));
+      expect(await service.refillIfDue(now: t1), isTrue);
+      expect(plugin.scheduled, hasLength(60 + deliveredCount));
+      expect(plugin.pending, hasLength(60));
+      expect(plugin.scheduled.map((p) => p.payload).toSet(), hasLength(60 + deliveredCount), reason: 'no repeats across refills');
+      expect(plugin.scheduled.map((p) => p.id).toSet(), hasLength(60 + deliveredCount), reason: 'ids are not reused');
+    });
+
+    test('a refill leaves delivered notifications and pending requests intact', () async {
+      final prefs = await _prefs({StorageKeys.notificationsEnabled: true});
+      final service = NotificationService(prefs, plugin);
+      final t0 = DateTime(2026, 10, 23, 7);
+      await service.refillIfDue(now: t0);
+
+      final t1 = DateTime(2026, 10, 23, 20);
+      plugin.deliverUntil(t1);
+      final delivered = plugin.delivered.map((p) => p.id).toList();
+      expect(delivered.length, greaterThanOrEqualTo(3));
+      final before = {for (final e in plugin.pending.entries) e.key: e.value.payload};
+      final lastPending = plugin.pending.values.map((p) => p.at!).reduce((a, b) => a.isAfter(b) ? a : b);
+
+      await service.refillIfDue(now: t1);
+
+      expect(plugin.delivered.map((p) => p.id), delivered);
+      for (final e in before.entries) {
+        expect(plugin.pending[e.key]?.payload, e.value);
+      }
+      final added = plugin.pending.values.where((p) => !before.containsKey(p.id));
+      expect(added, hasLength(delivered.length));
+      expect(added.every((p) => p.at!.isAfter(lastPending)), isTrue, reason: 'only the tail after the last pending time');
+    });
+
+    test('the rotation moves by exactly the newly scheduled count', () async {
+      final prefs = await _prefs({StorageKeys.notificationsEnabled: true});
+      final service = NotificationService(prefs, plugin);
+      final t0 = DateTime(2026, 10, 23, 7);
+      await service.refillIfDue(now: t0);
+      expect(_rotationTaken(prefs), 60);
+
+      // Nothing delivered (phone off): the next refill must not consume or skip anything.
+      await service.refillIfDue(now: t0.add(NotificationService.refillInterval));
+      expect(_rotationTaken(prefs), 60);
+      expect(plugin.scheduled, hasLength(60));
+
+      final t2 = DateTime(2026, 10, 24, 12);
+      plugin.deliverUntil(t2);
+      final before = plugin.scheduled.length;
+      await service.refillIfDue(now: t2);
+      final added = plugin.scheduled.length - before;
+      expect(added, greaterThan(0));
+      expect(_rotationTaken(prefs), 60 + added);
+    });
+
+    test('cancels owned pending requests left by an older build with no recorded time', () async {
+      plugin.pending[50001] = _Posted(50001, 'old', 'old', null, 'p001', DateTime(2026, 10, 24));
+      plugin.pending[7] = _Posted(7, 'other', 'other', null, null, DateTime(2026, 10, 24));
+      final service = NotificationService(await _prefs({StorageKeys.notificationsEnabled: true}), plugin);
+      await service.refillIfDue(now: DateTime(2026, 10, 23, 7));
+      expect(plugin.pending.values.where((p) => p.title == 'old'), isEmpty);
+      expect(plugin.pending.containsKey(7), isTrue, reason: 'ids outside the owned range are left alone');
+      expect(plugin.pending.values.where((p) => p.title == pointingNotificationTitle), hasLength(60));
+    });
+
+    test('a Settings change rebuilds pending requests without touching delivered ones', () async {
+      final prefs = await _prefs({StorageKeys.notificationsEnabled: true});
+      final service = NotificationService(prefs, plugin);
+      final now = DateTime.now();
+      await service.scheduleAllNotifications(now: now);
+      plugin.deliverUntil(plugin.pending.values.map((p) => p.at!).reduce((a, b) => a.isBefore(b) ? a : b).add(const Duration(hours: 4)));
+      final delivered = plugin.delivered.map((p) => p.id).toList();
+      expect(delivered, isNotEmpty);
+      final oldPending = plugin.pending.keys.toSet();
+
+      const changed = NotificationSchedule(frequencyMinutes: 240, startHour: 9, endHour: 18);
+      await service.saveSchedule(changed);
+
+      expect(plugin.delivered.map((p) => p.id), delivered);
+      expect(plugin.pending.keys.toSet().intersection(oldPending), isEmpty);
+      expect(plugin.pending, isNotEmpty);
+      expect(plugin.pending.values.every((p) => changed.allows(p.at!)), isTrue);
+    });
+
+    test('disabling cancels pending requests and keeps delivered ones', () async {
+      final service = NotificationService(await _prefs({StorageKeys.notificationsEnabled: true}), plugin);
+      await service.scheduleAllNotifications(now: DateTime(2026, 10, 23, 7));
+      plugin.deliverUntil(DateTime(2026, 10, 23, 20));
+      final delivered = plugin.delivered.length;
+      await service.setNotificationsEnabled(false);
+      expect(plugin.pending, isEmpty);
+      expect(plugin.delivered, hasLength(delivered));
     });
 
     test('does nothing when notifications are disabled or on Android', () async {
