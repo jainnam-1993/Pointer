@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pointer/data/articles.dart';
@@ -33,6 +34,7 @@ import 'package:pointer/models/article.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/main_shell.dart';
 import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
@@ -240,6 +242,42 @@ class _HostPage extends StatelessWidget {
 }
 
 /// A screen in the matrix: how to build it and how to drive it into the captured state.
+/// Hosts the real [MainShell] under a GoRouter so shell goldens show the navigation chrome.
+class _ShellHost extends StatefulWidget {
+  const _ShellHost();
+
+  @override
+  State<_ShellHost> createState() => _ShellHostState();
+}
+
+class _ShellHostState extends State<_ShellHost> {
+  late final GoRouter _router = GoRouter(
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => MainShell(navigationShell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+          ),
+          for (final path in ['/inquiry', '/library', '/settings'])
+            StatefulShellBranch(
+              routes: [GoRoute(path: path, builder: (context, state) => const SizedBox.shrink())],
+            ),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Router.withConfig(config: _router);
+}
+
 class MatrixScreen {
   final String name;
   final bool onboardingCompleted;
@@ -258,6 +296,8 @@ final matrixScreens = <MatrixScreen>[
     drive: (tester) => _settleTransient(tester, frames: 80),
   ),
   MatrixScreen('home', () => const HomeScreen()),
+  // The real MainShell (bottom bar on compact, side rail on medium and up) around Home.
+  MatrixScreen('shell', () => const _ShellHost()),
   MatrixScreen('library', () => const Scaffold(body: LibraryScreen())),
   MatrixScreen('settings', () => const SettingsScreen()),
   MatrixScreen('lineages', () => const LineagesScreen()),
@@ -419,6 +459,22 @@ void main() {
       await _pumpAt(tester, screen('settings'), device('foldhinge'));
       expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX));
       expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX));
+    });
+
+    testWidgets('shell: bottom bar on compact, rail on medium and up, clear of the hinge', (tester) async {
+      await _pumpAt(tester, screen('shell'), device('foldouter'));
+      expect(find.byKey(const ValueKey('side-rail')), findsNothing);
+      expect(find.text('Library'), findsOneWidget);
+      for (final d in [medium, device('foldinner'), device('tablet')]) {
+        await _pumpAt(tester, screen('shell'), d);
+        expect(find.byKey(const ValueKey('side-rail')), findsOneWidget, reason: d.name);
+      }
+      await _pumpAt(tester, screen('shell'), device('foldhinge'));
+      expect(tester.getRect(find.byKey(const ValueKey('side-rail'))).right, lessThanOrEqualTo(hingeX));
+      await _pumpAt(tester, screen('shell'), device('tabletop'));
+      final rail = tester.getRect(find.byKey(const ValueKey('side-rail')));
+      expect(tester.getRect(find.text('Library')).top, greaterThanOrEqualTo(hingeY));
+      expect(rail.top, greaterThanOrEqualTo(hingeY));
     });
 
     testWidgets('library: list and detail on expanded only', (tester) async {
