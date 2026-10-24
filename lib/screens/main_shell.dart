@@ -195,7 +195,7 @@ class _SideRail extends StatelessWidget {
                   children: [
                     for (var i = 0; i < _tabs.length; i++)
                       SizedBox(
-                        height: 76,
+                        height: 96,
                         child: _NavItem(
                           icon: _tabs[i].$1,
                           activeIcon: _tabs[i].$2,
