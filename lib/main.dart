@@ -6,8 +6,9 @@
  * immediately.
  *
  * This file retains only:
- * - The global [ProviderContainer] reference for background notification dispatch.
- * - The `@pragma('vm:entry-point')` notification action callback.
+ * - The global [ProviderContainer] reference for deep-link and notification routing.
+ * - Main-isolate notification tap and action handling (background actions live in
+ *   `notification_content.dart`).
  * - The root [PointerApp] widget.
  */
 library;
@@ -26,41 +27,58 @@ import 'router.dart';
 import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
 import 'debug/maestro_hooks.dart';
-import 'services/notification_service.dart';
+import 'services/notification_content.dart';
 import 'theme/app_theme.dart';
 
 /**
- * Global [ProviderContainer] reference retained for notification action handling.
- *
- * Set once in [main] after the container is created and read by [notificationActionCallback]
- * when the OS delivers a notification action while the app may not have an active widget tree.
+ * Global [ProviderContainer] reference for top-level deep-link and
+ * notification routing. Null only before [main] finishes bootstrap.
  */
 ProviderContainer? _globalContainer;
 
 /**
- * Handles notification action responses dispatched by the OS.
+ * Handles notification responses delivered to the main isolate.
  *
- * Supports two action identifiers:
- * - `save` — toggles the pointing identified by [NotificationResponse.payload] as a favorite
- *   via [favoritesProvider].
- * - `another` — sends a new test notification through [NotificationService.sendTestNotification].
- *
- * Annotated with `@pragma('vm:entry-point')` to ensure the Dart VM retains this function
- * for invocation from native background isolates.
+ * A plain tap (`actionId == null`) opens the pointing named by the payload
+ * through the same buffered path widget deep links use. Action buttons share
+ * [handleNotificationAction] with the background isolate, then favourites are
+ * reloaded so the UI reflects a Save.
  */
-@pragma('vm:entry-point')
-void notificationActionCallback(NotificationResponse response) {
-  if (_globalContainer == null) return;
-
-  final actionId = response.actionId;
+void _onForegroundNotificationResponse(NotificationResponse response) {
   final payload = response.payload;
+  if (response.actionId == null) {
+    if (payload != null && payload.isNotEmpty) _routeToPointing(payload);
+    return;
+  }
+  final container = _globalContainer;
+  if (container == null) return;
+  unawaited(
+    handleNotificationAction(
+      response,
+      prefs: container.read(sharedPreferencesProvider),
+      plugin: FlutterLocalNotificationsPlugin(),
+      loadPool: loadNotificationPool,
+    ).then((_) => container.invalidate(favoritesProvider)),
+  );
+}
 
-  if (actionId == 'save' && payload != null) {
-    _globalContainer!.read(favoritesProvider.notifier).toggle(payload);
-  } else if (actionId == 'another') {
-    final prefs = _globalContainer!.read(sharedPreferencesProvider);
-    final service = NotificationService(prefs);
-    service.sendTestNotification();
+/** Buffer a pointing deep link and navigate once startup content is ready. */
+void _routeToPointing(String pointingId) {
+  _pendingWidgetUri = 'dailypointer://pointing/$pointingId';
+  _drainPendingWidgetUri();
+}
+
+/** Cold start from a notification tap: open the pointing it showed. */
+Future<void> _captureNotificationLaunch() async {
+  try {
+    final details = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();
+    final response = details?.notificationResponse;
+    if (details?.didNotificationLaunchApp != true || response == null) return;
+    if (response.actionId == null && response.payload != null && response.payload!.isNotEmpty) {
+      _routeToPointing(response.payload!);
+    }
+  } catch (e) {
+    debugPrint('[NotificationLaunch] Launch details unavailable: $e');
   }
 }
 
@@ -132,8 +150,9 @@ void main() async {
   // captured, but navigation is deferred until init completes.
   _setupWidgetDeepLink();
 
-  final result = await AppInitializer.initialize(onNotificationAction: notificationActionCallback);
+  final result = await AppInitializer.initialize(onNotificationAction: _onForegroundNotificationResponse);
   _globalContainer = result.container;
+  unawaited(_captureNotificationLaunch());
 
   unawaited(
     AppInitializer.criticalContentReady
@@ -237,9 +256,12 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       final widgetService = ref.read(widgetServiceProvider);
       widgetService.refreshWidget();
-      widgetService.processPendingWidgetActions().then((_) {
+      widgetService.processPendingWidgetActions().then((_) async {
+        // Pick up favourites saved by the notification action isolate.
+        await ref.read(sharedPreferencesProvider).reload();
         ref.invalidate(favoritesProvider);
       });
+      unawaited(ref.read(notificationServiceProvider).refillIfDue());
     }
   }
 
