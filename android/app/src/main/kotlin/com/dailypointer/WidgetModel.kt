@@ -173,15 +173,20 @@ enum class WidgetSize(val contentLines: Int, val showHeader: Boolean, val showTe
     LARGE(contentLines = 12, showHeader = true, showTeacher = true, showActions = true, aspect = 1f);
 
     companion object {
-        /** The layout breakpoints, in dp, as (width, height) minimums. */
+        /**
+         * The layout breakpoints, in dp, as (width, height) minimums. LARGE starts at 260 dp tall:
+         * its eyebrow, teacher line and control row take about 150 dp, and below 260 dp the quote
+         * was left about 50 dp and clipped mid-line (a 4x2 widget on a Fold). MEDIUM, with the
+         * teacher in the control row, gives the quote nearly 100 dp there.
+         */
         val BREAKPOINTS: List<Pair<WidgetSize, Pair<Float, Float>>> = listOf(
             COMPACT to (110f to 40f),
             MEDIUM to (180f to 110f),
-            LARGE to (250f to 200f),
+            LARGE to (250f to 260f),
         )
 
         fun forSize(widthDp: Float, heightDp: Float): WidgetSize = when {
-            heightDp >= 200f && widthDp >= 250f -> LARGE
+            heightDp >= 260f && widthDp >= 250f -> LARGE
             heightDp >= 110f && widthDp >= 180f -> MEDIUM
             else -> COMPACT
         }
