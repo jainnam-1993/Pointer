@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:pointer/theme/phosphor_icons.dart';
 import '../data/articles.dart';
 import '../data/inquiries.dart';
 import '../layout/adaptive.dart';
@@ -133,7 +133,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
    * and the app is in the foreground.
    */
   bool get _isHomeVisible {
-    if (!mounted || !TickerMode.of(context)) return false;
+    if (!mounted || !TickerMode.valuesOf(context).enabled) return false;
     final route = ModalRoute.of(context);
     if (route != null && !route.isCurrent) return false;
     final lifecycle = WidgetsBinding.instance.lifecycleState;

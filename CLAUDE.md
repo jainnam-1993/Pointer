@@ -6,10 +6,10 @@ Repo: `/workplace/jainnam/tools/Pointer` (the Mac sees it as `/Volumes/workplace
 
 ## Hosts and commands
 
-The devdesk (Linux, aarch64) runs Flutter and is the golden host. Run analyze, tests and goldens there.
+Flutter 3.47.8 (Dart 3.13.7) on both hosts; 3.38.9 cannot build iOS with Xcode 27. The devdesk (Linux, aarch64) runs Flutter and is the golden host. Run analyze, tests and goldens there.
 
 ```bash
-export PATH=$HOME/.local/share/flutter-sdk/3.38.9/bin:$PATH
+export PATH=$HOME/.local/share/flutter-sdk/3.47.8/bin:$PATH
 flutter pub get
 flutter analyze                       # gate: "No issues found"
 flutter test --concurrency=16         # gate: all pass
@@ -18,7 +18,7 @@ tool/visual_diff.sh <rev-a> <rev-b|WORKTREE>         # before/after contact shee
 dart format --page-width=150 <files>
 ```
 
-The Mac is used only for native builds (iOS, Xcode archives, `bundle exec fastlane android internal|production`) and on-device checks. Do not generate goldens on the Mac, because its font rasterization differs.
+On the Mac, put `~/flutter-3.47.8/bin` first on PATH (Homebrew's `/opt/homebrew/bin/flutter` is the old 3.38.9). The Mac is used only for native builds (iOS, Xcode archives, `bundle exec fastlane android internal|production`) and on-device checks. Do not generate goldens on the Mac, because its font rasterization differs.
 
 ## Architecture
 
