@@ -33,37 +33,42 @@ data class FrostPalette(
         private const val INK_LIGHT = 0xFFF5F2EE.toInt()
 
         /** Sheen (upper half) and shade (lower edge) strengths drawn by the card renderer. */
-        const val SHEEN = 0.10
+        const val SHEEN = 0.06
         const val SHADE = 0.08
 
-        /** App palette when the wallpaper exposes no colors (some live wallpapers). */
-        private val FALLBACK_LIGHT = intArrayOf(0xFFF7F5F2.toInt(), 0xFFECE7F4.toInt())
-        private val FALLBACK_DARK = intArrayOf(0xFF24222A.toInt(), 0xFF1C1B1F.toInt())
 
         /**
          * [primary], [secondary] and [tertiary] are WallpaperColors ARGB values (null when absent).
          * [dark] follows the system night mode.
          */
         fun from(primary: Int?, secondary: Int?, tertiary: Int?, dark: Boolean): FrostPalette {
-            if (primary == null) {
-                val f = if (dark) FALLBACK_DARK else FALLBACK_LIGHT
-                return withInk(f[0], f[1])
-            }
             // Tint source: the wallpaper's most colorful of primary/secondary/tertiary, so a white
-            // or grey primary over a colored wallpaper still tints the card.
-            val source = listOfNotNull(primary, secondary, tertiary).maxByOrNull { Oklch.of(it).c } ?: primary
-            val lch = Oklch.of(source)
+            // or grey primary over a colored wallpaper still tints the card. No colors: a calm violet.
+            val source = listOfNotNull(primary, secondary, tertiary).maxByOrNull { Oklch.of(it).c }
+            val lch = source?.let { Oklch.of(it) } ?: Oklch(0.5, 0.05, 300.0)
             val neutral = lch.c < NEUTRAL_CHROMA
-            // Visible but calm: light frost carries 0.035-0.06 OKLCH chroma toward the wallpaper hue,
-            // deep frost 0.03-0.055. A neutral wallpaper keeps a whisper of warmth instead.
-            val c = if (neutral) 0.008 else if (dark) (lch.c * 0.45).coerceIn(0.03, 0.055) else (lch.c * 0.5).coerceIn(0.035, 0.06)
+            // visionOS-style glass: a MID-TONE panel in the scene's own color, with white text.
+            // Moderate chroma (0.035-0.075) at the wallpaper hue; neutral wallpapers stay a soft grey.
+            val c = if (neutral) 0.012 else (lch.c * 0.55).coerceIn(0.035, 0.075)
             val h = if (neutral) 70.0 else lch.h
-            val (lTop, lBottom) = if (dark) 0.27 to 0.22 else 0.925 to 0.885
-            return withInk(Oklch(lTop, c, h).toArgb(), Oklch(lBottom, c * 1.1, h + 8).toArgb())
+            // Start at the target lightness and step down until white text clears 4.5:1 over every
+            // shade the card shows (sheen included) and 70% white clears 3:1.
+            var lTop = if (dark) 0.44 else 0.54
+            while (true) {
+                val p = withWhiteInk(Oklch(lTop, c, h).toArgb(), Oklch(lTop - 0.05, c * 1.1, h + 8).toArgb())
+                val probe = p.cardExtremes()
+                val ok = probe.minOf { contrast(p.ink, it) } >= 4.6 && probe.minOf { contrast(p.secondary, it) } >= 3.1
+                if (ok || lTop <= 0.30) return p
+                lTop -= 0.01
+            }
         }
 
         /** Below this OKLCH chroma a wallpaper reads as white, grey or black. */
         private const val NEUTRAL_CHROMA = 0.02
+
+        /** White ink, and secondary text as white at 70% over the card (the target's two levels). */
+        fun withWhiteInk(top: Int, bottom: Int): FrostPalette =
+            FrostPalette(top, bottom, INK_LIGHT, mix(mix(top, bottom, 0.5), INK_LIGHT, 0.70), lightInk = true)
 
         /** Picks the ink with the higher worst-case contrast over every shade the card shows. */
         fun withInk(top: Int, bottom: Int): FrostPalette {

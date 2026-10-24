@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToOutline="true"
-    android:background="@drawable/widget_background">
+    android:background="@drawable/widget_preview_glass">
 
     <!-- Opaque frosted card painted from the wallpaper colors (FrostCard). -->
     <ImageView
@@ -54,7 +54,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="serif"
-            android:textColor="@color/widget_text"
+            android:textColor="@color/widget_on_glass"
             android:autoSizeTextType="uniform"
             android:autoSizeStepGranularity="1sp"
             android:gravity="top|start"
@@ -79,7 +79,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textSize="13sp"
-            android:textColor="@color/widget_text_muted" />
+            android:textColor="@color/widget_on_glass_secondary" />
 
         <ImageView
             android:layout_width="@dimen/widget_touch_target"
@@ -87,7 +87,7 @@
             android:padding="13dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_heart_outline"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/widget_save_circle"
             android:contentDescription="@string/widget_save" />
 
         <LinearLayout
@@ -96,7 +96,7 @@
             android:layout_marginStart="4dp"
             android:orientation="horizontal"
             
-            android:background="@drawable/widget_pill_on_light">
+            android:background="@drawable/widget_pill_on_dark">
 
             <ImageView
                 android:layout_width="@dimen/widget_touch_target"
