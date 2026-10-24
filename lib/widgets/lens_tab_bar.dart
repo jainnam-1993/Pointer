@@ -31,11 +31,19 @@ typedef LensTab = (IconData icon, String label);
 /** Colours and sizes of the lens tab bar (one place, so the design can be tuned against the reference). */
 abstract final class LensTabStyle {
   static const Color capsule = Color(0xFF0B0B0C);
+
+  /** Dark theme: a slightly lifted capsule and a light hairline, so the bar reads as an object on a dark field. */
+  static const Color capsuleDark = Color(0xFF161618);
+  static const Color hairlineDark = Color(0x29FFFFFF);
+
+  /** High contrast: no glass; a solid bar and pill with clear borders. */
+  static const Color hcBorder = Color(0xB3FFFFFF);
+  static const Color hcPill = Color(0xFF2C2C30);
   static const Color inactive = Color(0xFF6E6E73);
   static const Color active = Color(0xFFFFFFFF);
 
   /** The lens is this much thicker than the bar (it overflows on both sides). */
-  static const double lensThickness = 1.3;
+  static const double lensThickness = 1.4;
 
   /** Lens width as a share of a cell, capped by [lensAspect] times its thickness. */
   static const double lensCellShare = 1.15;
@@ -49,8 +57,8 @@ abstract final class LensTabStyle {
 
   /** Lens bevel and refraction as shares of its shorter side. The rim samples inward by about the overhang, so the edge shows a dark rim and
    * the overhang shows the background as bright crescents. */
-  static const double lensBand = 0.14;
-  static const double lensRefraction = 0.10;
+  static const double lensBand = 0.16;
+  static const double lensRefraction = 0.06;
 
   static const List<Shadow> activeGlow = [Shadow(color: Color(0x99FFFFFF), blurRadius: 12)];
 }
@@ -126,11 +134,16 @@ class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateM
         final lensMain = math.min(cell * LensTabStyle.lensCellShare, lensCross * LensTabStyle.lensAspect);
         final showLabel = !(horizontal && widget.minimized);
 
+        final dark = Theme.of(context).brightness == Brightness.dark;
+        final highContrast = GlassMaterial.of(context).opaque;
         final capsule = DecoratedBox(
           decoration: BoxDecoration(
-            color: LensTabStyle.capsule,
+            color: dark || highContrast ? LensTabStyle.capsuleDark : LensTabStyle.capsule,
             borderRadius: BorderRadius.circular(thickness / 2),
-            boxShadow: LensTabStyle.capsuleShadow,
+            border: highContrast
+                ? Border.all(color: LensTabStyle.hcBorder, width: 1.5)
+                : (dark ? Border.all(color: LensTabStyle.hairlineDark, width: 1) : null),
+            boxShadow: highContrast ? null : LensTabStyle.capsuleShadow,
           ),
         );
 
@@ -245,6 +258,8 @@ class _Lens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final highContrast = GlassMaterial.of(context).opaque;
     final r = size.shortestSide * LensTabStyle.lensRadius;
     final radius = BorderRadius.circular(r);
     final rim = ShapeDecoration(
@@ -267,9 +282,23 @@ class _Lens extends StatelessWidget {
         saturation: 1.0,
         bevelSaturation: 0,
         dispersion: -0.10,
+        bandLift: dark ? 0.55 : 0.35,
+        bandLiftFrom: dark ? 0.04 : 0.15,
       ),
     );
     Widget body = DecoratedBox(decoration: rim, child: child);
+    if (highContrast) {
+      return DecoratedBox(
+        decoration: ShapeDecoration(
+          color: LensTabStyle.hcPill,
+          shape: RoundedSuperellipseBorder(
+            borderRadius: radius,
+            side: const BorderSide(color: LensTabStyle.hcBorder, width: 1.5),
+          ),
+        ),
+        child: child,
+      );
+    }
     if (plain || lens == null) {
       // Fallback (no shader, Reduce Transparency, tests): a faint clear lens with the same rim.
       body = DecoratedBox(
