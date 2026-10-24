@@ -30,9 +30,7 @@ class SelectableChip extends StatelessWidget {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final reduce = Motion.reduce(context);
-    final fill = selected
-        ? colors.accent.withValues(alpha: isDark ? SelectionTint.selectedDark : SelectionTint.selectedLight)
-        : colors.textPrimary.withValues(alpha: SelectionTint.resting);
+    final fill = SelectionTint.fill(colors, selected: selected, isDark: isDark);
     final textColor = selected ? colors.textPrimary : colors.textSecondary;
 
     return MergeSemantics(

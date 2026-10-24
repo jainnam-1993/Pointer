@@ -241,10 +241,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       children: [
         Padding(
           padding: AppSpacing.screenH,
-          child: Text(
-            'STYLE',
-            style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1),
-          ),
+          child: Text('STYLE', style: AppTextStyles.sectionHeader(context)),
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
@@ -267,11 +264,10 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     ref.read(shareTemplateProvider.notifier).setTemplate(template);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg + AppSpacing.xs, vertical: AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                      color: SelectionTint.fill(colors, selected: isSelected, isDark: Theme.of(context).brightness == Brightness.dark),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                     ),
                     child: Text(
                       template.displayName,
@@ -297,10 +293,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       children: [
         Padding(
           padding: AppSpacing.screenH,
-          child: Text(
-            'FORMAT',
-            style: TextStyle(color: colors.textMuted, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1),
-          ),
+          child: Text('FORMAT', style: AppTextStyles.sectionHeader(context)),
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
@@ -323,11 +316,10 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     ref.read(shareFormatProvider.notifier).setFormat(format);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg + AppSpacing.xs, vertical: AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: isSelected ? colors.primary.withValues(alpha: 0.2) : colors.glassBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(color: isSelected ? colors.primary : colors.glassBorder),
+                      color: SelectionTint.fill(colors, selected: isSelected, isDark: Theme.of(context).brightness == Brightness.dark),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

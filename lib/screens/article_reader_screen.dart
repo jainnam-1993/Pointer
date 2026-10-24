@@ -145,17 +145,16 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                               ConstrainedBox(
                                 constraints: const BoxConstraints(maxWidth: kReadingMeasure),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
                                   decoration: BoxDecoration(
                                     color: colors.glassBackground,
-                                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                                    border: Border.all(color: colors.glassBorder),
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                                   ),
                                   child: Text(
                                     traditionInfo.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: colors.textMuted, fontSize: 12),
+                                    style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
                                   ),
                                 ),
                               ),

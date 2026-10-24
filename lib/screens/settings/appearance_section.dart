@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/motion.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/pointer_switch.dart';
 import '../../utils/haptics.dart';
@@ -172,9 +173,7 @@ class ThemeOption extends StatelessWidget {
     // - Thicker border (2px selected vs 1px unselected)
     // - Stronger background fill
     // - High contrast border color
-    final borderColor = isSelected ? accentColor : colors.glassBorder;
-    final borderWidth = isSelected ? 2.0 : 1.0;
-    final bgColor = isSelected ? accentColor.withValues(alpha: isDark ? 0.25 : 0.15) : Colors.transparent;
+    final bgColor = SelectionTint.fill(colors, selected: isSelected, isDark: isDark);
 
     return Expanded(
       child: Semantics(
@@ -187,13 +186,10 @@ class ThemeOption extends StatelessWidget {
             onTap();
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: Motion.reduce(context) ? Duration.zero : Motion.quick,
+            curve: Motion.inOut,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.md, horizontal: AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: borderColor, width: borderWidth),
-            ),
+            decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
             child: Column(
               children: [
                 // Stack icon with checkmark overlay when selected

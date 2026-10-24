@@ -897,6 +897,10 @@ class SelectionTint {
 
   /** Selected chip fill in light themes: accent at this opacity. */
   static const double selectedLight = 0.18;
+
+  /** The chip or tile fill for [selected], in place of an outline. */
+  static Color fill(PointerColors colors, {required bool selected, required bool isDark}) =>
+      selected ? colors.accent.withValues(alpha: isDark ? selectedDark : selectedLight) : colors.textPrimary.withValues(alpha: resting);
 }
 
 class AppSpacing {

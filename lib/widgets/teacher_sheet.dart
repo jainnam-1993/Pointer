@@ -165,11 +165,7 @@ class _PointingTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: colors.glassBackground,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: colors.glassBorder),
-        ),
+        decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
         child: Text(
           pointing.content.length > 120 ? '${pointing.content.substring(0, 120)}...' : pointing.content,
           style: TextStyle(color: colors.textSecondary, fontSize: AppType.callout, height: 1.5),
