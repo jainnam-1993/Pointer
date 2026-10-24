@@ -76,7 +76,6 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
-    }
 
         val filter = IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
