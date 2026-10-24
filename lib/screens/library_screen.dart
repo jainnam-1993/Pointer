@@ -10,6 +10,7 @@
  */
 library;
 
+import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 // flutter_markdown_plus moved to article_reader_screen.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -127,11 +128,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ),
               ),
               if (favorites.isEmpty && savedArticleIds.isEmpty)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: EmptyStateWidget(
                     icon: Icons.bookmark_border,
-                    title: 'Nothing saved yet',
-                    subtitle: 'Long-press a pointing or bookmark an article',
+                    title: 'Nothing saved yet.',
+                    subtitle: 'Long-press a pointing to keep it here.',
+                    actionLabel: 'Back to today',
+                    onAction: () => context.go('/'),
                   ),
                 ),
 
@@ -442,8 +445,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /** Navigates to [TopicTeachingsScreen] for the given topic with the active filter. */
   void _openTopic(BuildContext context, String topic, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (context) => TopicTeachingsScreen(topic: topic, filter: filter),
       ),
     );
@@ -477,7 +480,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
     if (sortedTeachers.isEmpty) {
       return const SliverToBoxAdapter(
-        child: EmptyStateWidget(icon: Icons.person_outline, title: 'No teachers found', subtitle: 'Try a different content filter'),
+        child: EmptyStateWidget(title: 'No teachers here yet.', subtitle: 'Try another filter above.'),
       );
     }
 
@@ -616,8 +619,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openTeacher(BuildContext context, String teacher, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (context) => TeacherTeachingsScreen(teacher: teacher, filter: filter),
       ),
     );
@@ -625,8 +628,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openLineage(BuildContext context, Tradition tradition, TraditionInfo info, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (context) => LineageTeachingsScreen(tradition: tradition, info: info, filter: filter),
       ),
     );
@@ -634,8 +637,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 
   void _openMood(BuildContext context, String mood, ContentFilter filter) {
     Haptics.light();
-    Navigator.of(context).push(
-      MaterialPageRoute(
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (context) => MoodTeachingsScreen(mood: mood, filter: filter),
       ),
     );

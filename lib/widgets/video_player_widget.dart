@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
@@ -53,6 +54,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       _player = Player();
       _videoController = VideoController(_player!);
       await _player!.open(Media(widget.videoUrl!), play: false);
+      if (!mounted) return;
       setState(() => _isInitialized = true);
     }
 
@@ -60,7 +62,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
     if (mounted) {
       await Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
           builder: (context) => _FullScreenVideoPlayer(player: _player!, videoController: _videoController!),
         ),
       );
