@@ -49,7 +49,7 @@ void main() {
         if (initialPointing != null)
           currentPointingProvider.overrideWith((ref) {
             final storage = ref.watch(storageServiceProvider);
-            final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+            final notifier = CurrentPointingNotifier(storage);
             notifier.setPointing(initialPointing);
             return notifier;
           }),
@@ -307,7 +307,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),
@@ -339,7 +339,7 @@ void main() {
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {
               final storage = ref.watch(storageServiceProvider);
-              final notifier = CurrentPointingNotifier(storage, ref.watch(widgetServiceProvider));
+              final notifier = CurrentPointingNotifier(storage);
               notifier.setPointing(testPointing);
               return notifier;
             }),

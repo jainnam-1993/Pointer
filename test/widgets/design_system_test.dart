@@ -7,7 +7,6 @@ import 'package:pointer/providers/providers.dart';
 import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/utils/motion.dart';
-import 'package:pointer/widgets/donation_thank_you.dart';
 import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/widgets/pointer_switch.dart';
 import 'package:pointer/widgets/pointer_toast.dart';
@@ -43,7 +42,6 @@ void main() {
           PointerSwitch(value: true, onChanged: (_) {}),
         ],
       ),
-      'DonationThankYou': () => const DonationThankYou(),
     };
     for (final theme in [AppTheme.dark, AppTheme.light]) {
       for (final c in components.entries) {

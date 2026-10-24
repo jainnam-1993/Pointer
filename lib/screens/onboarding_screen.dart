@@ -112,15 +112,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
-  /** Requests notification permission and finishes onboarding regardless of result. */
+  /**
+   * Shows a short rationale, then the system permission prompt. Granting
+   * enables and schedules notifications; either answer finishes onboarding.
+   * Dismissing the rationale stays on the page.
+   */
   Future<void> _handleEnableNotifications() async {
-    Haptics.success();
-    final granted = await ref.read(notificationServiceProvider).requestPermissions();
+    Haptics.light();
+    final proceed = await showDialog<bool>(context: context, builder: (context) => const _PermissionRationaleDialog());
+    if (proceed != true || !mounted) return;
+    final notificationService = ref.read(notificationServiceProvider);
+    final granted = await notificationService.requestPermissions();
     await _finishOnboarding(granted);
   }
 
-  /** Marks onboarding complete in storage and navigates to home screen. */
+  /** Marks onboarding complete, enables notifications when granted, and navigates home. */
   Future<void> _finishOnboarding(bool notificationsEnabled) async {
+    if (notificationsEnabled) {
+      await ref.read(notificationServiceProvider).setNotificationsEnabled(true);
+    }
     final storage = ref.read(storageServiceProvider);
     await storage.setOnboardingCompleted(true);
     ref.invalidate(onboardingCompletedProvider);
@@ -583,6 +593,52 @@ class _PageIndicators extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             color: dotColor.withValues(alpha: currentPage == index ? 1 : 0.3),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/** Rationale shown before the system notification permission prompt. */
+class _PermissionRationaleDialog extends StatelessWidget {
+  const _PermissionRationaleDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GlassCard(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'A few quiet pointings a day',
+              style: TextStyle(fontSize: _responsiveFontSize(context, 20), fontWeight: FontWeight.w500, color: colors.textPrimary),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Only inside the hours you choose, never during quiet hours. Your phone asks for permission next. You can change times or turn them off in Settings.',
+              style: TextStyle(fontSize: _responsiveFontSize(context, 15), height: 1.5, color: colors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: _OnboardingButton(label: 'Continue', onPressed: () => Navigator.of(context).pop(true), isPrimary: true),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'Not now',
+                style: TextStyle(color: colors.textMuted, fontSize: _responsiveFontSize(context, 15)),
+              ),
+            ),
+          ],
         ),
       ),
     );

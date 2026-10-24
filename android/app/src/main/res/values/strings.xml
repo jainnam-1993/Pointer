@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">Pointer</string>
     <string name="widget_description">Daily non-dual pointing for your home screen</string>
+    <string name="widget_empty">Here Now</string>
+    <string name="widget_save">Save to favorites</string>
+    <string name="widget_saved">Saved to favorites</string>
+    <string name="widget_previous">Previous pointing</string>
+    <string name="widget_next">Next pointing</string>
 </resources>

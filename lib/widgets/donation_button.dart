@@ -9,6 +9,8 @@
  */
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -31,6 +33,7 @@ class _TipProduct {
 
 /** Map product IDs to display labels and icons */
 const _tipProducts = <String, _TipProduct>{
+  // Phosphor Light line icons, distinct from the tab icons.
   'tip_small': _TipProduct('Tea', AppIcons.tipTea),
   'tip_medium': _TipProduct('Cushion', AppIcons.tipCushion),
   'tip_large': _TipProduct('Incense', AppIcons.tipIncense),
@@ -84,8 +87,24 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
     ref.read(donationProvider.notifier).initialize();
   }
 
+  /** Light, 60 ms, light: the success pattern for a completed tip. */
+  Future<void> _successHaptic() async {
+    await Haptics.success();
+  }
+
+  void _dismissResult() {
+    Haptics.light();
+    ref.read(donationProvider.notifier).clearResult();
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen<DonationResult?>(donationProvider.select((s) => s.lastResult), (previous, next) {
+      if (next == null || next == previous) return;
+      if (next == DonationResult.success) unawaited(_successHaptic());
+      // Show the outcome even if the card was collapsed when it arrived.
+      if (next != DonationResult.cancelled && !_isExpanded) setState(() => _isExpanded = true);
+    });
     final state = ref.watch(donationProvider);
     if (!state.isAvailable && !state.isLoading) {
       return const SizedBox.shrink();
@@ -131,7 +150,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
 
   Widget _buildHeader(DonationState state, PointerColors colors) {
     return GestureDetector(
-      onTap: state.isLoading ? null : _toggleExpanded,
+      onTap: _toggleExpanded,
       behavior: HitTestBehavior.opaque,
       child: Row(
         children: [
@@ -165,6 +184,11 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
           'Here Now is free forever. If you find value, consider supporting development.',
           style: TextStyle(color: colors.textSecondary, fontFamily: AppFonts.sans, fontSize: AppType.callout, height: 1.45),
         ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Tips do not unlock features.',
+          style: TextStyle(fontFamily: AppFonts.sans, color: colors.textMuted, fontSize: AppType.caption, height: 1.4),
+        ),
         const SizedBox(height: AppSpacing.lg),
         _buildProductGrid(state, colors),
       ],
@@ -172,6 +196,10 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
   }
 
   Widget _buildProductGrid(DonationState state, PointerColors colors) {
+    if (state.lastResult == DonationResult.success) {
+      return _ThankYou(colors: colors, onDone: _dismissResult);
+    }
+
     // Loading state
     if (state.isLoading) {
       return Center(
@@ -200,8 +228,35 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       );
     }
 
-    // Products grid (2x2)
-    return _buildProductsGrid(state.products, colors);
+    // Products grid (2x2), with a calm note for the last attempt
+    final note = _resultNote(state);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (note != null) ...[
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              note,
+              style: TextStyle(fontFamily: AppFonts.sans, color: colors.textSecondary, fontSize: AppType.callout, height: 1.45),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        _buildProductsGrid(state.products, colors),
+      ],
+    );
+  }
+
+  /** User-facing copy for [DonationState.lastResult]; null when nothing to say. */
+  static String? _resultNote(DonationState state) {
+    return switch (state.lastResult) {
+      DonationResult.pending => 'Your tip is waiting for approval. It will finish on its own, and you will not be charged twice.',
+      DonationResult.cancelled => 'Purchase cancelled. You were not charged.',
+      DonationResult.error => 'The tip did not go through, and you were not charged. Please try again.',
+      DonationResult.success || null => null,
+    };
   }
 
   Widget _buildErrorState(DonationState state, PointerColors colors) {
@@ -209,7 +264,7 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       children: [
         Text(
           state.error ?? 'An error occurred',
-          style: TextStyle(fontFamily: AppFonts.sans, color: Theme.of(context).colorScheme.error, fontSize: AppType.callout),
+          style: TextStyle(fontFamily: AppFonts.sans, color: colors.textSecondary, fontSize: AppType.callout),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -255,6 +310,89 @@ class _DonationButtonState extends ConsumerState<DonationButton> {
       }).toList(),
     );
   }
+}
+
+/**
+ * Thank-you moment shown in place of the tier grid after a completed tip.
+ *
+ * An ink enso draws itself once ([Motion.calm]), then the gratitude copy and a Done
+ * control that returns to the tiers. No blur or repeating animation.
+ */
+class _ThankYou extends StatelessWidget {
+  final PointerColors colors;
+  final VoidCallback onDone;
+
+  const _ThankYou({required this.colors, required this.onDone});
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    return Semantics(
+      liveRegion: true,
+      child: Column(
+        children: [
+          const SizedBox(height: AppSpacing.sm),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: reduceMotion ? 1 : 0, end: 1),
+            duration: Motion.calm,
+            curve: Curves.easeInOutCubic,
+            builder: (context, progress, _) => CustomPaint(
+              size: const Size.square(56),
+              painter: _EnsoPainter(progress: progress, color: colors.accent),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Thank you. This keeps Here Now free.',
+            style: AppTextStyles.quoteText(context).copyWith(color: colors.textPrimary),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Semantics(
+            button: true,
+            child: GestureDetector(
+              onTap: onDone,
+              behavior: HitTestBehavior.opaque,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 44, minWidth: 88),
+                child: Center(
+                  child: Text(
+                    'Done',
+                    style: TextStyle(fontFamily: AppFonts.sans, color: colors.accent, fontSize: AppType.callout, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/** Paints an open enso brush circle up to [progress] (0 to 1) of its sweep. */
+class _EnsoPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+
+  const _EnsoPainter({required this.progress, required this.color});
+
+  static const _start = -1.9; // radians, upper left like a brush entry
+  static const _sweep = 5.6; // leaves the traditional gap
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = size.width * 0.07;
+    canvas.drawArc(rect.deflate(paint.strokeWidth), _start, _sweep * progress, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(_EnsoPainter old) => old.progress != progress || old.color != color;
 }
 
 /** Individual tip option card */

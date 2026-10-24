@@ -17,18 +17,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../services/donation_service.dart';
+import '../services/tip_purchase_listener.dart';
 
-/** Result of a donation purchase attempt */
-enum DonationResult {
-  /** Purchase completed successfully */
-  success,
-
-  /** User cancelled the purchase */
-  cancelled,
-
-  /** Purchase failed due to error */
-  error,
-}
+export '../services/tip_purchase_listener.dart' show DonationResult, TipPurchaseOutcome, TipPurchaseListener;
 
 /**
  * Immutable state for the donation/tip jar feature.
@@ -53,7 +44,10 @@ class DonationState {
   /** Result of the last purchase attempt (null if no attempt yet) */
   final DonationResult? lastResult;
 
-  const DonationState({this.isAvailable = false, this.isLoading = true, this.products = const [], this.error, this.lastResult});
+  /** Store message for a failed purchase, shown with [DonationResult.error]. */
+  final String? resultMessage;
+
+  const DonationState({this.isAvailable = false, this.isLoading = true, this.products = const [], this.error, this.lastResult, this.resultMessage});
 
   /**
    * Creates a copy with selectively overridden fields.
@@ -67,6 +61,7 @@ class DonationState {
     List<ProductDetails>? products,
     String? error,
     DonationResult? lastResult,
+    String? resultMessage,
     bool clearError = false,
     bool clearResult = false,
   }) {
@@ -76,6 +71,7 @@ class DonationState {
       products: products ?? this.products,
       error: clearError ? null : (error ?? this.error),
       lastResult: clearResult ? null : (lastResult ?? this.lastResult),
+      resultMessage: clearResult ? null : (resultMessage ?? this.resultMessage),
     );
   }
 }
@@ -87,28 +83,51 @@ final donationServiceProvider = Provider<DonationService>((ref) {
   return service;
 });
 
+/**
+ * App-lifetime purchase listener.
+ *
+ * Read once at app start by `AppInitializer.initialize`, so interrupted,
+ * Ask to Buy and Play pending tips are finished with the store even when the
+ * tip jar is never opened. Reading it also recovers purchases an earlier run
+ * left unfinished.
+ */
+final tipPurchaseListenerProvider = Provider<TipPurchaseListener>((ref) {
+  final listener = TipPurchaseListener(ref.watch(donationServiceProvider));
+  ref.onDispose(listener.dispose);
+  listener.start(recoverUnfinished: true);
+  return listener;
+});
+
 /** Provider for donation state and actions */
 final donationProvider = StateNotifierProvider<DonationNotifier, DonationState>((ref) {
   final service = ref.watch(donationServiceProvider);
-  return DonationNotifier(service);
+  return DonationNotifier(service, ref.watch(tipPurchaseListenerProvider));
 });
 
 /**
- * Manages [DonationState] and coordinates with [DonationService] for IAP.
+ * Manages [DonationState] for the tip jar UI.
  *
- * On construction, subscribes to the platform purchase update stream and
- * calls [initialize] to check availability and load products. Purchase
- * results flow through the stream listener and update state reactively.
- *
- * Consumable purchases must be explicitly completed via
- * [DonationService.completePurchase] to acknowledge receipt with the store.
+ * Loads products through [DonationService] and turns [TipPurchaseListener]
+ * outcomes into UI state. It never finishes purchases itself; the
+ * app-lifetime listener does that. Every path, including a purchase the
+ * store refuses to start, ends with `isLoading == false`.
  */
 class DonationNotifier extends StateNotifier<DonationState> {
   final DonationService _service;
-  StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+  final TipPurchaseListener _listener;
+  final bool _ownsListener;
+  StreamSubscription<TipPurchaseOutcome>? _outcomeSubscription;
 
-  DonationNotifier(this._service) : super(const DonationState()) {
-    _listenToPurchases();
+  /**
+   * Without [listener] the notifier starts and owns a private one, which
+   * keeps standalone use (tests, previews) finishing purchases too.
+   */
+  DonationNotifier(this._service, [TipPurchaseListener? listener])
+    : _listener = listener ?? TipPurchaseListener(_service),
+      _ownsListener = listener == null,
+      super(const DonationState()) {
+    _outcomeSubscription = _listener.outcomes.listen(_applyOutcome);
+    _listener.start();
     initialize();
   }
 
@@ -149,13 +168,14 @@ class DonationNotifier extends StateNotifier<DonationState> {
 
     state = state.copyWith(isLoading: true, clearError: true, clearResult: true);
 
+    bool started;
     try {
-      await _service.purchaseProduct(product);
-      // Result will come through the purchase stream
+      started = await _service.purchaseProduct(product);
     } catch (e) {
-      if (!mounted) return;
-      state = state.copyWith(isLoading: false, error: 'Failed to initiate purchase: $e', lastResult: DonationResult.error);
+      started = false;
     }
+    if (!mounted || started) return; // The outcome arrives through the listener.
+    state = state.copyWith(isLoading: false, lastResult: DonationResult.error, resultMessage: 'The store could not start this purchase.');
   }
 
   /** Clear the last purchase result */
@@ -170,63 +190,15 @@ class DonationNotifier extends StateNotifier<DonationState> {
     state = state.copyWith(clearError: true);
   }
 
-  /** Subscribes to the platform IAP purchase update stream. */
-  void _listenToPurchases() {
-    _purchaseSubscription = _service.purchaseUpdates.listen(_handlePurchase);
-  }
-
-  /** Processes each [PurchaseDetails] in a batch of purchase updates. */
-  Future<void> _handlePurchase(List<PurchaseDetails> purchases) async {
-    for (final purchase in purchases) {
-      await _processPurchase(purchase);
-    }
-  }
-
-  /**
-   * Handles a single purchase update based on its [PurchaseStatus].
-   *
-   * Completed purchases are acknowledged via [DonationService.completePurchase]
-   * (critical for consumable products). Cancelled and error states update
-   * [DonationState.lastResult] for UI feedback.
-   */
-  Future<void> _processPurchase(PurchaseDetails purchase) async {
+  void _applyOutcome(TipPurchaseOutcome outcome) {
     if (!mounted) return;
-
-    switch (purchase.status) {
-      case PurchaseStatus.pending:
-        // Still processing - keep loading state
-        state = state.copyWith(isLoading: true);
-        break;
-
-      case PurchaseStatus.purchased:
-        // CRITICAL: Complete the purchase to acknowledge receipt
-        await _service.completePurchase(purchase);
-        if (!mounted) return;
-        state = state.copyWith(isLoading: false, lastResult: DonationResult.success);
-        break;
-
-      case PurchaseStatus.restored:
-        // Consumables don't restore, but handle anyway
-        await _service.completePurchase(purchase);
-        if (!mounted) return;
-        state = state.copyWith(isLoading: false);
-        break;
-
-      case PurchaseStatus.error:
-        if (!mounted) return;
-        state = state.copyWith(isLoading: false, error: purchase.error?.message ?? 'Purchase failed', lastResult: DonationResult.error);
-        break;
-
-      case PurchaseStatus.canceled:
-        if (!mounted) return;
-        state = state.copyWith(isLoading: false, lastResult: DonationResult.cancelled);
-        break;
-    }
+    state = state.copyWith(isLoading: false, clearResult: true).copyWith(lastResult: outcome.result, resultMessage: outcome.message);
   }
 
   @override
   void dispose() {
-    _purchaseSubscription?.cancel();
+    _outcomeSubscription?.cancel();
+    if (_ownsListener) _listener.dispose();
     super.dispose();
   }
 }
