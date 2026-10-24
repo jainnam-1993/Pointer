@@ -2,32 +2,39 @@ import Flutter
 import UIKit
 import flutter_local_notifications
 
+// UIScene lifecycle (required from the iOS 27 SDK): Info.plist declares
+// UIApplicationSceneManifest with SceneDelegate (a FlutterSceneDelegate subclass),
+// which owns the window and the FlutterViewController. The AppDelegate keeps process
+// work only; plugins and method channels are registered in
+// didInitializeImplicitFlutterEngine, once the implicit engine exists.
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // Required for flutter_local_notifications to handle foreground notifications
+    // Background isolates of flutter_local_notifications register plugins through this.
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
       GeneratedPluginRegistrant.register(with: registry)
     }
 
-    // Set notification center delegate for foreground notification display
-    if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
-    }
-
-    GeneratedPluginRegistrant.register(with: self)
+    // The UNUserNotificationCenter delegate must be set before launch finishes, so a
+    // notification tap or action that cold-launches the app still reaches the plugin.
+    UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
 
     // No background modes on iOS: reminders are local notifications scheduled
     // by flutter_local_notifications; WorkManager runs on Android only.
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
 
-    // MethodChannel for opening app notification settings
-    let controller = window?.rootViewController as! FlutterViewController
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    let messenger = engineBridge.applicationRegistrar.messenger()
+
+    // Opens app notification settings; reports Low Power Mode.
     let settingsChannel = FlutterMethodChannel(
       name: "com.dailypointer/settings",
-      binaryMessenger: controller.binaryMessenger
+      binaryMessenger: messenger
     )
     settingsChannel.setMethodCallHandler { [weak self] (call, result) in
       if call.method == "openNotificationSettings" {
@@ -51,7 +58,7 @@ import flutter_local_notifications
     // Reduce Transparency: the tab bar and rail drop their glass for a frosted, opaque fill.
     let accessibilityChannel = FlutterMethodChannel(
       name: "com.dailypointer/accessibility",
-      binaryMessenger: controller.binaryMessenger
+      binaryMessenger: messenger
     )
     accessibilityChannel.setMethodCallHandler { (call, result) in
       if call.method == "isReduceTransparency" {
@@ -65,8 +72,6 @@ import flutter_local_notifications
     ) { _ in
       accessibilityChannel.invokeMethod("reduceTransparencyChanged", arguments: UIAccessibility.isReduceTransparencyEnabled)
     }
-
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   private func openNotificationSettings(result: @escaping FlutterResult) {
