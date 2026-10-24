@@ -13,6 +13,33 @@ void main() {
   setUp(() {
     mockPrefs = MockSharedPreferences();
     storageService = StorageService(mockPrefs);
+    when(() => mockPrefs.reload()).thenAnswer((_) async {});
+  });
+
+  group('favorites read-modify-write with native widget writes', () {
+    test('a widget Save written natively between app reads is kept', () async {
+      // App cache starts with ["a"]; the widget then saves "w" natively, which
+      // only becomes visible to Dart after reload().
+      var cached = jsonEncode(['a']);
+      const nativeStore = '["a","w"]';
+      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenAnswer((_) => cached);
+      when(() => mockPrefs.reload()).thenAnswer((_) async => cached = nativeStore);
+      String? written;
+      when(() => mockPrefs.setString(StorageKeys.favoritePointings, any())).thenAnswer((inv) async {
+        written = inv.positionalArguments[1] as String;
+        cached = written!;
+        return true;
+      });
+
+      await storageService.addFavorite('b');
+      expect(jsonDecode(written!), ['a', 'w', 'b']);
+
+      cached = '["a","w","b"]';
+      when(() => mockPrefs.reload()).thenAnswer((_) async => cached = '["a","w","b","x"]');
+      await storageService.removeFavorite('a');
+      expect(jsonDecode(written!), ['w', 'b', 'x']);
+      verify(() => mockPrefs.reload()).called(2);
+    });
   });
 
   group('AppSettings', () {

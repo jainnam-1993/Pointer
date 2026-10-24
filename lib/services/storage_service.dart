@@ -116,6 +116,9 @@ class StorageService {
 
   /** Add a [Pointing] ID to the favourites list (no-op if already present). */
   Future<void> addFavorite(String pointingId) async {
+    // The home-screen widget writes this key natively; reload so a widget Save
+    // made while the app is open is not overwritten by a stale cached list.
+    await _prefs.reload();
     final current = favorites;
     if (!current.contains(pointingId)) {
       current.add(pointingId);
@@ -125,6 +128,7 @@ class StorageService {
 
   /** Remove a [Pointing] ID from the favourites list. */
   Future<void> removeFavorite(String pointingId) async {
+    await _prefs.reload();
     final current = favorites;
     current.remove(pointingId);
     await _prefs.setString(StorageKeys.favoritePointings, jsonEncode(current));
