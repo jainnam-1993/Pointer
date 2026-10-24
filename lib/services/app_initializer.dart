@@ -22,6 +22,7 @@ import '../data/teachers.dart';
 import '../data/teaching.dart';
 import '../providers/core_providers.dart';
 import '../router.dart';
+import 'notification_content.dart';
 import 'notification_service.dart';
 import 'widget_service.dart';
 import 'workmanager_service.dart';
@@ -82,11 +83,23 @@ class StartupCoordinator {
     }
 
     await Future.wait([_initializeNotifications(), _initializeWidgetCache(), if (Platform.isAndroid) _initializeWorkManager()]);
+    await _refillNotifications();
+  }
+
+  Future<void> _refillNotifications() async {
+    try {
+      await _notificationService.refillIfDue();
+    } catch (e) {
+      debugPrint('[AppInitializer] Notification refill failed (non-fatal): $e');
+    }
   }
 
   Future<void> _initializeNotifications() async {
     try {
-      await _notificationService.initialize(onNotificationResponse: _onNotificationAction, onBackgroundNotificationResponse: _onNotificationAction);
+      await _notificationService.initialize(
+        onNotificationResponse: _onNotificationAction,
+        onBackgroundNotificationResponse: notificationBackgroundHandler,
+      );
     } catch (e) {
       debugPrint('[AppInitializer] Notification init failed (non-fatal): $e');
     }

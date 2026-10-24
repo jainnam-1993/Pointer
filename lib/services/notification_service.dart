@@ -8,6 +8,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../data/pointings.dart';
+import 'notification_content.dart';
 import 'storage_service.dart';
 import 'workmanager_service.dart';
 
@@ -144,12 +145,26 @@ class NotificationSchedule {
     final end = DateTime(date.year, date.month, date.day, endHour, endMinute);
 
     while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
-      if (!_isInQuietHours(current)) {
+      if (allows(current)) {
         times.add(current);
       }
       current = current.add(Duration(minutes: frequencyMinutes));
     }
     return times;
+  }
+
+  /**
+   * The single delivery rule shared by iOS batches and the Android WorkManager task.
+   *
+   * True when [time] falls inside the window, inclusive at both ends to the
+   * minute, and outside quiet hours.
+   */
+  bool allows(DateTime time) {
+    final minute = time.hour * 60 + time.minute;
+    final start = startHour * 60 + startMinute;
+    final end = endHour * 60 + endMinute;
+    final inWindow = start <= end ? (minute >= start && minute <= end) : (minute >= start || minute <= end);
+    return inWindow && !_isInQuietHours(time);
   }
 
   bool _isInQuietHours(DateTime time) {
@@ -244,10 +259,7 @@ class NotificationService {
     playSound: true,
     sound: RawResourceAndroidNotificationSound('bell_chime'),
     styleInformation: BigTextStyleInformation(''),
-    actions: <AndroidNotificationAction>[
-      AndroidNotificationAction('save', 'Save', showsUserInterface: false, cancelNotification: false),
-      AndroidNotificationAction('another', 'Another', showsUserInterface: false, cancelNotification: true),
-    ],
+    actions: pointingNotificationActions,
   );
 
   static const notificationDetails = NotificationDetails(iOS: iosNotificationDetails, android: androidNotificationDetails);
@@ -263,38 +275,10 @@ class NotificationService {
   Future<void> setNotificationsEnabled(bool enabled) async {
     await _prefs.setBool(StorageKeys.notificationsEnabled, enabled);
     if (enabled) {
-      await cachePointingsForBackground();
       await scheduleAllNotifications();
     } else {
       await cancelAllNotifications();
     }
-  }
-
-  /** Cache pointings data for background notification access. */
-  Future<void> cachePointingsForBackground() async {
-    final morningPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.morning) || p.contexts.contains(PointingContext.general))
-        .take(20)
-        .toList();
-
-    final middayPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.midday) || p.contexts.contains(PointingContext.general))
-        .take(20)
-        .toList();
-
-    final eveningPointings = pointings
-        .where((p) => p.contexts.contains(PointingContext.evening) || p.contexts.contains(PointingContext.general))
-        .take(20)
-        .toList();
-
-    final cache = {
-      'morning': morningPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
-      'midday': middayPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
-      'evening': eveningPointings.map((p) => {'id': p.id, 'content': p.content, 'tradition': p.tradition.name, 'teacher': p.teacher}).toList(),
-    };
-
-    await _prefs.setString(StorageKeys.notificationPointingsCache, jsonEncode(cache));
-    debugPrint('[NotificationService] Cached ${morningPointings.length + middayPointings.length + eveningPointings.length} pointings for background');
   }
 
   /** Get the notification schedule (Phase 5.1 time window model). */
@@ -377,9 +361,41 @@ class NotificationService {
   // Scheduling (via WorkManager)
   // ============================================================
 
-  Future<void> scheduleAllNotifications() async {
+  /** Minimum time between automatic iOS batch refills. */
+  static const Duration refillInterval = Duration(hours: 6);
+
+  /** Epoch millis of the last iOS batch build. */
+  static const String lastRefillKey = 'pointer_notification_last_refill_ms';
+
+  /** Test-only platform override; null means use [Platform]. */
+  @visibleForTesting
+  static TargetPlatform? platformOverride;
+
+  static bool get _isIOS => platformOverride != null ? platformOverride == TargetPlatform.iOS : Platform.isIOS;
+  static bool get _isAndroid => platformOverride != null ? platformOverride == TargetPlatform.android : Platform.isAndroid;
+
+  /**
+   * Top up the iOS pending batch when it is due. The one entry point for
+   * automatic refills, called at startup and on every app resume.
+   *
+   * Throttled to once per [refillInterval]. Returns whether a refill ran.
+   * Android needs no refill: its WorkManager task is periodic.
+   */
+  Future<bool> refillIfDue({DateTime? now}) async {
+    if (!_isIOS || !isNotificationsEnabled) return false;
+    final current = now ?? DateTime.now();
+    final last = _prefs.getInt(lastRefillKey);
+    if (last != null) {
+      final elapsed = current.difference(DateTime.fromMillisecondsSinceEpoch(last));
+      if (!elapsed.isNegative && elapsed < refillInterval) return false;
+    }
+    await scheduleAllNotifications(now: current);
+    return true;
+  }
+
+  Future<void> scheduleAllNotifications({DateTime? now}) async {
     await _localNotifications.cancelAll();
-    if (Platform.isAndroid) {
+    if (_isAndroid) {
       await WorkManagerService.cancelAll();
     }
 
@@ -388,8 +404,10 @@ class NotificationService {
     final schedule = getSchedule();
     if (!schedule.isEnabled) return;
 
-    if (Platform.isIOS) {
-      final count = await _scheduleIosBatchNotifications(schedule);
+    if (_isIOS) {
+      final current = now ?? DateTime.now();
+      final count = await _scheduleIosBatchNotifications(schedule, current);
+      await _prefs.setInt(lastRefillKey, current.millisecondsSinceEpoch);
       debugPrint('[NotificationService] iOS batch scheduled: $count notifications');
       return;
     }
@@ -413,10 +431,9 @@ class NotificationService {
     _timeZonesInitialized = true;
   }
 
-  Future<int> _scheduleIosBatchNotifications(NotificationSchedule schedule) async {
+  Future<int> _scheduleIosBatchNotifications(NotificationSchedule schedule, DateTime now) async {
     _initializeTimeZonesIfNeeded();
 
-    final now = DateTime.now();
     final windowStart = DateTime(now.year, now.month, now.day);
     final windowEnd = windowStart.add(const Duration(days: 14));
     final scheduledTimes = <DateTime>[];
@@ -432,14 +449,15 @@ class NotificationService {
       day = day.add(const Duration(days: 1));
     }
 
-    for (var i = 0; i < scheduledTimes.length; i++) {
+    final batch = await NotificationRotation.take(_prefs, pointings, scheduledTimes.length);
+    for (var i = 0; i < batch.length; i++) {
       final localTime = scheduledTimes[i];
       final scheduledAtUtc = tz.TZDateTime.from(localTime.toUtc(), tz.UTC);
-      final pointing = getRandomPointing();
+      final pointing = batch[i];
 
       await _localNotifications.zonedSchedule(
         _iosScheduleIdBase + i,
-        "Today's Pointing",
+        pointingNotificationTitle,
         pointing.content,
         scheduledAtUtc,
         _buildRichNotificationDetails(pointing),
@@ -449,7 +467,7 @@ class NotificationService {
       );
     }
 
-    return scheduledTimes.length;
+    return batch.length;
   }
 
   Future<void> showImmediateNotification(Pointing pointing) async {
@@ -462,43 +480,7 @@ class NotificationService {
     );
   }
 
-  NotificationDetails _buildRichNotificationDetails(Pointing pointing) {
-    final traditionName = traditions[pointing.tradition]?.name ?? pointing.tradition.name;
-    final attribution = pointing.teacher != null ? '— ${pointing.teacher}' : '';
-    final subtitle = '$traditionName $attribution'.trim();
-
-    return NotificationDetails(
-      iOS: DarwinNotificationDetails(
-        interruptionLevel: InterruptionLevel.passive,
-        presentSound: false,
-        presentBanner: false,
-        presentList: true,
-        subtitle: subtitle,
-      ),
-      android: AndroidNotificationDetails(
-        'pointings_v6',
-        'Daily Pointings',
-        channelDescription: 'Gentle reminders for your daily pointing',
-        importance: Importance.max,
-        priority: Priority.max,
-        enableVibration: true,
-        playSound: true,
-        sound: const RawResourceAndroidNotificationSound('bell_chime'),
-        styleInformation: BigTextStyleInformation(
-          pointing.content,
-          contentTitle: "Today's Pointing",
-          summaryText: subtitle,
-          htmlFormatBigText: false,
-          htmlFormatContentTitle: false,
-          htmlFormatSummaryText: false,
-        ),
-        actions: const <AndroidNotificationAction>[
-          AndroidNotificationAction('save', 'Save', showsUserInterface: false, cancelNotification: false),
-          AndroidNotificationAction('another', 'Another', showsUserInterface: false, cancelNotification: true),
-        ],
-      ),
-    );
-  }
+  NotificationDetails _buildRichNotificationDetails(Pointing pointing) => buildPointingNotificationDetails(pointing);
 
   Future<void> sendTestNotification() async {
     final pointing = getRandomPointing();
@@ -542,7 +524,7 @@ class NotificationService {
 
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
-    if (Platform.isAndroid) {
+    if (_isAndroid) {
       await WorkManagerService.cancelAll();
     }
   }

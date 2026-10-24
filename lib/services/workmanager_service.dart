@@ -1,11 +1,14 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'package:workmanager/workmanager.dart';
 
+import '../data/pointings.dart';
+import 'notification_content.dart';
+import 'notification_service.dart';
 import 'storage_service.dart';
 
 /**
@@ -50,137 +53,65 @@ void callbackDispatcher() {
 }
 
 /**
- * Show a notification from background context.
- * This runs without Flutter engine, so we use minimal dependencies.
+ * Show the next rotation pointing from the WorkManager background isolate.
+ *
+ * Applies [NotificationSchedule.allows], the same rule iOS batches use, so
+ * window minutes and quiet hours behave identically on both platforms.
  */
 Future<void> _showNotificationFromBackground() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-
-  // Check if notifications are enabled
-  final enabled = prefs.getBool(StorageKeys.notificationsEnabled) ?? false;
-  if (!enabled) {
-    debugPrint('[WorkManager] Notifications disabled, skipping');
-    return;
-  }
-
-  // Check if we're within the notification window
-  final now = DateTime.now();
-  final startHour = prefs.getInt(StorageKeys.notificationStartHour) ?? 8;
-  final endHour = prefs.getInt(StorageKeys.notificationEndHour) ?? 21;
-
-  if (now.hour < startHour || now.hour >= endHour) {
-    debugPrint('[WorkManager] Outside notification window ($startHour-$endHour), current hour: ${now.hour}');
-    return;
-  }
-
-  // Initialize notifications plugin
+  await prefs.reload();
   final plugin = FlutterLocalNotificationsPlugin();
-
-  const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
-  const iosSettings = DarwinInitializationSettings();
-  const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-
-  await plugin.initialize(initSettings);
-
-  // Show notification with time-aware pointing from cache
-  final pointing = await _getTimeAwarePointing(prefs);
-
-  await plugin.show(
-    DateTime.now().millisecondsSinceEpoch ~/ 1000,
-    "Today's Pointing",
-    pointing['content'],
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        'pointings_v6',
-        'Daily Pointings',
-        channelDescription: 'Gentle reminders for your daily pointing',
-        importance: Importance.high,
-        priority: Priority.high,
-        styleInformation: BigTextStyleInformation(pointing['content']!, contentTitle: "Today's Pointing", summaryText: pointing['tradition']),
-      ),
-      iOS: const DarwinNotificationDetails(presentAlert: true, presentBadge: true),
-    ),
-    payload: pointing['id'],
-  );
-
-  debugPrint('[WorkManager] Notification shown successfully');
+  final posted = await postScheduledPointing(prefs: prefs, plugin: plugin, loadPool: loadNotificationPool, initialize: initializePluginForBackground);
+  debugPrint('[WorkManager] Scheduled pointing posted: $posted');
 }
 
 /**
- * Get a time-aware pointing from the cached data.
+ * Post the next pointing when notifications are enabled and [now] passes the schedule rule.
  *
- * Loads pointings cached by NotificationService and selects based on:
- * - Current time of day (morning/midday/evening)
- * - Recently shown IDs (avoids repeats within last 10)
+ * Returns the posted pointing id, or null when nothing was posted.
  */
-Future<Map<String, String>> _getTimeAwarePointing(SharedPreferences prefs) async {
-  // Determine time context
-  final hour = DateTime.now().hour;
-  String timeContext;
-  if (hour >= 5 && hour < 11) {
-    timeContext = 'morning';
-  } else if (hour >= 11 && hour < 17) {
-    timeContext = 'midday';
-  } else {
-    timeContext = 'evening';
+@visibleForTesting
+Future<String?> postScheduledPointing({
+  required SharedPreferences prefs,
+  required FlutterLocalNotificationsPlugin plugin,
+  required Future<List<Pointing>> Function() loadPool,
+  Future<void> Function(FlutterLocalNotificationsPlugin)? initialize,
+  DateTime? now,
+}) async {
+  if (!(prefs.getBool(StorageKeys.notificationsEnabled) ?? false)) return null;
+
+  final stored = prefs.getString(StorageKeys.notificationSchedule);
+  final schedule = stored == null ? const NotificationSchedule() : NotificationSchedule.fromJson(jsonDecode(stored) as Map<String, dynamic>);
+  final current = now ?? DateTime.now();
+  if (!schedule.isEnabled || !schedule.allows(current)) {
+    debugPrint('[WorkManager] Outside schedule at $current, skipping');
+    return null;
   }
 
-  // Load cached pointings
-  final cacheJson = prefs.getString(StorageKeys.notificationPointingsCache);
-  if (cacheJson == null) {
-    debugPrint('[WorkManager] No pointing cache found, using fallback');
-    return _getFallbackPointing();
-  }
-
+  var pool = const <Pointing>[];
   try {
-    final cache = jsonDecode(cacheJson) as Map<String, dynamic>;
-    final contextPointings = (cache[timeContext] as List?)?.cast<Map<String, dynamic>>() ?? [];
-
-    if (contextPointings.isEmpty) {
-      debugPrint('[WorkManager] No pointings for $timeContext, using fallback');
-      return _getFallbackPointing();
-    }
-
-    // Get recently shown IDs to avoid repeats
-    final recentIds = prefs.getStringList(StorageKeys.recentNotificationIds) ?? [];
-
-    // Filter out recently shown pointings
-    var candidates = contextPointings.where((p) => !recentIds.contains(p['id'])).toList();
-
-    // If all have been shown, reset and use all
-    if (candidates.isEmpty) {
-      candidates = contextPointings;
-      await prefs.setStringList(StorageKeys.recentNotificationIds, []);
-    }
-
-    // Select random from candidates
-    final selected = candidates[Random().nextInt(candidates.length)];
-
-    // Track this ID as recently shown (keep last 10)
-    final updatedRecent = [...recentIds, selected['id'] as String];
-    if (updatedRecent.length > 10) {
-      updatedRecent.removeAt(0);
-    }
-    await prefs.setStringList(StorageKeys.recentNotificationIds, updatedRecent);
-
-    debugPrint('[WorkManager] Selected $timeContext pointing: ${selected['id']}');
-    return {'id': selected['id'] as String, 'content': selected['content'] as String, 'tradition': selected['tradition'] as String};
+    pool = await loadPool();
   } catch (e) {
-    // Non-critical: corrupted cache falls back to hardcoded pointing
-    debugPrint('[WorkManager] Error parsing cache: $e');
-    return _getFallbackPointing();
+    debugPrint('[WorkManager] Pool load failed, using fallback: $e');
   }
+  final next = await NotificationRotation.take(prefs, pool.isEmpty ? _fallbackPointings : pool, 1);
+  await initialize?.call(plugin);
+  await showPointingNotification(plugin, next.first, now: current);
+  return next.first.id;
 }
 
-/** Fallback pointing if cache is unavailable. */
-Map<String, String> _getFallbackPointing() {
-  final fallbacks = [
-    {'id': 'fallback_1', 'content': 'You are not the body, not the mind. You are the awareness in which both appear.', 'tradition': 'Advaita'},
-    {'id': 'fallback_2', 'content': 'What is it that is aware right now? Look directly, without thinking.', 'tradition': 'Direct Path'},
-    {'id': 'fallback_3', 'content': 'Before thought arises, what are you?', 'tradition': 'Zen'},
-  ];
-  return fallbacks[Random().nextInt(fallbacks.length)];
-}
+/** Fallback pointings if the content asset cannot be loaded. */
+const _fallbackPointings = <Pointing>[
+  Pointing(
+    id: 'fallback_1',
+    content: 'You are not the body, not the mind. You are the awareness in which both appear.',
+    tradition: Tradition.advaita,
+    contexts: [],
+  ),
+  Pointing(id: 'fallback_3', content: 'Before thought arises, what are you?', tradition: Tradition.zen, contexts: []),
+];
 
 /**
  * Service for scheduling background notifications via the WorkManager plugin.
@@ -189,8 +120,7 @@ Map<String, String> _getFallbackPointing() {
  * more reliable than `AlarmManager`-based scheduling. All methods are
  * static — no instance state is required.
  *
- * Notification content is sourced from the [Pointing] cache written by
- * [NotificationService.cachePointingsForBackground].
+ * Notification content comes from the full pointing pool via [NotificationRotation].
  */
 class WorkManagerService {
   static bool _isInitialized = false;
