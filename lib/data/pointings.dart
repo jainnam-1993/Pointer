@@ -17,6 +17,7 @@ library;
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../models/tradition.dart';
@@ -142,8 +143,9 @@ Future<void> loadPointings() async {
   if (_pointingsLoaded) return;
 
   final jsonString = await rootBundle.loadString('assets/data/pointings.json');
-  final list = (jsonDecode(jsonString) as List<dynamic>).cast<Map<String, dynamic>>();
-  pointings = list.map((e) => Pointing.fromJson(e)).toList(growable: false);
+  // The asset is about 540 KB; decode and map it on a background isolate so
+  // the splash animation keeps its frames.
+  pointings = await compute(parsePointingsJson, jsonString);
 
   // Build indexes
   _byId = {for (final p in pointings) p.id: p};
@@ -165,6 +167,12 @@ Future<void> loadPointings() async {
   }
 
   _pointingsLoaded = true;
+}
+
+/** Decode the pointings asset JSON. Top-level so it can run in an isolate. */
+List<Pointing> parsePointingsJson(String jsonString) {
+  final list = (jsonDecode(jsonString) as List<dynamic>).cast<Map<String, dynamic>>();
+  return list.map(Pointing.fromJson).toList(growable: false);
 }
 
 /**

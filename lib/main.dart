@@ -25,7 +25,6 @@ import 'package:home_widget/home_widget.dart';
 import 'providers/providers.dart';
 import 'router.dart';
 import 'widgets/shared_ambient.dart';
-import 'services/ambient_sound_service.dart';
 import 'services/app_initializer.dart';
 import 'debug/maestro_hooks.dart';
 import 'services/notification_content.dart';
@@ -179,6 +178,10 @@ void main() async {
   _globalContainer = result.container;
   unawaited(_captureNotificationLaunch());
 
+  // Start content loading now, before the first frame, so JSON asset reads
+  // overlap engine warmup instead of waiting for the splash to mount.
+  unawaited(AppInitializer.startBackgroundInitialization());
+
   unawaited(
     AppInitializer.criticalContentReady
         .then((_) {
@@ -204,7 +207,6 @@ void main() async {
  * - Reads [routerProvider] once (via `ref.read`, not `ref.watch`) to avoid [MaterialApp.router]
  *   rebuilds that would trigger [GlobalKey] conflicts in [StatefulShellRoute].
  * - Watches [flutterThemeModeProvider] to reactively switch between light and dark themes.
- * - Disposes the [AmbientSoundService] when the app is torn down.
  */
 class PointerApp extends ConsumerStatefulWidget {
   const PointerApp({super.key});
@@ -218,13 +220,10 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Opening bell sound is embedded in the splash video asset —
-    // no separate just_audio playback needed (avoids codec contention).
   }
 
   @override
   void dispose() {
-    ref.read(ambientSoundServiceProvider).dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -262,28 +261,31 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
           MaestroHooks.setContext(context);
         }
 
+        // Edge-to-edge bars are transparent by default on Android 15+; set only
+        // icon brightness, declaratively, instead of calling the deprecated
+        // bar color setters on every rebuild.
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-            systemNavigationBarColor: Colors.transparent,
-            systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          ),
-        );
+        final iconBrightness = isDark ? Brightness.light : Brightness.dark;
         // One text-scale clamp for the whole app; Text applies it once.
         // Fold the app's Animations toggle into disableAnimations so Motion.reduce is one check.
         // One shared backdrop for every sheet blur (BackdropFilter.grouped).
         final media = MediaQuery.of(context);
         final reduceMotion = media.disableAnimations || reduceMotionOverride == true;
-        return BackdropGroup(
-          // One ambient background under every route (design 9): pushes slide over it, never cross-fade it.
-          child: MediaQuery(
-            data: media.copyWith(disableAnimations: reduceMotion),
-            child: MediaQuery.withClampedTextScaling(
-              minScaleFactor: 0.85,
-              maxScaleFactor: 2.0,
-              child: SharedAmbientHost(child: child ?? const SizedBox.shrink()),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarIconBrightness: iconBrightness,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            systemNavigationBarIconBrightness: iconBrightness,
+          ),
+          child: BackdropGroup(
+            // One ambient background under every route (design 9): pushes slide over it, never cross-fade it.
+            child: MediaQuery(
+              data: media.copyWith(disableAnimations: reduceMotion),
+              child: MediaQuery.withClampedTextScaling(
+                minScaleFactor: 0.85,
+                maxScaleFactor: 2.0,
+                child: SharedAmbientHost(child: child ?? const SizedBox.shrink()),
+              ),
             ),
           ),
         );

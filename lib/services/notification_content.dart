@@ -17,6 +17,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/pointings.dart';
+import 'pointing_selection.dart';
 import 'storage_service.dart';
 
 /** Action id of the Android "Save" button. Adds the shown pointing to favourites. */
@@ -65,11 +66,32 @@ class NotificationRotation {
   static String _key(String bucket, String field) => 'pointer_notification_rotation_${bucket}_$field';
 
   /** Take the next pointing for [at] (default now), [count] times. */
-  static Future<List<Pointing>> take(SharedPreferences prefs, List<Pointing> pool, int count, {DateTime? at, Random? random}) =>
-      takeFor(prefs, pool, List.filled(count < 0 ? 0 : count, at ?? DateTime.now()), random: random);
+  static Future<List<Pointing>> take(
+    SharedPreferences prefs,
+    List<Pointing> pool,
+    int count, {
+    DateTime? at,
+    Random? random,
+    double Function(Pointing)? weight,
+  }) => takeFor(prefs, pool, List.filled(count < 0 ? 0 : count, at ?? DateTime.now()), random: random, weight: weight);
+
+  /**
+   * Take from the pool the user selected: enabled traditions only, ordered
+   * with affinity weights (see [PointingSelection]).
+   */
+  static Future<List<Pointing>> takeSelectedFor(SharedPreferences prefs, List<Pointing> all, List<DateTime> times, {Random? random}) {
+    final selection = PointingSelection.fromPrefs(prefs);
+    return takeFor(prefs, selection.eligible(all), times, random: random, weight: selection.weightOf);
+  }
 
   /** Take one pointing per delivery time in [times], each matched to its slot. */
-  static Future<List<Pointing>> takeFor(SharedPreferences prefs, List<Pointing> pool, List<DateTime> times, {Random? random}) async {
+  static Future<List<Pointing>> takeFor(
+    SharedPreferences prefs,
+    List<Pointing> pool,
+    List<DateTime> times, {
+    Random? random,
+    double Function(Pointing)? weight,
+  }) async {
     if (pool.isEmpty || times.isEmpty) return const [];
     final rng = random ?? Random();
     final sorted = [...pool]..sort((a, b) => a.id.compareTo(b.id));
@@ -79,6 +101,7 @@ class NotificationRotation {
       sorted.where(test).toList(),
       prefs.getInt(_key(name, 'seed')) ?? rng.nextInt(1 << 31),
       prefs.getInt(_key(name, 'cursor')) ?? 0,
+      weight,
     );
     final general = bucket('general', (p) => p.contexts.contains(PointingContext.general) && !p.contexts.any(slots.contains));
 
@@ -108,14 +131,19 @@ class _Bucket {
   final List<Pointing> items;
   int seed;
   int cursor;
+  final double Function(Pointing)? weight;
   late List<Pointing> order;
 
-  _Bucket(this.items, this.seed, this.cursor) {
+  _Bucket(this.items, this.seed, this.cursor, this.weight) {
     _shuffle();
   }
 
   bool get hasUnseen => cursor < items.length;
-  void _shuffle() => order = [...items]..shuffle(Random(seed));
+  void _shuffle() {
+    final w = weight;
+    order = w == null ? ([...items]..shuffle(Random(seed))) : PointingSelection.all.weightedShuffle(items, w, Random(seed));
+  }
+
   void restart(Random rng) {
     seed = rng.nextInt(1 << 31);
     cursor = 0;
@@ -195,7 +223,7 @@ Future<void> handleNotificationAction(
       await StorageService(prefs).addFavorite(id);
       debugPrint('[NotificationAction] Saved $id');
     case notificationActionAnother:
-      final next = await NotificationRotation.take(prefs, await loadPool(), 1);
+      final next = await NotificationRotation.takeSelectedFor(prefs, await loadPool(), [DateTime.now()]);
       if (next.isEmpty) return;
       await showPointingNotification(plugin, next.first);
       debugPrint('[NotificationAction] Posted ${next.first.id}');

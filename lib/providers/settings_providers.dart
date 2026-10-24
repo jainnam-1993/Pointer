@@ -174,10 +174,17 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
    *
    * All individual setters delegate to this method for atomic persistence.
    */
-  Future<void> update(AppSettings newSettings) async {
-    await _storage.updateSettings(newSettings);
+  Future<void> update(AppSettings newSettings) {
+    // State first so rapid successive setters each copy from the latest value
+    // instead of a stale snapshot that an in-flight write has not applied yet.
     state = newSettings;
+    // Serialize writes so they land in call order; the last write always wins.
+    final write = _pendingWrite.catchError((Object _) {}).then((_) => _storage.updateSettings(newSettings));
+    _pendingWrite = write;
+    return write;
   }
+
+  Future<void> _pendingWrite = Future<void>.value();
 
   /** Sets the app color theme to [mode] (dark, light, high contrast, or OLED). */
   Future<void> setTheme(AppThemeMode mode) async {

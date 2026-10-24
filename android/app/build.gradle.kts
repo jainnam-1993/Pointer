@@ -6,8 +6,6 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
-    // Google services for Firebase
-    id("com.google.gms.google-services")
 }
 
 // Load keystore properties
@@ -15,6 +13,21 @@ val keystorePropertiesFile = rootProject.file("key.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+val allowDebugSigning = (findProperty("pointerAllowDebugSigning") as String?) == "true"
+
+// Fail release packaging without android/key.properties instead of producing
+// an unsigned or debug-signed artifact.
+tasks.matching { it.name == "packageRelease" || it.name == "signReleaseBundle" }.configureEach {
+    doFirst {
+        if (!keystorePropertiesFile.exists() && !allowDebugSigning) {
+            throw GradleException(
+                "Release signing is not configured: add android/key.properties, " +
+                    "or pass -PpointerAllowDebugSigning=true for a local, non-distributable build."
+            )
+        }
+    }
 }
 
 android {
@@ -51,10 +64,13 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (keystorePropertiesFile.exists()) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            // Never ship a debug-signed release by accident. Local verification can
+            // opt in with -PpointerAllowDebugSigning=true or the env var
+            // ORG_GRADLE_PROJECT_pointerAllowDebugSigning=true.
+            signingConfig = when {
+                keystorePropertiesFile.exists() -> signingConfigs.getByName("release")
+                allowDebugSigning -> signingConfigs.getByName("debug")
+                else -> null
             }
             isMinifyEnabled = true
             isShrinkResources = true

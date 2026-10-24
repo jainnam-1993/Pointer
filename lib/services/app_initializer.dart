@@ -50,8 +50,9 @@ class StartupCoordinator {
   final NotificationService _notificationService;
   final void Function(NotificationResponse) _onNotificationAction;
 
-  final Completer<void> _criticalReady = Completer<void>();
+  Completer<void> _criticalReady = Completer<void>();
   Future<void>? _startFuture;
+  bool _criticalFailed = false;
 
   StartupCoordinator({
     required SharedPreferences prefs,
@@ -61,10 +62,25 @@ class StartupCoordinator {
        _notificationService = notificationService,
        _onNotificationAction = onNotificationAction;
 
-  bool get isCriticalReady => _criticalReady.isCompleted;
+  bool get isCriticalReady => _criticalReady.isCompleted && !_criticalFailed;
+  bool get hasCriticalFailed => _criticalFailed;
   Future<void> get criticalReady => _criticalReady.future;
 
   Future<void> start() => _startFuture ??= _run();
+
+  /**
+   * Retry startup after a critical content failure. Returns the new
+   * [criticalReady] future; a no-op when startup has not failed.
+   */
+  Future<void> retry() {
+    if (_criticalFailed) {
+      _criticalFailed = false;
+      _criticalReady = Completer<void>();
+      _startFuture = null;
+      unawaited(start().catchError((Object _) {}));
+    }
+    return criticalReady;
+  }
 
   Future<void> _run() async {
     try {
@@ -77,10 +93,12 @@ class StartupCoordinator {
         _criticalReady.complete();
       }
     } catch (e, stackTrace) {
+      debugPrint('[AppInitializer] Critical content failed: $e');
       if (!_criticalReady.isCompleted) {
+        _criticalFailed = true;
         _criticalReady.completeError(e, stackTrace);
       }
-      rethrow;
+      return;
     }
 
     await Future.wait([_initializeNotifications(), _initializeWidgetCache(), if (Platform.isAndroid) _initializeWorkManager()]);
@@ -144,7 +162,9 @@ class AppInitializer {
 
   static bool get isCriticalContentReady => startupCoordinator.isCriticalReady;
   static Future<void> get criticalContentReady => startupCoordinator.criticalReady;
+  static bool get hasCriticalContentFailed => startupCoordinator.hasCriticalFailed;
   static Future<void> startBackgroundInitialization() => startupCoordinator.start();
+  static Future<void> retryCriticalContent() => startupCoordinator.retry();
 
   /**
    * Run the minimal bootstrap needed before `runApp()`.

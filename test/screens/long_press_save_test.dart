@@ -35,6 +35,7 @@ void main() {
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
+    when(() => mockPrefs.reload()).thenAnswer((_) async {});
     hapticCalls = [];
 
     // Setup default mock returns

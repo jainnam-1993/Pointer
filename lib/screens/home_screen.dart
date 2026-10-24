@@ -24,7 +24,6 @@ import '../widgets/commentary_section.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/share_preview_helper.dart';
 import '../widgets/teacher_sheet.dart';
-import '../widgets/video_player_widget.dart';
 import 'library_screen.dart';
 
 /**
@@ -453,10 +452,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 if (pointing.audioUrl != null) ...[
                   const SizedBox(height: AppSpacing.lg),
                   AudioPlayerWidget(key: ValueKey('audio-${pointing.id}'), pointingId: pointing.id, audioUrl: pointing.audioUrl),
-                ],
-                if (pointing.videoUrl != null) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  VideoPlayerWidget(key: ValueKey('video-${pointing.id}'), pointingId: pointing.id, videoUrl: pointing.videoUrl),
                 ],
               ],
             ),

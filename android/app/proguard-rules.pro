@@ -1,11 +1,9 @@
-# Flutter
--keep class io.flutter.** { *; }
--keep class io.flutter.plugins.** { *; }
+# Flutter embedding and plugins ship consumer ProGuard rules; whole-package
+# keeps for io.flutter.** and plugin packages are not needed here.
 
-# RevenueCat
--keep class com.revenuecat.** { *; }
-
-# Home Widget
+# Home Widget: the native widget and background receiver are wired by
+# manifest and reflection; keep until a release device check proves the
+# plugin's consumer rules are enough.
 -keep class es.antonborri.home_widget.** { *; }
 
 # Keep annotations
@@ -15,9 +13,6 @@
 -keepclasseswithmembernames class * {
     native <methods>;
 }
-
-# media_kit (mpv-based video player)
--keep class com.alexmercerind.** { *; }
 
 # Google Play Core (deferred components - not used but referenced by Flutter)
 -dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication

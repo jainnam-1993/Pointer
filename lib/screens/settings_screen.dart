@@ -394,11 +394,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
             child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
           ),
 
-          // Experience section (ambient sounds, auto-advance)
+          // Experience section (auto-advance)
           const SizedBox(height: 24),
           SettingsSectionHeader(title: 'EXPERIENCE'),
-          const SizedBox(height: 12),
-          AmbientSoundPicker(),
           const SizedBox(height: 12),
           AutoAdvanceToggle(),
 
