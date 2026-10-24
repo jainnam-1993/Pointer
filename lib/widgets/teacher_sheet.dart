@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../layout/adaptive.dart';
+
 import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/teacher.dart';
@@ -15,10 +17,9 @@ import 'drag_handle.dart';
  * tradition badge, biography, tags, and up to 5 related [Pointing]s.
  */
 void showTeacherSheet(BuildContext context, Teacher teacher) {
-  showModalBottomSheet(
+  showAdaptiveSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     builder: (context) => TeacherSheet(teacher: teacher),
   );
 }

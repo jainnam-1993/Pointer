@@ -4,6 +4,8 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../layout/adaptive.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/haptics.dart';
@@ -121,12 +123,7 @@ class _AddWidgetRowState extends State<AddWidgetRow> {
 
 /** iOS how-to: the system has no API to add a widget for the user. */
 Future<void> showAddWidgetHowTo(BuildContext context) {
-  return showModalBottomSheet<void>(
-    context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (context) => const AddWidgetHowToSheet(),
-  );
+  return showAdaptiveSheet<void>(context: context, isScrollControlled: true, builder: (context) => const AddWidgetHowToSheet());
 }
 
 class AddWidgetHowToSheet extends StatelessWidget {

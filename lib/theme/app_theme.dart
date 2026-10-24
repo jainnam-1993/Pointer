@@ -14,6 +14,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import '../layout/adaptive.dart';
 
 /**
  * User-facing theme mode selection persisted in [SharedPreferences].
@@ -621,6 +622,9 @@ class AppType {
   /** 28: pointings (serif). */
   static const double display = 28;
 
+  /** The hero pointing one step up, on medium and expanded windows (iPad, unfolded phones). */
+  static const double hero = 32;
+
   /** 22: screen titles and headings. */
   static const double title = 22;
 
@@ -706,6 +710,13 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     color: _colors(context).textPrimary,
   );
+
+  /**
+   * The hero pointing on Home: [pointingText], one step up to [AppType.hero]
+   * on medium and expanded windows, where the card has room for it.
+   */
+  static TextStyle heroPointingText(BuildContext context) =>
+      pointingText(context).copyWith(fontSize: WindowLayout.of(context).sizeClass == WindowSizeClass.compact ? AppType.display : AppType.hero);
 
   /** Quote text: Newsreader italic at [AppType.headline]. */
   static TextStyle quoteText(BuildContext context) => TextStyle(

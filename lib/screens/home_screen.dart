@@ -10,6 +10,7 @@ import 'package:pointer/theme/phosphor_icons.dart';
 import '../data/articles.dart';
 import '../data/inquiries.dart';
 import '../layout/adaptive.dart';
+import '../layout/keyboard_shortcuts.dart';
 import '../data/pointings.dart';
 import '../data/teachers.dart';
 import '../models/article.dart';
@@ -330,7 +331,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           child: SingleChildScrollView(
-            child: Text(smartPunctuation(pointing.content), style: AppTextStyles.pointingText(context), textAlign: TextAlign.center),
+            child: Text(smartPunctuation(pointing.content), style: AppTextStyles.heroPointingText(context), textAlign: TextAlign.center),
           ),
         ),
       ),
@@ -417,7 +418,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   child: Text(
                     smartPunctuation(pointing.content),
                     key: ValueKey(pointing.id),
-                    style: AppTextStyles.pointingText(context),
+                    style: AppTextStyles.heroPointingText(context),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -470,23 +471,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         if (didPop || !mounted) return;
         ref.read(settingsProvider.notifier).setZenMode(false);
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            const Positioned.fill(child: RouteAmbient()),
-            if (isZenMode)
-              SafeArea(
-                child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
-              )
-            else
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onVerticalDragStart: _onDragStart,
-                onVerticalDragUpdate: _onDragUpdate,
-                onVerticalDragEnd: _onDragEnd,
-                child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
+      child: Shortcuts(
+        shortcuts: isZenMode ? {...homeShortcuts, ...focusModeShortcuts} : homeShortcuts,
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            NextPointingIntent: CallbackAction<NextPointingIntent>(onInvoke: (_) => _handleNext()),
+            PreviousPointingIntent: CallbackAction<PreviousPointingIntent>(onInvoke: (_) => _handlePrevious()),
+            SavePointingIntent: CallbackAction<SavePointingIntent>(onInvoke: (_) => _handleSave()),
+            ExitFocusModeIntent: CallbackAction<ExitFocusModeIntent>(onInvoke: (_) => ref.read(settingsProvider.notifier).setZenMode(false)),
+          },
+          child: Focus(
+            autofocus: true,
+            onKeyEvent: (node, event) {
+              if (!node.hasPrimaryFocus || !isNextPointingKey(event)) return KeyEventResult.ignored;
+              _handleNext();
+              return KeyEventResult.handled;
+            },
+            child: Scaffold(
+              body: Stack(
+                children: [
+                  const Positioned.fill(child: RouteAmbient()),
+                  if (isZenMode)
+                    SafeArea(
+                      child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
+                    )
+                  else
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onVerticalDragStart: _onDragStart,
+                      onVerticalDragUpdate: _onDragUpdate,
+                      onVerticalDragEnd: _onDragEnd,
+                      child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
+                    ),
+                ],
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
@@ -507,10 +527,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   }) {
     final layout = WindowLayout.of(context);
     final bottomSpace = layout.navigationType == NavigationType.rail ? AppSpacing.xl : navBarSpace;
+    final regular = layout.sizeClass != WindowSizeClass.compact;
+    // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
+    // actions together in the middle instead of leaving the actions at the bottom.
+    final grouped = layout.isTwoPane && size.height > size.width;
     final card = Center(
+      heightFactor: grouped ? 1.0 : null,
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
-        constraints: const BoxConstraints(maxWidth: kContentMaxWidth),
+        constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
         child: ValueListenableBuilder<double>(
           valueListenable: _dragOffset,
           builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
@@ -542,8 +567,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       );
     }
     final column = Column(
+      mainAxisAlignment: grouped ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
-        Expanded(child: card),
+        if (grouped) Flexible(child: card) else Expanded(child: card),
         SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
         actions,
         if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
@@ -554,7 +580,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     );
     final primary = SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: 20, bottom: bottomSpace),
+        padding: EdgeInsets.only(
+          left: regular ? AppSpacing.xxl : AppSpacing.xl,
+          right: regular ? AppSpacing.xxl : AppSpacing.xl,
+          top: 20,
+          bottom: bottomSpace,
+        ),
         child: column,
       ),
     );

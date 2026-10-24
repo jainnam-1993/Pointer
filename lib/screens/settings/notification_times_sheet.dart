@@ -118,11 +118,10 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     int selectedHour = hour;
     int selectedMinute = minute;
 
-    await showModalBottomSheet(
+    await showAdaptiveSheet(
       context: context,
       anchorPoint: sheetAnchorPoint(context),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setSheetState) {

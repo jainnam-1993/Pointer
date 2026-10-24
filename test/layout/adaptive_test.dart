@@ -1,6 +1,7 @@
 import 'dart:ui' show DisplayFeature, DisplayFeatureState, DisplayFeatureType;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -143,6 +144,25 @@ void main() {
       );
     }
 
+    for (final modifier in [LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.controlLeft]) {
+      testWidgets('${modifier.keyLabel}+1 to 4 select the tabs', (tester) async {
+        _setView(tester, const Size(1376, 1032));
+        await tester.pumpWidget(shellApp());
+        await tester.pumpAndSettle();
+        for (final (digit, path) in [
+          (LogicalKeyboardKey.digit3, '/library'),
+          (LogicalKeyboardKey.digit4, '/settings'),
+          (LogicalKeyboardKey.digit1, '/'),
+        ]) {
+          await tester.sendKeyDownEvent(modifier);
+          await tester.sendKeyEvent(digit);
+          await tester.sendKeyUpEvent(modifier);
+          await tester.pumpAndSettle();
+          expect(find.text('page $path'), findsOneWidget, reason: path);
+        }
+      });
+    }
+
     for (final (size, rail) in [
       (const Size(411, 923), false),
       (const Size(700, 900), true),
@@ -175,6 +195,57 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('side-rail')), findsOneWidget);
       expect(find.text('page /settings'), findsOneWidget);
+    });
+  });
+
+  group('modals on regular width', () {
+    Future<BuildContext> pumpAt(WidgetTester tester, Size size) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      late BuildContext ctx;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (c) {
+              ctx = c;
+              return const SizedBox.expand();
+            },
+          ),
+        ),
+      );
+      return ctx;
+    }
+
+    testWidgets('DialogWidth caps a dialog card at kDialogMaxWidth', (tester) async {
+      final ctx = await pumpAt(tester, const Size(1376, 1032));
+      showDialog<void>(
+        context: ctx,
+        builder: (_) => const DialogWidth(
+          child: Dialog(key: ValueKey('d'), child: Text('About')),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.descendant(of: find.byKey(const ValueKey('d')), matching: find.byType(Material)).first).width,
+        lessThanOrEqualTo(kDialogMaxWidth),
+      );
+    });
+
+    testWidgets('showAdaptiveSheet: centered panel on medium, bottom sheet on compact, Escape closes both', (tester) async {
+      for (final (size, panel) in [(const Size(678, 1032), true), (const Size(375, 1032), false)]) {
+        final ctx = await pumpAt(tester, size);
+        showAdaptiveSheet<void>(
+          context: ctx,
+          builder: (_) => const SizedBox(height: 200, child: Text('sheet')),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('form-sheet-panel')), panel ? findsOneWidget : findsNothing, reason: '$size');
+        expect(find.byType(BottomSheet), panel ? findsNothing : findsOneWidget, reason: '$size');
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        await tester.pumpAndSettle();
+        expect(find.text('sheet'), findsNothing, reason: '$size: Escape closes');
+      }
     });
   });
 }

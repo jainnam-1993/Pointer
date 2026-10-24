@@ -125,10 +125,9 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
                                 setState(() => _selected = tradition);
                                 return;
                               }
-                              showModalBottomSheet(
+                              showAdaptiveSheet(
                                 context: context,
                                 anchorPoint: sheetAnchorPoint(context),
-                                backgroundColor: Colors.transparent,
                                 builder: (context) => _TraditionDetailSheet(tradition: tradition, info: info, pointingsCount: count),
                               );
                             },

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../layout/adaptive.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pointer_toast.dart';
@@ -117,10 +120,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     if (!mounted) return;
 
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
       anchorPoint: sheetAnchorPoint(context),
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => const NotificationTimesSheet(),
     );
@@ -134,20 +136,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     showDialog(
       context: context,
-      builder: (context) => GlassDialog(
-        title: 'About Here Now',
-        content: Text(
-          'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
-          'Each pointing is a direct invitation to recognize what you already are.'
-          '${_versionLine()}',
-          style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Close', style: TextStyle(color: context.colors.accent)),
+      builder: (context) => DialogWidth(
+        child: GlassDialog(
+          title: 'About Here Now',
+          content: Text(
+            'Here Now delivers daily non-dual awareness "pointings" from various spiritual traditions.\n\n'
+            'Each pointing is a direct invitation to recognize what you already are.'
+            '${_versionLine()}',
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close', style: TextStyle(color: context.colors.accent)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -217,26 +221,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     showDialog(
       context: context,
-      builder: (context) => GlassDialog(
-        title: 'Notifications Blocked',
-        content: Text(
-          'Notification permission was previously denied. '
-          'Tap Open Settings to go to the app notification settings and enable notifications.',
-          style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
+      builder: (context) => DialogWidth(
+        child: GlassDialog(
+          title: 'Notifications Blocked',
+          content: Text(
+            'Notification permission was previously denied. '
+            'Tap Open Settings to go to the app notification settings and enable notifications.',
+            style: TextStyle(color: context.colors.textSecondary, fontSize: 14, height: 1.5),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Not Now', style: TextStyle(color: context.colors.textSecondary)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _openAppNotificationSettings();
+              },
+              child: Text('Open Settings', style: TextStyle(color: context.colors.accent)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Not Now', style: TextStyle(color: context.colors.textSecondary)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _openAppNotificationSettings();
-            },
-            child: Text('Open Settings', style: TextStyle(color: context.colors.accent)),
-          ),
-        ],
       ),
     );
   }

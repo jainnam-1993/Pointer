@@ -1,6 +1,6 @@
 import 'dart:ui' show DisplayFeature, DisplayFeatureState, DisplayFeatureType;
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /**
  * Window size classes and foldable posture helpers.
@@ -281,3 +281,124 @@ double sheetMaxHeight(double windowHeight) => windowHeight * (windowHeight < kSh
 
 /** Windows shorter than this get a taller sheet cap; see [sheetMaxHeight]. */
 const double kShortWindowHeight = 520;
+
+/** Widest a centered form-sheet panel gets on medium and expanded windows, like an iPad form sheet. */
+const double kFormSheetMaxWidth = 580;
+
+/** Tallest a centered form-sheet panel gets. */
+const double kFormSheetMaxHeight = 760;
+
+/** Widest a dialog's card gets; past this a dialog's lines run too long to read. */
+const double kDialogMaxWidth = 480;
+
+/** Widest the hero pointing card gets on medium and expanded windows (compact keeps [kContentMaxWidth]). */
+const double kHeroCardMaxWidth = 680;
+
+/**
+ * Whether modal sheets present as centered form-sheet panels: on medium and
+ * expanded windows, except tabletop posture, whose sheets belong below the
+ * fold. Compact windows (phones, an iPad Split View third) keep bottom sheets.
+ * Reads the whole window, like [sheetAnchorPoint].
+ */
+bool presentsFormSheets(BuildContext context) {
+  final layout = WindowLayout.fromMediaQuery(MediaQueryData.fromView(View.of(context)));
+  return layout.sizeClass != WindowSizeClass.compact && layout.posture != Posture.tabletop;
+}
+
+/**
+ * Shows [builder] as a bottom sheet on compact windows and as a centered
+ * [FormSheetPanel] on medium and expanded ones, so a sheet never stretches
+ * along the bottom of an iPad or an unfolded phone. Both routes close on
+ * Escape, a barrier tap and the system back gesture.
+ */
+Future<T?> showAdaptiveSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool isScrollControlled = false,
+  bool useSafeArea = false,
+  bool useRootNavigator = false,
+  Offset? anchorPoint,
+}) {
+  if (!presentsFormSheets(context)) {
+    return showModalBottomSheet<T>(
+      context: context,
+      builder: builder,
+      isScrollControlled: isScrollControlled,
+      useSafeArea: useSafeArea,
+      useRootNavigator: useRootNavigator,
+      anchorPoint: anchorPoint,
+      backgroundColor: Colors.transparent,
+    );
+  }
+  return showDialog<T>(
+    context: context,
+    useRootNavigator: useRootNavigator,
+    anchorPoint: anchorPoint,
+    builder: (context) => FormSheetPanel(child: builder(context)),
+  );
+}
+
+/**
+ * A sheet's content as a centered panel, at most [kFormSheetMaxWidth] by
+ * [kFormSheetMaxHeight], inside the window's safe area and above the keyboard.
+ * The panel clips the content's corners, so a sheet drawn with rounded top
+ * corners reads as a rounded card.
+ */
+class FormSheetPanel extends StatelessWidget {
+  final Widget child;
+
+  const FormSheetPanel({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return Padding(
+      padding: media.padding + media.viewInsets + const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          key: const ValueKey('form-sheet-panel'),
+          constraints: const BoxConstraints(maxWidth: kFormSheetMaxWidth, maxHeight: kFormSheetMaxHeight),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: Material(
+              type: MaterialType.transparency,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                removeBottom: true,
+                removeLeft: true,
+                removeRight: true,
+                child: child,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * Caps a [Dialog] at [kDialogMaxWidth] of card plus the dialog's own inset, so
+ * its text keeps a readable measure on wide windows. Wrap the dialog widget a
+ * dialog builder returns.
+ */
+class DialogWidth extends StatelessWidget {
+  final Widget child;
+
+  /** Horizontal inset the wrapped dialog adds on each side (Dialog's default is 40). */
+  final double inset;
+
+  const DialogWidth({super.key, required this.child, this.inset = 40});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        key: const ValueKey('dialog-width'),
+        constraints: BoxConstraints(maxWidth: kDialogMaxWidth + 2 * inset),
+        child: child,
+      ),
+    );
+  }
+}

@@ -123,7 +123,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
    */
   Future<void> _handleEnableNotifications() async {
     Haptics.light();
-    final proceed = await showDialog<bool>(context: context, builder: (context) => const _PermissionRationaleDialog());
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const DialogWidth(inset: 24, child: _PermissionRationaleDialog()),
+    );
     if (proceed != true || !mounted) return;
     final notificationService = ref.read(notificationServiceProvider);
     final granted = await notificationService.requestPermissions();
@@ -160,57 +163,59 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           HingeSplit(
             companion: const SizedBox.expand(key: ValueKey('onboarding-calm-pane')),
             child: SafeArea(
-              child: Column(
-                children: [
-                  // Page view - allows swiping
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      onPageChanged: (page) {
-                        Haptics.light();
-                        setState(() => _currentPage = page);
-                      },
-                      children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
+              child: ContentWidth(
+                child: Column(
+                  children: [
+                    // Page view - allows swiping
+                    Expanded(
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (page) {
+                          Haptics.light();
+                          setState(() => _currentPage = page);
+                        },
+                        children: const [_InterruptionPage(), _ContrastPage(), _SimplicityPage(), _NotificationsPage()],
+                      ),
                     ),
-                  ),
 
-                  // Page indicators
-                  _PageIndicators(currentPage: _currentPage, pageCount: 4),
+                    // Page indicators
+                    _PageIndicators(currentPage: _currentPage, pageCount: 4),
 
-                  SizedBox(height: isLandscape ? 16 : 32),
+                    SizedBox(height: isLandscape ? 16 : 32),
 
-                  // Buttons
-                  Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
-                    child: Column(
-                      children: [
-                        if (isLastPage) ...[
-                          SizedBox(
-                            width: double.infinity,
-                            child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
-                          ),
-                          const SizedBox(height: 16),
-                          Builder(
-                            builder: (context) {
-                              final textColor = context.colors.textMuted;
-                              return TextButton(
-                                onPressed: () => _finishOnboarding(false),
-                                child: Text(
-                                  'Maybe Later',
-                                  style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
-                                ),
-                              );
-                            },
-                          ),
-                        ] else
-                          SizedBox(
-                            width: double.infinity,
-                            child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
-                          ),
-                      ],
+                    // Buttons
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, bottom: bottomPadding + (isLandscape ? 8 : 20)),
+                      child: Column(
+                        children: [
+                          if (isLastPage) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              child: _OnboardingButton(label: 'Enable Notifications', onPressed: _handleEnableNotifications, isPrimary: true),
+                            ),
+                            const SizedBox(height: 16),
+                            Builder(
+                              builder: (context) {
+                                final textColor = context.colors.textMuted;
+                                return TextButton(
+                                  onPressed: () => _finishOnboarding(false),
+                                  child: Text(
+                                    'Maybe Later',
+                                    style: TextStyle(color: textColor, fontSize: _responsiveFontSize(context, 16)),
+                                  ),
+                                );
+                              },
+                            ),
+                          ] else
+                            SizedBox(
+                              width: double.infinity,
+                              child: _OnboardingButton(label: 'Continue', onPressed: _handleContinue, isPrimary: true),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -384,7 +389,12 @@ class _ContrastPage extends StatelessWidget {
                 children: [
                   Text(
                     'Here Now asks:',
-                    style: TextStyle(fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w500, color: colors.textMuted, letterSpacing: 1),
+                    style: TextStyle(
+                      fontSize: _responsiveFontSize(context, 16),
+                      fontWeight: FontWeight.w500,
+                      color: colors.textMuted,
+                      letterSpacing: 1,
+                    ),
                   ),
                   SizedBox(height: _responsiveVerticalSpace(context, 12)),
                   Text(

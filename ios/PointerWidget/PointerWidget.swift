@@ -326,7 +326,8 @@ struct PointerWidgetEntryView: View {
     private func systemLayout(_ palette: WidgetPalette, env: WidgetEnvironment) -> some View {
         switch family {
         case .systemSmall: smallLayout(palette, env: env)
-        case .systemLarge, .systemExtraLarge: largeLayout(palette)
+        case .systemLarge: largeLayout(palette)
+        case .systemExtraLarge: extraLargeLayout(palette)
         default: mediumLayout(palette)
         }
     }
@@ -430,6 +431,39 @@ struct PointerWidgetEntryView: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(readingLabel)
             controls(palette, target: 44, spread: true)
+        }
+    }
+
+    /// iPad only. The canvas is wide and short (about 715 x 337 pt on a 13-inch iPad), so the pointing
+    /// steps up to a title size inside a capped measure (about 55 characters a line) instead of running
+    /// edge to edge, with the attribution and the controls aligned under it.
+    private func extraLargeLayout(_ palette: WidgetPalette) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 6) {
+                    Image(systemName: "quote.opening")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(palette.accent)
+                        .pointerAccentable()
+                    eyebrow(entry.data.tradition, palette)
+                }
+                Spacer(minLength: 0)
+                pointingText(size: 30, style: .title, lines: 5, palette: palette)
+                    .lineSpacing(3)
+                    .frame(maxWidth: 600, alignment: .leading)
+                if let attribution {
+                    Text(attribution)
+                        .font(.body)
+                        .foregroundStyle(palette.secondary)
+                        .lineLimit(1)
+                        .pointerAccentable()
+                }
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(readingLabel)
+            controls(palette, target: 44, spread: true)
+                .frame(maxWidth: 600)
         }
     }
 
@@ -594,6 +628,7 @@ struct PointerWidget: Widget {
                 .systemSmall,
                 .systemMedium,
                 .systemLarge,
+                .systemExtraLarge,
                 .accessoryCircular,
                 .accessoryRectangular,
                 .accessoryInline,

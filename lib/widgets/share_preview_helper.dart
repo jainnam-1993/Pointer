@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../layout/adaptive.dart';
 import '../data/pointings.dart';
 import '../screens/share_preview_screen.dart';
 
@@ -9,10 +11,9 @@ import '../screens/share_preview_screen.dart';
 /// top-rounded clip). Replaces 4 duplicated invocations across home, article
 /// reader, library, and library_widgets screens.
 void showSharePreview(BuildContext context, Pointing pointing) {
-  showModalBottomSheet(
+  showAdaptiveSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     useSafeArea: true,
     useRootNavigator: true,
     builder: (ctx) => SizedBox(

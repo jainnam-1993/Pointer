@@ -94,6 +94,13 @@ const matrixDevices = <MatrixDevice>[
     ],
   ),
   MatrixDevice('tablet', Size(1024, 1366), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  // iPad: 11-inch and 13-inch in portrait and landscape, plus Split View third (compact) and half (medium) windows.
+  MatrixDevice('ipad11p', Size(834, 1194), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  MatrixDevice('ipad11l', Size(1194, 834), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  MatrixDevice('ipad13p', Size(1032, 1376), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  MatrixDevice('ipad13l', Size(1376, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  MatrixDevice('ipadthird', Size(375, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  MatrixDevice('ipadhalf', Size(678, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
 ];
 
 enum MatrixTheme { dark, light }
@@ -310,10 +317,9 @@ final matrixScreens = <MatrixScreen>[
     () => const _HostPage(),
     drive: (tester) async {
       // Same call as SettingsScreen._showNotificationTimesSheet.
-      showModalBottomSheet<void>(
+      showAdaptiveSheet<void>(
         context: tester.element(find.byType(_HostPage)),
         anchorPoint: sheetAnchorPoint(tester.element(find.byType(_HostPage))),
-        backgroundColor: Colors.transparent,
         isScrollControlled: true,
         builder: (context) => const NotificationTimesSheet(),
       );
@@ -387,7 +393,7 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
 
 /// Light theme on tablet and the two hinge postures (same pixels as foldinner today) is a
 /// representative subset to keep the matrix under 10 MB.
-const _lightSubsetDevices = {'tablet', 'foldhinge', 'tabletop'};
+const _lightSubsetDevices = {'tablet', 'foldhinge', 'tabletop', 'ipad11p', 'ipad11l', 'ipad13p', 'ipad13l', 'ipadthird', 'ipadhalf'};
 const _tabletLightScreens = {'home', 'settings'};
 
 void main() {
@@ -426,6 +432,52 @@ void main() {
   group('adaptive layout', () {
     MatrixDevice device(String name) => matrixDevices.firstWhere((d) => d.name == name);
     MatrixScreen screen(String name) => matrixScreens.firstWhere((s) => s.name == name);
+
+    // The hero pointing: the serif Text keyed by the pointing id inside Home's AnimatedSwitcher.
+    final heroPointing = find.byWidgetPredicate(
+      (w) => w is Text && w.key is ValueKey && w.style?.fontFamily == AppFonts.serif && (w.style?.fontSize ?? 0) >= AppType.display,
+    );
+    Key? pointingKey(WidgetTester tester) => tester.widgetList<Text>(heroPointing).last.key;
+
+    testWidgets('keyboard: arrow keys and Space step through pointings on Home', (tester) async {
+      await _pumpAt(tester, screen('home'), device('ipad13l'));
+      final first = pointingKey(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump(const Duration(seconds: 1));
+      final second = pointingKey(tester);
+      expect(second, isNot(first));
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump(const Duration(seconds: 1));
+      expect(pointingKey(tester), isNot(second));
+    });
+
+    testWidgets('home: the hero pointing steps up on regular width only', (tester) async {
+      for (final (name, size) in [
+        ('phone', AppType.display),
+        ('ipadthird', AppType.display),
+        ('ipadhalf', AppType.hero),
+        ('ipad13l', AppType.hero),
+      ]) {
+        await _pumpAt(tester, screen('home'), device(name));
+        final text = tester.widgetList<Text>(heroPointing).last;
+        expect(text.style?.fontSize, size, reason: name);
+      }
+    });
+
+    testWidgets('notificationsheet: a centered form sheet on iPad, a bottom sheet in a Split View third (Escape: adaptive_test)', (tester) async {
+      final sheet = screen('notificationsheet');
+      for (final name in ['ipad11p', 'ipad13l']) {
+        await _pumpAt(tester, sheet, device(name));
+        await sheet.drive!(tester);
+        final panel = tester.getRect(find.byKey(const ValueKey('form-sheet-panel')));
+        expect(panel.width, lessThanOrEqualTo(kFormSheetMaxWidth), reason: name);
+        expect((panel.center.dx - device(name).size.width / 2).abs(), lessThan(1), reason: name);
+      }
+      await _pumpAt(tester, sheet, device('ipadthird'));
+      await sheet.drive!(tester);
+      expect(find.byKey(const ValueKey('form-sheet-panel')), findsNothing);
+      expect(find.byType(BottomSheet), findsOneWidget);
+    });
     const medium = MatrixDevice('medium', Size(700, 900), 1);
     const hingeX = 420.0;
     const hingeY = 442.0;
