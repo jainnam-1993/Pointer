@@ -197,6 +197,29 @@ class PointerColors extends ThemeExtension<PointerColors> {
     shimmerColor: Colors.transparent,
     cardBackground: Color(0xFF1A1A1A),
   );
+  /**
+   * Light high contrast: the light theme's paper and ink, pushed to AAA (7:1+).
+   * Opaque white cards with near-black text and strong borders.
+   */
+  static const highContrastLight = PointerColors(
+    background: Color(0xFFF6F4F1),
+    surface: Color(0xFFFFFFFF),
+    primary: Color(0xFF0D0B12),
+    secondary: Color(0xFF2B2536),
+    textPrimary: Color(0xFF0D0B12),
+    textSecondary: Color(0xFF1F1A28),
+    textMuted: Color(0xFF2F2A38),
+    glassBorder: Color(0xFF1A1622),
+    glassBackground: Color(0xFFFFFFFF),
+    glassBorderActive: Color(0xFF0D0B12),
+    gold: Color(0xFF5E4210),
+    accent: Color(0xFF2E2470),
+    iconColor: Color(0xFF0D0B12),
+    glassHighlight: Colors.transparent,
+    glassGlow: Colors.transparent,
+    shimmerColor: Colors.transparent,
+    cardBackground: Color(0xFFFFFFFF),
+  );
 
   /** OLED black mode: pure black surfaces, same ink palette as [dark]. */
   static const oled = PointerColors(
@@ -441,6 +464,21 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     blurSigma: 0,
     opaque: true,
   );
+  /** Light high contrast: opaque white surfaces with a strong near-black rim. */
+  static const highContrastLight = GlassMaterial(
+    fill: Color(0xFFFFFFFF),
+    levels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    onSurfaceLevels: [GlassLevel(0, 1, 1), GlassLevel(0, 1, 1), GlassLevel(0, 1, 1)],
+    buttonPrimary: GlassLevel(0, 1, 1),
+    buttonSecondary: GlassLevel(0, 1, 1),
+    rimTop: Color(0xFF1A1622),
+    rimBottom: Color(0xFF1A1622),
+    rimWidth: 2,
+    highlight: Colors.transparent,
+    shadow: Colors.transparent,
+    blurSigma: 0,
+    opaque: true,
+  );
 
   /** Index of each intensity in [levels]. */
   static const int lightLevel = 0, standardLevel = 1, heavyLevel = 2;
@@ -451,7 +489,7 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
 
   /** Resolves the material for [context]; [highContrast] forces the opaque variant. */
   static GlassMaterial of(BuildContext context, {bool highContrast = false}) {
-    if (highContrast) return GlassMaterial.highContrast;
+    if (highContrast) return context.isDarkMode ? GlassMaterial.highContrast : GlassMaterial.highContrastLight;
     if (context.colors == PointerColors.oled) return GlassMaterial.oled;
     return Theme.of(context).extension<GlassMaterial>() ?? (context.isDarkMode ? GlassMaterial.dark : GlassMaterial.light);
   }
@@ -797,14 +835,13 @@ class AppTheme {
   }
 
   /**
-   * High-contrast [ThemeData]: white on black with opaque glass (AAA). Used for
-   * the in-app High contrast setting and whenever the OS reports high contrast
-   * (MaterialApp.highContrastTheme). Every color the app reads comes from
-   * [PointerColors.highContrast], so text stays white on the opaque cards.
-   * Before this theme existed, only cards switched to the opaque near-black
-   * surface while text kept the light theme's dark ink.
+   * High-contrast themes follow light and dark mode and keep the app's style:
+   * opaque surfaces instead of glass, strong rims, AAA text, a subdued ambient.
+   * Used for the in-app High contrast setting and whenever the OS reports high
+   * contrast (MaterialApp.highContrastTheme / highContrastDarkTheme; Flutter
+   * 3.47+ reports Android's system contrast setting there).
    */
-  static ThemeData get highContrast {
+  static ThemeData get highContrastDark {
     const colors = PointerColors.highContrast;
     final base = dark;
     return base.copyWith(
@@ -812,6 +849,18 @@ class AppTheme {
       colorScheme: base.colorScheme.copyWith(primary: colors.primary, secondary: colors.secondary, surface: colors.surface),
       extensions: const [PointerColors.highContrast, GlassMaterial.highContrast],
       textTheme: _textTheme(ThemeData.dark().textTheme, colors),
+    );
+  }
+
+  /** Light high-contrast [ThemeData]; see [highContrastDark]. */
+  static ThemeData get highContrastLight {
+    const colors = PointerColors.highContrastLight;
+    final base = light;
+    return base.copyWith(
+      scaffoldBackgroundColor: colors.background,
+      colorScheme: base.colorScheme.copyWith(primary: colors.primary, secondary: colors.secondary, surface: colors.surface),
+      extensions: const [PointerColors.highContrastLight, GlassMaterial.highContrastLight],
+      textTheme: _textTheme(ThemeData.light().textTheme, colors),
     );
   }
 

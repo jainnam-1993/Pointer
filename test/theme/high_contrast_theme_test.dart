@@ -4,32 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_theme.dart';
 
-double _luminance(Color c) => c.computeLuminance();
-double _contrast(Color a, Color b) {
-  final l1 = _luminance(a), l2 = _luminance(b);
-  return (l1 > l2 ? l1 + 0.05 : l2 + 0.05) / (l1 > l2 ? l2 + 0.05 : l1 + 0.05);
-}
-
 /**
- * Regression for the black glass cards on Flutter 3.47: the OS contrast
- * setting now arrives as MediaQuery.highContrast, and the app drew opaque
- * near-black high-contrast cards while text kept the light theme's dark ink.
- * High contrast must resolve to one theme whose text reads on those cards.
+ * Regression for the black glass cards on Flutter 3.47: the OS contrast setting
+ * now arrives as MediaQuery.highContrast, and the app drew opaque near-black
+ * high-contrast cards while text kept the light theme's dark ink. High contrast
+ * must resolve to a full theme that follows light and dark mode.
  */
 void main() {
-  testWidgets('system high contrast in light mode resolves the high-contrast palette', (tester) async {
-    tester.platformDispatcher.accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(highContrast: true);
+  Future<(PointerColors, GlassMaterial)> resolve(WidgetTester tester, ThemeMode mode, {required bool system, bool inApp = false}) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue = FakeAccessibilityFeatures(highContrast: system);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     late PointerColors colors;
     late GlassMaterial glass;
     await tester.pumpWidget(
       MaterialApp(
         // The same theme wiring as PointerApp in lib/main.dart.
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        highContrastTheme: AppTheme.highContrast,
-        highContrastDarkTheme: AppTheme.highContrast,
-        themeMode: ThemeMode.light,
+        theme: inApp ? AppTheme.highContrastLight : AppTheme.light,
+        darkTheme: inApp ? AppTheme.highContrastDark : AppTheme.dark,
+        highContrastTheme: AppTheme.highContrastLight,
+        highContrastDarkTheme: AppTheme.highContrastDark,
+        themeMode: mode,
         home: Builder(
           builder: (context) {
             colors = context.colors;
@@ -39,16 +33,41 @@ void main() {
         ),
       ),
     );
-    expect(colors, PointerColors.highContrast);
+    return (colors, glass);
+  }
+
+  testWidgets('system high contrast in light mode keeps light, opaque cards with dark text', (tester) async {
+    final (colors, glass) = await resolve(tester, ThemeMode.light, system: true);
+    expect(colors, PointerColors.highContrastLight);
+    expect(glass, GlassMaterial.highContrastLight);
     expect(glass.opaque, isTrue);
-    expect(_contrast(colors.textPrimary, glass.fill), greaterThanOrEqualTo(7));
-    expect(_contrast(colors.textSecondary, glass.fill), greaterThanOrEqualTo(7));
+    expect(colors.textPrimary.computeLuminance(), lessThan(0.05));
+    expect(glass.fill.computeLuminance(), greaterThan(0.9));
   });
 
-  test('lib/main.dart wires the high-contrast theme for both system and in-app high contrast', () {
+  testWidgets('system high contrast in dark mode gives dark, opaque cards with light text', (tester) async {
+    final (colors, glass) = await resolve(tester, ThemeMode.dark, system: true);
+    expect(colors, PointerColors.highContrast);
+    expect(glass, GlassMaterial.highContrast);
+    expect(colors.textPrimary.computeLuminance(), greaterThan(0.9));
+  });
+
+  testWidgets('the in-app setting alone also gives high contrast', (tester) async {
+    final (colors, _) = await resolve(tester, ThemeMode.light, system: false, inApp: true);
+    expect(colors, PointerColors.highContrastLight);
+  });
+
+  testWidgets('neither on keeps the normal glass theme', (tester) async {
+    final (colors, glass) = await resolve(tester, ThemeMode.light, system: false);
+    expect(colors, PointerColors.light);
+    expect(glass.opaque, isFalse);
+  });
+
+  test('lib/main.dart wires both high-contrast themes for the system and the in-app setting', () {
     final src = File('lib/main.dart').readAsStringSync();
-    expect(src, contains('highContrastTheme: AppTheme.highContrast'));
-    expect(src, contains('highContrastDarkTheme: AppTheme.highContrast'));
-    expect(src, contains('theme: highContrast ? AppTheme.highContrast : AppTheme.light'));
+    expect(src, contains('theme: highContrast ? AppTheme.highContrastLight : AppTheme.light'));
+    expect(src, contains('darkTheme: highContrast ? AppTheme.highContrastDark : AppTheme.dark'));
+    expect(src, contains('highContrastTheme: AppTheme.highContrastLight'));
+    expect(src, contains('highContrastDarkTheme: AppTheme.highContrastDark'));
   });
 }

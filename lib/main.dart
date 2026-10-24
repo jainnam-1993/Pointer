@@ -236,11 +236,11 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
     return MaterialApp.router(
       title: 'Here Now',
       debugShowCheckedModeBanner: false,
-      // High contrast is one coherent theme, never opaque cards over the light palette.
-      theme: highContrast ? AppTheme.highContrast : AppTheme.light,
-      darkTheme: highContrast ? AppTheme.highContrast : AppTheme.dark,
-      highContrastTheme: AppTheme.highContrast,
-      highContrastDarkTheme: AppTheme.highContrast,
+      // High contrast (in-app setting or OS) is a full theme that follows light and dark mode.
+      theme: highContrast ? AppTheme.highContrastLight : AppTheme.light,
+      darkTheme: highContrast ? AppTheme.highContrastDark : AppTheme.dark,
+      highContrastTheme: AppTheme.highContrastLight,
+      highContrastDarkTheme: AppTheme.highContrastDark,
       themeMode: themeMode,
       routerConfig: router,
       builder: (context, child) {
