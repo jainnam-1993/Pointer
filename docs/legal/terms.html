@@ -45,24 +45,57 @@
             font-size: 0.9rem;
             margin-bottom: 2rem;
         }
+        .summary {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+        .summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        .summary li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .summary li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--surface);
+        }
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
         a {
             color: var(--accent);
             text-decoration: none;
         }
         a:hover { text-decoration: underline; }
+        hr {
+            border: none;
+            border-top: 1px solid var(--surface);
+            margin: 2rem 0;
+        }
         ul, ol {
             margin: 1rem 0;
             padding-left: 1.5rem;
         }
         li { margin-bottom: 0.5rem; }
-        .warning {
-            background: var(--surface);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent);
-            margin: 1rem 0;
-            font-size: 0.95rem;
-        }
         .footer {
             margin-top: 3rem;
             padding-top: 2rem;
@@ -75,118 +108,42 @@
 </head>
 <body>
     <h1>Terms of Service</h1>
-    <p class="meta">Effective Date: January 2, 2025 &bull; Last Updated: January 2, 2025</p>
-
-    <p>Welcome to Here Now. By downloading, installing, or using the Here Now mobile application ("the app"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the app.</p>
-
-    <h2>1. Description of Service</h2>
-    <p>Here Now is a mobile application that delivers daily non-dual awareness pointings from various wisdom traditions. The app provides:</p>
-    <ul>
-        <li>Daily curated pointings from diverse spiritual traditions</li>
-        <li>A library of teachings and articles</li>
-        <li>Text-to-speech audio playback (premium feature)</li>
-        <li>Home screen widget</li>
-        <li>Favorites and reading history</li>
-    </ul>
-
-    <h2>2. Acceptance of Terms</h2>
-    <p>By using Here Now, you confirm that:</p>
-    <ul>
-        <li>You are at least 13 years of age</li>
-        <li>You have the legal capacity to enter into these Terms</li>
-        <li>You will use the app in compliance with applicable laws</li>
-    </ul>
-
-    <h2>3. Premium Features and Purchases</h2>
-
-    <h3>3.1 Lifetime Purchase</h3>
-    <p>Here Now offers a one-time lifetime purchase that unlocks premium features including:</p>
-    <ul>
-        <li>Full library access</li>
-        <li>Audio pointings and guided readings</li>
-        <li>Text-to-speech for all content</li>
-        <li>Notification scheduling</li>
-        <li>Home screen widget</li>
-    </ul>
-
-    <h3>3.2 Payment and Refunds</h3>
-    <ul>
-        <li>All purchases are processed through Google Play</li>
-        <li>Purchases are final and non-refundable, except as required by applicable law</li>
-        <li>Google Play's refund policies apply: <a href="https://support.google.com/googleplay/answer/2479637">Google Play Refund Policy</a></li>
-    </ul>
-
-    <h3>3.3 Purchase Restoration</h3>
-    <p>If you reinstall the app or switch devices, you can restore your purchase through the app settings using the same Google account.</p>
-
-    <h2>4. Content Disclaimer</h2>
-
-    <h3>4.1 Spiritual Content</h3>
-    <p>The pointings, teachings, and articles in Here Now are drawn from various wisdom traditions for contemplative and educational purposes. This content:</p>
-    <ul>
-        <li>Is not medical, psychological, or professional advice</li>
-        <li>Should not replace professional mental health treatment</li>
-        <li>Is provided "as is" without warranties of any kind</li>
-    </ul>
-
-    <h3>4.2 Attribution</h3>
-    <p>Content is attributed to its respective teachers and traditions where known. We respect the lineages and teachers whose wisdom is shared through the app.</p>
-
-    <h3>4.3 User Interpretation</h3>
-    <p>You are solely responsible for how you interpret and apply any content from the app. Individual experiences with contemplative practices vary.</p>
-
-    <h2>5. Acceptable Use</h2>
-    <p>You agree NOT to:</p>
-    <ul>
-        <li>Reverse engineer, decompile, or disassemble the app</li>
-        <li>Circumvent any technological protection measures</li>
-        <li>Use the app for any unlawful purpose</li>
-        <li>Redistribute or commercially exploit app content without permission</li>
-        <li>Interfere with the app's operation or other users' enjoyment</li>
-    </ul>
-
-    <h2>6. Intellectual Property</h2>
-
-    <h3>6.1 App Ownership</h3>
-    <p>The Here Now app, including its design, code, features, and original content, is owned by us and protected by intellectual property laws.</p>
-
-    <h3>6.2 Traditional Teachings</h3>
-    <p>Many pointings in the app are from public domain sources or are traditional teachings. We do not claim ownership of these teachings.</p>
-
-    <h3>6.3 License to Use</h3>
-    <p>We grant you a limited, non-exclusive, non-transferable license to use the app for personal, non-commercial purposes.</p>
-
-    <h2>7. Limitation of Liability</h2>
-    <div class="warning">
-        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW: The app is provided "AS IS" without warranties. We are not liable for any indirect, incidental, special, or consequential damages. Our total liability shall not exceed the amount you paid for premium features.</p>
-    </div>
-
-    <h2>8. Indemnification</h2>
-    <p>You agree to indemnify and hold harmless Here Now and its developers from any claims, damages, or expenses arising from your use of the app or violation of these Terms.</p>
-
-    <h2>9. Privacy</h2>
-    <p>Your use of the app is also governed by our <a href="privacy.html">Privacy Policy</a>, which describes how we collect and use your information.</p>
-
-    <h2>10. Modifications</h2>
-    <p>We may modify these Terms or the app at any time. Continued use after changes constitutes acceptance of the modified Terms.</p>
-
-    <h2>11. Termination</h2>
-    <p>We may terminate or suspend your access to the app at any time for violation of these Terms. Upon termination, your license to use the app ends immediately.</p>
-
-    <h2>12. Governing Law</h2>
-    <p>These Terms are governed by the laws of the State of California, United States, without regard to conflict of law principles.</p>
-
-    <h2>13. Dispute Resolution</h2>
-    <p>Any disputes arising from these Terms or your use of the app shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association, except where prohibited by law.</p>
-
-    <h2>14. Contact Us</h2>
-    <p>If you have questions about these Terms:</p>
-    <ul>
-        <li><strong>Email:</strong> pointer.app.contact@gmail.com</li>
-    </ul>
-
+    <p class="meta">Effective Date: October 23, 2026 &bull; Last Updated: October 23, 2026</p>
+<p>By downloading or using Here Now ("the app"), you agree to these Terms. If you do not agree, do not use the app.</p>
+<h2>1. The app</h2>
+<p>Here Now shows short awareness pointings, teachings, articles, and guided self-inquiry from contemplative traditions. It includes local reminders, a home-screen widget, favorites, sharing, and optional tips. The app works without an account and stores everything on your device (see the Privacy Policy).</p>
+<h2>2. Eligibility</h2>
+<p>You must be at least 13 years old, or the minimum age required in your country, to use the app.</p>
+<h2>3. Optional tips</h2>
+<ul>
+<li>The app offers optional one-time tips to support its development. Tips are voluntary, unlock no features or content, and are not subscriptions.</li>
+<li>Tips are processed by the Apple App Store or Google Play. Their payment terms and refund policies apply:</li>
+<li>Apple: <a href="https://support.apple.com/en-us/118223">https://support.apple.com/en-us/118223</a></li>
+<li>Google Play: <a href="https://support.google.com/googleplay/answer/2479637">https://support.google.com/googleplay/answer/2479637</a></li>
+<li>Except where the store or applicable law provides otherwise, tips are non-refundable.</li>
+</ul>
+<h2>4. Content</h2>
+<p>Pointings and teachings are attributed to their teachers and traditions where known and are provided for reflection and educational purposes. The app's design, code, and original text are protected by copyright. You may share individual pointings for personal, non-commercial use with attribution; you may not copy or redistribute the content library as a whole.</p>
+<h2>5. Not professional advice</h2>
+<p>The app is not medical, psychological, or therapeutic advice and is not a substitute for professional care. If you are in crisis, contact local emergency services or a qualified professional.</p>
+<h2>6. Acceptable use</h2>
+<p>Do not reverse engineer, modify, or redistribute the app except as permitted by law, and do not use it for any unlawful purpose.</p>
+<h2>7. Third-party services</h2>
+<p>Purchases go through Apple or Google, and sharing or exporting hands content to apps you choose. Those services are governed by their own terms.</p>
+<h2>8. Disclaimer and limitation of liability</h2>
+<p>The app is provided "as is" and "as available" without warranties of any kind. To the maximum extent permitted by law, we are not liable for indirect, incidental, special, or consequential damages, and our total liability is limited to the amount you paid in tips in the twelve months before the claim.</p>
+<h2>9. Indemnification</h2>
+<p>You agree to indemnify us against claims arising from your violation of these Terms or misuse of the app.</p>
+<h2>10. Changes and termination</h2>
+<p>We may update the app or these Terms; the "Last Updated" date shows the latest version, and continued use means you accept it. You may stop using the app at any time by deleting it.</p>
+<h2>11. Governing law and disputes</h2>
+<p>These Terms are governed by the laws of the State of California, United States, without regard to conflict-of-law rules. Disputes will be resolved by binding arbitration under the rules of the American Arbitration Association, except where prohibited by law or where you may bring a claim in small-claims court.</p>
+<h2>12. Severability</h2>
+<p>If any provision is unenforceable, the rest remain in effect.</p>
+<h2>13. Contact</h2>
+<p><a href="mailto:pointer.app.contact@gmail.com">pointer.app.contact@gmail.com</a></p>
     <div class="footer">
-        <p>&copy; 2025 Here Now &bull; <a href="privacy.html">Privacy Policy</a></p>
+        <p>&copy; 2026 Here Now &bull; <a href="privacy.html">Privacy Policy</a></p>
     </div>
 </body>
 </html>
