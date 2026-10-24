@@ -8,6 +8,8 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../widgets/ambient.dart' show AmbientClock;
+
 const bool kFrameLog = bool.fromEnvironment('POINTER_FRAME_LOG');
 
 class FrameLog {
