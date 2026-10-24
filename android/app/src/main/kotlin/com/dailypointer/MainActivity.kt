@@ -1,9 +1,12 @@
 package com.dailypointer
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -16,6 +19,18 @@ class MainActivity : FlutterActivity() {
 
     /** Pointing id from the last widget tap. Dart pulls it once it is ready (cold or warm start). */
     private var pendingPointingId: String? = null
+
+    private var settingsChannel: MethodChannel? = null
+
+    /**
+     * Pushes battery saver changes to the ambient clock. Toggling battery saver from the
+     * quick settings shade keeps the activity resumed, so a query on resume alone misses it.
+     */
+    private val powerSaveReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            settingsChannel?.invokeMethod("lowPowerModeChanged", isPowerSaveMode())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +50,15 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
+            .also { settingsChannel = it }
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "openNotificationSettings" -> {
                         openNotificationSettings()
                         result.success(null)
                     }
-                    // Ambient clock drops to 15 fps while battery saver is on (UNVERIFIED on device).
-                    "isLowPowerMode" -> {
-                        val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
-                        result.success(pm.isPowerSaveMode)
-                    }
+                    // Ambient clock drops to 15 fps while battery saver is on.
+                    "isLowPowerMode" -> result.success(isPowerSaveMode())
                     else -> result.notImplemented()
                 }
             }
@@ -64,6 +77,23 @@ class MainActivity : FlutterActivity() {
                 }
             }
     }
+
+        val filter = IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // A protected system broadcast still reaches a not-exported receiver.
+            registerReceiver(powerSaveReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(powerSaveReceiver, filter)
+        }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        unregisterReceiver(powerSaveReceiver)
+        settingsChannel = null
+        super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    private fun isPowerSaveMode(): Boolean = (getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode
 
     private fun openNotificationSettings() {
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

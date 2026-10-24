@@ -133,7 +133,20 @@ class AmbientClock extends ChangeNotifier with WidgetsBindingObserver implements
     if (_observing) return;
     _observing = true;
     WidgetsBinding.instance.addObserver(this);
+    // The platforms push "lowPowerModeChanged" when battery saver or Low Power Mode
+    // changes while the app stays resumed (quick settings, Control Center).
+    powerChannel.setMethodCallHandler(_handlePowerCall);
     unawaited(_refreshPowerMode());
+  }
+
+  Future<void> _handlePowerCall(MethodCall call) async {
+    if (call.method == 'lowPowerModeChanged' && call.arguments is bool) _setLowPower(call.arguments as bool);
+  }
+
+  void _setLowPower(bool lowPower) {
+    if (frozen || lowPower == _lowPower) return;
+    _lowPower = lowPower;
+    _restartTimer();
   }
 
   @override
@@ -143,16 +156,12 @@ class AmbientClock extends ChangeNotifier with WidgetsBindingObserver implements
     _update();
   }
 
-  // UNVERIFIED on devices: native handlers in MainActivity.kt and AppDelegate.swift
-  // answer "isLowPowerMode"; missing handlers leave the 30 fps default.
+  // Native handlers in MainActivity.kt and AppDelegate.swift answer "isLowPowerMode";
+  // missing handlers leave the 30 fps default.
   Future<void> _refreshPowerMode() async {
     if (frozen) return;
     try {
-      final lowPower = await powerChannel.invokeMethod<bool>('isLowPowerMode') ?? false;
-      if (lowPower != _lowPower) {
-        _lowPower = lowPower;
-        _restartTimer();
-      }
+      _setLowPower(await powerChannel.invokeMethod<bool>('isLowPowerMode') ?? false);
     } on MissingPluginException {
       // Platform without the handler (tests, desktop): keep 30 fps.
     } on PlatformException {

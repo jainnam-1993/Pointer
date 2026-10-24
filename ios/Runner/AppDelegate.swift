@@ -33,11 +33,19 @@ import flutter_local_notifications
       if call.method == "openNotificationSettings" {
         self?.openNotificationSettings(result: result)
       } else if call.method == "isLowPowerMode" {
-        // Ambient clock drops to 15 fps in Low Power Mode (UNVERIFIED on device).
+        // Ambient clock drops to 15 fps in Low Power Mode.
         result(ProcessInfo.processInfo.isLowPowerModeEnabled)
       } else {
         result(FlutterMethodNotImplemented)
       }
+    }
+
+    // Push Low Power Mode changes to the ambient clock: toggling it in Control Center
+    // keeps the app active, so a query on resume alone misses the change.
+    NotificationCenter.default.addObserver(
+      forName: .NSProcessInfoPowerStateDidChange, object: nil, queue: .main
+    ) { _ in
+      settingsChannel.invokeMethod("lowPowerModeChanged", arguments: ProcessInfo.processInfo.isLowPowerModeEnabled)
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
