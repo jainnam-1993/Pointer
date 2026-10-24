@@ -165,6 +165,15 @@ Future<void> _loadSdkFonts() async {
   if (icons.existsSync()) {
     await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)))).load();
   }
+  // Phosphor icon fonts ship in the package; without them every glyph renders as tofu.
+  for (final (family, file) in const [
+    ('Phosphor', 'Phosphor.ttf'),
+    ('PhosphorRegular', 'Phosphor.ttf'),
+    ('PhosphorLight', 'Phosphor-Light.ttf'),
+    ('PhosphorFill', 'Phosphor-Fill.ttf'),
+  ]) {
+    await (FontLoader('packages/phosphor_flutter/$family')..addFont(rootBundle.load('packages/phosphor_flutter/lib/fonts/$file'))).load();
+  }
 }
 
 /// Initializes articles and preloads the reader article body so no asset IO is needed.
