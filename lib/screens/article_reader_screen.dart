@@ -4,6 +4,8 @@
  */
 library;
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,134 +86,162 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
         children: [
           const Positioned.fill(child: AnimatedGradient()),
           SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // App bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.close, color: colors.textPrimary),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const Spacer(),
-                        Consumer(
-                          builder: (context, ref, _) {
-                            final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
-                            return IconButton(
-                              icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
-                              onPressed: () {
-                                Haptics.success();
-                                ref.read(articleFavoritesProvider.notifier).toggle(article.id);
-                              },
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.share_outlined, color: colors.textPrimary),
-                          onPressed: () => _shareArticle(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Article header
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: AppSpacing.screenH,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 48),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: colors.glassBackground,
-                              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                              border: Border.all(color: colors.glassBorder),
-                            ),
-                            child: Text(
-                              traditionInfo.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: colors.textMuted, fontSize: 12),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          article.title,
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colors.textPrimary, height: 1.2),
-                        ),
-                        if (article.subtitle != null) ...[
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
-                        ],
-                        const SizedBox(height: AppSpacing.md),
-                        Row(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Width-driven reading measure: about 60-66 characters of 18 pt serif, centred on wide screens.
+                final side = math.max(AppSpacing.xl, (constraints.maxWidth - kReadingMeasure) / 2);
+                final gutter = EdgeInsets.symmetric(horizontal: side);
+                return CustomScrollView(
+                  slivers: [
+                    // App bar
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: side - AppSpacing.md, vertical: AppSpacing.lg),
+                        child: Row(
                           children: [
-                            Icon(Icons.schedule, size: 14, color: colors.textMuted),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
-                            if (article.teacher != null) ...[
-                              const SizedBox(width: AppSpacing.lg),
-                              Icon(Icons.person_outline, size: 14, color: colors.textMuted),
-                              const SizedBox(width: AppSpacing.xs),
-                              Flexible(
-                                child: Text(
-                                  article.teacher!,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 13, color: colors.textMuted),
-                                ),
-                              ),
-                            ],
+                            IconButton(
+                              icon: Icon(Icons.close, color: colors.textPrimary),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            const Spacer(),
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final isSaved = ref.watch(articleFavoritesProvider).contains(article.id);
+                                return IconButton(
+                                  icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: isSaved ? colors.accent : colors.textPrimary),
+                                  onPressed: () {
+                                    Haptics.success();
+                                    ref.read(articleFavoritesProvider.notifier).toggle(article.id);
+                                  },
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.share_outlined, color: colors.textPrimary),
+                              onPressed: () => _shareArticle(context),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Divider(color: colors.glassBorder),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
 
-                // Article content (lazy-loaded)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
-                    child: FutureBuilder<String>(
-                      future: _contentFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-                            child: Center(child: CircularProgressIndicator(color: colors.accent)),
-                          );
-                        }
-                        if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-                            child: Center(
-                              child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                    // Article header
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: gutter,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: kReadingMeasure),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: colors.glassBackground,
+                                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                                  border: Border.all(color: colors.glassBorder),
+                                ),
+                                child: Text(
+                                  traditionInfo.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: colors.textMuted, fontSize: 12),
+                                ),
+                              ),
                             ),
-                          );
-                        }
-                        return _MarkdownContent(content: snapshot.data!, colors: colors);
-                      },
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              article.title,
+                              style: TextStyle(
+                                fontFamily: AppFonts.serif,
+                                fontSize: AppType.display,
+                                fontWeight: FontWeight.w500,
+                                color: colors.textPrimary,
+                                height: 1.2,
+                              ),
+                            ),
+                            if (article.subtitle != null) ...[
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(article.subtitle!, style: TextStyle(fontSize: 16, color: colors.textSecondary)),
+                            ],
+                            const SizedBox(height: AppSpacing.md),
+                            Row(
+                              children: [
+                                Icon(Icons.schedule, size: 14, color: colors.textMuted),
+                                const SizedBox(width: AppSpacing.xs),
+                                Text('${article.readingTimeMinutes} min read', style: TextStyle(fontSize: 13, color: colors.textMuted)),
+                                if (article.teacher != null) ...[
+                                  const SizedBox(width: AppSpacing.lg),
+                                  Icon(Icons.person_outline, size: 14, color: colors.textMuted),
+                                  const SizedBox(width: AppSpacing.xs),
+                                  Flexible(
+                                    child: Text(
+                                      article.teacher!,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 13, color: colors.textMuted),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            Divider(color: colors.glassBorder),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
+
+                    // Article content (lazy-loaded)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: side, right: side, top: AppSpacing.lg, bottom: AppSpacing.xxl + bottomPadding),
+                        child: FutureBuilder<String>(
+                          future: _contentFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                                child: Center(child: CircularProgressIndicator(color: colors.accent)),
+                              );
+                            }
+                            if (snapshot.hasError) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                                child: Center(
+                                  child: Text('Unable to load article content.', style: TextStyle(color: colors.textMuted)),
+                                ),
+                              );
+                            }
+                            return _MarkdownContent(content: stripLeadingTitle(snapshot.data!, article.title), colors: colors);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
       ),
     );
   }
+}
+
+/** Maximum reading measure in logical pixels: about 60-66 characters of 18 pt Newsreader. */
+const double kReadingMeasure = 560;
+
+/**
+ * Removes a leading Markdown H1 that repeats [title], so the reader shows the title once.
+ * Matching ignores case, surrounding whitespace and trailing punctuation.
+ */
+String stripLeadingTitle(String content, String title) {
+  final match = RegExp(r'^\s*#\s+(.+?)\s*(\r?\n|$)').firstMatch(content);
+  if (match == null) return content;
+  String norm(String s) => s.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
+  if (norm(match.group(1)!) != norm(title)) return content;
+  return content.substring(match.end).trimLeft();
 }
 
 /**
@@ -235,17 +265,18 @@ class _MarkdownContent extends StatelessWidget {
       data: content,
       selectable: true,
       styleSheet: MarkdownStyleSheet(
-        h1: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: colors.textPrimary),
-        h2: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: colors.textPrimary),
-        h3: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: colors.textPrimary),
-        p: TextStyle(fontSize: 16, color: colors.textPrimary, height: 1.6),
-        blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: colors.textPrimary, height: 1.5),
+        // Long-form reading: serif body at 18/28, headings in the same serif family.
+        h1: TextStyle(fontFamily: AppFonts.serif, fontSize: AppType.title, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.3),
+        h2: TextStyle(fontFamily: AppFonts.serif, fontSize: 20, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.3),
+        h3: TextStyle(fontFamily: AppFonts.serif, fontSize: AppType.headline, fontWeight: FontWeight.w600, color: colors.textPrimary, height: 1.35),
+        p: TextStyle(fontFamily: AppFonts.serif, fontSize: 18, color: colors.textPrimary, height: 28 / 18),
+        pPadding: const EdgeInsets.only(bottom: AppSpacing.xs),
+        // Hanging italic quote: a hairline rule, no tinted box.
+        blockquote: TextStyle(fontFamily: AppFonts.serif, fontSize: 18, fontStyle: FontStyle.italic, color: colors.textSecondary, height: 28 / 18),
         blockquoteDecoration: BoxDecoration(
-          color: colors.accent.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          border: Border(left: BorderSide(color: colors.accent.withValues(alpha: 0.5), width: 3)),
+          border: Border(left: BorderSide(color: colors.textMuted.withValues(alpha: 0.4), width: 1)),
         ),
-        blockquotePadding: const EdgeInsets.all(AppSpacing.lg),
+        blockquotePadding: const EdgeInsets.only(left: AppSpacing.lg, top: AppSpacing.xs, bottom: AppSpacing.xs),
         listBullet: TextStyle(color: colors.accent),
         strong: TextStyle(fontWeight: FontWeight.w600, color: colors.textPrimary),
         em: TextStyle(fontStyle: FontStyle.italic, color: colors.textPrimary),
