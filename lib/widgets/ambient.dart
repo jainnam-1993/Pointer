@@ -577,7 +577,7 @@ class _AmbientBackgroundState extends State<AmbientBackground> {
 
   @override
   Widget build(BuildContext context) {
-    final visible = TickerMode.of(context);
+    final visible = TickerMode.valuesOf(context).enabled;
     final live = widget.animate && visible && widget.palette.aurora + widget.palette.motes > 0;
     return RepaintBoundary(
       child: CustomPaint(
@@ -602,7 +602,12 @@ class AmbientFrost extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderAmbientFrost(frost: frost, palette: palette, animate: animate && TickerMode.of(context), screen: MediaQuery.sizeOf(context));
+    return RenderAmbientFrost(
+      frost: frost,
+      palette: palette,
+      animate: animate && TickerMode.valuesOf(context).enabled,
+      screen: MediaQuery.sizeOf(context),
+    );
   }
 
   @override
@@ -610,7 +615,7 @@ class AmbientFrost extends LeafRenderObjectWidget {
     renderObject
       ..frost = frost
       ..palette = palette
-      ..animate = animate && TickerMode.of(context)
+      ..animate = animate && TickerMode.valuesOf(context).enabled
       ..screen = MediaQuery.sizeOf(context)
       ..scroll = Scrollable.maybeOf(context)?.position;
   }

@@ -8,7 +8,7 @@
 library;
 
 import 'package:flutter/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:pointer/theme/phosphor_icons.dart';
 
 /** Spiritual lineage/tradition a pointing originates from. */
 enum Tradition {

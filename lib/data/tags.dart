@@ -7,7 +7,7 @@
 library;
 
 import 'package:flutter/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:pointer/theme/phosphor_icons.dart';
 
 /**
  * Predefined topic tag constants for consistent content classification.

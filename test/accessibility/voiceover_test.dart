@@ -92,7 +92,7 @@ void main() {
 
       // GlassButton exposes a button node (PressScale), with no ink ripple on glass.
       expect(find.byType(InkWell), findsNothing);
-      expect(tester.getSemantics(find.byType(GlassButton)), containsSemantics(isButton: true));
+      expect(tester.getSemantics(find.byType(GlassButton)), isSemantics(isButton: true));
     });
   });
 

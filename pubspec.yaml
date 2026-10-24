@@ -54,7 +54,7 @@ dependencies:
   flutter_svg: ^2.0.10
   flutter_markdown_plus: ^1.0.6
   animations: ^2.1.1
-  phosphor_flutter: ^2.1.0
+  phosphor_flutter: ^2.1.0   # fonts only; its Dart API extends the now-final IconData (see lib/theme/phosphor_icons.dart)
   package_info_plus: ^9.0.0
 
 dev_dependencies:
