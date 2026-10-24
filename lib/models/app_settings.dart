@@ -7,6 +7,8 @@
  */
 library;
 
+import 'package:flutter/foundation.dart';
+
 class AppSettings {
   /** Whether haptic feedback is enabled for interactions. */
   final bool hapticFeedback;
@@ -76,16 +78,47 @@ class AppSettings {
     'animationsEnabled': animationsEnabled,
   };
 
+  /**
+   * Builds settings from persisted JSON, field by field.
+   *
+   * A missing field takes its default. A field of the wrong type (left by an
+   * older schema or a manual edit) also takes its default, while the valid
+   * fields are kept; the rejected fields are logged once per call.
+   */
   factory AppSettings.fromJson(Map<String, dynamic> json) {
-    return AppSettings(
-      hapticFeedback: json['hapticFeedback'] ?? true,
-      autoAdvance: json['autoAdvance'] ?? true, // Default ON
-      autoAdvanceDelay: json['autoAdvanceDelay'] ?? 60, // 1 minute
-      theme: json['theme'] ?? 'system',
-      highContrast: json['highContrast'] ?? false,
-      oledMode: json['oledMode'] ?? false,
-      zenMode: json['zenMode'] ?? false,
-      animationsEnabled: json['animationsEnabled'] ?? true,
+    const defaults = AppSettings();
+    final rejected = <String>[];
+
+    T read<T>(String key, T fallback) {
+      final value = json[key];
+      if (value == null) return fallback;
+      if (value is T) return value;
+      rejected.add(key);
+      return fallback;
+    }
+
+    int readInt(String key, int fallback) {
+      final value = json[key];
+      if (value == null) return fallback;
+      if (value is int) return value;
+      if (value is num && value.isFinite && value == value.roundToDouble()) return value.toInt();
+      rejected.add(key);
+      return fallback;
+    }
+
+    final settings = AppSettings(
+      hapticFeedback: read<bool>('hapticFeedback', defaults.hapticFeedback),
+      autoAdvance: read<bool>('autoAdvance', defaults.autoAdvance),
+      autoAdvanceDelay: readInt('autoAdvanceDelay', defaults.autoAdvanceDelay),
+      theme: read<String>('theme', defaults.theme),
+      highContrast: read<bool>('highContrast', defaults.highContrast),
+      oledMode: read<bool>('oledMode', defaults.oledMode),
+      zenMode: read<bool>('zenMode', defaults.zenMode),
+      animationsEnabled: read<bool>('animationsEnabled', defaults.animationsEnabled),
     );
+    if (rejected.isNotEmpty) {
+      debugPrint('AppSettings: ignoring wrong-typed saved fields ${rejected.join(', ')}; using defaults for them');
+    }
+    return settings;
   }
 }
