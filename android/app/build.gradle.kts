@@ -51,6 +51,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Launcher and widget-picker label. Test build types override it below.
+        resValue("string", "launcher_label", "Here Now")
     }
 
     signingConfigs {
@@ -63,6 +65,19 @@ android {
     }
 
     buildTypes {
+        // Debug and profile builds install BESIDE the real app (com.dailypointer.test),
+        // never over it: their own data, widgets, notifications and launcher entry.
+        // namespace (Kotlin package, R class) stays com.dailypointer; only applicationId changes.
+        debug {
+            applicationIdSuffix = ".test"
+            versionNameSuffix = "-test"
+            resValue("string", "launcher_label", "Here Now Test")
+        }
+        maybeCreate("profile").apply {
+            applicationIdSuffix = ".test"
+            versionNameSuffix = "-test"
+            resValue("string", "launcher_label", "Here Now Test")
+        }
         release {
             // Never ship a debug-signed release by accident. Local verification can
             // opt in with -PpointerAllowDebugSigning=true or the env var
