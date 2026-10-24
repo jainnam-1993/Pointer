@@ -83,6 +83,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  shaders:
+    - shaders/ambient.frag
+
   assets:
     - assets/
     - assets/audio/

@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../providers/providers.dart';
+import 'ambient.dart';
 import 'animated_gradient.dart';
 
 /**
@@ -121,10 +121,13 @@ class GlassCard extends ConsumerWidget {
   Widget _buildGlassCard(BuildContext context, WidgetRef ref, PointerColors colors, bool isDark) {
     // Get blur and opacity values based on intensity - iOS Control Center style
     final (double blur, double topAlpha, double bottomAlpha) = switch (intensity) {
-      GlassIntensity.light => isDark ? (25.0, 0.15, 0.08) : (20.0, 0.7, 0.45),
-      GlassIntensity.standard => isDark ? (35.0, 0.25, 0.12) : (30.0, 0.85, 0.6),
-      GlassIntensity.heavy => isDark ? (45.0, 0.38, 0.20) : (40.0, 0.95, 0.75),
+      // First value is now the analytic frost amount (0..1), not a blur sigma.
+      // Fills are thinner than the old blur-era values so the frost shows through.
+      GlassIntensity.light => isDark ? (0.6, 0.07, 0.03) : (0.6, 0.42, 0.26),
+      GlassIntensity.standard => isDark ? (0.8, 0.10, 0.04) : (0.8, 0.52, 0.34),
+      GlassIntensity.heavy => isDark ? (1.0, 0.16, 0.07) : (1.0, 0.66, 0.48),
     };
+    final frost = blur;
 
     // iOS-style glass gradient
     final glassGradient = LinearGradient(
@@ -162,73 +165,61 @@ class GlassCard extends ConsumerWidget {
       );
     }
 
-    // Check if breathing animation should be enabled
-    // Respects: reduceMotion accessibility, test environment, flag,
-    // and whether background gradient shimmer is already running
-    final appOverride = ref.watch(reduceMotionOverrideProvider);
-    final reduceMotion = shouldReduceMotion(context, appOverride);
-    var shouldAnimate = enableBreathingAnimation && !reduceMotion && !AnimatedGradient.disableAnimations && !AnimatedGradient.isTestEnvironment();
-    // Only check background shimmer when animation would otherwise be enabled.
-    // Deferred watch avoids settingsProvider dependency chain in tests/disabled states.
-    if (shouldAnimate) {
-      shouldAnimate = !ref.watch(backgroundShimmerActiveProvider);
-    }
+    // Analytic frost: the ambient shader evaluated at this card's position with
+    // frost settings stands in for a live BackdropFilter. [enableBreathingAnimation]
+    // is kept for API compatibility; the frost already moves with the background.
+    final palette = ambientPaletteForTheme(context);
+    final animate = ambientMotionEnabled(context, ref);
+    final radius = BorderRadius.circular(borderRadius);
 
-    // Build the inner container with optional breathing animation overlay
-    Widget glassContainer = Container(
+    final material = Container(
       padding: padding,
-      decoration: BoxDecoration(
-        gradient: glassGradient,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.5 : 1),
+      decoration: BoxDecoration(gradient: glassGradient, borderRadius: radius),
+      // Top-edge highlight: a soft sheen across the upper third.
+      foregroundDecoration: BoxDecoration(
+        borderRadius: radius,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0, 0.35],
+          colors: [
+            Colors.white.withValues(alpha: isDark ? 0.07 : 0.35),
+            Colors.white.withValues(alpha: 0),
+          ],
+        ),
       ),
       child: constrainedContent,
     );
 
-    // Add breathing shimmer overlay when enabled
-    if (shouldAnimate) {
-      // Subtle shimmer that "breathes" - slower than background for layered effect
-      // Uses theme's shimmerColor for consistency
-      final shimmerColor = colors.shimmerColor.withValues(
-        alpha: isDark ? 0.12 : 0.08, // Very subtle - not distracting
-      );
-
-      glassContainer = Stack(
-        children: [
-          glassContainer,
-          // Animated shimmer overlay — RepaintBoundary isolates shimmer repaints
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: IgnorePointer(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius)))
-                      .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                      .shimmer(
-                        duration: 8000.ms, // Slower than 4s background for layered feel
-                        color: shimmerColor,
-                        angle: 0.5, // Slight diagonal for organic feel
-                      ),
-                ),
-              ),
-            ),
+    final card = DecoratedBox(
+      // Soft shadow in both themes, plus the hairline rim drawn outside the clip.
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.32 : 0.08),
+            blurRadius: isDark ? 24 : 20,
+            offset: const Offset(0, 6),
           ),
         ],
-      );
-    }
-
-    final card = Container(
-      decoration: isDark
-          ? null
-          : BoxDecoration(
-              borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 4))],
-            ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: glassContainer,
+      ),
+      position: DecorationPosition.background,
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          border: GradientBoxBorder(gradient: borderGradient, width: isDark ? 1.0 : 1),
+        ),
+        child: ClipRRect(
+          borderRadius: radius,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: AmbientFrost(frost: frost, palette: palette, animate: animate),
+              ),
+              material,
+            ],
+          ),
         ),
       ),
     );
@@ -280,7 +271,7 @@ class GlassButton extends ConsumerWidget {
       return _buildHighContrastButton(context);
     }
 
-    return _buildGlassButton(context, colors, isDark);
+    return _buildGlassButton(context, ref, colors, isDark);
   }
 
   Widget _buildHighContrastButton(BuildContext context) {
@@ -322,7 +313,7 @@ class GlassButton extends ConsumerWidget {
     );
   }
 
-  Widget _buildGlassButton(BuildContext context, PointerColors colors, bool isDark) {
+  Widget _buildGlassButton(BuildContext context, WidgetRef ref, PointerColors colors, bool isDark) {
     final spinnerColor = colors.primary;
 
     final glassGradient = isDark
@@ -358,31 +349,36 @@ class GlassButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppSpacing.xxl),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppSpacing.xxl),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
-                decoration: BoxDecoration(
-                  gradient: glassGradient,
-                  borderRadius: BorderRadius.circular(AppSpacing.xxl),
-                  border: GradientBoxBorder(gradient: borderGradient, width: 1),
+            // Analytic frost instead of a live blur (see GlassCard).
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: AmbientFrost(frost: 0.7, palette: ambientPaletteForTheme(context), animate: ambientMotionEnabled(context, ref)),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (isLoading)
-                      SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor))
-                    else ...[
-                      Text(
-                        label,
-                        style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                      if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: glassGradient,
+                    borderRadius: BorderRadius.circular(AppSpacing.xxl),
+                    border: GradientBoxBorder(gradient: borderGradient, width: 1),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (isLoading)
+                        SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: spinnerColor))
+                      else ...[
+                        Text(
+                          label,
+                          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
+                        ),
+                        if (icon != null) ...[const SizedBox(width: AppSpacing.sm), icon!],
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -444,7 +440,14 @@ class GlassDialog extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xl),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: actions!.map((action) => Padding(padding: const EdgeInsets.only(left: AppSpacing.sm), child: action)).toList(),
+                    children: actions!
+                        .map(
+                          (action) => Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.sm),
+                            child: action,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ],
               ],

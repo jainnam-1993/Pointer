@@ -45,6 +45,9 @@ import flutter_local_notifications
     settingsChannel.setMethodCallHandler { [weak self] (call, result) in
       if call.method == "openNotificationSettings" {
         self?.openNotificationSettings(result: result)
+      } else if call.method == "isLowPowerMode" {
+        // Ambient clock drops to 15 fps in Low Power Mode (UNVERIFIED on device).
+        result(ProcessInfo.processInfo.isLowPowerModeEnabled)
       } else {
         result(FlutterMethodNotImplemented)
       }
