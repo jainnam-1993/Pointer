@@ -13,8 +13,8 @@ package com.dailypointer
  *
  * The alpha is the least that keeps the white quote at [QUOTE_MIN] and the 80% white teacher line
  * at [SECONDARY_MIN] over the brightest colour the wallpaper is likely to put behind the card.
- * WallpaperColors are dominant colours, not the brightest pixels, so the brightest is pushed [MARGIN] toward
- * white; a wallpaper that supports dark text (a light wallpaper) is treated as white outright.
+ * WallpaperColors are dominant colours, not the brightest pixels, so the brightest is pushed toward white
+ * ([MARGIN], or [DARK_MARGIN] on a uniformly dark wallpaper); a wallpaper that supports dark text (a light wallpaper) is treated as white outright.
  * Pure Kotlin (ARGB ints), so the rule runs as a JVM unit test.
  */
 object GlassRule {
@@ -26,7 +26,17 @@ object GlassRule {
     /** The glassiest the card gets, and the most opaque it may become for a white wallpaper. */
     const val MIN_ALPHA = 0.40
     const val MAX_ALPHA = 0.95
-    const val MARGIN = 0.60
+    /**
+     * How far the brightest dominant colour is pushed toward white to estimate the brightest pixel
+     * behind the card. Measured on a Fold: a busy photo whose dominant colours peak near 0.3
+     * luminance still had bright yellow and white patches behind the card (5.6:1 at 0.35), so any
+     * wallpaper that is not uniformly dark is assumed to be nearly white somewhere. A uniformly
+     * dark wallpaper (brightest dominant colour under [DARK_WALLPAPER]) keeps the small margin and
+     * the glassiest card.
+     */
+    const val MARGIN = 0.80
+    const val DARK_MARGIN = 0.35
+    const val DARK_WALLPAPER = 0.06
     /** Measured on a Fold: rendered glyphs and the system tint land up to about 0.5:1 under the model. */
     const val HEADROOM = 0.6
 
@@ -34,7 +44,8 @@ object GlassRule {
     fun worstCase(colors: List<Int>, supportsDarkText: Boolean): Int {
         if (supportsDarkText || colors.isEmpty()) return FrostPalette.WHITE
         val brightest = colors.maxBy { FrostPalette.luminance(it) }
-        return FrostPalette.mix(brightest, FrostPalette.WHITE, MARGIN)
+        val margin = if (FrostPalette.luminance(brightest) < DARK_WALLPAPER) DARK_MARGIN else MARGIN
+        return FrostPalette.mix(brightest, FrostPalette.WHITE, margin)
     }
 
     /** What the card looks like over [behind] at [alpha]. */
