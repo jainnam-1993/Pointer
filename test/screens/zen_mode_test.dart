@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/theme/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -208,8 +209,8 @@ void main() {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: false));
 
       // Verify full UI elements are present (Phase 5.11: TraditionBadge is inline, Share is icon)
-      expect(find.byType(GlassCard), findsNWidgets(2)); // Pointing card + mini-inquiry card
-      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      expect(find.byType(GlassCard), findsOneWidget); // One plate: the inquiry entry is a quiet text action
+      expect(find.byIcon(AppIcons.share), findsOneWidget);
       expect(find.text('Next'), findsOneWidget);
 
       // Verify content is visible
@@ -226,7 +227,7 @@ void main() {
 
       // Verify non-essential UI elements are hidden (Phase 5.11: TraditionBadge inline, Share is icon)
       expect(find.byType(GlassCard), findsNothing);
-      expect(find.byIcon(Icons.ios_share), findsNothing);
+      expect(find.byIcon(AppIcons.share), findsNothing);
       expect(find.text('Next'), findsNothing);
       expect(find.text('Tap for another invitation to look'), findsNothing);
 
