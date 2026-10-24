@@ -239,9 +239,14 @@ struct WidgetPalette {
     let env: WidgetEnvironment
     let dark: Bool
 
-    var ink: Color { env.fullColor ? (dark ? Color(hex: "F4F1EC") : Color(hex: "1D1B20")) : .primary }
-    var secondary: Color { env.fullColor ? (dark ? Color(hex: "B4AFB8") : Color(hex: "5A5560")) : .secondary }
-    var accent: Color { env.fullColor ? (dark ? Color(hex: "B79CFF") : Color(hex: "6D28D9")) : .primary }
+    // Full colour is the same mid-tone glass panel as the Android widget (the visionOS target),
+    // identical in light and dark: white quote (8.3:1 on the panel), teacher line and eyebrow at
+    // 80% white (5.8:1), white glyphs. Accented and vibrant modes hand colour to the system.
+    var ink: Color { env.fullColor ? Color(hex: "F5F2EE") : .primary }
+    var secondary: Color { env.fullColor ? Color(hex: "F5F2EE").opacity(0.80) : .secondary }
+    var accent: Color { env.fullColor ? Color(hex: "F5F2EE").opacity(0.80) : .primary }
+    /// Glass control fill (Save circle, Previous/Next capsule); none outside full colour.
+    var controlFill: Color { env.fullColor ? Color.white.opacity(0.18) : .clear }
 }
 
 /// Type: the bundled Newsreader serif for the pointing (New York if it fails to register), SF for the rest.
@@ -538,16 +543,21 @@ struct PointerControls: View {
     let spread: Bool
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 6) {
             Button(intent: SavePointingIntent(pointingId: data.id ?? "")) {
                 glyph(data.isFavorite ? "heart.fill" : "heart")
             }
+            .background(Circle().fill(palette.controlFill))
             .accessibilityLabel(data.isFavorite ? "Saved to favorites" : "Save to favorites")
             if spread { Spacer(minLength: 0) }
-            Button(intent: PreviousPointingIntent()) { glyph("chevron.left") }
-                .accessibilityLabel("Previous pointing")
-            Button(intent: NextPointingIntent()) { glyph("chevron.right") }
-                .accessibilityLabel("Next pointing")
+            // Previous and Next share one glass capsule, like the target's paired controls.
+            HStack(spacing: 0) {
+                Button(intent: PreviousPointingIntent()) { glyph("chevron.left") }
+                    .accessibilityLabel("Previous pointing")
+                Button(intent: NextPointingIntent()) { glyph("chevron.right") }
+                    .accessibilityLabel("Next pointing")
+            }
+            .background(Capsule().fill(palette.controlFill))
         }
         .buttonStyle(.plain)
         .pointerAccentable()
@@ -557,7 +567,7 @@ struct PointerControls: View {
         Image(systemName: name)
             .font(.body.weight(.semibold))
             .imageScale(target >= 44 ? .large : .medium)
-            .foregroundStyle(palette.accent)
+            .foregroundStyle(palette.ink)
             .frame(width: target, height: target)
             .contentShape(Rectangle())
     }
@@ -565,11 +575,11 @@ struct PointerControls: View {
 
 // MARK: - Container Background
 
-/// The calm card: warm paper in light, soft graphite in dark, with a faint violet light from the top.
-/// It is the container background, so the system removes it in StandBy, tinted and clear modes.
+/// The glass panel: one mid-tone violet in light and dark (OKLCH L 0.36 to 0.31, like the Android
+/// widget's panel; WidgetKit cannot read the wallpaper's colours), a soft top sheen, a thin light
+/// rim, a 1 pt top highlight and static grain. It is the container background, so the system
+/// removes it in StandBy, tinted and clear modes and shows its own Liquid Glass there.
 struct WidgetCardBackground: View {
-    @Environment(\.colorScheme) var colorScheme
-
     var body: some View {
         // Tinted, clear and accented modes: draw nothing, so only the system glass shows.
         WidgetEnvironmentReader { env in
@@ -577,25 +587,14 @@ struct WidgetCardBackground: View {
         }
     }
 
-    /// Full colour: the palette gradient, a soft violet light, a 1 pt inner top highlight
-    /// (white 0.25 fading out over the top 40%) and a static 2% grain.
     private var card: some View {
-        let dark = colorScheme == .dark
-        return ZStack {
-            LinearGradient(
-                colors: dark ? [Color(hex: "242229"), Color(hex: "1C1B1F")] : [Color(hex: "FBFAF7"), Color(hex: "F1EEE8")],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            RadialGradient(
-                colors: [Color(hex: dark ? "B79CFF" : "8B5CF6").opacity(dark ? 0.10 : 0.06), .clear],
-                center: .topLeading,
-                startRadius: 0,
-                endRadius: 260
-            )
-            LinearGradient(colors: [.white.opacity(0.25), .clear], startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.4))
+        ZStack {
+            LinearGradient(colors: [Color(hex: "413754"), Color(hex: "382846")], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [.white.opacity(0.06), .clear], startPoint: .top, endPoint: .center)
+            ContainerRelativeShape().strokeBorder(Color.white.opacity(0.30), lineWidth: 1)
+            LinearGradient(colors: [.white.opacity(0.45), .clear], startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.25))
                 .mask(ContainerRelativeShape().strokeBorder(lineWidth: 1))
-            WidgetGrain().opacity(0.02)
+            WidgetGrain().opacity(0.03)
         }
     }
 }
