@@ -26,6 +26,8 @@ import 'providers/providers.dart';
 import 'router.dart';
 import 'widgets/shared_ambient.dart';
 import 'services/app_initializer.dart';
+import 'services/launch_link_buffer.dart';
+import 'services/widget_service.dart';
 import 'debug/maestro_hooks.dart';
 import 'services/notification_content.dart';
 import 'theme/app_theme.dart';
@@ -64,8 +66,7 @@ void _onForegroundNotificationResponse(NotificationResponse response) {
 
 /** Buffer a pointing deep link and navigate once startup content is ready. */
 void _routeToPointing(String pointingId) {
-  _pendingWidgetUri = 'dailypointer://pointing/$pointingId';
-  _drainPendingWidgetUri();
+  _launchLink.offer('dailypointer://pointing/$pointingId');
 }
 
 /** Cold start from a notification tap: open the pointing it showed. */
@@ -83,31 +84,27 @@ Future<void> _captureNotificationLaunch() async {
 }
 
 /**
- * URI buffered from a widget deep-link that arrived before critical startup
- * content finished loading. Drained once [AppInitializer.criticalContentReady]
- * completes.
+ * The pending pointing deep link (widget or notification tap). Every producer
+ * offers through it, so a link that arrives after the startup drain still lands.
  */
-String? _pendingWidgetUri;
+final _launchLink = LaunchLinkBuffer(isReady: () => _globalContainer != null && AppInitializer.isCriticalContentReady, deliver: _openPointingLink);
 
 /**
- * Listens for widget-click deep-links and buffers them in [_pendingWidgetUri]
+ * Listens for widget-click deep-links and offers them to [_launchLink]
  * instead of navigating immediately — prevents the deep-link from racing with
  * the splash screen or SharedPreferences cache on cold start.
  */
 void _setupWidgetDeepLink() {
   // Check for an initial (cold-start) widget click URI.
-  HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
-    if (uri != null) {
-      _pendingWidgetUri = uri.toString();
-    }
+  WidgetService.initialLaunchUri().then((uri) {
+    if (uri != null) _launchLink.offer(uri.toString());
   });
 
   // Listen for widget clicks while the app is running (iOS widgetURL). This is the only
   // widget-tap listener; Android taps are pulled by [_pullAndroidWidgetTap].
   HomeWidget.widgetClicked.listen((uri) {
     if (uri == null) return;
-    _pendingWidgetUri = uri.toString();
-    _drainPendingWidgetUri();
+    _launchLink.offer(uri.toString());
   });
 }
 
@@ -121,30 +118,17 @@ Future<void> _pullAndroidWidgetTap() async {
   if (container == null) return;
   final id = await container.read(widgetServiceProvider).takePendingWidgetPointingId();
   if (id == null || id.isEmpty) return;
-  _pendingWidgetUri = 'dailypointer://pointing/$id';
-  _drainPendingWidgetUri();
+  _launchLink.offer('dailypointer://pointing/$id');
 }
 
-/**
- * If critical startup content is ready and a pending URI is buffered,
- * navigate to the home screen and clear the buffer.
- */
-void _drainPendingWidgetUri() {
-  if (_pendingWidgetUri == null || _globalContainer == null) return;
-  if (!AppInitializer.isCriticalContentReady) return;
-
-  final uri = Uri.tryParse(_pendingWidgetUri!);
+/** Show the linked pointing on Home; unknown ids still land on Home. */
+void _openPointingLink(Uri uri) {
   var found = true;
-  if (uri != null && uri.host == 'pointing' && uri.pathSegments.isNotEmpty) {
+  if (uri.host == 'pointing' && uri.pathSegments.isNotEmpty) {
     found = _globalContainer!.read(currentPointingProvider.notifier).setPointingById(uri.pathSegments.first);
   }
-  final router = _globalContainer!.read(routerProvider);
-  router.go('/');
-  if (!found) {
-    final missingId = (uri != null && uri.pathSegments.isNotEmpty) ? uri.pathSegments.first : null;
-    debugPrint('[WidgetDeepLink] Pointing not found after startup: $missingId');
-  }
-  _pendingWidgetUri = null;
+  _globalContainer!.read(routerProvider).go('/');
+  if (!found) debugPrint('[WidgetDeepLink] Pointing not found after startup: ${uri.pathSegments.firstOrNull}');
 }
 
 /**
@@ -185,7 +169,7 @@ void main() async {
   unawaited(
     AppInitializer.criticalContentReady
         .then((_) {
-          _drainPendingWidgetUri();
+          _launchLink.drain();
           return _pullAndroidWidgetTap();
         })
         .catchError((error, stackTrace) {
