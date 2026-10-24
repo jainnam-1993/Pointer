@@ -28,8 +28,7 @@
       "morning"
     ],
     "teacher": "Ramana Maharshi",
-    "source": "Talks with Sri Ramana Maharshi",
-    "audioUrl": "asset:///assets/audio/ramana_who_am_i.mp3"
+    "source": "Talks with Sri Ramana Maharshi"
   },
   {
     "id": "adv-4",
@@ -50,8 +49,7 @@
       "general"
     ],
     "teacher": "Nisargadatta Maharaj",
-    "source": "I Am That",
-    "audioUrl": "asset:///assets/audio/nisargadatta_world_in_you.mp3"
+    "source": "I Am That"
   },
   {
     "id": "adv-6",
@@ -126,8 +124,7 @@
       "general"
     ],
     "teacher": "Rupert Spira",
-    "source": "The Nature of Consciousness",
-    "audioUrl": "asset:///assets/audio/spira_what_is_looking.mp3"
+    "source": "The Nature of Consciousness"
   },
   {
     "id": "dir-3",
@@ -165,8 +162,7 @@
       "stress"
     ],
     "teacher": "Eckhart Tolle",
-    "source": "The Power of Now",
-    "audioUrl": "asset:///assets/audio/tolle_present_moment.mp3"
+    "source": "The Power of Now"
   },
   {
     "id": "con-3",
@@ -177,8 +173,7 @@
       "general"
     ],
     "teacher": "Pema Chodron",
-    "source": "When Things Fall Apart",
-    "audioUrl": "asset:///assets/audio/pema_sky_weather.mp3"
+    "source": "When Things Fall Apart"
   },
   {
     "id": "ori-601",
