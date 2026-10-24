@@ -4,14 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_gradient.dart';
 import '../widgets/glass_card.dart';
 
 /**
  * Root shell widget providing bottom navigation and tab management.
  *
  * Wraps the [StatefulNavigationShell] from GoRouter with horizontal swipe
- * gestures for tab switching, [FloatingParticles] background, and a
+ * gestures for tab switching (dust motes now come from the ambient shader), and a
  * glassmorphic [_BottomNavBar]. Hides the nav bar in zen mode.
  *
  * The [navigationShell] must NOT be wrapped in [AnimatedSwitcher] or
@@ -68,38 +67,26 @@ class _MainShellState extends ConsumerState<MainShell> {
           if (didPop) return;
           widget.navigationShell.goBranch(0);
         },
-        child: Scaffold(
-          body: Stack(
-            children: [
-              // Global particles effect (behind content) — RepaintBoundary isolates
-              // continuous particle animations from triggering full-tree repaints
-              const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-              content,
-            ],
-          ),
-          extendBody: true,
-        ),
+        child: Scaffold(body: Stack(children: [content]), extendBody: true),
       );
     }
 
+    // BackdropGroup lets the tab bar share one backdrop read with any other
+    // grouped blur in the shell (BackdropFilter.grouped).
     return PopScope(
       canPop: !shouldInterceptBack,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         widget.navigationShell.goBranch(0);
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            // Global particles effect (behind content)
-            const Positioned.fill(child: RepaintBoundary(child: FloatingParticles())),
-            content,
-          ],
-        ),
-        extendBody: true,
-        bottomNavigationBar: _BottomNavBar(
-          currentIndex: currentIndex,
-          onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+      child: BackdropGroup(
+        child: Scaffold(
+          body: Stack(children: [content]),
+          extendBody: true,
+          bottomNavigationBar: _BottomNavBar(
+            currentIndex: currentIndex,
+            onTap: (index) => widget.navigationShell.goBranch(index, initialLocation: index == currentIndex),
+          ),
         ),
       ),
     );
@@ -127,7 +114,6 @@ class _BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<_BottomNavBar> {
-
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -196,7 +182,8 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
+        // Live blur stays here: the tab bar floats over scrolling content.
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 35, sigmaY: 35),
           child: Container(
             height: navHeight,
@@ -209,44 +196,44 @@ class _BottomNavBarState extends State<_BottomNavBar> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Row(
-                      children: [
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.spa_outlined,
-                            activeIcon: Icons.spa,
-                            label: 'Home',
-                            isActive: widget.currentIndex == 0,
-                            onTap: () => widget.onTap(0),
-                          ),
-                        ),
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.self_improvement_outlined,
-                            activeIcon: Icons.self_improvement,
-                            label: 'Inquiry',
-                            isActive: widget.currentIndex == 1,
-                            onTap: () => widget.onTap(1),
-                          ),
-                        ),
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.menu_book_outlined,
-                            activeIcon: Icons.menu_book,
-                            label: 'Library',
-                            isActive: widget.currentIndex == 2,
-                            onTap: () => widget.onTap(2),
-                          ),
-                        ),
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.settings_outlined,
-                            activeIcon: Icons.settings,
-                            label: 'Settings',
-                            isActive: widget.currentIndex == 3,
-                            onTap: () => widget.onTap(3),
-                          ),
-                        ),
-                      ],
+                  children: [
+                    Expanded(
+                      child: _NavItem(
+                        icon: Icons.spa_outlined,
+                        activeIcon: Icons.spa,
+                        label: 'Home',
+                        isActive: widget.currentIndex == 0,
+                        onTap: () => widget.onTap(0),
+                      ),
+                    ),
+                    Expanded(
+                      child: _NavItem(
+                        icon: Icons.self_improvement_outlined,
+                        activeIcon: Icons.self_improvement,
+                        label: 'Inquiry',
+                        isActive: widget.currentIndex == 1,
+                        onTap: () => widget.onTap(1),
+                      ),
+                    ),
+                    Expanded(
+                      child: _NavItem(
+                        icon: Icons.menu_book_outlined,
+                        activeIcon: Icons.menu_book,
+                        label: 'Library',
+                        isActive: widget.currentIndex == 2,
+                        onTap: () => widget.onTap(2),
+                      ),
+                    ),
+                    Expanded(
+                      child: _NavItem(
+                        icon: Icons.settings_outlined,
+                        activeIcon: Icons.settings,
+                        label: 'Settings',
+                        isActive: widget.currentIndex == 3,
+                        onTap: () => widget.onTap(3),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -325,10 +312,7 @@ class _NavItem extends StatelessWidget {
                 curve: Curves.easeOutCubic,
                 width: isActive ? indicatorWidth : 0,
                 height: 3,
-                decoration: BoxDecoration(
-                  color: isActive ? colors.accent : Colors.transparent,
-                  borderRadius: BorderRadius.circular(1.5),
-                ),
+                decoration: BoxDecoration(color: isActive ? colors.accent : Colors.transparent, borderRadius: BorderRadius.circular(1.5)),
               ),
               const SizedBox(height: 4),
             ],

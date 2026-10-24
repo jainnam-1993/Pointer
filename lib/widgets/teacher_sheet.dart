@@ -54,7 +54,7 @@ class TeacherSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
-          child: BackdropFilter(
+          child: BackdropFilter.grouped(
             filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
             child: Container(
               decoration: BoxDecoration(
@@ -82,12 +82,22 @@ class TeacherSheet extends StatelessWidget {
                   Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
-                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+                      decoration: BoxDecoration(
+                        color: colors.accent.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Semantics(excludeSemantics: true, label: traditionInfo.name, child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12))),
-                          Text(' ${traditionInfo.name}', style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500)),
+                          Semantics(
+                            excludeSemantics: true,
+                            label: traditionInfo.name,
+                            child: Text(traditionInfo.icon, style: TextStyle(color: colors.accent, fontSize: 12)),
+                          ),
+                          Text(
+                            ' ${traditionInfo.name}',
+                            style: TextStyle(color: colors.accent, fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),

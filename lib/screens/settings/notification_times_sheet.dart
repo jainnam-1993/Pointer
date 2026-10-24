@@ -72,92 +72,90 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
 
             return ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
-                child: Container(
-                  height: pickerHeight,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: isDark ? 0.25 : 0.90),
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  ),
-                  child: Column(
-                    children: [
-                      // Header
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel', style: TextStyle(color: context.colors.textSecondary)),
+              // No blur: this picker opens over the already blurred schedule sheet.
+              child: Container(
+                height: pickerHeight,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1D26).withValues(alpha: 0.96) : Colors.white.withValues(alpha: 0.97),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Cancel', style: TextStyle(color: context.colors.textSecondary)),
+                          ),
+                          Text(
+                            isStart ? 'Start Time' : 'End Time',
+                            style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              setState(() {
+                                _schedule = isStart
+                                    ? _schedule.copyWith(startHour: selectedHour, startMinute: selectedMinute)
+                                    : _schedule.copyWith(endHour: selectedHour, endMinute: selectedMinute);
+                              });
+                              await _saveSchedule();
+                            },
+                            child: Text(
+                              'Done',
+                              style: TextStyle(color: context.colors.accent, fontWeight: FontWeight.w600),
                             ),
-                            Text(
-                              isStart ? 'Start Time' : 'End Time',
-                              style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                setState(() {
-                                  _schedule = isStart
-                                      ? _schedule.copyWith(startHour: selectedHour, startMinute: selectedMinute)
-                                      : _schedule.copyWith(endHour: selectedHour, endMinute: selectedMinute);
-                                });
-                                await _saveSchedule();
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Time picker wheels
+                    Expanded(
+                      child: Row(
+                        children: [
+                          // Hour wheel
+                          Expanded(
+                            child: CupertinoPicker(
+                              scrollController: FixedExtentScrollController(initialItem: selectedHour),
+                              itemExtent: 40,
+                              onSelectedItemChanged: (index) {
+                                setSheetState(() => selectedHour = index);
                               },
-                              child: Text(
-                                'Done',
-                                style: TextStyle(color: context.colors.accent, fontWeight: FontWeight.w600),
-                              ),
+                              children: List.generate(24, (index) {
+                                final displayHour = index == 0 ? 12 : (index > 12 ? index - 12 : index);
+                                final period = index < 12 ? 'AM' : 'PM';
+                                return Center(
+                                  child: Text('$displayHour $period', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20)),
+                                );
+                              }),
                             ),
-                          ],
-                        ),
+                          ),
+                          // Minute wheel
+                          Expanded(
+                            child: CupertinoPicker(
+                              scrollController: FixedExtentScrollController(initialItem: selectedMinute),
+                              itemExtent: 40,
+                              onSelectedItemChanged: (index) {
+                                setSheetState(() => selectedMinute = index);
+                              },
+                              children: List.generate(60, (index) {
+                                return Center(
+                                  child: Text(
+                                    index.toString().padLeft(2, '0'),
+                                    style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                        ],
                       ),
-                      // Time picker wheels
-                      Expanded(
-                        child: Row(
-                          children: [
-                            // Hour wheel
-                            Expanded(
-                              child: CupertinoPicker(
-                                scrollController: FixedExtentScrollController(initialItem: selectedHour),
-                                itemExtent: 40,
-                                onSelectedItemChanged: (index) {
-                                  setSheetState(() => selectedHour = index);
-                                },
-                                children: List.generate(24, (index) {
-                                  final displayHour = index == 0 ? 12 : (index > 12 ? index - 12 : index);
-                                  final period = index < 12 ? 'AM' : 'PM';
-                                  return Center(
-                                    child: Text('$displayHour $period', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20)),
-                                  );
-                                }),
-                              ),
-                            ),
-                            // Minute wheel
-                            Expanded(
-                              child: CupertinoPicker(
-                                scrollController: FixedExtentScrollController(initialItem: selectedMinute),
-                                itemExtent: 40,
-                                onSelectedItemChanged: (index) {
-                                  setSheetState(() => selectedMinute = index);
-                                },
-                                children: List.generate(60, (index) {
-                                  return Center(
-                                    child: Text(
-                                      index.toString().padLeft(2, '0'),
-                                      style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
-                                    ),
-                                  );
-                                }),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -195,7 +193,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
+        child: BackdropFilter.grouped(
           filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
           child: Container(
             decoration: BoxDecoration(
@@ -225,20 +223,19 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                         spacing: 8,
                         runSpacing: 8,
                         children: NotificationPreset.values.map((preset) {
-                              final isSelected = _matchesPreset(preset);
-                              return ChoiceChip(
-                                label: Text(preset.label),
-                                selected: isSelected,
-                                onSelected: (_) => _applyPreset(preset),
-                                selectedColor: context.colors.accent.withValues(alpha: 0.3),
-                                labelStyle: TextStyle(
-                                  color: isSelected ? context.colors.accent : textColor,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                ),
-                                side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
-                              );
-                            })
-                            .toList(),
+                          final isSelected = _matchesPreset(preset);
+                          return ChoiceChip(
+                            label: Text(preset.label),
+                            selected: isSelected,
+                            onSelected: (_) => _applyPreset(preset),
+                            selectedColor: context.colors.accent.withValues(alpha: 0.3),
+                            labelStyle: TextStyle(
+                              color: isSelected ? context.colors.accent : textColor,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            ),
+                            side: BorderSide(color: isSelected ? context.colors.accent : context.colors.glassBorder),
+                          );
+                        }).toList(),
                       ),
                       const SizedBox(height: 24),
 
