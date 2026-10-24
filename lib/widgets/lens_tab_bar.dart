@@ -47,10 +47,10 @@ abstract final class LensTabStyle {
   /** One soft, wide drop shadow (about 22% black, 32 px blur, 8 px down), never a hard band. */
   static const List<BoxShadow> capsuleShadow = [BoxShadow(color: Color(0x38000000), blurRadius: 32, offset: Offset(0, 8))];
 
-  /** Lens bevel and refraction as shares of its shorter side. Negative refraction samples outward from the rim, so
-   * the background past the bar's edge is pulled into the lens as bright magnified crescents. */
-  static const double lensBand = 0.24;
-  static const double lensRefraction = -0.20;
+  /** Lens bevel and refraction as shares of its shorter side. The rim samples inward by about the overhang, so the edge shows a dark rim and
+   * the overhang shows the background as bright crescents. */
+  static const double lensBand = 0.30;
+  static const double lensRefraction = 0.16;
 
   static const List<Shadow> activeGlow = [Shadow(color: Color(0x99FFFFFF), blurRadius: 12)];
 }
@@ -266,7 +266,7 @@ class _Lens extends StatelessWidget {
         bevelDarken: 0,
         saturation: 1.0,
         bevelSaturation: 0,
-        dispersion: 0.25,
+        dispersion: 0.08,
       ),
     );
     Widget body = DecoratedBox(decoration: rim, child: child);
