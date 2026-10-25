@@ -7,6 +7,9 @@ import android.content.SharedPreferences
 interface KeyValueStore {
     fun getLong(key: String): Long?
     fun getString(key: String): String?
+
+    /** Whether [key] holds any value, of any type. */
+    fun exists(key: String): Boolean = getString(key) != null || getLong(key) != null
     fun write(longs: Map<String, Long>, strings: Map<String, String>)
 }
 
@@ -31,7 +34,9 @@ class WidgetStore(
             seed = seed,
             position = (kv.getLong(KEY_POSITION) ?: 0L).toInt(),
             lastAdvanceAt = kv.getLong(KEY_LAST_ADVANCE) ?: 0L,
-            favorites = PointingsJson.decodeIds(kv.getString(KEY_FAVORITES)),
+            // A favorites value of another type (not the JSON string both apps write) is
+            // unreadable, not missing: null keeps the widget from writing over it.
+            favorites = kv.getString(KEY_FAVORITES).let { if (it == null && kv.exists(KEY_FAVORITES)) null else PointingsJson.decodeIds(it) },
         )
     }
 
@@ -68,6 +73,8 @@ class SharedPreferencesKeyValueStore(private val prefs: SharedPreferences) : Key
     override fun getLong(key: String): Long? = (prefs.all[key] as? Number)?.toLong()
 
     override fun getString(key: String): String? = prefs.all[key] as? String
+
+    override fun exists(key: String): Boolean = prefs.contains(key)
 
     override fun write(longs: Map<String, Long>, strings: Map<String, String>) {
         val editor = prefs.edit()

@@ -167,7 +167,7 @@ void main() {
       const testPointing = Pointing(id: 'already-fav', content: 'Already a favorite', tradition: Tradition.original, contexts: [PointingContext.general]);
 
       // Setup: pointing already in favorites
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['already-fav']));
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['already-fav']));
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
