@@ -78,7 +78,10 @@ object QuoteBitmap {
                 .setMaxLines(lines).setEllipsize(TextUtils.TruncateAt.END).build()
         }
         // Only as tall as the text, so leftover height never forces a height-limited scale.
-        val bmp = Bitmap.createBitmap(w, layout.height.coerceIn(1, h), Bitmap.Config.ALPHA_8)
+        // Cropped to the text (widest line by its height), so fitStart scales it up until it fills the
+        // view's width or height, whichever comes first, instead of leaving a dead column.
+        val inkW = (0 until layout.lineCount).maxOf { layout.getLineRight(it) }.toInt().coerceIn(1, w)
+        val bmp = Bitmap.createBitmap(inkW, layout.height.coerceIn(1, h), Bitmap.Config.ALPHA_8)
         layout.draw(Canvas(bmp))
         return bmp
     }
