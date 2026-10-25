@@ -19,5 +19,6 @@
     <color name="widget_app_ink_secondary">#FF2A2F29</color>
     <color name="widget_app_accent">#C21B1F1A</color>
     <color name="widget_app_pill">#66FFFFFF</color>
-    <color name="widget_app_rim">#99FFFFFF</color>
+    <color name="widget_app_rim">#80FFFFFF</color>
+    <color name="widget_app_pill_stroke">#0F000000</color>
 </resources>

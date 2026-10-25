@@ -93,10 +93,6 @@
             android:id="@+id/widget_teacher"
             android:fontFamily="@font/inter"
             android:background="@drawable/widget_text_scrim"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -118,7 +114,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/widget_touch_target"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="8dp"
             android:orientation="horizontal"
             android:id="@+id/widget_pill"
             android:background="@drawable/widget_pill_on_light">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The app's glass pill: a light wash of the accent (sage in light, white in dark), like GlassButton. -->
+<!-- The app's glass control: Save circle and Previous/Next capsule share one fill, one 48 dp height
+     and a full capsule radius, with a soft hairline (design panel, 2026-10-24). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <solid android:color="@color/widget_app_pill" />
-    <stroke android:width="1dp" android:color="@color/widget_app_rim" />
+    <stroke android:width="0.5dp" android:color="@color/widget_app_pill_stroke" />
 </shape>

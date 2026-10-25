@@ -60,7 +60,8 @@ object QuoteBitmap {
         while (true) {
             paint.textSize = sp * dm.scaledDensity / dm.density * scale
             layout = StaticLayout.Builder.obtain(text, 0, text.length, paint, w)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(0f, 1.2f).setIncludePad(false).build()
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(0f, 1.2f).setIncludePad(false)
+                .setBreakStrategy(Layout.BREAK_STRATEGY_BALANCED).build()
             if (layout.height <= h || sp <= minSp) break
             sp -= 1f
         }
@@ -70,6 +71,7 @@ object QuoteBitmap {
             while (lines > 1 && layout.getLineBottom(lines - 1) > h) lines--
             layout = StaticLayout.Builder.obtain(text, 0, text.length, paint, w)
                 .setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(0f, 1.2f).setIncludePad(false)
+                .setBreakStrategy(Layout.BREAK_STRATEGY_BALANCED)
                 .setMaxLines(lines).setEllipsize(TextUtils.TruncateAt.END).build()
         }
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8)
