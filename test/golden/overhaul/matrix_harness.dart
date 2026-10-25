@@ -370,6 +370,19 @@ final matrixScreens = <MatrixScreen>[
   // The real MainShell (bottom bar on compact, side rail on medium and up) around Home.
   MatrixScreen('shell', () => const _ShellHost(), postures: {'foldhinge', 'tabletop'}, extraCells: [('phone', MatrixTheme.contrastlight)]),
   MatrixScreen('library', () => const Scaffold(body: LibraryScreen())),
+  // Library scrolled to Featured on one-pane classes, where the grid sits below the fold: every card whole.
+  MatrixScreen(
+    'libraryfeatured',
+    () => const Scaffold(body: LibraryScreen()),
+    onlyCells: [('phone', MatrixTheme.light), ('phone', MatrixTheme.dark), ('smallphone', MatrixTheme.dark)],
+    drive: (tester) async {
+      final header = find.byWidgetPredicate((w) => w.runtimeType.toString() == '_FeaturedHeader');
+      await tester.scrollUntilVisible(header, 200, scrollable: find.byType(Scrollable).first);
+      await Scrollable.ensureVisible(tester.element(header), alignment: 0.05);
+      await settleTransient(tester);
+      expect(find.byWidgetPredicate((w) => w.runtimeType.toString() == '_FeaturedGrid'), findsOneWidget);
+    },
+  ),
   MatrixScreen('settings', () => const SettingsScreen()),
   // Saved with nothing saved: the empty state's heart icon and copy (restructure2 moved Saved to its own tab).
   MatrixScreen(
