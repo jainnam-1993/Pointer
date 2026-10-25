@@ -496,6 +496,9 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
 }
 
 /** Rest look of the bar per theme: light glass in light mode, a dark capsule in dark mode, solid in high contrast. */
+/** EXPERIMENT (ovh/tabbar-light, not for merge): light selected-pill variant for device panel runs. */
+const String _lightVariant = String.fromEnvironment('TB_LIGHT', defaultValue: 'base');
+
 class LensBarLook {
   final Color capsule;
   final BoxBorder? border;
@@ -564,9 +567,16 @@ class LensBarLook {
       // Selected (store panel 1.3.0, item 2: white on cream barely showed): sage-tinted glass with a sage rim at 3:1 or
       // more against the bar, and the label and icon in deep sage ink. Separation comes from the accent tint, not a
       // heavier shadow.
-      pill: const Color(0x333F6B52),
+      pill: switch (_lightVariant) {
+        'white' => const Color(0xB3FFFFFF),
+        'tint' => const Color(0x1F5C9A74),
+        _ => const Color(0x333F6B52),
+      },
       pillRim: const Color(0xD93F6B52),
-      pillHighlight: const Color(0x40FFFFFF), // the same glass top highlight as the dark pill
+      pillHighlight: switch (_lightVariant) {
+        'white' => const Color(0x66FFFFFF),
+        _ => const Color(0x40FFFFFF),
+      },
       pillShadow: const Color(0x1A1E2A1F),
       inactive: const Color(0xFF5A5F58),
       active: const Color(0xFF24402F),
