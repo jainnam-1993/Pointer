@@ -59,6 +59,9 @@ abstract final class LensTabStyle {
   /** Tab labels grow with the text scale up to this factor; above it a long press shows the label large instead. */
   static const double labelScaleCap = 1.6;
 
+  /** The tab label's own style at [size]; measured and painted merged into the ambient [DefaultTextStyle]. */
+  static TextStyle label(double size, FontWeight weight) => TextStyle(fontFamily: AppFonts.sans, fontSize: size, fontWeight: weight);
+
   /** One soft, wide drop shadow (about 22% black, 32 px blur, 8 px down), never a hard band. */
   static const List<BoxShadow> capsuleShadow = [BoxShadow(color: Color(0x38000000), blurRadius: 32, offset: Offset(0, 8))];
 
@@ -262,27 +265,44 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
    * One label size for every tab on this bar or rail, selected or not: the caption at the user's text scale, capped at
    * [LensTabStyle.labelScaleCap], then shrunk once so the widest label (at the selected weight) and the icon fit the
    * pill. So all labels match at any text scale and none overhangs its pill.
+   *
+   * The widths are measured at the style the label is painted with: the ambient [DefaultTextStyle] merged with the
+   * label's own, as [Text] does. Measuring the bare style missed the inherited letter spacing (0.25 under a Material
+   * ancestor), so "Library" painted about 1 px wider than the rail pill's inner width, wrapped its last letter onto a
+   * hidden second line and showed as "Librar" at text scale 1.3 and above (merge review of r12).
    */
   double _sharedLabelSize(BuildContext context, Size box) {
     const iconAndGap = 24.0 + 3.0, vertical = 4.0, inset = 6.0;
-    var size = MediaQuery.textScalerOf(context).scale(AppType.caption).clamp(AppType.caption, AppType.caption * LensTabStyle.labelScaleCap);
-    var widest = 0.0;
-    for (final t in widget.tabs) {
-      final tp = TextPainter(
-        text: TextSpan(
-          text: t.$2,
-          style: TextStyle(fontFamily: AppFonts.sans, fontSize: size, fontWeight: FontWeight.w600),
-        ),
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-      )..layout();
-      widest = math.max(widest, tp.width);
-      tp.dispose();
+    final ambient = DefaultTextStyle.of(context).style;
+    double widestAt(double size) {
+      var widest = 0.0;
+      for (final t in widget.tabs) {
+        final tp = TextPainter(
+          text: TextSpan(text: t.$2, style: ambient.merge(LensTabStyle.label(size, FontWeight.w600))),
+          textDirection: TextDirection.ltr,
+          textScaler: TextScaler.noScaling,
+          maxLines: 1,
+        )..layout();
+        widest = math.max(widest, tp.width);
+        tp.dispose();
+      }
+      return widest;
     }
-    final room = box.width - 2 * inset;
-    if (widest > room && widest > 0) size *= room / widest;
+
     final heightRoom = (box.height - vertical - iconAndGap) / 1.3;
-    return math.max(1.0, math.min(size, heightRoom));
+    var size = math.min(
+      MediaQuery.textScalerOf(context).scale(AppType.caption).clamp(AppType.caption, AppType.caption * LensTabStyle.labelScaleCap),
+      heightRoom,
+    );
+    final room = box.width - 2 * inset;
+    // Letter spacing is fixed in pixels and glyph advances round, so width is not exactly proportional to size: rescale
+    // from the measured width until the widest label fits.
+    for (var i = 0; i < 4; i++) {
+      final widest = widestAt(size);
+      if (widest <= room || widest == 0) break;
+      size *= room / widest * 0.995;
+    }
+    return math.max(1.0, size);
   }
 
   @override
@@ -594,13 +614,10 @@ class _ActiveLabel extends StatelessWidget {
                       tab.$2,
                       maxLines: 1,
                       textScaler: TextScaler.noScaling,
-                      style: TextStyle(
-                        fontFamily: AppFonts.sans,
-                        fontSize: labelSize,
-                        fontWeight: weight,
-                        color: color,
-                        shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
-                      ),
+                      style: LensTabStyle.label(
+                        labelSize,
+                        weight,
+                      ).copyWith(color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
                     ),
                   ),
                 ),

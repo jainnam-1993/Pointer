@@ -1,10 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/lens_tab_bar.dart';
+
+import '../helpers/app_fonts.dart';
 
 /** The lens tab bar: high contrast draws no glass, every tab is a 44 pt target, and every tab shows its label, fitting its cell at text scale 1.3 and 2.0. */
 void main() {
@@ -354,16 +357,24 @@ void main() {
   });
 
   group('labels inside the pill and the large label (merge review, 2026-10-24)', () {
+    // The real fonts and the app's tabs, under a Scaffold as in the shell: the inherited Material text style (letter
+    // spacing 0.25) and Inter's real advances are what made r12 clip "Library" to "Librar" on the rail. The test font
+    // (Ahem) and a bare MaterialApp hid both.
+    setUpAll(loadAppFonts);
+    const shell = <LensTab>[(AppIcons.home, 'Today'), (AppIcons.library, 'Library'), (AppIcons.heart, 'Saved')];
+
     Future<void> pumpAt(WidgetTester tester, Axis axis, int index, double scale) => tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
-        home: MediaQuery(
-          data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-          child: Center(
-            child: SizedBox(
-              width: axis == Axis.horizontal ? 358 : 72,
-              height: axis == Axis.horizontal ? 64 : 4 * 64 + 16,
-              child: LensTabBar(tabs: tabs, currentIndex: index, onTap: (_) {}, axis: axis),
+        home: Scaffold(
+          body: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: Center(
+              child: SizedBox(
+                width: axis == Axis.horizontal ? 358 : 72,
+                height: axis == Axis.horizontal ? 64 : shell.length * 64 + 16,
+                child: LensTabBar(tabs: shell, currentIndex: index, onTap: (_) {}, axis: axis),
+              ),
             ),
           ),
         ),
@@ -382,12 +393,20 @@ void main() {
           };
           expect(sizes, hasLength(1), reason: 'label sizes $sizes');
           final pillSize = tester.getRect(find.byKey(const ValueKey('tab-pill'))).size;
-          for (var i = 0; i < tabs.length; i++) {
-            final cell = tester.getRect(find.bySemanticsLabel(RegExp('^${tabs[i].$2} tab')));
+          for (var i = 0; i < shell.length; i++) {
+            final cell = tester.getRect(find.bySemanticsLabel(RegExp('^${shell[i].$2} tab')));
             final pill = Rect.fromCenter(center: cell.center, width: pillSize.width, height: pillSize.height).inflate(0.5);
-            for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.text(tabs[i].$2)).evaluate()) {
+            final painted = find.descendant(of: find.byType(LensTabBar), matching: find.text(shell[i].$2));
+            expect(painted, findsWidgets);
+            for (final e in painted.evaluate()) {
+              // The painted text, not the Text box: the box is clamped to its slot, so it always "fits" even when the
+              // last letters wrapped onto a hidden second line.
+              final p = tester.renderObject<RenderParagraph>(find.descendant(of: find.byWidget(e.widget), matching: find.byType(RichText)));
+              expect(p.didExceedMaxLines, isFalse, reason: '${shell[i].$2} wraps past one line (clipped) at $scale');
+              final lineWidth = p.getMaxIntrinsicWidth(double.infinity);
+              expect(lineWidth, lessThanOrEqualTo(p.size.width + 0.01), reason: '${shell[i].$2} needs $lineWidth, has ${p.size.width}');
               final r = tester.getRect(find.byWidget(e.widget));
-              expect(pill.contains(r.topLeft) && pill.contains(r.bottomRight), isTrue, reason: '${tabs[i].$2} $r outside pill $pill');
+              expect(pill.contains(r.topLeft) && pill.contains(r.bottomRight), isTrue, reason: '${shell[i].$2} $r outside pill $pill');
             }
           }
         });
