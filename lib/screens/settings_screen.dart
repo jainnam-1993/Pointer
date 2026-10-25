@@ -503,7 +503,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
    */
   Widget _layoutColumns(BuildContext context, double bottomPadding, List<Widget> children) {
     final layout = WindowLayout.of(context);
-    final bottom = (layout.navigationType == NavigationType.rail ? 32.0 : 120.0) + bottomPadding;
+    final bottom = scrollEndInset(context);
     final breakAt = children.indexWhere((w) => w is _ColumnBreak);
     if (!layout.isTwoPane || breakAt < 0) {
       return LayoutBuilder(

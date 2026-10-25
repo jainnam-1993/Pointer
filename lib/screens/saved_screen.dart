@@ -20,7 +20,6 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final favorites = ref.watch(favoritesProvider);
     final savedArticleIds = ref.watch(articleFavoritesProvider);
 
@@ -122,7 +121,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+            padding: EdgeInsets.only(left: 24, right: 24, bottom: scrollEndInset(context)),
             sliver: SliverTileGrid(
               itemBuilder: (context, index) {
                 final pointingId = favorites[index];

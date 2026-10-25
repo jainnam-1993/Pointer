@@ -1054,6 +1054,19 @@ class LiquidGlass {
   /** Gap between the bar and the bottom safe inset. */
   static const double safeGap = 8;
 
+  /** Gap between the bar capsule and the content above it. */
+  static const double barTopGap = 8;
+
+  /** Space between the bottom bar capsule and the screen bottom, given the window safe-area [bottomInset]. */
+  static double barBottomOffset(double bottomInset) => bottomInset + safeGap > edgeMargin ? bottomInset + safeGap : edgeMargin;
+
+  /**
+   * Height the floating bottom bar covers, at full size, from the screen bottom: the content inset the shell publishes
+   * as MediaQuery padding.bottom, so the end of every tab list scrolls clear of the bar. Full size, not the minimized
+   * height, so lists do not relayout when the bar minimizes.
+   */
+  static double barContentInset(double bottomInset) => barTopGap + barHeight + barBottomOffset(bottomInset);
+
   /** Rail width (the content keeps [kRailWidth] of padding; the capsule is narrower). 80 so the selected pill is a
    * capsule (68 x 56, wider than tall) rather than a near-circle, with room for the label at 1.6x text; 12 inset + 80
    * still fits inside [kRailWidth] (96). */

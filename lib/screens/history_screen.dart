@@ -92,7 +92,7 @@ class HistoryScreen extends ConsumerWidget {
     PointerColors colors,
   ) {
     return ListView.builder(
-      padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.sm, bottom: 100 + bottomPadding),
+      padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.sm, bottom: scrollEndInset(context)),
       itemCount: viewedPointings.length,
       itemBuilder: (context, index) {
         final viewed = viewedPointings[index];
