@@ -34,7 +34,8 @@ enum class WidgetScrim {
 data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scrim: WidgetScrim) {
     companion object {
         /** The shipped look. */
-        val SHIPPED = WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE)
+        /** The user's pick (2026-10-24): glass that follows the system theme, light cream in light mode and dark smoke in dark mode, at 72%. */
+        val SHIPPED = WidgetLook(WidgetSurface.APP, 0.72, WidgetScrim.NONE)
 
         /** The looks compared in the 2026-10-24 design review. */
         val REVIEW = mapOf(

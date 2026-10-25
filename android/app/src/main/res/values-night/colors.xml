@@ -8,12 +8,12 @@
     <color name="widget_accent">#B79CFF</color>
     <color name="widget_control">#CCC2DC</color>
     <color name="widget_on_control">#332D41</color>
-    <!-- App look (the widget as a piece of the app): sage-and-sand paper / ink-on-black, as in PointerColors. -->
-    <color name="widget_app_card">#FF0B0A10</color>
-    <color name="widget_app_card_end">#FF15131C</color>
-    <color name="widget_app_ink">#FFF5F3FA</color>
-    <color name="widget_app_ink_secondary">#FFE6E3EC</color>
+    <!-- App look, dark: the user's pick, dark smoke glass (#1C1B1F at the look's alpha) with white ink. -->
+    <color name="widget_app_card">#FF1C1B1F</color>
+    <color name="widget_app_card_end">#FF1C1B1F</color>
+    <color name="widget_app_ink">#FFF5F2EE</color>
+    <color name="widget_app_ink_secondary">#D9F5F2EE</color>
     <color name="widget_app_accent">#E6EDEAE3</color>
-    <color name="widget_app_pill">#29FFFFFF</color>
-    <color name="widget_app_rim">#38FFFFFF</color>
+    <color name="widget_app_pill">#24FFFFFF</color>
+    <color name="widget_app_rim">#59FFFFFF</color>
 </resources>
