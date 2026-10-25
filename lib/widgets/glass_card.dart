@@ -310,7 +310,11 @@ class GlassButton extends ConsumerWidget {
                   borderRadius: radius,
                   border: GradientBoxBorder(gradient: borderGradient, width: 1),
                 ),
-                child: _label(context, colors.textPrimary, colors.accent),
+                child: _label(
+                  context,
+                  isPrimary ? (glass.onPrimary ?? colors.textPrimary) : colors.textPrimary,
+                  isPrimary && glass.onPrimary != null ? glass.onPrimary! : colors.accent,
+                ),
               ),
             ],
           ),

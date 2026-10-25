@@ -39,6 +39,9 @@ abstract final class LensTabStyle {
   /** High contrast: no glass; a solid bar and pill with clear borders. */
   static const Color hcBorder = Color(0xB3FFFFFF);
   static const Color hcPill = Color(0xFF2C2C30);
+
+  /** The lens body where the shader is unavailable (and its tint everywhere): a faint clear white. */
+  static const Color lensFallbackFill = Color(0x1FFFFFFF);
   static const Color inactive = Color(0xFF6E6E73);
   static const Color active = Color(0xFFFFFFFF);
 
@@ -283,10 +286,17 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                           if (i != widget.currentIndex) Haptics.selection();
                           widget.onTap(i);
                         },
+                        // The tab under the pill or lens is drawn by it, once. Its cell icon is hidden, so it is not in
+                        // the backdrop the lens refracts (a visible cell icon there showed as a displaced second
+                        // copy under the lens's own label: the "image up and down" the user saw on the rail).
                         child: Center(
-                          child: AnimatedOpacity(
-                            opacity: i == widget.currentIndex ? 0 : 1,
-                            duration: reduce ? Duration.zero : Motion.quick,
+                          child: AnimatedBuilder(
+                            animation: Listenable.merge([_pos, _lift]),
+                            builder: (context, child) {
+                              final underLens = (i - _pos.value).abs() < 0.5;
+                              final hidden = underLens || (i == widget.currentIndex && _lift.value <= 0.001);
+                              return Opacity(opacity: hidden ? 0 : 1, child: child);
+                            },
                             child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
                           ),
                         ),
@@ -389,11 +399,16 @@ class LensBarLook {
       );
     }
     return LensBarLook(
-      capsule: const Color(0x9EFFFFFF),
-      border: Border.all(color: const Color(0xCCFFFFFF), width: 1),
-      shadow: const [BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 6))],
+      // Light glass that reads as glass on a pale field: a translucent body (not a solid fill), a 1 px warm-grey
+      // hairline for the edge, and a soft two-step shadow for depth.
+      capsule: const Color(0x8CFFFFFF),
+      border: Border.all(color: const Color(0x1F3A3426), width: 1),
+      shadow: const [
+        BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1)),
+        BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 8)),
+      ],
       frosted: true,
-      pill: const Color(0x14000000),
+      pill: const Color(0x2E3F6B52), // sage at 18%
       inactive: const Color(0xFF6E6E73),
       active: const Color(0xFF1C1C1E),
     );
@@ -491,7 +506,7 @@ class _Lens extends StatelessWidget {
       // Fallback (no shader, Reduce Transparency, tests): a faint clear lens with the same rim.
       body = DecoratedBox(
         decoration: ShapeDecoration(
-          color: const Color(0x1FFFFFFF),
+          color: LensTabStyle.lensFallbackFill,
           shape: RoundedSuperellipseBorder(borderRadius: radius),
         ),
         child: body,

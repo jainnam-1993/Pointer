@@ -46,11 +46,25 @@ void main() {
       }
       // Button labels are textPrimary: check that alone over both button fills.
       for (final (label, l) in [('primary', glass.buttonPrimary), ('secondary', glass.buttonSecondary)]) {
-        final bg = Color.alphaBlend(glass.fill.withValues(alpha: l.top), colors.background);
+        final filled = label == 'primary' && glass.primaryFill != null;
+        final bg = filled ? glass.primaryFill! : Color.alphaBlend(glass.fill.withValues(alpha: l.top), colors.background);
+        final ink = filled ? glass.onPrimary! : colors.textPrimary;
         test('button label on $label button is at least 4.5:1', () {
-          expect(contrast(colors.textPrimary, bg), greaterThanOrEqualTo(4.5), reason: '$name button-$label');
+          expect(contrast(ink, bg), greaterThanOrEqualTo(4.5), reason: '$name button-$label');
         });
       }
+      test('light tradition colours keep 4.5:1 on the light surfaces', () {
+        if (colors != PointerColors.light) return;
+        for (final c in const [
+          TraditionAccentColors.advaitaLight,
+          TraditionAccentColors.zenLight,
+          TraditionAccentColors.directLight,
+          TraditionAccentColors.contemporaryLight,
+          TraditionAccentColors.originalLight,
+        ]) {
+          expect(contrast(c, Color.alphaBlend(glass.fill.withValues(alpha: glass.levels[1].top), colors.background)), greaterThanOrEqualTo(4.5));
+        }
+      });
       final texts = <String, Color>{
         'textPrimary': colors.textPrimary,
         'textSecondary': colors.textSecondary,

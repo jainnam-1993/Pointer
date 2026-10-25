@@ -86,4 +86,13 @@ void main() {
     expect(src, isNot(contains('highContrastTheme:')));
     expect(src, isNot(contains('highContrastDarkTheme:')));
   });
+
+  test('system contrast strengthens the glass rim to a low-alpha hairline, not a heavy border', () {
+    for (final (g, dark) in [(GlassMaterial.light, false), (GlassMaterial.dark, true), (GlassMaterial.oled, true)]) {
+      final up = increasedContrastGlass(g, dark: dark);
+      expect(up.rimTop.a, greaterThan(g.rimTop.a + 0.1));
+      expect(up.rimTop.a, lessThanOrEqualTo(0.45), reason: 'a hairline, not the solid theme border');
+      expect(up.opaque, isFalse);
+    }
+  });
 }

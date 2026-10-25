@@ -10,6 +10,7 @@ import '../theme/app_theme.dart';
 import '../widgets/shared_ambient.dart';
 import '../widgets/ambient.dart' show FrostScope;
 import '../widgets/glass_card.dart';
+import '../widgets/press_scale.dart';
 import '../widgets/onboarding_animations.dart';
 import '../utils/haptics.dart';
 import '../theme/app_icons.dart';
@@ -698,6 +699,25 @@ class _OnboardingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = context.colors.textPrimary;
     final borderColor = isPrimary ? context.colors.glassBorderActive : null;
+    final glass = GlassMaterial.of(context);
+    if (isPrimary && glass.primaryFill != null) {
+      // Light theme (sage and sand): the primary action is a filled sage capsule with white text.
+      return PressScale(
+        onTap: onPressed,
+        child: DecoratedBox(
+          decoration: BoxDecoration(gradient: glass.buttonFill(primary: true), borderRadius: BorderRadius.circular(AppSpacing.radiusCard)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: Text(
+                label,
+                style: TextStyle(color: glass.onPrimary, fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return GlassCard(
       padding: const EdgeInsets.symmetric(vertical: 16),

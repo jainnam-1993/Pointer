@@ -279,13 +279,14 @@ class AmbientPalette {
   );
 
   /** Light mode: soft lavender and peach over a warm off-white. */
+  // Light: "Sage and sand" (2026-10-24): warm off-white paper into pale sage, a faint warm-gold glow, no pink.
   static const light = AmbientPalette(
-    top: Color(0xFFF4F1FA),
-    mid: Color(0xFFF7F3F6),
-    bottom: Color(0xFFFAF5F0),
-    fieldA: Color(0xFFD9CCF5),
-    fieldB: Color(0xFFF8D6C2),
-    fieldC: Color(0xFFEFD0E2),
+    top: Color(0xFFF6F1E6),
+    mid: Color(0xFFF4EFE3),
+    bottom: Color(0xFFE5ECE1),
+    fieldA: Color(0xFFF3E2BF),
+    fieldB: Color(0xFFF6EAD3),
+    fieldC: Color(0xFFD2E1CE),
     aurora: 0.62,
     motes: 0.55,
     isDark: false,

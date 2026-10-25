@@ -48,19 +48,23 @@ class InquirySession {
     required this.tradition,
   });
 
-  /** Get the accent color for this session's tradition */
-  Color get accentColor {
+  /** The accent color for this session's tradition (dark theme colours). */
+  Color get accentColor => accentColorFor(Brightness.dark);
+
+  /** The accent color for this session's tradition in [brightness]: light mode uses the sage-and-sand variants. */
+  Color accentColorFor(Brightness brightness) {
+    final light = brightness == Brightness.light;
     switch (tradition) {
       case Tradition.advaita:
-        return TraditionAccentColors.advaita;
+        return light ? TraditionAccentColors.advaitaLight : TraditionAccentColors.advaita;
       case Tradition.zen:
-        return TraditionAccentColors.zen;
+        return light ? TraditionAccentColors.zenLight : TraditionAccentColors.zen;
       case Tradition.direct:
-        return TraditionAccentColors.direct;
+        return light ? TraditionAccentColors.directLight : TraditionAccentColors.direct;
       case Tradition.contemporary:
-        return TraditionAccentColors.contemporary;
+        return light ? TraditionAccentColors.contemporaryLight : TraditionAccentColors.contemporary;
       case Tradition.original:
-        return TraditionAccentColors.original;
+        return light ? TraditionAccentColors.originalLight : TraditionAccentColors.original;
     }
   }
 }
