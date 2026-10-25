@@ -82,8 +82,29 @@ class LensTabBar extends StatefulWidget {
   State<LensTabBar> createState() => _LensTabBarState();
 }
 
-class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateMixin {
+/**
+ * Tab lens state machine, after the native iOS 27 tab bar (findings/joy-motion-spec.md, "Tab lens state machine",
+ * recorded on the Studio simulator: visual/liquid-glass/state-machine/).
+ *
+ * - rest: the selected tab sits on a flat, tinted pill. No lens, no refraction, no magnification.
+ * - pressed: on touch-down the pill lifts into the liquid lens (scale [Motion.lensLiftX] x [Motion.lensLiftY], refraction,
+ *   content magnified [Motion.lensMagnify]) at the touched tab, on [Motion.lift].
+ * - dragging: the lens follows the finger 1:1 across the tabs.
+ * - settling: on release the lens springs to the nearest tab on [Motion.liquid], then flattens back to the rest pill
+ *   on [Motion.settle] (no overshoot). A tap with no drag is a short lift, the move, then the settle.
+ * Reduce Motion: no lift or lens; the pill moves to the new tab without travel.
+ */
+enum LensPhase { rest, pressed, dragging, settling }
+
+class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
+  /** Lens position in cell units (0 = first tab). */
   late final AnimationController _pos = AnimationController.unbounded(vsync: this, value: widget.currentIndex.toDouble());
+
+  /** 0 = flat rest pill, 1 = lifted lens. */
+  late final AnimationController _lift = AnimationController.unbounded(vsync: this);
+
+  LensPhase phase = LensPhase.rest;
+  double _cell = 1;
 
   @override
   void initState() {
@@ -97,31 +118,83 @@ class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateM
   @override
   void didUpdateWidget(LensTabBar old) {
     super.didUpdateWidget(old);
-    if (old.currentIndex == widget.currentIndex) return;
-    final target = widget.currentIndex.toDouble();
-    if (Motion.reduce(context)) {
-      _pos.value = target;
-    } else {
-      _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, target, _pos.velocity));
-    }
+    // Selection changed from outside (swipe between tabs, deep link): move the pill without lifting it.
+    if (old.currentIndex != widget.currentIndex && phase == LensPhase.rest) _moveTo(widget.currentIndex.toDouble());
   }
 
   @override
   void dispose() {
     _pos.dispose();
+    _lift.dispose();
     super.dispose();
   }
 
-  void _select(int i) {
+  bool get _reduce => Motion.reduce(context);
+
+  void _moveTo(double target) {
+    if (_reduce) {
+      _pos.value = target;
+      return;
+    }
+    _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, target, _pos.velocity));
+  }
+
+  void _liftTo(double v, SpringDescription spring) {
+    if (_reduce) {
+      _lift.value = 0;
+      return;
+    }
+    _lift.animateWith(SpringSimulation(spring, _lift.value, v, _lift.velocity));
+  }
+
+  double _cellAt(double mainOffset) => ((mainOffset - LensTabBar.pad) / _cell - 0.5).clamp(0.0, widget.tabs.length - 1.0);
+
+  /** The tab under the finger at touch-down: what a tap without a drag selects. */
+  int _touched = 0;
+
+  void _down(Offset local) {
+    phase = LensPhase.pressed;
+    final at = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy);
+    _touched = at.round();
+    _liftTo(1, Motion.lift);
+    _moveTo(at);
+  }
+
+  void _drag(Offset local) {
+    // A drag can win the gesture arena before the tap's touch-down fires (the finger moved past the slop within
+    // 100 ms), so a drag from rest lifts the lens itself.
+    if (phase == LensPhase.rest || phase == LensPhase.settling) _liftTo(1, Motion.lift);
+    phase = LensPhase.dragging;
+    _pos.stop();
+    _pos.value = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy); // follows the finger 1:1
+  }
+
+  void _release() {
+    if (phase == LensPhase.rest) return;
+    final i = (phase == LensPhase.dragging ? _pos.value.round() : _touched).clamp(0, widget.tabs.length - 1);
+    phase = LensPhase.settling;
     if (i != widget.currentIndex) Haptics.selection();
     widget.onTap(i);
+    final move = _reduce ? null : _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, i.toDouble(), _pos.velocity));
+    void flatten() {
+      if (!mounted || phase != LensPhase.settling) return;
+      _liftTo(0, Motion.settle);
+      phase = LensPhase.rest;
+    }
+
+    if (move == null) {
+      _pos.value = i.toDouble();
+      flatten();
+    } else {
+      move.whenComplete(flatten);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final horizontal = widget.axis == Axis.horizontal;
     final plain = ReduceTransparency.of(context);
-    final reduce = Motion.reduce(context);
+    final reduce = _reduce;
     return LayoutBuilder(
       builder: (context, c) {
         final n = widget.tabs.length;
@@ -130,86 +203,191 @@ class _LensTabBarState extends State<LensTabBar> with SingleTickerProviderStateM
             ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth)
             : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
         final cell = (extent - 2 * LensTabBar.pad) / n;
-        final lensCross = thickness * LensTabStyle.lensThickness;
-        final lensMain = math.min(cell * LensTabStyle.lensCellShare, lensCross * LensTabStyle.lensAspect);
+        _cell = cell;
         final showLabel = !(horizontal && widget.minimized);
-
         final dark = Theme.of(context).brightness == Brightness.dark;
         final highContrast = GlassMaterial.of(context).opaque;
-        final capsule = DecoratedBox(
+        final style = LensBarLook.of(dark: dark, highContrast: highContrast);
+
+        // Rest pill: flat and tinted, inset from the capsule.
+        final pillMain = cell - LiquidGlass.pillCellGap;
+        final pillCross = thickness - 2 * LiquidGlass.pillInset;
+        // Lens: the pill lifted.
+        final lensMain = pillMain * Motion.lensLiftX;
+        final lensCross = pillCross * Motion.lensLiftY;
+
+        Widget capsule = DecoratedBox(
           decoration: BoxDecoration(
-            color: dark || highContrast ? LensTabStyle.capsuleDark : LensTabStyle.capsule,
+            color: style.capsule,
             borderRadius: BorderRadius.circular(thickness / 2),
-            border: highContrast
-                ? Border.all(color: LensTabStyle.hcBorder, width: 1.5)
-                : (dark ? Border.all(color: LensTabStyle.hairlineDark, width: 1) : null),
-            boxShadow: highContrast ? null : LensTabStyle.capsuleShadow,
+            border: style.border,
+            boxShadow: style.shadow,
           ),
         );
+        if (style.frosted && !plain) {
+          capsule = ClipRRect(
+            borderRadius: BorderRadius.circular(thickness / 2),
+            child: BackdropFilter.grouped(
+              filter: ui.ImageFilter.blur(sigmaX: LiquidGlass.blurSigma, sigmaY: LiquidGlass.blurSigma),
+              child: capsule,
+            ),
+          );
+          capsule = DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(thickness / 2), boxShadow: style.shadow),
+            child: capsule,
+          );
+        }
 
         Widget cellAt(int i, Widget child) => horizontal
             ? Positioned(left: LensTabBar.pad + i * cell, top: 0, width: cell, height: thickness, child: child)
             : Positioned(top: LensTabBar.pad + i * cell, left: 0, width: thickness, height: cell, child: child);
 
+        Offset local(Offset global) => (context.findRenderObject()! as RenderBox).globalToLocal(global);
+
         return SizedBox(
           width: horizontal ? extent : thickness,
           height: horizontal ? thickness : extent,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned.fill(child: capsule),
-              // Inactive tabs: filled grey icons, no labels. The active one is drawn by the lens instead.
-              for (var i = 0; i < n; i++)
-                cellAt(
-                  i,
-                  Semantics(
-                    button: true,
-                    selected: i == widget.currentIndex,
-                    label: '${widget.tabs[i].$2} tab${i == widget.currentIndex ? ', selected' : ''}',
-                    excludeSemantics: true,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => _select(i),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (d) => _down(local(d.globalPosition)),
+            onTapUp: (_) => _release(),
+            onTapCancel: () {
+              if (phase == LensPhase.pressed) _release();
+            },
+            onHorizontalDragStart: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
+            onHorizontalDragUpdate: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
+            onHorizontalDragEnd: horizontal ? (_) => _release() : null,
+            onVerticalDragStart: horizontal ? null : (d) => _drag(local(d.globalPosition)),
+            onVerticalDragUpdate: horizontal ? null : (d) => _drag(local(d.globalPosition)),
+            onVerticalDragEnd: horizontal ? null : (_) => _release(),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(child: capsule),
+                for (var i = 0; i < n; i++)
+                  cellAt(
+                    i,
+                    Semantics(
+                      button: true,
+                      selected: i == widget.currentIndex,
+                      label: '${widget.tabs[i].$2} tab${i == widget.currentIndex ? ', selected' : ''}',
+                      excludeSemantics: true,
+                      onTap: () {
+                        if (i != widget.currentIndex) Haptics.selection();
+                        widget.onTap(i);
+                      },
                       child: Center(
                         child: AnimatedOpacity(
                           opacity: i == widget.currentIndex ? 0 : 1,
                           duration: reduce ? Duration.zero : Motion.quick,
-                          child: Icon(widget.tabs[i].$1, size: 24, color: LensTabStyle.inactive),
+                          child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
                         ),
                       ),
                     ),
                   ),
-                ),
-              // The lens, carrying the active icon and label; it ignores pointers so taps reach the cells below.
-              AnimatedBuilder(
-                animation: _pos,
-                builder: (context, _) {
-                  final stretch = reduce ? 0.0 : liquidStretch(_pos.velocity * cell);
-                  final main = lensMain * (1 + stretch);
-                  final cross = lensCross * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                  // Clamp inside the capsule's rounded ends so the first and last lens never hang past them.
-                  final inset = thickness * 0.1;
-                  final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
-                  final rect = horizontal
-                      ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
-                      : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
-                  final i = _pos.value.round().clamp(0, n - 1);
-                  return Positioned.fromRect(
-                    rect: rect,
-                    child: IgnorePointer(
-                      child: _Lens(
-                        size: rect.size,
-                        plain: plain,
-                        child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel),
+                AnimatedBuilder(
+                  animation: Listenable.merge([_pos, _lift]),
+                  builder: (context, _) {
+                    final lift = reduce ? 0.0 : _lift.value.clamp(0.0, 1.0);
+                    final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
+                    final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
+                    final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
+                    final inset = thickness * 0.06 * (1 - lift);
+                    final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
+                    final rect = horizontal
+                        ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
+                        : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
+                    final i = _pos.value.round().clamp(0, n - 1);
+                    final label = Transform.scale(
+                      scale: 1 + (Motion.lensMagnify - 1) * lift,
+                      child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: lift > 0.5 ? LensTabStyle.active : style.active),
+                    );
+                    return Positioned.fromRect(
+                      rect: rect,
+                      child: IgnorePointer(
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            // Rest pill, fading out as the lens lifts.
+                            Opacity(
+                              opacity: 1 - lift,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(color: style.pill, borderRadius: BorderRadius.circular(math.min(main, cross) / 2)),
+                              ),
+                            ),
+                            if (lift > 0.01)
+                              Opacity(
+                                key: const ValueKey('tab-lens'),
+                                opacity: lift,
+                                child: _Lens(size: rect.size, plain: plain, child: const SizedBox.expand()),
+                              ),
+                            label,
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+/** Rest look of the bar per theme: light glass in light mode, a dark capsule in dark mode, solid in high contrast. */
+class LensBarLook {
+  final Color capsule;
+  final BoxBorder? border;
+  final List<BoxShadow>? shadow;
+  final bool frosted;
+  final Color pill;
+  final Color inactive;
+  final Color active;
+
+  const LensBarLook({
+    required this.capsule,
+    required this.border,
+    required this.shadow,
+    required this.frosted,
+    required this.pill,
+    required this.inactive,
+    required this.active,
+  });
+
+  static LensBarLook of({required bool dark, required bool highContrast}) {
+    if (highContrast) {
+      return LensBarLook(
+        capsule: LensTabStyle.capsuleDark,
+        border: Border.all(color: LensTabStyle.hcBorder, width: 1.5),
+        shadow: null,
+        frosted: false,
+        pill: LensTabStyle.hcPill,
+        inactive: const Color(0xFFB0B0B5),
+        active: LensTabStyle.active,
+      );
+    }
+    if (dark) {
+      return LensBarLook(
+        capsule: LensTabStyle.capsuleDark,
+        border: Border.all(color: LensTabStyle.hairlineDark, width: 1),
+        shadow: LensTabStyle.capsuleShadow,
+        frosted: false,
+        pill: const Color(0x24FFFFFF),
+        inactive: const Color(0xFF8E8E93),
+        active: LensTabStyle.active,
+      );
+    }
+    return LensBarLook(
+      capsule: const Color(0x9EFFFFFF),
+      border: Border.all(color: const Color(0xCCFFFFFF), width: 1),
+      shadow: const [BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 6))],
+      frosted: true,
+      pill: const Color(0x14000000),
+      inactive: const Color(0xFF6E6E73),
+      active: const Color(0xFF1C1C1E),
     );
   }
 }
@@ -218,7 +396,9 @@ class _ActiveLabel extends StatelessWidget {
   final LensTab tab;
   final bool showLabel;
 
-  const _ActiveLabel({required this.tab, required this.showLabel});
+  final Color color;
+
+  const _ActiveLabel({required this.tab, required this.showLabel, this.color = LensTabStyle.active});
 
   @override
   Widget build(BuildContext context) {
@@ -226,19 +406,19 @@ class _ActiveLabel extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(tab.$1, size: 24, color: LensTabStyle.active, shadows: LensTabStyle.activeGlow),
+          Icon(tab.$1, size: 24, color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
           if (showLabel)
             Padding(
               padding: const EdgeInsets.only(top: 3),
               child: Text(
                 tab.$2,
                 maxLines: 1,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: AppFonts.sans,
                   fontSize: AppType.caption,
                   fontWeight: FontWeight.w600,
-                  color: LensTabStyle.active,
-                  shadows: LensTabStyle.activeGlow,
+                  color: color,
+                  shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
                 ),
               ),
             ),
