@@ -21,4 +21,12 @@ void main() {
   test('profileinstaller ships the profile to sideloaded installs', () {
     expect(File('android/app/build.gradle.kts').readAsStringSync(), contains('androidx.profileinstaller:profileinstaller:'));
   });
+
+  test('profile builds are not debuggable, so they measure what users run', () {
+    // A debuggable APK skips AOT and the Baseline Profile; AGP does not even package it.
+    final gradle = File('android/app/build.gradle.kts').readAsStringSync();
+    final profile = RegExp(r'maybeCreate\("profile"\)\.apply \{([^}]*)\}').firstMatch(gradle)!.group(1)!;
+    expect(profile, contains('isDebuggable = false'));
+    expect(File('android/app/src/profile/AndroidManifest.xml').readAsStringSync(), contains('<profileable android:shell="true"'));
+  });
 }
