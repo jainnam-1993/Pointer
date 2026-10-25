@@ -495,9 +495,22 @@ void runMatrixScreens(List<String> names) {
       for (final (device, theme) in matrixCells(screen)) {
         testWidgets('${screen.name} ${device.name} ${theme.name}', (tester) => _capture(tester, screen, device, theme));
       }
+      for (final (device, theme) in extraCells[screen.name] ?? const <(MatrixDevice, MatrixTheme)>[]) {
+        testWidgets('${screen.name} ${device.name} ${theme.name}', (tester) => _capture(tester, screen, device, theme));
+      }
     });
   }
 }
+
+/// The user's vivo V2330 unfolded at its 432 dpi display size: medium width,
+/// two panes from its near-square shape.
+const userFoldDevice = MatrixDevice('userfold', Size(815, 918), 2.7, safeArea: EdgeInsets.only(top: 24, bottom: 24));
+
+/// Cells beyond the shared device matrix, per screen. Library's Featured strip
+/// ends at the list pane's edge on the user's fold, so it must fade, not cut into a box.
+final extraCells = <String, List<(MatrixDevice, MatrixTheme)>>{
+  'library': [for (final theme in MatrixTheme.values) (userFoldDevice, theme)],
+};
 
 /// Pumps [screen] at [device] in the dark theme for layout assertions (no golden).
 Future<void> pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice device) async {

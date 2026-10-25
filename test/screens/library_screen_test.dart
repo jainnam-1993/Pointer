@@ -71,6 +71,9 @@ void main() {
       final listPane = tester.getSize(find.byKey(const ValueKey('pane-primary')));
       expect(listPane.width, greaterThanOrEqualTo(kListPaneMinWidth));
 
+      // The Featured strip ends at the list pane's edge: it fades there instead of cutting.
+      expect(find.byKey(const ValueKey('featured-edge-fade')), findsOneWidget);
+
       final names = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.text('Awareness'));
       expect(names, findsWidgets);
       final paragraph = tester.renderObject<RenderParagraph>(names.first);
