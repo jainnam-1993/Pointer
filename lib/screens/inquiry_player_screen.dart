@@ -66,7 +66,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
   /** Whether a timed sequence is currently running. */
   bool _isPlaying = false;
 
-  /** Animation controller driving the [_BreathingProgressRing] during timed phases. */
+  /** Animation controller driving the [_PhaseTimeBar] during timed phases. */
   AnimationController? _timerController;
 
   @override
@@ -324,7 +324,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
     );
   }
 
-  /** Builds the bottom phase indicator with progress ring and phase dots. */
+  /** Builds the bottom phase indicator with time bar and phase dots. */
   Widget _buildPhaseIndicator(BuildContext context, PointerColors colors) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final showTimer = _phase == InquiryPhase.setup || _phase == InquiryPhase.question;
@@ -339,7 +339,7 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
             AnimatedBuilder(
               animation: _timerController!,
               builder: (context, child) {
-                return _BreathingProgressRing(progress: _timerController!.value, colors: colors);
+                return _PhaseTimeBar(progress: _timerController!.value, colors: colors);
               },
             ),
           if (showTimer) const SizedBox(height: 16),
@@ -400,12 +400,14 @@ class _PhaseIndicatorDot extends StatelessWidget {
 }
 
 /**
- * Subtle breathing progress ring that fills as time passes
+ * Time left in the phase as a hairline bar that fills left to right. A ring was
+ * read as a loading spinner in a still frame (panel item 11); a bar is not.
+ * Subtle breathing progress that fills as time passes
  * Creates a gentle visual cue without being distracting
  * Matches the liquid glass design system
  */
-class _BreathingProgressRing extends StatelessWidget {
-  const _BreathingProgressRing({required this.progress, required this.colors});
+class _PhaseTimeBar extends StatelessWidget {
+  const _PhaseTimeBar({required this.progress, required this.colors});
 
   /** Progress from 0.0 to 1.0 */
   final double progress;
@@ -421,62 +423,20 @@ class _BreathingProgressRing extends StatelessWidget {
     final ringColor = isDark ? colors.accent.withValues(alpha: 0.5) : colors.primary.withValues(alpha: 0.4);
     final bgColor = isDark ? colors.glassBorder.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.06);
 
-    return Transform.scale(
-      scale: breathingScale,
-      child: SizedBox(
-        width: 44,
-        height: 44,
-        child: CustomPaint(
-          painter: _ProgressRingPainter(progress: progress, color: ringColor, backgroundColor: bgColor, strokeWidth: isDark ? 2.5 : 2.0),
+    return Semantics(
+      label: 'Time in this phase',
+      value: '${(progress * 100).round()} percent',
+      child: Transform.scale(
+        scale: breathingScale,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: SizedBox(
+            width: 120,
+            height: 3,
+            child: LinearProgressIndicator(value: progress, color: ringColor, backgroundColor: bgColor, minHeight: 3),
+          ),
         ),
       ),
     );
-  }
-}
-
-/** Custom painter for the progress ring */
-class _ProgressRingPainter extends CustomPainter {
-  _ProgressRingPainter({required this.progress, required this.color, required this.backgroundColor, this.strokeWidth = 2.5});
-
-  final double progress;
-  final Color color;
-  final Color backgroundColor;
-  final double strokeWidth;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - strokeWidth) / 2;
-
-    // Background ring
-    final bgPaint = Paint()
-      ..color = backgroundColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, bgPaint);
-
-    // Progress arc
-    final progressPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    const pi = 3.14159265359;
-    final sweepAngle = 2 * pi * progress;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2, // Start from top
-      sweepAngle,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ProgressRingPainter oldDelegate) {
-    return progress != oldDelegate.progress || color != oldDelegate.color || backgroundColor != oldDelegate.backgroundColor;
   }
 }

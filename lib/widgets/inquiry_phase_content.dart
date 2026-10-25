@@ -116,7 +116,12 @@ class InquiryPhaseContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Visual element if the inquiry has one
-          if (inquiry.hasVisualElement) ...[const InquiryVisual(size: 140), const SizedBox(height: 48)],
+          if (inquiry.hasVisualElement) ...[
+            const InquiryVisual(size: 140),
+            const SizedBox(height: 12),
+            _orbCaption(context),
+            const SizedBox(height: 32),
+          ],
 
           // Main question in glass card
           GlassCard(
@@ -126,18 +131,27 @@ class InquiryPhaseContent extends StatelessWidget {
                 Text(inquiry.question, style: AppTextStyles.pointingText(context).copyWith(height: 1.6), textAlign: TextAlign.center),
                 if (inquiry.teacher != null) ...[
                   const SizedBox(height: 20),
-                  Text('- ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
+                  Text('— ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
                 ],
               ],
             ),
           ),
 
           // Visual element below if no visual above
-          if (!inquiry.hasVisualElement) ...[const SizedBox(height: 48), const InquiryVisual(size: 100)],
+          if (!inquiry.hasVisualElement) ...[
+            const SizedBox(height: 40),
+            const InquiryVisual(size: 100),
+            const SizedBox(height: 12),
+            _orbCaption(context),
+          ],
         ],
       ),
     );
   }
+
+  /** Names the breathing orb, so it reads as a place to rest attention rather than a control (panel item 11). */
+  Widget _orbCaption(BuildContext context) =>
+      Text('Breathe with the circle and let the question rest', style: AppTextStyles.footerText(context), textAlign: TextAlign.center);
 
   Widget _buildFollowUpPhase(BuildContext context, PointerColors colors) {
     if (inquiry.followUp == null) {

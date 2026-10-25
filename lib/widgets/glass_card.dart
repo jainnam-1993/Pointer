@@ -159,12 +159,16 @@ class GlassCard extends ConsumerWidget {
     // by the rim width. The rim is now a foreground layer, so add that inset back
     // to keep every child exactly where it was.
     final rimWidth = glass.rimWidth;
-    final material = Container(
-      padding: scrolls ? EdgeInsets.zero : padding,
+    // Top-edge highlight: a soft sheen across the upper third, painted behind the
+    // content. As a foreground layer it washed out the first row's text, so the top
+    // row of a grouped list read as pressed or disabled (panel item 4).
+    final material = DecoratedBox(
       decoration: BoxDecoration(gradient: glassGradient, borderRadius: radius),
-      // Top-edge highlight: a soft sheen across the upper third.
-      foregroundDecoration: BoxDecoration(borderRadius: radius, gradient: glass.sheen),
-      child: Padding(padding: EdgeInsets.all(rimWidth), child: constrainedContent),
+      child: Container(
+        padding: scrolls ? EdgeInsets.zero : padding,
+        decoration: BoxDecoration(borderRadius: radius, gradient: glass.sheen),
+        child: Padding(padding: EdgeInsets.all(rimWidth), child: constrainedContent),
+      ),
     );
 
     final card = DecoratedBox(
@@ -488,7 +492,12 @@ class _ScrollingContentState extends State<_ScrollingContent> {
   @override
   Widget build(BuildContext context) {
     final muted = context.colors.textMuted;
-    Widget scroll = SingleChildScrollView(controller: _controller, padding: widget.padding, physics: const BouncingScrollPhysics(), child: widget.child);
+    Widget scroll = SingleChildScrollView(
+      controller: _controller,
+      padding: widget.padding,
+      physics: const BouncingScrollPhysics(),
+      child: widget.child,
+    );
     if (_moreBelow) {
       scroll = ShaderMask(
         key: const ValueKey('glass-card-more-fade'),

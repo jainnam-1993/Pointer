@@ -25,7 +25,7 @@ abstract final class PhosphorIconsLight {
   static const IconData coffee = IconData(0xe1c2, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData couch = IconData(0xe7f6, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData diamond = IconData(0xe1ec, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
-  static const IconData dot = IconData(0xecde, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
+  static const IconData record = IconData(0xe3ee, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData drop = IconData(0xe210, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData export = IconData(0xeaf0, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData fire = IconData(0xe242, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);

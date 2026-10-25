@@ -9,10 +9,8 @@ List<Widget> _guidedInquirySlivers(BuildContext context, PointerColors colors) {
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
         child: Semantics(
           header: true,
-          child: Text(
-            'Guided Inquiry',
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.textMuted),
-          ),
+          // Section labels are tracked caps everywhere (DESIGN_SYSTEM.md, sectionHeader).
+          child: Text('GUIDED INQUIRY', style: AppTextStyles.sectionHeader(context)),
         ),
       ),
     ),
@@ -88,7 +86,7 @@ class _GuidedRow extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 13, color: colors.textSecondary),
                   ),
