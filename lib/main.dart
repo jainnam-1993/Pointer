@@ -236,6 +236,8 @@ class _PointerAppState extends ConsumerState<PointerApp> with WidgetsBindingObse
 
     return MaterialApp.router(
       title: 'Here Now',
+      // Lets the router restore the open tab after process death (see router.dart).
+      restorationScopeId: 'app',
       debugShowCheckedModeBanner: false,
       // High contrast (in-app setting or OS) is a full theme that follows light and dark mode.
       theme: highContrast ? AppTheme.highContrastLight : AppTheme.light,
