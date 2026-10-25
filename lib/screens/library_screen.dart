@@ -696,7 +696,8 @@ class _BrowseCard extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(fontSize: 13, color: colors.textSecondary),
-                    maxLines: listSubtitleMaxLines(context),
+                    // Wrap rather than clip: the count column takes width from a narrow list column.
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
