@@ -156,7 +156,7 @@ class WindowLayout {
    * glass capsule sits top-left, clear of Today's centered card. The Fold and
    * tabletop keep the centered capsule they had.
    */
-  Alignment get railAlignment => isFoldableInnerScreen || posture == Posture.tabletop ? Alignment.centerLeft : Alignment.topLeft;
+  Alignment get railAlignment => isTabletCanvas ? Alignment.topLeft : Alignment.centerLeft;
 
   /**
    * Left padding the shell gives content beside the rail. Tablets also get
@@ -164,14 +164,15 @@ class WindowLayout {
    * content. The Fold keeps [kRailWidth] alone, because its 815 dp two panes
    * need the width.
    */
-  double get railContentInset => kRailWidth + (isFoldableInnerScreen ? 0 : kRailGutter);
+  double get railContentInset => kRailWidth + (isTabletCanvas ? kRailGutter : 0);
 
   /**
    * A tablet canvas: a medium or expanded flat window that is not a foldable's
    * inner screen. Today's card centres its pointing and sets it a type step up
    * here ([AppType.heroTablet]); the Fold and phones keep their card.
    */
-  bool get isTabletCanvas => sizeClass != WindowSizeClass.compact && posture == Posture.flat && !isFoldableInnerScreen;
+  bool get isTabletCanvas =>
+      sizeClass != WindowSizeClass.compact && posture == Posture.flat && !isFoldableInnerScreen && size.width >= kTabletMinWidth;
 
   /**
    * Library's list-detail: wherever the window is two-pane, and on medium
@@ -182,10 +183,7 @@ class WindowLayout {
 
   /** How Today composes the hero card with its context. See [HeroComposition]. */
   HeroComposition get heroComposition {
-    if (sizeClass == WindowSizeClass.compact || posture != Posture.flat || isFoldableInnerScreen) {
-      return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
-    }
-    if (size.height > size.width * kTallWindowAspect) return HeroComposition.stacked;
+    if (isTabletCanvas && size.height > size.width * kTallWindowAspect) return HeroComposition.stacked;
     return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
   }
 }
@@ -203,8 +201,15 @@ enum HeroComposition { single, sideBySide, stacked }
 /** Height-to-width ratio past which a regular window counts as a tall (portrait) tablet. */
 const double kTallWindowAspect = 1.15;
 
-/** Narrowest medium window that gets Library's list-detail ([WindowLayout.showsListDetail]). */
-const double kListDetailMinWidth = 720;
+/**
+ * Narrowest tablet canvas ([WindowLayout.isTabletCanvas]) and medium window with Library's list-detail
+ * ([WindowLayout.showsListDetail]): a 10-inch tablet in portrait. Narrower regular windows (an iPad Split View half,
+ * the Fold) keep their layouts.
+ */
+const double kTabletMinWidth = 720;
+
+/** Library's list-detail threshold on medium windows; the same width as [kTabletMinWidth]. */
+const double kListDetailMinWidth = kTabletMinWidth;
 
 /** Share of the window height the pointing's area fills in a tablet hero card ([WindowLayout.isTabletCanvas]). */
 const double kTabletHeroBodyHeightShare = 0.2;
@@ -252,6 +257,12 @@ const double kWideContentMaxWidth = 1240;
 /** Featured readings in Library's detail pane: six fill a regular grid of two or three columns. */
 const int kFeaturedOverviewCount = 6;
 
+/** Featured readings in Library's reader pane: [kFeaturedOverviewCount] on a tablet canvas, three elsewhere (the Fold keeps its pane). */
+int featuredOverviewCount(WindowLayout layout) => layout.isTabletCanvas ? kFeaturedOverviewCount : 3;
+
+/** Widest the Saved column gets: [kWideContentMaxWidth] on a tablet canvas, [kContentMaxWidth] elsewhere. */
+double wideContentMaxWidth(WindowLayout layout) => layout.isTabletCanvas ? kWideContentMaxWidth : kContentMaxWidth;
+
 /** Narrowest a Saved tile gets before the grid drops a column. */
 const double kTileMinWidth = 300;
 
@@ -291,7 +302,7 @@ class SliverTileGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverLayoutBuilder(
       builder: (context, constraints) {
-        final cols = WindowLayout.of(context).sizeClass == WindowSizeClass.compact
+        final cols = !WindowLayout.of(context).isTabletCanvas
             ? 1
             : tileColumns(constraints.crossAxisExtent, minTileWidth: minTileWidth, gap: gap).clamp(1, itemCount < 1 ? 1 : itemCount);
         if (cols == 1) return SliverList(delegate: SliverChildBuilderDelegate(itemBuilder, childCount: itemCount));
@@ -331,7 +342,7 @@ const double kHeroReadingMeasureWidth = 760;
  * leave too little room, so the subtitle wraps to a second line instead of
  * truncating.
  */
-int listSubtitleMaxLines(BuildContext context) => WindowLayout.of(context).sizeClass == WindowSizeClass.compact ? 1 : 2;
+int listSubtitleMaxLines(BuildContext context) => WindowLayout.of(context).isTabletCanvas ? 2 : 1;
 
 /** Inner side padding of the hero card on regular windows; the stacked context lines up with it. */
 const double kHeroCardInset = 28;

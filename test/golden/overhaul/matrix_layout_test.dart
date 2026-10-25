@@ -112,7 +112,7 @@ void main() {
       await pumpAt(tester, screen('home'), device('foldinner'));
       expect(find.byKey(const ValueKey('pane-primary')), findsOneWidget);
       expect(find.byKey(const ValueKey('home-context-pane')), findsOneWidget);
-      for (final d in [medium, device('tablet')]) {
+      for (final d in [device('tablet10'), device('tablet')]) {
         await pumpAt(tester, screen('home'), d);
         expect(find.byKey(const ValueKey('hero-stack')), findsOneWidget, reason: d.name);
         // The context sits under the card, inside the card's column, not in a far pane.

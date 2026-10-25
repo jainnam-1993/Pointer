@@ -185,7 +185,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       secondary: selected == null
           ? _FeaturedOverview(
               key: const ValueKey('library-detail-featured'),
-              featured: getFeaturedArticles(limit: kFeaturedOverviewCount),
+              featured: getFeaturedArticles(limit: featuredOverviewCount(layout)),
               onOpen: (article) => _openArticle(context, article),
             )
           : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
@@ -729,7 +729,11 @@ const double _featuredGap = 12;
 double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
 /** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
-int featuredColumns(double width, int count) => balancedColumns(tileColumns(width, minTileWidth: kFeaturedCardMinWidth, gap: _featuredGap), count);
+int featuredColumns(double width, int count, {bool balanced = false}) {
+  final fit = ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
+  // Tablets: every row full (balancedColumns); elsewhere the old fit, so the Fold and phones keep their grid.
+  return balanced ? balancedColumns(fit, count) : fit;
+}
 
 class _FeaturedHeader extends StatelessWidget {
   final PointerColors colors;
@@ -766,7 +770,7 @@ class _FeaturedGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cols = featuredColumns(constraints.maxWidth, featured.length);
+          final cols = featuredColumns(constraints.maxWidth, featured.length, balanced: WindowLayout.of(context).isTabletCanvas);
           final width = (constraints.maxWidth - _featuredGap * (cols - 1)) / cols;
           // Rows sized to their content: each row is as tall as its tallest card
           // (IntrinsicHeight), so cards line up without the empty band a fixed
@@ -820,25 +824,40 @@ class _FeaturedOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return SafeArea(
-      child: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(child: SizedBox(height: 20)),
-          SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
-          SliverToBoxAdapter(
-            child: _FeaturedGrid(featured: featured, onOpen: onOpen),
-          ),
-          // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: EmptyStateWidget(
-              key: const ValueKey('library-detail-empty'),
-              icon: AppIcons.library,
-              title: 'Choose a reading',
-              subtitle: 'Pick a teaching or article from the list, and it opens here.',
+      child: !WindowLayout.of(context).isTabletCanvas
+          ? ListView(
+              padding: const EdgeInsets.only(top: 20, bottom: 48),
+              children: [
+                _FeaturedHeader(colors: colors),
+                _FeaturedGrid(featured: featured, onOpen: onOpen),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  child: Text(
+                    'Or choose a reading from the list.',
+                    style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+                  ),
+                ),
+              ],
+            )
+          : CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
+                SliverToBoxAdapter(
+                  child: _FeaturedGrid(featured: featured, onOpen: onOpen),
+                ),
+                // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyStateWidget(
+                    key: const ValueKey('library-detail-empty'),
+                    icon: AppIcons.library,
+                    title: 'Choose a reading',
+                    subtitle: 'Pick a teaching or article from the list, and it opens here.',
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

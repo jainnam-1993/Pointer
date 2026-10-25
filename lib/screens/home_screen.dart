@@ -560,7 +560,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     // actions together in the middle instead of leaving the actions at the bottom.
     final stacked = layout.heroComposition == HeroComposition.stacked;
     // Tablets in landscape too: the actions stay under the card, never pinned to the bottom edge (the Fold keeps its layout).
-    final grouped = stacked || (layout.isTwoPane && (size.height > size.width || !layout.isFoldableInnerScreen));
+    final grouped = stacked || (layout.isTwoPane && (size.height > size.width || layout.isTabletCanvas));
     final card = Center(
       heightFactor: grouped ? 1.0 : null,
       child: ConstrainedBox(

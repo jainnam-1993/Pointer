@@ -191,6 +191,6 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
       ],
     );
     final layout = WindowLayout.of(context);
-    return PointerScaffold(body: layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(maxWidth: kWideContentMaxWidth, child: list));
+    return PointerScaffold(body: layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(maxWidth: wideContentMaxWidth(layout), child: list));
   }
 }
