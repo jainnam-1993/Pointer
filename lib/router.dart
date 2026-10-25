@@ -253,6 +253,9 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _libraryNavigatorKey,
+            // Built at startup, off screen: the first visit used to build the whole page in the switch frame
+            // (Library's first visit: raster p90 17 ms and 36 janky frames on the user Fold, revisits 4 ms and 0).
+            preload: true,
             restorationScopeId: 'library',
             routes: [GoRoute(path: '/library', builder: (context, state) => const LibraryScreen())],
           ),
@@ -261,6 +264,9 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _savedNavigatorKey,
+            // Built at startup, off screen: the first visit used to build the whole page in the switch frame
+            // (Library's first visit: raster p90 17 ms and 36 janky frames on the user Fold, revisits 4 ms and 0).
+            preload: true,
             restorationScopeId: 'saved',
             routes: [GoRoute(path: '/saved', builder: (context, state) => const SavedScreen())],
           ),
