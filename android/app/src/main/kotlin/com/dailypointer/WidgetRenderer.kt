@@ -140,7 +140,7 @@ object WidgetRenderer {
             }
             WidgetSurface.TONAL -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_tonal)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", 255)
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
                 tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_text)
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_text_muted)
                 tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_accent)

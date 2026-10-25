@@ -30,6 +30,7 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "current" to WidgetLook(WidgetSurface.GLASS, 0.45, WidgetScrim.BOX),
             "frosted" to WidgetLook(WidgetSurface.GLASS, 0.80, WidgetScrim.NONE),
             "tonal" to WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE),
+            "tonal-glass" to WidgetLook(WidgetSurface.TONAL, 0.85, WidgetScrim.NONE),
         )
     }
 }

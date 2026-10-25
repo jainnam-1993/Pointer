@@ -4,7 +4,7 @@ import android.content.Context
 
 /**
  * Debug builds only: the shipped look, unless the design review set one through
- * DebugWallpaperReceiver (--es look current|frosted|tonal; --es look shipped clears).
+ * DebugWallpaperReceiver (--es look current|frosted|tonal|tonal-glass; --es look shipped clears).
  * Release and profile builds return WidgetLook.SHIPPED (ManifestSafetyTest).
  */
 object WidgetLookSource {
