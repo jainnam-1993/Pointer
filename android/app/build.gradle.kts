@@ -138,6 +138,8 @@ tasks.matching { it.name == "compileReleaseJavaWithJavac" || it.name == "compile
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // Installs src/main/baseline-prof.txt on sideloads, so startup code is compiled ahead of time.
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     // JVM unit tests for the widget model (org.json is stubbed in android.jar)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")

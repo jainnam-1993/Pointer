@@ -1,0 +1,30 @@
+# Baseline Profile: classes and methods on the cold start path, compiled ahead of time.
+# AGP packs this into the APK; androidx.profileinstaller installs it on first launch for
+# sideloads, and Play uses it at install. Without it, a fresh install runs the app's dex
+# unverified from the APK (status run-from-apk), which cost about 350 ms per cold start on
+# Pointer_UserFold_2 (2026-10-24 trace: OpenDexFilesFromOat inside bindApplication).
+# Wildcard rules: H hot, S startup, P post-startup.
+
+# The app: MainActivity, widget renderer and stores.
+HSPLcom/dailypointer/**->**(**)**
+Lcom/dailypointer/**;
+
+# Flutter embedding: loader, engine, FlutterActivity, FlutterView, platform channels.
+HSPLio/flutter/**->**(**)**
+Lio/flutter/**;
+
+# Plugins registered with the engine before the first frame.
+HSPLdev/fluttercommunity/workmanager/**->**(**)**
+Ldev/fluttercommunity/workmanager/**;
+HSPLcom/dexterous/flutterlocalnotifications/**->**(**)**
+Lcom/dexterous/flutterlocalnotifications/**;
+HSPLes/antonborri/home_widget/**->**(**)**
+Les/antonborri/home_widget/**;
+
+# App Startup and WorkManager initialisation in bindApplication.
+HSPLandroidx/startup/**->**(**)**
+Landroidx/startup/**;
+HSPLandroidx/work/**->**(**)**
+Landroidx/work/**;
+HSPLandroidx/room/**->**(**)**
+Landroidx/room/**;
