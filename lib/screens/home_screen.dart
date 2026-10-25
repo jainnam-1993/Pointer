@@ -648,7 +648,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             label: 'Next',
             semanticsLabel: 'Show next pointing',
             color: colors.textSecondary,
-            trailing: AppIcons.chevronDown,
+            trailing: AppIcons.chevronRight,
             onTap: _handleNext,
           ),
         ],
