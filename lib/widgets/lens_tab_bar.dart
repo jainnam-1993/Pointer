@@ -561,12 +561,14 @@ class LensBarLook {
       border: Border.all(color: const Color(0x99FFFFFF), width: 1),
       shadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, 3))],
       frosted: true,
-      // Selected (store panel 1.3.0, item 2: white on cream barely showed): sage-tinted glass with a sage rim at 3:1 or
+      // Selected (store panel 1.3.0, item 2: white on cream barely showed): white glass with a sage rim at 3:1 or
       // more against the bar, and the label and icon in deep sage ink. Separation comes from the accent tint, not a
       // heavier shadow.
-      pill: const Color(0x333F6B52),
+      // Bright white glass inside the bar with the sage rim and deep-sage ink (design panel on device: 53 against the
+      // sage-tinted fill's 49; the tint read as muddy grey-green).
+      pill: const Color(0xB3FFFFFF),
       pillRim: const Color(0xD93F6B52),
-      pillHighlight: const Color(0x40FFFFFF), // the same glass top highlight as the dark pill
+      pillHighlight: const Color(0x66FFFFFF),
       pillShadow: const Color(0x1A1E2A1F),
       inactive: const Color(0xFF5A5F58),
       active: const Color(0xFF24402F),
