@@ -1004,8 +1004,10 @@ class LiquidGlass {
   /** Gap between the bar and the bottom safe inset. */
   static const double safeGap = 8;
 
-  /** Rail width (the content keeps [kRailWidth] of padding; the capsule is narrower). */
-  static const double railWidth = 72;
+  /** Rail width (the content keeps [kRailWidth] of padding; the capsule is narrower). 80 so the selected pill is a
+   * capsule (68 x 56, wider than tall) rather than a near-circle, with room for the label at 1.6x text; 12 inset + 80
+   * still fits inside [kRailWidth] (96). */
+  static const double railWidth = 80;
 
   /** Rail inset from the left safe edge. */
   static const double railInset = 12;

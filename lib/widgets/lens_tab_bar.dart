@@ -38,7 +38,7 @@ abstract final class LensTabStyle {
   static const Color hairlineDark = Color(0x29FFFFFF);
 
   /** Dark glass bar: translucent violet-grey over a backdrop blur, and its light rim. */
-  static const Color capsuleDarkGlass = Color(0x6626233D);
+  static const Color capsuleDarkGlass = Color(0x4D3A3560);
   static const Color rimDarkGlass = Color(0x24FFFFFF);
 
   /** High contrast: no glass; a solid bar and pill with clear borders. */
@@ -88,6 +88,10 @@ class LensTabBar extends StatefulWidget {
 
   /** Main-axis padding inside the capsule. */
   static const double pad = 8;
+
+  /** Main-axis padding inside the rail: with the rail pill [LiquidGlass.railCellHeight] - 4 tall, the pill is 6 from the rim
+   * on every side, like its 6 side inset. */
+  static const double railPad = 4;
 
   /** Width of the minimized bar for [count] tabs. */
   static double minimizedWidth(int count) => count * LiquidGlass.minimizedCell + 2 * pad;
@@ -165,7 +169,10 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
     });
   }
 
-  double _cellAt(double mainOffset) => ((mainOffset - LensTabBar.pad) / _cell - 0.5).clamp(0.0, widget.tabs.length - 1.0);
+  /** Main-axis padding: on the rail it is [LensTabBar.railPad], so the selected pill sits 6 from the rim on all four sides. */
+  double get _pad => widget.axis == Axis.horizontal ? LensTabBar.pad : LensTabBar.railPad;
+
+  double _cellAt(double mainOffset) => ((mainOffset - _pad) / _cell - 0.5).clamp(0.0, widget.tabs.length - 1.0);
 
   /**
    * Large label (the equivalent of iOS's Large Content Viewer): tab labels stop growing past [LensTabStyle.labelScaleCap]
@@ -318,10 +325,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       builder: (context, c) {
         final n = widget.tabs.length;
         final thickness = horizontal ? (widget.minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight) : LiquidGlass.railWidth;
-        final extent = horizontal
-            ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth)
-            : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
-        final cell = (extent - 2 * LensTabBar.pad) / n;
+        final extent = horizontal ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth) : n * LiquidGlass.railCellHeight + 2 * _pad;
+        final cell = (extent - 2 * _pad) / n;
         _cell = cell;
         final showLabel = !(horizontal && widget.minimized);
         final dark = Theme.of(context).brightness == Brightness.dark;
@@ -329,7 +334,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
         final style = LensBarLook.of(dark: dark, highContrast: highContrast);
 
         // Rest pill: flat and tinted, inset from the capsule.
-        final pillMain = cell - LiquidGlass.pillCellGap;
+        // On the rail the pill keeps the same inset from the rim on all four sides; on the bar it spans the cell less a gap.
+        final pillMain = cell - (horizontal ? LiquidGlass.pillCellGap : 2 * (LiquidGlass.pillInset - LensTabBar.railPad));
         final pillCross = thickness - 2 * LiquidGlass.pillInset;
         // Every tab's icon and label are laid out in the rest pill's box, so the label always fits inside the pill.
         final pillBox = horizontal ? Size(pillMain, pillCross) : Size(pillCross, pillMain);
@@ -361,8 +367,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
         }
 
         Widget cellAt(int i, Widget child) => horizontal
-            ? Positioned(left: LensTabBar.pad + i * cell, top: 0, width: cell, height: thickness, child: child)
-            : Positioned(top: LensTabBar.pad + i * cell, left: 0, width: thickness, height: cell, child: child);
+            ? Positioned(left: _pad + i * cell, top: 0, width: cell, height: thickness, child: child)
+            : Positioned(top: _pad + i * cell, left: 0, width: thickness, height: cell, child: child);
 
         Offset local(Offset global) => (context.findRenderObject()! as RenderBox).globalToLocal(global);
 
@@ -431,7 +437,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                       final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
                       final inset =
                           thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
-                      final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
+                      final centreMain = (_pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
                       final rect = horizontal
                           ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
                           : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
@@ -534,11 +540,12 @@ class LensBarLook {
         // opaque slab.
         capsule: LensTabStyle.capsuleDarkGlass,
         border: Border.all(color: LensTabStyle.rimDarkGlass, width: 1),
-        shadow: LensTabStyle.capsuleShadow,
+        // A light diffuse shadow: the wide 22% shadow drew a dark halo ring around the glass on the dark sky.
+        shadow: const [BoxShadow(color: Color(0x26000000), blurRadius: 20, offset: Offset(0, 6))],
         frosted: true,
         // Selected: lavender-tinted glass (the dark accent), with a lavender rim at 3:1 or more against the bar.
         pill: const Color(0x4DA597E0),
-        pillRim: const Color(0x99B9ADF0),
+        pillRim: const Color(0x8CB9ADF0),
         pillHighlight: const Color(0x1FFFFFFF),
         pillShadow: const Color(0x33000000),
         inactive: const Color(0xFFB4B1C0),
@@ -548,18 +555,18 @@ class LensBarLook {
     return LensBarLook(
       // Light glass that reads as glass on a pale field: a translucent body (not a solid fill), a 1 px warm-grey
       // hairline for the edge, and a soft two-step shadow for depth.
-      // Warm cream glass (design panel: a cool grey body read as a pasted-on tray on the cream field), a white rim,
-      // and one diffuse shadow with no hard lip.
-      capsule: const Color(0xB8F6F0E2),
+      // Neutral white glass that the field tints through the blur (design panel: grey read as a tray, cream as a
+      // yellow slab), a white rim, and one diffuse shadow with no hard lip.
+      capsule: const Color(0x9EFFFCF5),
       border: Border.all(color: const Color(0x99FFFFFF), width: 1),
-      shadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, 6))],
+      shadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, 3))],
       frosted: true,
       // Selected (store panel 1.3.0, item 2: white on cream barely showed): sage-tinted glass with a sage rim at 3:1 or
       // more against the bar, and the label and icon in deep sage ink. Separation comes from the accent tint, not a
       // heavier shadow.
-      pill: const Color(0x2E3F6B52),
-      pillRim: const Color(0xB33F6B52),
-      pillHighlight: const Color(0x59FFFFFF),
+      pill: const Color(0x333F6B52),
+      pillRim: const Color(0xD93F6B52),
+      pillHighlight: const Color(0x40FFFFFF), // the same glass top highlight as the dark pill
       pillShadow: const Color(0x1A1E2A1F),
       inactive: const Color(0xFF5A5F58),
       active: const Color(0xFF24402F),
