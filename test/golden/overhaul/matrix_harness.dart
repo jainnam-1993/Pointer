@@ -408,7 +408,7 @@ bool _isLayoutOverflow(FlutterErrorDetails d) => d.exceptionAsString().contains(
 /// logical size, so [MatrixDevice.dpr] documents the real device and is not used for capture.
 const _goldenDpr = 1.0;
 
-Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice device, MatrixTheme theme) async {
+Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice device, MatrixTheme theme, {double textScale = 1.0}) async {
   final view = tester.view;
   view.physicalSize = device.size * _goldenDpr;
   view.devicePixelRatio = _goldenDpr;
@@ -426,6 +426,11 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
     tester.platformDispatcher.accessibilityFeaturesTestValue = FakeAccessibilityFeatures(highContrast: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
   }
+  if (textScale != 1.0) {
+    tester.platformDispatcher.textScaleFactorTestValue = textScale;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  }
+  final cell = '${screen.name}_${device.name}_${theme.name}${_textScaleSuffix(textScale)}';
 
   final prefs = await createMockPrefs(onboardingCompleted: screen.onboardingCompleted);
 
@@ -445,7 +450,7 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
     // Library featured row stayed at opacity 0); step frames so they finish.
     await settleTransient(tester);
     if (screen.drive != null) await screen.drive!(tester);
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/${screen.name}_${device.name}_${theme.name}.png'));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$cell.png'));
     // Unmount so pending timers and repeating animations are disposed.
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 5));
@@ -454,7 +459,7 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
   }
   if (overflows.isNotEmpty) {
     // ignore: avoid_print
-    print('[overhaul-golden] ${screen.name}_${device.name}_${theme.name}: ${overflows.length} overflow(s): ${overflows.toSet().join('; ')}');
+    print('[overhaul-golden] $cell: ${overflows.length} overflow(s): ${overflows.toSet().join('; ')}');
   }
 }
 
@@ -494,6 +499,9 @@ void runMatrixScreens(List<String> names) {
       for (final (device, theme) in extraCells[screen.name] ?? const <(MatrixDevice, MatrixTheme)>[]) {
         testWidgets('${screen.name} ${device.name} ${theme.name}', (tester) => _capture(tester, screen, device, theme));
       }
+      for (final (device, theme, scale) in largeTextCells[screen.name] ?? const <(MatrixDevice, MatrixTheme, double)>[]) {
+        testWidgets('${screen.name} ${device.name} ${theme.name} text $scale', (tester) => _capture(tester, screen, device, theme, textScale: scale));
+      }
     });
   }
 }
@@ -507,6 +515,18 @@ const userFoldDevice = MatrixDevice('userfold', Size(815, 918), 2.7, safeArea: E
 final extraCells = <String, List<(MatrixDevice, MatrixTheme)>>{
   'library': [for (final theme in MatrixTheme.values) (userFoldDevice, theme)],
 };
+
+/// Cells at a large system text scale, as (device, theme, scale). The shell's tab labels must fit
+/// at 2.0 in both layouts: the bottom bar (phone) and the side rail (ipad11p).
+final largeTextCells = <String, List<(MatrixDevice, MatrixTheme, double)>>{
+  'shell': [
+    for (final device in ['phone', 'ipad11p'])
+      for (final theme in [MatrixTheme.light, MatrixTheme.dark]) (matrixDevice(device), theme, 2.0),
+  ],
+};
+
+/// Golden name suffix for a text scale: none at 1.0, `_text2` at 2.0, `_text1.3` at 1.3.
+String _textScaleSuffix(double scale) => scale == 1.0 ? '' : '_text${scale == scale.roundToDouble() ? scale.toInt() : scale}';
 
 /// Pumps [screen] at [device] in the dark theme for layout assertions (no golden).
 Future<void> pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice device) async {

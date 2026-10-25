@@ -6,7 +6,7 @@ import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/lens_tab_bar.dart';
 
-/** The lens tab bar: high contrast draws no glass, every tab is a 44 pt target, and only the active tab has a label. */
+/** The lens tab bar: high contrast draws no glass, every tab is a 44 pt target, and every tab shows its label, fitting its cell at text scale 1.3 and 2.0. */
 void main() {
   const tabs = <LensTab>[
     (AppIcons.homeFilled, 'Home'),
