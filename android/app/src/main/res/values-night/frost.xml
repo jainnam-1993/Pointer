@@ -2,4 +2,6 @@
 <resources>
     <color name="widget_highlight">#80FFFFFF</color>
     <color name="widget_rim">#59FFFFFF</color>
+    <!-- Dark mode keeps the 0.5 dp control hairline (unchanged from 878cae8). -->
+    <dimen name="widget_app_pill_stroke_width">0.5dp</dimen>
 </resources>
