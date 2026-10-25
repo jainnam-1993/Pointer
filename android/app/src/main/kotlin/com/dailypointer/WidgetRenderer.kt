@@ -153,12 +153,13 @@ object WidgetRenderer {
             WidgetScrim.NONE -> 0
         }
         views.setInt(R.id.widget_content_area, "setBackgroundResource", scrim)
-        views.setInt(R.id.widget_teacher, "setBackgroundResource", scrim)
+        views.setInt(R.id.widget_teacher, "setBackgroundResource", if (look.scrim == WidgetScrim.SOFT) R.drawable.widget_teacher_tint else scrim)
         when (look.surface) {
             WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
                 views.setInt(R.id.widget_frost_bg, "setImageAlpha", ((look.bodyAlpha ?: 1.0) * 255).toInt().coerceIn(0, 255))
-                val secondary = (0xD9 shl 24) or (GlassRule.INK and 0xFFFFFF)
+                // Over the soft tint the teacher line takes full ink, as the quote does.
+                val secondary = if (look.scrim == WidgetScrim.SOFT) GlassRule.INK else (0xD9 shl 24) or (GlassRule.INK and 0xFFFFFF)
                 views.setTextColor(R.id.widget_content, GlassRule.INK)
                 views.setTextColor(R.id.widget_teacher, secondary)
                 views.setTextColor(R.id.widget_tradition, secondary)
