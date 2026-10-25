@@ -599,7 +599,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     );
   }
 
-  /** Secondary actions, demoted to quiet text. */
+  /** Inquire as the one prominent button, Next as the quiet secondary. */
   Widget _buildActions(BuildContext context, PointerColors colors) {
     return Semantics(
       sortKey: const OrdinalSortKey(2.0),
@@ -608,10 +608,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: AppSpacing.md,
         children: [
-          _QuietTextAction(
-            label: 'Take a moment',
-            semanticsLabel: 'Take a moment - start guided inquiry',
-            color: colors.accent,
+          // Today's one prominent action (ux-simplify.md Option A): about a minute of inquiry.
+          _InquireButton(
             onTap: () {
               Haptics.light();
               context.push('/inquiry/random');
@@ -901,12 +899,15 @@ class _TeacherMatch extends _SourceMatch {
  * Today's top bar: the large title and the gear that opens Settings as a
  * sheet. Settings left the tab bar (ux-simplify.md, Option A).
  */
-class _TodayTopBar extends StatelessWidget {
+class _TodayTopBar extends ConsumerWidget {
   const _TodayTopBar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final autoAdvance = ref.watch(autoAdvanceProvider);
+    final zenMode = ref.watch(zenModeProvider);
+    final settings = ref.read(settingsProvider.notifier);
     // Pads by the view insets directly: Home keeps a single SafeArea, around its body.
     final inset = MediaQuery.paddingOf(context);
     return Padding(
@@ -917,6 +918,23 @@ class _TodayTopBar extends StatelessWidget {
           children: [
             Expanded(
               child: Semantics(header: true, child: Text('Today', style: Theme.of(context).textTheme.displayLarge)),
+            ),
+            // Today's own toggles live here, next to what they change (P6).
+            SizedBox.square(
+              dimension: 44,
+              child: PopupMenuButton<String>(
+                key: const ValueKey('today-more'),
+                tooltip: 'More',
+                icon: Icon(Icons.more_horiz, color: colors.textSecondary),
+                onSelected: (value) {
+                  if (value == 'autoAdvance') settings.setAutoAdvance(!autoAdvance);
+                  if (value == 'zen') settings.setZenMode(!zenMode);
+                },
+                itemBuilder: (context) => [
+                  CheckedPopupMenuItem(value: 'autoAdvance', checked: autoAdvance, child: const Text('Auto-Advance')),
+                  CheckedPopupMenuItem(value: 'zen', checked: zenMode, child: const Text('Zen Mode')),
+                ],
+              ),
             ),
             SizedBox.square(
               dimension: 44,
@@ -929,6 +947,40 @@ class _TodayTopBar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/**
+ * "Inquire · 1 min": the filled accent button. Its label color is picked
+ * from the fill's brightness, so dark mode's light accent gets dark text
+ * (the Option A gate measured white on the light accent at about 2:1).
+ */
+class _InquireButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _InquireButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final fill = context.colors.accent;
+    final label = ThemeData.estimateBrightnessForColor(fill) == Brightness.light ? const Color(0xFF24182C) : Colors.white;
+    return Semantics(
+      button: true,
+      label: 'Inquire, about one minute',
+      excludeSemantics: true,
+      child: FilledButton(
+        key: const ValueKey('today-inquire'),
+        style: FilledButton.styleFrom(
+          backgroundColor: fill,
+          foregroundColor: label,
+          minimumSize: const Size(0, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          shape: const StadiumBorder(),
+        ),
+        onPressed: onTap,
+        child: const Text('Inquire · 1 min', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
     );
   }

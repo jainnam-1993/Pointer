@@ -42,6 +42,19 @@ List<Widget> _guidedInquirySlivers(BuildContext context, PointerColors colors) {
         ),
       ),
     ),
+    // Traditions and Recently Read moved here from Settings.
+    SliverPadding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+      sliver: SliverToBoxAdapter(
+        child: GroupedSection(
+          separatorIndent: 24,
+          itemCount: 2,
+          itemBuilder: (context, index) => index == 0
+              ? _GuidedRow(title: 'Traditions', subtitle: 'Choose which schools you see', trailing: null, onTap: () => context.push('/lineages'))
+              : _GuidedRow(title: 'Recently Read', subtitle: 'Pointings you have seen', trailing: null, onTap: () => context.push('/history')),
+        ),
+      ),
+    ),
   ];
 }
 

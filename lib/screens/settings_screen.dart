@@ -4,7 +4,6 @@ import '../layout/adaptive.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,7 +20,6 @@ import 'settings/settings_widgets.dart';
 import 'settings/widget_section.dart';
 import 'settings/settings_banners.dart';
 import 'settings/appearance_section.dart';
-import 'settings/experience_section.dart';
 import 'settings/notification_times_sheet.dart';
 import '../utils/haptics.dart';
 
@@ -384,52 +382,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
         // Second column starts here on two-pane windows.
         const _ColumnBreak(),
 
-        // Traditions section
+        // Help: what the app's words mean, in plain language (P4, P9). Traditions
+        // and Recently Read moved to Library; Auto-Advance to Today's menu.
         const SizedBox(height: 24),
-        SettingsSectionHeader(title: 'TRADITIONS'),
+        SettingsSectionHeader(title: 'HELP'),
         const SizedBox(height: 12),
         GlassCard(
           padding: EdgeInsets.zero,
-          child: SettingsRow(
-            title: 'Manage Lineages',
-            trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-            onTap: () async {
-              Haptics.light();
-              // Navigate to lineages management screen
-              if (context.mounted) {
-                context.push('/lineages');
-              }
-            },
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              key: const ValueKey('settings-help'),
+              title: const Text('How Here Now Works'),
+              childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final (term, meaning) in helpGlossary)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '$term. ',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          TextSpan(text: meaning),
+                        ],
+                      ),
+                      style: TextStyle(color: colors.textSecondary, fontSize: 14, height: 1.4),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
-
-        // History section
-        const SizedBox(height: 24),
-        SettingsSectionHeader(title: 'HISTORY'),
-        const SizedBox(height: 12),
-        GlassCard(
-          padding: EdgeInsets.zero,
-          child: SettingsRow(
-            title: 'Past Pointings',
-            trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-            onTap: () async {
-              Haptics.light();
-              if (context.mounted) {
-                context.push('/history');
-              }
-            },
-          ),
-        ),
-        const SizedBox(height: 8),
-        Center(
-          child: Text('No streaks. Just recognition.', style: TextStyle(color: textColorSubtle, fontSize: 12)),
-        ),
-
-        // Experience section (auto-advance)
-        const SizedBox(height: 24),
-        SettingsSectionHeader(title: 'EXPERIENCE'),
-        const SizedBox(height: 12),
-        AutoAdvanceToggle(),
 
         // About section
         const SizedBox(height: 24),
@@ -570,3 +557,14 @@ class _ColumnBreak extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const SizedBox.shrink();
 }
+
+/** Settings > Help > How Here Now Works: one plain sentence or two per term. */
+const helpGlossary = <(String, String)>[
+  ('Pointing', 'A short line from a teacher that turns your attention to what is already here. Read it, then look, rather than think about it.'),
+  (
+    'Inquiry',
+    'A question you hold for about a minute, such as "Who am I?". Today\'s Inquire button starts one; Library has five guided sessions and all 27 questions.',
+  ),
+  ('Traditions', 'The schools the pointings come from, such as Advaita Vedanta and Zen. Library > Traditions lets you choose which ones you see.'),
+  ('Saved', 'Tap the heart on a pointing or an article to keep it in the Saved tab.'),
+];

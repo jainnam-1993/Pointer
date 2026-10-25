@@ -8,6 +8,7 @@ import 'package:pointer/data/pointings.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/router.dart';
 import 'package:pointer/screens/library_screen.dart';
+import 'package:pointer/screens/settings_screen.dart' show helpGlossary;
 import 'package:pointer/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,5 +68,11 @@ void main() {
     expect(find.text('Saved'), findsWidgets);
     expect(find.text('Nothing saved yet.'), findsNothing);
     expect(find.textContaining(kept.content.substring(0, 20)), findsWidgets);
+  });
+
+  test('Help explains pointing, inquiry and traditions with one term each (P4, P9)', () {
+    final terms = helpGlossary.map((e) => e.$1).toList();
+    expect(terms, containsAll(['Pointing', 'Inquiry', 'Traditions', 'Saved']));
+    expect(helpGlossary.any((e) => e.$2.contains('Lineage')), isFalse, reason: 'Traditions is the one term');
   });
 }
