@@ -737,6 +737,12 @@ int featuredColumns(double width, int count, {bool balanced = false}) {
   return balanced ? balancedColumns(fit, count) : fit;
 }
 
+/**
+ * Height of the list pane's large title and subtitle above its first section header. The featured
+ * pane drops by this much so its header lines up with GUIDED INQUIRY (user nit, 10-inch tablet).
+ */
+const double kLibraryTitleBlockHeight = 73;
+
 class _FeaturedHeader extends StatelessWidget {
   final PointerColors colors;
   const _FeaturedHeader({required this.colors});
@@ -820,40 +826,44 @@ class _FeaturedOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return SafeArea(
-      child: !WindowLayout.of(context).isTabletCanvas
-          ? ListView(
-              padding: const EdgeInsets.only(top: 20, bottom: 48),
-              children: [
-                _FeaturedHeader(colors: colors),
-                _FeaturedGrid(featured: featured, onOpen: onOpen),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-                  child: Text(
-                    'Or choose a reading from the list.',
-                    style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+      child: Padding(
+        // FEATURED shares the GUIDED INQUIRY row of the list pane beside it, and the cards the grouped section's top edge.
+        padding: const EdgeInsets.only(top: kLibraryTitleBlockHeight),
+        child: !WindowLayout.of(context).isTabletCanvas
+            ? ListView(
+                padding: const EdgeInsets.only(top: 20, bottom: 48),
+                children: [
+                  _FeaturedHeader(colors: colors),
+                  _FeaturedGrid(featured: featured, onOpen: onOpen),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    child: Text(
+                      'Or choose a reading from the list.',
+                      style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+                    ),
                   ),
-                ),
-              ],
-            )
-          : CustomScrollView(
-              slivers: [
-                const SliverToBoxAdapter(child: SizedBox(height: 20)),
-                SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
-                SliverToBoxAdapter(
-                  child: _FeaturedGrid(featured: featured, onOpen: onOpen),
-                ),
-                // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: EmptyStateWidget(
-                    key: const ValueKey('library-detail-empty'),
-                    icon: AppIcons.library,
-                    title: 'Choose a reading',
-                    subtitle: 'Pick a teaching or article from the list, and it opens here.',
+                ],
+              )
+            : CustomScrollView(
+                slivers: [
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                  SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
+                  SliverToBoxAdapter(
+                    child: _FeaturedGrid(featured: featured, onOpen: onOpen),
                   ),
-                ),
-              ],
-            ),
+                  // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: EmptyStateWidget(
+                      key: const ValueKey('library-detail-empty'),
+                      icon: AppIcons.library,
+                      title: 'Choose a reading',
+                      subtitle: 'Pick a teaching or article from the list, and it opens here.',
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }
