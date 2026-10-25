@@ -26,11 +26,13 @@ Source: DesignPanel runs on 2026-10-24. Round 1 is in `/workplace/jainnam/AgentR
 | 20 | Today has a large empty zone above the card at store-thumbnail scale | `*_1_today.png` | Underfilled hero | HIG |
 | 21 | On Android the floating capsule tab bar and glass pills are iOS idioms | `play_phone_*` | Non-native next to Material 3 | adversarial |
 
-Capture-side findings that I own, and their state:
-- Spinner and mismatched prompt on Guided Inquiry: the retake uses the fixed "Who Am I?" inquiry with a 15 s wait. The ring still animates (item 11).
+Capture-side findings that I own, and their state (scripts: `store/1.3.0/ios_shots.sh`, `store/1.3.0/play_shots.sh`, `store/1.3.0/render_captions.py`):
+- Guided Inquiry: the retake uses the fixed "Who Am I?" inquiry. The ring still animates (item 11).
 - Settings banner: Settings was dropped from the store set.
-- "3G" on Android: hidden. Charging bolt on iOS: still shown; `--batteryState discharged` did not take on the iOS 27 simulator.
-- Dynamic Island shows in some iPhone frames and not others: open.
-- iPad window chrome (app name in the status bar, resize grabber): open; the simulator runs the app windowed.
-- Library ends on a clipped "FEATURED" header: open.
-- No captions: drafted in `captions.md`.
+- Android "3G": hidden with demo mode `network -e mobile hide`.
+- iOS charging bolt: accepted. `--batteryState charged --batteryLevel 100` still draws a green battery with a bolt on the iOS 27 simulator, and `discharged` is ignored. Cropping is not an option, because App Store sizes are exact.
+- Dynamic Island: on the iOS 27 simulator it appears after about 10 s without input and hides on the next tap (measured: absent at 3 s and 8 s after launch, present at 15 s and 25 s, gone again after a tap). Every shot is now taken within 8 s of the last tap or launch, so no frame shows it.
+- iPad windowed chrome: fixed. The Store iPad 13 simulator is set to Settings > Multitasking & Gestures > Full Screen Apps, which persists on the device. Settings is terminated before the app launches, so no "Settings" back link shows.
+- Library ending on a clipped "FEATURED" header: on iPhone the shot scrolls about 140 pt first, so it ends on the Featured cards. iOS then minimizes the tab bar, which is native behaviour.
+- iPad status-bar date: `simctl status_bar --time` rejects ISO dates on this Xcode, so the real date shows next to 9:41 AM.
+- Captions: drafted in `captions.md` and rendered by `render_captions.py`. The dark background is the app's night ambient (indigo to plum with soft fields), and dark frames get a hairline device edge. The final render waits for the app fixes.
