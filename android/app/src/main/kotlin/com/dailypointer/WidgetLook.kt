@@ -55,6 +55,11 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             // (foliage drew 0.68 to 0.77), no scrim, as one fixed alpha.
             "pick" to WidgetLook(WidgetSurface.GLASS, 0.72, WidgetScrim.NONE),
             "app-90" to WidgetLook(WidgetSurface.APP, 0.90, WidgetScrim.NONE),
+            // Light-mode see-through sweep (2026-10-24, "no glass blur, just full solid colour"):
+            // cream at 0.50 and 0.58 (0.66 is app-66) and the dark smoke glass at 0.60 in light mode.
+            "app-50" to WidgetLook(WidgetSurface.APP, 0.50, WidgetScrim.NONE),
+            "app-58" to WidgetLook(WidgetSurface.APP, 0.58, WidgetScrim.NONE),
+            "glass-60" to WidgetLook(WidgetSurface.GLASS, 0.60, WidgetScrim.NONE),
         )
     }
 }
