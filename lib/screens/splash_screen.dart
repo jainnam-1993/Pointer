@@ -45,9 +45,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _loopController = AnimationController(vsync: this, duration: _loopDuration)..repeat();
     _exitController = AnimationController(vsync: this, duration: _exitDuration);
 
-    // main() normally starts loading before the first frame; start() is
-    // idempotent, so this only matters when the splash is shown directly.
-    unawaited(AppInitializer.startBackgroundInitialization().catchError((Object _) {}));
+    // main() starts loading after the first frame; start() is idempotent, so
+    // this only matters when the splash is shown directly (tests). Either way it
+    // runs after the first frame is built, so content work never delays it.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(AppInitializer.startBackgroundInitialization().catchError((Object _) {}));
+    });
     _startupReady = AppInitializer.isCriticalContentReady;
     _awaitContent(AppInitializer.criticalContentReady);
 

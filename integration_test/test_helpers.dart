@@ -42,6 +42,7 @@ Future<Widget> createTestApp({bool onboardingCompleted = true, bool isPremium = 
   // Same bootstrap as main(): the splash reads AppInitializer.startupCoordinator,
   // which only initialize() creates.
   final result = await AppInitializer.initialize(onNotificationAction: (_) {});
+  AppInitializer.startAfterFirstFrame(result.container);
   return UncontrolledProviderScope(container: result.container, child: const PointerApp());
 }
 

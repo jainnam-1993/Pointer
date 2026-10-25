@@ -74,6 +74,11 @@ android {
             resValue("string", "launcher_label", "Here Now Test")
         }
         maybeCreate("profile").apply {
+            // Flutter's profile type starts from debug, which makes the APK debuggable: ART then
+            // skips AOT and the Baseline Profile, so cold start measured ~350 ms slower than a
+            // user's install. Profile builds exist to measure, so they run like release here;
+            // src/profile/AndroidManifest.xml keeps them profileable for Perfetto.
+            isDebuggable = false
             applicationIdSuffix = ".test"
             versionNameSuffix = "-test"
             resValue("string", "launcher_label", "Here Now Test")
@@ -138,6 +143,8 @@ tasks.matching { it.name == "compileReleaseJavaWithJavac" || it.name == "compile
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // Installs src/main/baseline-prof.txt on sideloads, so startup code is compiled ahead of time.
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     // JVM unit tests for the widget model (org.json is stubbed in android.jar)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
