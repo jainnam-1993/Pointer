@@ -541,8 +541,9 @@ void main() {
           final card = tester.getRect(find.ancestor(of: quote, matching: find.byType(GlassCard)).first);
           final text = tester.getRect(quote);
           if (text.bottom > card.bottom) {
-            // Taller than the card: it must scroll, with the scrollbar showing.
+            // Taller than the card: it scrolls, and a soft fade at the bottom says there is more.
             expect(find.byKey(const ValueKey('glass-card-scrollbar')), findsOneWidget);
+            expect(find.byKey(const ValueKey('glass-card-more-fade')), findsOneWidget);
             final scrollable = tester.state<ScrollableState>(
               find.descendant(of: find.byKey(const ValueKey('glass-card-scrollbar')), matching: find.byType(Scrollable)).first,
             );
