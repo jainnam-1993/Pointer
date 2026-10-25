@@ -419,12 +419,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                     opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                     child: child,
                   ),
-                  child: Text(
-                    smartPunctuation(pointing.content),
-                    key: ValueKey(pointing.id),
-                    style: AppTextStyles.heroPointingText(context),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: BalancedText(smartPunctuation(pointing.content), key: ValueKey(pointing.id), style: AppTextStyles.heroPointingText(context)),
                 ),
                 if (pointing.instruction != null) ...[
                   const SizedBox(height: AppSpacing.xl),
@@ -997,6 +992,62 @@ class _InquireButton extends StatelessWidget {
         onPressed: onTap,
         child: const Text('Inquire · 1 min', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
+    );
+  }
+}
+
+/**
+ * Centered text with balanced lines, so the last line is never a lone word
+ * (a widow, such as "you." by itself) at any width.
+ */
+class BalancedText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+
+  const BalancedText(this.text, {super.key, required this.style});
+
+  /**
+   * The narrowest width that keeps [text] on as many lines as at [maxWidth]
+   * (CSS text-wrap: balance). Lines come out near-equal, so the last line is
+   * never a lone word, and a one-line quote keeps its natural width.
+   */
+  static double balancedWidth(String text, TextStyle style, double maxWidth, TextScaler scaler, TextDirection direction) {
+    int lines(double width) => (TextPainter(
+      text: TextSpan(text: text, style: style),
+      textAlign: TextAlign.center,
+      textDirection: direction,
+      textScaler: scaler,
+    )..layout(maxWidth: width)).computeLineMetrics().length;
+    final count = lines(maxWidth);
+    if (count < 2) return maxWidth;
+    var lo = maxWidth / count, hi = maxWidth;
+    for (var i = 0; i < 12; i++) {
+      final mid = (lo + hi) / 2;
+      if (lines(mid) > count) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return hi.ceilToDouble();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.maxWidth.isFinite) return Text(text, style: style, textAlign: TextAlign.center);
+        // Measure with the style Text will actually paint (DefaultTextStyle merged in).
+        final effective = DefaultTextStyle.of(context).style.merge(style);
+        final width = balancedWidth(text, effective, constraints.maxWidth, MediaQuery.textScalerOf(context), Directionality.of(context));
+        return Center(
+          widthFactor: 1,
+          child: SizedBox(
+            width: width,
+            child: Text(text, style: style, textAlign: TextAlign.center),
+          ),
+        );
+      },
     );
   }
 }
