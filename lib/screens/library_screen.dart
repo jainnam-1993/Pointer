@@ -724,7 +724,7 @@ const double kFeaturedCardMinWidth = 168;
 
 const double _featuredGap = 12;
 
-/** Height of a Featured card: fixed per text size, so a row of cards lines up. */
+/** Base height of a Featured card per text size; the grid uses 60% of it as a floor and otherwise fits content. */
 double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
 /** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
@@ -759,28 +759,47 @@ class _FeaturedGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = _featuredCardHeight(context);
+    // A floor so a row of short cards still reads as cards, not chips.
+    final minHeight = _featuredCardHeight(context) * 0.6;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final cols = featuredColumns(constraints.maxWidth, featured.length);
           final width = (constraints.maxWidth - _featuredGap * (cols - 1)) / cols;
-          return Wrap(
+          // Rows sized to their content: each row is as tall as its tallest card
+          // (IntrinsicHeight), so cards line up without the empty band a fixed
+          // height left between the subtitle and the author.
+          final rows = <List<(int, Article)>>[];
+          for (final entry in featured.indexed) {
+            if (entry.$1 % cols == 0) rows.add([]);
+            rows.last.add(entry);
+          }
+          return Column(
             key: const ValueKey('featured-grid'),
-            spacing: _featuredGap,
-            runSpacing: _featuredGap,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final (i, article) in featured.indexed)
-                StaggeredFadeIn(
-                  index: i,
-                  child: SizedBox(
-                    key: ValueKey('featured-card-$i'),
-                    width: width,
-                    height: height,
-                    child: _FeaturedArticleCard(article: article, onTap: () => onOpen(article)),
+              for (final (r, row) in rows.indexed) ...[
+                if (r > 0) const SizedBox(height: _featuredGap),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final (j, (i, article)) in row.indexed) ...[
+                        if (j > 0) const SizedBox(width: _featuredGap),
+                        StaggeredFadeIn(
+                          index: i,
+                          child: ConstrainedBox(
+                            key: ValueKey('featured-card-$i'),
+                            constraints: BoxConstraints.tightFor(width: width).copyWith(minHeight: minHeight),
+                            child: _FeaturedArticleCard(article: article, onTap: () => onOpen(article)),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
+              ],
             ],
           );
         },
@@ -884,6 +903,7 @@ class _FeaturedArticleCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
 
+            const SizedBox(height: 8),
             const Spacer(),
 
             // Teacher attribution

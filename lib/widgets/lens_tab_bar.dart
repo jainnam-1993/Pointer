@@ -303,8 +303,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                       final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
                       final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
                       final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                      final inset =
-                          thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
+                      final inset = thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
                       final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
                       final rect = horizontal
                           ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
