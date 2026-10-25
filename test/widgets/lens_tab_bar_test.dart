@@ -1,10 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/widgets/lens_tab_bar.dart';
+
+import '../helpers/app_fonts.dart';
 
 /** The lens tab bar: high contrast draws no glass, every tab is a 44 pt target, and every tab shows its label, fitting its cell at text scale 1.3 and 2.0. */
 void main() {
@@ -86,7 +89,11 @@ void main() {
         final bar = tester.getRect(find.byType(LensTabBar));
         for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate()) {
           final r = tester.getRect(find.byWidget(e.widget));
-          expect(bar.inflate(1).contains(r.topLeft) && bar.inflate(1).contains(r.bottomRight), isTrue, reason: '${(e.widget as Text).data} $r in $bar');
+          expect(
+            bar.inflate(1).contains(r.topLeft) && bar.inflate(1).contains(r.bottomRight),
+            isTrue,
+            reason: '${(e.widget as Text).data} $r in $bar',
+          );
         }
       });
     }
@@ -275,7 +282,10 @@ void main() {
         expect(lens, findsOneWidget, reason: '$axis');
         final visibleLibraryIcons = tester
             .widgetList<Icon>(find.byIcon(AppIcons.libraryFilled))
-            .where((icon) => tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0))
+            .where(
+              (icon) =>
+                  tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0),
+            )
             .length;
         expect(visibleLibraryIcons, 1, reason: 'exactly one Library glyph on screen while the lens is over it ($axis)');
         await g.up();
@@ -317,7 +327,8 @@ void main() {
           final icon = find.descendant(of: find.byType(LensTabBar), matching: find.byIcon(tabs[i].$1));
           final visible = icon.evaluate().map((e) => tester.getRect(find.byWidget(e.widget))).where((r) => pill.contains(r.center)).toList();
           expect(visible, isNotEmpty);
-          expect(visible.first.size, const Size(24, 24), reason: 'icon size is fixed for every tab');
+          expect(visible.first.width, closeTo(24, 0.01), reason: 'icon size is fixed for every tab');
+          expect(visible.first.height, closeTo(24, 0.01), reason: 'icon size is fixed for every tab');
           final off = visible.first.center - pill.center;
           iconOffsetInPill ??= off;
           expect((off - iconOffsetInPill).distance, lessThan(0.5), reason: 'icon sits at the same place in every pill');
@@ -336,10 +347,92 @@ void main() {
           expect(now.width, closeTo(base.width, 0.01));
           expect(now.height, closeTo(base.height, 0.01));
           for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Icon)).evaluate()) {
-            expect(tester.getSize(find.byWidget(e.widget)), const Size(24, 24));
+            final sz = tester.getSize(find.byWidget(e.widget));
+            expect(sz.width, closeTo(24, 0.01));
+            expect(sz.height, closeTo(24, 0.01));
           }
         });
       }
     }
+  });
+
+  group('labels inside the pill and the large label (merge review, 2026-10-24)', () {
+    // The real fonts and the app's tabs, under a Scaffold as in the shell: the inherited Material text style (letter
+    // spacing 0.25) and Inter's real advances are what made r12 clip "Library" to "Librar" on the rail. The test font
+    // (Ahem) and a bare MaterialApp hid both.
+    setUpAll(loadAppFonts);
+    const shell = <LensTab>[(AppIcons.home, 'Today'), (AppIcons.library, 'Library'), (AppIcons.heart, 'Saved')];
+
+    Future<void> pumpAt(WidgetTester tester, Axis axis, int index, double scale) => tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: Center(
+              child: SizedBox(
+                width: axis == Axis.horizontal ? 358 : 72,
+                height: axis == Axis.horizontal ? 64 : shell.length * 64 + 16,
+                child: LensTabBar(tabs: shell, currentIndex: index, onTap: (_) {}, axis: axis),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    for (final axis in [Axis.horizontal, Axis.vertical]) {
+      for (final scale in [1.0, 1.3, 1.6, 2.0]) {
+        testWidgets('every label lies inside its pill at text scale $scale ($axis)', (tester) async {
+          await pumpAt(tester, axis, 0, scale);
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          // One label size for the whole axis, selected or not (merge review: the selected label was smaller).
+          final sizes = {
+            for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate()) (e.widget as Text).style!.fontSize,
+          };
+          expect(sizes, hasLength(1), reason: 'label sizes $sizes');
+          final pillSize = tester.getRect(find.byKey(const ValueKey('tab-pill'))).size;
+          for (var i = 0; i < shell.length; i++) {
+            final cell = tester.getRect(find.bySemanticsLabel(RegExp('^${shell[i].$2} tab')));
+            final pill = Rect.fromCenter(center: cell.center, width: pillSize.width, height: pillSize.height).inflate(0.5);
+            final painted = find.descendant(of: find.byType(LensTabBar), matching: find.text(shell[i].$2));
+            expect(painted, findsWidgets);
+            for (final e in painted.evaluate()) {
+              // The painted text, not the Text box: the box is clamped to its slot, so it always "fits" even when the
+              // last letters wrapped onto a hidden second line.
+              final p = tester.renderObject<RenderParagraph>(find.descendant(of: find.byWidget(e.widget), matching: find.byType(RichText)));
+              expect(p.didExceedMaxLines, isFalse, reason: '${shell[i].$2} wraps past one line (clipped) at $scale');
+              final lineWidth = p.getMaxIntrinsicWidth(double.infinity);
+              expect(lineWidth, lessThanOrEqualTo(p.size.width + 0.01), reason: '${shell[i].$2} needs $lineWidth, has ${p.size.width}');
+              final r = tester.getRect(find.byWidget(e.widget));
+              expect(pill.contains(r.topLeft) && pill.contains(r.bottomRight), isTrue, reason: '${shell[i].$2} $r outside pill $pill');
+            }
+          }
+        });
+      }
+    }
+
+    testWidgets('above the cap, a long press shows the tab label large; release hides it', (tester) async {
+      await pumpAt(tester, Axis.vertical, 0, 2.0);
+      await tester.pumpAndSettle();
+      final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Library tab')));
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.byKey(const ValueKey('tab-large-label')), findsOneWidget);
+      expect(find.descendant(of: find.byKey(const ValueKey('tab-large-label')), matching: find.text('Library')), findsOneWidget);
+      await g.up();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('tab-large-label')), findsNothing);
+    });
+
+    testWidgets('at or below the cap, a long press shows no large label', (tester) async {
+      await pumpAt(tester, Axis.vertical, 0, 1.3);
+      await tester.pumpAndSettle();
+      final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Library tab')));
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.byKey(const ValueKey('tab-large-label')), findsNothing);
+      await g.up();
+      await tester.pumpAndSettle();
+    });
   });
 }
