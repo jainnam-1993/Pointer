@@ -102,7 +102,7 @@ object WidgetRenderer {
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
         if (look.surface == WidgetSurface.APP || look.surface == WidgetSurface.GLASS) {
             // Brand serif: draw the quote ourselves (launchers ignore res/font in RemoteViews).
-            val maxSp = when (size) { WidgetSize.COMPACT -> 26f; WidgetSize.MEDIUM -> 30f; WidgetSize.LARGE -> 36f }
+            val maxSp = when (size) { WidgetSize.COMPACT -> 32f; WidgetSize.MEDIUM -> 40f; WidgetSize.LARGE -> 46f }
             val bmp = QuoteBitmap.render(context, pointing.content, QuoteBitmap.boxFor(options, size), maxSp = maxSp)
             views.setImageViewBitmap(R.id.widget_quote_img, bmp)
             views.setContentDescription(R.id.widget_quote_img, pointing.content)
