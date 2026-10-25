@@ -56,8 +56,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
+            sliver: SliverTileGrid(
+              itemBuilder: (context, index) {
                 final articleId = savedArticleIds[index];
                 final article = articles.cast<Article?>().firstWhere((a) => a?.id == articleId, orElse: () => null);
                 if (article == null) return const SizedBox.shrink();
@@ -110,7 +110,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                     ),
                   ),
                 );
-              }, childCount: savedArticleIds.length),
+              },
+              itemCount: savedArticleIds.length,
             ),
           ),
         ],
@@ -128,8 +129,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           ),
           SliverPadding(
             padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
+            sliver: SliverTileGrid(
+              itemBuilder: (context, index) {
                 final pointingId = favorites[index];
                 final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
                 return Padding(
@@ -182,13 +183,14 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                     ),
                   ),
                 );
-              }, childCount: favorites.length),
+              },
+              itemCount: favorites.length,
             ),
           ),
         ],
       ],
     );
     final layout = WindowLayout.of(context);
-    return PointerScaffold(body: layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list));
+    return PointerScaffold(body: layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(maxWidth: kWideContentMaxWidth, child: list));
   }
 }

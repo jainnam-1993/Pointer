@@ -96,15 +96,22 @@ void main() {
     const hingeX = 420.0;
     const hingeY = 442.0;
 
-    testWidgets('home: one pane on compact and medium, pointing plus context on expanded', (tester) async {
-      for (final d in [device('phone'), device('foldouter'), medium]) {
+    testWidgets('home: one card on phones, two panes on the Fold, one composed hero column on tall tablets', (tester) async {
+      for (final d in [device('phone'), device('foldouter')]) {
         await pumpAt(tester, screen('home'), d);
         expect(find.byKey(const ValueKey('home-context-pane')), findsNothing, reason: d.name);
       }
-      for (final d in [device('foldinner'), device('tablet')]) {
+      await pumpAt(tester, screen('home'), device('foldinner'));
+      expect(find.byKey(const ValueKey('pane-primary')), findsOneWidget);
+      expect(find.byKey(const ValueKey('home-context-pane')), findsOneWidget);
+      for (final d in [medium, device('tablet')]) {
         await pumpAt(tester, screen('home'), d);
-        expect(find.byKey(const ValueKey('pane-primary')), findsOneWidget, reason: d.name);
-        expect(find.byKey(const ValueKey('home-context-pane')), findsOneWidget, reason: d.name);
+        expect(find.byKey(const ValueKey('hero-stack')), findsOneWidget, reason: d.name);
+        // The context sits under the card, inside the card's column, not in a far pane.
+        final card = tester.getRect(find.byType(GlassCard).first);
+        final contextPane = tester.getRect(find.byKey(const ValueKey('home-context-pane')));
+        expect(contextPane.top, greaterThan(card.bottom), reason: d.name);
+        expect(contextPane.center.dx, closeTo(card.center.dx, card.width / 2), reason: d.name);
       }
     });
 

@@ -552,7 +552,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     final regular = layout.sizeClass != WindowSizeClass.compact;
     // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
     // actions together in the middle instead of leaving the actions at the bottom.
-    final grouped = layout.isTwoPane && size.height > size.width;
+    final stacked = layout.heroComposition == HeroComposition.stacked;
+    final grouped = stacked || (layout.isTwoPane && size.height > size.width);
     final card = Center(
       heightFactor: grouped ? 1.0 : null,
       child: ConstrainedBox(
@@ -600,6 +601,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       );
     }
     final column = Column(
+      mainAxisSize: stacked ? MainAxisSize.min : MainAxisSize.max,
       mainAxisAlignment: grouped ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         if (grouped) Flexible(child: card) else Expanded(child: card),
@@ -611,6 +613,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         ],
       ],
     );
+    if (stacked) {
+      // Tall tablets: one composed hero column, with the context beneath the card instead of in a far pane.
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(AppSpacing.xxl, 20, AppSpacing.xxl, bottomSpace),
+          child: HeroStack(
+            hero: column,
+            below: Padding(padding: const EdgeInsets.only(top: AppSpacing.xxl), child: _HomeContextPane(pointing: pointing)),
+          ),
+        ),
+      );
+    }
     final primary = SafeArea(
       child: Padding(
         padding: EdgeInsets.only(left: regular ? AppSpacing.xxl : AppSpacing.xl, right: regular ? AppSpacing.xxl : AppSpacing.xl, top: 20, bottom: bottomSpace),

@@ -141,6 +141,159 @@ class WindowLayout {
   }
 
   bool get isTwoPane => paneCount == 2;
+
+  /**
+   * An unfolded foldable's inner screen: a vertical fold in any state, book
+   * posture, or the near-square shape. These windows keep the layouts tuned on
+   * the Fold; the tablet rules below ([railAlignment], [railContentInset],
+   * [heroComposition]) apply only to the other regular windows.
+   */
+  bool get isFoldableInnerScreen => hasVerticalFold || posture == Posture.book || _isNearSquareInnerScreen;
+
+  /**
+   * Rail rule. Material 3 puts rail destinations at the top of their own
+   * margin column, and the iPadOS sidebar starts at the top too. On tablets the
+   * glass capsule sits top-left, clear of Today's centered card. The Fold and
+   * tabletop keep the centered capsule they had.
+   */
+  Alignment get railAlignment => isFoldableInnerScreen || posture == Posture.tabletop ? Alignment.centerLeft : Alignment.topLeft;
+
+  /**
+   * Left padding the shell gives content beside the rail. Tablets also get
+   * [kRailGutter], so the rail has its own margin column and never touches
+   * content. The Fold keeps [kRailWidth] alone, because its 815 dp two panes
+   * need the width.
+   */
+  double get railContentInset => kRailWidth + (isFoldableInnerScreen ? 0 : kRailGutter);
+
+  /** How Today composes the hero card with its context. See [HeroComposition]. */
+  HeroComposition get heroComposition {
+    if (sizeClass == WindowSizeClass.compact || posture != Posture.flat || isFoldableInnerScreen) {
+      return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
+    }
+    if (size.height > size.width * kTallWindowAspect) return HeroComposition.stacked;
+    return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
+  }
+}
+
+/**
+ * Today's hero composition. [single]: the card alone, as on phones.
+ * [sideBySide]: the card with context in a second pane (Fold, landscape
+ * tablets). [stacked]: one composed column on tall tablets, with the card at
+ * [kHeroCardMaxWidth], the actions below it, and the context beneath them. The
+ * group sits a little above center, so a portrait iPad has no empty band above
+ * a floating card.
+ */
+enum HeroComposition { single, sideBySide, stacked }
+
+/** Height-to-width ratio past which a regular window counts as a tall (portrait) tablet. */
+const double kTallWindowAspect = 1.15;
+
+/** Extra gap between the rail column and content on tablets. */
+const double kRailGutter = 16;
+
+/** Top inset of a top-aligned rail, matching the large-title row of the screens beside it. */
+const double kRailTopInset = 20;
+
+/** Widest a multi-column screen (Saved) gets; past this, tiles stop adding columns and center. */
+const double kWideContentMaxWidth = 1240;
+
+/** Featured readings in Library's detail pane: six fill a regular grid of two or three columns. */
+const int kFeaturedOverviewCount = 6;
+
+/** Narrowest a Saved tile gets before the grid drops a column. */
+const double kTileMinWidth = 300;
+
+/** Columns of [minTileWidth]-wide tiles, separated by [gap], that fit in [width]. Never below one. */
+int tileColumns(double width, {double minTileWidth = kTileMinWidth, double gap = 12}) =>
+    ((width + gap) / (minTileWidth + gap)).floor().clamp(1, 1 << 20);
+
+/**
+ * Columns for a grid of [count] equal cards when at most [fit] fit: the most
+ * columns that leave every row full. Three cards in two columns would leave a
+ * ragged last row, so they go in three columns or one. Never above [count].
+ */
+int balancedColumns(int fit, int count) {
+  if (count <= 1) return 1;
+  final cap = fit.clamp(1, count);
+  for (var c = cap; c > 1; c--) {
+    if (count % c == 0) return c;
+  }
+  return 1;
+}
+
+/**
+ * The Saved tiles: a [SliverList] on one column, and on wider windows a
+ * masonry of [tileColumns] columns: each column is as tall as its own items.
+ * Items fill round-robin, so the reading order runs left to right, then top
+ * to bottom. Items bring their own bottom spacing, as in the list.
+ */
+class SliverTileGrid extends StatelessWidget {
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+  final double minTileWidth;
+  final double gap;
+
+  const SliverTileGrid({super.key, required this.itemCount, required this.itemBuilder, this.minTileWidth = kTileMinWidth, this.gap = 12});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final cols = WindowLayout.of(context).sizeClass == WindowSizeClass.compact
+            ? 1
+            : tileColumns(constraints.crossAxisExtent, minTileWidth: minTileWidth, gap: gap).clamp(1, itemCount < 1 ? 1 : itemCount);
+        if (cols == 1) return SliverList(delegate: SliverChildBuilderDelegate(itemBuilder, childCount: itemCount));
+        return SliverToBoxAdapter(
+          child: Row(
+            key: const ValueKey('tile-grid'),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var c = 0; c < cols; c++) ...[
+                if (c > 0) SizedBox(width: gap),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [for (var i = c; i < itemCount; i += cols) Builder(builder: (context) => itemBuilder(context, i))],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/**
+ * The [HeroComposition.stacked] column: [hero] over [below], capped at
+ * [kHeroCardMaxWidth] and placed a little above center. [hero] shrinks
+ * before [below] when the window is short.
+ */
+class HeroStack extends StatelessWidget {
+  final Widget hero;
+  final Widget below;
+
+  const HeroStack({super.key, required this.hero, required this.below});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      key: const ValueKey('hero-stack'),
+      alignment: const Alignment(0, -0.3),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: kHeroCardMaxWidth),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(child: hero),
+            below,
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /**

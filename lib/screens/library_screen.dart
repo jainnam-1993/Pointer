@@ -184,7 +184,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       secondary: selected == null
           ? _FeaturedOverview(
               key: const ValueKey('library-detail-featured'),
-              featured: getFeaturedArticles(limit: 3),
+              featured: getFeaturedArticles(limit: kFeaturedOverviewCount),
               onOpen: (article) => _openArticle(context, article),
             )
           : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
@@ -728,7 +728,7 @@ const double _featuredGap = 12;
 double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
 /** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
-int featuredColumns(double width, int count) => ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
+int featuredColumns(double width, int count) => balancedColumns(tileColumns(width, minTileWidth: kFeaturedCardMinWidth, gap: _featuredGap), count);
 
 class _FeaturedHeader extends StatelessWidget {
   final PointerColors colors;
