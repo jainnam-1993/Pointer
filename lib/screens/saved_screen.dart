@@ -152,7 +152,9 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                                   ? const SizedBox.shrink()
                                   : Text('— ${pointing.teacher}', style: AppTextStyles.teacherText(context).copyWith(color: colors.textSecondary)),
                             ),
+                            // Opaque hit tests: with the default the 44 pt boxes took taps only on the 22 pt glyph.
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 Haptics.light();
                                 ref.read(favoritesProvider.notifier).toggle(pointingId);
@@ -164,6 +166,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                               ),
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 Haptics.light();
                                 showSharePreview(context, pointing);

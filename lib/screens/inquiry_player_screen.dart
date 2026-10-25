@@ -307,13 +307,17 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
             ),
           ),
 
-          // Tradition badge
+          // Tradition badge: callout type in the primary text color on a solid accent tint, so it reads at store size in both themes.
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-            decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusPill)),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs + 2),
+            decoration: BoxDecoration(
+              color: Color.alphaBlend(colors.accent.withValues(alpha: 0.34), colors.surface),
+              border: Border.all(color: colors.accent.withValues(alpha: 0.45), width: 0.5),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+            ),
             child: Text(
               _getTraditionLabel(_currentInquiry!.tradition),
-              style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w500),
+              style: TextStyle(color: colors.textPrimary, fontSize: AppType.callout, fontWeight: FontWeight.w600, letterSpacing: 0.2),
             ),
           ),
 

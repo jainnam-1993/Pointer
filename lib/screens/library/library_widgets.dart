@@ -91,21 +91,27 @@ class ArticleListItem extends ConsumerWidget {
                       article.subtitle!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13, color: colors.textSecondary),
+                      style: TextStyle(fontSize: AppType.callout, height: 1.35, color: colors.textSecondary),
                     ),
                   ],
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Text('${article.readingTimeMinutes} min', style: TextStyle(fontSize: 12, color: colors.textMuted)),
+                      Text(
+                        '${article.readingTimeMinutes} min',
+                        style: TextStyle(fontSize: AppType.caption, color: colors.textSecondary),
+                      ),
                       if (article.teacher != null) ...[
-                        Text(' · ', style: TextStyle(fontSize: 12, color: colors.textMuted)),
+                        Text(
+                          ' · ',
+                          style: TextStyle(fontSize: AppType.caption, color: colors.textSecondary),
+                        ),
                         Flexible(
                           child: Text(
                             article.teacher!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: colors.textMuted),
+                            style: TextStyle(fontSize: AppType.caption, color: colors.textSecondary),
                           ),
                         ),
                       ],
@@ -126,7 +132,9 @@ class ArticleListItem extends ConsumerWidget {
               child: SizedBox(
                 width: 44,
                 height: 44,
-                child: Center(child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted)),
+                child: Center(
+                  child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted),
+                ),
               ),
             ),
           ],
@@ -286,7 +294,10 @@ class FilterSheet<T> extends StatelessWidget {
                     leading: Icon(option.icon, color: isSelected ? colors.accent : colors.textMuted),
                     title: Text(
                       option.label,
-                      style: TextStyle(color: isSelected ? colors.accent : colors.textPrimary, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
+                      style: TextStyle(
+                        color: isSelected ? colors.accent : colors.textPrimary,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      ),
                     ),
                     trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                     onTap: () {

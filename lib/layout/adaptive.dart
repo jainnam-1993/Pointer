@@ -249,8 +249,8 @@ class HeroCardBody extends StatelessWidget {
   }
 }
 
-/** Extra gap between the rail column and content on tablets (Material 3 large-screen margin). */
-const double kRailGutter = 24;
+/** Extra gap between the rail column and content on tablets, so the capsule stands back from the Today card (user nit, 10-inch tablet). */
+const double kRailGutter = 40;
 
 /**
  * Top inset of a top-aligned rail: below the large-title row of the screens beside it, as the iPadOS sidebar starts
