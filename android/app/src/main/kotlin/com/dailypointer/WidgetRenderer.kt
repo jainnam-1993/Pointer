@@ -76,18 +76,18 @@ object WidgetRenderer {
     ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, look)
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, look, options)
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, look) }
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, look, options) }
     }
 
     private fun views(
         context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
-        look: WidgetLook,
+        look: WidgetLook, options: Bundle,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, layoutFor(size, look))
         paint(context, views, size, look)
@@ -100,6 +100,18 @@ object WidgetRenderer {
         }
         views.setTextViewText(R.id.widget_content, pointing.content)
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
+        if (look.surface == WidgetSurface.APP) {
+            // Brand serif: draw the quote ourselves (launchers ignore res/font in RemoteViews).
+            val maxSp = when (size) { WidgetSize.COMPACT -> 26f; WidgetSize.MEDIUM -> 30f; WidgetSize.LARGE -> 36f }
+            val bmp = QuoteBitmap.render(context, pointing.content, QuoteBitmap.boxFor(options, size), maxSp = maxSp)
+            views.setImageViewBitmap(R.id.widget_quote_img, bmp)
+            views.setContentDescription(R.id.widget_quote_img, pointing.content)
+            views.setViewVisibility(R.id.widget_quote_img, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_content, View.GONE)
+        } else {
+            views.setViewVisibility(R.id.widget_quote_img, View.GONE)
+            views.setViewVisibility(R.id.widget_content, View.VISIBLE)
+        }
         views.setTextViewText(R.id.widget_tradition, pointing.tradition)
         views.setViewVisibility(R.id.widget_header, if (size.showHeader) View.VISIBLE else View.GONE)
         views.setTextViewText(R.id.widget_teacher, teacherLine(pointing, size))

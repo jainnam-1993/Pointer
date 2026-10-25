@@ -104,6 +104,15 @@ class WidgetLayoutTest {
         }
     }
 
+    /** The app look draws the quote as a Newsreader bitmap; each live layout has the tinted image slot for it. */
+    @Test
+    fun quoteBitmapSlotIsTintedByTheLauncher() {
+        for (name in listOf("pointer_widget.xml", "pointer_widget_small.xml", "pointer_widget_large.xml")) {
+            val t = File("src/main/res/layout/$name").readText().replace("\n", " ")
+            assertTrue("$name: quote image tinted with the app ink", Regex("""widget_quote_img"[^>]*android:tint="@color/widget_app_ink"""").containsMatchIn(t))
+        }
+    }
+
     @Test
     fun widgetLayoutsUseOnlyRemoteViewsClasses() {
         val layouts = widgetLayouts()

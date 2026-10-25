@@ -68,6 +68,18 @@
             android:autoSizeMinTextSize="18sp"
             android:autoSizeMaxTextSize="26sp"
             android:lineSpacingMultiplier="1.2" />
+        <!-- The quote as a Newsreader bitmap (QuoteBitmap), shown by the app look; tinted here so
+             the launcher resolves the ink for light and dark. -->
+        <ImageView
+            android:id="@+id/widget_quote_img"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="false"
+            android:tint="@color/widget_app_ink"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <TextView
