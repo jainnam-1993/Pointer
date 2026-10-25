@@ -39,6 +39,9 @@ abstract final class LensTabStyle {
   /** High contrast: no glass; a solid bar and pill with clear borders. */
   static const Color hcBorder = Color(0xB3FFFFFF);
   static const Color hcPill = Color(0xFF2C2C30);
+
+  /** The lens body where the shader is unavailable (and its tint everywhere): a faint clear white. */
+  static const Color lensFallbackFill = Color(0x1FFFFFFF);
   static const Color inactive = Color(0xFF6E6E73);
   static const Color active = Color(0xFFFFFFFF);
 
@@ -393,7 +396,7 @@ class LensBarLook {
       border: Border.all(color: const Color(0xCCFFFFFF), width: 1),
       shadow: const [BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 6))],
       frosted: true,
-      pill: const Color(0x14000000),
+      pill: const Color(0x2E3F6B52), // sage at 18%
       inactive: const Color(0xFF6E6E73),
       active: const Color(0xFF1C1C1E),
     );
@@ -491,7 +494,7 @@ class _Lens extends StatelessWidget {
       // Fallback (no shader, Reduce Transparency, tests): a faint clear lens with the same rim.
       body = DecoratedBox(
         decoration: ShapeDecoration(
-          color: const Color(0x1FFFFFFF),
+          color: LensTabStyle.lensFallbackFill,
           shape: RoundedSuperellipseBorder(borderRadius: radius),
         ),
         child: body,

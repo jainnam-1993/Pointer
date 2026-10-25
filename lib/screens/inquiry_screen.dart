@@ -108,7 +108,7 @@ class _SessionCard extends StatelessWidget {
     final textColorSecondary = colors.textSecondary;
     final textColorMuted = colors.textMuted;
     // Use tradition-specific accent color for the circle
-    final traditionAccent = session.accentColor;
+    final traditionAccent = session.accentColorFor(Theme.of(context).brightness);
     final circleColor = traditionAccent.withValues(alpha: 0.15);
     return Semantics(
       button: true,

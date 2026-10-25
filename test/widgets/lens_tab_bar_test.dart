@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_icons.dart';
@@ -184,6 +186,24 @@ void main() {
       await tester.pump(const Duration(milliseconds: 120));
       final o = tester.widget<Opacity>(lens);
       expect(o.opacity, greaterThan(0.97), reason: 'fully lifted by about 130 ms');
+      await g.up();
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('light mode: the label on the lifted lens keeps at least 4.5:1 against the lens (658aba4 regression)', (tester) async {
+      await pumpLive(tester);
+      final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Library tab')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(lens, findsOneWidget);
+      final label = tester.widget<Text>(find.descendant(of: find.byType(LensTabBar), matching: find.text('Library')));
+      final ink = label.style!.color!;
+      // What the label sits on: the light background, under the light glass capsule, under the lens fill.
+      final look = LensBarLook.of(dark: false, highContrast: false);
+      final under = Color.alphaBlend(LensTabStyle.lensFallbackFill, Color.alphaBlend(look.capsule, PointerColors.light.background));
+      double lum(Color c) => c.computeLuminance();
+      final ratio = (math.max(lum(ink), lum(under)) + 0.05) / (math.min(lum(ink), lum(under)) + 0.05);
+      expect(ratio, greaterThanOrEqualTo(4.5), reason: 'label ${ink.toARGB32().toRadixString(16)} on lens ${under.toARGB32().toRadixString(16)}');
       await g.up();
       await tester.pumpAndSettle();
     });

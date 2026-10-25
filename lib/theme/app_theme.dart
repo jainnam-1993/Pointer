@@ -155,23 +155,27 @@ class PointerColors extends ThemeExtension<PointerColors> {
   );
 
   /** Light theme: ink on warm paper. */
+  /**
+   * Light theme: "Sage and sand" (2026-10-24, main's default after the user asked for something other than pink).
+   * Warm off-white paper, deep sage ink for accents and selection, muted warm gold as the rare secondary.
+   */
   static const light = PointerColors(
-    background: Color(0xFFF6F4F1),
+    background: Color(0xFFF5F2EA),
     surface: Color(0xFFFFFFFF),
-    primary: InkPalette.ink,
-    secondary: Color(0xFF6F6585),
-    textPrimary: Color(0xFF1A1622),
-    textSecondary: Color(0xFF45404F),
-    textMuted: Color(0xFF69636F),
+    primary: Color(0xFF355C46),
+    secondary: Color(0xFF6E6248),
+    textPrimary: Color(0xFF1B1F1A),
+    textSecondary: Color(0xFF3F463F),
+    textMuted: Color(0xFF5F665E),
     glassBorder: Color(0x14000000),
     glassBackground: Color(0xCCFFFFFF),
     glassBorderActive: Color(0x24000000),
     gold: Color(0xFF8A6420),
-    accent: InkPalette.inkDeep,
-    iconColor: Color(0xFF2A2533),
+    accent: Color(0xFF3F6B52),
+    iconColor: Color(0xFF283028),
     glassHighlight: Color(0x99FFFFFF),
-    glassGlow: Color(0x0A4B3D8F),
-    shimmerColor: Color(0x104B3D8F),
+    glassGlow: Color(0x0A4E6A58),
+    shimmerColor: Color(0x104E6A58),
     cardBackground: Color(0xFFFFFFFF),
   );
 
@@ -411,7 +415,14 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     this.shadowBlur = 24,
     this.blurSigma = 30,
     this.opaque = false,
+    this.primaryFill,
+    this.onPrimary,
   });
+
+  /** Primary button fill colour when it is not the glass fill (light theme: sage), and the label colour on it. */
+  final Color? primaryFill;
+
+  final Color? onPrimary;
 
   static const dark = GlassMaterial(
     fill: Colors.white,
@@ -435,8 +446,11 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimTop: Color(0x14000000),
     rimBottom: Color(0x08000000),
     highlight: Color(0x59FFFFFF),
-    shadow: Color(0x141A0A3A),
+    shadow: Color(0x141A1A12),
     shadowBlur: 20,
+    // Sage and sand: a filled sage primary button with white text (Continue, Done).
+    primaryFill: Color(0xFF3F6B52),
+    onPrimary: Color(0xFFFFFFFF),
   );
 
   static const oled = GlassMaterial(
@@ -523,7 +537,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   LinearGradient onSurfaceAt(int level) => _gradient(onSurfaceLevels[level]);
 
   /** Button fill. */
-  LinearGradient buttonFill({required bool primary}) => _gradient(primary ? buttonPrimary : buttonSecondary);
+  LinearGradient buttonFill({required bool primary}) => primary && primaryFill != null
+      ? LinearGradient(colors: [primaryFill!, primaryFill!.withValues(alpha: 0.92)], begin: Alignment.topLeft, end: Alignment.bottomRight)
+      : _gradient(primary ? buttonPrimary : buttonSecondary);
 
   LinearGradient _gradient(GlassLevel l) => LinearGradient(
     colors: [
@@ -575,6 +591,8 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
       shadowBlur: shadowBlur,
       blurSigma: blurSigma,
       opaque: opaque,
+      primaryFill: primaryFill,
+      onPrimary: onPrimary,
     );
   }
 
@@ -597,6 +615,8 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
       shadowBlur: l(shadowBlur, other.shadowBlur),
       blurSigma: l(blurSigma, other.blurSigma),
       opaque: t < 0.5 ? opaque : other.opaque,
+      primaryFill: Color.lerp(primaryFill, other.primaryFill, t),
+      onPrimary: Color.lerp(onPrimary, other.onPrimary, t),
     );
   }
 }
@@ -951,6 +971,14 @@ class TraditionAccentColors {
 
   /** Silver/White accent for Original content */
   static const Color original = Color(0xFFE0E0E0);
+
+  // Light-theme variants in the sage-and-sand family (dark mode keeps the colours above). Each passes 4.5:1 on the
+  // light glass so the level numbers stay readable.
+  static const Color advaitaLight = Color(0xFF85652A); // sand
+  static const Color zenLight = Color(0xFF3B6763); // teal-grey
+  static const Color directLight = Color(0xFF4E6A58); // sage
+  static const Color contemporaryLight = Color(0xFF4A5C6B); // slate
+  static const Color originalLight = Color(0xFF5F6447); // olive
 }
 
 /**
@@ -1044,7 +1072,7 @@ class SelectionTint {
   static const double selectedDark = 0.30;
 
   /** Selected chip fill in light themes: accent at this opacity. */
-  static const double selectedLight = 0.18;
+  static const double selectedLight = 0.16;
 
   /** The chip or tile fill for [selected], in place of an outline. */
   static Color fill(PointerColors colors, {required bool selected, required bool isDark}) =>
