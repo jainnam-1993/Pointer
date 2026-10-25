@@ -12,6 +12,7 @@
     <!-- Dark-mode opacity lives in this alpha (CC = 80%). -->
     <color name="widget_app_card">#CC1C1C1E</color>
     <color name="widget_app_card_end">#CC1C1C1E</color>
+    <color name="widget_app_card_solid">#FF1C1C1E</color>
     <color name="widget_app_ink">#FFF5F2EE</color>
     <color name="widget_app_ink_secondary">#E6F5F2EE</color>
     <color name="widget_app_accent">#E6EDEAE3</color>

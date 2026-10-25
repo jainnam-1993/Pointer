@@ -169,10 +169,10 @@ object WidgetRenderer {
                 }
             }
             WidgetSurface.APP -> {
-                views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_app_glass)
+                views.setImageViewResource(R.id.widget_frost_bg, if (look.bodyAlpha == 1.0) R.drawable.widget_app_card_opaque else R.drawable.widget_app_glass)
                 // The card colours carry the theme's opacity; an explicit (review) alpha replaces it.
                 val themed = android.graphics.Color.alpha(context.getColor(R.color.widget_app_card)) / 255.0
-                val scale = look.bodyAlpha?.let { it / themed } ?: 1.0
+                val scale = look.bodyAlpha?.let { if (it >= 1.0) 1.0 else it / themed } ?: 1.0
                 views.setInt(R.id.widget_frost_bg, "setImageAlpha", (scale * 255).toInt().coerceIn(0, 255))
                 tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_app_ink)
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_app_ink_secondary)
