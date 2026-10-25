@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_background">#050505</color>
-    <color name="widget_surface">#1C1B1F</color>
+    <color name="widget_surface">#3A3640</color>
     <color name="widget_surface_variant">#2B2833</color>
     <color name="widget_text">#FFFFFF</color>
     <color name="widget_text_muted">#B4AFB8</color>
     <color name="widget_accent">#B79CFF</color>
     <color name="widget_control">#CCC2DC</color>
     <color name="widget_on_control">#332D41</color>
+    <!-- App look, dark: the user's pick, dark smoke glass (#1C1B1F at the look's alpha) with white ink. -->
+    <!-- Dark-mode opacity lives in this alpha (CC = 80%). -->
+    <color name="widget_app_card">#CC1C1C1E</color>
+    <color name="widget_app_card_end">#CC1C1C1E</color>
+    <color name="widget_app_card_solid">#FF1C1C1E</color>
+    <color name="widget_app_ink">#FFF5F2EE</color>
+    <color name="widget_app_ink_secondary">#E6F5F2EE</color>
+    <color name="widget_app_accent">#E6EDEAE3</color>
+    <color name="widget_app_pill">#24FFFFFF</color>
+    <color name="widget_app_rim">#3DFFFFFF</color>
+    <color name="widget_app_pill_stroke">#26FFFFFF</color>
+    <color name="widget_app_rim_outer">#00000000</color>
 </resources>

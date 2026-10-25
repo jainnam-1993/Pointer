@@ -12,6 +12,14 @@ enum class WidgetSurface {
     /** No panel: white text with a soft legibility shadow straight on the wallpaper (iOS clear style). */
     CLEAR,
 
+    /**
+     * The app's own glass card on the home screen: sage-and-sand paper (light) or ink on black
+     * (dark) at the look's body alpha over the wallpaper, a soft sheen and the app's thin bright
+     * rim, the app's ink colours, Newsreader and Inter, and sage (dark: lavender) glass pills with
+     * line icons. No Material You neutral.
+     */
+    APP,
+
     /** Opaque Material You tonal card (system_accent2/neutral tones), dark text in light mode. */
     TONAL,
 }
@@ -21,12 +29,21 @@ enum class WidgetScrim {
 
     /** Rounded box behind the quote and teacher line (the 0.45 glass look the user called ugly). */
     BOX,
+
+    /** Soft, borderless tint behind the quote and teacher line (no box edge): holds contrast on light wallpapers. */
+    SOFT,
 }
 
-data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scrim: WidgetScrim) {
+/**
+ * [bodyAlpha] null means the theme decides: the card colours carry their own alpha
+ * (widget_app_card in values/ and values-night/), so light and dark opacity are one value each and
+ * the launcher re-resolves them on a theme change.
+ */
+data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double?, val scrim: WidgetScrim) {
     companion object {
         /** The shipped look. */
-        val SHIPPED = WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE)
+        /** The user's pick (2026-10-24): glass that follows the system theme, light cream in light mode and dark smoke in dark mode, at 80% (the most the user allows; the design panel asked for more cover). */
+        val SHIPPED = WidgetLook(WidgetSurface.APP, null, WidgetScrim.NONE)
 
         /** The looks compared in the 2026-10-24 design review. */
         val REVIEW = mapOf(
@@ -35,6 +52,24 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "tonal" to WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE),
             "tonal-glass" to WidgetLook(WidgetSurface.TONAL, 0.85, WidgetScrim.NONE),
             "clear" to WidgetLook(WidgetSurface.CLEAR, 0.0, WidgetScrim.NONE),
+            "app-55" to WidgetLook(WidgetSurface.APP, 0.55, WidgetScrim.NONE),
+            "app-62" to WidgetLook(WidgetSurface.APP, 0.62, WidgetScrim.NONE),
+            "app-66" to WidgetLook(WidgetSurface.APP, 0.66, WidgetScrim.NONE),
+            "app-70" to WidgetLook(WidgetSurface.APP, 0.70, WidgetScrim.NONE),
+            "app-72" to WidgetLook(WidgetSurface.APP, 0.72, WidgetScrim.NONE),
+            "app-82" to WidgetLook(WidgetSurface.APP, 0.82, WidgetScrim.NONE),
+            "app-88" to WidgetLook(WidgetSurface.APP, 0.88, WidgetScrim.NONE),
+            // The user's pick (2026-10-24, ref.png): the dark translucent glass from the 1e74d29 sweep
+            // (foliage drew 0.68 to 0.77), no scrim, as one fixed alpha.
+            "pick" to WidgetLook(WidgetSurface.GLASS, 0.72, WidgetScrim.NONE),
+            "app-90" to WidgetLook(WidgetSurface.APP, 0.90, WidgetScrim.NONE),
+            // Light-mode see-through sweep (2026-10-24, "no glass blur, just full solid colour"):
+            // cream at 0.50 and 0.58 (0.66 is app-66) and the dark smoke glass at 0.60 in light mode.
+            // Premise test: the fully opaque card (does the panel mark down see-through itself?).
+            "app-100" to WidgetLook(WidgetSurface.APP, 1.0, WidgetScrim.NONE),
+            "app-50" to WidgetLook(WidgetSurface.APP, 0.50, WidgetScrim.NONE),
+            "app-58" to WidgetLook(WidgetSurface.APP, 0.58, WidgetScrim.NONE),
+            "glass-60" to WidgetLook(WidgetSurface.GLASS, 0.60, WidgetScrim.SOFT),
         )
     }
 }

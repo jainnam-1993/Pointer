@@ -84,6 +84,35 @@ class WidgetLayoutTest {
         assertEquals(emptyList<String>(), problems)
     }
 
+    /**
+     * The quote is sized to its card: autosize between a readable floor and a large ceiling, so a
+     * short pointing fills the card (about the Google bar's text height or more) and a long one
+     * steps down instead of clipping. Guards against the quote shrinking back to a third of the card.
+     */
+    @Test
+    fun quoteAutosizesToItsCard() {
+        val floors = mapOf("pointer_widget_small.xml" to 26, "pointer_widget.xml" to 30, "pointer_widget_large.xml" to 36)
+        for ((name, ceiling) in floors) {
+            val t = File("src/main/res/layout/$name").readText().replace("\n", " ")
+            val q = Regex("""widget_content"[^>]*""").find(t)!!.value
+            assertTrue("$name autosize", "android:autoSizeTextType=\"uniform\"" in q)
+            val max = Regex("""autoSizeMaxTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
+            val min = Regex("""autoSizeMinTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
+            assertTrue("$name ceiling $max", max >= ceiling)
+            // 18 sp floor: the quote is WCAG large text, so its contrast floor is 4.5:1 rather than 7:1.
+            assertTrue("$name floor $min", min >= 18)
+        }
+    }
+
+    /** The app look draws the quote as a Newsreader bitmap; each live layout has the tinted image slot for it. */
+    @Test
+    fun quoteBitmapSlotIsTintedByTheLauncher() {
+        for (name in listOf("pointer_widget.xml", "pointer_widget_small.xml", "pointer_widget_large.xml")) {
+            val t = File("src/main/res/layout/$name").readText().replace("\n", " ")
+            assertTrue("$name: quote image tinted with the app ink", Regex("""widget_quote_img"[^>]*android:tint="@color/widget_app_ink"""").containsMatchIn(t))
+        }
+    }
+
     @Test
     fun widgetLayoutsUseOnlyRemoteViewsClasses() {
         val layouts = widgetLayouts()

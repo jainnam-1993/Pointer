@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The app's glass card on the home screen: sage-and-sand paper (dark: ink on black) with a soft
+     top sheen; its alpha is in widget_app_card (per theme), so the wallpaper shows through. Rim from widget_app_rim. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:type="linear" android:angle="270" android:startColor="@color/widget_app_card" android:endColor="@color/widget_app_card_end" />
+            <corners android:radius="@dimen/widget_corner_radius" />
+        </shape>
+    </item>
+    <item android:bottom="60dp">
+        <shape android:shape="rectangle">
+            <gradient android:type="linear" android:angle="270" android:startColor="#29FFFFFF" android:endColor="#00FFFFFF" />
+            <corners android:topLeftRadius="@dimen/widget_corner_radius" android:topRightRadius="@dimen/widget_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="1dp" android:color="@color/widget_app_rim_outer" />
+            <corners android:radius="@dimen/widget_corner_radius" />
+        </shape>
+    </item>
+    <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp">
+        <shape android:shape="rectangle">
+            <stroke android:width="1dp" android:color="@color/widget_app_rim" />
+            <corners android:radius="@dimen/widget_corner_radius" />
+        </shape>
+    </item>
+</layer-list>

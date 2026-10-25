@@ -11,10 +11,12 @@ class WidgetLookTest {
 
     private fun argb(hex: String): Int = hex.removePrefix("#").let { if (it.length == 6) "FF$it" else it }.toLong(16).toInt()
 
-    /** The shipped look is the opaque Material You tonal card with no scrim box. */
+    /** The shipped look is the user's pick: see-through app glass that follows the system theme, no scrim box, at most 80% opaque. */
     @Test
-    fun shippedLookIsTheTonalCard() {
-        assertEquals(WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE), WidgetLook.SHIPPED)
+    fun shippedLookIsTheSeeThroughAppGlass() {
+        assertEquals(WidgetSurface.APP, WidgetLook.SHIPPED.surface)
+        assertEquals(WidgetScrim.NONE, WidgetLook.SHIPPED.scrim)
+        assertEquals("shipped opacity comes from the theme colours", null, WidgetLook.SHIPPED.bodyAlpha)
     }
 
     /** On Android 12+ every tonal colour is a system dynamic resource, so it follows the wallpaper with no code running. */

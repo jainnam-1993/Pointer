@@ -3,10 +3,12 @@
      frosted glass: a translucent tinted body, a top highlight, a soft lower shade and static grain.
      Body opacities (color/, color-night/) are the floor that keeps 4.5:1 for the pointing text over any wallpaper. -->
 <resources>
-    <color name="widget_highlight">#80FFFFFF</color>
+    <color name="widget_highlight">#B3FFFFFF</color>
     <!-- Glass rim: a thin light edge over the mid-tone panel (white 30%). -->
     <color name="widget_rim">#4DFFFFFF</color>
     <!-- Text on the glass panel (preview; the live widget sets measured colors). -->
     <color name="widget_on_glass">#FFF5F2EE</color>
     <color name="widget_on_glass_secondary">#B3F5F2EE</color>
+    <!-- Control outline: 1 dp ink in light mode so Save and Previous/Next hold on white. -->
+    <dimen name="widget_app_pill_stroke_width">1dp</dimen>
 </resources>

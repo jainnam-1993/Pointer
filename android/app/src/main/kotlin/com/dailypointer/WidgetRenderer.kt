@@ -76,18 +76,18 @@ object WidgetRenderer {
     ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, look)
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, look, options)
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, look) }
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, look, options) }
     }
 
     private fun views(
         context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
-        look: WidgetLook,
+        look: WidgetLook, options: Bundle,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, layoutFor(size, look))
         paint(context, views, size, look)
@@ -100,6 +100,20 @@ object WidgetRenderer {
         }
         views.setTextViewText(R.id.widget_content, pointing.content)
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
+        if (look.surface == WidgetSurface.APP || look.surface == WidgetSurface.GLASS) {
+            // Brand serif: draw the quote ourselves (launchers ignore res/font in RemoteViews).
+            val maxSp = when (size) { WidgetSize.COMPACT -> 32f; WidgetSize.MEDIUM -> 40f; WidgetSize.LARGE -> 46f }
+            val bmp = QuoteBitmap.render(context, pointing.content, QuoteBitmap.boxFor(options, size), maxSp = maxSp)
+            views.setImageViewBitmap(R.id.widget_quote_img, bmp)
+            views.setContentDescription(R.id.widget_quote_img, pointing.content)
+            views.setViewVisibility(R.id.widget_quote_img, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_content, View.GONE)
+            // Glass is white ink in both modes; the XML tint (app ink) is for the app look.
+            if (look.surface == WidgetSurface.GLASS) views.setInt(R.id.widget_quote_img, "setColorFilter", GlassRule.INK)
+        } else {
+            views.setViewVisibility(R.id.widget_quote_img, View.GONE)
+            views.setViewVisibility(R.id.widget_content, View.VISIBLE)
+        }
         views.setTextViewText(R.id.widget_tradition, pointing.tradition)
         views.setViewVisibility(R.id.widget_header, if (size.showHeader) View.VISIBLE else View.GONE)
         views.setTextViewText(R.id.widget_teacher, teacherLine(pointing, size))
@@ -115,6 +129,8 @@ object WidgetRenderer {
             views.setImageViewResource(
                 R.id.widget_save,
                 when {
+                    look.surface == WidgetSurface.APP && saved -> R.drawable.ic_heart_filled_app
+                    look.surface == WidgetSurface.APP -> R.drawable.ic_heart_outline_app
                     tonal && saved -> R.drawable.ic_heart_filled_tonal
                     tonal -> R.drawable.ic_heart_outline_tonal
                     saved -> R.drawable.ic_heart_filled
@@ -131,14 +147,19 @@ object WidgetRenderer {
 
     /** Applies the look: surface, scrim, and the two text levels (quote, then teacher and eyebrow). */
     private fun paint(context: Context, views: RemoteViews, size: WidgetSize, look: WidgetLook) {
-        val scrim = if (look.scrim == WidgetScrim.BOX) R.drawable.widget_text_scrim else 0
+        val scrim = when (look.scrim) {
+            WidgetScrim.BOX -> R.drawable.widget_text_scrim
+            WidgetScrim.SOFT -> R.drawable.widget_quote_tint
+            WidgetScrim.NONE -> 0
+        }
         views.setInt(R.id.widget_content_area, "setBackgroundResource", scrim)
-        views.setInt(R.id.widget_teacher, "setBackgroundResource", scrim)
+        views.setInt(R.id.widget_teacher, "setBackgroundResource", if (look.scrim == WidgetScrim.SOFT) R.drawable.widget_teacher_tint else scrim)
         when (look.surface) {
             WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
-                val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", ((look.bodyAlpha ?: 1.0) * 255).toInt().coerceIn(0, 255))
+                // Over the soft tint the teacher line takes full ink, as the quote does.
+                val secondary = if (look.scrim == WidgetScrim.SOFT) GlassRule.INK else (0xD9 shl 24) or (GlassRule.INK and 0xFFFFFF)
                 views.setTextColor(R.id.widget_content, GlassRule.INK)
                 views.setTextColor(R.id.widget_teacher, secondary)
                 views.setTextColor(R.id.widget_tradition, secondary)
@@ -147,9 +168,25 @@ object WidgetRenderer {
                     views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_on_dark)
                 }
             }
+            WidgetSurface.APP -> {
+                views.setImageViewResource(R.id.widget_frost_bg, if (look.bodyAlpha == 1.0) R.drawable.widget_app_card_opaque else R.drawable.widget_app_glass)
+                // The card colours carry the theme's opacity; an explicit (review) alpha replaces it.
+                val themed = android.graphics.Color.alpha(context.getColor(R.color.widget_app_card)) / 255.0
+                val scale = look.bodyAlpha?.let { if (it >= 1.0) 1.0 else it / themed } ?: 1.0
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (scale * 255).toInt().coerceIn(0, 255))
+                tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_app_ink)
+                tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_app_ink_secondary)
+                tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_app_accent)
+                if (size.showActions) {
+                    views.setImageViewResource(R.id.widget_prev, R.drawable.ic_chevron_left_app)
+                    views.setImageViewResource(R.id.widget_next, R.drawable.ic_chevron_right_app)
+                    views.setInt(R.id.widget_save, "setBackgroundResource", R.drawable.widget_save_app)
+                    views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_app)
+                }
+            }
             WidgetSurface.TONAL -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_tonal)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", ((look.bodyAlpha ?: 1.0) * 255).toInt().coerceIn(0, 255))
                 tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_text)
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_text_muted)
                 tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_accent)
@@ -196,7 +233,8 @@ object WidgetRenderer {
     /** Medium has no tradition eyebrow, so its footer carries the tradition after the teacher. */
     fun teacherLine(pointing: WidgetPointing, size: WidgetSize): String {
         if (pointing.teacher.isEmpty()) return if (size == WidgetSize.MEDIUM) pointing.tradition else ""
-        return if (size == WidgetSize.MEDIUM) "\u2014 ${pointing.teacher} \u00b7 ${pointing.tradition}" else "\u2014 ${pointing.teacher}"
+        // Author only: the design panel flagged "author · tradition" being cut off mid-name.
+        return "\u2014 ${pointing.teacher}"
     }
 
     private fun openIntent(context: Context, widgetId: Int, pointingId: String): PendingIntent {

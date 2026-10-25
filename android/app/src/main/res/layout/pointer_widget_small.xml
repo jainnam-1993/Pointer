@@ -36,7 +36,6 @@
     <LinearLayout
         android:id="@+id/widget_content_area"
         android:background="@drawable/widget_text_scrim"
-        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -59,24 +58,33 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:fontFamily="serif"
+            android:fontFamily="@font/newsreader"
             android:textColor="@color/widget_text"
             android:autoSizeTextType="uniform"
             android:autoSizeStepGranularity="1sp"
             android:gravity="top|start"
             android:maxLines="4"
-            android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeMinTextSize="18sp"
+            android:autoSizeMaxTextSize="26sp"
             android:lineSpacingMultiplier="1.2" />
+        <!-- The quote as a Newsreader bitmap (QuoteBitmap), shown by the app look; tinted here so
+             the launcher resolves the ink for light and dark. -->
+        <ImageView
+            android:id="@+id/widget_quote_img"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="false"
+            android:tint="@color/widget_app_ink"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/widget_teacher"
+            android:fontFamily="@font/inter"
             android:background="@drawable/widget_text_scrim"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
