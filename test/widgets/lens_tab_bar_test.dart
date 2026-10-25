@@ -149,12 +149,8 @@ void main() {
       for (final t in scales) {
         expect(t.transform.entry(0, 0), closeTo(1.0, 1e-6), reason: 'no magnification at rest');
       }
-      final pills = tester
-          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
-          .map((d) => d.decoration)
-          .whereType<BoxDecoration>()
-          .where((d) => d.color != null && d.boxShadow == null && d.border == null);
-      expect(pills, isNotEmpty, reason: 'a flat tinted pill marks the selected tab');
+      // The resting glass pill (no lens, no refraction) marks the selected tab.
+      expect(find.byKey(const ValueKey('tab-pill')), findsOneWidget, reason: 'a resting glass pill marks the selected tab');
     }
 
     testWidgets('rest on first build: flat pill, no lens, no magnification', (tester) async {
@@ -293,5 +289,64 @@ void main() {
         await tester.pumpAndSettle();
       }
     });
+  });
+
+  group('uniform selected pill (user report, 2026-10-24)', () {
+    Future<void> pumpAt(WidgetTester tester, Axis axis, int index, {double scale = 1.0}) => tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+          child: Center(
+            child: SizedBox(
+              width: axis == Axis.horizontal ? 358 : 72,
+              height: axis == Axis.horizontal ? 64 : 4 * 64 + 16,
+              child: LensTabBar(tabs: tabs, currentIndex: index, onTap: (_) {}, axis: axis),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    for (final axis in [Axis.horizontal, Axis.vertical]) {
+      testWidgets('every tab gets the same pill size, centred on its cell, and the same icon size ($axis)', (tester) async {
+        Size? size;
+        Offset? iconOffsetInPill;
+        for (var i = 0; i < tabs.length; i++) {
+          await pumpAt(tester, axis, i);
+          await tester.pumpAndSettle();
+          final pill = tester.getRect(find.byKey(const ValueKey('tab-pill')));
+          size ??= pill.size;
+          expect(pill.width, closeTo(size.width, 0.01), reason: 'tab $i');
+          expect(pill.height, closeTo(size.height, 0.01), reason: 'tab $i');
+          final cell = tester.getRect(find.bySemanticsLabel(RegExp('^${tabs[i].$2} tab, selected')));
+          expect((pill.center - cell.center).distance, lessThan(0.5), reason: 'pill centred on tab $i');
+          final icon = find.descendant(of: find.byType(LensTabBar), matching: find.byIcon(tabs[i].$1));
+          final visible = icon.evaluate().map((e) => tester.getRect(find.byWidget(e.widget))).where((r) => pill.contains(r.center)).toList();
+          expect(visible, isNotEmpty);
+          expect(visible.first.size, const Size(24, 24), reason: 'icon size is fixed for every tab');
+          final off = visible.first.center - pill.center;
+          iconOffsetInPill ??= off;
+          expect((off - iconOffsetInPill).distance, lessThan(0.5), reason: 'icon sits at the same place in every pill');
+        }
+      });
+
+      for (final scale in [1.3, 2.0]) {
+        testWidgets('at text scale $scale the pill size and icon size do not change; labels scale down, never clip ($axis)', (tester) async {
+          await pumpAt(tester, axis, 0);
+          await tester.pumpAndSettle();
+          final base = tester.getRect(find.byKey(const ValueKey('tab-pill'))).size;
+          await pumpAt(tester, axis, 0, scale: scale);
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          final now = tester.getRect(find.byKey(const ValueKey('tab-pill'))).size;
+          expect(now.width, closeTo(base.width, 0.01));
+          expect(now.height, closeTo(base.height, 0.01));
+          for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Icon)).evaluate()) {
+            expect(tester.getSize(find.byWidget(e.widget)), const Size(24, 24));
+          }
+        });
+      }
+    }
   });
 }

@@ -310,7 +310,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                       final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
                       final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
                       final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                      final inset = thickness * 0.06 * (1 - lift);
+                      final inset =
+                          thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
                       final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
                       final rect = horizontal
                           ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
@@ -329,8 +330,21 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                               // Rest pill, fading out as the lens lifts.
                               Opacity(
                                 opacity: 1 - lift,
+                                // The rest pill is the same glass as the lens, at rest: a frosted tint, a thin bright rim, a
+                                // soft top highlight and a little depth; no refraction or motion. Its size comes from the cell,
+                                // so it is identical for every tab.
                                 child: DecoratedBox(
-                                  decoration: BoxDecoration(color: style.pill, borderRadius: BorderRadius.circular(math.min(main, cross) / 2)),
+                                  key: const ValueKey('tab-pill'),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(math.min(main, cross) / 2),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [Color.alphaBlend(style.pillHighlight, style.pill), style.pill],
+                                    ),
+                                    border: Border.all(color: style.pillRim, width: 1),
+                                    boxShadow: [BoxShadow(color: style.pillShadow, blurRadius: 6, offset: const Offset(0, 1.5))],
+                                  ),
                                 ),
                               ),
                               if (lift > 0.01)
@@ -363,6 +377,9 @@ class LensBarLook {
   final List<BoxShadow>? shadow;
   final bool frosted;
   final Color pill;
+  final Color pillRim;
+  final Color pillHighlight;
+  final Color pillShadow;
   final Color inactive;
   final Color active;
 
@@ -372,6 +389,9 @@ class LensBarLook {
     required this.shadow,
     required this.frosted,
     required this.pill,
+    this.pillRim = const Color(0x66FFFFFF),
+    this.pillHighlight = const Color(0x33FFFFFF),
+    this.pillShadow = const Color(0x14000000),
     required this.inactive,
     required this.active,
   });
@@ -394,7 +414,10 @@ class LensBarLook {
         border: Border.all(color: LensTabStyle.hairlineDark, width: 1),
         shadow: LensTabStyle.capsuleShadow,
         frosted: false,
-        pill: const Color(0x24FFFFFF),
+        pill: const Color(0x29FFFFFF),
+        pillRim: const Color(0x59FFFFFF),
+        pillHighlight: const Color(0x1FFFFFFF),
+        pillShadow: const Color(0x33000000),
         inactive: const Color(0xFF8E8E93),
         active: LensTabStyle.active,
       );
@@ -409,7 +432,10 @@ class LensBarLook {
         BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 8)),
       ],
       frosted: true,
-      pill: const Color(0x2E3F6B52), // sage at 18%
+      pill: const Color(0xB3F3F4EE), // frosted white glass, a hint of sage
+      pillRim: const Color(0xF2FFFFFF), // thin bright rim
+      pillHighlight: const Color(0x66FFFFFF), // soft top highlight
+      pillShadow: const Color(0x1A1E2A1F),
       inactive: const Color(0xFF6E6E73),
       active: const Color(0xFF1C1C1E),
     );
@@ -430,39 +456,48 @@ class _ActiveLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     // Scale the icon and label down together when a large text scale would not fit the cell (rail width, bar cell),
     // so a label never clips or spills into its neighbour.
+    // Fixed metrics for every tab: the icon is always 24 and sits at the same place; only the label scales down (never
+    // clips) when a long label or a large text scale would not fit the cell width. So no tab's icon shrinks because
+    // its label is longer ("Library"), and every tab looks the same size.
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(tab.$1, size: 24, color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
-              if (showLabel)
-                Padding(
-                  padding: const EdgeInsets.only(top: 3),
-                  child: Text(
-                    tab.$2,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontFamily: AppFonts.sans,
-                      fontSize: AppType.caption,
-                      fontWeight: weight,
-                      color: color,
-                      shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(tab.$1, size: 24, color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
+            if (showLabel)
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                // One label slot for every tab: the height follows the text scale (so labels grow for low vision)
+                // but not the label's length, so the icon sits at the same place in every pill.
+                child: SizedBox(
+                  // Grows with the text scale up to 1.6x (the pill holds icon + label at that size); beyond it the label
+                  // scales down inside the slot, never clips.
+                  height: MediaQuery.textScalerOf(context).scale(AppType.caption).clamp(AppType.caption, AppType.caption * 1.6) * 1.3,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      tab.$2,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontFamily: AppFonts.sans,
+                        fontSize: AppType.caption,
+                        fontWeight: weight,
+                        color: color,
+                        shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
+                      ),
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
 
-/** The raised lens: refracts what is behind it (bar and background) and draws a thin bright rim. */
 class _Lens extends StatelessWidget {
   final Size size;
   final bool plain;
