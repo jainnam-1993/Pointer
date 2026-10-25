@@ -11,24 +11,17 @@ const _minimumIos = 15.0;
 void main() {
   test('Runner and widget extension targets are at least iOS 15', () {
     final pbx = File('ios/Runner.xcodeproj/project.pbxproj').readAsStringSync();
-    final targets = RegExp(r'IPHONEOS_DEPLOYMENT_TARGET = ([0-9.]+);')
-        .allMatches(pbx)
-        .map((m) => double.parse(m.group(1)!))
-        .toList();
+    final targets = RegExp(r'IPHONEOS_DEPLOYMENT_TARGET = ([0-9.]+);').allMatches(pbx).map((m) => double.parse(m.group(1)!)).toList();
     expect(targets, isNotEmpty);
-    expect(targets.where((v) => v < _minimumIos), isEmpty,
-        reason: 'project.pbxproj targets: $targets');
+    expect(targets.where((v) => v < _minimumIos), isEmpty, reason: 'project.pbxproj targets: $targets');
   });
 
   test('Podfile platform and pod clamp are at least iOS 15', () {
     final podfile = File('ios/Podfile').readAsStringSync();
-    final platform =
-        RegExp(r"^platform :ios, '([0-9.]+)'", multiLine: true)
-            .firstMatch(podfile);
+    final platform = RegExp(r"^platform :ios, '([0-9.]+)'", multiLine: true).firstMatch(podfile);
     expect(platform, isNotNull);
     expect(double.parse(platform!.group(1)!), greaterThanOrEqualTo(_minimumIos));
     // Pods such as CocoaAsyncSocket declare 9.0; post_install must raise them.
-    expect(podfile,
-        contains("config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'"));
+    expect(podfile, contains("config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'"));
   });
 }

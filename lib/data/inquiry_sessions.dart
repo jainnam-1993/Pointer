@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../models/tradition.dart';
+import '../models/inquiry.dart';
 import '../theme/app_theme.dart';
 
 /**
@@ -33,6 +34,9 @@ class InquirySession {
   /** Human-readable duration string (e.g., "5 min"). */
   final String duration;
 
+  /** The [Inquiry] in `inquiries.dart` this session plays. */
+  final String inquiryId;
+
   /** Difficulty level: Beginner, Intermediate, or Advanced. */
   final String level;
 
@@ -44,6 +48,7 @@ class InquirySession {
     required this.title,
     required this.description,
     required this.duration,
+    required this.inquiryId,
     required this.level,
     required this.tradition,
   });
@@ -75,7 +80,8 @@ const inquirySessions = [
     id: '1',
     title: 'Who Am I?',
     description: 'The fundamental inquiry',
-    duration: '5 min',
+    duration: '1 min',
+    inquiryId: 'si_003',
     level: 'Beginner',
     tradition: Tradition.advaita,
   ),
@@ -83,7 +89,8 @@ const inquirySessions = [
     id: '2',
     title: 'Finding the Looker',
     description: 'Turn attention to its source',
-    duration: '7 min',
+    duration: '1 min',
+    inquiryId: 'si_007',
     level: 'Beginner',
     tradition: Tradition.direct,
   ),
@@ -91,7 +98,8 @@ const inquirySessions = [
     id: '3',
     title: 'The Space of Awareness',
     description: "Recognizing what doesn't change",
-    duration: '10 min',
+    duration: '1 min',
+    inquiryId: 'dp_004',
     level: 'Intermediate',
     tradition: Tradition.direct,
   ),
@@ -99,7 +107,8 @@ const inquirySessions = [
     id: '4',
     title: 'Investigating Thoughts',
     description: 'What are thoughts made of?',
-    duration: '8 min',
+    duration: '1 min',
+    inquiryId: 'si_001',
     level: 'Intermediate',
     tradition: Tradition.zen,
   ),
@@ -107,8 +116,15 @@ const inquirySessions = [
     id: '5',
     title: 'Resting as Awareness',
     description: 'Beyond the practice',
-    duration: '12 min',
+    duration: '1 min',
+    inquiryId: 'dp_005',
     level: 'Advanced',
     tradition: Tradition.contemporary,
   ),
 ];
+
+/**
+ * How long the player runs [inquiry], from its own timings: the setup line
+ * (when there is one) and the question. Rounded up to whole minutes for copy.
+ */
+Duration inquiryRunTime(Inquiry inquiry, {required Duration setup, required Duration question}) => (inquiry.setup != null ? setup : Duration.zero) + question;

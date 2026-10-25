@@ -800,11 +800,7 @@ void main() {
       // Verify all entries are from preferred traditions
       for (final entry in filteredForCache) {
         final tradName = entry['tradition'] as String;
-        expect(
-          tradName == 'Advaita Vedanta' || tradName == 'Contemporary',
-          true,
-          reason: 'Entry tradition should be Advaita or Contemporary, got: $tradName',
-        );
+        expect(tradName == 'Advaita Vedanta' || tradName == 'Contemporary', true, reason: 'Entry tradition should be Advaita or Contemporary, got: $tradName');
       }
     });
   });

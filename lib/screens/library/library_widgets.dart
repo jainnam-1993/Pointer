@@ -7,8 +7,10 @@
 library;
 
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/pointings.dart';
 import '../../data/teaching.dart';
 import '../../models/article.dart';
@@ -124,9 +126,7 @@ class ArticleListItem extends ConsumerWidget {
               child: SizedBox(
                 width: 44,
                 height: 44,
-                child: Center(
-                  child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted),
-                ),
+                child: Center(child: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: isSaved ? colors.accent : colors.textMuted)),
               ),
             ),
           ],
@@ -286,10 +286,7 @@ class FilterSheet<T> extends StatelessWidget {
                     leading: Icon(option.icon, color: isSelected ? colors.accent : colors.textMuted),
                     title: Text(
                       option.label,
-                      style: TextStyle(
-                        color: isSelected ? colors.accent : colors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      ),
+                      style: TextStyle(color: isSelected ? colors.accent : colors.textPrimary, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
                     ),
                     trailing: isSelected ? Icon(Icons.check, color: colors.accent) : null,
                     onTap: () {

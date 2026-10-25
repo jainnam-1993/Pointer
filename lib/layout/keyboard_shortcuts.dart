@@ -36,7 +36,8 @@ class ExitFocusModeIntent extends Intent {
   const ExitFocusModeIntent();
 }
 
-const _tabDigits = [LogicalKeyboardKey.digit1, LogicalKeyboardKey.digit2, LogicalKeyboardKey.digit3, LogicalKeyboardKey.digit4];
+/** One digit per tab: Today, Library, Saved (main_shell.dart shellTabs). */
+const _tabDigits = [LogicalKeyboardKey.digit1, LogicalKeyboardKey.digit2, LogicalKeyboardKey.digit3];
 
 /** Cmd+1 to Cmd+4 (and Ctrl+1 to Ctrl+4) select the four tabs. */
 final Map<ShortcutActivator, Intent> tabShortcuts = {

@@ -81,18 +81,14 @@ const matrixDevices = <MatrixDevice>[
     _foldInner,
     2.625,
     safeArea: EdgeInsets.only(top: 24, bottom: 24),
-    displayFeatures: [
-      DisplayFeature(bounds: Rect.fromLTWH(420, 0, 0, 884), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened),
-    ],
+    displayFeatures: [DisplayFeature(bounds: Rect.fromLTWH(420, 0, 0, 884), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened)],
   ),
   MatrixDevice(
     'tabletop',
     _foldInner,
     2.625,
     safeArea: EdgeInsets.only(top: 24, bottom: 24),
-    displayFeatures: [
-      DisplayFeature(bounds: Rect.fromLTWH(0, 442, 841, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened),
-    ],
+    displayFeatures: [DisplayFeature(bounds: Rect.fromLTWH(0, 442, 841, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened)],
   ),
   // iPad: 11-inch and 13-inch in portrait and landscape, plus Split View third (compact) and half (medium) windows.
   MatrixDevice('ipad11p', Size(834, 1194), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),

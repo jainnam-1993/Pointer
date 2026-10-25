@@ -52,9 +52,7 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
-      MethodCall methodCall,
-    ) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (MethodCall methodCall) async {
       if (methodCall.method == 'HapticFeedback.vibrate') {
         hapticCalls.add(methodCall);
       }
@@ -101,12 +99,7 @@ void main() {
 
   group('Long Press to Save', () {
     testWidgets('long press on pointing card triggers save', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'What is aware of this moment?',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'What is aware of this moment?', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -127,12 +120,7 @@ void main() {
     });
 
     testWidgets('long press triggers haptic feedback', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-haptic',
-        content: 'Test haptic feedback',
-        tradition: Tradition.zen,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-haptic', content: 'Test haptic feedback', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -173,12 +161,7 @@ void main() {
     });
 
     testWidgets('long press does not add duplicate favorites', (tester) async {
-      const testPointing = Pointing(
-        id: 'already-fav',
-        content: 'Already a favorite',
-        tradition: Tradition.original,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'already-fav', content: 'Already a favorite', tradition: Tradition.original, contexts: [PointingContext.general]);
 
       // Setup: pointing already in favorites
       when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['already-fav']));

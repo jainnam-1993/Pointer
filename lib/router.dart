@@ -30,14 +30,17 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'layout/tab_crossfade.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'widgets/ambient.dart';
 import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
-import 'screens/inquiry_screen.dart';
 import 'screens/inquiry_player_screen.dart';
 import 'screens/library_screen.dart';
+import 'screens/library/all_inquiries_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/history_screen.dart';
@@ -53,14 +56,11 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 /** Navigator key for the Home tab branch inside [StatefulShellRoute]. */
 final _homeNavigatorKey = GlobalKey<NavigatorState>();
 
-/** Navigator key for the Inquiry tab branch inside [StatefulShellRoute]. */
-final _inquiryNavigatorKey = GlobalKey<NavigatorState>();
-
 /** Navigator key for the Library tab branch inside [StatefulShellRoute]. */
 final _libraryNavigatorKey = GlobalKey<NavigatorState>();
 
-/** Navigator key for the Settings tab branch inside [StatefulShellRoute]. */
-final _settingsNavigatorKey = GlobalKey<NavigatorState>();
+/** Navigator key for the Saved tab branch inside [StatefulShellRoute]. */
+final _savedNavigatorKey = GlobalKey<NavigatorState>();
 
 /**
  * In-memory flag ensuring the [SplashScreen] is shown only once per cold start.
@@ -186,6 +186,19 @@ GoRouter _createRouter() {
       ),
 
       // Inquiry player route (outside shell - full screen experience)
+      // The Inquiry tab is gone: its sessions lead Library (P2).
+      GoRoute(path: '/inquiry', redirect: (context, state) => '/library?section=inquiry'),
+
+      // Every inquiry, from Library > Guided Inquiry > See all.
+      GoRoute(path: '/inquiries', builder: (context, state) => const AllInquiriesScreen()),
+
+      // Settings is a sheet from the gear on Today, over the tabs, with Done.
+      GoRoute(
+        path: '/settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) => MaterialPage<void>(key: state.pageKey, fullscreenDialog: true, child: const SettingsScreen(asSheet: true)),
+      ),
+
       GoRoute(
         path: '/inquiry/:id',
         pageBuilder: (context, state) {
@@ -218,7 +231,10 @@ GoRouter _createRouter() {
       // Main app with bottom navigation
       // Tabs cross-fade over the one shared ambient background instead of cutting (TabCrossFadeContainer).
       StatefulShellRoute(
-        restorationScopeId: 'shell',
+        // 'shell' held the old 4-tab index (Home, Inquiry, Library, Settings). A new
+        // id drops that index; the restored location picks the tab by path, so
+        // /library stays Library and /inquiry or /settings redirect below.
+        restorationScopeId: 'shell-3tab',
         builder: (context, state, navigationShell) {
           return MainShell(navigationShell: navigationShell);
         },
@@ -233,14 +249,6 @@ GoRouter _createRouter() {
             routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
           ),
 
-          // Inquiry tab
-          StatefulShellBranch(
-            observers: [AmbientRouteObserver()],
-            navigatorKey: _inquiryNavigatorKey,
-            restorationScopeId: 'inquiry',
-            routes: [GoRoute(path: '/inquiry', builder: (context, state) => const InquiryScreen())],
-          ),
-
           // Library tab
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
@@ -249,12 +257,12 @@ GoRouter _createRouter() {
             routes: [GoRoute(path: '/library', builder: (context, state) => const LibraryScreen())],
           ),
 
-          // Settings tab
+          // Saved tab
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
-            navigatorKey: _settingsNavigatorKey,
-            restorationScopeId: 'settings',
-            routes: [GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen())],
+            navigatorKey: _savedNavigatorKey,
+            restorationScopeId: 'saved',
+            routes: [GoRoute(path: '/saved', builder: (context, state) => const SavedScreen())],
           ),
         ],
       ),

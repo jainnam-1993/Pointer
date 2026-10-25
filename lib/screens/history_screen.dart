@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../data/pointings.dart';
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
@@ -63,9 +64,7 @@ class HistoryScreen extends ConsumerWidget {
 
           // Empty state or list
           Expanded(
-            child: viewedPointings.isEmpty
-                ? _buildEmptyState(context, colors)
-                : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
+            child: viewedPointings.isEmpty ? _buildEmptyState(context, colors) : _buildPointingsList(context, ref, viewedPointings, bottomPadding, colors),
           ),
         ],
       ),
@@ -83,13 +82,7 @@ class HistoryScreen extends ConsumerWidget {
   }
 
   /** Builds the scrollable list of viewed pointings with [StaggeredFadeIn] animations. */
-  Widget _buildPointingsList(
-    BuildContext context,
-    WidgetRef ref,
-    List<Map<String, dynamic>> viewedPointings,
-    double bottomPadding,
-    PointerColors colors,
-  ) {
+  Widget _buildPointingsList(BuildContext context, WidgetRef ref, List<Map<String, dynamic>> viewedPointings, double bottomPadding, PointerColors colors) {
     return ListView.builder(
       padding: EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.sm, bottom: 100 + bottomPadding),
       itemCount: viewedPointings.length,

@@ -1,7 +1,7 @@
 /**
  * Library screen for browsing articles and teachings from non-dual traditions.
  *
- * Provides multiple browse modes (topics, teachers, lineages, moods, saved) with
+ * Provides multiple browse modes (topics, teachers, lineages, moods) with
  * ContentFilter support (all/articles/quotes). Features a horizontal-scrolling
  * featured articles section with peek indicator, browse mode and content type
  * dropdowns.
@@ -40,6 +40,8 @@ import 'library/lineage_teachings_screen.dart';
 import 'library/mood_teachings_screen.dart';
 import 'library/topic_teachings_screen.dart';
 import '../utils/haptics.dart';
+import '../data/inquiries.dart';
+import '../data/inquiry_sessions.dart';
 import '../theme/app_icons.dart';
 
 // Re-export all library subfiles for backward compatibility
@@ -51,11 +53,14 @@ export 'library/lineage_teachings_screen.dart';
 export 'library/mood_teachings_screen.dart';
 export 'library/topic_teachings_screen.dart';
 
+part 'saved_screen.dart';
+part 'library/guided_inquiry_section.dart';
+
 /**
  * Main library screen with featured articles, browse-by navigation, and saved pointings.
  *
  * Browse modes include [LibraryBrowseMode.topics], [LibraryBrowseMode.teachers],
- * [LibraryBrowseMode.lineages], [LibraryBrowseMode.moods], and [LibraryBrowseMode.saved].
+ * [LibraryBrowseMode.lineages] and [LibraryBrowseMode.moods]. Saved items have their own tab ([SavedScreen]).
  */
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
@@ -79,8 +84,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final colors = context.colors;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
-    final favorites = ref.watch(favoritesProvider);
-    final savedArticleIds = ref.watch(articleFavoritesProvider);
 
     final hasActiveFilter = _browseMode != LibraryBrowseMode.topics || _contentFilter != ContentFilter.all;
 
@@ -108,288 +111,109 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     children: [
                       Semantics(header: true, child: Text('Library', style: Theme.of(context).textTheme.displayLarge)),
                       const SizedBox(height: 4),
-                      Text(
-                        _browseMode == LibraryBrowseMode.saved ? 'Your saved pointings' : 'Explore teachings and articles',
-                        style: TextStyle(color: colors.textSecondary, fontSize: 16),
-                      ),
+                      Text('Explore teachings and articles', style: TextStyle(color: colors.textSecondary, fontSize: 16)),
                     ],
                   ),
                 ),
               ),
 
-              // Show saved pointings if browsing saved
-              if (_browseMode == LibraryBrowseMode.saved) ...[
-                // Browse Mode dropdown (so user can switch back)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'BROWSE BY',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                          ),
-                          const SizedBox(width: 12),
-                          _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
-                        ],
-                      ),
-                    ),
+              // Guided Inquiry leads Library: the old Inquiry tab's sessions (P2).
+              ..._guidedInquirySlivers(context, colors),
+
+              // Featured Section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8 - _featuredShadowTop),
+                  child: Text(
+                    'FEATURED',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
                   ),
                 ),
-                if (favorites.isEmpty && savedArticleIds.isEmpty)
-                  SliverFillRemaining(
-                    child: EmptyStateWidget(
-                      icon: Icons.bookmark_border,
-                      title: 'Nothing saved yet.',
-                      subtitle: 'Long-press a pointing to keep it here.',
-                      actionLabel: 'Back to today',
-                      onAction: () => context.go('/'),
-                    ),
-                  ),
+              ),
 
-                // Saved articles section
-                if (savedArticleIds.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                      child: Text(
-                        'ARTICLES',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final articleId = savedArticleIds[index];
-                        final article = articles.cast<Article?>().firstWhere((a) => a?.id == articleId, orElse: () => null);
-                        if (article == null) return const SizedBox.shrink();
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: GlassCard(
-                            padding: const EdgeInsets.all(20),
-                            onTap: () => _openArticle(context, article),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  article.title,
-                                  style: TextStyle(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
-                                ),
-                                if (article.subtitle != null) ...[
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    article.subtitle!,
-                                    style: TextStyle(color: colors.textSecondary, fontSize: 13),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    Text('${article.readingTimeMinutes} min read', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-                                    if (article.teacher != null) ...[
-                                      Text('  ·  ', style: TextStyle(color: colors.textMuted, fontSize: 12)),
-                                      Expanded(
-                                        child: Text(
-                                          article.teacher!,
-                                          style: TextStyle(color: colors.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ] else
-                                      const Spacer(),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Haptics.light();
-                                        ref.read(articleFavoritesProvider.notifier).toggle(articleId);
-                                      },
-                                      child: Icon(Icons.bookmark, size: 22, color: colors.accent),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+              // Featured articles horizontal scroll with peek indicator
+              // The strip is a scroll viewport, so it clips. It is taller than
+              // the cards by their shadow's reach, so the clip never cuts a
+              // shadow into a visible box, and its ends fade so a card that
+              // runs past the edge (the list pane's edge in two-pane mode)
+              // dissolves instead of stopping at a hard line.
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height:
+                      (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble() +
+                      _featuredShadowTop +
+                      _featuredShadowBottom,
+                  child: _EdgeFade(
+                    width: _featuredEdgeFade,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenWidth = constraints.maxWidth;
+                        // Card takes ~70% of screen, leaving ~30% for peek
+                        // Peek shows ~24px of next card edge
+                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                        final cardSpacing = 8.0;
+                        // Calculate padding: 24px left, enough right for last card + peek area
+                        final horizontalPadding = 24.0;
+                        // Extra right padding ensures smooth scroll end (peek area width)
+                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
+
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: rightPadding.clamp(24.0, 80.0),
+                            top: _featuredShadowTop,
+                            bottom: _featuredShadowBottom,
                           ),
+                          itemCount: featured.length,
+                          itemBuilder: (context, index) {
+                            final article = featured[index];
+                            final isLast = index == featured.length - 1;
+                            return StaggeredFadeIn(
+                              index: index,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
+                                child: SizedBox(
+                                  width: cardWidth,
+                                  child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
+                                ),
+                              ),
+                            );
+                          },
                         );
-                      }, childCount: savedArticleIds.length),
-                    ),
-                  ),
-                ],
-
-                // Saved pointings section
-                if (favorites.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                      child: Text(
-                        'POINTINGS',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final pointingId = favorites[index];
-                        final pointing = pointings.firstWhere((p) => p.id == pointingId, orElse: () => pointings.first);
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: GlassCard(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  pointing.content,
-                                  style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
-                                  maxLines: 4,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    if (pointing.teacher != null)
-                                      Expanded(
-                                        child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
-                                      )
-                                    else
-                                      const Spacer(),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Haptics.light();
-                                        showSharePreview(context, pointing);
-                                      },
-                                      child: SizedBox(
-                                        width: 44,
-                                        height: 44,
-                                        child: Center(child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted)),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Haptics.light();
-                                        ref.read(favoritesProvider.notifier).toggle(pointingId);
-                                      },
-                                      child: SizedBox(
-                                        width: 44,
-                                        height: 44,
-                                        child: Center(child: Icon(Icons.favorite, size: 22, color: colors.accent)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }, childCount: favorites.length),
-                    ),
-                  ),
-                ],
-              ] else ...[
-                // Featured Section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8 - _featuredShadowTop),
-                    child: Text(
-                      'FEATURED',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                      },
                     ),
                   ),
                 ),
+              ),
 
-                // Featured articles horizontal scroll with peek indicator
-                // The strip is a scroll viewport, so it clips. It is taller than
-                // the cards by their shadow's reach, so the clip never cuts a
-                // shadow into a visible box, and its ends fade so a card that
-                // runs past the edge (the list pane's edge in two-pane mode)
-                // dissolves instead of stopping at a hard line.
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height:
-                        (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble() +
-                        _featuredShadowTop +
-                        _featuredShadowBottom,
-                    child: _EdgeFade(
-                      width: _featuredEdgeFade,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final screenWidth = constraints.maxWidth;
-                          // Card takes ~70% of screen, leaving ~30% for peek
-                          // Peek shows ~24px of next card edge
-                          final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                          final cardSpacing = 8.0;
-                          // Calculate padding: 24px left, enough right for last card + peek area
-                          final horizontalPadding = 24.0;
-                          // Extra right padding ensures smooth scroll end (peek area width)
-                          final rightPadding = screenWidth - cardWidth - horizontalPadding;
-
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.only(
-                              left: horizontalPadding,
-                              right: rightPadding.clamp(24.0, 80.0),
-                              top: _featuredShadowTop,
-                              bottom: _featuredShadowBottom,
-                            ),
-                            itemCount: featured.length,
-                            itemBuilder: (context, index) {
-                              final article = featured[index];
-                              final isLast = index == featured.length - 1;
-                              return StaggeredFadeIn(
-                                index: index,
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
-                                  child: SizedBox(
-                                    width: cardWidth,
-                                    child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
+              // Browse Mode Section with Dropdown
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24 - _featuredShadowBottom, 24, 12),
+                  // FittedBox scales content down proportionally on small screens
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'BROWSE BY',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+                        ),
+                        const SizedBox(width: 12),
+                        _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
+                        const SizedBox(width: 8),
+                        _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
+                      ],
                     ),
                   ),
                 ),
+              ),
 
-                // Browse Mode Section with Dropdown
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24 - _featuredShadowBottom, 24, 12),
-                    // FittedBox scales content down proportionally on small screens
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'BROWSE BY',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                          ),
-                          const SizedBox(width: 12),
-                          _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
-                          const SizedBox(width: 8),
-                          _ContentTypeDropdown(currentFilter: _contentFilter, onChanged: (filter) => setState(() => _contentFilter = filter)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Dynamic browse list based on mode
-                _buildBrowseList(colors, bottomPadding, _contentFilter),
-              ], // end else
+              // Dynamic browse list based on mode
+              _buildBrowseList(colors, bottomPadding, _contentFilter),
             ],
           ),
         ),
@@ -452,9 +276,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
         return _buildLineagesList(colors, bottomPadding, contentFilter);
       case LibraryBrowseMode.moods:
         return _buildMoodsList(colors, bottomPadding, contentFilter);
-      case LibraryBrowseMode.saved:
-        // Saved pointings are handled separately in the main build
-        return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
   }
 

@@ -83,12 +83,7 @@ void main() {
     });
 
     testWidgets('shows a pointing content', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'What is aware of this moment?',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'What is aware of this moment?', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -222,12 +217,7 @@ void main() {
     });
 
     testWidgets('handles pointing without teacher', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Pointing without attribution',
-        tradition: Tradition.original,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Pointing without attribution', tradition: Tradition.original, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 

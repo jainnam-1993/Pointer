@@ -66,33 +66,30 @@ Future<void> setupGoldenTests() async {
   when(() => _mockNotificationService.getSchedule()).thenReturn(const NotificationSchedule());
 
   // Mock home_widget plugin to prevent MissingPluginException
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), (
-    MethodCall methodCall,
-  ) async {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('home_widget'), (MethodCall methodCall) async {
     // Return null for all home_widget calls - they're no-ops in tests
     return null;
   });
 
   // Mock flutter_local_notifications plugin
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('dexterous.com/flutter/local_notifications'),
-    (MethodCall methodCall) async {
-      // Return appropriate values for notification plugin calls
-      switch (methodCall.method) {
-        case 'initialize':
-          return true;
-        case 'getNotificationAppLaunchDetails':
-          return null;
-        case 'requestNotificationsPermission':
-        case 'requestPermissions':
-          return true;
-        case 'checkPermissions':
-          return {'isEnabled': true};
-        default:
-          return null;
-      }
-    },
-  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('dexterous.com/flutter/local_notifications'), (
+    MethodCall methodCall,
+  ) async {
+    // Return appropriate values for notification plugin calls
+    switch (methodCall.method) {
+      case 'initialize':
+        return true;
+      case 'getNotificationAppLaunchDetails':
+        return null;
+      case 'requestNotificationsPermission':
+      case 'requestPermissions':
+        return true;
+      case 'checkPermissions':
+        return {'isEnabled': true};
+      default:
+        return null;
+    }
+  });
 }
 
 /// Teardown for golden tests

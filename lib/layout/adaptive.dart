@@ -427,14 +427,7 @@ class FormSheetPanel extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             child: Material(
               type: MaterialType.transparency,
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                removeBottom: true,
-                removeLeft: true,
-                removeRight: true,
-                child: child,
-              ),
+              child: MediaQuery.removePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: child),
             ),
           ),
         ),

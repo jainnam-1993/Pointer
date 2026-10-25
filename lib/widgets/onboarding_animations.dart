@@ -616,10 +616,7 @@ class _NotificationSimulationState extends State<NotificationSimulation> with Si
 
     _controller = AnimationController(duration: OnboardingDurations.notificationSlide, vsync: this);
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1.5),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, -1.5), end: Offset.zero).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -789,22 +786,18 @@ class _BreathingGlowState extends State<BreathingGlow> with SingleTickerProvider
 extension OnboardingAnimateExtensions on Widget {
   /** Applies a contemplative fade-in with subtle upward drift. */
   Widget contemplativeFadeIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
-    return animate(
-      delay: delay,
-    ).fadeIn(duration: duration, curve: Curves.easeOut).slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
+    return animate(delay: delay).fadeIn(duration: duration, curve: Curves.easeOut).slideY(begin: 0.05, end: 0, duration: duration, curve: Curves.easeOut);
   }
 
   /** Applies a gentle scale-in effect for emphasis. */
   Widget gentleScaleIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 600)}) {
-    return animate(
-      delay: delay,
-    ).scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
+    return animate(delay: delay).scaleXY(begin: 0.95, end: 1.0, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
   }
 
   /** Applies a soft blur-in effect (from blurred to clear). */
   Widget blurIn({Duration delay = Duration.zero, Duration duration = const Duration(milliseconds: 800)}) {
-    return animate(delay: delay)
-        .blur(begin: const Offset(10, 10), end: Offset.zero, duration: duration, curve: Curves.easeOut)
-        .fadeIn(duration: duration, curve: Curves.easeOut);
+    return animate(
+      delay: delay,
+    ).blur(begin: const Offset(10, 10), end: Offset.zero, duration: duration, curve: Curves.easeOut).fadeIn(duration: duration, curve: Curves.easeOut);
   }
 }

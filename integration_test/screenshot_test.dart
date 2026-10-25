@@ -25,9 +25,7 @@ void main() {
 
   /// Creates a fresh ProviderContainer for each test
   ProviderContainer createContainer() {
-    return ProviderContainer(
-      overrides: [sharedPreferencesProvider.overrideWithValue(prefs), onboardingCompletedProvider.overrideWith((ref) => true)],
-    );
+    return ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(prefs), onboardingCompletedProvider.overrideWith((ref) => true)]);
   }
 
   /// Pump frames for a fixed duration (handles continuous animations)

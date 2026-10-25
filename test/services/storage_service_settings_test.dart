@@ -29,9 +29,7 @@ void main() {
     });
 
     test('a wrong-typed field takes its default and the valid fields are kept', () async {
-      final service = await serviceWithSavedSettings(
-        jsonEncode({'hapticFeedback': 'yes', 'autoAdvanceDelay': '30', 'theme': 'dark', 'zenMode': true}),
-      );
+      final service = await serviceWithSavedSettings(jsonEncode({'hapticFeedback': 'yes', 'autoAdvanceDelay': '30', 'theme': 'dark', 'zenMode': true}));
 
       final settings = service.settings;
 

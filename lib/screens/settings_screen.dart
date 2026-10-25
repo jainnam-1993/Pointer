@@ -43,7 +43,10 @@ export 'settings/notification_times_sheet.dart';
  * Re-exports all `settings/` subfiles for backward compatibility.
  */
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({super.key});
+  /** True when presented as the gear's sheet: shows Done to close it. */
+  final bool asSheet;
+
+  const SettingsScreen({super.key, this.asSheet = false});
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -120,12 +123,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     if (!mounted) return;
 
-    showAdaptiveSheet(
-      context: context,
-      anchorPoint: sheetAnchorPoint(context),
-      isScrollControlled: true,
-      builder: (context) => const NotificationTimesSheet(),
-    );
+    showAdaptiveSheet(context: context, anchorPoint: sheetAnchorPoint(context), isScrollControlled: true, builder: (context) => const NotificationTimesSheet());
   }
 
   /** Shows the "About Here Now" dialog with app description and version. */
@@ -298,7 +296,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       body: _layoutColumns(context, bottomPadding, [
         StaggeredFadeIn(
           index: 0,
-          child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
+          child: Row(
+            children: [
+              Expanded(
+                child: Semantics(header: true, child: Text('Settings', style: Theme.of(context).textTheme.displayLarge)),
+              ),
+              if (widget.asSheet)
+                TextButton(
+                  key: const ValueKey('settings-done'),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  child: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
+                ),
+            ],
+          ),
         ),
         const SizedBox(height: 24),
 
@@ -527,9 +537,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     if (!layout.isTwoPane || breakAt < 0) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          final side = layout.sizeClass == WindowSizeClass.compact
-              ? 24.0
-              : ((constraints.maxWidth - kContentMaxWidth) / 2).clamp(24.0, double.infinity);
+          final side = layout.sizeClass == WindowSizeClass.compact ? 24.0 : ((constraints.maxWidth - kContentMaxWidth) / 2).clamp(24.0, double.infinity);
           return ListView(
             padding: EdgeInsets.only(left: side, right: side, top: 20, bottom: bottom),
             children: [

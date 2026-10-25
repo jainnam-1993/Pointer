@@ -5,6 +5,7 @@
 library;
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,9 @@ class InquiryPlayerScreen extends ConsumerStatefulWidget {
 class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with SingleTickerProviderStateMixin {
   /** The currently loaded [Inquiry] (null until [_loadInquiry] completes). */
   Inquiry? _currentInquiry;
+
+  /** Set when [InquiryPlayerScreen.inquiryId] names no inquiry; shown as an error. */
+  String? _missingId;
 
   /** Current phase in the inquiry flow (setup -> question -> followUp -> complete). */
   InquiryPhase _phase = InquiryPhase.setup;
@@ -96,8 +100,14 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
     // Check if ID is a valid inquiry ID or if we should get a random one
     final inquiry = widget.inquiryId == 'random' ? getRandomInquiry() : getInquiryById(widget.inquiryId);
 
-    // Fall back to random if ID not found
-    _currentInquiry = inquiry ?? getRandomInquiry();
+    // An unknown id is a bug in the caller (a session or link pointing at an
+    // inquiry that doesn't exist); fail loudly instead of playing another one.
+    if (inquiry == null) {
+      debugPrint('InquiryPlayerScreen: no inquiry with id ${widget.inquiryId}');
+      if (mounted) setState(() => _missingId = widget.inquiryId);
+      return;
+    }
+    _currentInquiry = inquiry;
 
     // Start the sequence
     if (mounted) {
@@ -235,6 +245,17 @@ class _InquiryPlayerScreenState extends ConsumerState<InquiryPlayerScreen> with 
   Widget build(BuildContext context) {
     final colors = context.colors;
 
+    if (_missingId != null) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            'No inquiry "$_missingId".',
+            key: const ValueKey('inquiry-missing'),
+            style: TextStyle(color: colors.textSecondary),
+          ),
+        ),
+      );
+    }
     if (_currentInquiry == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }

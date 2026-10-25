@@ -7,6 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pointer/theme/phosphor_icons.dart';
+
 import '../data/articles.dart';
 import '../data/inquiries.dart';
 import '../layout/adaptive.dart';
@@ -503,6 +504,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       onVerticalDragEnd: _onDragEnd,
                       child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
                     ),
+                  if (!isZenMode) const Positioned(top: 0, left: 0, right: 0, child: _TodayTopBar()),
                 ],
               ),
             ),
@@ -580,12 +582,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     );
     final primary = SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(
-          left: regular ? AppSpacing.xxl : AppSpacing.xl,
-          right: regular ? AppSpacing.xxl : AppSpacing.xl,
-          top: 20,
-          bottom: bottomSpace,
-        ),
+        padding: EdgeInsets.only(left: regular ? AppSpacing.xxl : AppSpacing.xl, right: regular ? AppSpacing.xxl : AppSpacing.xl, top: 20, bottom: bottomSpace),
         child: column,
       ),
     );
@@ -719,13 +716,7 @@ class _HomeContextPane extends StatelessWidget {
                   inquiry.question,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: AppFonts.serif,
-                    fontStyle: FontStyle.italic,
-                    color: colors.accent,
-                    fontSize: AppType.headline,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, color: colors.accent, fontSize: AppType.headline, height: 1.4),
                 ),
               ),
             ),
@@ -901,6 +892,43 @@ class _TeacherMatch extends _SourceMatch {
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => TeacherTeachingsScreen(teacher: teacher, filter: ContentFilter.articles),
+      ),
+    );
+  }
+}
+
+/**
+ * Today's top bar: the large title and the gear that opens Settings as a
+ * sheet. Settings left the tab bar (ux-simplify.md, Option A).
+ */
+class _TodayTopBar extends StatelessWidget {
+  const _TodayTopBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    // Pads by the view insets directly: Home keeps a single SafeArea, around its body.
+    final inset = MediaQuery.paddingOf(context);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(inset.left + 24, inset.top + 12, inset.right + 12, 0),
+      child: Padding(
+        padding: EdgeInsets.zero,
+        child: Row(
+          children: [
+            Expanded(
+              child: Semantics(header: true, child: Text('Today', style: Theme.of(context).textTheme.displayLarge)),
+            ),
+            SizedBox.square(
+              dimension: 44,
+              child: IconButton(
+                key: const ValueKey('today-settings'),
+                tooltip: 'Settings',
+                icon: Icon(AppIcons.settings, color: colors.textSecondary),
+                onPressed: () => context.push('/settings'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

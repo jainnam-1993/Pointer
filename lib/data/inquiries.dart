@@ -11,6 +11,7 @@
 library;
 
 import 'dart:math';
+
 import '../models/inquiry.dart';
 import 'pointings.dart'; // For Tradition enum
 
@@ -139,13 +140,7 @@ const inquiries = <Inquiry>[
     hasVisualElement: true,
   ),
 
-  Inquiry(
-    id: 'koan_006',
-    question: 'Where do you go when you die?',
-    type: InquiryType.koan,
-    tradition: Tradition.zen,
-    pauseDuration: Duration(seconds: 15),
-  ),
+  Inquiry(id: 'koan_006', question: 'Where do you go when you die?', type: InquiryType.koan, tradition: Tradition.zen, pauseDuration: Duration(seconds: 15)),
 
   Inquiry(
     id: 'koan_007',

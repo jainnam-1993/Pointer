@@ -8,6 +8,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import '../../data/teaching.dart';
 
 /** Extension to sort teachings with unviewed first (viewed items sink down) */
@@ -40,7 +41,7 @@ class CategoryInfo {
  *
  * Each mode presents a different organizational axis for content discovery.
  */
-enum LibraryBrowseMode { topics, teachers, lineages, moods, saved }
+enum LibraryBrowseMode { topics, teachers, lineages, moods }
 
 /** Provides display [label] and [icon] for each [LibraryBrowseMode] value. */
 extension LibraryBrowseModeExt on LibraryBrowseMode {
@@ -54,8 +55,6 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
         return 'Lineages';
       case LibraryBrowseMode.moods:
         return 'Moods';
-      case LibraryBrowseMode.saved:
-        return 'Saved';
     }
   }
 
@@ -69,8 +68,6 @@ extension LibraryBrowseModeExt on LibraryBrowseMode {
         return Icons.account_tree_outlined;
       case LibraryBrowseMode.moods:
         return Icons.mood_outlined;
-      case LibraryBrowseMode.saved:
-        return Icons.bookmark_outline;
     }
   }
 }

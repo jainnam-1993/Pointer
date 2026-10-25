@@ -115,10 +115,7 @@ class StartupCoordinator {
 
   Future<void> _initializeNotifications() async {
     try {
-      await _notificationService.initialize(
-        onNotificationResponse: _onNotificationAction,
-        onBackgroundNotificationResponse: notificationBackgroundHandler,
-      );
+      await _notificationService.initialize(onNotificationResponse: _onNotificationAction, onBackgroundNotificationResponse: notificationBackgroundHandler);
     } catch (e) {
       debugPrint('[AppInitializer] Notification init failed (non-fatal): $e');
     }

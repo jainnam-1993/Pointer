@@ -11,13 +11,16 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/teaching.dart';
 import '../../models/article.dart';
 import '../../providers/core_providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/shared_ambient.dart';
 import '../../widgets/animated_transitions.dart';
+
 import 'package:go_router/go_router.dart';
+
 import 'library_models.dart';
 import 'library_widgets.dart';
 import '../../utils/haptics.dart';

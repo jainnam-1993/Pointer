@@ -14,6 +14,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import '../layout/adaptive.dart';
 
 /**
@@ -564,12 +565,8 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
 
   /** Top-edge sheen as a foreground gradient. */
-  LinearGradient get sheen => LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    stops: [0, highlightExtent],
-    colors: [highlight, highlight.withValues(alpha: 0)],
-  );
+  LinearGradient get sheen =>
+      LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0, highlightExtent], colors: [highlight, highlight.withValues(alpha: 0)]);
 
   /** Drop shadows, empty when [shadow] is transparent. */
   List<BoxShadow> get shadows => shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 6))];
@@ -816,13 +813,7 @@ TextTheme _textTheme(TextTheme base, PointerColors colors) {
         titleLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.headline, fontWeight: FontWeight.w600, color: colors.textPrimary),
         bodyLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.body, color: colors.textPrimary),
         bodyMedium: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.callout, color: colors.textSecondary),
-        labelSmall: TextStyle(
-          fontFamily: AppFonts.sans,
-          fontSize: AppType.caption,
-          fontWeight: FontWeight.w600,
-          color: colors.textMuted,
-          letterSpacing: 1,
-        ),
+        labelSmall: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.caption, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
       );
 }
 

@@ -288,10 +288,7 @@ void main() {
                     enableScrolling: true,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                        20,
-                        (i) => Padding(padding: const EdgeInsets.all(8.0), child: Text('Line $i of many lines of content')),
-                      ),
+                      children: List.generate(20, (i) => Padding(padding: const EdgeInsets.all(8.0), child: Text('Line $i of many lines of content'))),
                     ),
                   ),
                 ),
@@ -363,12 +360,7 @@ void main() {
       });
 
       testWidgets('renders correctly at extra large scale (2.0x)', (tester) async {
-        const testPointing = Pointing(
-          id: 'test-dynamic-type-xl',
-          content: 'Notice.',
-          tradition: Tradition.direct,
-          contexts: [PointingContext.general],
-        );
+        const testPointing = Pointing(id: 'test-dynamic-type-xl', content: 'Notice.', tradition: Tradition.direct, contexts: [PointingContext.general]);
 
         await pumpWithTextScale(tester, createAppWithTextScale(child: const HomeScreen(), textScaleFactor: 2.0, initialPointing: testPointing));
 

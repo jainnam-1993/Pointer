@@ -41,8 +41,7 @@ PointingContext notificationSlotFor(DateTime time) {
 }
 
 /** Whether [pointing] may be delivered in [slot]: tagged for that slot or general. */
-bool isEligibleForSlot(Pointing pointing, PointingContext slot) =>
-    pointing.contexts.contains(slot) || pointing.contexts.contains(PointingContext.general);
+bool isEligibleForSlot(Pointing pointing, PointingContext slot) => pointing.contexts.contains(slot) || pointing.contexts.contains(PointingContext.general);
 
 /**
  * Slot-aware no-repeat rotation over the full notification content pool.

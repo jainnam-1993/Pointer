@@ -71,12 +71,7 @@ const traditions = <Tradition, TraditionInfo>{
     description: 'The path of non-duality. You are already what you seek.',
     lineIcon: PhosphorIconsLight.sun,
   ),
-  Tradition.zen: TraditionInfo(
-    name: 'Zen Buddhism',
-    icon: '◯',
-    description: 'Direct pointing. No words, no concepts.',
-    lineIcon: PhosphorIconsLight.circle,
-  ),
+  Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.', lineIcon: PhosphorIconsLight.circle),
   Tradition.direct: TraditionInfo(
     name: 'Direct Path',
     icon: '◇',

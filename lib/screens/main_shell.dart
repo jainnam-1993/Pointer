@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../providers/providers.dart';
 import '../theme/app_theme.dart';
 import '../utils/motion.dart';
@@ -65,7 +66,7 @@ class _MainShellState extends ConsumerState<MainShell> {
   }
 
   /**
-   * Cmd+1 to Cmd+4 (Ctrl on other keyboards) select the tabs. The autofocused
+   * Cmd+1 to Cmd+3 (Ctrl on other keyboards) select the tabs. The autofocused
    * node keeps the shortcuts live before anything else takes focus.
    */
   @override
@@ -109,7 +110,7 @@ class _MainShellState extends ConsumerState<MainShell> {
           ? null
           : (details) {
               // Swipe left (negative velocity) -> next tab
-              if (details.primaryVelocity! < -200 && currentIndex < 3) {
+              if (details.primaryVelocity! < -200 && currentIndex < shellTabs.length - 1) {
                 widget.navigationShell.goBranch(currentIndex + 1);
               }
               // Swipe right (positive velocity) -> previous tab
@@ -198,7 +199,14 @@ class _MainShellState extends ConsumerState<MainShell> {
 }
 
 /** The four tabs, shared by the bottom bar and the side rail. */
-const _tabs = <LensTab>[(AppIcons.home, 'Home'), (AppIcons.inquiry, 'Inquiry'), (AppIcons.library, 'Library'), (AppIcons.settings, 'Settings')];
+/** One top-level destination: its icon and label. The lens tab bar and rail draw this list. */
+typedef ShellTab = LensTab;
+
+/**
+ * The three tabs, in branch order (router.dart): Today, Library, Saved.
+ * Settings is a sheet from the gear on Today, not a tab.
+ */
+const shellTabs = <ShellTab>[(AppIcons.home, 'Today'), (AppIcons.library, 'Library'), (AppIcons.heart, 'Saved')];
 
 /**
  * Liquid Glass side rail for medium and expanded windows: a vertical capsule centred on the left edge, sharing the
@@ -218,7 +226,7 @@ class _SideRail extends StatelessWidget {
         padding: const EdgeInsets.only(left: LiquidGlass.railInset),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: LensTabBar(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
+          child: LensTabBar(tabs: shellTabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
         ),
       ),
     );
@@ -254,9 +262,9 @@ class _BottomNavBar extends StatelessWidget {
         child: AnimatedContainer(
           duration: reduce ? Duration.zero : Motion.standard,
           curve: SpringCurve(Motion.settle, Motion.standard),
-          width: minimized ? LensTabBar.minimizedWidth(_tabs.length) : full,
+          width: minimized ? LensTabBar.minimizedWidth(shellTabs.length) : full,
           height: minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight,
-          child: LensTabBar(tabs: _tabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.horizontal, minimized: minimized),
+          child: LensTabBar(tabs: shellTabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.horizontal, minimized: minimized),
         ),
       ),
     );

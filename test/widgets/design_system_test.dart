@@ -209,7 +209,5 @@ void main() {
 }
 
 bool _libContains(String needle) {
-  return Directory(
-    'lib',
-  ).listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart')).any((f) => f.readAsStringSync().contains(needle));
+  return Directory('lib').listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart')).any((f) => f.readAsStringSync().contains(needle));
 }

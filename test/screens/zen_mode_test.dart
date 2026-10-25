@@ -45,9 +45,7 @@ void main() {
     when(() => mockPrefs.setInt(any(), any())).thenAnswer((_) async => true);
 
     // Mock haptic feedback channel
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
-      MethodCall methodCall,
-    ) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (MethodCall methodCall) async {
       if (methodCall.method == 'HapticFeedback.vibrate') {
         hapticCalls.add(methodCall);
       }
@@ -272,12 +270,7 @@ void main() {
   });
 
   group('Zen Mode Gestures', () {
-    const testPointing = Pointing(
-      id: 'gesture-test',
-      content: 'Test gesture interaction',
-      tradition: Tradition.direct,
-      contexts: [PointingContext.general],
-    );
+    const testPointing = Pointing(id: 'gesture-test', content: 'Test gesture interaction', tradition: Tradition.direct, contexts: [PointingContext.general]);
 
     testWidgets('double-tap on pointing card toggles zen mode on', (tester) async {
       late WidgetRef capturedRef;
@@ -419,12 +412,7 @@ void main() {
   });
 
   group('Zen Mode Animation', () {
-    const testPointing = Pointing(
-      id: 'animation-test',
-      content: 'Test animation behavior',
-      tradition: Tradition.zen,
-      contexts: [PointingContext.general],
-    );
+    const testPointing = Pointing(id: 'animation-test', content: 'Test animation behavior', tradition: Tradition.zen, contexts: [PointingContext.general]);
 
     testWidgets('zen mode view has fade-in animation', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing, initialZenMode: true));
@@ -451,12 +439,7 @@ void main() {
   });
 
   group('Zen Mode Integration', () {
-    const testPointing = Pointing(
-      id: 'integration-test',
-      content: 'Test full integration',
-      tradition: Tradition.original,
-      contexts: [PointingContext.general],
-    );
+    const testPointing = Pointing(id: 'integration-test', content: 'Test full integration', tradition: Tradition.original, contexts: [PointingContext.general]);
 
     testWidgets('zen mode persists across rebuilds', (tester) async {
       late WidgetRef capturedRef;

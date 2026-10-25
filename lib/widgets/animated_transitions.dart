@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+
 import '../utils/motion.dart';
+
 import 'package:go_router/go_router.dart';
 
 /**
@@ -244,13 +246,7 @@ class MorphingCard extends StatelessWidget {
   /** Corner radius for the ink splash bounds. */
   final BorderRadius borderRadius;
 
-  const MorphingCard({
-    super.key,
-    required this.heroTag,
-    required this.child,
-    this.onTap,
-    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
-  });
+  const MorphingCard({super.key, required this.heroTag, required this.child, this.onTap, this.borderRadius = const BorderRadius.all(Radius.circular(16))});
 
   @override
   Widget build(BuildContext context) {
@@ -366,24 +362,14 @@ class SharedAxisSwitcher extends StatelessWidget {
   /** Duration of the transition. */
   final Duration duration;
 
-  const SharedAxisSwitcher({
-    super.key,
-    required this.child,
-    this.transitionType = SharedAxisTransitionType.horizontal,
-    this.duration = Motion.standard,
-  });
+  const SharedAxisSwitcher({super.key, required this.child, this.transitionType = SharedAxisTransitionType.horizontal, this.duration = Motion.standard});
 
   @override
   Widget build(BuildContext context) {
     return PageTransitionSwitcher(
       duration: duration,
       transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-        return SharedAxisTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: transitionType,
-          child: child,
-        );
+        return SharedAxisTransition(animation: primaryAnimation, secondaryAnimation: secondaryAnimation, transitionType: transitionType, child: child);
       },
       child: child,
     );
@@ -465,10 +451,7 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _scaleAnimation = Tween<double>(
-      begin: widget.minScale,
-      end: widget.maxScale,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _scaleAnimation = Tween<double>(begin: widget.minScale, end: widget.maxScale).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     if (widget.enabled) {
       _controller.repeat(reverse: true);

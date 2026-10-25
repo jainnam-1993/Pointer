@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/articles.dart';
 import '../layout/adaptive.dart';
 import '../data/pointings.dart';
@@ -146,10 +147,7 @@ class _ArticleReaderScreenState extends ConsumerState<ArticleReaderScreen> {
                                 constraints: const BoxConstraints(maxWidth: kReadingMeasure),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                                  decoration: BoxDecoration(
-                                    color: colors.glassBackground,
-                                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                                  ),
+                                  decoration: BoxDecoration(color: colors.glassBackground, borderRadius: BorderRadius.circular(AppSpacing.radiusPill)),
                                   child: Text(
                                     traditionInfo.name,
                                     maxLines: 1,
@@ -267,13 +265,7 @@ class _ArticleCompanion extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             smartPunctuation(title),
-            style: TextStyle(
-              fontFamily: AppFonts.serif,
-              fontSize: AppType.display,
-              fontWeight: FontWeight.w500,
-              color: colors.textPrimary,
-              height: 1.2,
-            ),
+            style: TextStyle(fontFamily: AppFonts.serif, fontSize: AppType.display, fontWeight: FontWeight.w500, color: colors.textPrimary, height: 1.2),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: AppSpacing.sm),

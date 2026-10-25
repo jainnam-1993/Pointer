@@ -390,12 +390,7 @@ class _ContrastPage extends StatelessWidget {
                 children: [
                   Text(
                     'Here Now asks:',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 16),
-                      fontWeight: FontWeight.w500,
-                      color: colors.textMuted,
-                      letterSpacing: 1,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w500, color: colors.textMuted, letterSpacing: 1),
                   ),
                   SizedBox(height: _responsiveVerticalSpace(context, 12)),
                   Text(

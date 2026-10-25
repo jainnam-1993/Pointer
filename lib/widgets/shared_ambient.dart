@@ -16,6 +16,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import 'animated_gradient.dart';
 
 /** Marks a subtree that already has the app's shared ambient background. */
@@ -83,21 +84,13 @@ class AmbientPageTransitionsBuilder extends PageTransitionsBuilder {
     return PageTransitionsTheme(
       builders: {
         for (final platform in TargetPlatform.values)
-          platform: AmbientPageTransitionsBuilder(
-            theme.builders[platform] ?? fallback.builders[platform] ?? const FadeForwardsPageTransitionsBuilder(),
-          ),
+          platform: AmbientPageTransitionsBuilder(theme.builders[platform] ?? fallback.builders[platform] ?? const FadeForwardsPageTransitionsBuilder()),
       },
     );
   }
 
   @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
+  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     final covered = CurvedAnimation(
       parent: secondaryAnimation,
       curve: const Interval(0, 0.6, curve: Curves.easeOut),
