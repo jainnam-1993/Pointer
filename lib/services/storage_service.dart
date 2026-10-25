@@ -109,12 +109,16 @@ class StorageService {
   /** Persist the onboarding completion state. */
   Future<void> setOnboardingCompleted(bool completed) => _prefs.setBool(StorageKeys.onboardingCompleted, completed);
 
-  /** List of saved [Pointing] IDs, ordered from oldest to newest. */
-  List<String> get favorites {
-    final stored = _prefs.getString(StorageKeys.favoritePointings);
-    if (stored == null) return [];
-    return List<String>.from(jsonDecode(stored));
-  }
+  /**
+   * List of saved [Pointing] IDs, ordered from oldest to newest.
+   *
+   * Stored as a JSON array of id strings, the format this class, the iOS
+   * pending-saves merge and the Android widget all write. A value in any
+   * other shape (a list written with setStringList, a JSON value that is not
+   * an array, garbled text) keeps the ids it can read instead of throwing,
+   * and the next save rewrites it in the right format.
+   */
+  List<String> get favorites => decodeFavoriteIds(_prefs.get(StorageKeys.favoritePointings));
 
   /** Add a [Pointing] ID to the favourites list (no-op if already present). */
   Future<void> addFavorite(String pointingId) async {
@@ -304,4 +308,38 @@ class StorageService {
     // Invalidate caches
     _viewedTeachingIdsCache = null;
   }
+}
+
+/**
+ * Reads a stored favorites value into ids, never throwing. Accepts the JSON
+ * array string every writer produces, and a native string list; keeps the
+ * string ids and drops anything else, logging the bad shape once.
+ */
+List<String> decodeFavoriteIds(Object? raw) {
+  if (raw == null) return [];
+  Object? decoded = raw;
+  if (raw is String) {
+    if (raw.isEmpty) return [];
+    try {
+      decoded = jsonDecode(raw);
+    } on FormatException catch (error) {
+      _logBadFavorites('not valid JSON ($error)');
+      return [];
+    }
+  }
+  if (decoded is! List) {
+    _logBadFavorites('a ${decoded.runtimeType}, not a list');
+    return [];
+  }
+  final ids = decoded.whereType<String>().where((id) => id.isNotEmpty).toList();
+  if (ids.length != decoded.length) _logBadFavorites('a list with ${decoded.length - ids.length} non-id entries');
+  return ids;
+}
+
+bool _loggedBadFavorites = false;
+
+void _logBadFavorites(String what) {
+  if (_loggedBadFavorites) return;
+  _loggedBadFavorites = true;
+  debugPrint('StorageService: saved favorites are $what; keeping the readable ids');
 }

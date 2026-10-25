@@ -22,7 +22,7 @@ void main() {
       // only becomes visible to Dart after reload().
       var cached = jsonEncode(['a']);
       const nativeStore = '["a","w"]';
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenAnswer((_) => cached);
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenAnswer((_) => cached);
       when(() => mockPrefs.reload()).thenAnswer((_) async => cached = nativeStore);
       String? written;
       when(() => mockPrefs.setString(StorageKeys.favoritePointings, any())).thenAnswer((inv) async {
@@ -141,20 +141,20 @@ void main() {
 
   group('StorageService - Favorites', () {
     test('favorites returns empty list when not set', () {
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(null);
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(null);
       expect(storageService.favorites, isEmpty);
     });
 
     test('favorites returns stored list', () {
       final stored = jsonEncode(['adv-1', 'zen-1', 'dir-1']);
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(stored);
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(stored);
 
       final favorites = storageService.favorites;
       expect(favorites, ['adv-1', 'zen-1', 'dir-1']);
     });
 
     test('addFavorite adds new favorite', () async {
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1']));
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1']));
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await storageService.addFavorite('zen-1');
@@ -164,7 +164,7 @@ void main() {
     });
 
     test('addFavorite does not add duplicate', () async {
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1']));
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1']));
 
       await storageService.addFavorite('adv-1');
 
@@ -172,7 +172,7 @@ void main() {
     });
 
     test('removeFavorite removes existing favorite', () async {
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1', 'zen-1']));
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1', 'zen-1']));
       when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
 
       await storageService.removeFavorite('adv-1');
@@ -182,7 +182,7 @@ void main() {
     });
 
     test('isFavorite returns true for existing favorite', () {
-      when(() => mockPrefs.getString(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1', 'zen-1']));
+      when(() => mockPrefs.get(StorageKeys.favoritePointings)).thenReturn(jsonEncode(['adv-1', 'zen-1']));
 
       expect(storageService.isFavorite('adv-1'), true);
       expect(storageService.isFavorite('adv-99'), false);

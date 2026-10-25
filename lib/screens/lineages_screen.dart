@@ -264,10 +264,9 @@ class _TraditionCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
+                    // Full description: two lines with an ellipsis cut it mid-word.
                     info.description,
                     style: TextStyle(fontSize: AppType.callout, color: textColorSecondary),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(

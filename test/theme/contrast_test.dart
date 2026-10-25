@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/theme/app_theme.dart';
 import 'package:pointer/theme/contrast_level.dart';
+import 'package:pointer/widgets/ambient.dart';
 
 double _channel(double c) => c <= 0.03928 ? c / 12.92 : math.pow((c + 0.055) / 1.055, 2.4).toDouble();
 
@@ -43,6 +44,32 @@ void main() {
         final l = glass.onSurfaceLevels[i];
         surfaces['onSurface-$label-top'] = Color.alphaBlend(glass.fill.withValues(alpha: l.top), colors.surface);
         surfaces['onSurface-$label-bottom'] = Color.alphaBlend(glass.fill.withValues(alpha: l.bottom), colors.surface);
+      }
+      // The real page is the ambient gradient, not the flat background token: text on each
+      // period's gradient stops, bare and under glass at each intensity.
+      final ambient = switch (name) {
+        'dark' || 'darkIncreased' => AmbientPalette.dark,
+        'light' || 'lightIncreased' => const [AmbientPalette.light],
+        'oled' || 'oledIncreased' => const [AmbientPalette.oled],
+        _ => const <AmbientPalette>[],
+      };
+      for (final (p, palette) in ambient.indexed) {
+        for (final (stop, c) in [('top', palette.top), ('mid', palette.mid), ('bottom', palette.bottom)]) {
+          surfaces['ambient$p-$stop'] = c;
+          for (final (i, label) in const [(0, 'light'), (1, 'standard'), (2, 'heavy')]) {
+            surfaces['ambient$p-$stop-glass-$label'] = Color.alphaBlend(glass.fill.withValues(alpha: glass.levels[i].top), c);
+          }
+        }
+      }
+      // Bottom sheets (notification schedule, time picker) over the darkest and lightest page,
+      // bare and under the plain glass that sits inside them.
+      final sheetFill = GlassMaterial.sheetSurface(colors);
+      for (final (under, page) in [('page', colors.background), ...ambient.map((a) => ('ambient', a.top))]) {
+        final sheet = Color.alphaBlend(sheetFill, page);
+        surfaces['sheet-over-$under'] = sheet;
+        for (final (i, label) in const [(0, 'light'), (1, 'standard'), (2, 'heavy')]) {
+          surfaces['sheet-over-$under-$label'] = Color.alphaBlend(glass.fill.withValues(alpha: glass.onSurfaceLevels[i].top), sheet);
+        }
       }
       // Button labels are textPrimary: check that alone over both button fills.
       for (final (label, l) in [('primary', glass.buttonPrimary), ('secondary', glass.buttonSecondary)]) {

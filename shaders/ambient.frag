@@ -125,7 +125,8 @@ void main() {
       motes += core * twinkle * (0.45 + fl * 0.3);
     }
   }
-  motes *= uMotes * mix(1.0, 0.15, uFrost);
+  // Under glass the motes are off: on a dark card they read as specks in the glass.
+  motes *= uMotes * (1.0 - uFrost);
   vec3 moteColor = uDark > 0.5 ? vec3(1.0, 0.95, 0.86) : vec3(1.0);
   col = mix(col, moteColor, clamp(motes, 0.0, 1.0));
 

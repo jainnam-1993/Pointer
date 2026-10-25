@@ -180,7 +180,7 @@ void main() {
     testWidgets('Next button has arrow icon', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      expect(find.byIcon(AppIcons.chevronDown), findsOneWidget);
+      expect(find.byIcon(AppIcons.chevronRight), findsOneWidget);
     });
 
     testWidgets('Share icon exists in card header', (tester) async {

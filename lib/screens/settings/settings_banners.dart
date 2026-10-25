@@ -25,13 +25,14 @@ class NotificationPermissionBanner extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.15),
+        // Informative, not an error: the app's accent at a quiet tint, no amber.
+        color: colors.accent.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+        border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.notifications_off, color: Colors.orange, size: 24),
+          Icon(Icons.notifications_off_outlined, color: colors.accent, size: 24),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

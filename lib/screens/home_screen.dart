@@ -301,14 +301,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       key: key,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ExcludeSemantics(child: Icon(traditionInfo.lineIcon, size: 14, color: colors.textMuted)),
+        ExcludeSemantics(child: Icon(traditionInfo.lineIcon, size: 14, color: colors.textSecondary)),
         const SizedBox(width: 6),
         Flexible(
           child: Text(
             traditionInfo.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w500, letterSpacing: 0.4),
+            style: TextStyle(color: colors.textSecondary, fontSize: AppType.callout, fontWeight: FontWeight.w500, letterSpacing: 0.2),
           ),
         ),
       ],
@@ -419,12 +419,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                     opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                     child: child,
                   ),
-                  child: Text(
-                    smartPunctuation(pointing.content),
-                    key: ValueKey(pointing.id),
-                    style: AppTextStyles.heroPointingText(context),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: BalancedText(smartPunctuation(pointing.content), key: ValueKey(pointing.id), style: AppTextStyles.heroPointingText(context)),
                 ),
                 if (pointing.instruction != null) ...[
                   const SizedBox(height: AppSpacing.xl),
@@ -552,9 +547,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     final regular = layout.sizeClass != WindowSizeClass.compact;
     // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
     // actions together in the middle instead of leaving the actions at the bottom.
-    final grouped = layout.isTwoPane && size.height > size.width;
+    // The card and its actions are one group, centered in the body, so the free
+    // space sits above and below the group rather than between card and actions
+    // (the phone left about 180 pt there).
     final card = Center(
-      heightFactor: grouped ? 1.0 : null,
+      heightFactor: 1.0,
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
         constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
@@ -600,10 +597,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       );
     }
     final column = Column(
-      mainAxisAlignment: grouped ? MainAxisAlignment.center : MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (grouped) Flexible(child: card) else Expanded(child: card),
-        SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
+        Flexible(child: card),
+        // Room for the card's soft shadow before the actions, on near-square screens too.
+        const SizedBox(height: AppSpacing.lg + AppSpacing.xs),
         actions,
         if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
           const SizedBox(height: AppSpacing.sm),
@@ -650,7 +648,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             label: 'Next',
             semanticsLabel: 'Show next pointing',
             color: colors.textSecondary,
-            trailing: AppIcons.chevronDown,
+            trailing: AppIcons.chevronRight,
             onTap: _handleNext,
           ),
         ],
@@ -678,7 +676,7 @@ class _HomeContextPane extends StatelessWidget {
     final teacher = getTeacher(pointing.teacher);
     final related = getInquiriesByTradition(pointing.tradition);
     final inquiry = related.isEmpty ? null : related.first;
-    final label = TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w600, letterSpacing: 1.2);
+    final label = TextStyle(color: colors.textSecondary, fontSize: AppType.caption, fontWeight: FontWeight.w600, letterSpacing: 1.2);
     final body = TextStyle(color: colors.textSecondary, fontSize: AppType.callout, height: 1.5);
     if (compact) {
       return Text(
@@ -694,40 +692,25 @@ class _HomeContextPane extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('TRADITION', style: label),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              ExcludeSemantics(child: Icon(info.lineIcon, size: 16, color: colors.textSecondary)),
-              const SizedBox(width: AppSpacing.sm),
-              Flexible(
-                child: Text(
-                  info.name,
-                  style: TextStyle(color: colors.textPrimary, fontSize: AppType.headline),
-                ),
-              ),
-            ],
-          ),
-          if (pointing.teacher != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text('TEACHER', style: label),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              pointing.teacher!,
-              style: TextStyle(fontFamily: AppFonts.serif, color: colors.textPrimary, fontSize: AppType.title),
-            ),
-            if (teacher?.dates != null) ...[
+          // The card already names the tradition and the teacher; this pane adds what
+          // the card doesn't: who the teacher was, what the tradition is, and an
+          // inquiry to try (it no longer repeats the two names).
+          if (teacher?.bio != null) ...[
+            Text('ABOUT ${pointing.teacher!.toUpperCase()}', style: label),
+            if (teacher!.dates != null) ...[
               const SizedBox(height: 2),
               Text(
-                teacher!.dates!,
-                style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
+                teacher.dates!,
+                style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
               ),
             ],
-            if (teacher?.bio != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(teacher!.bio!, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
-            ],
+            const SizedBox(height: AppSpacing.sm),
+            Text(teacher.bio!, maxLines: 5, overflow: TextOverflow.ellipsis, style: body),
+            const SizedBox(height: AppSpacing.xl),
           ],
+          Text('ABOUT ${info.name.toUpperCase()}', style: label),
+          const SizedBox(height: AppSpacing.sm),
+          Text(info.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
           if (inquiry != null) ...[
             const SizedBox(height: AppSpacing.xl),
             Text('RELATED INQUIRY', style: label),
@@ -876,7 +859,7 @@ class _SourceCitation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final match = _resolveSource();
-    final style = TextStyle(fontSize: AppType.caption, fontStyle: FontStyle.italic, color: context.colors.textMuted);
+    final style = TextStyle(fontSize: AppType.callout, fontStyle: FontStyle.italic, color: context.colors.textSecondary);
     return _AttributionLink(
       text: source,
       style: style,
@@ -1009,6 +992,62 @@ class _InquireButton extends StatelessWidget {
         onPressed: onTap,
         child: const Text('Inquire · 1 min', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
+    );
+  }
+}
+
+/**
+ * Centered text with balanced lines, so the last line is never a lone word
+ * (a widow, such as "you." by itself) at any width.
+ */
+class BalancedText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+
+  const BalancedText(this.text, {super.key, required this.style});
+
+  /**
+   * The narrowest width that keeps [text] on as many lines as at [maxWidth]
+   * (CSS text-wrap: balance). Lines come out near-equal, so the last line is
+   * never a lone word, and a one-line quote keeps its natural width.
+   */
+  static double balancedWidth(String text, TextStyle style, double maxWidth, TextScaler scaler, TextDirection direction) {
+    int lines(double width) => (TextPainter(
+      text: TextSpan(text: text, style: style),
+      textAlign: TextAlign.center,
+      textDirection: direction,
+      textScaler: scaler,
+    )..layout(maxWidth: width)).computeLineMetrics().length;
+    final count = lines(maxWidth);
+    if (count < 2) return maxWidth;
+    var lo = maxWidth / count, hi = maxWidth;
+    for (var i = 0; i < 12; i++) {
+      final mid = (lo + hi) / 2;
+      if (lines(mid) > count) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return hi.ceilToDouble();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.maxWidth.isFinite) return Text(text, style: style, textAlign: TextAlign.center);
+        // Measure with the style Text will actually paint (DefaultTextStyle merged in).
+        final effective = DefaultTextStyle.of(context).style.merge(style);
+        final width = balancedWidth(text, effective, constraints.maxWidth, MediaQuery.textScalerOf(context), Directionality.of(context));
+        return Center(
+          widthFactor: 1,
+          child: SizedBox(
+            width: width,
+            child: Text(text, style: style, textAlign: TextAlign.center),
+          ),
+        );
+      },
     );
   }
 }

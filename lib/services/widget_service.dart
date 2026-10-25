@@ -187,10 +187,6 @@ class WidgetService {
     }
   }
 
-  List<String> _readFavorites() {
-    final stored = _prefs.getString(StorageKeys.favoritePointings);
-    if (stored == null) return <String>[];
-    final decoded = jsonDecode(stored);
-    return decoded is List ? decoded.whereType<String>().toList() : <String>[];
-  }
+  /** One reader for favorites, shared with [StorageService.favorites], so both tolerate the same bad shapes. */
+  List<String> _readFavorites() => decodeFavoriteIds(_prefs.get(StorageKeys.favoritePointings));
 }

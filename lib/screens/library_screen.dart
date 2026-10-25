@@ -40,6 +40,7 @@ import 'library/lineage_teachings_screen.dart';
 import 'library/mood_teachings_screen.dart';
 import 'library/topic_teachings_screen.dart';
 import '../utils/haptics.dart';
+import '../utils/typography.dart';
 import '../data/inquiries.dart';
 import '../data/inquiry_sessions.dart';
 import '../theme/app_icons.dart';
@@ -141,10 +142,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          'BROWSE BY',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                        ),
+                        Text('BROWSE BY', style: AppTextStyles.sectionHeader(context)),
                         const SizedBox(width: 12),
                         _BrowseModeDropdown(currentMode: _browseMode, onChanged: (mode) => setState(() => _browseMode = mode)),
                         const SizedBox(width: 8),
@@ -187,7 +185,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               featured: getFeaturedArticles(limit: 3),
               onOpen: (article) => _openArticle(context, article),
             )
-          : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
+          : ArticleReaderScreen(
+              key: ValueKey('library-detail-$selected'),
+              articleId: selected,
+              onClose: () => setState(() => _selectedArticleId = null),
+            ),
     );
   }
 
@@ -693,7 +695,8 @@ class _BrowseCard extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(fontSize: 13, color: colors.textSecondary),
-                    maxLines: 1,
+                    // Wrap rather than clip: the count column takes width from a narrow list column.
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -728,7 +731,8 @@ const double _featuredGap = 12;
 double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
 /** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
-int featuredColumns(double width, int count) => ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
+int featuredColumns(double width, int count) =>
+    ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
 
 class _FeaturedHeader extends StatelessWidget {
   final PointerColors colors;
@@ -737,13 +741,7 @@ class _FeaturedHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-    child: Semantics(
-      header: true,
-      child: Text(
-        'FEATURED',
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-      ),
-    ),
+    child: Semantics(header: true, child: Text('FEATURED', style: AppTextStyles.sectionHeader(context))),
   );
 }
 
