@@ -161,7 +161,7 @@ class InquiryPhaseContent extends StatelessWidget {
 
   /** Names the breathing orb, so it reads as a place to rest attention rather than a control (panel item 11). */
   Widget _orbCaption(BuildContext context) =>
-      Text('Breathe with the circle and let the question rest', style: AppTextStyles.bodyText(context), textAlign: TextAlign.center);
+      Text('Breathe with the circle.\nLet the question rest.', style: AppTextStyles.bodyText(context), textAlign: TextAlign.center);
 
   Widget _buildFollowUpPhase(BuildContext context, PointerColors colors) {
     if (inquiry.followUp == null) {
