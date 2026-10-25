@@ -150,7 +150,9 @@ class _MainShellState extends ConsumerState<MainShell> {
         child: navigationType == NavigationType.rail
             ? _buildWithRail(context, content, currentIndex)
             : Scaffold(
-                body: Stack(children: [content]),
+                // The bar floats over the tabs (extendBody). Each tab reads padding.bottom as the space its list ends
+                // above; the full bar height keeps that stable while the bar minimizes.
+                body: Stack(children: [_withBarInset(context, content)]),
                 extendBody: true,
                 bottomNavigationBar: _BottomNavBar(
                   currentIndex: currentIndex,
@@ -159,6 +161,15 @@ class _MainShellState extends ConsumerState<MainShell> {
                 ),
               ),
       ),
+    );
+  }
+
+  Widget _withBarInset(BuildContext context, Widget content) {
+    final media = MediaQuery.of(context);
+    final inset = LiquidGlass.barContentInset(media.padding.bottom);
+    return MediaQuery(
+      data: media.copyWith(padding: media.padding.copyWith(bottom: inset), viewPadding: media.viewPadding.copyWith(bottom: inset)),
+      child: content,
     );
   }
 
@@ -260,11 +271,11 @@ class _BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final full = math.min(media.size.width - 2 * LiquidGlass.edgeMargin, LiquidGlass.barMaxWidth);
-    final bottom = math.max(media.padding.bottom + LiquidGlass.safeGap, LiquidGlass.edgeMargin);
+    final bottom = LiquidGlass.barBottomOffset(media.padding.bottom);
     final reduce = Motion.reduce(context);
     return Padding(
       key: const ValueKey('liquid-tab-bar'),
-      padding: EdgeInsets.fromLTRB(LiquidGlass.edgeMargin, AppSpacing.sm, LiquidGlass.edgeMargin, bottom),
+      padding: EdgeInsets.fromLTRB(LiquidGlass.edgeMargin, LiquidGlass.barTopGap, LiquidGlass.edgeMargin, bottom),
       child: Center(
         heightFactor: 1,
         child: AnimatedContainer(

@@ -83,7 +83,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final featured = getFeaturedArticles(limit: 3);
 
     final hasActiveFilter = _browseMode != LibraryBrowseMode.topics || _contentFilter != ContentFilter.all;
@@ -154,7 +153,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
 
               // Dynamic browse list based on mode
-              _buildBrowseList(colors, bottomPadding, _contentFilter),
+              _buildBrowseList(colors, _contentFilter),
             ],
           ),
         ),
@@ -205,16 +204,16 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /** Build dynamic browse list based on current mode */
-  Widget _buildBrowseList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+  Widget _buildBrowseList(PointerColors colors, ContentFilter contentFilter) {
     switch (_browseMode) {
       case LibraryBrowseMode.topics:
-        return _buildTopicsList(colors, bottomPadding, contentFilter);
+        return _buildTopicsList(colors, contentFilter);
       case LibraryBrowseMode.teachers:
-        return _buildTeachersList(colors, bottomPadding, contentFilter);
+        return _buildTeachersList(colors, contentFilter);
       case LibraryBrowseMode.lineages:
-        return _buildLineagesList(colors, bottomPadding, contentFilter);
+        return _buildLineagesList(colors, contentFilter);
       case LibraryBrowseMode.moods:
-        return _buildMoodsList(colors, bottomPadding, contentFilter);
+        return _buildMoodsList(colors, contentFilter);
     }
   }
 
@@ -224,7 +223,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
    * When filtering by quotes, uses [TeachingRepository.topicCounts]; by articles,
    * uses [getArticleTopicCounts]; for all, merges both. Sorted by count descending.
    */
-  Widget _buildTopicsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+  Widget _buildTopicsList(PointerColors colors, ContentFilter contentFilter) {
     // Always show TopicTags with merged counts based on filter
     final Map<String, int> topicCounts;
 
@@ -245,7 +244,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final sortedTopics = topicCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return SliverPadding(
-      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: scrollEndInset(context)),
       sliver: SliverToBoxAdapter(
         child: GroupedSection(
           separatorIndent: 74,
@@ -285,7 +284,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /** Builds a sliver list of teachers with counts based on the active [contentFilter]. */
-  Widget _buildTeachersList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+  Widget _buildTeachersList(PointerColors colors, ContentFilter contentFilter) {
     // Get teachers based on content filter
     final Map<String, int> teacherCounts;
     if (contentFilter == ContentFilter.articles) {
@@ -317,7 +316,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
 
     return SliverPadding(
-      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: scrollEndInset(context)),
       sliver: SliverToBoxAdapter(
         child: GroupedSection(
           separatorIndent: 74,
@@ -351,7 +350,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /** Builds a sliver list of tradition lineages with counts based on the active [contentFilter]. */
-  Widget _buildLineagesList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+  Widget _buildLineagesList(PointerColors colors, ContentFilter contentFilter) {
     // Build list of lineages with their counts based on filter
     final lineageData = <({Tradition tradition, TraditionInfo info, int count})>[];
 
@@ -377,7 +376,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     }
 
     return SliverPadding(
-      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: scrollEndInset(context)),
       sliver: SliverToBoxAdapter(
         child: GroupedSection(
           separatorIndent: 74,
@@ -405,7 +404,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 
   /** Builds a sliver list of mood tags with counts based on the active [contentFilter]. */
-  Widget _buildMoodsList(PointerColors colors, double bottomPadding, ContentFilter contentFilter) {
+  Widget _buildMoodsList(PointerColors colors, ContentFilter contentFilter) {
     // Build mood counts based on filter
     final Map<String, int> moodCounts;
 
@@ -432,7 +431,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final sortedMoods = moodCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return SliverPadding(
-      padding: EdgeInsets.only(left: 24, right: 24, bottom: 120 + bottomPadding),
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: scrollEndInset(context)),
       sliver: SliverToBoxAdapter(
         child: GroupedSection(
           separatorIndent: 74,
