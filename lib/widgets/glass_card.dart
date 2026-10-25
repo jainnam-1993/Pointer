@@ -126,9 +126,12 @@ class GlassCard extends ConsumerWidget {
     var glassGradient = glass.fillAt(level);
     final borderGradient = borderColor == null ? glass.rim : glass.rimWith(borderColor!);
 
+    // A scrolling card puts its padding inside the scroll view, so the scrollbar
+    // runs in the card's margin beside the text, not over it.
+    final scrolls = maxHeight != null && enableScrolling;
     Widget innerContent = child;
-    if (maxHeight != null && enableScrolling) {
-      innerContent = _ScrollingContent(child: child);
+    if (scrolls) {
+      innerContent = _ScrollingContent(padding: padding, child: child);
     }
 
     Widget constrainedContent = innerContent;
@@ -157,7 +160,7 @@ class GlassCard extends ConsumerWidget {
     // to keep every child exactly where it was.
     final rimWidth = glass.rimWidth;
     final material = Container(
-      padding: padding,
+      padding: scrolls ? EdgeInsets.zero : padding,
       decoration: BoxDecoration(gradient: glassGradient, borderRadius: radius),
       // Top-edge highlight: a soft sheen across the upper third.
       foregroundDecoration: BoxDecoration(borderRadius: radius, gradient: glass.sheen),
@@ -448,13 +451,15 @@ class GradientBoxBorder extends BoxBorder {
 }
 
 /**
- * Content taller than the card's [GlassCard.maxHeight]: it scrolls, and the
- * scrollbar stays visible whenever there is more to read, so a long quote
- * never looks cut off. With nothing to scroll the scrollbar draws nothing.
+ * Content taller than the card's [GlassCard.maxHeight] scrolls. The cue that
+ * there is more is a soft fade at the bottom while text sits below; the
+ * scrollbar is the platform's thin one, low contrast, in the card's margin,
+ * showing while scrolling and fading when idle.
  */
 class _ScrollingContent extends StatefulWidget {
+  final EdgeInsetsGeometry padding;
   final Widget child;
-  const _ScrollingContent({required this.child});
+  const _ScrollingContent({required this.padding, required this.child});
 
   @override
   State<_ScrollingContent> createState() => _ScrollingContentState();
@@ -462,6 +467,17 @@ class _ScrollingContent extends StatefulWidget {
 
 class _ScrollingContentState extends State<_ScrollingContent> {
   final _controller = ScrollController();
+
+  /** True while more content sits below the visible part. */
+  bool _moreBelow = false;
+
+  static const _fadeHeight = 40.0;
+
+  bool _onMetrics(ScrollMetrics m) {
+    final more = m.extentAfter > 1;
+    if (more != _moreBelow) setState(() => _moreBelow = more);
+    return false;
+  }
 
   @override
   void dispose() {
@@ -471,11 +487,39 @@ class _ScrollingContentState extends State<_ScrollingContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      key: const ValueKey('glass-card-scrollbar'),
-      controller: _controller,
-      thumbVisibility: true,
-      child: SingleChildScrollView(controller: _controller, physics: const BouncingScrollPhysics(), child: widget.child),
+    final muted = context.colors.textMuted;
+    Widget scroll = SingleChildScrollView(controller: _controller, padding: widget.padding, physics: const BouncingScrollPhysics(), child: widget.child);
+    if (_moreBelow) {
+      scroll = ShaderMask(
+        key: const ValueKey('glass-card-more-fade'),
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (bounds) {
+          final stop = bounds.height <= 0 ? 1.0 : (1 - _fadeHeight / bounds.height).clamp(0.0, 1.0);
+          return LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [Color(0xFF000000), Color(0xFF000000), Color(0x00000000)],
+            stops: [0, stop, 1],
+          ).createShader(bounds);
+        },
+        child: scroll,
+      );
+    }
+    return NotificationListener<ScrollMetricsNotification>(
+      onNotification: (n) => _onMetrics(n.metrics),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (n) => _onMetrics(n.metrics),
+        child: ScrollbarTheme(
+          data: ScrollbarTheme.of(context).copyWith(thumbColor: WidgetStatePropertyAll(muted.withValues(alpha: 0.35))),
+          child: Scrollbar(
+            key: const ValueKey('glass-card-scrollbar'),
+            controller: _controller,
+            // Off when idle: it appears while scrolling, then fades.
+            thumbVisibility: false,
+            child: scroll,
+          ),
+        ),
+      ),
     );
   }
 }

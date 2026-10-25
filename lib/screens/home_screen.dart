@@ -545,7 +545,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     required double navBarSpace,
   }) {
     final layout = WindowLayout.of(context);
-    final bottomSpace = layout.navigationType == NavigationType.rail ? AppSpacing.xl : navBarSpace;
+    // The shell's bottom bar already pads the body (Scaffold.extendBody adds its
+    // height to the bottom inset), so only a small gap is needed here; the old
+    // navBarSpace counted the bar twice and left an empty band above it.
+    final bottomSpace = layout.navigationType == NavigationType.rail ? AppSpacing.xl : AppSpacing.lg;
     final regular = layout.sizeClass != WindowSizeClass.compact;
     // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
     // actions together in the middle instead of leaving the actions at the bottom.
