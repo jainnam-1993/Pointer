@@ -43,10 +43,15 @@ void main() {
     }
   });
 
-  testWidgets('dark theme: the capsule has a light hairline', (tester) async {
+  testWidgets('dark theme: the capsule is translucent frosted glass with a light rim', (tester) async {
     await pumpBar(tester, AppTheme.dark);
-    final bar = tester.widgetList<DecoratedBox>(find.byType(DecoratedBox)).map((d) => d.decoration).whereType<BoxDecoration>().first;
-    expect(bar.color, LensTabStyle.capsuleDark);
+    expect(find.descendant(of: find.byType(LensTabBar), matching: find.byType(BackdropFilter)), findsWidgets);
+    final bar = tester
+        .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+        .map((d) => d.decoration)
+        .whereType<BoxDecoration>()
+        .firstWhere((d) => d.color == LensTabStyle.capsuleDarkGlass);
+    expect(bar.color!.a, lessThan(1.0));
     expect(bar.border, isNotNull);
   });
 
@@ -99,16 +104,32 @@ void main() {
     }
   }
 
-  test('inactive labels keep 4.5:1 on the resting bar in light and dark', () {
+  test('bar, pill and labels meet contrast in light and dark (store panel 1.3.0, items 1-3)', () {
     double ratio(Color a, Color b) {
       final x = a.computeLuminance(), y = b.computeLuminance();
       return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
     }
 
-    final light = LensBarLook.of(dark: false, highContrast: false);
-    expect(ratio(light.inactive, Color.alphaBlend(light.capsule, PointerColors.light.background)), greaterThanOrEqualTo(4.5));
-    final dark = LensBarLook.of(dark: true, highContrast: false);
-    expect(ratio(dark.inactive, dark.capsule), greaterThanOrEqualTo(4.5));
+    // The dark bar is translucent glass, so check it over the black field and over a lighter patch of the ambient sky.
+    final cases = {
+      'light': (LensBarLook.of(dark: false, highContrast: false), [PointerColors.light.background]),
+      'dark': (LensBarLook.of(dark: true, highContrast: false), [PointerColors.dark.background, const Color(0xFF2A2040)]),
+    };
+    for (final MapEntry(key: name, value: (look, fields)) in cases.entries) {
+      expect(look.capsule.a, lessThan(1.0), reason: '$name bar is translucent glass, not an opaque slab');
+      expect(look.frosted, isTrue, reason: '$name bar blurs what is behind it');
+      for (final field in fields) {
+        final bar = Color.alphaBlend(look.capsule, field);
+        final pillBottom = Color.alphaBlend(look.pill, bar);
+        final pillTop = Color.alphaBlend(Color.alphaBlend(look.pillHighlight, look.pill), bar);
+        final rim = Color.alphaBlend(look.pillRim, bar);
+        expect(ratio(rim, bar), greaterThanOrEqualTo(3), reason: '$name selected pill edge against the bar (non-text 3:1)');
+        expect(ratio(look.inactive, bar), greaterThanOrEqualTo(4.5), reason: '$name inactive label on the bar');
+        for (final under in [pillTop, pillBottom]) {
+          expect(ratio(look.active, under), greaterThanOrEqualTo(4.5), reason: '$name selected label on the pill');
+        }
+      }
+    }
   });
 
   group('lens state machine (native iOS 27 reference)', () {
@@ -392,6 +413,7 @@ void main() {
             for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate()) (e.widget as Text).style!.fontSize,
           };
           expect(sizes, hasLength(1), reason: 'label sizes $sizes');
+          expect(sizes.single!, greaterThanOrEqualTo(AppType.caption), reason: 'labels are at least caption size');
           final pillSize = tester.getRect(find.byKey(const ValueKey('tab-pill'))).size;
           for (var i = 0; i < shell.length; i++) {
             final cell = tester.getRect(find.bySemanticsLabel(RegExp('^${shell[i].$2} tab')));
