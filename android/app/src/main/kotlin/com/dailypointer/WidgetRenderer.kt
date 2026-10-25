@@ -111,7 +111,16 @@ object WidgetRenderer {
         // The small layout has no controls; only sizes with an action bar wire Save, Previous and Next.
         if (size.showActions) {
             val saved = state.isFavorite(pointing.id)
-            views.setImageViewResource(R.id.widget_save, if (saved) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
+            val tonal = look.surface == WidgetSurface.TONAL
+            views.setImageViewResource(
+                R.id.widget_save,
+                when {
+                    tonal && saved -> R.drawable.ic_heart_filled_tonal
+                    tonal -> R.drawable.ic_heart_outline_tonal
+                    saved -> R.drawable.ic_heart_filled
+                    else -> R.drawable.ic_heart_outline
+                },
+            )
             views.setContentDescription(R.id.widget_save, context.getString(if (saved) R.string.widget_saved else R.string.widget_save))
             views.setOnClickPendingIntent(R.id.widget_save, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_SAVE, pointing.id))
             views.setOnClickPendingIntent(R.id.widget_prev, actionIntent(context, widgetId, WidgetActionReceiver.ACTION_PREV, pointing.id))
@@ -145,7 +154,11 @@ object WidgetRenderer {
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_text_muted)
                 tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_accent)
                 if (size.showActions) {
-                    for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) tint(context, views, id, "setImageTintList", R.color.widget_accent)
+                    // Tonal controls: secondary-tone fills with glyph drawables whose colour is a
+                    // resource (widget_on_control), so the launcher resolves it; no runtime tint.
+                    views.setImageViewResource(R.id.widget_prev, R.drawable.ic_chevron_left_tonal)
+                    views.setImageViewResource(R.id.widget_next, R.drawable.ic_chevron_right_tonal)
+                    views.setInt(R.id.widget_save, "setBackgroundResource", R.drawable.widget_save_tonal)
                     views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_tonal)
                 }
             }

@@ -7,6 +7,8 @@
     <color name="widget_text">#1C1C1E</color>
     <color name="widget_text_muted">#5A5560</color>
     <color name="widget_accent">#6D28D9</color>
+    <color name="widget_control">#625B71</color>
+    <color name="widget_on_control">#FFFFFF</color>
     <color name="widget_glass_tint">#FF1C1B1F</color>
     <!-- Text halo in the glass base tone: holds contrast over bright patches behind the glass. -->
     <color name="widget_text_halo">#B31C1B1F</color>
