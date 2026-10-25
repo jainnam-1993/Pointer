@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
 import 'animated_gradient.dart';
 import 'shared_ambient.dart';
 
@@ -43,9 +44,15 @@ class PointerScaffold extends StatelessWidget {
       body: Stack(
         children: [
           const Positioned.fill(child: RouteAmbient()),
-          if (useSafeArea) SafeArea(child: body) else body,
+          // The bottom stays open so lists scroll under the floating tab bar and the home indicator; each list ends
+          // [scrollEndInset] above the bottom instead.
+          if (useSafeArea) SafeArea(bottom: false, child: body) else body,
         ],
       ),
     );
   }
 }
+
+/// Bottom padding for the end of a [PointerScaffold] list: the bottom inset (the floating tab bar inside the shell,
+/// the safe area elsewhere, nothing beside the rail) plus one spacing step, so the last item scrolls fully clear.
+double scrollEndInset(BuildContext context) => MediaQuery.paddingOf(context).bottom + AppSpacing.lg;

@@ -39,7 +39,6 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
   @override
   Widget build(BuildContext context) {
     final isBook = WindowLayout.of(context).posture == Posture.book;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final traditionEntries = traditions.entries.toList();
     final colors = context.colors;
     final preferredTraditions = ref.watch(preferredTraditionsProvider);
@@ -88,7 +87,7 @@ class _LineagesScreenState extends ConsumerState<LineagesScreen> {
             // Content
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: AppSpacing.xxl + AppSpacing.sm + bottomPadding),
+                padding: EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: scrollEndInset(context)),
                 children: [
                   Text('Manage Lineages', style: Theme.of(context).textTheme.displayLarge),
                   const SizedBox(height: 8),
@@ -342,9 +341,9 @@ class _TraditionDetailSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final textColor = context.colors.textPrimary;
     final textColorSecondary = context.colors.textSecondary;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),

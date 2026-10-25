@@ -18,7 +18,7 @@ class AllInquiriesScreen extends StatelessWidget {
       slivers: [
         SliverAppBar(pinned: true, backgroundColor: Colors.transparent, title: const Text('All Inquiries')),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 48),
+          padding: EdgeInsets.fromLTRB(24, 8, 24, scrollEndInset(context)),
           sliver: SliverToBoxAdapter(
             child: GroupedSection(
               separatorIndent: 24,
