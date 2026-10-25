@@ -40,6 +40,7 @@ import 'library/lineage_teachings_screen.dart';
 import 'library/mood_teachings_screen.dart';
 import 'library/topic_teachings_screen.dart';
 import '../utils/haptics.dart';
+import '../utils/typography.dart';
 import '../data/inquiries.dart';
 import '../data/inquiry_sessions.dart';
 import '../theme/app_icons.dart';

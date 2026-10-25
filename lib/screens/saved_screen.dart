@@ -129,54 +129,52 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: GlassCard(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 8, 12),
-                    // Sized to its content: the quote and attribution set the height, and the
-                    // actions sit beside the last line instead of on a row of their own.
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    padding: const EdgeInsets.fromLTRB(20, 20, 8, 4),
+                    // Sized to its content: the quote spans the card, and the actions share the
+                    // attribution's row, so a short quote leaves no empty band.
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // The Today pointing style (Newsreader), one step down for a list card.
-                                Text(
-                                  pointing.content,
-                                  style: AppTextStyles.pointingText(context).copyWith(fontSize: AppType.title),
-                                  maxLines: 6,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                if (pointing.teacher != null) ...[
-                                  const SizedBox(height: 8),
-                                  Text('— ${pointing.teacher}', style: AppTextStyles.teacherText(context)),
-                                ],
-                              ],
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          // The Today pointing style (Newsreader), one step down for a list card.
+                          child: Text(
+                            smartPunctuation(pointing.content),
+                            style: AppTextStyles.pointingText(context).copyWith(fontSize: AppType.title),
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: pointing.teacher == null
+                                  ? const SizedBox.shrink()
+                                  : Text('— ${pointing.teacher}', style: AppTextStyles.teacherText(context).copyWith(color: colors.textSecondary)),
                             ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Haptics.light();
-                            showSharePreview(context, pointing);
-                          },
-                          child: SizedBox(
-                            width: 44,
-                            height: 44,
-                            child: Center(child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted)),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Haptics.light();
-                            ref.read(favoritesProvider.notifier).toggle(pointingId);
-                          },
-                          child: SizedBox(
-                            width: 44,
-                            height: 44,
-                            child: Center(child: Icon(Icons.favorite, size: 22, color: colors.accent)),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                Haptics.light();
+                                ref.read(favoritesProvider.notifier).toggle(pointingId);
+                              },
+                              child: SizedBox(
+                                width: 44,
+                                height: 44,
+                                child: Center(child: Icon(Icons.favorite, size: 22, color: colors.accent)),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Haptics.light();
+                                showSharePreview(context, pointing);
+                              },
+                              child: SizedBox(
+                                width: 44,
+                                height: 44,
+                                child: Center(child: Icon(AppIcons.share, size: 22, color: colors.textSecondary)),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

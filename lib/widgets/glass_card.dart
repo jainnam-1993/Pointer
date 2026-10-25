@@ -492,12 +492,7 @@ class _ScrollingContentState extends State<_ScrollingContent> {
   @override
   Widget build(BuildContext context) {
     final muted = context.colors.textMuted;
-    Widget scroll = SingleChildScrollView(
-      controller: _controller,
-      padding: widget.padding,
-      physics: const BouncingScrollPhysics(),
-      child: widget.child,
-    );
+    Widget scroll = SingleChildScrollView(controller: _controller, padding: widget.padding, physics: const BouncingScrollPhysics(), child: widget.child);
     if (_moreBelow) {
       scroll = ShaderMask(
         key: const ValueKey('glass-card-more-fade'),

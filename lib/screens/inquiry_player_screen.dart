@@ -392,7 +392,7 @@ class _PhaseIndicatorDot extends StatelessWidget {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive || isPast ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4) : colors.glassBorder,
+        color: isActive || isPast ? colors.accent.withValues(alpha: isActive ? 0.8 : 0.4) : colors.textMuted.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -420,8 +420,8 @@ class _PhaseTimeBar extends StatelessWidget {
     final breathingScale = 1.0 + (0.015 * (1 - (progress * 2 - 1).abs()));
 
     // Theme-consistent colors matching liquid glass style
-    final ringColor = isDark ? colors.accent.withValues(alpha: 0.5) : colors.primary.withValues(alpha: 0.4);
-    final bgColor = isDark ? colors.glassBorder.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.06);
+    final ringColor = colors.accent.withValues(alpha: isDark ? 0.8 : 0.9);
+    final bgColor = colors.textMuted.withValues(alpha: 0.3);
 
     return Semantics(
       label: 'Time in this phase',
@@ -432,8 +432,8 @@ class _PhaseTimeBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(2),
           child: SizedBox(
             width: 120,
-            height: 3,
-            child: LinearProgressIndicator(value: progress, color: ringColor, backgroundColor: bgColor, minHeight: 3),
+            height: 4,
+            child: LinearProgressIndicator(value: progress, color: ringColor, backgroundColor: bgColor, minHeight: 4),
           ),
         ),
       ),
