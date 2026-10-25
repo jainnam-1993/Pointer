@@ -84,6 +84,25 @@ class WidgetLayoutTest {
         assertEquals(emptyList<String>(), problems)
     }
 
+    /**
+     * The quote is sized to its card: autosize between a readable floor and a large ceiling, so a
+     * short pointing fills the card (about the Google bar's text height or more) and a long one
+     * steps down instead of clipping. Guards against the quote shrinking back to a third of the card.
+     */
+    @Test
+    fun quoteAutosizesToItsCard() {
+        val floors = mapOf("pointer_widget_small.xml" to 26, "pointer_widget.xml" to 30, "pointer_widget_large.xml" to 36)
+        for ((name, ceiling) in floors) {
+            val t = File("src/main/res/layout/$name").readText().replace("\n", " ")
+            val q = Regex("""widget_content"[^>]*""").find(t)!!.value
+            assertTrue("$name autosize", "android:autoSizeTextType=\"uniform\"" in q)
+            val max = Regex("""autoSizeMaxTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
+            val min = Regex("""autoSizeMinTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
+            assertTrue("$name ceiling $max", max >= ceiling)
+            assertTrue("$name floor $min", min >= 11)
+        }
+    }
+
     @Test
     fun widgetLayoutsUseOnlyRemoteViewsClasses() {
         val layouts = widgetLayouts()

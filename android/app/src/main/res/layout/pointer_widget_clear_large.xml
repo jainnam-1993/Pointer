@@ -75,7 +75,7 @@
             android:gravity="top|start"
             android:maxLines="12"
             android:autoSizeMinTextSize="14sp"
-            android:autoSizeMaxTextSize="24sp"
+            android:autoSizeMaxTextSize="36sp"
             android:lineSpacingMultiplier="1.25" />
     </LinearLayout>
 
