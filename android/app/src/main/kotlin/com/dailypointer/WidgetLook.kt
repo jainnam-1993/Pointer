@@ -50,6 +50,9 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "app-72" to WidgetLook(WidgetSurface.APP, 0.72, WidgetScrim.NONE),
             "app-82" to WidgetLook(WidgetSurface.APP, 0.82, WidgetScrim.NONE),
             "app-88" to WidgetLook(WidgetSurface.APP, 0.88, WidgetScrim.NONE),
+            // The user's pick (2026-10-24, ref.png): the dark translucent glass from the 1e74d29 sweep
+            // (foliage drew 0.68 to 0.77), no scrim, as one fixed alpha.
+            "pick" to WidgetLook(WidgetSurface.GLASS, 0.72, WidgetScrim.NONE),
             "app-90" to WidgetLook(WidgetSurface.APP, 0.90, WidgetScrim.NONE),
         )
     }

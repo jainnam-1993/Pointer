@@ -100,7 +100,7 @@ object WidgetRenderer {
         }
         views.setTextViewText(R.id.widget_content, pointing.content)
         views.setInt(R.id.widget_content, "setMaxLines", size.contentLines)
-        if (look.surface == WidgetSurface.APP) {
+        if (look.surface == WidgetSurface.APP || look.surface == WidgetSurface.GLASS) {
             // Brand serif: draw the quote ourselves (launchers ignore res/font in RemoteViews).
             val maxSp = when (size) { WidgetSize.COMPACT -> 26f; WidgetSize.MEDIUM -> 30f; WidgetSize.LARGE -> 36f }
             val bmp = QuoteBitmap.render(context, pointing.content, QuoteBitmap.boxFor(options, size), maxSp = maxSp)
@@ -108,6 +108,8 @@ object WidgetRenderer {
             views.setContentDescription(R.id.widget_quote_img, pointing.content)
             views.setViewVisibility(R.id.widget_quote_img, View.VISIBLE)
             views.setViewVisibility(R.id.widget_content, View.GONE)
+            // Glass is white ink in both modes; the XML tint (app ink) is for the app look.
+            if (look.surface == WidgetSurface.GLASS) views.setInt(R.id.widget_quote_img, "setColorFilter", GlassRule.INK)
         } else {
             views.setViewVisibility(R.id.widget_quote_img, View.GONE)
             views.setViewVisibility(R.id.widget_content, View.VISIBLE)
@@ -152,7 +154,7 @@ object WidgetRenderer {
             WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
                 views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
-                val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
+                val secondary = (0xE6 shl 24) or (GlassRule.INK and 0xFFFFFF)
                 views.setTextColor(R.id.widget_content, GlassRule.INK)
                 views.setTextColor(R.id.widget_teacher, secondary)
                 views.setTextColor(R.id.widget_tradition, secondary)
