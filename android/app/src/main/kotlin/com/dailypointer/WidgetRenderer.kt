@@ -154,7 +154,7 @@ object WidgetRenderer {
             WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
                 views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
-                val secondary = (0xE6 shl 24) or (GlassRule.INK and 0xFFFFFF)
+                val secondary = (0xD9 shl 24) or (GlassRule.INK and 0xFFFFFF)
                 views.setTextColor(R.id.widget_content, GlassRule.INK)
                 views.setTextColor(R.id.widget_teacher, secondary)
                 views.setTextColor(R.id.widget_tradition, secondary)
