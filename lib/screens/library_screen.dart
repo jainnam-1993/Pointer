@@ -188,7 +188,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               featured: getFeaturedArticles(limit: kFeaturedOverviewCount),
               onOpen: (article) => _openArticle(context, article),
             )
-          : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
+          : ArticleReaderScreen(
+              key: ValueKey('library-detail-$selected'),
+              articleId: selected,
+              onClose: () => setState(() => _selectedArticleId = null),
+            ),
     );
   }
 
@@ -694,7 +698,7 @@ class _BrowseCard extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(fontSize: 13, color: colors.textSecondary),
-                    maxLines: 1,
+                    maxLines: listSubtitleMaxLines(context),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -820,16 +824,21 @@ class _FeaturedOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.only(top: 20, bottom: 48),
-        children: [
-          _FeaturedHeader(colors: colors),
-          _FeaturedGrid(featured: featured, onOpen: onOpen),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-            child: Text(
-              'Or choose a reading from the list.',
-              style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+      child: CustomScrollView(
+        slivers: [
+          const SliverToBoxAdapter(child: SizedBox(height: 20)),
+          SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
+          SliverToBoxAdapter(
+            child: _FeaturedGrid(featured: featured, onOpen: onOpen),
+          ),
+          // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyStateWidget(
+              key: const ValueKey('library-detail-empty'),
+              icon: AppIcons.library,
+              title: 'Choose a reading',
+              subtitle: 'Pick a teaching or article from the list, and it opens here.',
             ),
           ),
         ],

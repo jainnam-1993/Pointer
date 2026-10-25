@@ -207,7 +207,7 @@ const double kTallWindowAspect = 1.15;
 const double kListDetailMinWidth = 720;
 
 /** Share of the window height the pointing's area fills in a tablet hero card ([WindowLayout.isTabletCanvas]). */
-const double kTabletHeroBodyHeightShare = 0.26;
+const double kTabletHeroBodyHeightShare = 0.2;
 
 /**
  * The hero card's content: [header] on top, then [body]. On a tablet canvas
@@ -325,6 +325,17 @@ class SliverTileGrid extends StatelessWidget {
  */
 const double kHeroReadingMeasureWidth = 760;
 
+/**
+ * Lines a list row's subtitle may take. Compact windows keep one line; beside
+ * a detail pane (a 360 dp list on a 10-inch tablet) the count and chevron
+ * leave too little room, so the subtitle wraps to a second line instead of
+ * truncating.
+ */
+int listSubtitleMaxLines(BuildContext context) => WindowLayout.of(context).sizeClass == WindowSizeClass.compact ? 1 : 2;
+
+/** Inner side padding of the hero card on regular windows; the stacked context lines up with it. */
+const double kHeroCardInset = 28;
+
 /** Gap between the stacked hero group (card and actions) and the context beneath it. */
 const double kHeroContextGap = 56;
 
@@ -353,7 +364,11 @@ class HeroStack extends StatelessWidget {
             // Loose: the card takes the height it needs, and its quote scrolls past what the window has.
             Flexible(child: hero),
             const SizedBox(height: kHeroContextGap),
-            below,
+            // Full card width, inset like the card's content: the context starts on the card's left text edge.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kHeroCardInset),
+              child: SizedBox(width: double.infinity, child: below),
+            ),
           ],
         ),
       ),
