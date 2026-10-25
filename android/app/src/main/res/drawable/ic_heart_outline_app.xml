@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Line icon in the app's Phosphor Light style (1.5 stroke on a 24 grid), in widget_app_accent. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="@color/widget_app_accent" android:strokeWidth="1.5" android:strokeLineJoin="round" android:fillColor="#00000000" android:pathData="M12,20.25C12,20.25 2.75,15 2.75,8.625A4.875,4.875 0,0 1,12,6.75A4.875,4.875 0,0 1,21.25,8.625C21.25,15 12,20.25 12,20.25Z" />
+</vector>

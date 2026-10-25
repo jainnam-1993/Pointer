@@ -115,6 +115,8 @@ object WidgetRenderer {
             views.setImageViewResource(
                 R.id.widget_save,
                 when {
+                    look.surface == WidgetSurface.APP && saved -> R.drawable.ic_heart_filled_app
+                    look.surface == WidgetSurface.APP -> R.drawable.ic_heart_outline_app
                     tonal && saved -> R.drawable.ic_heart_filled_tonal
                     tonal -> R.drawable.ic_heart_outline_tonal
                     saved -> R.drawable.ic_heart_filled
@@ -145,6 +147,19 @@ object WidgetRenderer {
                 if (size.showActions) {
                     for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", GlassRule.INK)
                     views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_on_dark)
+                }
+            }
+            WidgetSurface.APP -> {
+                views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_app_glass)
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_app_ink)
+                tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_app_ink_secondary)
+                tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_app_accent)
+                if (size.showActions) {
+                    views.setImageViewResource(R.id.widget_prev, R.drawable.ic_chevron_left_app)
+                    views.setImageViewResource(R.id.widget_next, R.drawable.ic_chevron_right_app)
+                    views.setInt(R.id.widget_save, "setBackgroundResource", R.drawable.widget_save_app)
+                    views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_app)
                 }
             }
             WidgetSurface.TONAL -> {

@@ -12,6 +12,14 @@ enum class WidgetSurface {
     /** No panel: white text with a soft legibility shadow straight on the wallpaper (iOS clear style). */
     CLEAR,
 
+    /**
+     * The app's own glass card on the home screen: sage-and-sand paper (light) or ink on black
+     * (dark) at the look's body alpha over the wallpaper, a soft sheen and the app's thin bright
+     * rim, the app's ink colours, Newsreader and Inter, and sage (dark: lavender) glass pills with
+     * line icons. No Material You neutral.
+     */
+    APP,
+
     /** Opaque Material You tonal card (system_accent2/neutral tones), dark text in light mode. */
     TONAL,
 }
@@ -35,6 +43,9 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "tonal" to WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE),
             "tonal-glass" to WidgetLook(WidgetSurface.TONAL, 0.85, WidgetScrim.NONE),
             "clear" to WidgetLook(WidgetSurface.CLEAR, 0.0, WidgetScrim.NONE),
+            "app-72" to WidgetLook(WidgetSurface.APP, 0.72, WidgetScrim.NONE),
+            "app-82" to WidgetLook(WidgetSurface.APP, 0.82, WidgetScrim.NONE),
+            "app-90" to WidgetLook(WidgetSurface.APP, 0.90, WidgetScrim.NONE),
         )
     }
 }

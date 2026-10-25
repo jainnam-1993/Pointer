@@ -59,7 +59,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:fontFamily="serif"
+            android:fontFamily="@font/newsreader"
             android:textColor="@color/widget_text"
             android:autoSizeTextType="uniform"
             android:autoSizeStepGranularity="1sp"
@@ -80,6 +80,7 @@
 
         <TextView
             android:id="@+id/widget_teacher"
+            android:fontFamily="@font/inter"
             android:background="@drawable/widget_text_scrim"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
