@@ -213,9 +213,7 @@ class NotificationSchedule {
   String get summary {
     final start = formatTime(startHour, startMinute);
     final end = formatTime(endHour, endMinute);
-    final freqLabel = frequencyMinutes < 60
-        ? 'Every $frequencyMinutes min'
-        : 'Every ${frequencyMinutes ~/ 60} hour${frequencyMinutes >= 120 ? 's' : ''}';
+    final freqLabel = frequencyMinutes < 60 ? 'Every $frequencyMinutes min' : 'Every ${frequencyMinutes ~/ 60} hour${frequencyMinutes >= 120 ? 's' : ''}';
     return '$freqLabel, $start - $end';
   }
 }
@@ -437,9 +435,7 @@ class NotificationService {
     }
     if (!_isAndroid) return;
 
-    debugPrint(
-      '[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00',
-    );
+    debugPrint('[NotificationService] Scheduling via WorkManager: freq=${schedule.frequencyMinutes}min, ${schedule.startHour}:00-${schedule.endHour}:00');
 
     await WorkManagerService.schedulePeriodicNotifications(
       frequencyMinutes: schedule.frequencyMinutes,
@@ -466,8 +462,7 @@ class NotificationService {
     }
   }
 
-  Future<void> _writeIosScheduled(Map<int, int> scheduled) =>
-      _prefs.setString(iosScheduledKey, jsonEncode(scheduled.map((k, v) => MapEntry('$k', v))));
+  Future<void> _writeIosScheduled(Map<int, int> scheduled) => _prefs.setString(iosScheduledKey, jsonEncode(scheduled.map((k, v) => MapEntry('$k', v))));
 
   /**
    * Keep the pending requests this service owns and schedule pointings for the

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/pointings.dart';
 import '../../services/share_service.dart';
 import '../../theme/app_theme.dart';
@@ -171,11 +172,7 @@ class _ShareTemplateStyle {
   /** Dark purple gradient with default badge. */
   static _ShareTemplateStyle gradient = _ShareTemplateStyle(
     decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF0F0B1A), Color(0xFF1A1025), Color(0xFF150D20)],
-      ),
+      gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F0B1A), Color(0xFF1A1025), Color(0xFF150D20)]),
     ),
     textColor: const Color(0xFFF5F0FF),
     accentColor: const Color(0xFFA78BFA),

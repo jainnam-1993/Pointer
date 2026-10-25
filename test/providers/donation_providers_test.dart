@@ -33,13 +33,7 @@ void main() {
       const original = DonationState();
       final products = [_createMockProduct('test', 1.99)];
 
-      final modified = original.copyWith(
-        isAvailable: true,
-        isLoading: false,
-        products: products,
-        error: 'Test error',
-        lastResult: DonationResult.success,
-      );
+      final modified = original.copyWith(isAvailable: true, isLoading: false, products: products, error: 'Test error', lastResult: DonationResult.success);
 
       expect(modified.isAvailable, true);
       expect(modified.isLoading, false);

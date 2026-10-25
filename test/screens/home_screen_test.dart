@@ -83,12 +83,7 @@ void main() {
     });
 
     testWidgets('shows a pointing content', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'What is aware of this moment?',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'What is aware of this moment?', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -222,12 +217,7 @@ void main() {
     });
 
     testWidgets('handles pointing without teacher', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Pointing without attribution',
-        tradition: Tradition.original,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Pointing without attribution', tradition: Tradition.original, contexts: [PointingContext.general]);
 
       await pumpHomeScreen(tester, createHomeScreen(initialPointing: testPointing));
 
@@ -408,9 +398,13 @@ void main() {
     testWidgets('buttons are accessible', (tester) async {
       await pumpHomeScreen(tester, createHomeScreen());
 
-      // Next and Take a moment are quiet text actions with 48 pt targets.
+      // Inquire is Today's one prominent button, 48 pt tall; Next stays a quiet text action.
       expect(find.byType(GlassButton), findsNothing);
-      expect(find.text('Take a moment'), findsOneWidget);
+      expect(find.text('Inquire · 1 min'), findsOneWidget);
+      expect(tester.getSize(find.byKey(const ValueKey('today-inquire'))).height, greaterThanOrEqualTo(48));
+      expect(find.bySemanticsLabel('Inquire, about one minute'), findsOneWidget);
+      expect(find.byTooltip('Settings'), findsOneWidget);
+      expect(find.byTooltip('More'), findsOneWidget);
 
       // Share icon should be tappable
       await tester.tap(find.byIcon(AppIcons.share));

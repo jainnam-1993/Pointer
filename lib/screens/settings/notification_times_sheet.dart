@@ -207,10 +207,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                               },
                               children: List.generate(60, (index) {
                                 return Center(
-                                  child: Text(
-                                    index.toString().padLeft(2, '0'),
-                                    style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20),
-                                  ),
+                                  child: Text(index.toString().padLeft(2, '0'), style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 20)),
                                 );
                               }),
                             ),
@@ -298,11 +295,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                     spacing: AppSpacing.sm,
                                     runSpacing: AppSpacing.sm,
                                     children: NotificationPreset.values.map((preset) {
-                                      return SelectableChip(
-                                        label: preset.label,
-                                        selected: _matchesPreset(preset),
-                                        onSelected: () => _applyPreset(preset),
-                                      );
+                                      return SelectableChip(label: preset.label, selected: _matchesPreset(preset), onSelected: () => _applyPreset(preset));
                                     }).toList(),
                                   ),
                                   const SizedBox(height: 24),
@@ -363,9 +356,7 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
                                     runSpacing: AppSpacing.sm,
                                     children: _frequencyOptions.map((minutes) {
                                       final short = minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h';
-                                      final spoken = minutes < 60
-                                          ? 'Every $minutes minutes'
-                                          : (minutes == 60 ? 'Every hour' : 'Every ${minutes ~/ 60} hours');
+                                      final spoken = minutes < 60 ? 'Every $minutes minutes' : (minutes == 60 ? 'Every hour' : 'Every ${minutes ~/ 60} hours');
                                       return SelectableChip(
                                         label: short,
                                         semanticLabel: spoken,

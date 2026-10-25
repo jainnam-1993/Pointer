@@ -99,9 +99,11 @@ void main() {
     testWidgets('primaryMinWidth floors a narrow flex split and caps at its share', (tester) async {
       Future<double> primaryWidth(double width) async {
         _setView(tester, Size(width, 918));
-        await tester.pumpWidget(const MaterialApp(
-          home: TwoPane(primaryFlex: 2, secondaryFlex: 3, primaryMinWidth: kListPaneMinWidth, primary: SizedBox.expand(), secondary: SizedBox.expand()),
-        ));
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: TwoPane(primaryFlex: 2, secondaryFlex: 3, primaryMinWidth: kListPaneMinWidth, primary: SizedBox.expand(), secondary: SizedBox.expand()),
+          ),
+        );
         return tester.getSize(find.byKey(const ValueKey('pane-primary'))).width;
       }
 
@@ -165,7 +167,7 @@ void main() {
           StatefulShellRoute.indexedStack(
             builder: (context, state, shell) => MainShell(navigationShell: shell),
             branches: [
-              for (final path in ['/', '/inquiry', '/library', '/settings'])
+              for (final path in ['/', '/library', '/saved'])
                 StatefulShellBranch(
                   routes: [
                     GoRoute(
@@ -189,11 +191,7 @@ void main() {
         _setView(tester, const Size(1376, 1032));
         await tester.pumpWidget(shellApp());
         await tester.pumpAndSettle();
-        for (final (digit, path) in [
-          (LogicalKeyboardKey.digit3, '/library'),
-          (LogicalKeyboardKey.digit4, '/settings'),
-          (LogicalKeyboardKey.digit1, '/'),
-        ]) {
+        for (final (digit, path) in [(LogicalKeyboardKey.digit2, '/library'), (LogicalKeyboardKey.digit3, '/saved'), (LogicalKeyboardKey.digit1, '/')]) {
           await tester.sendKeyDownEvent(modifier);
           await tester.sendKeyEvent(digit);
           await tester.sendKeyUpEvent(modifier);
@@ -203,12 +201,7 @@ void main() {
       });
     }
 
-    for (final (size, rail) in [
-      (const Size(411, 923), false),
-      (const Size(700, 900), true),
-      (const Size(841, 884), true),
-      (const Size(1024, 1366), true),
-    ]) {
+    for (final (size, rail) in [(const Size(411, 923), false), (const Size(700, 900), true), (const Size(841, 884), true), (const Size(1024, 1366), true)]) {
       testWidgets('${size.width.toInt()} wide uses ${rail ? 'the side rail' : 'the bottom bar'}', (tester) async {
         _setView(tester, size);
         await tester.pumpWidget(shellApp());
@@ -232,7 +225,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.fling(find.text('page /'), const Offset(-300, 0), 1500);
         await tester.pumpAndSettle();
-        expect(find.text(swipes ? 'page /inquiry' : 'page /'), findsOneWidget);
+        expect(find.text(swipes ? 'page /library' : 'page /'), findsOneWidget);
       });
     }
 
@@ -240,12 +233,12 @@ void main() {
       _setView(tester, const Size(411, 923));
       await tester.pumpWidget(shellApp());
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Settings tab'));
+      await tester.tap(find.bySemanticsLabel('Saved tab'));
       await tester.pumpAndSettle();
       _setView(tester, const Size(841, 884));
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('side-rail')), findsOneWidget);
-      expect(find.text('page /settings'), findsOneWidget);
+      expect(find.text('page /saved'), findsOneWidget);
     });
   });
 

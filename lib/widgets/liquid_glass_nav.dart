@@ -308,9 +308,7 @@ class _LiquidGlassNavState extends State<LiquidGlassNav> with TickerProviderStat
                               ),
                               width: 1,
                             ),
-                            boxShadow: look.pillShadow == null
-                                ? null
-                                : [BoxShadow(color: look.pillShadow!, blurRadius: 8, offset: const Offset(0, 2))],
+                            boxShadow: look.pillShadow == null ? null : [BoxShadow(color: look.pillShadow!, blurRadius: 8, offset: const Offset(0, 2))],
                           ),
                         ),
                       ),

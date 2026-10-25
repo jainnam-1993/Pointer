@@ -11,6 +11,7 @@ import 'package:test_api/src/backend/invoker.dart';
 // START: GENERATED TEST IMPORTS
 import 'app_test.dart' as app_test;
 import 'screenshot_test.dart' as screenshot_test;
+
 // END: GENERATED TEST IMPORTS
 
 Future<void> main() async {

@@ -114,10 +114,11 @@ void main() {
       expect(find.byType(InquiryPhaseContent), findsOneWidget);
     });
 
-    testWidgets('falls back to random when ID not found', (tester) async {
+    testWidgets('an unknown id shows an error, not a random inquiry', (tester) async {
       await pumpScreen(tester, createInquiryPlayerScreen(inquiryId: 'nonexistent_id'));
-      // Should still render (with a fallback inquiry)
-      expect(find.byType(InquiryPhaseContent), findsOneWidget);
+      // A random question here hid the guided sessions' broken ids (ux-simplify.md P1).
+      expect(find.byKey(const ValueKey('inquiry-missing')), findsOneWidget);
+      expect(find.byType(InquiryPhaseContent), findsNothing);
     });
   });
 
@@ -270,13 +271,7 @@ void main() {
 
   group('InquiryPhaseContent widget', () {
     testWidgets('renders setup phase', (tester) async {
-      const inquiry = Inquiry(
-        id: 'test',
-        question: 'Test question?',
-        setup: 'Setup text',
-        type: InquiryType.selfInquiry,
-        tradition: Tradition.advaita,
-      );
+      const inquiry = Inquiry(id: 'test', question: 'Test question?', setup: 'Setup text', type: InquiryType.selfInquiry, tradition: Tradition.advaita);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -315,13 +310,7 @@ void main() {
     });
 
     testWidgets('renders followUp phase with buttons', (tester) async {
-      const inquiry = Inquiry(
-        id: 'test',
-        question: 'Test question?',
-        followUp: 'Follow up text',
-        type: InquiryType.selfInquiry,
-        tradition: Tradition.advaita,
-      );
+      const inquiry = Inquiry(id: 'test', question: 'Test question?', followUp: 'Follow up text', type: InquiryType.selfInquiry, tradition: Tradition.advaita);
 
       bool anotherTapped = false;
       bool doneTapped = false;
@@ -332,12 +321,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.dark,
             home: Scaffold(
-              body: InquiryPhaseContent(
-                inquiry: inquiry,
-                phase: InquiryPhase.followUp,
-                onAnother: () => anotherTapped = true,
-                onDone: () => doneTapped = true,
-              ),
+              body: InquiryPhaseContent(inquiry: inquiry, phase: InquiryPhase.followUp, onAnother: () => anotherTapped = true, onDone: () => doneTapped = true),
             ),
           ),
         ),

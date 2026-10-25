@@ -230,10 +230,7 @@ void main() {
         expect(lens, findsOneWidget, reason: '$axis');
         final visibleLibraryIcons = tester
             .widgetList<Icon>(find.byIcon(AppIcons.libraryFilled))
-            .where(
-              (icon) =>
-                  tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0),
-            )
+            .where((icon) => tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0))
             .length;
         expect(visibleLibraryIcons, 1, reason: 'exactly one Library glyph on screen while the lens is over it ($axis)');
         await g.up();

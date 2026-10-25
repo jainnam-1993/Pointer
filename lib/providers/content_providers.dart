@@ -233,13 +233,10 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
   final Future<void> Function(String) _add;
   final Future<void> Function(String) _remove;
 
-  FavoritesNotifier({
-    required List<String> Function() load,
-    required Future<void> Function(String) add,
-    required Future<void> Function(String) remove,
-  }) : _add = add,
-       _remove = remove,
-       super(load());
+  FavoritesNotifier({required List<String> Function() load, required Future<void> Function(String) add, required Future<void> Function(String) remove})
+    : _add = add,
+      _remove = remove,
+      super(load());
 
   /** Whether the given [id] is currently in the favorites list. */
   bool isFavorite(String id) => state.contains(id);

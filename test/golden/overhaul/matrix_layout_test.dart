@@ -41,12 +41,7 @@ void main() {
     });
 
     testWidgets('home: the hero pointing steps up on regular width only', (tester) async {
-      for (final (name, size) in [
-        ('phone', AppType.display),
-        ('ipadthird', AppType.display),
-        ('ipadhalf', AppType.hero),
-        ('ipad13l', AppType.hero),
-      ]) {
+      for (final (name, size) in [('phone', AppType.display), ('ipadthird', AppType.display), ('ipadhalf', AppType.hero), ('ipad13l', AppType.hero)]) {
         await pumpAt(tester, screen('home'), device(name));
         final text = tester.widgetList<Text>(heroPointing).last;
         expect(text.style?.fontSize, size, reason: name);
@@ -192,9 +187,7 @@ void main() {
       expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
       // Scrolled to the end nothing is hidden below, so the fade goes away.
       final position = tester
-          .state<ScrollableState>(
-            find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first,
-          )
+          .state<ScrollableState>(find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first)
           .position;
       position.jumpTo(position.maxScrollExtent);
       await tester.pump();

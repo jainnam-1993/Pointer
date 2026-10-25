@@ -85,10 +85,7 @@ class TeacherSheet extends StatelessWidget {
                   Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: colors.accent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                      ),
+                      decoration: BoxDecoration(color: colors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

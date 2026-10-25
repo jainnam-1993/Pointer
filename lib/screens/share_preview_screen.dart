@@ -277,10 +277,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
                     ),
                     child: Text(
                       template.displayName,
-                      style: TextStyle(
-                        color: isSelected ? colors.primary : colors.textSecondary,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      ),
+                      style: TextStyle(color: isSelected ? colors.primary : colors.textSecondary, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
                     ),
                   ),
                 ),

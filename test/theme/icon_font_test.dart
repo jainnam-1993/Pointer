@@ -37,10 +37,7 @@ const _fallback = IconData(0xe2a8, fontFamily: 'NoSuchIconFont');
 void main() {
   test('the icon and text fonts are declared in the packaged FontManifest (device builds)', () async {
     final families = await manifestFontFamilies();
-    expect(
-      families,
-      containsAll(<String>['Inter', 'Newsreader', 'packages/phosphor_flutter/PhosphorLight', 'packages/phosphor_flutter/PhosphorRegular']),
-    );
+    expect(families, containsAll(<String>['Inter', 'Newsreader', 'packages/phosphor_flutter/PhosphorLight', 'packages/phosphor_flutter/PhosphorRegular']));
   });
 
   testWidgets('without loading the manifest fonts, icons render as the fallback box (the golden bug)', (tester) async {

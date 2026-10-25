@@ -59,7 +59,10 @@ void main() {
             home: const Scaffold(
               body: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [SizedBox(width: kRailWidth), Expanded(child: LibraryScreen())],
+                children: [
+                  SizedBox(width: kRailWidth),
+                  Expanded(child: LibraryScreen()),
+                ],
               ),
             ),
           ),
@@ -71,9 +74,18 @@ void main() {
       final listPane = tester.getSize(find.byKey(const ValueKey('pane-primary')));
       expect(listPane.width, greaterThanOrEqualTo(kListPaneMinWidth));
 
+
+      // Guided Inquiry now leads the list, so scroll the Featured strip, then the topics, into view.
+      final listScroll = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byType(Scrollable)).first;
+      await tester.dragUntilVisible(find.byKey(const ValueKey('featured-edge-fade')), listScroll, const Offset(0, -200));
       // The Featured strip ends at the list pane's edge: it fades there instead of cutting.
       expect(find.byKey(const ValueKey('featured-edge-fade')), findsOneWidget);
-
+      await tester.dragUntilVisible(
+        find.text('Awareness'),
+        find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byType(Scrollable)).first,
+        const Offset(0, -200),
+      );
+      await tester.pump(const Duration(seconds: 1));
       final names = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.text('Awareness'));
       expect(names, findsWidgets);
       final paragraph = tester.renderObject<RenderParagraph>(names.first);

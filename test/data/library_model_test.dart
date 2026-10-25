@@ -159,14 +159,7 @@ void main() {
     });
 
     test('equality works correctly', () {
-      const article1 = Article(
-        id: 'test_005',
-        title: 'Equality Test',
-        content: 'Content',
-        tradition: Tradition.zen,
-        categories: [],
-        readingTimeMinutes: 2,
-      );
+      const article1 = Article(id: 'test_005', title: 'Equality Test', content: 'Content', tradition: Tradition.zen, categories: [], readingTimeMinutes: 2);
 
       const article2 = Article(
         id: 'test_005',

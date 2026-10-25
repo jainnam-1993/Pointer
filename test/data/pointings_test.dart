@@ -188,11 +188,7 @@ void main() {
     test('pointing ids follow naming convention', () {
       for (final pointing in pointings) {
         // IDs should follow pattern like 'adv-1', 'zen-1', 'dir-1', 'con-1', 'ori-1' or 'org-1'
-        expect(
-          pointing.id,
-          matches(RegExp(r'^(adv|zen|dir|con|ori|org)-\d+$')),
-          reason: 'Pointing id ${pointing.id} should follow naming convention',
-        );
+        expect(pointing.id, matches(RegExp(r'^(adv|zen|dir|con|ori|org)-\d+$')), reason: 'Pointing id ${pointing.id} should follow naming convention');
       }
     });
 

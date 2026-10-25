@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import '../../theme/app_theme.dart';
 
 /** Uppercase label header for a settings section (e.g., "NOTIFICATIONS", "APPEARANCE"). */

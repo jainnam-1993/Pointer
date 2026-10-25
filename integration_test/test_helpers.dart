@@ -52,11 +52,7 @@ Future<void> clearAppState() async {
 }
 
 /// Pump the widget and wait for all animations to complete
-Future<void> pumpAndSettle(
-  WidgetTester tester, {
-  Duration duration = const Duration(milliseconds: 100),
-  Duration timeout = const Duration(seconds: 10),
-}) async {
+Future<void> pumpAndSettle(WidgetTester tester, {Duration duration = const Duration(milliseconds: 100), Duration timeout = const Duration(seconds: 10)}) async {
   await tester.pumpAndSettle(duration, EnginePhase.sendSemanticsUpdate, timeout);
 }
 
@@ -128,12 +124,12 @@ Future<void> navigateToTab(WidgetTester tester, String tabLabel) async {
 
 /// Navigate to Home tab
 Future<void> navigateToHome(WidgetTester tester) async {
-  await navigateToTab(tester, 'Home');
+  await navigateToTab(tester, 'Today');
 }
 
-/// Navigate to Inquiry tab
+/// Inquiry lives at the top of Library (Guided Inquiry) since the 3-tab layout
 Future<void> navigateToInquiry(WidgetTester tester) async {
-  await navigateToTab(tester, 'Inquiry');
+  await navigateToTab(tester, 'Library');
 }
 
 /// Navigate to Lineages tab
@@ -141,9 +137,11 @@ Future<void> navigateToLineages(WidgetTester tester) async {
   await navigateToTab(tester, 'Lineages');
 }
 
-/// Navigate to Settings tab
+/// Open Settings: the gear on Today presents it as a sheet
 Future<void> navigateToSettings(WidgetTester tester) async {
-  await navigateToTab(tester, 'Settings');
+  await navigateToTab(tester, 'Today');
+  await tester.tap(find.byKey(const ValueKey('today-settings')));
+  await tester.pumpAndSettle();
 }
 
 /// Find text that contains a substring (partial match)

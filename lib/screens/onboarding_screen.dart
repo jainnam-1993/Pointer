@@ -167,6 +167,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: ContentWidth(
                 child: Column(
                   children: [
+                    // Skip: every page but the last leaves onboarding at once (P11).
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Visibility(
+                        visible: !isLastPage,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: TextButton(
+                          key: const ValueKey('onboarding-skip'),
+                          onPressed: () => _finishOnboarding(false),
+                          child: Text(
+                            'Skip',
+                            style: TextStyle(color: context.colors.textMuted, fontSize: _responsiveFontSize(context, 16)),
+                          ),
+                        ),
+                      ),
+                    ),
                     // Page view - allows swiping
                     Expanded(
                       child: PageView(
@@ -390,12 +408,7 @@ class _ContrastPage extends StatelessWidget {
                 children: [
                   Text(
                     'Here Now asks:',
-                    style: TextStyle(
-                      fontSize: _responsiveFontSize(context, 16),
-                      fontWeight: FontWeight.w500,
-                      color: colors.textMuted,
-                      letterSpacing: 1,
-                    ),
+                    style: TextStyle(fontSize: _responsiveFontSize(context, 16), fontWeight: FontWeight.w500, color: colors.textMuted, letterSpacing: 1),
                   ),
                   SizedBox(height: _responsiveVerticalSpace(context, 12)),
                   Text(

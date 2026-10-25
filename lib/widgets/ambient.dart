@@ -530,10 +530,7 @@ void _paintFallback(
   // Work in screen space so cards line up with the background.
   canvas.translate(rect.left - origin.dx, rect.top - origin.dy);
   final full = Offset.zero & screen;
-  canvas.drawRect(
-    full,
-    Paint()..shader = ui.Gradient.linear(full.topCenter, full.bottomCenter, [palette.top, palette.mid, palette.bottom], const [0, 0.5, 1]),
-  );
+  canvas.drawRect(full, Paint()..shader = ui.Gradient.linear(full.topCenter, full.bottomCenter, [palette.top, palette.mid, palette.bottom], const [0, 0.5, 1]));
   if (palette.aurora > 0) {
     final t = time;
     final w = screen.width;
@@ -652,12 +649,7 @@ class AmbientFrost extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderAmbientFrost(
-      frost: frost,
-      palette: palette,
-      animate: animate && TickerMode.valuesOf(context).enabled,
-      screen: MediaQuery.sizeOf(context),
-    );
+    return RenderAmbientFrost(frost: frost, palette: palette, animate: animate && TickerMode.valuesOf(context).enabled, screen: MediaQuery.sizeOf(context));
   }
 
   @override

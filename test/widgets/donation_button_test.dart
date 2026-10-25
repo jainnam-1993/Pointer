@@ -209,10 +209,7 @@ void main() {
 
     testWidgets('shows error state with retry button', (tester) async {
       await tester.pumpWidget(
-        wrapWithProviders(
-          const DonationButton(),
-          donationState: const DonationState(isAvailable: true, isLoading: false, error: 'Failed to load products'),
-        ),
+        wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: false, error: 'Failed to load products')),
       );
 
       // Tap to expand
@@ -227,9 +224,7 @@ void main() {
     });
 
     testWidgets('shows message when no products available', (tester) async {
-      await tester.pumpWidget(
-        wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: false, products: [])),
-      );
+      await tester.pumpWidget(wrapWithProviders(const DonationButton(), donationState: const DonationState(isAvailable: true, isLoading: false, products: [])));
 
       // Tap to expand
       await tester.tap(find.text('Support Development'));

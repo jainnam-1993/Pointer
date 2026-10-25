@@ -7,7 +7,6 @@ import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/screens/history_screen.dart';
 import 'package:pointer/screens/home_screen.dart';
 import 'package:pointer/screens/inquiry_player_screen.dart';
-import 'package:pointer/screens/inquiry_screen.dart';
 import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
@@ -41,13 +40,7 @@ Future<void> _pumpAndAssertResponsive(
 
   await pumpForGolden(
     tester,
-    createGoldenTestApp(
-      child: screen.builder(),
-      prefs: prefs,
-      size: device.size,
-      initialPointing: screen.initialPointing,
-      textScaleFactor: textScaleFactor,
-    ),
+    createGoldenTestApp(child: screen.builder(), prefs: prefs, size: device.size, initialPointing: screen.initialPointing, textScaleFactor: textScaleFactor),
     size: device.size,
   );
 
@@ -86,7 +79,7 @@ void main() {
   // it's safe after setUpAll has run loadArticles().
   final screens = <_ScreenCase>[
     const _ScreenCase(name: 'home', builder: HomeScreen.new, initialPointing: goldenTestPointing),
-    const _ScreenCase(name: 'inquiry', builder: InquiryScreen.new),
+    const _ScreenCase(name: 'saved', builder: SavedScreen.new),
     _ScreenCase(
       name: 'inquiry_player',
       // A real id: an unknown id falls back to getRandomInquiry(), which made this case depend on which inquiry was drawn.
@@ -154,11 +147,7 @@ void main() {
 
   group('Responsive layout - larger text scale', () {
     final textScaleScreens = screens.where((screen) {
-      return screen.name == 'home' ||
-          screen.name == 'inquiry' ||
-          screen.name == 'library' ||
-          screen.name == 'onboarding' ||
-          screen.name == 'settings';
+      return screen.name == 'home' || screen.name == 'inquiry' || screen.name == 'library' || screen.name == 'onboarding' || screen.name == 'settings';
     });
 
     for (final screen in textScaleScreens) {

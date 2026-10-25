@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import '../utils/motion.dart';
 import '../models/inquiry.dart';
 import '../theme/app_theme.dart';

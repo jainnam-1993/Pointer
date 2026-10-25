@@ -116,12 +116,7 @@ void main() {
     });
 
     testWidgets('HomeScreen pointing card has custom actions', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Test pointing content',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Test pointing content', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       await tester.pumpAndSettle();
@@ -147,12 +142,7 @@ void main() {
     });
 
     testWidgets('HomeScreen has logical semantic focus order', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Test pointing content',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Test pointing content', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       await tester.pumpAndSettle();
@@ -250,12 +240,7 @@ void main() {
     });
 
     testWidgets('HomeScreen pointing card has hint for actions', (tester) async {
-      const testPointing = Pointing(
-        id: 'test-1',
-        content: 'Test pointing content',
-        tradition: Tradition.advaita,
-        contexts: [PointingContext.general],
-      );
+      const testPointing = Pointing(id: 'test-1', content: 'Test pointing content', tradition: Tradition.advaita, contexts: [PointingContext.general]);
 
       await tester.pumpWidget(createTestApp(child: const HomeScreen(), prefs: prefs, initialPointing: testPointing));
       // Use pump with duration for continuous animations (AnimatedGradient)

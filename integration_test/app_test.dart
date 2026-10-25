@@ -13,7 +13,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointer/screens/home_screen.dart';
-import 'package:pointer/screens/inquiry_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
 import 'package:pointer/screens/settings_screen.dart';
 import 'package:pointer/screens/onboarding_screen.dart';
@@ -94,10 +93,9 @@ void main() {
       await navigateToInquiry(tester);
 
       // Verify Inquiry screen content
-      expectTextVisible('Self-Inquiry');
-      expectTextVisible('AVAILABLE SESSIONS');
+      expectTextVisible('Guided Inquiry');
       expectTextVisible('Who Am I?');
-      expect(find.byType(InquiryScreen), findsOneWidget);
+      expect(find.byKey(const ValueKey('library-guided-inquiry')), findsOneWidget);
     }, tags: [TestTags.navigation, TestTags.smoke]);
 
     testWidgets('can navigate to Lineages tab', (WidgetTester tester) async {
@@ -151,7 +149,7 @@ void main() {
 
       // Navigate through all tabs
       await navigateToInquiry(tester);
-      expect(find.byType(InquiryScreen), findsOneWidget);
+      expect(find.byKey(const ValueKey('library-guided-inquiry')), findsOneWidget);
 
       await navigateToLineages(tester);
       expect(find.byType(LineagesScreen), findsOneWidget);
@@ -595,7 +593,7 @@ void main() {
 
       // 3. Navigate to all tabs
       await navigateToInquiry(tester);
-      expect(find.byType(InquiryScreen), findsOneWidget);
+      expect(find.byKey(const ValueKey('library-guided-inquiry')), findsOneWidget);
 
       await navigateToLineages(tester);
       expect(find.byType(LineagesScreen), findsOneWidget);
