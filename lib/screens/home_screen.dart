@@ -603,7 +603,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       mainAxisAlignment: grouped ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         if (grouped) Flexible(child: card) else Expanded(child: card),
-        SizedBox(height: isSquareAspect ? AppSpacing.sm : AppSpacing.lg),
+        // Room for the card's soft shadow before the actions, on near-square screens too.
+        const SizedBox(height: AppSpacing.lg * 2),
         actions,
         if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
           const SizedBox(height: AppSpacing.sm),

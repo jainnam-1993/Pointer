@@ -431,11 +431,16 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     onSurfaceLevels: [GlassLevel(0, 0.10, 0.05), GlassLevel(0, 0.14, 0.07), GlassLevel(0, 0.18, 0.09)],
     buttonPrimary: GlassLevel(0.7, 0.30, 0.15),
     buttonSecondary: GlassLevel(0.7, 0.22, 0.10),
-    rimTop: Color(0x38FFFFFF),
-    rimBottom: Color(0x11FFFFFF),
+    // A top-weighted glass rim (about 15% fading to 6%), tuned to sit as quietly as
+    // the light theme's warm hairline.
+    rimTop: Color(0x3DFFFFFF),
+    rimBottom: Color(0x0FFFFFFF),
     rimWidth: 1.5,
     highlight: Color(0x12FFFFFF),
-    shadow: Color(0x52000000),
+    // One soft ambient lift (CalmGlassBrief): 25% black, wide blur, pulled in by the
+    // spread so no solid core shows under the card's lower edge.
+    shadow: Color(0x40000000),
+    shadowBlur: 32,
   );
 
   static const light = GlassMaterial(
@@ -444,11 +449,14 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     onSurfaceLevels: [GlassLevel(0, 0.70, 0.45), GlassLevel(0, 0.85, 0.60), GlassLevel(0, 0.95, 0.75)],
     buttonPrimary: GlassLevel(0.7, 0.92, 0.65),
     buttonSecondary: GlassLevel(0.7, 0.85, 0.55),
-    rimTop: Color(0x14000000),
-    rimBottom: Color(0x08000000),
+    // A warm hairline at about 11% carries the card's edge on cream now that the
+    // shadow is a soft lift, not a dark band (design panel, light mode).
+    rimTop: Color(0x243A2A1A),
+    rimBottom: Color(0x173A2A1A),
     highlight: Color(0x59FFFFFF),
-    shadow: Color(0x141A1A12),
-    shadowBlur: 20,
+    // A warm, just-visible lift (about 10%), so the cream card reads as raised.
+    shadow: Color(0x1A4A3220),
+    shadowBlur: 28,
     // Sage and sand: a filled sage primary button with white text (Continue, Done).
     primaryFill: Color(0xFF3F6B52),
     onPrimary: Color(0xFFFFFFFF),
@@ -569,7 +577,13 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
       LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0, highlightExtent], colors: [highlight, highlight.withValues(alpha: 0)]);
 
   /** Drop shadows, empty when [shadow] is transparent. */
-  List<BoxShadow> get shadows => shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 6))];
+  /**
+   * The card's one drop shadow. The negative spread keeps the shadow's solid core
+   * inside the card's footprint, so only the soft blur shows below it; with
+   * spread 0 and a 6 dp drop, the core showed as a hard dark lip under the card.
+   */
+  List<BoxShadow> get shadows =>
+      shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 8), spreadRadius: -shadowBlur / 4)];
 
   @override
   GlassMaterial copyWith({Color? fill, List<GlassLevel>? levels, Color? rimTop, Color? rimBottom, Color? highlight, Color? shadow}) {
