@@ -13,11 +13,11 @@
     <!-- Text halo in the glass base tone: holds contrast over bright patches behind the glass. -->
     <color name="widget_text_halo">#B31C1B1F</color>
     <!-- App look (the widget as a piece of the app): sage-and-sand paper / ink-on-black, as in PointerColors. -->
-    <color name="widget_app_card">#FFF5F2EA</color>
-    <color name="widget_app_card_end">#FFEDE8DC</color>
+    <color name="widget_app_card">#FFF7F3EA</color>
+    <color name="widget_app_card_end">#FFF7F3EA</color>
     <color name="widget_app_ink">#FF1B1F1A</color>
     <color name="widget_app_ink_secondary">#FF2A2F29</color>
-    <color name="widget_app_accent">#FF3F6B52</color>
-    <color name="widget_app_pill">#2E3F6B52</color>
+    <color name="widget_app_accent">#C21B1F1A</color>
+    <color name="widget_app_pill">#66FFFFFF</color>
     <color name="widget_app_rim">#99FFFFFF</color>
 </resources>

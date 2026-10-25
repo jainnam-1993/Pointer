@@ -225,7 +225,8 @@ object WidgetRenderer {
     /** Medium has no tradition eyebrow, so its footer carries the tradition after the teacher. */
     fun teacherLine(pointing: WidgetPointing, size: WidgetSize): String {
         if (pointing.teacher.isEmpty()) return if (size == WidgetSize.MEDIUM) pointing.tradition else ""
-        return if (size == WidgetSize.MEDIUM) "\u2014 ${pointing.teacher} \u00b7 ${pointing.tradition}" else "\u2014 ${pointing.teacher}"
+        // Author only: the design panel flagged "author · tradition" being cut off mid-name.
+        return "\u2014 ${pointing.teacher}"
     }
 
     private fun openIntent(context: Context, widgetId: Int, pointingId: String): PendingIntent {
