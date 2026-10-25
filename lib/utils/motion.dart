@@ -69,6 +69,10 @@ class Motion {
   /** The tab lens flattening back into the rest pill: critically damped, within 2% by about 120 ms (native iOS 27: 100 to 130 ms). */
   static final SpringDescription lensFlatten = SpringDescription.withDampingRatio(mass: 1, stiffness: 2500, ratio: 1.0);
 
+  /** The tab lens travelling to a tab: a touch of liquid (zeta 0.85, under 1% overshoot) settled within about 180 ms,
+   * so no lens spring tail runs past 200 ms. */
+  static final SpringDescription lensMove = SpringDescription.withDampingRatio(mass: 1, stiffness: 1200, ratio: 0.85);
+
   /** Sheet rise and card zoom: critically damped, about 500 ms. */
   static final SpringDescription sheet = SpringDescription.withDampingRatio(mass: 1, stiffness: 160, ratio: 1.0);
 

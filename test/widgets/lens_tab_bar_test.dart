@@ -174,5 +174,18 @@ void main() {
       expect(lens, findsNothing, reason: 'flat again well before the liquid move finishes');
       await tester.pumpAndSettle();
     });
+
+    testWidgets('latency: the lens is lifting on the frame after pointer-down, and full within about 130 ms', (tester) async {
+      await pumpLive(tester);
+      final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Library tab')));
+      await tester.pump(); // the frame after pointer-down: no tap slop, arena or long-press wait
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(lens, findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 120));
+      final o = tester.widget<Opacity>(lens);
+      expect(o.opacity, greaterThan(0.97), reason: 'fully lifted by about 130 ms');
+      await g.up();
+      await tester.pumpAndSettle();
+    });
   });
 }
