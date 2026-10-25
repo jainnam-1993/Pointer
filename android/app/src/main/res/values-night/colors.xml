@@ -18,4 +18,5 @@
     <color name="widget_app_pill">#24FFFFFF</color>
     <color name="widget_app_rim">#3DFFFFFF</color>
     <color name="widget_app_pill_stroke">#26FFFFFF</color>
+    <color name="widget_app_rim_outer">#00000000</color>
 </resources>

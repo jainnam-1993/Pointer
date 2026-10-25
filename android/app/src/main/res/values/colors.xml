@@ -18,8 +18,11 @@
     <color name="widget_app_card_end">#CCF7F3EA</color>
     <color name="widget_app_ink">#FF1B1F1A</color>
     <color name="widget_app_ink_secondary">#FF2A2F29</color>
-    <color name="widget_app_accent">#C21B1F1A</color>
+    <color name="widget_app_accent">#E61B1F1A</color>
     <color name="widget_app_pill">#66FFFFFF</color>
     <color name="widget_app_rim">#66FFFFFF</color>
-    <color name="widget_app_pill_stroke">#0F000000</color>
+    <!-- Ink hairline (18%) so the controls hold on a white wallpaper, where a white fill alone vanishes. -->
+    <color name="widget_app_pill_stroke">#2E1B1F1A</color>
+    <!-- Outer dark hairline under the white rim, so the card edge holds on a white wallpaper (light only). -->
+    <color name="widget_app_rim_outer">#291B1F1A</color>
 </resources>

@@ -39,7 +39,10 @@ object QuoteBitmap {
             @Suppress("DEPRECATION") options.getParcelableArrayList<android.util.SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
         } else null
         val w = sizes?.firstOrNull()?.width ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).toFloat()
-        val h = sizes?.firstOrNull()?.height ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 160).toFloat()
+        // Height: the smallest the launcher reports. The bitmap is scaled to fit its view (fitStart), so a
+        // box taller than the real view shrank the text by height and left a dead right column (the quote
+        // used 70% of the width on the Fold); a box no taller than the view lets the text fill the width.
+        val h = sizes?.minOfOrNull { it.height } ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110).toFloat()
         val chrome = when (size) {
             WidgetSize.COMPACT -> 32f
             WidgetSize.MEDIUM -> 32f + 8f + 48f
@@ -74,7 +77,8 @@ object QuoteBitmap {
                 .setBreakStrategy(Layout.BREAK_STRATEGY_BALANCED)
                 .setMaxLines(lines).setEllipsize(TextUtils.TruncateAt.END).build()
         }
-        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8)
+        // Only as tall as the text, so leftover height never forces a height-limited scale.
+        val bmp = Bitmap.createBitmap(w, layout.height.coerceIn(1, h), Bitmap.Config.ALPHA_8)
         layout.draw(Canvas(bmp))
         return bmp
     }
