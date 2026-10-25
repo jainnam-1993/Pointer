@@ -2,7 +2,8 @@
 <!-- Material You: the widget takes its palette from the wallpaper (Android 12+). Tone pairs are
      at least 50 tones apart (95 vs 10/30/40), which keeps every text pair above 4.5:1. -->
 <resources>
-    <color name="widget_surface">@android:color/system_accent2_50</color>
+    <!-- Surface: the dynamic neutral the Google search bar sits on (tone 95), so the card reads as its sibling. -->
+    <color name="widget_surface">@android:color/system_neutral1_50</color>
     <color name="widget_surface_variant">@android:color/system_accent2_100</color>
     <color name="widget_text">@android:color/system_neutral1_900</color>
     <color name="widget_text_muted">@android:color/system_neutral2_700</color>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_background">#050505</color>
-    <color name="widget_surface">#1C1B1F</color>
+    <color name="widget_surface">#3A3640</color>
     <color name="widget_surface_variant">#2B2833</color>
     <color name="widget_text">#FFFFFF</color>
     <color name="widget_text_muted">#B4AFB8</color>
