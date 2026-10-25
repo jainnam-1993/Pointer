@@ -128,7 +128,7 @@ class GlassCard extends ConsumerWidget {
 
     Widget innerContent = child;
     if (maxHeight != null && enableScrolling) {
-      innerContent = SingleChildScrollView(physics: const BouncingScrollPhysics(), child: child);
+      innerContent = _ScrollingContent(child: child);
     }
 
     Widget constrainedContent = innerContent;
@@ -445,4 +445,37 @@ class GradientBoxBorder extends BoxBorder {
 
   @override
   ShapeBorder scale(double t) => GradientBoxBorder(gradient: gradient, width: width * t);
+}
+
+/**
+ * Content taller than the card's [GlassCard.maxHeight]: it scrolls, and the
+ * scrollbar stays visible whenever there is more to read, so a long quote
+ * never looks cut off. With nothing to scroll the scrollbar draws nothing.
+ */
+class _ScrollingContent extends StatefulWidget {
+  final Widget child;
+  const _ScrollingContent({required this.child});
+
+  @override
+  State<_ScrollingContent> createState() => _ScrollingContentState();
+}
+
+class _ScrollingContentState extends State<_ScrollingContent> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      key: const ValueKey('glass-card-scrollbar'),
+      controller: _controller,
+      thumbVisibility: true,
+      child: SingleChildScrollView(controller: _controller, physics: const BouncingScrollPhysics(), child: widget.child),
+    );
+  }
 }

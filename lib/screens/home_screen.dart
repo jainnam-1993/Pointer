@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -339,7 +340,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildCard(BuildContext context, Pointing pointing, PointerColors colors, {required Size size, required bool isSquareAspect}) {
+  Widget _buildCard(BuildContext context, Pointing pointing, PointerColors colors, {required Size size, required bool isSquareAspect, double? maxHeight}) {
     final isFavorite = ref.watch(favoritesProvider.select((f) => f.contains(pointing.id)));
     final cardPadding = (size.width * 0.06).clamp(20.0, 28.0);
     final teacher = getTeacher(pointing.teacher);
@@ -361,8 +362,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         child: GlassCard(
           padding: EdgeInsets.fromLTRB(cardPadding, 12, cardPadding, 24),
           borderRadius: 32,
-          minHeight: isSquareAspect ? size.height * 0.25 : size.height * 0.15,
-          maxHeight: isSquareAspect ? size.height * 0.40 : size.height * 0.58,
+          // Never above maxHeight: at text scale 2.0 on a phone the slot can be shorter than 15% of the window.
+          minHeight: math.min(isSquareAspect ? size.height * 0.25 : size.height * 0.15, maxHeight ?? double.infinity),
+          // Past this the quote scrolls inside the card, with its scrollbar showing.
+          maxHeight: maxHeight ?? (isSquareAspect ? size.height * 0.40 : size.height * 0.58),
           enableScrolling: true,
           enableBreathingAnimation: true,
           // Height changes between pointings ease instead of snapping.
@@ -552,10 +555,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
         constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
-        child: ValueListenableBuilder<double>(
-          valueListenable: _dragOffset,
-          builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
-          child: _buildCard(context, pointing, colors, size: size, isSquareAspect: isSquareAspect),
+        // The card may grow to all the height its slot has, not a fixed share of the
+        // window: at text scale 2.0 a 58% cap cut long pointings off.
+        child: LayoutBuilder(
+          builder: (context, constraints) => ValueListenableBuilder<double>(
+            valueListenable: _dragOffset,
+            builder: (context, offset, child) => Transform.translate(offset: Offset(0, offset), child: child),
+            child: _buildCard(
+              context,
+              pointing,
+              colors,
+              size: size,
+              isSquareAspect: isSquareAspect,
+              maxHeight: constraints.maxHeight.isFinite ? constraints.maxHeight : null,
+            ),
+          ),
         ),
       ),
     );

@@ -1,3 +1,6 @@
+import 'package:flutter/rendering.dart';
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../helpers/app_fonts.dart';
@@ -486,5 +489,67 @@ void main() {
         expect(size.height, greaterThanOrEqualTo(48), reason: key);
       }
     });
+  });
+
+  group('Today quote at any text size', () {
+    setUpAll(loadAppFonts);
+
+    // The longest pointing in the shipped data (zen-293, 220 characters).
+    Pointing longest() {
+      final raw = jsonDecode(File('assets/data/pointings.json').readAsStringSync());
+      final items = (raw is List ? raw : (raw as Map).values.firstWhere((v) => v is List)) as List;
+      final json = items.cast<Map<String, dynamic>>().reduce((a, b) => (a['content'] as String).length >= (b['content'] as String).length ? a : b);
+      return Pointing.fromJson(json);
+    }
+
+    for (final (name, logical, dpr) in [('phone', const Size(390, 844), 3.0), ('foldinner', const Size(841, 884), 2.625)]) {
+      for (final scale in [1.0, 1.3, 2.0]) {
+        testWidgets('the longest pointing is fully readable on $name at text scale $scale', (tester) async {
+          final pointing = longest();
+          tester.view.physicalSize = logical * dpr;
+          tester.view.devicePixelRatio = dpr;
+          addTearDown(tester.view.reset);
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              ProviderScope(
+                overrides: [
+                  sharedPreferencesProvider.overrideWithValue(mockPrefs),
+                  oledModeProvider.overrideWith((ref) => false),
+                  reduceMotionOverrideProvider.overrideWith((ref) => null),
+                  currentPointingProvider.overrideWith((ref) {
+                    final notifier = CurrentPointingNotifier(ref.watch(storageServiceProvider));
+                    notifier.setPointing(pointing);
+                    return notifier;
+                  }),
+                ],
+                child: MaterialApp(
+                  theme: ThemeData.dark(),
+                  builder: (context, child) => MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+                    child: child!,
+                  ),
+                  home: const HomeScreen(),
+                ),
+              ),
+            );
+          });
+          await tester.pump(const Duration(seconds: 1));
+
+          final quote = find.byKey(ValueKey(pointing.id));
+          final paragraph = tester.renderObject<RenderParagraph>(find.descendant(of: quote, matching: find.byType(RichText)).first);
+          expect(paragraph.didExceedMaxLines, isFalse, reason: 'no maxLines or ellipsis cuts the quote');
+          final card = tester.getRect(find.ancestor(of: quote, matching: find.byType(GlassCard)).first);
+          final text = tester.getRect(quote);
+          if (text.bottom > card.bottom) {
+            // Taller than the card: it must scroll, with the scrollbar showing.
+            expect(find.byKey(const ValueKey('glass-card-scrollbar')), findsOneWidget);
+            final scrollable = tester.state<ScrollableState>(
+              find.descendant(of: find.byKey(const ValueKey('glass-card-scrollbar')), matching: find.byType(Scrollable)).first,
+            );
+            expect(scrollable.position.maxScrollExtent, greaterThanOrEqualTo(text.bottom - card.bottom - 1));
+          }
+        });
+      }
+    }
   });
 }
