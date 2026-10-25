@@ -188,11 +188,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               featured: getFeaturedArticles(limit: kFeaturedOverviewCount),
               onOpen: (article) => _openArticle(context, article),
             )
-          : ArticleReaderScreen(
-              key: ValueKey('library-detail-$selected'),
-              articleId: selected,
-              onClose: () => setState(() => _selectedArticleId = null),
-            ),
+          : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
     );
   }
 
