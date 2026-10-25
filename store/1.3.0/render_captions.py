@@ -77,13 +77,21 @@ def font(path, size, name):
 def drop_island(im):
     """Paint out the Dynamic Island the iOS 27 simulator draws; on-device screenshots never show it.
 
-    The island sits centred in the status bar between the clock and the icons, so the band is
-    refilled row by row with the status bar colour sampled just left of it.
+    The island sits centred in the status bar between the clock and the icons. Its rows are found by
+    their near-black pixels (the island drifts a few rows between screens), padded for the
+    antialiased edge, and refilled row by row with the status bar colour sampled just left of it.
     """
     px = im.load()
     w = im.width
-    x0, x1 = int(w * 0.335), int(w * 0.665)
-    for y in range(int(w * 0.012), int(w * 0.095)):
+    x0, x1 = int(w * 0.30), int(w * 0.70)
+    rows = [
+        y
+        for y in range(int(w * 0.17))
+        if any(max(px[x, y]) < 24 for x in range(x0, x1, 4))
+    ]
+    if not rows:
+        return im
+    for y in range(max(0, rows[0] - 6), min(im.height, rows[-1] + 7)):
         left = px[x0 - 12, y]
         for x in range(x0, x1):
             px[x, y] = left
@@ -102,7 +110,7 @@ def render(shots, out, fonts, dev):
             d = ImageDraw.Draw(can)
             base = W if portrait else H
             f1 = font(f"{fonts}/Newsreader-Variable.ttf", int(base * 0.070), b"Medium")
-            f2 = font(f"{fonts}/Inter-Variable.ttf", int(base * 0.040), b"Regular")
+            f2 = font(f"{fonts}/Inter-Variable.ttf", int(base * 0.042), b"Regular")
             top = int(H * (0.050 if portrait else 0.050))
             for txt, f, colr, gap in [
                 (line, f1, ink, int(H * 0.016)),
@@ -121,23 +129,29 @@ def render(shots, out, fonts, dev):
             else:
                 sh = H - y - int(H * 0.05)
                 sw = int(shot.width * sh / shot.height)
+            b = max(8, int(min(sw, sh) * 0.012))  # hardware bezel around the screen, the same on both themes
+            sw, sh = sw - 2 * b, int((sw - 2 * b) * shot.height / shot.width)
             s = shot.resize((sw, sh), Image.LANCZOS)
             x = (W - sw) // 2
-            r = int(min(sw, sh) * 0.06)
+            r = int(min(sw, sh) * (0.06 if dev == "iphone69" else 0.035))  # tablets: keep the status bar clear of the corner
             mask = Image.new("L", (sw, sh), 0)
             ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw - 1, sh - 1), r, fill=255)
+            bx0, by0, bx1, by1 = x - b, y - b, x + sw + b, y + sh + b
             shadow = Image.new("L", (W, H), 0)
             ImageDraw.Draw(shadow).rounded_rectangle(
-                (x, y + 12, x + sw, y + sh + 12), r, fill=150
+                (bx0, by0 + 22, bx1, by1 + 22), r + b, fill=190 if mode == "dark" else 120
             )
             can.paste(
                 Image.new("RGB", (W, H), (0, 0, 0)),
                 (0, 0),
-                shadow.filter(ImageFilter.GaussianBlur(28)),
+                shadow.filter(ImageFilter.GaussianBlur(44)),
             )
+            # One device on both themes: the same graphite bezel; on night a faint lavender rim keeps its silhouette.
+            rim = (92, 88, 118) if mode == "dark" else (70, 68, 76)
+            bezel = (30, 29, 36)
+            dc = ImageDraw.Draw(can)
+            dc.rounded_rectangle((bx0, by0, bx1, by1), r + b, fill=bezel, outline=rim, width=3)
             can.paste(s, (x, y), mask)
-            edge = (176, 166, 214) if mode == "dark" else (158, 148, 128)  # device edge on night or cream
-            ImageDraw.Draw(can).rounded_rectangle((x, y, x + sw - 1, y + sh - 1), r, outline=edge, width=3)
             can.save(f"{out}/{dev}_{mode}_{key}_captioned.png")
 
 
