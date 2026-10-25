@@ -1,3 +1,4 @@
+import '../utils/glyph_warmup.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -83,7 +84,8 @@ class _MainShellState extends ConsumerState<MainShell> {
             },
           ),
         },
-        child: Focus(autofocus: true, skipTraversal: true, child: _buildShell(context)),
+        // Fills the glyph atlas for Settings and Library at idle after the first frame (first Settings open jank).
+        child: GlyphWarmup(child: Focus(autofocus: true, skipTraversal: true, child: _buildShell(context))),
       ),
     );
   }
