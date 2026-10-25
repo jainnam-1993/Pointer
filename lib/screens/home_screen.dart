@@ -497,14 +497,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       child: AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 500), child: _buildZenModeView(pointing)),
                     )
                   else
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onVerticalDragStart: _onDragStart,
-                      onVerticalDragUpdate: _onDragUpdate,
-                      onVerticalDragEnd: _onDragEnd,
-                      child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
+                    // The header is laid out above the body, not overlaid on it, so the
+                    // body centers in the space left below it at any text size; an
+                    // overlay covered the card at text scale 2.0.
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const _TodayTopBar(),
+                        Expanded(
+                          child: MediaQuery.removePadding(
+                            context: context,
+                            removeTop: true,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onVerticalDragStart: _onDragStart,
+                              onVerticalDragUpdate: _onDragUpdate,
+                              onVerticalDragEnd: _onDragEnd,
+                              child: _buildAdaptiveBody(context, pointing, colors, size: size, isSquareAspect: isSquareAspect, navBarSpace: navBarSpace),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  if (!isZenMode) const Positioned(top: 0, left: 0, right: 0, child: _TodayTopBar()),
                 ],
               ),
             ),
@@ -911,6 +925,7 @@ class _TodayTopBar extends ConsumerWidget {
     // Pads by the view insets directly: Home keeps a single SafeArea, around its body.
     final inset = MediaQuery.paddingOf(context);
     return Padding(
+      key: const ValueKey('today-header'),
       padding: EdgeInsets.fromLTRB(inset.left + 24, inset.top + 12, inset.right + 12, 0),
       child: Padding(
         padding: EdgeInsets.zero,
@@ -919,31 +934,26 @@ class _TodayTopBar extends ConsumerWidget {
             Expanded(
               child: Semantics(header: true, child: Text('Today', style: Theme.of(context).textTheme.displayLarge)),
             ),
-            // Today's own toggles live here, next to what they change (P6).
-            SizedBox.square(
-              dimension: 44,
-              child: PopupMenuButton<String>(
-                key: const ValueKey('today-more'),
-                tooltip: 'More',
-                icon: Icon(Icons.more_horiz, color: colors.textSecondary),
-                onSelected: (value) {
-                  if (value == 'autoAdvance') settings.setAutoAdvance(!autoAdvance);
-                  if (value == 'zen') settings.setZenMode(!zenMode);
-                },
-                itemBuilder: (context) => [
-                  CheckedPopupMenuItem(value: 'autoAdvance', checked: autoAdvance, child: const Text('Auto-Advance')),
-                  CheckedPopupMenuItem(value: 'zen', checked: zenMode, child: const Text('Zen Mode')),
-                ],
-              ),
+            // Today's own toggles live here, next to what they change (P6). Both buttons keep
+            // Material's 48 dp tap target; a 44 dp SizedBox here clipped it below Android's minimum.
+            PopupMenuButton<String>(
+              key: const ValueKey('today-more'),
+              tooltip: 'More',
+              icon: Icon(Icons.more_horiz, color: colors.textSecondary),
+              onSelected: (value) {
+                if (value == 'autoAdvance') settings.setAutoAdvance(!autoAdvance);
+                if (value == 'zen') settings.setZenMode(!zenMode);
+              },
+              itemBuilder: (context) => [
+                CheckedPopupMenuItem(value: 'autoAdvance', checked: autoAdvance, child: const Text('Auto-Advance')),
+                CheckedPopupMenuItem(value: 'zen', checked: zenMode, child: const Text('Zen Mode')),
+              ],
             ),
-            SizedBox.square(
-              dimension: 44,
-              child: IconButton(
-                key: const ValueKey('today-settings'),
-                tooltip: 'Settings',
-                icon: Icon(AppIcons.settings, color: colors.textSecondary),
-                onPressed: () => context.push('/settings'),
-              ),
+            IconButton(
+              key: const ValueKey('today-settings'),
+              tooltip: 'Settings',
+              icon: Icon(AppIcons.settings, color: colors.textSecondary),
+              onPressed: () => context.push('/settings'),
             ),
           ],
         ),

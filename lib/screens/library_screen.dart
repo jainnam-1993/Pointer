@@ -120,77 +120,20 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               // Guided Inquiry leads Library: the old Inquiry tab's sessions (P2).
               ..._guidedInquirySlivers(context, colors),
 
-              // Featured Section
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8 - _featuredShadowTop),
-                  child: Text(
-                    'FEATURED',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-                  ),
+              // Featured: whole cards in a grid that fits the width, never a strip
+              // that runs past an edge. In two panes it moves to the detail pane,
+              // which it fills until a reading is chosen.
+              if (!WindowLayout.of(context).isTwoPane) ...[
+                SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
+                SliverToBoxAdapter(
+                  child: _FeaturedGrid(featured: featured, onOpen: (a) => _openArticle(context, a)),
                 ),
-              ),
-
-              // Featured articles horizontal scroll with peek indicator
-              // The strip is a scroll viewport, so it clips. It is taller than
-              // the cards by their shadow's reach, so the clip never cuts a
-              // shadow into a visible box, and its ends fade so a card that
-              // runs past the edge (the list pane's edge in two-pane mode)
-              // dissolves instead of stopping at a hard line.
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height:
-                      (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble() +
-                      _featuredShadowTop +
-                      _featuredShadowBottom,
-                  child: _EdgeFade(
-                    width: _featuredEdgeFade,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final screenWidth = constraints.maxWidth;
-                        // Card takes ~70% of screen, leaving ~30% for peek
-                        // Peek shows ~24px of next card edge
-                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                        final cardSpacing = 8.0;
-                        // Calculate padding: 24px left, enough right for last card + peek area
-                        final horizontalPadding = 24.0;
-                        // Extra right padding ensures smooth scroll end (peek area width)
-                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
-
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: rightPadding.clamp(24.0, 80.0),
-                            top: _featuredShadowTop,
-                            bottom: _featuredShadowBottom,
-                          ),
-                          itemCount: featured.length,
-                          itemBuilder: (context, index) {
-                            final article = featured[index];
-                            final isLast = index == featured.length - 1;
-                            return StaggeredFadeIn(
-                              index: index,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
-                                child: SizedBox(
-                                  width: cardWidth,
-                                  child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              ],
 
               // Browse Mode Section with Dropdown
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 24 - _featuredShadowBottom, 24, 12),
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
                   // FittedBox scales content down proportionally on small screens
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -229,7 +172,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   Widget _adaptiveBody(BuildContext context, Widget list) {
     final layout = WindowLayout.of(context);
     if (!layout.isTwoPane) return layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list);
-    final colors = context.colors;
     final selected = _selectedArticleId;
     return TwoPane(
       key: const ValueKey('library-list-detail'),
@@ -240,16 +182,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       primaryMinWidth: kListPaneMinWidth,
       primary: list,
       secondary: selected == null
-          ? Center(
-              key: const ValueKey('library-detail-empty'),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Text(
-                  'Choose a reading to open it here.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.headline, color: colors.textMuted),
-                ),
-              ),
+          ? _FeaturedOverview(
+              key: const ValueKey('library-detail-featured'),
+              featured: getFeaturedArticles(limit: 3),
+              onOpen: (article) => _openArticle(context, article),
             )
           : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
     );
@@ -783,35 +719,101 @@ class _BrowseCard extends StatelessWidget {
   }
 }
 
-/** Room above the featured cards for their shadow (glass shadow: blur 20, offset 6 down). */
-const double _featuredShadowTop = 8;
+/** Narrowest a Featured card gets before the grid drops a column. */
+const double kFeaturedCardMinWidth = 168;
 
-/** Room below the featured cards for their shadow's blur plus its 6 px drop. */
-const double _featuredShadowBottom = 24;
+const double _featuredGap = 12;
 
-/** Width of the soft fade at each end of the featured strip. */
-const double _featuredEdgeFade = 40;
+/** Height of a Featured card: fixed per text size, so a row of cards lines up. */
+double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
-/** Fades [child] to transparent over [width] at its left and right ends. */
-class _EdgeFade extends StatelessWidget {
-  final double width;
-  final Widget child;
+/** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
+int featuredColumns(double width, int count) => ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
 
-  const _EdgeFade({required this.width, required this.child});
+class _FeaturedHeader extends StatelessWidget {
+  final PointerColors colors;
+  const _FeaturedHeader({required this.colors});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+    child: Semantics(
+      header: true,
+      child: Text(
+        'FEATURED',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+      ),
+    ),
+  );
+}
+
+/**
+ * Featured articles as whole cards: as many equal columns as fit the width,
+ * wrapping to a new row, so no card is ever half-shown at rest.
+ */
+class _FeaturedGrid extends StatelessWidget {
+  final List<Article> featured;
+  final void Function(Article) onOpen;
+
+  const _FeaturedGrid({required this.featured, required this.onOpen});
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      key: const ValueKey('featured-edge-fade'),
-      blendMode: BlendMode.dstIn,
-      shaderCallback: (bounds) {
-        final edge = bounds.width <= 0 ? 0.0 : (width / bounds.width).clamp(0.0, 0.5);
-        return LinearGradient(
-          colors: const [Color(0x00000000), Color(0xFF000000), Color(0xFF000000), Color(0x00000000)],
-          stops: [0, edge, 1 - edge, 1],
-        ).createShader(bounds);
-      },
-      child: child,
+    final height = _featuredCardHeight(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final cols = featuredColumns(constraints.maxWidth, featured.length);
+          final width = (constraints.maxWidth - _featuredGap * (cols - 1)) / cols;
+          return Wrap(
+            key: const ValueKey('featured-grid'),
+            spacing: _featuredGap,
+            runSpacing: _featuredGap,
+            children: [
+              for (final (i, article) in featured.indexed)
+                StaggeredFadeIn(
+                  index: i,
+                  child: SizedBox(
+                    key: ValueKey('featured-card-$i'),
+                    width: width,
+                    height: height,
+                    child: _FeaturedArticleCard(article: article, onTap: () => onOpen(article)),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/** The detail pane before a reading is chosen: the Featured readings, whole, with a quiet hint. */
+class _FeaturedOverview extends StatelessWidget {
+  final List<Article> featured;
+  final void Function(Article) onOpen;
+
+  const _FeaturedOverview({super.key, required this.featured, required this.onOpen});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.only(top: 20, bottom: 48),
+        children: [
+          _FeaturedHeader(colors: colors),
+          _FeaturedGrid(featured: featured, onOpen: onOpen),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+            child: Text(
+              'Or choose a reading from the list.',
+              style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

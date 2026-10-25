@@ -74,11 +74,9 @@ void main() {
       final listPane = tester.getSize(find.byKey(const ValueKey('pane-primary')));
       expect(listPane.width, greaterThanOrEqualTo(kListPaneMinWidth));
 
-      // Guided Inquiry now leads the list, so scroll the Featured strip, then the topics, into view.
-      final listScroll = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byType(Scrollable)).first;
-      await tester.dragUntilVisible(find.byKey(const ValueKey('featured-edge-fade')), listScroll, const Offset(0, -200));
-      // The Featured strip ends at the list pane's edge: it fades there instead of cutting.
-      expect(find.byKey(const ValueKey('featured-edge-fade')), findsOneWidget);
+      // In two panes Featured fills the detail pane, so the list pane has no strip to cut.
+      expect(find.byKey(const ValueKey('library-detail-featured')), findsOneWidget);
+      expect(find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byKey(const ValueKey('featured-grid'))), findsNothing);
       await tester.dragUntilVisible(
         find.text('Awareness'),
         find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byType(Scrollable)).first,

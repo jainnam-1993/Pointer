@@ -209,9 +209,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       builder: (context, c) {
         final n = widget.tabs.length;
         final thickness = horizontal ? (widget.minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight) : LiquidGlass.railWidth;
-        final extent = horizontal
-            ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth)
-            : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
+        final extent = horizontal ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth) : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
         final cell = (extent - 2 * LensTabBar.pad) / n;
         _cell = cell;
         final showLabel = !(horizontal && widget.minimized);
@@ -227,12 +225,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
         final lensCross = pillCross * Motion.lensLiftY;
 
         Widget capsule = DecoratedBox(
-          decoration: BoxDecoration(
-            color: style.capsule,
-            borderRadius: BorderRadius.circular(thickness / 2),
-            border: style.border,
-            boxShadow: style.shadow,
-          ),
+          decoration: BoxDecoration(color: style.capsule, borderRadius: BorderRadius.circular(thickness / 2), border: style.border, boxShadow: style.shadow),
         );
         if (style.frosted && !plain) {
           capsule = ClipRRect(

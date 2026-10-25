@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../helpers/app_fonts.dart';
 import 'package:pointer/theme/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
@@ -436,6 +437,54 @@ void main() {
       when(() => mockPrefs.getInt(HomeScreen.sessionCountKey)).thenReturn(HomeScreen.swipeHintSessions);
       await pumpHomeScreen(tester, createHomeScreen());
       expect(find.text(hint), findsNothing);
+    });
+  });
+
+  group('Today header', () {
+    setUpAll(loadAppFonts);
+
+    Future<void> pumpAt(WidgetTester tester, double scale) async {
+      tester.view.physicalSize = const Size(1170, 2532); // 390 x 844 dp phone
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
+      await tester.runAsync(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              sharedPreferencesProvider.overrideWithValue(mockPrefs),
+              oledModeProvider.overrideWith((ref) => false),
+              reduceMotionOverrideProvider.overrideWith((ref) => null),
+            ],
+            child: MaterialApp(
+              theme: ThemeData.dark(),
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+                child: child!,
+              ),
+              home: const HomeScreen(),
+            ),
+          ),
+        );
+      });
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    for (final scale in [1.0, 1.3, 2.0]) {
+      testWidgets('the header never covers the pointing card at text scale $scale', (tester) async {
+        await pumpAt(tester, scale);
+        final header = tester.getRect(find.byKey(const ValueKey('today-header')));
+        final card = tester.getRect(find.ancestor(of: find.bySemanticsLabel('Save to favorites').first, matching: find.byType(GlassCard)).first);
+        expect(header.bottom, lessThanOrEqualTo(card.top), reason: 'header $header, card $card');
+      });
+    }
+
+    testWidgets('More and Settings are at least 48 dp tap targets', (tester) async {
+      await pumpAt(tester, 1.0);
+      for (final key in ['today-more', 'today-settings']) {
+        final size = tester.getSize(find.byKey(ValueKey(key)));
+        expect(size.width, greaterThanOrEqualTo(48), reason: key);
+        expect(size.height, greaterThanOrEqualTo(48), reason: key);
+      }
     });
   });
 }
