@@ -163,10 +163,6 @@ void main() async {
   _globalContainer = result.container;
   unawaited(_captureNotificationLaunch());
 
-  // Start content loading now, before the first frame, so JSON asset reads
-  // overlap engine warmup instead of waiting for the splash to mount.
-  unawaited(AppInitializer.startBackgroundInitialization());
-
   unawaited(
     AppInitializer.criticalContentReady
         .then((_) {
@@ -180,6 +176,8 @@ void main() async {
 
   _registerFontLicenses();
   runApp(UncontrolledProviderScope(container: result.container, child: const PointerApp()));
+  // Content loading and the billing listener start once the first frame is built.
+  AppInitializer.startAfterFirstFrame(result.container);
 }
 
 /**

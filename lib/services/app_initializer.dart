@@ -180,9 +180,24 @@ class AppInitializer {
     _startupCoordinator = StartupCoordinator(prefs: prefs, notificationService: notificationService, onNotificationAction: onNotificationAction);
 
     final container = _createContainer(prefs, notificationService);
-    // Finish interrupted and pending tips from launch, not when Settings opens.
-    container.read(tipPurchaseListenerProvider);
     return InitResult(container: container);
+  }
+
+  /**
+   * Start launch work the first frame does not need, once that frame is built.
+   *
+   * Content loading (asset reads, JSON decode on background isolates) and the
+   * tip purchase listener (billing connection on the platform thread) used to
+   * start before `runApp()` and competed with the first frame. Both still run
+   * on every launch, one frame later; [StartupCoordinator.start] is idempotent,
+   * so the splash screen starting it first is harmless.
+   */
+  static void startAfterFirstFrame(ProviderContainer container) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Finish interrupted and pending tips from launch, not when Settings opens.
+      container.read(tipPurchaseListenerProvider);
+      unawaited(startBackgroundInitialization());
+    });
   }
 
   static void _initPlatform() {
