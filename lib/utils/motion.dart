@@ -66,6 +66,9 @@ class Motion {
   /** Lift spring: lens and thumb lift, the specular highlight catching up with the finger (about 100 ms lag). */
   static final SpringDescription lift = SpringDescription.withDampingRatio(mass: 1, stiffness: 200, ratio: 1.0);
 
+  /** The tab lens flattening back into the rest pill: critically damped, within 2% by about 120 ms (native iOS 27: 100 to 130 ms). */
+  static final SpringDescription lensFlatten = SpringDescription.withDampingRatio(mass: 1, stiffness: 2500, ratio: 1.0);
+
   /** Sheet rise and card zoom: critically damped, about 500 ms. */
   static final SpringDescription sheet = SpringDescription.withDampingRatio(mass: 1, stiffness: 160, ratio: 1.0);
 
@@ -73,8 +76,8 @@ class Motion {
   static double pressScaleLarge(double shortestSide) => 1 - (shortestSide <= 0 ? 0.02 : (8 / shortestSide).clamp(0.0, 0.02));
 
   /** Tab lens and toggle thumb lift (x, y), and the magnification of the label under the lens. */
-  static const double lensLiftX = 1.12;
-  static const double lensLiftY = 1.15;
+  static const double lensLiftX = 1.5;
+  static const double lensLiftY = 1.5;
   static const double lensMagnify = 1.06;
 
   /** Whether motion should be reduced here: system setting or the app's Animations toggle. */

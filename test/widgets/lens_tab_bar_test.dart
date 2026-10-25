@@ -142,5 +142,37 @@ void main() {
       expect(taps.last, 3);
       expectRest(tester, 'Settings');
     });
+
+    testWidgets('a fast flick selects the tab under the finger where it lifts, not where the lens lags', (tester) async {
+      final taps = await pumpLive(tester);
+      // Start on Library.
+      await tester.tap(find.bySemanticsLabel('Library tab'));
+      await tester.pumpAndSettle();
+      final from = tester.getCenter(find.bySemanticsLabel('Library tab, selected'));
+      final to = tester.getCenter(find.bySemanticsLabel('Home tab'));
+      final g = await tester.startGesture(from);
+      for (var k = 1; k <= 4; k++) {
+        await g.moveTo(Offset.lerp(from, to, k / 6)!); // the moves stop two thirds of the way...
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      await g.moveTo(to); // ...and the finger lifts at Home within about 100 ms
+      await g.up();
+      await tester.pumpAndSettle();
+      expect(taps.last, 0);
+      expectRest(tester, 'Home');
+    });
+
+    testWidgets('release flattens the lens in parallel with the move, in about 110 ms', (tester) async {
+      await pumpLive(tester);
+      final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Settings tab')));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(lens, findsOneWidget);
+      await g.up();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 160));
+      expect(lens, findsNothing, reason: 'flat again well before the liquid move finishes');
+      await tester.pumpAndSettle();
+    });
   });
 }

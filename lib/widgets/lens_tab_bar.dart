@@ -90,8 +90,8 @@ class LensTabBar extends StatefulWidget {
  * - pressed: on touch-down the pill lifts into the liquid lens (scale [Motion.lensLiftX] x [Motion.lensLiftY], refraction,
  *   content magnified [Motion.lensMagnify]) at the touched tab, on [Motion.lift].
  * - dragging: the lens follows the finger 1:1 across the tabs.
- * - settling: on release the lens springs to the nearest tab on [Motion.liquid], then flattens back to the rest pill
- *   on [Motion.settle] (no overshoot). A tap with no drag is a short lift, the move, then the settle.
+ * - settling: on release the tab under the finger is selected; the lens springs to it on [Motion.liquid] while it
+ *   flattens back to the rest pill on [Motion.lensFlatten] (about 110 ms, no overshoot), as native does.
  * Reduce Motion: no lift or lens; the pill moves to the new tab without travel.
  */
 enum LensPhase { rest, pressed, dragging, settling }
@@ -144,7 +144,10 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       _lift.value = 0;
       return;
     }
-    _lift.animateWith(SpringSimulation(spring, _lift.value, v, _lift.velocity));
+    // Springs end within their tolerance of the target; snap so rest is exactly flat (scale 1.0, no lens).
+    _lift.animateWith(SpringSimulation(spring, _lift.value, v, _lift.velocity)).whenComplete(() {
+      if (mounted && !_lift.isAnimating && phase == LensPhase.rest && v == 0) _lift.value = 0;
+    });
   }
 
   double _cellAt(double mainOffset) => ((mainOffset - LensTabBar.pad) / _cell - 0.5).clamp(0.0, widget.tabs.length - 1.0);
@@ -160,34 +163,38 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
     _moveTo(at);
   }
 
+  /** The finger's last position along the bar, in cell units: what a release selects. */
+  double _finger = 0;
+
   void _drag(Offset local) {
     // A drag can win the gesture arena before the tap's touch-down fires (the finger moved past the slop within
     // 100 ms), so a drag from rest lifts the lens itself.
     if (phase == LensPhase.rest || phase == LensPhase.settling) _liftTo(1, Motion.lift);
     phase = LensPhase.dragging;
+    _finger = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy);
     _pos.stop();
-    _pos.value = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy); // follows the finger 1:1
+    _pos.value = _finger; // follows the finger 1:1
   }
 
-  void _release() {
+  /**
+   * Release selects the tab under the finger where it lifted ([at], from the gesture's own end details), never the
+   * lens's animated position, which can lag a fast flick. The lens then moves to the selection on [Motion.liquid] while
+   * it flattens in parallel on [Motion.lensFlatten] (about 110 ms, like native), with no overshoot.
+   */
+  void _release({Offset? at}) {
     if (phase == LensPhase.rest) return;
-    final i = (phase == LensPhase.dragging ? _pos.value.round() : _touched).clamp(0, widget.tabs.length - 1);
-    phase = LensPhase.settling;
+    if (at != null) _finger = _cellAt(widget.axis == Axis.horizontal ? at.dx : at.dy);
+    final i = (phase == LensPhase.dragging ? _finger.round() : _touched).clamp(0, widget.tabs.length - 1);
+    phase = LensPhase.rest;
     if (i != widget.currentIndex) Haptics.selection();
     widget.onTap(i);
-    final move = _reduce ? null : _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, i.toDouble(), _pos.velocity));
-    void flatten() {
-      if (!mounted || phase != LensPhase.settling) return;
-      _liftTo(0, Motion.settle);
-      phase = LensPhase.rest;
-    }
-
-    if (move == null) {
+    if (_reduce) {
       _pos.value = i.toDouble();
-      flatten();
-    } else {
-      move.whenComplete(flatten);
+      _lift.value = 0;
+      return;
     }
+    _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, i.toDouble(), _pos.velocity));
+    _liftTo(0, Motion.lensFlatten);
   }
 
   @override
@@ -250,16 +257,16 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (d) => _down(local(d.globalPosition)),
-            onTapUp: (_) => _release(),
+            onTapUp: (d) => _release(at: local(d.globalPosition)),
             onTapCancel: () {
               if (phase == LensPhase.pressed) _release();
             },
             onHorizontalDragStart: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
             onHorizontalDragUpdate: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
-            onHorizontalDragEnd: horizontal ? (_) => _release() : null,
+            onHorizontalDragEnd: horizontal ? (d) => _release(at: local(d.globalPosition)) : null,
             onVerticalDragStart: horizontal ? null : (d) => _drag(local(d.globalPosition)),
             onVerticalDragUpdate: horizontal ? null : (d) => _drag(local(d.globalPosition)),
-            onVerticalDragEnd: horizontal ? null : (_) => _release(),
+            onVerticalDragEnd: horizontal ? null : (d) => _release(at: local(d.globalPosition)),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
