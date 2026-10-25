@@ -18,6 +18,7 @@ abstract final class PhosphorIconsLight {
   static const IconData brain = IconData(0xe74e, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData caretDown = IconData(0xe136, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData caretLeft = IconData(0xe138, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
+  static const IconData caretRight = IconData(0xe13a, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData check = IconData(0xe182, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData circle = IconData(0xe18a, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);
   static const IconData circleDashed = IconData(0xe602, fontFamily: 'PhosphorLight', fontPackage: _package, matchTextDirection: true);

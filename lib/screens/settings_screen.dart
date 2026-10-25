@@ -121,7 +121,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
     if (!mounted) return;
 
-    showAdaptiveSheet(context: context, anchorPoint: sheetAnchorPoint(context), isScrollControlled: true, builder: (context) => const NotificationTimesSheet());
+    showAdaptiveSheet(
+      context: context,
+      anchorPoint: sheetAnchorPoint(context),
+      isScrollControlled: true,
+      builder: (context) => const NotificationTimesSheet(),
+    );
   }
 
   /** Shows the "About Here Now" dialog with app description and version. */
@@ -283,11 +288,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
     final colors = context.colors;
-    final textColorMuted = colors.textMuted;
-    final textColorSubtle = isDark ? Colors.white.withValues(alpha: 0.4) : colors.textMuted;
-    final textColorVersion = isDark ? Colors.white.withValues(alpha: 0.3) : colors.textMuted;
+    // Tokens only: white at 30-40% fell under 4.5:1 on dark glass.
+    final textColorSubtle = colors.textMuted;
+    final textColorVersion = colors.textMuted;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return PointerScaffold(
@@ -339,29 +343,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
               const SettingsDivider(),
               SettingsRow(
                 title: 'Notification Times',
-                trailing: LayoutBuilder(
-                  builder: (context, constraints) {
-                    const iconAndGapWidth = 26.0; // chevron (20) + gap (6)
-                    final maxSummaryWidth = (constraints.maxWidth - iconAndGapWidth).clamp(40.0, 180.0);
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: maxSummaryWidth),
-                          child: Text(
-                            _getScheduleTimeSummary(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(color: textColorMuted, fontSize: 14),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
-                      ],
-                    );
-                  },
-                ),
+                // The summary is the subtitle, so it has the row's full width and never truncates.
+                subtitle: _getScheduleTimeSummary(),
+                trailing: Icon(Icons.chevron_right, color: textColorSubtle, size: 20),
                 onTap: _showNotificationTimesSheet,
               ),
             ],
@@ -524,7 +508,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
     if (!layout.isTwoPane || breakAt < 0) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          final side = layout.sizeClass == WindowSizeClass.compact ? 24.0 : ((constraints.maxWidth - kContentMaxWidth) / 2).clamp(24.0, double.infinity);
+          final side = layout.sizeClass == WindowSizeClass.compact
+              ? 24.0
+              : ((constraints.maxWidth - kContentMaxWidth) / 2).clamp(24.0, double.infinity);
           return ListView(
             padding: EdgeInsets.only(left: side, right: side, top: 20, bottom: bottom),
             children: [

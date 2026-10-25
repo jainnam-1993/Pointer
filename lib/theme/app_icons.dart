@@ -37,6 +37,7 @@ class AppIcons {
   // Common
   static const IconData heart = PhosphorIconsLight.heart;
   static const IconData chevronDown = PhosphorIconsLight.caretDown;
+  static const IconData chevronRight = PhosphorIconsLight.caretRight;
   static const IconData back = PhosphorIconsLight.caretLeft;
   static const IconData check = PhosphorIconsLight.check;
   static const IconData close = PhosphorIconsLight.x;
@@ -69,6 +70,7 @@ class AppIcons {
     'tipFallback': tipFallback,
     'heart': heart,
     'chevronDown': chevronDown,
+    'chevronRight': chevronRight,
     'check': check,
     'close': close,
     'share': share,

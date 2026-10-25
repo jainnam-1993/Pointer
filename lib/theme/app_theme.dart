@@ -436,6 +436,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimWidth: 1.5,
     highlight: Color(0x12FFFFFF),
     shadow: Color(0x52000000),
+    // The same filled lavender as Today's Inquire pill, so every primary action matches (Done, Continue).
+    primaryFill: InkPalette.inkLavender,
+    onPrimary: Color(0xFF24182C),
   );
 
   static const light = GlassMaterial(
@@ -464,6 +467,8 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimBottom: Color(0x0AFFFFFF),
     highlight: Color(0x0DFFFFFF),
     shadow: Colors.transparent,
+    primaryFill: InkPalette.inkLavender,
+    onPrimary: Color(0xFF24182C),
   );
 
   static const highContrast = GlassMaterial(
@@ -495,6 +500,17 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     blurSigma: 0,
     opaque: true,
   );
+
+  /**
+   * Fill of a bottom sheet body (notification schedule, time picker): the app's own
+   * surface, ink-tinted in dark, warm white in light, never a neutral grey. Text and
+   * the plain glass levels on it are checked in test/theme/contrast_test.dart.
+   */
+  static Color sheetSurface(PointerColors colors) {
+    if (identical(colors, PointerColors.dark)) return const Color(0xFA0C0A13);
+    if (identical(colors, PointerColors.light)) return const Color(0xF0FFFDF8);
+    return colors.surface;
+  }
 
   /** Index of each intensity in [levels]. */
   static const int lightLevel = 0, standardLevel = 1, heavyLevel = 2;
