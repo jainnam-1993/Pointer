@@ -31,29 +31,37 @@ class AppearanceSelector extends ConsumerWidget {
         children: [
           Text('Theme', style: TextStyle(fontSize: 16, color: context.colors.textPrimary)),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              ThemeOption(
-                label: 'Light',
-                icon: Icons.light_mode_outlined,
-                isSelected: currentMode == AppThemeMode.light,
-                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.light),
-              ),
-              const SizedBox(width: 12),
-              ThemeOption(
-                label: 'Dark',
-                icon: Icons.dark_mode_outlined,
-                isSelected: currentMode == AppThemeMode.dark,
-                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.dark),
-              ),
-              const SizedBox(width: 12),
-              ThemeOption(
-                label: 'System',
-                icon: Icons.settings_brightness_outlined,
-                isSelected: currentMode == AppThemeMode.system,
-                onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.system),
-              ),
-            ],
+          // One segmented control: a quiet track, the selected segment a filled pill on it.
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: context.colors.textPrimary.withValues(alpha: SelectionTint.resting),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd + AppSpacing.xs),
+            ),
+            child: Row(
+              children: [
+                ThemeOption(
+                  label: 'Light',
+                  icon: Icons.light_mode_outlined,
+                  isSelected: currentMode == AppThemeMode.light,
+                  onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.light),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                ThemeOption(
+                  label: 'Dark',
+                  icon: Icons.dark_mode_outlined,
+                  isSelected: currentMode == AppThemeMode.dark,
+                  onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.dark),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                ThemeOption(
+                  label: 'System',
+                  icon: Icons.settings_brightness_outlined,
+                  isSelected: currentMode == AppThemeMode.system,
+                  onTap: () => ref.read(settingsProvider.notifier).setTheme(AppThemeMode.system),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           // OLED Black Mode toggle removed (Phase 5.5) - caused light mode to turn black
@@ -166,8 +174,6 @@ class ThemeOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = context.isDarkMode;
-    // Use accent color for better visibility across themes
-    final accentColor = colors.accent;
     final unselectedColor = colors.textSecondary;
 
     // Enhanced selection visibility:
@@ -195,32 +201,15 @@ class ThemeOption extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
             child: Column(
               children: [
-                // Stack icon with checkmark overlay when selected
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(icon, size: 24, color: isSelected ? accentColor : unselectedColor),
-                    // Checkmark indicator in bottom-right corner
-                    if (isSelected)
-                      Positioned(
-                        right: -4,
-                        bottom: -4,
-                        child: Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
-                          child: const Icon(Icons.check, size: 10, color: Colors.white),
-                        ),
-                      ),
-                  ],
-                ),
+                // Selection shows through the segment fill and label weight; no badge over the glyph.
+                Icon(icon, size: 24, color: isSelected ? colors.textPrimary : unselectedColor),
                 const SizedBox(height: 4),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected ? accentColor : unselectedColor,
+                    color: isSelected ? colors.textPrimary : unselectedColor,
                   ),
                 ),
               ],
