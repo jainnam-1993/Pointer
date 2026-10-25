@@ -47,15 +47,65 @@ void main() {
     expect(bar.border, isNotNull);
   });
 
-  testWidgets('only the active tab shows a label; every tab is at least 44 pt', (tester) async {
+  /** Labels the user can see: Text widgets whose Opacity ancestors are all non-zero. */
+  List<String> visibleLabels(WidgetTester tester) => [
+    for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate())
+      if (tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(e.widget), matching: find.byType(Opacity))).every((o) => o.opacity > 0))
+        (e.widget as Text).data!,
+  ];
+
+  testWidgets('every tab shows its label once; every tab is at least 44 pt', (tester) async {
     await pumpBar(tester, AppTheme.light);
-    expect(find.text('Inquiry'), findsOneWidget);
-    expect(find.text('Home'), findsNothing);
+    expect(visibleLabels(tester)..sort(), ['Home', 'Inquiry', 'Library', 'Settings']);
     for (final label in ['Home tab', 'Inquiry tab, selected', 'Library tab', 'Settings tab']) {
       final size = tester.getSize(find.bySemanticsLabel(label));
       expect(size.width, greaterThanOrEqualTo(AppSpacing.minTouchTarget), reason: label);
       expect(size.height, greaterThanOrEqualTo(AppSpacing.minTouchTarget), reason: label);
     }
+  });
+
+  for (final scale in [1.3, 2.0]) {
+    for (final axis in [Axis.horizontal, Axis.vertical]) {
+      testWidgets('labels fit their cells at text scale $scale ($axis): no overflow, inside the bar', (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: MediaQuery(
+              data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+              child: Center(
+                child: SizedBox(
+                  width: axis == Axis.horizontal ? 358 : 72,
+                  height: axis == Axis.horizontal ? 64 : 4 * 64 + 16,
+                  child: LensTabBar(tabs: tabs, currentIndex: 1, onTap: (_) {}, axis: axis),
+                ),
+              ),
+            ),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final bar = tester.getRect(find.byType(LensTabBar));
+        for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate()) {
+          final r = tester.getRect(find.byWidget(e.widget));
+          expect(
+            bar.inflate(1).contains(r.topLeft) && bar.inflate(1).contains(r.bottomRight),
+            isTrue,
+            reason: '${(e.widget as Text).data} $r in $bar',
+          );
+        }
+      });
+    }
+  }
+
+  test('inactive labels keep 4.5:1 on the resting bar in light and dark', () {
+    double ratio(Color a, Color b) {
+      final x = a.computeLuminance(), y = b.computeLuminance();
+      return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
+    }
+
+    final light = LensBarLook.of(dark: false, highContrast: false);
+    expect(ratio(light.inactive, Color.alphaBlend(light.capsule, PointerColors.light.background)), greaterThanOrEqualTo(4.5));
+    final dark = LensBarLook.of(dark: true, highContrast: false);
+    expect(ratio(dark.inactive, dark.capsule), greaterThanOrEqualTo(4.5));
   });
 
   group('lens state machine (native iOS 27 reference)', () {
@@ -196,7 +246,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
       expect(lens, findsOneWidget);
-      final label = tester.widget<Text>(find.descendant(of: find.byType(LensTabBar), matching: find.text('Library')));
+      // The lens's own label (w600); the hidden cell label underneath is w500.
+      final label = tester
+          .widgetList<Text>(find.descendant(of: find.byType(LensTabBar), matching: find.text('Library')))
+          .firstWhere((t) => t.style!.fontWeight == FontWeight.w600);
       final ink = label.style!.color!;
       // What the label sits on: the light background, under the light glass capsule, under the lens fill.
       final look = LensBarLook.of(dark: false, highContrast: false);
@@ -230,7 +283,10 @@ void main() {
         expect(lens, findsOneWidget, reason: '$axis');
         final visibleLibraryIcons = tester
             .widgetList<Icon>(find.byIcon(AppIcons.libraryFilled))
-            .where((icon) => tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0))
+            .where(
+              (icon) =>
+                  tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0),
+            )
             .length;
         expect(visibleLibraryIcons, 1, reason: 'exactly one Library glyph on screen while the lens is over it ($axis)');
         await g.up();
