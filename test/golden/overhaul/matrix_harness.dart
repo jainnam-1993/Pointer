@@ -371,6 +371,12 @@ final matrixScreens = <MatrixScreen>[
   MatrixScreen('shell', () => const _ShellHost(), postures: {'foldhinge', 'tabletop'}, extraCells: [('phone', MatrixTheme.contrastlight)]),
   MatrixScreen('library', () => const Scaffold(body: LibraryScreen())),
   MatrixScreen('settings', () => const SettingsScreen()),
+  // Saved with nothing saved: the empty state's heart icon and copy (restructure2 moved Saved to its own tab).
+  MatrixScreen(
+    'savedempty',
+    () => const Scaffold(body: SavedScreen()),
+    onlyCells: [('phone', MatrixTheme.light), ('phone', MatrixTheme.dark), ('foldinner', MatrixTheme.light), ('foldinner', MatrixTheme.dark)],
+  ),
   MatrixScreen('lineages', () => const LineagesScreen()),
   MatrixScreen('article', () => const ArticleReaderScreen(articleId: _readerArticleId)),
   MatrixScreen(
