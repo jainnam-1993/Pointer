@@ -4,6 +4,8 @@
  */
 library;
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../utils/motion.dart';
@@ -123,24 +125,32 @@ class InquiryPhaseContent extends StatelessWidget {
             const SizedBox(height: 32),
           ],
 
-          // Main question in glass card
-          GlassCard(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32, vertical: 40),
-            child: Column(
-              children: [
-                Text(inquiry.question, style: AppTextStyles.pointingText(context).copyWith(height: 1.6), textAlign: TextAlign.center),
-                if (inquiry.teacher != null) ...[
-                  const SizedBox(height: 20),
-                  Text('— ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
+          // Main question in glass card: a fixed share of the width (capped on tablets), so a short question
+          // still makes a focal card instead of a small tile in an empty screen (A4).
+          SizedBox(
+            width: math.min(MediaQuery.sizeOf(context).width * 0.78, 520),
+            child: GlassCard(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width < 360 ? 20 : 32, vertical: 40),
+              child: Column(
+                children: [
+                  Text(
+                    inquiry.question,
+                    style: AppTextStyles.pointingText(context).copyWith(fontSize: AppType.hero, height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (inquiry.teacher != null) ...[
+                    const SizedBox(height: 20),
+                    Text('— ${inquiry.teacher}', style: AppTextStyles.teacherText(context), textAlign: TextAlign.center),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
 
           // Visual element below if no visual above
           if (!inquiry.hasVisualElement) ...[
-            const SizedBox(height: 40),
-            const InquiryVisual(size: 100),
+            const SizedBox(height: 32),
+            const InquiryVisual(size: 120),
             const SizedBox(height: 12),
             _orbCaption(context),
           ],
