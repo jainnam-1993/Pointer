@@ -48,10 +48,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-              child: Text(
-                'ARTICLES',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-              ),
+              child: Text('ARTICLES', style: AppTextStyles.sectionHeader(context)),
             ),
           ),
           SliverPadding(
@@ -120,10 +117,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-              child: Text(
-                'POINTINGS',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
-              ),
+              child: Text('POINTINGS', style: AppTextStyles.sectionHeader(context)),
             ),
           ),
           SliverPadding(
@@ -135,35 +129,28 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: GlassCard(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 8, 4),
+                    // Sized to its content: the quote spans the card, and the actions share the
+                    // attribution's row, so a short quote leaves no empty band.
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          pointing.content,
-                          style: TextStyle(color: colors.textPrimary, fontSize: 15, height: 1.5),
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          // The Today pointing style (Newsreader), one step down for a list card.
+                          child: Text(
+                            smartPunctuation(pointing.content),
+                            style: AppTextStyles.pointingText(context).copyWith(fontSize: AppType.title),
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        const SizedBox(height: 12),
                         Row(
                           children: [
-                            if (pointing.teacher != null)
-                              Expanded(
-                                child: Text('— ${pointing.teacher}', style: TextStyle(color: colors.textMuted, fontSize: 13)),
-                              )
-                            else
-                              const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                Haptics.light();
-                                showSharePreview(context, pointing);
-                              },
-                              child: SizedBox(
-                                width: 44,
-                                height: 44,
-                                child: Center(child: Icon(Icons.share_outlined, size: 20, color: colors.textMuted)),
-                              ),
+                            Expanded(
+                              child: pointing.teacher == null
+                                  ? const SizedBox.shrink()
+                                  : Text('— ${pointing.teacher}', style: AppTextStyles.teacherText(context).copyWith(color: colors.textSecondary)),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -174,6 +161,17 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                                 width: 44,
                                 height: 44,
                                 child: Center(child: Icon(Icons.favorite, size: 22, color: colors.accent)),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Haptics.light();
+                                showSharePreview(context, pointing);
+                              },
+                              child: SizedBox(
+                                width: 44,
+                                height: 44,
+                                child: Center(child: Icon(AppIcons.share, size: 22, color: colors.textSecondary)),
                               ),
                             ),
                           ],

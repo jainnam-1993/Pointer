@@ -35,6 +35,7 @@ import 'package:pointer/models/article.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
 import 'package:pointer/screens/home_screen.dart';
+import 'package:pointer/screens/inquiry_player_screen.dart';
 import 'package:pointer/screens/main_shell.dart';
 import 'package:pointer/screens/library_screen.dart';
 import 'package:pointer/screens/lineages_screen.dart';
@@ -81,14 +82,18 @@ const matrixDevices = <MatrixDevice>[
     _foldInner,
     2.625,
     safeArea: EdgeInsets.only(top: 24, bottom: 24),
-    displayFeatures: [DisplayFeature(bounds: Rect.fromLTWH(420, 0, 0, 884), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened)],
+    displayFeatures: [
+      DisplayFeature(bounds: Rect.fromLTWH(420, 0, 0, 884), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened),
+    ],
   ),
   MatrixDevice(
     'tabletop',
     _foldInner,
     2.625,
     safeArea: EdgeInsets.only(top: 24, bottom: 24),
-    displayFeatures: [DisplayFeature(bounds: Rect.fromLTWH(0, 442, 841, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened)],
+    displayFeatures: [
+      DisplayFeature(bounds: Rect.fromLTWH(0, 442, 841, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened),
+    ],
   ),
   // iPad: 11-inch and 13-inch in portrait and landscape, plus Split View third (compact) and half (medium) windows.
   MatrixDevice('ipad11p', Size(834, 1194), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
@@ -317,6 +322,9 @@ class MatrixScreen {
 
   final Pointing pointing;
 
+  /// Preference values written before the screen is pumped (a seeded state, such as saved pointings).
+  final Map<String, String> seedPrefs;
+
   const MatrixScreen(
     this.name,
     this.build, {
@@ -326,6 +334,7 @@ class MatrixScreen {
     this.extraCells = const [],
     this.onlyCells,
     this.pointing = goldenTestPointing,
+    this.seedPrefs = const {},
   });
 }
 
@@ -390,6 +399,24 @@ final matrixScreens = <MatrixScreen>[
     () => const Scaffold(body: SavedScreen()),
     onlyCells: [('phone', MatrixTheme.light), ('phone', MatrixTheme.dark), ('foldinner', MatrixTheme.light), ('foldinner', MatrixTheme.dark)],
   ),
+  // Saved with pointings: serif cards sized to content, actions beside the text (panel items 6 and 7).
+  MatrixScreen(
+    'saved',
+    () => const Scaffold(body: SavedScreen()),
+    seedPrefs: const {'pointer_favorites': '["adv-1","adv-2","adv-3"]'},
+    onlyCells: [('phone', MatrixTheme.light), ('phone', MatrixTheme.dark), ('foldinner', MatrixTheme.dark), ('ipad13p', MatrixTheme.light)],
+  ),
+  // Guided Inquiry in the question phase: card, orb caption and time bar (panel item 11).
+  MatrixScreen(
+    'inquiry',
+    () => const InquiryPlayerScreen(inquiryId: 'si_003'),
+    onlyCells: [('phone', MatrixTheme.light), ('phone', MatrixTheme.dark), ('foldinner', MatrixTheme.dark), ('ipad13p', MatrixTheme.light)],
+    drive: (tester) async {
+      // Past the 8 s setup phase into the question; the time bar then sits part-filled.
+      await tester.pump(InquiryPlayerScreen.setupDuration);
+      await settleTransient(tester);
+    },
+  ),
   MatrixScreen('lineages', () => const LineagesScreen()),
   MatrixScreen('article', () => const ArticleReaderScreen(articleId: _readerArticleId)),
   MatrixScreen(
@@ -452,6 +479,9 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
   final cell = '${screen.name}_${device.name}_${theme.name}${_textScaleSuffix(textScale)}';
 
   final prefs = await createMockPrefs(onboardingCompleted: screen.onboardingCompleted);
+  for (final MapEntry(:key, :value) in screen.seedPrefs.entries) {
+    await prefs.setString(key, value);
+  }
 
   final previous = FlutterError.onError;
   final overflows = <String>[];

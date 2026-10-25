@@ -40,7 +40,7 @@ const inquiries = <Inquiry>[
 
   Inquiry(
     id: 'si_003',
-    question: 'Who am I?',
+    question: 'Who Am I?',
     setup: 'Not "what am I" or "what should I be." Who am I right now?',
     followUp: 'Can you find the one asking?',
     type: InquiryType.selfInquiry,
@@ -140,7 +140,13 @@ const inquiries = <Inquiry>[
     hasVisualElement: true,
   ),
 
-  Inquiry(id: 'koan_006', question: 'Where do you go when you die?', type: InquiryType.koan, tradition: Tradition.zen, pauseDuration: Duration(seconds: 15)),
+  Inquiry(
+    id: 'koan_006',
+    question: 'Where do you go when you die?',
+    type: InquiryType.koan,
+    tradition: Tradition.zen,
+    pauseDuration: Duration(seconds: 15),
+  ),
 
   Inquiry(
     id: 'koan_007',

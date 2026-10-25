@@ -170,7 +170,7 @@ class TopicTags {
       case truth:
         return PhosphorIconsLight.diamond;
       case presence:
-        return PhosphorIconsLight.dot;
+        return PhosphorIconsLight.record;
       case surrender:
         return PhosphorIconsLight.waves;
       case ego:
@@ -178,7 +178,7 @@ class TopicTags {
       case nature:
         return PhosphorIconsLight.leaf;
       default:
-        return PhosphorIconsLight.dot;
+        return PhosphorIconsLight.record;
     }
   }
 }
@@ -263,7 +263,7 @@ class MoodTags {
       case challenging:
         return PhosphorIconsLight.fire;
       default:
-        return PhosphorIconsLight.dot;
+        return PhosphorIconsLight.record;
     }
   }
 }

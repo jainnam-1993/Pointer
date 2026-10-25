@@ -60,7 +60,7 @@ class TraditionInfo {
   /** Thin line icon from the app icon set; render this instead of [icon] (which needs font fallback). */
   final IconData lineIcon;
 
-  const TraditionInfo({required this.name, required this.icon, required this.description, this.lineIcon = PhosphorIconsLight.dot});
+  const TraditionInfo({required this.name, required this.icon, required this.description, this.lineIcon = PhosphorIconsLight.record});
 }
 
 /** Map of [Tradition] to its [TraditionInfo] display metadata. */
@@ -71,7 +71,12 @@ const traditions = <Tradition, TraditionInfo>{
     description: 'The path of non-duality. You are already what you seek.',
     lineIcon: PhosphorIconsLight.sun,
   ),
-  Tradition.zen: TraditionInfo(name: 'Zen Buddhism', icon: '◯', description: 'Direct pointing. No words, no concepts.', lineIcon: PhosphorIconsLight.circle),
+  Tradition.zen: TraditionInfo(
+    name: 'Zen Buddhism',
+    icon: '◯',
+    description: 'Direct pointing. No words, no concepts.',
+    lineIcon: PhosphorIconsLight.circle,
+  ),
   Tradition.direct: TraditionInfo(
     name: 'Direct Path',
     icon: '◇',
