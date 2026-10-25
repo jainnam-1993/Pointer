@@ -1,7 +1,7 @@
 set -u
 export PATH=$HOME/flutter-3.47.8/bin:/opt/homebrew/bin:$PATH LC_ALL=en_US.UTF-8
 OUT=$HOME/PointerStudioShots/store-1.3.0; mkdir -p "$OUT"
-R=$HOME/PointerStudio-release; P=com.dailypointer
+R=${R:-$HOME/PointerStudio-relshots}; P=com.dailypointer
 [ -d $R/build/ios/iphonesimulator/Runner.app ] || { echo NOAPP; exit 1; }
 APP=$R/build/ios/iphonesimulator/Runner.app
 labels() { axe describe-ui --udid "$1" 2>/dev/null | python3 -c '
