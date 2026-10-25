@@ -6,4 +6,6 @@
     <color name="widget_text">#FFFFFF</color>
     <color name="widget_text_muted">#B4AFB8</color>
     <color name="widget_accent">#B79CFF</color>
+    <color name="widget_control">#CCC2DC</color>
+    <color name="widget_on_control">#332D41</color>
 </resources>

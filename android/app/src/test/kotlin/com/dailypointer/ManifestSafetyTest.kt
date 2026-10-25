@@ -25,12 +25,12 @@ class ManifestSafetyTest {
     @Test
     fun glassAlphaOverrideIsDebugOnly() {
         val main = File("src/main").walkTopDown().filter { it.isFile }.joinToString("\n") { it.readText() }
-        assertFalse("main must not read the debug override", "widget_debug" in main || "glass_alpha" in main)
+        assertFalse("main must not read the debug override", "widget_debug" in main || "WidgetLookSource.KEY" in main)
         for (t in listOf("release", "profile")) {
-            val f = File("src/$t/kotlin/com/dailypointer/GlassAlpha.kt")
-            assertTrue("$t GlassAlpha exists", f.exists())
+            val f = File("src/$t/kotlin/com/dailypointer/WidgetLookSource.kt")
+            assertTrue("$t WidgetLookSource exists", f.exists())
             val text = f.readText()
-            assertTrue("$t returns the constant", "GlassRule.FIXED_ALPHA" in text && "SharedPreferences" !in text && "getSharedPreferences" !in text)
+            assertTrue("$t returns the shipped look", "WidgetLook.SHIPPED" in text && "SharedPreferences" !in text && "getSharedPreferences" !in text)
         }
     }
 }
