@@ -288,8 +288,7 @@ class AmbientPalette {
     fieldB: Color(0xFFF6EAD3),
     fieldC: Color(0xFFD2E1CE),
     aurora: 0.62,
-    // Quieter in dark: at 0.55 the motes read as specks around the glass (design panel).
-    motes: 0.3,
+    motes: 0.55,
     isDark: false,
   );
 
@@ -304,7 +303,7 @@ class AmbientPalette {
       fieldB: Color(0xFF7A5030),
       fieldC: Color(0xFF41306E),
       aurora: 0.42,
-      motes: 0.5,
+      motes: 0.25, // quieter in dark: at 0.5 the motes read as specks around the glass (design panel)
       isDark: true,
     ),
     // morning: warm amber with teal
