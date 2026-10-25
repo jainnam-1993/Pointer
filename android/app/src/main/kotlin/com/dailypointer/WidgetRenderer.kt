@@ -62,8 +62,9 @@ object WidgetRenderer {
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
         // The wallpaper colors are read on every render, so a wallpaper change shows on the next redraw.
-        // Glass alpha for the current wallpaper; the wallpaper itself shows through the card.
-        val glass = WallpaperTint.glassAlpha(context)
+        // One fixed glass alpha, right for any wallpaper with no recompute: a wallpaper change
+        // redraws nothing, so a per-wallpaper value would go stale (see GlassRule.FIXED_ALPHA).
+        val glass = GlassAlpha.current(context)
         for (id in ids) {
             manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, glass))
         }

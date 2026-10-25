@@ -6,57 +6,57 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GlassRuleTest {
-    private val wallpapers = mapOf(
-        "white" to listOf(0xFFFFFFFF.toInt()), "black" to listOf(0xFF000000.toInt()), "snow" to listOf(0xFFE8EEF4.toInt(), 0xFF7A8FA6.toInt()),
-        "night" to listOf(0xFF101830.toInt(), 0xFF2A2040.toInt()), "red" to listOf(0xFFE01010.toInt()), "yellow" to listOf(0xFFFFE000.toInt()),
-        "foliage" to listOf(0xFF4A6A2A.toInt(), 0xFF9AB070.toInt()), "grey" to listOf(0xFF808080.toInt()), "busy" to listOf(0xFF203040.toInt(), 0xFFF0C040.toInt(), 0xFF40A0E0.toInt()),
+    /** Brightest colours of the 8 sweep wallpapers (pastel, dark, photo, white, foliage, snow, black, saturated), plus pure white. */
+    private val fixtures = mapOf(
+        "pastel" to 0xFFF2D6E4.toInt(), "dark" to 0xFF140B2B.toInt(), "photo" to 0xFFFFE000.toInt(), "white" to 0xFFFFFFFF.toInt(),
+        "foliage" to 0xFF9AB070.toInt(), "snow" to 0xFFF4F6FA.toInt(), "black" to 0xFF000000.toInt(), "saturated" to 0xFFFFE628.toInt(),
     )
 
-    /** Both floors hold over the assumed brightest colour, for every wallpaper and the no-colours case. */
+    /** The user asked for real see-through: the body must stay at or under half opacity. */
     @Test
-    fun alphaKeepsBothFloors() {
-        val failures = mutableListOf<String>()
-        for ((name, colors) in wallpapers + ("none" to emptyList())) for (darkText in listOf(false, true)) {
-            val a = GlassRule.alpha(colors, darkText)
-            val behind = GlassRule.worstCase(colors, darkText)
-            val q = GlassRule.quoteContrast(behind, a)
-            val s = GlassRule.secondaryContrast(behind, a)
-            if (q < GlassRule.QUOTE_MIN || s < GlassRule.SECONDARY_MIN) failures += "$name darkText=$darkText a=$a quote=$q secondary=$s"
-        }
-        assertEquals(emptyList<String>(), failures)
+    fun bodyAlphaStaysSeeThrough() {
+        assertTrue("body alpha ${GlassRule.FIXED_ALPHA}", GlassRule.FIXED_ALPHA <= 0.50)
     }
 
-    /** As see-through as the text allows: dark wallpapers get the glassiest card, light ones more tint. */
+    /** With the scrim, the quote keeps 7:1 and the teacher line 4.5:1 over every fixture wallpaper. */
     @Test
-    fun darkWallpapersStaySeeThroughAndLightOnesGetMoreTint() {
-        val night = GlassRule.alpha(wallpapers.getValue("night"), false)
-        val white = GlassRule.alpha(wallpapers.getValue("white"), true)
-        // A dark wallpaper gets the glassiest card in the sweep, close to the minimum (headroom adds a little).
-        assertTrue("night \$night", night <= GlassRule.MIN_ALPHA + 0.05)
-        assertTrue(wallpapers.filterKeys { it != "black" && it != "night" }.values.all { GlassRule.alpha(it, false) >= night })
-        assertTrue("white wallpaper needs more tint ($white vs $night)", white > night + 0.2)
-        assertTrue(white <= GlassRule.MAX_ALPHA)
+    fun floorsHoldOverEveryFixtureWallpaper() {
+        val failures = fixtures.mapNotNull { (name, c) ->
+            val q = GlassRule.quoteContrast(c)
+            val s = GlassRule.secondaryContrast(c)
+            if (q < GlassRule.QUOTE_MIN || s < GlassRule.SECONDARY_MIN) "$name quote=%.2f teacher=%.2f".format(q, s) else null
+        }
+        assertEquals(emptyList<String>(), failures)
     }
 
     /** The two text levels survive: the teacher line stays visibly dimmer than the quote. */
     @Test
     fun teacherLineStaysTheDimmerLevel() {
-        val card = GlassRule.composite(FrostPalette.WHITE, GlassRule.alpha(emptyList(), true))
+        val card = GlassRule.cardUnderText(FrostPalette.WHITE)
         assertTrue(FrostPalette.luminance(GlassRule.secondaryOver(card)) < 0.85 * FrostPalette.luminance(GlassRule.INK))
     }
 
+    /** The model matches the drawable: the scrim alphas in the test are the ones in widget_text_scrim.xml. */
+    @Test
+    fun scrimDrawableMatchesTheModel() {
+        val xml = File("src/main/res/drawable/widget_text_scrim.xml").readText()
+        assertTrue("#661C1B1F" in xml && "#8C1C1B1F" in xml)
+    }
+
     /**
-     * The tint follows the system palette with no code running: the glass layer is an XML drawable
-     * whose colour is @android:color/system_neutral1_* on Android 12+, which launchers re-inflate.
+     * Layout guards: the glass body uses the system dynamic colour on Android 12+, and the text scrim
+     * sits behind the quote (on its area) and behind the teacher line, in every live layout.
      */
     @Test
-    fun glassUsesTheSystemDynamicColour() {
+    fun layoutsUseDynamicTintAndPutTheScrimBehindTheText() {
         val v31 = File("src/main/res/values-v31/colors.xml").readText()
         assertTrue(Regex("""name="widget_glass_tint">@android:color/system_neutral\d_\d+<""").containsMatchIn(v31))
         assertTrue("@color/widget_glass_tint" in File("src/main/res/drawable/widget_glass.xml").readText())
         for (name in listOf("pointer_widget.xml", "pointer_widget_small.xml", "pointer_widget_large.xml")) {
-            val text = File("src/main/res/layout/$name").readText()
-            assertTrue("$name: glass layer", Regex("""widget_frost_bg"[^>]*android:src="@drawable/widget_glass"""").containsMatchIn(text.replace("\n", " ")))
+            val text = File("src/main/res/layout/$name").readText().replace("\n", " ")
+            assertTrue("$name: glass body", Regex("""widget_frost_bg"[^>]*android:src="@drawable/widget_glass"""").containsMatchIn(text))
+            assertTrue("$name: scrim behind the quote", Regex("""widget_content_area"[^>]*android:background="@drawable/widget_text_scrim"""").containsMatchIn(text))
+            assertTrue("$name: scrim behind the teacher line", Regex("""widget_teacher"[^>]*android:background="@drawable/widget_text_scrim"""").containsMatchIn(text))
         }
     }
 }

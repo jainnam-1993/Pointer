@@ -1,67 +1,45 @@
 package com.dailypointer
 
 /**
- * The see-through widget card: a dark glass tint over the live wallpaper, as translucent as the
- * text allows.
+ * The see-through widget card: a dark glass body over the live wallpaper, with a legibility scrim
+ * behind the text only (as iOS widgets and the lock screen do).
  *
- * Decision (2026-10-24, reverses the opaque card drawn from WallpaperColors): RemoteViews cannot
- * blur, and an opaque card painted from the wallpaper's colours only changes when the widget
- * redraws. Nothing redraws a widget on a wallpaper change with the app closed, so the card went
- * stale (user report). A translucent card shows the new wallpaper at once, with no code running.
- * The tint is @android:color/system_neutral1_900 on Android 12+ (the launcher re-inflates it on a
- * wallpaper or theme change), else a fixed near-black.
- *
- * The alpha is the least that keeps the white quote at [QUOTE_MIN] and the 80% white teacher line
- * at [SECONDARY_MIN] over the brightest colour the wallpaper is likely to put behind the card.
- * WallpaperColors are dominant colours, not the brightest pixels, so the brightest is pushed toward white
- * ([MARGIN], or [DARK_MARGIN] on a uniformly dark wallpaper); a wallpaper that supports dark text (a light wallpaper) is treated as white outright.
- * Pure Kotlin (ARGB ints), so the rule runs as a JVM unit test.
+ * Decisions (2026-10-24):
+ * - The card is translucent, so a new wallpaper shows through at once with no code running.
+ *   An opaque card painted from WallpaperColors went stale, because nothing redraws a widget on a
+ *   wallpaper change while the app is closed.
+ * - One FIXED body alpha for every wallpaper. A per-wallpaper alpha needs a recompute on each
+ *   wallpaper change, which nothing reliably runs, so it went stale between redraws.
+ * - The scrim (res/drawable/widget_text_scrim.xml) carries the text contrast, so the body can stay
+ *   see-through. Measured on a Fold over 8 wallpapers with no redraw: body 0.45 gives the quote
+ *   9.9:1 and the teacher line 6.2:1 at worst (flat card without a scrim: 0.79 needed).
+ * - The tint is @android:color/system_neutral1_900 on Android 12+ (launchers re-inflate it on a
+ *   wallpaper or theme change), else a fixed near-black.
+ * Pure Kotlin (ARGB ints) for the contrast model, so the floors run as a JVM unit test.
  */
 object GlassRule {
+    /** Body alpha on every wallpaper. Guarded at <= 0.50 by GlassRuleTest (the user asked for see-through). */
+    const val FIXED_ALPHA = 0.45
+
+    /** The two scrim layers' alphas as drawn in widget_text_scrim.xml (outer 0x66, inner 0x99 at its densest point, 0x8C at its edges). */
+    const val SCRIM_OUTER = 0x66 / 255.0
+    const val SCRIM_INNER_EDGE = 0x8C / 255.0
+
     const val TINT = 0xFF1C1B1F.toInt()
     const val INK = 0xFFF5F2EE.toInt()
     const val SECONDARY_WHITE = 0.80
     const val QUOTE_MIN = 7.0
     const val SECONDARY_MIN = 4.5
-    /** The glassiest the card gets, and the most opaque it may become for a white wallpaper. */
-    const val MIN_ALPHA = 0.40
-    const val MAX_ALPHA = 0.95
-    /**
-     * How far the brightest dominant colour is pushed toward white to estimate the brightest pixel
-     * behind the card. Measured on a Fold: a busy photo whose dominant colours peak near 0.3
-     * luminance still had bright yellow and white patches behind the card (5.6:1 at 0.35), so any
-     * wallpaper that is not uniformly dark is assumed to be nearly white somewhere. A uniformly
-     * dark wallpaper (brightest dominant colour under [DARK_WALLPAPER]) keeps the small margin and
-     * the glassiest card.
-     */
-    const val MARGIN = 0.80
-    const val DARK_MARGIN = 0.35
-    const val DARK_WALLPAPER = 0.06
-    /** Measured on a Fold: rendered glyphs and the system tint land up to about 0.5:1 under the model. */
-    const val HEADROOM = 0.6
 
-    /** The brightest colour assumed behind the card. */
-    fun worstCase(colors: List<Int>, supportsDarkText: Boolean): Int {
-        if (supportsDarkText || colors.isEmpty()) return FrostPalette.WHITE
-        val brightest = colors.maxBy { FrostPalette.luminance(it) }
-        val margin = if (FrostPalette.luminance(brightest) < DARK_WALLPAPER) DARK_MARGIN else MARGIN
-        return FrostPalette.mix(brightest, FrostPalette.WHITE, margin)
-    }
+    /** Tint coverage under the text: body, then the scrim's two layers at their thinnest. */
+    val underText: Double get() = 1 - (1 - FIXED_ALPHA) * (1 - SCRIM_OUTER) * (1 - SCRIM_INNER_EDGE)
 
-    /** What the card looks like over [behind] at [alpha]. */
-    fun composite(behind: Int, alpha: Double): Int = FrostPalette.mix(behind, TINT, alpha)
+    /** What the text sits on over a wallpaper colour [behind]. */
+    fun cardUnderText(behind: Int): Int = FrostPalette.mix(behind, TINT, underText)
 
     fun secondaryOver(card: Int): Int = FrostPalette.mix(card, INK, SECONDARY_WHITE)
 
-    fun quoteContrast(behind: Int, alpha: Double): Double = FrostPalette.contrast(INK, composite(behind, alpha))
+    fun quoteContrast(behind: Int): Double = FrostPalette.contrast(INK, cardUnderText(behind))
 
-    fun secondaryContrast(behind: Int, alpha: Double): Double = composite(behind, alpha).let { FrostPalette.contrast(secondaryOver(it), it) }
-
-    /** The least alpha (in 0.01 steps, from [MIN_ALPHA]) that meets both floors over [behind]. */
-    fun alpha(colors: List<Int>, supportsDarkText: Boolean): Double {
-        val behind = worstCase(colors, supportsDarkText)
-        var a = MIN_ALPHA
-        while (a < MAX_ALPHA && (quoteContrast(behind, a) < QUOTE_MIN + HEADROOM || secondaryContrast(behind, a) < SECONDARY_MIN + HEADROOM)) a += 0.01
-        return a.coerceAtMost(MAX_ALPHA)
-    }
+    fun secondaryContrast(behind: Int): Double = cardUnderText(behind).let { FrostPalette.contrast(secondaryOver(it), it) }
 }
