@@ -343,6 +343,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   Widget _buildCard(BuildContext context, Pointing pointing, PointerColors colors, {required Size size, required bool isSquareAspect, double? maxHeight}) {
     final isFavorite = ref.watch(favoritesProvider.select((f) => f.contains(pointing.id)));
     final cardPadding = (size.width * 0.06).clamp(20.0, 28.0);
+    // Tablets (not the Fold): the pointing sits centred in a taller card, a type step up.
+    final tablet = WindowLayout.of(context).isTabletCanvas;
     final teacher = getTeacher(pointing.teacher);
 
     return Semantics(
@@ -373,84 +375,88 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             duration: Motion.of(context, Motion.standard),
             curve: Motion.inOut,
             alignment: Alignment.topCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header: quiet tradition label, then heart and share as plain glyphs.
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Semantics(
-                            label: traditions[pointing.tradition]!.name,
-                            excludeSemantics: true,
-                            child: AnimatedSwitcher(
-                              duration: Motion.of(context, Motion.quick),
-                              switchInCurve: Motion.enter,
-                              switchOutCurve: Motion.exit,
-                              // Enters with a fade and a slight lift, never from scale 0.
-                              transitionBuilder: (child, animation) => FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(scale: Tween<double>(begin: 0.94, end: 1).animate(animation), child: child),
-                              ),
-                              child: _buildTraditionLabel(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
+            child: HeroCardBody(
+              centered: tablet,
+              minBodyHeight: size.height * kTabletHeroBodyHeightShare,
+              header: // Header: quiet tradition label, then heart and share as plain glyphs.
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Semantics(
+                          label: traditions[pointing.tradition]!.name,
+                          excludeSemantics: true,
+                          child: AnimatedSwitcher(
+                            duration: Motion.of(context, Motion.quick),
+                            switchInCurve: Motion.enter,
+                            switchOutCurve: Motion.exit,
+                            // Enters with a fade and a slight lift, never from scale 0.
+                            transitionBuilder: (child, animation) => FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(scale: Tween<double>(begin: 0.94, end: 1).animate(animation), child: child),
                             ),
+                            child: _buildTraditionLabel(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
                           ),
                         ),
                       ),
-                      _QuietIconButton(
-                        icon: isFavorite ? PhosphorIconsFill.heart : AppIcons.heart,
-                        color: isFavorite ? colors.accent : colors.textSecondary,
-                        label: isFavorite ? 'Remove from favorites' : 'Save to favorites',
-                        onTap: _handleToggleFavorite,
-                      ),
-                      _QuietIconButton(icon: AppIcons.share, color: colors.textSecondary, label: 'Share this pointing', onTap: _handleShare),
-                    ],
-                  ),
+                    ),
+                    _QuietIconButton(
+                      icon: isFavorite ? PhosphorIconsFill.heart : AppIcons.heart,
+                      color: isFavorite ? colors.accent : colors.textSecondary,
+                      label: isFavorite ? 'Remove from favorites' : 'Save to favorites',
+                      onTap: _handleToggleFavorite,
+                    ),
+                    _QuietIconButton(icon: AppIcons.share, color: colors.textSecondary, label: 'Share this pointing', onTap: _handleShare),
+                  ],
                 ),
-                AnimatedSwitcher(
-                  duration: Motion.of(context, const Duration(milliseconds: 400)),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Motion.exit,
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                    child: child,
-                  ),
-                  child: Text(
-                    smartPunctuation(pointing.content),
-                    key: ValueKey(pointing.id),
-                    style: AppTextStyles.heroPointingText(context),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                if (pointing.instruction != null) ...[
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(smartPunctuation(pointing.instruction!), style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
-                ],
-                if (pointing.teacher != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
+              ),
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   AnimatedSwitcher(
-                    duration: Motion.of(context, Motion.quick),
-                    transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
-                    child: _AttributionLink(
-                      key: ValueKey('${pointing.id}-teacher'),
-                      text: '— ${pointing.teacher}',
-                      style: AppTextStyles.teacherText(context),
-                      semanticsLabel: pointing.teacher!,
-                      hint: 'Opens teacher profile',
-                      onTap: teacher == null ? null : () => showTeacherSheet(context, teacher),
+                    duration: Motion.of(context, const Duration(milliseconds: 400)),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Motion.exit,
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                      child: child,
+                    ),
+                    child: Text(
+                      smartPunctuation(pointing.content),
+                      key: ValueKey(pointing.id),
+                      style: AppTextStyles.heroPointingText(context),
+                      textAlign: TextAlign.center,
                     ),
                   ),
+                  if (pointing.instruction != null) ...[
+                    const SizedBox(height: AppSpacing.xl),
+                    Text(smartPunctuation(pointing.instruction!), style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
+                  ],
+                  if (pointing.teacher != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    AnimatedSwitcher(
+                      duration: Motion.of(context, Motion.quick),
+                      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+                      child: _AttributionLink(
+                        key: ValueKey('${pointing.id}-teacher'),
+                        text: '— ${pointing.teacher}',
+                        style: AppTextStyles.teacherText(context),
+                        semanticsLabel: pointing.teacher!,
+                        hint: 'Opens teacher profile',
+                        onTap: teacher == null ? null : () => showTeacherSheet(context, teacher),
+                      ),
+                    ),
+                  ],
+                  if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
+                  if (pointing.commentary != null) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
+                  ],
                 ],
-                if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
-                if (pointing.commentary != null) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
-                ],
-              ],
+              ),
             ),
           ),
         ),

@@ -345,6 +345,32 @@ void main() {
       expect(_layout(const Size(841, 884), [_tableFold]).railAlignment, Alignment.centerLeft, reason: 'tabletop keeps its rail below the fold');
     });
 
+    test('Library list-detail from 720 dp medium; the Fold keeps it; phones, small tablets and tabletop do not', () {
+      expect(_layout(tablet10Portrait).showsListDetail, true);
+      expect(_layout(const Size(720, 1100)).showsListDetail, true);
+      expect(_layout(const Size(719, 1100)).showsListDetail, false);
+      expect(_layout(const Size(600, 960)).showsListDetail, false, reason: '7-inch tablet');
+      expect(_layout(const Size(411, 923)).showsListDetail, false);
+      expect(_layout(foldInner).showsListDetail, true);
+      expect(_layout(foldInner).isTwoPane, true, reason: 'the Fold is two-pane on every screen, as before');
+      expect(_layout(const Size(841, 884), [_tableFold]).showsListDetail, true, reason: 'expanded tabletop stays two-pane as before');
+    });
+
+    test('tablet canvas: iPad and Android tablets, not the Fold or phones', () {
+      expect(
+        [_layout(ipad13Portrait).isTabletCanvas, _layout(ipad13Landscape).isTabletCanvas, _layout(tablet10Portrait).isTabletCanvas],
+        [true, true, true],
+      );
+      expect(
+        [
+          _layout(foldInner).isTabletCanvas,
+          _layout(foldInner, [foldFlat]).isTabletCanvas,
+          _layout(const Size(411, 923)).isTabletCanvas,
+        ],
+        [false, false, false],
+      );
+    });
+
     test('grid columns: Saved tiles fill the width, Featured rows are always full', () {
       expect(tileColumns(360), 1);
       expect(tileColumns(624), 2);

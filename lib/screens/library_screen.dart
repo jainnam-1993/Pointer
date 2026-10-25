@@ -123,7 +123,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               // Featured: whole cards in a grid that fits the width, never a strip
               // that runs past an edge. In two panes it moves to the detail pane,
               // which it fills until a reading is chosen.
-              if (!WindowLayout.of(context).isTwoPane) ...[
+              if (!WindowLayout.of(context).showsListDetail) ...[
                 SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
                 SliverToBoxAdapter(
                   child: _FeaturedGrid(featured: featured, onOpen: (a) => _openArticle(context, a)),
@@ -171,10 +171,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
    */
   Widget _adaptiveBody(BuildContext context, Widget list) {
     final layout = WindowLayout.of(context);
-    if (!layout.isTwoPane) return layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list);
+    if (!layout.showsListDetail) return layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list);
     final selected = _selectedArticleId;
     return TwoPane(
       key: const ValueKey('library-list-detail'),
+      twoPane: true,
       primaryFlex: 2,
       secondaryFlex: 3,
       // A 2:3 split leaves the list under 300 dp on an 815 dp unfolded fold,
@@ -194,7 +195,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /** Navigates to the [ArticleReaderScreen] for the given article. */
   void _openArticle(BuildContext context, Article article) {
     Haptics.light();
-    if (WindowLayout.of(context).isTwoPane) {
+    if (WindowLayout.of(context).showsListDetail) {
       setState(() => _selectedArticleId = article.id);
       return;
     }

@@ -70,8 +70,16 @@ void main() {
       expect(pointingKey(tester), isNot(second));
     });
 
-    testWidgets('home: the hero pointing steps up on regular width only', (tester) async {
-      for (final (name, size) in [('phone', AppType.display), ('ipadthird', AppType.display), ('ipadhalf', AppType.hero), ('ipad13l', AppType.hero)]) {
+    testWidgets('home: the hero pointing steps up on regular width, and again on tablets (not the Fold)', (tester) async {
+      for (final (name, size) in [
+        ('phone', AppType.display),
+        ('ipadthird', AppType.display),
+        ('foldinner', AppType.hero),
+        ('ipadhalf', AppType.hero),
+        ('tablet10', AppType.hero),
+        ('ipad13p', AppType.heroTablet),
+        ('ipad13l', AppType.heroTablet),
+      ]) {
         await pumpAt(tester, screen('home'), device(name));
         final text = tester.widgetList<Text>(heroPointing).last;
         expect(text.style?.fontSize, size, reason: name);
@@ -224,7 +232,9 @@ void main() {
       expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
       // Scrolled to the end nothing is hidden below, so the fade goes away.
       final position = tester
-          .state<ScrollableState>(find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first)
+          .state<ScrollableState>(
+            find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first,
+          )
           .position;
       position.jumpTo(position.maxScrollExtent);
       await tester.pump();

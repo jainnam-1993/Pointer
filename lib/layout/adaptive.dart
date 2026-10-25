@@ -166,6 +166,20 @@ class WindowLayout {
    */
   double get railContentInset => kRailWidth + (isFoldableInnerScreen ? 0 : kRailGutter);
 
+  /**
+   * A tablet canvas: a medium or expanded flat window that is not a foldable's
+   * inner screen. Today's card centres its pointing and sets it a type step up
+   * here ([AppType.heroTablet]); the Fold and phones keep their card.
+   */
+  bool get isTabletCanvas => sizeClass != WindowSizeClass.compact && posture == Posture.flat && !isFoldableInnerScreen;
+
+  /**
+   * Library's list-detail: wherever the window is two-pane, and on medium
+   * windows from [kListDetailMinWidth] (a 10-inch tablet in portrait), which
+   * have room for a phone-width list beside the reader. Tabletop keeps one pane.
+   */
+  bool get showsListDetail => isTwoPane || (sizeClass == WindowSizeClass.medium && size.width >= kListDetailMinWidth && posture == Posture.flat);
+
   /** How Today composes the hero card with its context. See [HeroComposition]. */
   HeroComposition get heroComposition {
     if (sizeClass == WindowSizeClass.compact || posture != Posture.flat || isFoldableInnerScreen) {
@@ -188,6 +202,43 @@ enum HeroComposition { single, sideBySide, stacked }
 
 /** Height-to-width ratio past which a regular window counts as a tall (portrait) tablet. */
 const double kTallWindowAspect = 1.15;
+
+/** Narrowest medium window that gets Library's list-detail ([WindowLayout.showsListDetail]). */
+const double kListDetailMinWidth = 720;
+
+/** Share of the window height the pointing's area fills in a tablet hero card ([WindowLayout.isTabletCanvas]). */
+const double kTabletHeroBodyHeightShare = 0.26;
+
+/**
+ * The hero card's content: [header] on top, then [body]. On a tablet canvas
+ * ([centered]) the body gets at least [minBodyHeight] and sits centred in it,
+ * so the pointing holds the middle of the card rather than its top.
+ */
+class HeroCardBody extends StatelessWidget {
+  final Widget header;
+  final Widget body;
+  final bool centered;
+  final double minBodyHeight;
+
+  const HeroCardBody({super.key, required this.header, required this.body, this.centered = false, this.minBodyHeight = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        header,
+        if (centered)
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: minBodyHeight),
+            child: Center(key: const ValueKey('hero-card-centred'), child: body),
+          )
+        else
+          body,
+      ],
+    );
+  }
+}
 
 /** Extra gap between the rail column and content on tablets. */
 const double kRailGutter = 16;
@@ -268,10 +319,11 @@ class SliverTileGrid extends StatelessWidget {
 
 /**
  * Widest the hero card gets in [HeroComposition.stacked]: a line of about 60
- * to 70 characters of the pointing at [AppType.hero] (32 pt serif) plus the
- * card's side padding, the design panel's 600 to 640 pt reading measure.
+ * characters a line of the pointing at [AppType.heroTablet] (36 pt
+ * Newsreader) plus the card's side padding. The type grows with the measure,
+ * so the line stays near the design panel's 600 to 640 pt reading width.
  */
-const double kHeroReadingMeasureWidth = 640;
+const double kHeroReadingMeasureWidth = 760;
 
 /** Gap between the stacked hero group (card and actions) and the context beneath it. */
 const double kHeroContextGap = 56;
@@ -295,20 +347,14 @@ class HeroStack extends StatelessWidget {
       key: const ValueKey('hero-stack'),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: kHeroReadingMeasureWidth),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Column(
-            children: [
-              const Spacer(flex: 2),
-              // The card may grow to most of the height; past that its quote scrolls.
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: constraints.maxHeight * 0.7),
-                child: hero,
-              ),
-              const SizedBox(height: kHeroContextGap),
-              below,
-              const Spacer(flex: 2),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Loose: the card takes the height it needs, and its quote scrolls past what the window has.
+            Flexible(child: hero),
+            const SizedBox(height: kHeroContextGap),
+            below,
+          ],
         ),
       ),
     );
@@ -365,7 +411,11 @@ class TwoPane extends StatelessWidget {
    */
   final double primaryMinWidth;
 
+  /** Overrides [WindowLayout.isTwoPane], for a screen with its own rule such as [WindowLayout.showsListDetail]. */
+  final bool? twoPane;
+
   const TwoPane({
+    this.twoPane,
     super.key,
     required this.primary,
     required this.secondary,
@@ -378,7 +428,7 @@ class TwoPane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final layout = WindowLayout.of(context);
-    if (!layout.isTwoPane) return primary;
+    if (!(twoPane ?? layout.isTwoPane)) return primary;
     final left = MediaQuery.removePadding(
       context: context,
       removeRight: true,
