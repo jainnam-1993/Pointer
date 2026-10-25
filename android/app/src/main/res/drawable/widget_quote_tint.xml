@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Soft, borderless tint behind the quote on the dark glass: the glass tone, densest at the centre and
+     fading to nothing before the edges, so it reads as deeper glass rather than an inner box. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:type="radial" android:gradientRadius="170%p"
+        android:startColor="#A61C1B1F" android:centerColor="#731C1B1F" android:endColor="#001C1B1F" />
+</shape>

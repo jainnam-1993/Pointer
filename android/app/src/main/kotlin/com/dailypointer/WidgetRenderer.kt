@@ -147,13 +147,17 @@ object WidgetRenderer {
 
     /** Applies the look: surface, scrim, and the two text levels (quote, then teacher and eyebrow). */
     private fun paint(context: Context, views: RemoteViews, size: WidgetSize, look: WidgetLook) {
-        val scrim = if (look.scrim == WidgetScrim.BOX) R.drawable.widget_text_scrim else 0
+        val scrim = when (look.scrim) {
+            WidgetScrim.BOX -> R.drawable.widget_text_scrim
+            WidgetScrim.SOFT -> R.drawable.widget_quote_tint
+            WidgetScrim.NONE -> 0
+        }
         views.setInt(R.id.widget_content_area, "setBackgroundResource", scrim)
         views.setInt(R.id.widget_teacher, "setBackgroundResource", scrim)
         when (look.surface) {
             WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", ((look.bodyAlpha ?: 1.0) * 255).toInt().coerceIn(0, 255))
                 val secondary = (0xD9 shl 24) or (GlassRule.INK and 0xFFFFFF)
                 views.setTextColor(R.id.widget_content, GlassRule.INK)
                 views.setTextColor(R.id.widget_teacher, secondary)
@@ -165,7 +169,10 @@ object WidgetRenderer {
             }
             WidgetSurface.APP -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_app_glass)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                // The card colours carry the theme's opacity; an explicit (review) alpha replaces it.
+                val themed = android.graphics.Color.alpha(context.getColor(R.color.widget_app_card)) / 255.0
+                val scale = look.bodyAlpha?.let { it / themed } ?: 1.0
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (scale * 255).toInt().coerceIn(0, 255))
                 tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_app_ink)
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_app_ink_secondary)
                 tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_app_accent)
@@ -178,7 +185,7 @@ object WidgetRenderer {
             }
             WidgetSurface.TONAL -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_tonal)
-                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", ((look.bodyAlpha ?: 1.0) * 255).toInt().coerceIn(0, 255))
                 tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_text)
                 tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_text_muted)
                 tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_accent)

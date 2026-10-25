@@ -9,12 +9,13 @@
     <color name="widget_control">#CCC2DC</color>
     <color name="widget_on_control">#332D41</color>
     <!-- App look, dark: the user's pick, dark smoke glass (#1C1B1F at the look's alpha) with white ink. -->
-    <color name="widget_app_card">#FF1C1C1E</color>
-    <color name="widget_app_card_end">#FF1C1C1E</color>
+    <!-- Dark-mode opacity lives in this alpha (CC = 80%). -->
+    <color name="widget_app_card">#CC1C1C1E</color>
+    <color name="widget_app_card_end">#CC1C1C1E</color>
     <color name="widget_app_ink">#FFF5F2EE</color>
     <color name="widget_app_ink_secondary">#E6F5F2EE</color>
     <color name="widget_app_accent">#E6EDEAE3</color>
     <color name="widget_app_pill">#24FFFFFF</color>
-    <color name="widget_app_rim">#4DFFFFFF</color>
+    <color name="widget_app_rim">#3DFFFFFF</color>
     <color name="widget_app_pill_stroke">#26FFFFFF</color>
 </resources>

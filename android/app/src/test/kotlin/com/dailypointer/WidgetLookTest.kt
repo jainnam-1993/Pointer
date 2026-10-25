@@ -16,7 +16,7 @@ class WidgetLookTest {
     fun shippedLookIsTheSeeThroughAppGlass() {
         assertEquals(WidgetSurface.APP, WidgetLook.SHIPPED.surface)
         assertEquals(WidgetScrim.NONE, WidgetLook.SHIPPED.scrim)
-        assertTrue("see-through: ${WidgetLook.SHIPPED.bodyAlpha}", WidgetLook.SHIPPED.bodyAlpha <= 0.80)
+        assertEquals("shipped opacity comes from the theme colours", null, WidgetLook.SHIPPED.bodyAlpha)
     }
 
     /** On Android 12+ every tonal colour is a system dynamic resource, so it follows the wallpaper with no code running. */

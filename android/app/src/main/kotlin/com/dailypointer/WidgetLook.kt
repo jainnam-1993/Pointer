@@ -29,13 +29,21 @@ enum class WidgetScrim {
 
     /** Rounded box behind the quote and teacher line (the 0.45 glass look the user called ugly). */
     BOX,
+
+    /** Soft, borderless tint behind the quote and teacher line (no box edge): holds contrast on light wallpapers. */
+    SOFT,
 }
 
-data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scrim: WidgetScrim) {
+/**
+ * [bodyAlpha] null means the theme decides: the card colours carry their own alpha
+ * (widget_app_card in values/ and values-night/), so light and dark opacity are one value each and
+ * the launcher re-resolves them on a theme change.
+ */
+data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double?, val scrim: WidgetScrim) {
     companion object {
         /** The shipped look. */
         /** The user's pick (2026-10-24): glass that follows the system theme, light cream in light mode and dark smoke in dark mode, at 80% (the most the user allows; the design panel asked for more cover). */
-        val SHIPPED = WidgetLook(WidgetSurface.APP, 0.80, WidgetScrim.NONE)
+        val SHIPPED = WidgetLook(WidgetSurface.APP, null, WidgetScrim.NONE)
 
         /** The looks compared in the 2026-10-24 design review. */
         val REVIEW = mapOf(
@@ -59,7 +67,7 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             // cream at 0.50 and 0.58 (0.66 is app-66) and the dark smoke glass at 0.60 in light mode.
             "app-50" to WidgetLook(WidgetSurface.APP, 0.50, WidgetScrim.NONE),
             "app-58" to WidgetLook(WidgetSurface.APP, 0.58, WidgetScrim.NONE),
-            "glass-60" to WidgetLook(WidgetSurface.GLASS, 0.60, WidgetScrim.NONE),
+            "glass-60" to WidgetLook(WidgetSurface.GLASS, 0.60, WidgetScrim.SOFT),
         )
     }
 }

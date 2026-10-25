@@ -10,7 +10,7 @@
     <item android:gravity="top|fill_horizontal" android:height="1dp"
         android:left="@dimen/widget_corner_radius" android:right="@dimen/widget_corner_radius">
         <shape android:shape="rectangle">
-            <solid android:color="@color/widget_highlight" />
+            <gradient android:angle="0" android:startColor="#00FFFFFF" android:centerColor="@color/widget_highlight" android:endColor="#00FFFFFF" />
         </shape>
     </item>
 </layer-list>
