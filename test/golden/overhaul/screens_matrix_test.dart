@@ -429,6 +429,18 @@ void main() {
     });
   }
 
+  // The user's vivo V2330 unfolded at its 432 dpi display size: medium width,
+  // two panes from its near-square shape. Library's Featured strip ends at the
+  // list pane's edge here, so it must fade, not cut into a box.
+  group('user fold', () {
+    const userFold = MatrixDevice('userfold', Size(815, 918), 2.7, safeArea: EdgeInsets.only(top: 24, bottom: 24));
+    for (final theme in MatrixTheme.values) {
+      testWidgets('library userfold ${theme.name}', (tester) async {
+        await _capture(tester, matrixScreens.firstWhere((s) => s.name == 'library'), userFold, theme);
+      });
+    }
+  });
+
   group('adaptive layout', () {
     MatrixDevice device(String name) => matrixDevices.firstWhere((d) => d.name == name);
     MatrixScreen screen(String name) => matrixScreens.firstWhere((s) => s.name == name);
