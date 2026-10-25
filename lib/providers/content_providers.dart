@@ -266,7 +266,14 @@ class FavoritesNotifier extends StateNotifier<List<String>> {
  */
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(load: () => storage.favorites, add: storage.addFavorite, remove: storage.removeFavorite);
+  return FavoritesNotifier(
+    load: () => storage.favorites,
+    add: (id) async {
+      await storage.addFavorite(id);
+      await ref.read(notificationAskProvider).onSaved();
+    },
+    remove: storage.removeFavorite,
+  );
 });
 
 /**
@@ -274,7 +281,14 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>
  */
 final articleFavoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  return FavoritesNotifier(load: () => storage.favoriteArticles, add: storage.addFavoriteArticle, remove: storage.removeFavoriteArticle);
+  return FavoritesNotifier(
+    load: () => storage.favoriteArticles,
+    add: (id) async {
+      await storage.addFavoriteArticle(id);
+      await ref.read(notificationAskProvider).onSaved();
+    },
+    remove: storage.removeFavoriteArticle,
+  );
 });
 
 // ============================================================

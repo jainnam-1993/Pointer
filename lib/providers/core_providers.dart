@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../services/widget_service.dart';
+import '../services/notification_ask.dart';
 
 // ============================================================
 // SharedPreferences - Root dependency
@@ -44,6 +45,16 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 // ============================================================
 // Notification Service
 // ============================================================
+
+/** Asks for notification permission once, after the first Save (see [NotificationAskPolicy]). */
+final notificationAskProvider = Provider<NotificationAskPolicy>((ref) {
+  final service = ref.watch(notificationServiceProvider);
+  return NotificationAskPolicy(
+    ref.watch(sharedPreferencesProvider),
+    requestPermission: service.requestPermissions,
+    enableNotifications: () => service.setNotificationsEnabled(true),
+  );
+});
 
 /** Notification service provider */
 final notificationServiceProvider = Provider<NotificationService>((ref) {

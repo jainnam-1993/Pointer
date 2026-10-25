@@ -18,7 +18,7 @@ import '../utils/haptics.dart';
  * enso, so every empty state in the app reads as one family.
  */
 class EmptyStateWidget extends StatelessWidget {
-  /** Legacy icon parameter; ignored by the enso visual. */
+  /** Drawn instead of the enso when given, for a state whose fix has an icon (Saved: the heart). */
   final IconData? icon;
 
   /** The single in-voice line, set in the reading serif. */
@@ -51,10 +51,12 @@ class EmptyStateWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ExcludeSemantics(
-                child: CustomPaint(
-                  size: Size.square(iconSize),
-                  painter: _UnfinishedEnsoPainter(color: colors.textMuted),
-                ),
+                child: icon != null
+                    ? Icon(icon, key: const ValueKey('empty-state-icon'), size: iconSize, color: colors.textMuted)
+                    : CustomPaint(
+                        size: Size.square(iconSize),
+                        painter: _UnfinishedEnsoPainter(color: colors.textMuted),
+                      ),
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
