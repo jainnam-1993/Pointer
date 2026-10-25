@@ -28,6 +28,10 @@ class FavoritesFormatTest {
         assertEquals(emptyList<String>(), PointingsJson.decodeIds(""))
         assertNull(PointingsJson.decodeIds("\"adv-1\""))
         assertNull(PointingsJson.decodeIds("adv-1,zen-2"))
+        // The unquoted array a seed script wrote (quotes stripped by the shell): org.json is
+        // lenient and reads the bare words as ids, so the widget keeps them and its next Save
+        // rewrites the value as the strict JSON Dart reads. It must never come back empty.
+        assertEquals(listOf("zen-1", "dir-1", "con-1", "adv-1"), PointingsJson.decodeIds("[zen-1,dir-1,con-1,adv-1]"))
         assertEquals(listOf("adv-1", "zen-2"), PointingsJson.decodeIds("[\"adv-1\",7,null,\"zen-2\"]"))
     }
 

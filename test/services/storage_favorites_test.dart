@@ -18,6 +18,9 @@ void main() {
       ('text that is not JSON', 'adv-1,zen-2', []),
       ('a list with non-strings', '["adv-1",7,null,{"x":1},"","zen-2"]', ['adv-1', 'zen-2']),
       ('a native string list (setStringList)', <String>['adv-1', 'zen-2'], ['adv-1', 'zen-2']),
+      // Seeded on the iOS simulator with PlistBuddy, whose shell stripped the inner quotes;
+      // jsonDecode threw "Unexpected character (at character 2)" and Today showed the error screen.
+      ('the unquoted array a seed script wrote', '[zen-1,dir-1,con-1,adv-1]', []),
     ]) {
       test(name, () async {
         expect((await withStored(value)).favorites, expected);
