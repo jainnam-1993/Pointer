@@ -21,7 +21,7 @@ for spec in "Store iPhone 6.9|com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pr
   U=$(xcrun simctl list devices | sed -nE "s/^ +$NAME \(([0-9A-F-]+)\).*/\1/p" | head -1)
   [ -n "$U" ] || U=$(xcrun simctl create "$NAME" "$TYPE" com.apple.CoreSimulator.SimRuntime.iOS-27-0)
   xcrun simctl boot "$U" 2>/dev/null; xcrun simctl bootstatus "$U" -b >/dev/null; xcrun simctl terminate "$U" com.apple.Preferences 2>/dev/null
-  xcrun simctl status_bar "$U" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+  xcrun simctl status_bar "$U" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState discharging --batteryLevel 100
   xcrun simctl uninstall "$U" $P 2>/dev/null; xcrun simctl install "$U" "$APP"
   C=$(xcrun simctl get_app_container "$U" $P data); PL="$C/Library/Preferences/$P.plist"; mkdir -p "$C/Library/Preferences"
   python3 - "$PL" <<'PY'
@@ -29,7 +29,7 @@ import plistlib, sys, os, json
 p = sys.argv[1]
 d = plistlib.load(open(p, 'rb')) if os.path.exists(p) else {}
 d['flutter.pointer_onboarding_completed'] = True
-d['flutter.pointer_favorites'] = json.dumps(["zen-1", "dir-1", "con-1", "adv-1"])
+d['flutter.pointer_favorites'] = json.dumps(["zen-1", "dir-1", "con-1", "adv-1", "adv-2", "zen-2", "dir-2", "con-2"])
 d['flutter.pointer_current_pointing_id'] = 'con-1'
 plistlib.dump(d, open(p, 'wb'))
 PY
@@ -37,7 +37,7 @@ PY
     xcrun simctl ui "$U" appearance $mode; xcrun simctl terminate "$U" $P 2>/dev/null; xcrun simctl launch "$U" $P >/dev/null; sleep 16
     shot "$U" "${TAG}_${mode}_1_today"
     [ $mode = light ] && labels "$U" > "$OUT/${TAG}_labels_today.txt"
-    axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3; sleep 16; shot "$U" "${TAG}_${mode}_2_library"
+    axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3; [ "$TAG" = ipad13 ] && tap_prefix "$U" "I Am That"; sleep 16; shot "$U" "${TAG}_${mode}_2_library"
     axe tap --label "Saved tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 16; shot "$U" "${TAG}_${mode}_3_saved"
     axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3
     if axe tap --label "Who Am I?. The fundamental inquiry. 1 min." --wait-timeout 5 --udid "$U" >/dev/null 2>&1; then sleep 16; shot "$U" "${TAG}_${mode}_4_inquiry"; else echo "no inquiry row on $TAG"; fi

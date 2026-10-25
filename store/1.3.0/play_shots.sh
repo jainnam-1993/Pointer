@@ -19,7 +19,7 @@ import sys, xml.etree.ElementTree as ET
 p=sys.argv[1]; r=ET.parse(p).getroot()
 for k in ('flutter.pointer_favorites','flutter.pointer_current_pointing_id'):
     for e in r.findall(f"*[@name='{k}']"): r.remove(e)
-e=ET.SubElement(r,'string',name='flutter.pointer_favorites'); e.text='["zen-1","dir-1","con-1","adv-1"]'
+e=ET.SubElement(r,'string',name='flutter.pointer_favorites'); e.text='["zen-1","dir-1","con-1","adv-1","adv-2","zen-2","dir-2","con-2"]'
 e=ET.SubElement(r,'string',name='flutter.pointer_current_pointing_id'); e.text='con-1'
 open(p,'w').write("<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n"+ET.tostring(r,encoding='unicode'))
 PY

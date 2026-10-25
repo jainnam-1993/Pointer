@@ -17,7 +17,7 @@ CAPS = [
     ("1_today", "One pointing. Right now.", "From Zen, Advaita and the Direct Path"),
     (
         "2_library",
-        "Teachings, gathered by tradition.",
+        "Teachings, by tradition.",
         "Short readings and guided inquiries",
     ),
     ("3_saved", "Keep the lines that open you.", "Your favorites, always close"),
@@ -74,12 +74,30 @@ def font(path, size, name):
     return f
 
 
+def drop_island(im):
+    """Paint out the black Dynamic Island pill the simulator draws (on-device screenshots never show it)."""
+    px = im.load()
+    w = im.width
+    for y in range(20, 140):
+        row = [px[x, y] for x in range(int(w * 0.33), int(w * 0.67))]
+        dark = [i for i, c in enumerate(row) if max(c) < 20]
+        if len(dark) < 40:
+            continue
+        left = px[int(w * 0.31), y]
+        for x in range(int(w * 0.33), int(w * 0.67)):
+            if max(px[x, y]) < 60:
+                px[x, y] = left
+    return im
+
+
 def render(shots, out, fonts, dev):
     W, H = SIZES[dev]
     portrait = H > W
     for mode, (stops, ink, sub) in THEMES.items():
         for key, line, second in CAPS:
             shot = Image.open(f"{shots}/{dev}_{mode}_{key}.png").convert("RGB")
+            if dev == "iphone69":
+                shot = drop_island(shot)
             can = background(W, H, stops, mode == "dark")
             d = ImageDraw.Draw(can)
             base = W if portrait else H
@@ -97,6 +115,9 @@ def render(shots, out, fonts, dev):
             if portrait:
                 sw = int(W * 0.80)
                 sh = int(shot.height * sw / shot.width)
+                if y + sh > H - int(H * 0.04):  # keep the whole screen, bottom corners included
+                    sh = H - y - int(H * 0.04)
+                    sw = int(shot.width * sh / shot.height)
             else:
                 sh = H - y - int(H * 0.05)
                 sw = int(shot.width * sh / shot.height)
@@ -115,12 +136,8 @@ def render(shots, out, fonts, dev):
                 shadow.filter(ImageFilter.GaussianBlur(28)),
             )
             can.paste(s, (x, y), mask)
-            if (
-                mode == "dark"
-            ):  # hairline so the device edge reads against the night field
-                ImageDraw.Draw(can).rounded_rectangle(
-                    (x, y, x + sw - 1, y + sh - 1), r, outline=(120, 112, 150), width=3
-                )
+            edge = (120, 112, 150) if mode == "dark" else (196, 186, 166)  # device edge on night or cream
+            ImageDraw.Draw(can).rounded_rectangle((x, y, x + sw - 1, y + sh - 1), r, outline=edge, width=3)
             can.save(f"{out}/{dev}_{mode}_{key}_captioned.png")
 
 
