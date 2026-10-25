@@ -59,7 +59,7 @@
             android:autoSizeStepGranularity="1sp"
             android:gravity="top|start"
             android:maxLines="5"
-            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMinTextSize="18sp"
             android:autoSizeMaxTextSize="30sp"
             android:lineSpacingMultiplier="1.2" />
     </LinearLayout>

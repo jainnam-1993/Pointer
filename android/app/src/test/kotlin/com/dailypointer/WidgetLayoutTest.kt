@@ -99,7 +99,8 @@ class WidgetLayoutTest {
             val max = Regex("""autoSizeMaxTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
             val min = Regex("""autoSizeMinTextSize="(\d+)sp"""").find(q)!!.groupValues[1].toInt()
             assertTrue("$name ceiling $max", max >= ceiling)
-            assertTrue("$name floor $min", min >= 11)
+            // 18 sp floor: the quote is WCAG large text, so its contrast floor is 4.5:1 rather than 7:1.
+            assertTrue("$name floor $min", min >= 18)
         }
     }
 
