@@ -4,7 +4,7 @@ Nothing here has been uploaded. Every step under "Upload steps" needs the user's
 
 ## Version
 
-`1.3.0+17` (`pubspec.yaml:5`). Play already holds build 16 on the alpha and internal tracks (read-only `google_play_track_version_codes`, 2026-10-24: alpha `[16]`, internal `[16]`; production and beta have no releases). The highest is 16, so the release is 17.
+`1.3.0+17` (`pubspec.yaml:5`), on `ovh/release-1.3.0-rc2` (base `overhaul/2026-10` at `2c024ff`). Read-only checks, 2026-10-24 20:38: Play alpha `[16]`, internal `[16]`, production and beta empty; App Store Connect builds top out at 1.2.1 (16), live version 1.2.1 READY_FOR_SALE. 17 is free on both stores.
 
 ## Text
 
@@ -30,20 +30,19 @@ Nothing here has been uploaded. Every step under "Upload steps" needs the user's
 
 New-look captures exist only as test evidence under `/workplace/jainnam/AgentResearch/PointerOptimize/visual/`: `studio/` (iPhone 17 Pro 1206x2622, iPad 1668x2420, Fold 2076x2152, phone 1080x2424) and `uiscene/uiscene_ios27_*` (1206x2622). They are home-screen shots at sizes the stores do not accept for iOS, so they are references for a recapture.
 
-## Builds (checks only)
+## Release builds (signed, not uploaded)
 
-| Output | Where | Size | Signing |
-|---|---|---|---|
-| AAB 1.3.0 (17) | Mac `~/PointerRelease/1.3.0+17/app-release.aab` | 60,558,132 B | upload key, cert SHA-256 `A1:12:CD:ED:...:93:80:C4`, `jarsigner -verify` passes |
-| AAB, temporary key | Mac `~/PointerRelease/1.3.0+17/NOT-FOR-UPLOAD-tempkey-app-release.aab` | 60,548,908 B | temporary key `10:A8:C4:5A:...` |
-| iOS archive 1.3.0 (17) | Studio `~/PointerStudio-release/build/ios/archive/Runner.xcarchive` | 193 MB | unsigned (`--no-codesign`) |
+| Output | Where | Size | SHA-256 | Signing |
+|---|---|---|---|---|
+| Play AAB 1.3.0 (17) | Mac `~/PointerRelease/1.3.0+17-rc2/HereNow-1.3.0-17-release.aab` | 59,861,788 B | `c2211e62bed6b08827a2f7b3a407a4142f74f359984a27502771b95ace4edfad` | upload key `A1:12:CD:ED:...:93:80:C4`, `jarsigner -verify` passes |
+| App Store IPA 1.3.0 (17) | Studio `~/PointerRelease/1.3.0+17-rc2/HereNow-1.3.0-17-release.ipa` | 27,161,752 B | `dc4e0151c4de500a0b1f365331600edeb5d4812437ae1bce29fa5f77cdaa7ca2` | Apple Distribution: Naman Jain (29DPLC9929) on app and widget extension; profiles "Pointer AppStore 2026-10" and "PointerWidget AppStore 2026-10", cert SHA-1 `6DF2208B`; `codesign --verify --strict` passes |
 
-The AAB was built on the Studio with Flutter 3.47.8 and re-signed on the Mac with the upload key, so the key never leaves the Mac. The signed IPA did not build over ssh, because codesign cannot reach the Studio's locked login keychain ("User interaction is not allowed"). The Studio has the identity "Apple Distribution: Naman Jain (29DPLC9929)" and App Store profiles for `com.dailypointer` and `com.dailypointer.PointerWidget` (valid to 2027-01-05).
+Routes: the AAB is built on the Studio and re-signed on the Mac with jarsigner, so the upload key stays on the Mac. The IPA is built with `flutter build ipa --export-options-plist` (manual signing, the two profiles above) inside the Studio's `hermes-relay` tmux server, the only session with an unlocked keychain.
 
 ## Upload steps (each needs approval; none run)
 
-1. Play internal testing, as a draft, from the Mac:
-   `cd <Pointer checkout at ovh/release-1.3.0> && cp ~/PointerRelease/1.3.0+17/app-release.aab build/app/outputs/bundle/release/ && fastlane android internal` (service-account JSON at `android/play-store-credentials.json`; the Studio's copy validated read-only).
-2. TestFlight: on the Studio, unlock the login keychain in a GUI session (or run `security unlock-keychain ~/Library/Keychains/login.keychain-db`), then `flutter build ipa --release` and `fastlane ios beta`.
-3. Listing text, as a separate approval: `fastlane android metadata` and `fastlane ios metadata` (`submit_for_review: false`).
-4. Production rollout and App Review: separate later approval.
+1. Play internal testing, as a draft (Studio, `~/Projects/Pointer` holds `android/play-store-credentials.json`):
+   `scp` the AAB to `build/app/outputs/bundle/release/app-release.aab` in a checkout of `ovh/release-1.3.0-rc2`, then `fastlane android internal`.
+2. TestFlight (Studio): `fastlane ios beta` with `build/ios/ipa/` holding the IPA above; the lane uses API key J72393HTF4 and does not submit for review.
+3. Listing text, separate approval: `fastlane android metadata`, `fastlane ios metadata` (`submit_for_review: false`).
+4. Production rollout and App Review: a later, separate approval.

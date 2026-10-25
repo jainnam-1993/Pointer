@@ -1,7 +1,7 @@
 Here Now 1.3
-• A fresh look: new type, calmer colors and a Liquid Glass tab bar
-• The home-screen widget now follows your wallpaper's colors. Add it from Settings with the new Add widget button
-• Ready for the latest iOS and Android releases
-• Built for tablets and foldables: side rail, two-pane screens, keyboard shortcuts
-• High contrast now works in light and dark mode
-• Fixes for reminders, the widget, tips and small screens
+• A calmer, simpler app: three tabs, Today, Library and Saved, with Settings one tap away
+• New sage and sand colors, a glass tab bar and a quote card for each pointing
+• Library is now a browsable grid of traditions and teachers
+• The home-screen widget takes its tone from your wallpaper. Add it from Settings
+• Opens faster, works on tablets and foldables, high contrast in light and dark
+• Fixes for reminders, the widget and tips
