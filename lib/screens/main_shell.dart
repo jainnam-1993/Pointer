@@ -198,12 +198,7 @@ class _MainShellState extends ConsumerState<MainShell> {
 }
 
 /** The four tabs, shared by the bottom bar and the side rail. */
-const _tabs = <LensTab>[
-  (AppIcons.homeFilled, 'Home'),
-  (AppIcons.inquiryFilled, 'Inquiry'),
-  (AppIcons.libraryFilled, 'Library'),
-  (AppIcons.settingsFilled, 'Settings'),
-];
+const _tabs = <LensTab>[(AppIcons.home, 'Home'), (AppIcons.inquiry, 'Inquiry'), (AppIcons.library, 'Library'), (AppIcons.settings, 'Settings')];
 
 /**
  * Liquid Glass side rail for medium and expanded windows: a vertical capsule centred on the left edge, sharing the

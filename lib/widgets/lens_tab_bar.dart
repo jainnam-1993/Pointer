@@ -286,10 +286,17 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                           if (i != widget.currentIndex) Haptics.selection();
                           widget.onTap(i);
                         },
+                        // The tab under the pill or lens is drawn by it, once. Its cell icon is hidden, so it is not in
+                        // the backdrop the lens refracts (a visible cell icon there showed as a displaced second
+                        // copy under the lens's own label: the "image up and down" the user saw on the rail).
                         child: Center(
-                          child: AnimatedOpacity(
-                            opacity: i == widget.currentIndex ? 0 : 1,
-                            duration: reduce ? Duration.zero : Motion.quick,
+                          child: AnimatedBuilder(
+                            animation: Listenable.merge([_pos, _lift]),
+                            builder: (context, child) {
+                              final underLens = (i - _pos.value).abs() < 0.5;
+                              final hidden = underLens || (i == widget.currentIndex && _lift.value <= 0.001);
+                              return Opacity(opacity: hidden ? 0 : 1, child: child);
+                            },
                             child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
                           ),
                         ),
@@ -392,9 +399,14 @@ class LensBarLook {
       );
     }
     return LensBarLook(
-      capsule: const Color(0x9EFFFFFF),
-      border: Border.all(color: const Color(0xCCFFFFFF), width: 1),
-      shadow: const [BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 6))],
+      // Light glass that reads as glass on a pale field: a translucent body (not a solid fill), a 1 px warm-grey
+      // hairline for the edge, and a soft two-step shadow for depth.
+      capsule: const Color(0x8CFFFFFF),
+      border: Border.all(color: const Color(0x1F3A3426), width: 1),
+      shadow: const [
+        BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1)),
+        BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 8)),
+      ],
       frosted: true,
       pill: const Color(0x2E3F6B52), // sage at 18%
       inactive: const Color(0xFF6E6E73),

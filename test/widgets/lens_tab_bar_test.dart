@@ -207,5 +207,38 @@ void main() {
       await g.up();
       await tester.pumpAndSettle();
     });
+
+    testWidgets('a pressed lens draws its tab once: the cell icon under the lens is hidden from the backdrop', (tester) async {
+      for (final axis in [Axis.horizontal, Axis.vertical]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: axis == Axis.horizontal ? 358 : 72,
+                  height: axis == Axis.horizontal ? 64 : 4 * 64 + 16,
+                  child: LensTabBar(tabs: tabs, currentIndex: 0, onTap: (_) {}, axis: axis),
+                ),
+              ),
+            ),
+          ),
+        );
+        final g = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Library tab')));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
+        expect(lens, findsOneWidget, reason: '$axis');
+        final visibleLibraryIcons = tester
+            .widgetList<Icon>(find.byIcon(AppIcons.libraryFilled))
+            .where(
+              (icon) =>
+                  tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0),
+            )
+            .length;
+        expect(visibleLibraryIcons, 1, reason: 'exactly one Library glyph on screen while the lens is over it ($axis)');
+        await g.up();
+        await tester.pumpAndSettle();
+      }
+    });
   });
 }
