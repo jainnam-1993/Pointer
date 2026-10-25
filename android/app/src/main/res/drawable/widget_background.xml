@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Opaque fallback and outline for the card; the frosted bitmap (FrostCard) paints over it. -->
+<!-- Transparent: the card is the translucent glass (widget_glass) over the live wallpaper. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/widget_surface" />
+    <solid android:color="@android:color/transparent" />
     <corners android:radius="@dimen/widget_corner_radius" />
 </shape>

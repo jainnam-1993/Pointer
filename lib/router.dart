@@ -110,6 +110,32 @@ bool _isOnboardingCompleted() {
 }
 
 /**
+ * The router's redirect rules, free of [GoRouterState] so they can be tested.
+ *
+ * - The splash shows once per cold start, then continues to the location that
+ *   was asked for. That is Home on a fresh launch, and the restored tab (for
+ *   example `/library`) after Android killed the process in the background.
+ * - Until onboarding is done, everything goes to `/onboarding`; after it,
+ *   `/onboarding` goes Home.
+ */
+@visibleForTesting
+String? appRedirect({required String matchedLocation, required String location, required bool onboardingCompleted, required bool hasShownSplash}) {
+  final isSplash = matchedLocation == '/splash';
+  final isOnboarding = matchedLocation == '/onboarding';
+
+  if (!hasShownSplash && !isSplash && !isOnboarding) {
+    final dest = onboardingCompleted ? location : '/onboarding';
+    return '/splash?dest=${Uri.encodeComponent(dest)}';
+  }
+
+  // Splash self-navigates when it finishes.
+  if (isSplash) return null;
+  if (!onboardingCompleted && !isOnboarding) return '/onboarding';
+  if (onboardingCompleted && isOnboarding) return '/';
+  return null;
+}
+
+/**
  * Constructs the [GoRouter] with all route definitions and redirect logic.
  *
  * See the library-level documentation for the full route structure and redirect rules.
@@ -120,33 +146,19 @@ GoRouter _createRouter() {
     initialLocation: '/',
     // Pauses the ambient clock while a modal sheet or dialog is open.
     observers: [AmbientRouteObserver()],
+    // Restores the open tab and each tab's stack after Android kills the
+    // process in the background. A fresh launch has no saved state and starts
+    // at initialLocation, so it still opens on Home.
+    restorationScopeId: 'router',
     redirect: (context, state) {
-      final location = state.matchedLocation;
-      final isSplash = location == '/splash';
-      final isOnboarding = location == '/onboarding';
-      final onboardingCompleted = _isOnboardingCompleted();
-
-      // Splash: show once per cold start (always, regardless of animation settings)
-      if (!_hasShownSplash && !isSplash && !isOnboarding) {
-        _hasShownSplash = true;
-        final dest = onboardingCompleted ? '/' : '/onboarding';
-        return '/splash?dest=${Uri.encodeComponent(dest)}';
-      }
-
-      // Don't redirect away from splash (it self-navigates)
-      if (isSplash) return null;
-
-      // If onboarding not completed and not on onboarding page, redirect
-      if (!onboardingCompleted && !isOnboarding) {
-        return '/onboarding';
-      }
-
-      // If onboarding completed and on onboarding page, redirect to home
-      if (onboardingCompleted && isOnboarding) {
-        return '/';
-      }
-
-      return null;
+      final redirect = appRedirect(
+        matchedLocation: state.matchedLocation,
+        location: state.uri.toString(),
+        onboardingCompleted: _isOnboardingCompleted(),
+        hasShownSplash: _hasShownSplash,
+      );
+      if (redirect != null && redirect.startsWith('/splash')) _hasShownSplash = true;
+      return redirect;
     },
     routes: [
       // Splash video route (outside shell) - calm fade for branded entry
@@ -206,6 +218,7 @@ GoRouter _createRouter() {
       // Main app with bottom navigation
       // Tabs cross-fade over the one shared ambient background instead of cutting (TabCrossFadeContainer).
       StatefulShellRoute(
+        restorationScopeId: 'shell',
         builder: (context, state, navigationShell) {
           return MainShell(navigationShell: navigationShell);
         },
@@ -216,6 +229,7 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _homeNavigatorKey,
+            restorationScopeId: 'home',
             routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
           ),
 
@@ -223,6 +237,7 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _inquiryNavigatorKey,
+            restorationScopeId: 'inquiry',
             routes: [GoRoute(path: '/inquiry', builder: (context, state) => const InquiryScreen())],
           ),
 
@@ -230,6 +245,7 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _libraryNavigatorKey,
+            restorationScopeId: 'library',
             routes: [GoRoute(path: '/library', builder: (context, state) => const LibraryScreen())],
           ),
 
@@ -237,6 +253,7 @@ GoRouter _createRouter() {
           StatefulShellBranch(
             observers: [AmbientRouteObserver()],
             navigatorKey: _settingsNavigatorKey,
+            restorationScopeId: 'settings',
             routes: [GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen())],
           ),
         ],

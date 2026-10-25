@@ -298,7 +298,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 // Featured Section
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8 - _featuredShadowTop),
                     child: Text(
                       'FEATURED',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
@@ -307,41 +307,57 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ),
 
                 // Featured articles horizontal scroll with peek indicator
+                // The strip is a scroll viewport, so it clips. It is taller than
+                // the cards by their shadow's reach, so the clip never cuts a
+                // shadow into a visible box, and its ends fade so a card that
+                // runs past the edge (the list pane's edge in two-pane mode)
+                // dissolves instead of stopping at a hard line.
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble(),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final screenWidth = constraints.maxWidth;
-                        // Card takes ~70% of screen, leaving ~30% for peek
-                        // Peek shows ~24px of next card edge
-                        final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
-                        final cardSpacing = 8.0;
-                        // Calculate padding: 24px left, enough right for last card + peek area
-                        final horizontalPadding = 24.0;
-                        // Extra right padding ensures smooth scroll end (peek area width)
-                        final rightPadding = screenWidth - cardWidth - horizontalPadding;
+                    height:
+                        (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble() +
+                        _featuredShadowTop +
+                        _featuredShadowBottom,
+                    child: _EdgeFade(
+                      width: _featuredEdgeFade,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenWidth = constraints.maxWidth;
+                          // Card takes ~70% of screen, leaving ~30% for peek
+                          // Peek shows ~24px of next card edge
+                          final cardWidth = (screenWidth * 0.70).clamp(180.0, 280.0);
+                          final cardSpacing = 8.0;
+                          // Calculate padding: 24px left, enough right for last card + peek area
+                          final horizontalPadding = 24.0;
+                          // Extra right padding ensures smooth scroll end (peek area width)
+                          final rightPadding = screenWidth - cardWidth - horizontalPadding;
 
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(left: horizontalPadding, right: rightPadding.clamp(24.0, 80.0)),
-                          itemCount: featured.length,
-                          itemBuilder: (context, index) {
-                            final article = featured[index];
-                            final isLast = index == featured.length - 1;
-                            return StaggeredFadeIn(
-                              index: index,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
-                                child: SizedBox(
-                                  width: cardWidth,
-                                  child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.only(
+                              left: horizontalPadding,
+                              right: rightPadding.clamp(24.0, 80.0),
+                              top: _featuredShadowTop,
+                              bottom: _featuredShadowBottom,
+                            ),
+                            itemCount: featured.length,
+                            itemBuilder: (context, index) {
+                              final article = featured[index];
+                              final isLast = index == featured.length - 1;
+                              return StaggeredFadeIn(
+                                index: index,
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: isLast ? 0 : cardSpacing),
+                                  child: SizedBox(
+                                    width: cardWidth,
+                                    child: _FeaturedArticleCard(article: article, onTap: () => _openArticle(context, article)),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -349,7 +365,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 // Browse Mode Section with Dropdown
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+                    padding: const EdgeInsets.fromLTRB(24, 24 - _featuredShadowBottom, 24, 12),
                     // FittedBox scales content down proportionally on small screens
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -411,11 +427,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 ),
               ),
             )
-          : ArticleReaderScreen(
-              key: ValueKey('library-detail-$selected'),
-              articleId: selected,
-              onClose: () => setState(() => _selectedArticleId = null),
-            ),
+          : ArticleReaderScreen(key: ValueKey('library-detail-$selected'), articleId: selected, onClose: () => setState(() => _selectedArticleId = null)),
     );
   }
 
@@ -946,6 +958,39 @@ class _BrowseCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/** Room above the featured cards for their shadow (glass shadow: blur 20, offset 6 down). */
+const double _featuredShadowTop = 8;
+
+/** Room below the featured cards for their shadow's blur plus its 6 px drop. */
+const double _featuredShadowBottom = 24;
+
+/** Width of the soft fade at each end of the featured strip. */
+const double _featuredEdgeFade = 40;
+
+/** Fades [child] to transparent over [width] at its left and right ends. */
+class _EdgeFade extends StatelessWidget {
+  final double width;
+  final Widget child;
+
+  const _EdgeFade({required this.width, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      key: const ValueKey('featured-edge-fade'),
+      blendMode: BlendMode.dstIn,
+      shaderCallback: (bounds) {
+        final edge = bounds.width <= 0 ? 0.0 : (width / bounds.width).clamp(0.0, 0.5);
+        return LinearGradient(
+          colors: const [Color(0x00000000), Color(0xFF000000), Color(0xFF000000), Color(0x00000000)],
+          stops: [0, edge, 1 - edge, 1],
+        ).createShader(bounds);
+      },
+      child: child,
     );
   }
 }
