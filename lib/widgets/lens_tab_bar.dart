@@ -209,7 +209,9 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       builder: (context, c) {
         final n = widget.tabs.length;
         final thickness = horizontal ? (widget.minimized ? LiquidGlass.barMinimizedHeight : LiquidGlass.barHeight) : LiquidGlass.railWidth;
-        final extent = horizontal ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth) : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
+        final extent = horizontal
+            ? (widget.minimized ? LensTabBar.minimizedWidth(n) : c.maxWidth)
+            : n * LiquidGlass.railCellHeight + 2 * LensTabBar.pad;
         final cell = (extent - 2 * LensTabBar.pad) / n;
         _cell = cell;
         final showLabel = !(horizontal && widget.minimized);
@@ -225,7 +227,12 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
         final lensCross = pillCross * Motion.lensLiftY;
 
         Widget capsule = DecoratedBox(
-          decoration: BoxDecoration(color: style.capsule, borderRadius: BorderRadius.circular(thickness / 2), border: style.border, boxShadow: style.shadow),
+          decoration: BoxDecoration(
+            color: style.capsule,
+            borderRadius: BorderRadius.circular(thickness / 2),
+            border: style.border,
+            boxShadow: style.shadow,
+          ),
         );
         if (style.frosted && !plain) {
           capsule = ClipRRect(
@@ -290,7 +297,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                               final hidden = underLens || (i == widget.currentIndex && _lift.value <= 0.001);
                               return Opacity(opacity: hidden ? 0 : 1, child: child);
                             },
-                            child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
+                            // Every tab shows its label (HIG tab bars); the selected one is drawn by the pill or lens.
+                            child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: style.inactive, weight: FontWeight.w500),
                           ),
                         ),
                       ),
@@ -414,31 +422,41 @@ class _ActiveLabel extends StatelessWidget {
 
   final Color color;
 
-  const _ActiveLabel({required this.tab, required this.showLabel, this.color = LensTabStyle.active});
+  final FontWeight weight;
+
+  const _ActiveLabel({required this.tab, required this.showLabel, this.color = LensTabStyle.active, this.weight = FontWeight.w600});
 
   @override
   Widget build(BuildContext context) {
+    // Scale the icon and label down together when a large text scale would not fit the cell (rail width, bar cell),
+    // so a label never clips or spills into its neighbour.
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(tab.$1, size: 24, color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
-          if (showLabel)
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Text(
-                tab.$2,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: AppFonts.sans,
-                  fontSize: AppType.caption,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                  shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(tab.$1, size: 24, color: color, shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null),
+              if (showLabel)
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(
+                    tab.$2,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: AppFonts.sans,
+                      fontSize: AppType.caption,
+                      fontWeight: weight,
+                      color: color,
+                      shadows: color == LensTabStyle.active ? LensTabStyle.activeGlow : null,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
