@@ -769,12 +769,13 @@ class AppTextStyles {
 
   /**
    * The hero pointing on Home: [pointingText], one step up to [AppType.hero]
-   * on medium and expanded windows, where the card has room for it.
+   * on phones and medium windows, and [AppType.heroTablet] on expanded tablets.
    */
   static TextStyle heroPointingText(BuildContext context) => pointingText(context).copyWith(fontSize: _heroPointingSize(WindowLayout.of(context)));
 
   static double _heroPointingSize(WindowLayout layout) {
-    if (layout.sizeClass == WindowSizeClass.compact) return AppType.display;
+    // Phones get the hero step too (A3, 20): at display size the card read small under a dead zone at store scale.
+    if (layout.sizeClass == WindowSizeClass.compact) return AppType.hero;
     // The extra step needs an expanded tablet's card measure; at 800 dp a 36 pt line widowed its last word.
     return layout.isTabletCanvas && layout.sizeClass == WindowSizeClass.expanded ? AppType.heroTablet : AppType.hero;
   }

@@ -71,10 +71,10 @@ void main() {
       expect(pointingKey(tester), isNot(second));
     });
 
-    testWidgets('home: the hero pointing steps up on regular width, and again on tablets (not the Fold)', (tester) async {
+    testWidgets('home: the hero pointing is one step up everywhere, and two on expanded tablets (not the Fold)', (tester) async {
       for (final (name, size) in [
-        ('phone', AppType.display),
-        ('ipadthird', AppType.display),
+        ('phone', AppType.hero),
+        ('ipadthird', AppType.hero),
         ('foldinner', AppType.hero),
         ('ipadhalf', AppType.hero),
         ('tablet10', AppType.hero),
