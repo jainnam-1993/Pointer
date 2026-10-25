@@ -457,7 +457,10 @@ void main() {
             ],
             child: MaterialApp(
               theme: ThemeData.dark(),
-              builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)), child: child!),
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+                child: child!,
+              ),
               home: const HomeScreen(),
             ),
           ),

@@ -48,8 +48,7 @@ String _body(String source, String signature) {
 String _code(String body) => body.split('\n').map((l) => l.replaceFirst(RegExp(r'//.*$'), '')).join('\n');
 
 /** Callee of every `await` in [code], e.g. `AppInitializer.initialize`. */
-List<String> _awaited(String code) =>
-    RegExp(r'await\s+([A-Za-z_][\w.]*)').allMatches(code).map((m) => m.group(1)!).toList();
+List<String> _awaited(String code) => RegExp(r'await\s+([A-Za-z_][\w.]*)').allMatches(code).map((m) => m.group(1)!).toList();
 
 void main() {
   final mainSource = _read('lib/main.dart');

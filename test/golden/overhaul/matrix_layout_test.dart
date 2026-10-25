@@ -28,6 +28,36 @@ void main() {
     );
     Key? pointingKey(WidgetTester tester) => tester.widgetList<Text>(heroPointing).last.key;
 
+    // "Nothing looks cut off": at rest, every Featured card and Today's card sits wholly
+    // inside its pane (or the window when single pane), on every device class.
+    for (final name in ['phone', 'foldouter', 'foldinner', 'tablet', 'ipad13l']) {
+      testWidgets('no Featured or Today card is partly visible at rest on $name', (tester) async {
+        final d = device(name);
+        Rect paneFor(Finder f) {
+          for (final key in ['pane-primary', 'pane-secondary']) {
+            final pane = find.ancestor(of: f, matching: find.byKey(ValueKey(key)));
+            if (pane.evaluate().isNotEmpty) return tester.getRect(pane.first);
+          }
+          return Offset.zero & d.size;
+        }
+
+        bool whole(Rect r, Rect area) => r.left >= area.left - 0.5 && r.right <= area.right + 0.5;
+        await pumpAt(tester, screen('library'), d);
+        final cards = find.byWidgetPredicate((w) => w.key is ValueKey && '${(w.key as ValueKey).value}'.startsWith('featured-card-'));
+        // Two panes show Featured in the detail pane at rest; a phone may have it below the fold.
+        if (find.byKey(const ValueKey('library-list-detail')).evaluate().isNotEmpty) expect(cards, findsWidgets, reason: name);
+        for (final e in cards.evaluate()) {
+          final f = find.byWidget(e.widget);
+          expect(whole(tester.getRect(f), paneFor(f)), isTrue, reason: '$name ${(e.widget.key as ValueKey).value} ${tester.getRect(f)}');
+        }
+        await pumpAt(tester, screen('home'), d);
+        for (final e in find.byType(GlassCard).evaluate()) {
+          final f = find.byWidget(e.widget);
+          expect(whole(tester.getRect(f), Offset.zero & d.size), isTrue, reason: '$name Today card ${tester.getRect(f)}');
+        }
+      });
+    }
+
     testWidgets('keyboard: arrow keys and Space step through pointings on Home', (tester) async {
       await pumpAt(tester, screen('home'), device('ipad13l'));
       final first = pointingKey(tester);
@@ -126,7 +156,7 @@ void main() {
       expect(find.byType(ContentWidth), findsOneWidget);
       await pumpAt(tester, screen('library'), device('foldinner'));
       expect(find.byKey(const ValueKey('library-list-detail')), findsOneWidget);
-      expect(find.byKey(const ValueKey('library-detail-empty')), findsOneWidget);
+      expect(find.byKey(const ValueKey('library-detail-featured')), findsOneWidget);
     });
 
     /// Fails if any text or icon straddles the vertical hinge at [hingeX].

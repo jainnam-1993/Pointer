@@ -86,11 +86,7 @@ void main() {
         final bar = tester.getRect(find.byType(LensTabBar));
         for (final e in find.descendant(of: find.byType(LensTabBar), matching: find.byType(Text)).evaluate()) {
           final r = tester.getRect(find.byWidget(e.widget));
-          expect(
-            bar.inflate(1).contains(r.topLeft) && bar.inflate(1).contains(r.bottomRight),
-            isTrue,
-            reason: '${(e.widget as Text).data} $r in $bar',
-          );
+          expect(bar.inflate(1).contains(r.topLeft) && bar.inflate(1).contains(r.bottomRight), isTrue, reason: '${(e.widget as Text).data} $r in $bar');
         }
       });
     }
@@ -283,10 +279,7 @@ void main() {
         expect(lens, findsOneWidget, reason: '$axis');
         final visibleLibraryIcons = tester
             .widgetList<Icon>(find.byIcon(AppIcons.libraryFilled))
-            .where(
-              (icon) =>
-                  tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0),
-            )
+            .where((icon) => tester.widgetList<Opacity>(find.ancestor(of: find.byWidget(icon), matching: find.byType(Opacity))).every((o) => o.opacity > 0))
             .length;
         expect(visibleLibraryIcons, 1, reason: 'exactly one Library glyph on screen while the lens is over it ($axis)');
         await g.up();
