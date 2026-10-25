@@ -33,8 +33,13 @@ object QuoteBitmap {
     fun boxFor(options: Bundle, size: WidgetSize): Box {
         // Portrait size (min width, max height), as launchers report it; the max width is the
         // landscape width, which made the bitmap too wide and the text tiny once scaled to fit.
-        val w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).toFloat()
-        val h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 160).toFloat()
+        // Android 12+ reports the actual sizes; use the first (portrait). Older launchers: min
+        // width x max height. A box narrower than the slot made the quote wrap at about half width.
+        val sizes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            @Suppress("DEPRECATION") options.getParcelableArrayList<android.util.SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+        } else null
+        val w = sizes?.firstOrNull()?.width ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).toFloat()
+        val h = sizes?.firstOrNull()?.height ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 160).toFloat()
         val chrome = when (size) {
             WidgetSize.COMPACT -> 32f
             WidgetSize.MEDIUM -> 32f + 8f + 48f
