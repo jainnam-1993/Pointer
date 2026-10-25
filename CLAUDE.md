@@ -86,16 +86,22 @@ The tokens live in `app_theme.dart`. Read colors through `context.colors` and gl
 - Panes: expanded windows, and any window split by a vertical hinge (book posture), use `TwoPane`, which keeps both panes off the hinge. Home, Library and Settings split into two panes; single columns on medium and larger windows are capped at `kContentMaxWidth` (600) by `ContentWidth`.
 - Hinge and posture: `WindowLayout.separatingFeature` mirrors Android's `FoldingFeature.isSeparating`. A horizontal half-opened hinge is tabletop posture, where Home uses `TabletopSplit` (content above the fold, controls below).
 - Android declares `resizeableActivity="true"` and handles size and layout config changes, so fold, unfold and multi-window resizes reflow without a restart.
-- The golden matrix covers smallphone, phone, foldouter, foldinner, foldhinge, tabletop and tablet; `shell_*.png` goldens render the shell with the rail or bottom bar. `test/layout/adaptive_test.dart` covers size classes, hinges, tabletop and rail placement.
+- The golden matrix covers smallphone, phone, foldouter, foldinner, foldhinge, tabletop and the iPad classes (hinge postures only where they differ from foldinner); `shell_*.png` goldens render the shell with the rail or bottom bar. `test/layout/adaptive_test.dart` covers size classes, hinges, tabletop and rail placement.
 
 ## Testing
 
 - `test/flutter_test_config.dart` mocks home_widget and package info globally.
-- `test/golden/overhaul/screens_matrix_test.dart` renders every screen in every device class and theme into `test/golden/overhaul/goldens/`, with the clock frozen and `AnimatedGradient.debugPeriodOverride = TimeOfDayPeriod.night`. Goldens must not depend on the wall clock. The legacy goldens (`test/golden/goldens/`, `setupGoldenTests`) freeze the period the same way.
+- The golden matrix renders every screen in every device class and theme into `test/golden/overhaul/goldens/`, with the clock frozen and `AnimatedGradient.debugPeriodOverride = TimeOfDayPeriod.night`. `matrix_harness.dart` holds the devices, screens and cell rules (`matrixCells`); each screen has its own `matrix_<screen>_test.dart`, because `flutter test` runs one file's tests serially; layout assertions are in `matrix_layout_test.dart`. Add a cell only when its pixels differ from an existing cell. Goldens must not depend on the wall clock. The component goldens (`test/golden/goldens/`, `setupGoldenTests`) freeze the period the same way.
 - For continuous animations, use `pump(Duration)` rather than `pumpAndSettle()`, and set `AnimatedGradient.disableAnimations = true` / `AmbientClock.frozen = true`.
 - `test/accessibility/` covers semantics, labels and focus order. `test/theme/contrast_test.dart` covers contrast.
 - `integration_test/` and `maestro/flows/` (28 flows) run on the Mac or a device.
 - After any visual change, run `tool/visual_diff.sh` and review the contact sheets before committing goldens.
+
+## Test process
+
+- Workers do not commit matrix or shell PNGs (`test/golden/overhaul/goldens/`). They attach `tool/visual_diff.sh` sheets to their report and name the cells they expect to change.
+- The main merge step regenerates the matrix once per batch (`flutter test --update-goldens test/golden/overhaul`), reviews the sheets, and commits the PNGs.
+- Tree marker: after a green full run (`flutter analyze` and `flutter test --concurrency=16`) on a clean tree, run `tool/mark_tested.sh`. It writes `$(git rev-parse --git-common-dir)/tested-trees/<tree>`. A merge whose tree already has a marker needs no rerun.
 
 ## Conventions
 

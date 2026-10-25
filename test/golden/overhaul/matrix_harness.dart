@@ -1,9 +1,11 @@
-// Overhaul visual regression matrix.
+// Overhaul visual regression matrix: shared harness.
 //
 // Renders every key screen through the real widgets on a matrix of device
-// classes (phones, Pixel 9 Pro Fold outer/inner, hinge postures, tablet) in
+// classes (phones, Pixel 9 Pro Fold outer/inner, hinge postures, iPad) in
 // dark and light themes. Time and animations are frozen so output is
-// deterministic on the golden host (the Linux devdesk).
+// deterministic on the golden host (the Linux devdesk). Each screen has its own
+// matrix_<screen>_test.dart, because flutter test runs the tests of one file
+// serially and one file for all screens bounded the suite wall time.
 //
 // Regenerate:
 //   flutter test --update-goldens --tags overhaul-golden test/golden/overhaul/
@@ -13,7 +15,6 @@
 //   tool/visual_diff.sh <rev-a> <rev-b> [out-dir]
 //
 // Goldens: test/golden/overhaul/goldens/<screen>_<device>_<theme>.png
-@Tags(['overhaul-golden'])
 library;
 
 import 'dart:convert';
@@ -27,11 +28,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pointer/theme/app_icons.dart';
 import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/layout/adaptive.dart';
-import 'package:pointer/widgets/glass_card.dart';
 import 'package:pointer/models/article.dart';
 import 'package:pointer/providers/providers.dart';
 import 'package:pointer/screens/article_reader_screen.dart';
@@ -51,7 +50,9 @@ import 'package:pointer/widgets/ambient.dart';
 import 'package:pointer/widgets/donation_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../golden_test_helpers.dart' show setupGoldenTests, teardownGoldenTests, createMockPrefs, goldenTestPointing;
+import 'package:pointer/theme/contrast_level.dart';
+
+import '../golden_test_helpers.dart' show setupGoldenTests, teardownGoldenTests, createMockPrefs, goldenTestPointing, goldenTestPointing2;
 
 /// Article rendered by the reader golden (content preloaded from disk).
 const _readerArticleId = 'art_iam_that_001';
@@ -93,7 +94,6 @@ const matrixDevices = <MatrixDevice>[
       DisplayFeature(bounds: Rect.fromLTWH(0, 442, 841, 0), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureHalfOpened),
     ],
   ),
-  MatrixDevice('tablet', Size(1024, 1366), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
   // iPad: 11-inch and 13-inch in portrait and landscape, plus Split View third (compact) and half (medium) windows.
   MatrixDevice('ipad11p', Size(834, 1194), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
   MatrixDevice('ipad11l', Size(1194, 834), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
@@ -103,7 +103,13 @@ const matrixDevices = <MatrixDevice>[
   MatrixDevice('ipadhalf', Size(678, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
 ];
 
-enum MatrixTheme { dark, light }
+/// Device used only by the layout assertions: within 1 % of ipad13p, so it has no golden cells.
+const layoutOnlyDevices = <MatrixDevice>[MatrixDevice('tablet', Size(1024, 1366), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20))];
+
+MatrixDevice matrixDevice(String name) => [...matrixDevices, ...layoutOnlyDevices].firstWhere((d) => d.name == name);
+
+/// `contrastlight` is the light theme with the system contrast setting on (ContrastLevel.increased).
+enum MatrixTheme { dark, light, contrastlight }
 
 class _MockNotificationService extends Mock implements NotificationService {}
 
@@ -207,7 +213,7 @@ void _loadArticlesWithReaderContent() {
 /// The real app themes; fonts are bundled, so goldens render Inter and Newsreader.
 ThemeData _theme(MatrixTheme theme) => theme == MatrixTheme.dark ? AppTheme.dark : AppTheme.light;
 
-Widget _app({required Widget home, required SharedPreferences prefs, required MatrixTheme theme}) {
+Widget _app({required Widget home, required SharedPreferences prefs, required MatrixTheme theme, Pointing pointing = goldenTestPointing}) {
   final mode = theme == MatrixTheme.dark ? AppThemeMode.dark : AppThemeMode.light;
   return ProviderScope(
     overrides: [
@@ -223,11 +229,20 @@ Widget _app({required Widget home, required SharedPreferences prefs, required Ma
       donationProvider.overrideWith((ref) => _FixedDonationNotifier(_FakeDonationService())),
       currentPointingProvider.overrideWith((ref) {
         final notifier = CurrentPointingNotifier(ref.watch(storageServiceProvider));
-        notifier.setPointing(goldenTestPointing);
+        notifier.setPointing(pointing);
         return notifier;
       }),
     ],
-    child: MaterialApp(debugShowCheckedModeBanner: false, theme: _theme(theme), home: home),
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: _theme(theme),
+      // The same contrast wiring as PointerApp in lib/main.dart: the system setting gives ContrastLevel.increased.
+      builder: (context, child) => Theme(
+        data: themeForContrast(Theme.of(context), resolveContrastLevel(inApp: false, system: MediaQuery.of(context).highContrast)),
+        child: child!,
+      ),
+      home: home,
+    ),
   );
 }
 
@@ -251,7 +266,6 @@ class _HostPage extends StatelessWidget {
   }
 }
 
-/// A screen in the matrix: how to build it and how to drive it into the captured state.
 /// Hosts the real [MainShell] under a GoRouter so shell goldens show the navigation chrome.
 class _ShellHost extends StatefulWidget {
   const _ShellHost();
@@ -288,13 +302,56 @@ class _ShellHostState extends State<_ShellHost> {
   Widget build(BuildContext context) => Router.withConfig(config: _router);
 }
 
+/// A screen in the matrix: how to build it and how to drive it into the captured state.
 class MatrixScreen {
   final String name;
   final bool onboardingCompleted;
   final Widget Function() build;
   final Future<void> Function(WidgetTester tester)? drive;
 
-  const MatrixScreen(this.name, this.build, {this.onboardingCompleted = true, this.drive});
+  /// Hinge postures that render differently from foldinner for this screen. The others are byte-identical to
+  /// foldinner, so they get no cell (checked with md5sum on 2026-10-24).
+  final Set<String> postures;
+
+  /// Extra cells beyond the standard set, as (device, theme).
+  final List<(String, MatrixTheme)> extraCells;
+
+  /// When set, the screen renders only these cells (a state variant of another screen).
+  final List<(String, MatrixTheme)>? onlyCells;
+
+  final Pointing pointing;
+
+  const MatrixScreen(
+    this.name,
+    this.build, {
+    this.onboardingCompleted = true,
+    this.drive,
+    this.postures = const {'foldhinge'},
+    this.extraCells = const [],
+    this.onlyCells,
+    this.pointing = goldenTestPointing,
+  });
+}
+
+MatrixScreen matrixScreen(String name) => matrixScreens.firstWhere((s) => s.name == name);
+
+const _postures = {'foldhinge', 'tabletop'};
+
+/// Devices that get a light cell for every screen; the others get one only for [_wideLightScreens].
+const _lightDevices = {'smallphone', 'phone', 'foldouter', 'foldinner'};
+const _wideLightScreens = {'home', 'settings'};
+
+/// The golden cells of [screen], as (device, theme). Dark renders on every device; light on the phone and fold
+/// classes, and on the wide classes only for home and settings, which keeps the matrix under 10 MB.
+List<(MatrixDevice, MatrixTheme)> matrixCells(MatrixScreen screen) {
+  if (screen.onlyCells case final only?) return [for (final (d, t) in only) (matrixDevice(d), t)];
+  return [
+    for (final device in matrixDevices)
+      if (!_postures.contains(device.name) || screen.postures.contains(device.name))
+        for (final theme in const [MatrixTheme.dark, MatrixTheme.light])
+          if (theme == MatrixTheme.dark || _lightDevices.contains(device.name) || _wideLightScreens.contains(screen.name)) (device, theme),
+    for (final (d, t) in screen.extraCells) (matrixDevice(d), t),
+  ];
 }
 
 final matrixScreens = <MatrixScreen>[
@@ -303,11 +360,19 @@ final matrixScreens = <MatrixScreen>[
     () => const OnboardingScreen(),
     onboardingCompleted: false,
     // First page reveals word by word after a 1.5 s delay; capture the fully revealed page.
-    drive: (tester) => _settleTransient(tester, frames: 80),
+    drive: (tester) => settleTransient(tester, frames: 80),
   ),
-  MatrixScreen('home', () => const HomeScreen()),
+  MatrixScreen(
+    'home',
+    () => const HomeScreen(),
+    postures: {'foldhinge', 'tabletop'},
+    // Stark borders under the system contrast setting (Android contrast_level 1.0) were a user-found bug.
+    extraCells: [('phone', MatrixTheme.contrastlight)],
+  ),
+  // A pointing with no teacher: the attribution line is absent (moved from the legacy screens_golden_test).
+  MatrixScreen('homeminimal', () => const HomeScreen(), pointing: goldenTestPointing2, onlyCells: [('phone', MatrixTheme.dark)]),
   // The real MainShell (bottom bar on compact, side rail on medium and up) around Home.
-  MatrixScreen('shell', () => const _ShellHost()),
+  MatrixScreen('shell', () => const _ShellHost(), postures: {'foldhinge', 'tabletop'}, extraCells: [('phone', MatrixTheme.contrastlight)]),
   MatrixScreen('library', () => const Scaffold(body: LibraryScreen())),
   MatrixScreen('settings', () => const SettingsScreen()),
   MatrixScreen('lineages', () => const LineagesScreen()),
@@ -315,6 +380,7 @@ final matrixScreens = <MatrixScreen>[
   MatrixScreen(
     'notificationsheet',
     () => const _HostPage(),
+    postures: {'foldhinge', 'tabletop'},
     drive: (tester) async {
       // Same call as SettingsScreen._showNotificationTimesSheet.
       showAdaptiveSheet<void>(
@@ -323,16 +389,17 @@ final matrixScreens = <MatrixScreen>[
         isScrollControlled: true,
         builder: (context) => const NotificationTimesSheet(),
       );
-      await _settleTransient(tester);
+      await settleTransient(tester);
     },
   ),
-  MatrixScreen('sharepreview', () => const SharePreviewScreen(pointing: goldenTestPointing)),
+  MatrixScreen('sharepreview', () => const SharePreviewScreen(pointing: goldenTestPointing), postures: {}),
   MatrixScreen(
     'tip',
     () => const _HostPage(body: SingleChildScrollView(child: DonationButton())),
+    postures: {},
     drive: (tester) async {
       await tester.tap(find.text('Support Development'), warnIfMissed: false);
-      await _settleTransient(tester);
+      await settleTransient(tester);
     },
   ),
 ];
@@ -359,6 +426,10 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
   view.viewPadding = pad;
   view.displayFeatures = device.displayFeatures;
   addTearDown(view.reset);
+  if (theme == MatrixTheme.contrastlight) {
+    tester.platformDispatcher.accessibilityFeaturesTestValue = FakeAccessibilityFeatures(highContrast: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+  }
 
   final prefs = await createMockPrefs(onboardingCompleted: screen.onboardingCompleted);
 
@@ -372,11 +443,11 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
     }
   };
   try {
-    await tester.pumpWidget(_app(home: screen.build(), prefs: prefs, theme: theme));
+    await tester.pumpWidget(_app(home: screen.build(), prefs: prefs, theme: theme, pointing: screen.pointing));
     await tester.pump(const Duration(seconds: 2));
     // A single long pump renders only the first frame of entrance animations (the
     // Library featured row stayed at opacity 0); step frames so they finish.
-    await _settleTransient(tester);
+    await settleTransient(tester);
     if (screen.drive != null) await screen.drive!(tester);
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/${screen.name}_${device.name}_${theme.name}.png'));
     // Unmount so pending timers and repeating animations are disposed.
@@ -391,12 +462,8 @@ Future<void> _capture(WidgetTester tester, MatrixScreen screen, MatrixDevice dev
   }
 }
 
-/// Light theme on tablet and the two hinge postures (same pixels as foldinner today) is a
-/// representative subset to keep the matrix under 10 MB.
-const _lightSubsetDevices = {'tablet', 'foldhinge', 'tabletop', 'ipad11p', 'ipad11l', 'ipad13p', 'ipad13l', 'ipadthird', 'ipadhalf'};
-const _tabletLightScreens = {'home', 'settings'};
-
-void main() {
+/// Shared setup for every matrix file: fonts, shaders, articles and the notification mock.
+void setUpMatrixSuite() {
   setUpAll(() async {
     await setupGoldenTests();
     AnimatedGradient.disableAnimations = true;
@@ -417,229 +484,23 @@ void main() {
     AnimatedGradient.debugPeriodOverride = null;
     teardownGoldenTests();
   });
+}
 
-  for (final screen in matrixScreens) {
+/// Golden cells for the named screens; call from a `matrix_<screen>_test.dart` main().
+void runMatrixScreens(List<String> names) {
+  setUpMatrixSuite();
+  for (final name in names) {
+    final screen = matrixScreen(name);
     group(screen.name, () {
-      for (final device in matrixDevices) {
-        for (final theme in MatrixTheme.values) {
-          if (_lightSubsetDevices.contains(device.name) && theme == MatrixTheme.light && !_tabletLightScreens.contains(screen.name)) continue;
-          testWidgets('${screen.name} ${device.name} ${theme.name}', (tester) => _capture(tester, screen, device, theme));
-        }
+      for (final (device, theme) in matrixCells(screen)) {
+        testWidgets('${screen.name} ${device.name} ${theme.name}', (tester) => _capture(tester, screen, device, theme));
       }
     });
   }
-
-  group('adaptive layout', () {
-    MatrixDevice device(String name) => matrixDevices.firstWhere((d) => d.name == name);
-    MatrixScreen screen(String name) => matrixScreens.firstWhere((s) => s.name == name);
-
-    // The hero pointing: the serif Text keyed by the pointing id inside Home's AnimatedSwitcher.
-    final heroPointing = find.byWidgetPredicate(
-      (w) => w is Text && w.key is ValueKey && w.style?.fontFamily == AppFonts.serif && (w.style?.fontSize ?? 0) >= AppType.display,
-    );
-    Key? pointingKey(WidgetTester tester) => tester.widgetList<Text>(heroPointing).last.key;
-
-    testWidgets('keyboard: arrow keys and Space step through pointings on Home', (tester) async {
-      await _pumpAt(tester, screen('home'), device('ipad13l'));
-      final first = pointingKey(tester);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump(const Duration(seconds: 1));
-      final second = pointingKey(tester);
-      expect(second, isNot(first));
-      await tester.sendKeyEvent(LogicalKeyboardKey.space);
-      await tester.pump(const Duration(seconds: 1));
-      expect(pointingKey(tester), isNot(second));
-    });
-
-    testWidgets('home: the hero pointing steps up on regular width only', (tester) async {
-      for (final (name, size) in [
-        ('phone', AppType.display),
-        ('ipadthird', AppType.display),
-        ('ipadhalf', AppType.hero),
-        ('ipad13l', AppType.hero),
-      ]) {
-        await _pumpAt(tester, screen('home'), device(name));
-        final text = tester.widgetList<Text>(heroPointing).last;
-        expect(text.style?.fontSize, size, reason: name);
-      }
-    });
-
-    testWidgets('notificationsheet: a centered form sheet on iPad, a bottom sheet in a Split View third (Escape: adaptive_test)', (tester) async {
-      final sheet = screen('notificationsheet');
-      for (final name in ['ipad11p', 'ipad13l']) {
-        await _pumpAt(tester, sheet, device(name));
-        await sheet.drive!(tester);
-        final panel = tester.getRect(find.byKey(const ValueKey('form-sheet-panel')));
-        expect(panel.width, lessThanOrEqualTo(kFormSheetMaxWidth), reason: name);
-        expect((panel.center.dx - device(name).size.width / 2).abs(), lessThan(1), reason: name);
-      }
-      await _pumpAt(tester, sheet, device('ipadthird'));
-      await sheet.drive!(tester);
-      expect(find.byKey(const ValueKey('form-sheet-panel')), findsNothing);
-      expect(find.byType(BottomSheet), findsOneWidget);
-    });
-    const medium = MatrixDevice('medium', Size(700, 900), 1);
-    const hingeX = 420.0;
-    const hingeY = 442.0;
-
-    testWidgets('home: one pane on compact and medium, pointing plus context on expanded', (tester) async {
-      for (final d in [device('phone'), device('foldouter'), medium]) {
-        await _pumpAt(tester, screen('home'), d);
-        expect(find.byKey(const ValueKey('home-context-pane')), findsNothing, reason: d.name);
-      }
-      for (final d in [device('foldinner'), device('tablet')]) {
-        await _pumpAt(tester, screen('home'), d);
-        expect(find.byKey(const ValueKey('pane-primary')), findsOneWidget, reason: d.name);
-        expect(find.byKey(const ValueKey('home-context-pane')), findsOneWidget, reason: d.name);
-      }
-    });
-
-    testWidgets('home: panes sit on either side of a vertical hinge', (tester) async {
-      await _pumpAt(tester, screen('home'), device('foldhinge'));
-      expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX));
-      expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX));
-      expect(tester.getRect(find.byType(GlassCard).first).right, lessThanOrEqualTo(hingeX));
-    });
-
-    testWidgets('home: tabletop puts the pointing above the hinge and controls below', (tester) async {
-      await _pumpAt(tester, screen('home'), device('tabletop'));
-      expect(tester.getRect(find.byType(GlassCard).first).bottom, lessThanOrEqualTo(hingeY));
-      expect(tester.getRect(find.byKey(const ValueKey('home-tabletop-controls'))).top, greaterThanOrEqualTo(hingeY));
-      expect(tester.getRect(find.text('Next')).top, greaterThanOrEqualTo(hingeY));
-    });
-
-    testWidgets('settings: two columns on expanded, split at the hinge', (tester) async {
-      await _pumpAt(tester, screen('settings'), device('foldouter'));
-      expect(find.byKey(const ValueKey('settings-two-column')), findsNothing);
-      await _pumpAt(tester, screen('settings'), device('foldinner'));
-      expect(find.byKey(const ValueKey('settings-two-column')), findsOneWidget);
-      await _pumpAt(tester, screen('settings'), device('foldhinge'));
-      expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX));
-      expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX));
-    });
-
-    testWidgets('shell: bottom bar on compact, rail on medium and up, clear of the hinge', (tester) async {
-      await _pumpAt(tester, screen('shell'), device('foldouter'));
-      expect(find.byKey(const ValueKey('side-rail')), findsNothing);
-      expect(find.bySemanticsLabel('Library tab'), findsOneWidget);
-      for (final d in [medium, device('foldinner'), device('tablet')]) {
-        await _pumpAt(tester, screen('shell'), d);
-        expect(find.byKey(const ValueKey('side-rail')), findsOneWidget, reason: d.name);
-      }
-      await _pumpAt(tester, screen('shell'), device('foldhinge'));
-      expect(tester.getRect(find.byKey(const ValueKey('side-rail'))).right, lessThanOrEqualTo(hingeX));
-      await _pumpAt(tester, screen('shell'), device('tabletop'));
-      final rail = tester.getRect(find.byKey(const ValueKey('side-rail')));
-      expect(tester.getRect(find.bySemanticsLabel('Library tab')).top, greaterThanOrEqualTo(hingeY));
-      expect(rail.top, greaterThanOrEqualTo(hingeY));
-    });
-
-    testWidgets('library: list and detail on expanded only', (tester) async {
-      await _pumpAt(tester, screen('library'), device('foldouter'));
-      expect(find.byKey(const ValueKey('library-list-detail')), findsNothing);
-      await _pumpAt(tester, screen('library'), medium);
-      expect(find.byKey(const ValueKey('library-list-detail')), findsNothing);
-      expect(find.byType(ContentWidth), findsOneWidget);
-      await _pumpAt(tester, screen('library'), device('foldinner'));
-      expect(find.byKey(const ValueKey('library-list-detail')), findsOneWidget);
-      expect(find.byKey(const ValueKey('library-detail-empty')), findsOneWidget);
-    });
-
-    /// Fails if any text or icon straddles the vertical hinge at [hingeX].
-    void expectNothingUnderHinge(WidgetTester tester, String name) {
-      for (final finder in [find.byType(RichText), find.byType(Icon)]) {
-        for (final element in finder.evaluate()) {
-          final box = element.renderObject as RenderBox?;
-          if (box == null || !box.hasSize || !box.attached) continue;
-          final rect = box.localToGlobal(Offset.zero) & box.size;
-          expect(rect.left < hingeX && rect.right > hingeX, isFalse, reason: '$name: ${element.widget} at $rect crosses the hinge');
-        }
-      }
-    }
-
-    for (final name in ['article', 'lineages', 'onboarding']) {
-      testWidgets('$name: content stays off a vertical hinge', (tester) async {
-        await _pumpAt(tester, screen(name), device('foldhinge'));
-        expect(tester.getRect(find.byKey(const ValueKey('pane-primary'))).right, lessThanOrEqualTo(hingeX), reason: name);
-        expect(tester.getRect(find.byKey(const ValueKey('pane-secondary'))).left, greaterThanOrEqualTo(hingeX), reason: name);
-        expectNothingUnderHinge(tester, name);
-        // Phones and unfolded tablets keep the single column.
-        await _pumpAt(tester, screen(name), device('phone'));
-        expect(find.byKey(const ValueKey('pane-primary')), findsNothing, reason: name);
-      });
-    }
-
-    testWidgets('lineages: on a hinge, info selects the tradition in the detail pane', (tester) async {
-      await _pumpAt(tester, screen('lineages'), device('foldhinge'));
-      final first = traditions.keys.first;
-      expect(find.byKey(ValueKey('lineages-detail-${first.name}')), findsOneWidget);
-      await tester.tap(find.byIcon(AppIcons.info).at(1));
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.byType(BottomSheet), findsNothing);
-      expect(find.byKey(ValueKey('lineages-detail-${traditions.keys.elementAt(1).name}')), findsOneWidget);
-    });
-
-    testWidgets('notificationsheet: tabletop opens below the hinge with Done reachable', (tester) async {
-      final sheet = screen('notificationsheet');
-      await _pumpAt(tester, sheet, device('tabletop'));
-      await sheet.drive!(tester);
-      final sheetRect = tester.getRect(find.byType(NotificationTimesSheet));
-      expect(sheetRect.top, greaterThanOrEqualTo(hingeY));
-      final done = tester.getRect(find.byKey(const ValueKey('notification-sheet-done')));
-      expect(done.top, greaterThanOrEqualTo(hingeY));
-      expect(done.bottom, lessThanOrEqualTo(device('tabletop').size.height));
-      // The schedule overflows the lower half: a soft bottom edge marks it as scrollable.
-      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsOneWidget);
-      await tester.tap(find.text('Done'));
-      await _settleTransient(tester);
-      expect(find.byType(NotificationTimesSheet), findsNothing);
-    });
-
-    testWidgets('notificationsheet: phone keeps the 70 percent sheet', (tester) async {
-      final sheet = screen('notificationsheet');
-      await _pumpAt(tester, sheet, device('phone'));
-      await sheet.drive!(tester);
-      expect(tester.getRect(find.byType(NotificationTimesSheet)).height, lessThanOrEqualTo(device('phone').size.height * 0.7 + 0.5));
-      expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
-      // Scrolled to the end nothing is hidden below, so the fade goes away.
-      final position = tester
-          .state<ScrollableState>(
-            find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first,
-          )
-          .position;
-      position.jumpTo(position.maxScrollExtent);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      await _settleTransient(tester);
-      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsNothing);
-    });
-
-    testWidgets('notificationsheet: no fade when the schedule fits', (tester) async {
-      final sheet = screen('notificationsheet');
-      await _pumpAt(tester, sheet, device('tablet'));
-      await sheet.drive!(tester);
-      expect(find.byKey(const ValueKey('notification-sheet-fade')), findsNothing);
-    });
-
-    testWidgets('tip: the card is capped on wide windows and tiles keep phone proportions', (tester) async {
-      final tip = screen('tip');
-      for (final name in ['tablet', 'foldinner']) {
-        await _pumpAt(tester, tip, device(name));
-        await tip.drive!(tester);
-        expect(
-          tester.getSize(find.descendant(of: find.byType(DonationButton), matching: find.byType(GlassCard)).first).width,
-          lessThanOrEqualTo(kTipCardMaxWidth),
-          reason: name,
-        );
-        // Two columns at the fixed 1.4 aspect ratio inside a phone-wide card: tiles stay phone sized.
-        expect(tester.getSize(find.byType(GridView)).width, lessThanOrEqualTo(kTipCardMaxWidth), reason: name);
-      }
-    });
-  });
 }
 
 /// Pumps [screen] at [device] in the dark theme for layout assertions (no golden).
-Future<void> _pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice device) async {
+Future<void> pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice device) async {
   final view = tester.view;
   view.physicalSize = device.size;
   view.devicePixelRatio = 1.0;
@@ -655,7 +516,7 @@ Future<void> _pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice devi
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpWidget(_app(home: screen.build(), prefs: prefs, theme: MatrixTheme.dark));
     await tester.pump(const Duration(seconds: 2));
-    await _settleTransient(tester);
+    await settleTransient(tester);
   } finally {
     FlutterError.onError = previous;
   }
@@ -663,7 +524,7 @@ Future<void> _pumpAt(WidgetTester tester, MatrixScreen screen, MatrixDevice devi
 
 /// Runs a route or size transition to completion. A single long pump only
 /// renders the transition's first frame, so step frames explicitly.
-Future<void> _settleTransient(WidgetTester tester, {int frames = 20}) async {
+Future<void> settleTransient(WidgetTester tester, {int frames = 20}) async {
   await tester.pump();
   for (var i = 0; i < frames; i++) {
     await tester.pump(const Duration(milliseconds: 100));
