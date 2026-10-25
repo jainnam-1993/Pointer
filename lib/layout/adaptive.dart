@@ -183,7 +183,8 @@ class WindowLayout {
 
   /** How Today composes the hero card with its context. See [HeroComposition]. */
   HeroComposition get heroComposition {
-    if (isTabletCanvas && size.height > size.width * kTallWindowAspect) return HeroComposition.stacked;
+    // Landscape tablets too, once the column fits: a side-by-side pair sagged left of centre on a 13-inch canvas.
+    if (isTabletCanvas && (size.height > size.width * kTallWindowAspect || size.height >= kStackedMinHeight)) return HeroComposition.stacked;
     return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
   }
 }
@@ -197,6 +198,9 @@ class WindowLayout {
  * a floating card.
  */
 enum HeroComposition { single, sideBySide, stacked }
+
+/** Shortest tablet canvas that stacks Today in landscape: card, actions and context fit one column (iPad 11-inch landscape is 834). */
+const double kStackedMinHeight = 760;
 
 /** Height-to-width ratio past which a regular window counts as a tall (portrait) tablet. */
 const double kTallWindowAspect = 1.15;
@@ -375,10 +379,10 @@ class HeroStack extends StatelessWidget {
             // Loose: the card takes the height it needs, and its quote scrolls past what the window has.
             Flexible(child: hero),
             const SizedBox(height: kHeroContextGap),
-            // Full card width, inset like the card's content: the context starts on the card's left text edge.
+            // Inset like the card's content and centred on the card's axis.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kHeroCardInset),
-              child: SizedBox(width: double.infinity, child: below),
+              child: below,
             ),
           ],
         ),

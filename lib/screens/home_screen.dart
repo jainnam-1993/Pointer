@@ -627,7 +627,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           padding: EdgeInsets.fromLTRB(AppSpacing.xxl, 20, AppSpacing.xxl, bottomSpace),
           child: HeroStack(
             hero: column,
-            below: _HomeContextPane(pointing: pointing),
+            below: _HomeContextPane(pointing: pointing, centered: true),
           ),
         ),
       );
@@ -690,7 +690,10 @@ class _HomeContextPane extends StatelessWidget {
   /** Tabletop bottom half: one line of context, no teacher biography. */
   final bool compact;
 
-  const _HomeContextPane({required this.pointing, this.compact = false});
+  /** Tablet hero column: centred under the card, on the card's axis. */
+  final bool centered;
+
+  const _HomeContextPane({required this.pointing, this.compact = false, this.centered = false});
 
   @override
   Widget build(BuildContext context) {
@@ -711,67 +714,77 @@ class _HomeContextPane extends StatelessWidget {
     return ConstrainedBox(
       key: const ValueKey('home-context-pane'),
       constraints: const BoxConstraints(maxWidth: 420),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('TRADITION', style: label),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              ExcludeSemantics(child: Icon(info.lineIcon, size: 16, color: colors.textSecondary)),
-              const SizedBox(width: AppSpacing.sm),
-              Flexible(
-                child: Text(
-                  info.name,
-                  style: TextStyle(color: colors.textPrimary, fontSize: AppType.headline),
-                ),
-              ),
-            ],
-          ),
-          if (pointing.teacher != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text('TEACHER', style: label),
+      child: DefaultTextStyle.merge(
+        textAlign: centered ? TextAlign.center : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            Text('TRADITION', style: label),
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              pointing.teacher!,
-              style: TextStyle(fontFamily: AppFonts.serif, color: colors.textPrimary, fontSize: AppType.title),
+            Row(
+              mainAxisSize: centered ? MainAxisSize.min : MainAxisSize.max,
+              children: [
+                ExcludeSemantics(child: Icon(info.lineIcon, size: 16, color: colors.textSecondary)),
+                const SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    info.name,
+                    style: TextStyle(color: colors.textPrimary, fontSize: AppType.headline),
+                  ),
+                ),
+              ],
             ),
-            if (teacher?.dates != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                teacher!.dates!,
-                style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
-              ),
-            ],
-            if (teacher?.bio != null) ...[
+            if (pointing.teacher != null) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Text('TEACHER', style: label),
               const SizedBox(height: AppSpacing.sm),
-              Text(teacher!.bio!, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
+              Text(
+                pointing.teacher!,
+                style: TextStyle(fontFamily: AppFonts.serif, color: colors.textPrimary, fontSize: AppType.title),
+              ),
+              if (teacher?.dates != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  teacher!.dates!,
+                  style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
+                ),
+              ],
+              if (teacher?.bio != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(teacher!.bio!, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
+              ],
             ],
-          ],
-          if (inquiry != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text('RELATED INQUIRY', style: label),
-            const SizedBox(height: AppSpacing.sm),
-            Semantics(
-              button: true,
-              label: 'Start inquiry: ${inquiry.question}',
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Haptics.light();
-                  context.push('/inquiry/${inquiry.id}');
-                },
-                child: Text(
-                  inquiry.question,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, color: colors.accent, fontSize: AppType.headline, height: 1.4),
+            if (inquiry != null) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Text('RELATED INQUIRY', style: label),
+              const SizedBox(height: AppSpacing.sm),
+              Semantics(
+                button: true,
+                label: 'Start inquiry: ${inquiry.question}',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Haptics.light();
+                    context.push('/inquiry/${inquiry.id}');
+                  },
+                  child: Text(
+                    inquiry.question,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: AppFonts.serif,
+                      fontStyle: FontStyle.italic,
+                      color: colors.accent,
+                      fontSize: AppType.headline,
+                      height: 1.4,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

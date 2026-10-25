@@ -315,10 +315,11 @@ void main() {
     const foldInner = Size(815, 903);
     const foldFlat = DisplayFeature(bounds: Rect.fromLTWH(407, 0, 0, 903), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureFlat);
 
-    test('tall tablets stack the hero; the Fold and landscape keep two panes; phones keep one card', () {
+    test('tablets stack the hero; the Fold and short landscape windows keep two panes; phones keep one card', () {
       expect(_layout(ipad13Portrait).heroComposition, HeroComposition.stacked);
       expect(_layout(tablet10Portrait).heroComposition, HeroComposition.stacked);
-      expect(_layout(ipad13Landscape).heroComposition, HeroComposition.sideBySide);
+      expect(_layout(ipad13Landscape).heroComposition, HeroComposition.stacked);
+      expect(_layout(const Size(1280, 720)).heroComposition, HeroComposition.sideBySide, reason: 'a short landscape tablet keeps two panes');
       expect(_layout(foldInner).heroComposition, HeroComposition.sideBySide);
       expect(_layout(foldInner, [foldFlat]).heroComposition, HeroComposition.sideBySide);
       expect(_layout(const Size(841, 884), [_bookFold]).heroComposition, HeroComposition.sideBySide);
