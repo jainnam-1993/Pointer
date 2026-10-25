@@ -436,6 +436,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimWidth: 1.5,
     highlight: Color(0x12FFFFFF),
     shadow: Color(0x52000000),
+    // The same filled lavender as Today's Inquire pill, so every primary action matches (Done, Continue).
+    primaryFill: InkPalette.inkLavender,
+    onPrimary: Color(0xFF24182C),
   );
 
   static const light = GlassMaterial(
@@ -464,6 +467,8 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimBottom: Color(0x0AFFFFFF),
     highlight: Color(0x0DFFFFFF),
     shadow: Colors.transparent,
+    primaryFill: InkPalette.inkLavender,
+    onPrimary: Color(0xFF24182C),
   );
 
   static const highContrast = GlassMaterial(

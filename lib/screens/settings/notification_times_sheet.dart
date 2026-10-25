@@ -22,6 +22,9 @@ import '../../widgets/selectable_chip.dart';
  * a start/end time window with [CupertinoPicker] wheels, and frequency selection
  * (30m to 12h). Changes are saved immediately via [NotificationService.saveSchedule].
  */
+/** Tallest the schedule sheet gets: about 90 percent of the window, like an iOS large detent. */
+double notificationSheetMaxHeight(double windowHeight) => windowHeight * (windowHeight < kShortWindowHeight ? 0.94 : 0.9);
+
 class NotificationTimesSheet extends ConsumerStatefulWidget {
   const NotificationTimesSheet({super.key});
 
@@ -195,7 +198,8 @@ class _NotificationTimesSheetState extends ConsumerState<NotificationTimesSheet>
     final mutedColor = colors.textSecondary;
 
     return Container(
-      constraints: BoxConstraints(maxHeight: sheetMaxHeight(MediaQuery.sizeOf(context).height)),
+      // Sizes to its content (every chip row visible at rest) up to a large detent, then scrolls inside.
+      constraints: BoxConstraints(maxHeight: notificationSheetMaxHeight(MediaQuery.sizeOf(context).height)),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter.grouped(

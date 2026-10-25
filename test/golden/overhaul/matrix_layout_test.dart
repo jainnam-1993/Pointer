@@ -221,24 +221,17 @@ void main() {
       expect(find.byType(NotificationTimesSheet), findsNothing);
     });
 
-    testWidgets('notificationsheet: phone keeps the 70 percent sheet', (tester) async {
+    testWidgets('notificationsheet: phone sizes to its content, every chip visible at rest', (tester) async {
       final sheet = screen('notificationsheet');
       await pumpAt(tester, sheet, device('phone'));
       await sheet.drive!(tester);
-      expect(tester.getRect(find.byType(NotificationTimesSheet)).height, lessThanOrEqualTo(device('phone').size.height * 0.7 + 0.5));
-      expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
-      // Scrolled to the end, every frequency chip sits fully above Done.
-      final position = tester
-          .state<ScrollableState>(
-            find.descendant(of: find.byKey(const ValueKey('notification-sheet-scroll')), matching: find.byType(Scrollable)).first,
-          )
-          .position;
-      position.jumpTo(position.maxScrollExtent);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      await settleTransient(tester);
+      expect(tester.getRect(find.byType(NotificationTimesSheet)).height, lessThanOrEqualTo(device('phone').size.height * 0.9 + 0.5));
       final done = tester.getRect(find.byKey(const ValueKey('notification-sheet-done')));
-      expect(tester.getRect(find.text('12h')).bottom, lessThanOrEqualTo(done.top));
+      expect(find.byKey(const ValueKey('notification-sheet-done')).hitTestable(), findsOneWidget);
+      // No scrolling: the last frequency chip sits fully above Done.
+      for (final label in ['30m', '1h', '2h', '3h', '4h', '6h', '8h', '12h']) {
+        expect(tester.getRect(find.text(label)).bottom, lessThanOrEqualTo(done.top), reason: label);
+      }
     });
 
     testWidgets('notificationsheet: no mask ever ghosts the schedule', (tester) async {
