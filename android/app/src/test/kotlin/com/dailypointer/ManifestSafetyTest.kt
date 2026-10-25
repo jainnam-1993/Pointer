@@ -20,4 +20,17 @@ class ManifestSafetyTest {
         assertFalse("the hook's code lives only in the debug source set", File("src/main/kotlin/com/dailypointer/DebugWallpaperReceiver.kt").exists())
         assertTrue(File("src/debug/kotlin/com/dailypointer/DebugWallpaperReceiver.kt").exists())
     }
+
+    /** The glass-alpha override is debug-only: main never reads it, release and profile return the constant. */
+    @Test
+    fun glassAlphaOverrideIsDebugOnly() {
+        val main = File("src/main").walkTopDown().filter { it.isFile }.joinToString("\n") { it.readText() }
+        assertFalse("main must not read the debug override", "widget_debug" in main || "glass_alpha" in main)
+        for (t in listOf("release", "profile")) {
+            val f = File("src/$t/kotlin/com/dailypointer/GlassAlpha.kt")
+            assertTrue("$t GlassAlpha exists", f.exists())
+            val text = f.readText()
+            assertTrue("$t returns the constant", "GlassRule.FIXED_ALPHA" in text && "SharedPreferences" !in text && "getSharedPreferences" !in text)
+        }
+    }
 }

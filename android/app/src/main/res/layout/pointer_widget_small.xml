@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:src="@drawable/widget_glass"
         android:importantForAccessibility="no" />
 
     <!-- Rim and one-pixel top highlight, crisp at any size. -->
@@ -34,6 +35,8 @@
 
     <LinearLayout
         android:id="@+id/widget_content_area"
+        android:background="@drawable/widget_text_scrim"
+        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -41,6 +44,10 @@
 
         <TextView
             android:id="@+id/widget_tradition"
+            android:shadowColor="@color/widget_text_halo"
+            android:shadowRadius="5"
+            android:shadowDx="0"
+            android:shadowDy="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone" />
@@ -52,6 +59,10 @@
 
         <TextView
             android:id="@+id/widget_content"
+            android:shadowColor="@color/widget_text_halo"
+            android:shadowRadius="5"
+            android:shadowDx="0"
+            android:shadowDy="0"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -69,6 +80,15 @@
 
     <TextView
         android:id="@+id/widget_teacher"
+            android:background="@drawable/widget_text_scrim"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:shadowColor="@color/widget_text_halo"
+            android:shadowRadius="5"
+            android:shadowDx="0"
+            android:shadowDy="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"

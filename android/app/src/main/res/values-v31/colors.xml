@@ -7,4 +7,6 @@
     <color name="widget_text">@android:color/system_neutral1_900</color>
     <color name="widget_text_muted">@android:color/system_neutral2_700</color>
     <color name="widget_accent">@android:color/system_accent1_600</color>
+    <!-- Glass tint: the launcher re-inflates this on a wallpaper or theme change (tone 10, near-black). -->
+    <color name="widget_glass_tint">@android:color/system_neutral1_900</color>
 </resources>
