@@ -13,9 +13,9 @@
     <!-- Text halo in the glass base tone: holds contrast over bright patches behind the glass. -->
     <color name="widget_text_halo">#B31C1B1F</color>
     <!-- App look (the widget as a piece of the app): sage-and-sand paper / ink-on-black, as in PointerColors. -->
-    <!-- Light-mode opacity lives in this alpha (CC = 80%); the user picks the light value here. -->
-    <color name="widget_app_card">#CCF7F3EA</color>
-    <color name="widget_app_card_end">#CCF7F3EA</color>
+    <!-- Light-mode opacity lives in this alpha (94 = 58%, cream at 58% until the user picks); the user picks the light value here. -->
+    <color name="widget_app_card">#94F7F3EA</color>
+    <color name="widget_app_card_end">#94F7F3EA</color>
     <color name="widget_app_card_solid">#FFF7F3EA</color>
     <color name="widget_app_ink">#FF1B1F1A</color>
     <color name="widget_app_ink_secondary">#FF2A2F29</color>
