@@ -5,8 +5,8 @@
  * first Settings open introduced dozens of new glyph runs over the ~330 ms sheet transition, so the atlas was rebuilt
  * and re-uploaded on 9 frames (CreateGlyphAtlas, UpdateAtlasBitmap, BlitPass encode), which backed up the GPU and
  * showed as 10 to 15 janky frames; later opens drew from the filled atlas with 0 janky frames (Perfetto, Pointer_UserFold,
- * a5ac8db). This paints the text styles those screens use, at the current text scale and pixel ratio, into a tiny
- * offscreen image after Today's first frame, one style per scheduler task between frames, so the atlas already holds them.
+ * a5ac8db). This paints the text styles those screens use, at the current text scale and pixel ratio, into an
+ * offscreen image the size of the line after Today's first frame, one style per scheduler task between frames, so the atlas already holds them.
  */
 library;
 
@@ -90,12 +90,14 @@ class _GlyphWarmupState extends State<GlyphWarmup> {
       textDirection: TextDirection.ltr,
       textScaler: TextScaler.noScaling,
     )..layout();
-    // Painted at the origin so the run's bounds cover the 2x2 image and the rasteriser does not cull it.
+    // The image covers the whole line. With a 2x2 image (53f71de) Impeller culled the text run, whose glyph bounds start
+    // a few pixels below the top, so the 33 snapshots rasterised no glyph at all (no CreateGlyphAtlas inside them).
     tp.paint(canvas, Offset.zero);
+    final width = (tp.width * dpr).ceil().clamp(1, 4096), height = (tp.height * dpr).ceil().clamp(1, 512);
     tp.dispose();
     final picture = recorder.endRecording();
     try {
-      final image = await picture.toImage(2, 2);
+      final image = await picture.toImage(width, height);
       image.dispose();
     } finally {
       picture.dispose();
