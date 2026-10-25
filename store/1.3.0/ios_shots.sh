@@ -34,13 +34,13 @@ d['flutter.pointer_current_pointing_id'] = 'con-1'
 plistlib.dump(d, open(p, 'wb'))
 PY
   for mode in light dark; do
-    xcrun simctl ui "$U" appearance $mode; xcrun simctl terminate "$U" $P 2>/dev/null; xcrun simctl launch "$U" $P >/dev/null; sleep 7
+    xcrun simctl ui "$U" appearance $mode; xcrun simctl terminate "$U" $P 2>/dev/null; xcrun simctl launch "$U" $P >/dev/null; sleep 16
     shot "$U" "${TAG}_${mode}_1_today"
     [ $mode = light ] && labels "$U" > "$OUT/${TAG}_labels_today.txt"
-    axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3; [ "$TAG" = iphone69 ] && axe swipe --start-x 220 --start-y 700 --end-x 220 --end-y 560 --duration 0.6 --udid "$U" >/dev/null 2>&1; sleep 5; shot "$U" "${TAG}_${mode}_2_library"
-    axe tap --label "Saved tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 6; shot "$U" "${TAG}_${mode}_3_saved"
+    axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3; sleep 16; shot "$U" "${TAG}_${mode}_2_library"
+    axe tap --label "Saved tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 16; shot "$U" "${TAG}_${mode}_3_saved"
     axe tap --label "Library tab" --wait-timeout 5 --udid "$U" >/dev/null 2>&1; sleep 3
-    if axe tap --label "Who Am I?. The fundamental inquiry. 1 min." --wait-timeout 5 --udid "$U" >/dev/null 2>&1; then sleep 8; shot "$U" "${TAG}_${mode}_4_inquiry"; else echo "no inquiry row on $TAG"; fi
+    if axe tap --label "Who Am I?. The fundamental inquiry. 1 min." --wait-timeout 5 --udid "$U" >/dev/null 2>&1; then sleep 16; shot "$U" "${TAG}_${mode}_4_inquiry"; else echo "no inquiry row on $TAG"; fi
   done
   xcrun simctl ui "$U" appearance light
 done
