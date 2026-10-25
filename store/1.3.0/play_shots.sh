@@ -25,7 +25,7 @@ open(p,'w').write("<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n"+E
 PY
   adb -s $S shell "run-as $P sh -c 'cat > shared_prefs/FlutterSharedPreferences.xml'" < /tmp/fp.xml
   adb -s $S shell settings put global sysui_demo_allowed 1 </dev/null
-  for c in "enter" "clock -e hhmm 0941" "battery -e level 100 -e plugged false" "network -e wifi show -e level 4 -e fully true" "network -e mobile hide" "notifications -e visible false"; do adb -s $S shell am broadcast -a com.android.systemui.demo -e command $c </dev/null >/dev/null; done
+  for c in "enter" "clock -e hhmm 1200" "battery -e level 100 -e plugged false" "network -e wifi show -e level 4 -e fully true" "network -e mobile hide" "notifications -e visible false"; do adb -s $S shell am broadcast -a com.android.systemui.demo -e command $c </dev/null >/dev/null; done
   for mode in light dark; do
     if [ $mode = dark ]; then adb -s $S shell cmd uimode night yes </dev/null >/dev/null; else adb -s $S shell cmd uimode night no </dev/null >/dev/null; fi
     adb -s $S shell am force-stop $P </dev/null

@@ -35,7 +35,7 @@ THEMES = {
     "light": (
         ((246, 241, 230), (244, 239, 227), (229, 236, 225)),
         (0x3A, 0x36, 0x30),
-        (0x5E, 0x5A, 0x52),
+        (0x4A, 0x46, 0x3E),
     ),
     "dark": (
         ((28, 22, 51), (44, 35, 78), (39, 25, 45)),
@@ -75,18 +75,18 @@ def font(path, size, name):
 
 
 def drop_island(im):
-    """Paint out the black Dynamic Island pill the simulator draws (on-device screenshots never show it)."""
+    """Paint out the Dynamic Island the iOS 27 simulator draws; on-device screenshots never show it.
+
+    The island sits centred in the status bar between the clock and the icons, so the band is
+    refilled row by row with the status bar colour sampled just left of it.
+    """
     px = im.load()
     w = im.width
-    for y in range(20, 140):
-        row = [px[x, y] for x in range(int(w * 0.33), int(w * 0.67))]
-        dark = [i for i, c in enumerate(row) if max(c) < 20]
-        if len(dark) < 40:
-            continue
-        left = px[int(w * 0.31), y]
-        for x in range(int(w * 0.33), int(w * 0.67)):
-            if max(px[x, y]) < 60:
-                px[x, y] = left
+    x0, x1 = int(w * 0.335), int(w * 0.665)
+    for y in range(int(w * 0.012), int(w * 0.095)):
+        left = px[x0 - 12, y]
+        for x in range(x0, x1):
+            px[x, y] = left
     return im
 
 
@@ -103,7 +103,7 @@ def render(shots, out, fonts, dev):
             base = W if portrait else H
             f1 = font(f"{fonts}/Newsreader-Variable.ttf", int(base * 0.070), b"Medium")
             f2 = font(f"{fonts}/Inter-Variable.ttf", int(base * 0.040), b"Regular")
-            top = int(H * (0.060 if portrait else 0.055))
+            top = int(H * (0.050 if portrait else 0.050))
             for txt, f, colr, gap in [
                 (line, f1, ink, int(H * 0.016)),
                 (second, f2, sub, 0),
@@ -111,9 +111,9 @@ def render(shots, out, fonts, dev):
                 tw = d.textlength(txt, font=f)
                 d.text(((W - tw) / 2, top), txt, font=f, fill=colr)
                 top += f.size + gap
-            y = int(H * (0.215 if portrait else 0.26))
+            y = int(H * (0.165 if portrait else 0.22))
             if portrait:
-                sw = int(W * 0.80)
+                sw = int(W * 0.86)
                 sh = int(shot.height * sw / shot.width)
                 if y + sh > H - int(H * 0.04):  # keep the whole screen, bottom corners included
                     sh = H - y - int(H * 0.04)
@@ -128,7 +128,7 @@ def render(shots, out, fonts, dev):
             ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw - 1, sh - 1), r, fill=255)
             shadow = Image.new("L", (W, H), 0)
             ImageDraw.Draw(shadow).rounded_rectangle(
-                (x, y + 12, x + sw, y + sh + 12), r, fill=90
+                (x, y + 12, x + sw, y + sh + 12), r, fill=150
             )
             can.paste(
                 Image.new("RGB", (W, H), (0, 0, 0)),
@@ -136,7 +136,7 @@ def render(shots, out, fonts, dev):
                 shadow.filter(ImageFilter.GaussianBlur(28)),
             )
             can.paste(s, (x, y), mask)
-            edge = (120, 112, 150) if mode == "dark" else (196, 186, 166)  # device edge on night or cream
+            edge = (176, 166, 214) if mode == "dark" else (158, 148, 128)  # device edge on night or cream
             ImageDraw.Draw(can).rounded_rectangle((x, y, x + sw - 1, y + sh - 1), r, outline=edge, width=3)
             can.save(f"{out}/{dev}_{mode}_{key}_captioned.png")
 
