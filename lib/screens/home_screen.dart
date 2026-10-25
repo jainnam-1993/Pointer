@@ -343,6 +343,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   Widget _buildCard(BuildContext context, Pointing pointing, PointerColors colors, {required Size size, required bool isSquareAspect, double? maxHeight}) {
     final isFavorite = ref.watch(favoritesProvider.select((f) => f.contains(pointing.id)));
     final cardPadding = (size.width * 0.06).clamp(20.0, 28.0);
+    // Tablets (not the Fold): the pointing sits centred in a taller card, a type step up.
+    final tablet = WindowLayout.of(context).isTabletCanvas;
     final teacher = getTeacher(pointing.teacher);
 
     return Semantics(
@@ -373,79 +375,83 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             duration: Motion.of(context, Motion.standard),
             curve: Motion.inOut,
             alignment: Alignment.topCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header: quiet tradition label, then heart and share as plain glyphs.
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Semantics(
-                            label: traditions[pointing.tradition]!.name,
-                            excludeSemantics: true,
-                            child: AnimatedSwitcher(
-                              duration: Motion.of(context, Motion.quick),
-                              switchInCurve: Motion.enter,
-                              switchOutCurve: Motion.exit,
-                              // Enters with a fade and a slight lift, never from scale 0.
-                              transitionBuilder: (child, animation) => FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(scale: Tween<double>(begin: 0.94, end: 1).animate(animation), child: child),
-                              ),
-                              child: _buildTraditionLabel(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
+            child: HeroCardBody(
+              centered: tablet,
+              minBodyHeight: size.height * kTabletHeroBodyHeightShare,
+              header: // Header: quiet tradition label, then heart and share as plain glyphs.
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Semantics(
+                          label: traditions[pointing.tradition]!.name,
+                          excludeSemantics: true,
+                          child: AnimatedSwitcher(
+                            duration: Motion.of(context, Motion.quick),
+                            switchInCurve: Motion.enter,
+                            switchOutCurve: Motion.exit,
+                            // Enters with a fade and a slight lift, never from scale 0.
+                            transitionBuilder: (child, animation) => FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(scale: Tween<double>(begin: 0.94, end: 1).animate(animation), child: child),
                             ),
+                            child: _buildTraditionLabel(pointing.tradition, colors, key: ValueKey('${pointing.id}-badge')),
                           ),
                         ),
                       ),
-                      _QuietIconButton(
-                        icon: isFavorite ? PhosphorIconsFill.heart : AppIcons.heart,
-                        color: isFavorite ? colors.accent : colors.textSecondary,
-                        label: isFavorite ? 'Remove from favorites' : 'Save to favorites',
-                        onTap: _handleToggleFavorite,
-                      ),
-                      _QuietIconButton(icon: AppIcons.share, color: colors.textSecondary, label: 'Share this pointing', onTap: _handleShare),
-                    ],
-                  ),
-                ),
-                AnimatedSwitcher(
-                  duration: Motion.of(context, const Duration(milliseconds: 400)),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Motion.exit,
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                    child: child,
-                  ),
-                  child: BalancedText(smartPunctuation(pointing.content), key: ValueKey(pointing.id), style: AppTextStyles.heroPointingText(context)),
-                ),
-                if (pointing.instruction != null) ...[
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(smartPunctuation(pointing.instruction!), style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
-                ],
-                if (pointing.teacher != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  AnimatedSwitcher(
-                    duration: Motion.of(context, Motion.quick),
-                    transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
-                    child: _AttributionLink(
-                      key: ValueKey('${pointing.id}-teacher'),
-                      text: '— ${pointing.teacher}',
-                      style: AppTextStyles.teacherText(context),
-                      semanticsLabel: pointing.teacher!,
-                      hint: 'Opens teacher profile',
-                      onTap: teacher == null ? null : () => showTeacherSheet(context, teacher),
                     ),
+                    _QuietIconButton(
+                      icon: isFavorite ? PhosphorIconsFill.heart : AppIcons.heart,
+                      color: isFavorite ? colors.accent : colors.textSecondary,
+                      label: isFavorite ? 'Remove from favorites' : 'Save to favorites',
+                      onTap: _handleToggleFavorite,
+                    ),
+                    _QuietIconButton(icon: AppIcons.share, color: colors.textSecondary, label: 'Share this pointing', onTap: _handleShare),
+                  ],
+                ),
+              ),
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedSwitcher(
+                    duration: Motion.of(context, const Duration(milliseconds: 400)),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Motion.exit,
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                      child: child,
+                    ),
+                    child: BalancedText(smartPunctuation(pointing.content), key: ValueKey(pointing.id), style: AppTextStyles.heroPointingText(context)),
                   ),
+                  if (pointing.instruction != null) ...[
+                    const SizedBox(height: AppSpacing.xl),
+                    Text(smartPunctuation(pointing.instruction!), style: AppTextStyles.instructionText(context), textAlign: TextAlign.center),
+                  ],
+                  if (pointing.teacher != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    AnimatedSwitcher(
+                      duration: Motion.of(context, Motion.quick),
+                      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+                      child: _AttributionLink(
+                        key: ValueKey('${pointing.id}-teacher'),
+                        text: '— ${pointing.teacher}',
+                        style: AppTextStyles.teacherText(context),
+                        semanticsLabel: pointing.teacher!,
+                        hint: 'Opens teacher profile',
+                        onTap: teacher == null ? null : () => showTeacherSheet(context, teacher),
+                      ),
+                    ),
+                  ],
+                  if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
+                  if (pointing.commentary != null) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
+                  ],
                 ],
-                if (pointing.source != null) _SourceCitation(source: pointing.source!, teacher: pointing.teacher),
-                if (pointing.commentary != null) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  CommentarySection(commentary: pointing.commentary, pointingId: pointing.id),
-                ],
-              ],
+              ),
             ),
           ),
         ),
@@ -549,12 +555,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     // actions together in the middle instead of leaving the actions at the bottom.
     // The card and its actions are one group, centered in the body, so the free
     // space sits above and below the group rather than between card and actions
-    // (the phone left about 180 pt there).
+    // (the phone left about 180 pt there). Tablets stack it at its own height.
+    final stacked = layout.heroComposition == HeroComposition.stacked;
     final card = Center(
       heightFactor: 1.0,
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
-        constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
+        constraints: BoxConstraints(maxWidth: stacked ? kHeroReadingMeasureWidth : (regular ? kHeroCardMaxWidth : kContentMaxWidth)),
         // The card may grow to all the height its slot has, not a fixed share of the
         // window: at text scale 2.0 a 58% cap cut long pointings off.
         child: LayoutBuilder(
@@ -597,6 +604,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       );
     }
     final column = Column(
+      mainAxisSize: stacked ? MainAxisSize.min : MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Flexible(child: card),
@@ -609,6 +617,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         ],
       ],
     );
+    if (stacked) {
+      // Tall tablets: one composed hero column, with the context beneath the card instead of in a far pane.
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(AppSpacing.xxl, 20, AppSpacing.xxl, bottomSpace),
+          child: HeroStack(
+            hero: column,
+            below: _HomeContextPane(pointing: pointing, centered: true),
+          ),
+        ),
+      );
+    }
     final primary = SafeArea(
       child: Padding(
         padding: EdgeInsets.only(left: regular ? AppSpacing.xxl : AppSpacing.xl, right: regular ? AppSpacing.xxl : AppSpacing.xl, top: 20, bottom: bottomSpace),
@@ -667,7 +687,10 @@ class _HomeContextPane extends StatelessWidget {
   /** Tabletop bottom half: one line of context, no teacher biography. */
   final bool compact;
 
-  const _HomeContextPane({required this.pointing, this.compact = false});
+  /** Tablet hero column: centred under the card, on the card's axis. */
+  final bool centered;
+
+  const _HomeContextPane({required this.pointing, this.compact = false, this.centered = false});
 
   @override
   Widget build(BuildContext context) {
@@ -688,52 +711,55 @@ class _HomeContextPane extends StatelessWidget {
     return ConstrainedBox(
       key: const ValueKey('home-context-pane'),
       constraints: const BoxConstraints(maxWidth: 420),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // The card already names the tradition and the teacher; this pane adds what
-          // the card doesn't: who the teacher was, what the tradition is, and an
-          // inquiry to try (it no longer repeats the two names).
-          if (teacher?.bio != null) ...[
-            Text('ABOUT ${pointing.teacher!.toUpperCase()}', style: label),
-            if (teacher!.dates != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                teacher.dates!,
-                style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
-              ),
+      child: DefaultTextStyle.merge(
+        textAlign: centered ? TextAlign.center : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            // The card already names the tradition and the teacher; this pane adds what
+            // the card doesn't: who the teacher was, what the tradition is, and an
+            // inquiry to try (it no longer repeats the two names).
+            if (teacher?.bio != null) ...[
+              Text('ABOUT ${pointing.teacher!.toUpperCase()}', style: label),
+              if (teacher!.dates != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  teacher.dates!,
+                  style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              Text(teacher.bio!, maxLines: 5, overflow: TextOverflow.ellipsis, style: body),
+              const SizedBox(height: AppSpacing.xl),
             ],
+            Text('ABOUT ${info.name.toUpperCase()}', style: label),
             const SizedBox(height: AppSpacing.sm),
-            Text(teacher.bio!, maxLines: 5, overflow: TextOverflow.ellipsis, style: body),
-            const SizedBox(height: AppSpacing.xl),
-          ],
-          Text('ABOUT ${info.name.toUpperCase()}', style: label),
-          const SizedBox(height: AppSpacing.sm),
-          Text(info.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
-          if (inquiry != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text('RELATED INQUIRY', style: label),
-            const SizedBox(height: AppSpacing.sm),
-            Semantics(
-              button: true,
-              label: 'Start inquiry: ${inquiry.question}',
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Haptics.light();
-                  context.push('/inquiry/${inquiry.id}');
-                },
-                child: Text(
-                  inquiry.question,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, color: colors.accent, fontSize: AppType.headline, height: 1.4),
+            Text(info.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
+            if (inquiry != null) ...[
+              const SizedBox(height: AppSpacing.xl),
+              Text('RELATED INQUIRY', style: label),
+              const SizedBox(height: AppSpacing.sm),
+              Semantics(
+                button: true,
+                label: 'Start inquiry: ${inquiry.question}',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Haptics.light();
+                    context.push('/inquiry/${inquiry.id}');
+                  },
+                  child: Text(
+                    inquiry.question,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, color: colors.accent, fontSize: AppType.headline, height: 1.4),
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

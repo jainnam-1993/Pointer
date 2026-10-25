@@ -678,6 +678,9 @@ class AppType {
   /** The hero pointing one step up, on medium and expanded windows (iPad, unfolded phones). */
   static const double hero = 32;
 
+  /** The hero pointing on an expanded tablet canvas, where the card's measure is widest (iPad; not the Fold or a 10-inch tablet in portrait). */
+  static const double heroTablet = 36;
+
   /** 22: screen titles and headings. */
   static const double title = 22;
 
@@ -768,8 +771,13 @@ class AppTextStyles {
    * The hero pointing on Home: [pointingText], one step up to [AppType.hero]
    * on medium and expanded windows, where the card has room for it.
    */
-  static TextStyle heroPointingText(BuildContext context) =>
-      pointingText(context).copyWith(fontSize: WindowLayout.of(context).sizeClass == WindowSizeClass.compact ? AppType.display : AppType.hero);
+  static TextStyle heroPointingText(BuildContext context) => pointingText(context).copyWith(fontSize: _heroPointingSize(WindowLayout.of(context)));
+
+  static double _heroPointingSize(WindowLayout layout) {
+    if (layout.sizeClass == WindowSizeClass.compact) return AppType.display;
+    // The extra step needs an expanded tablet's card measure; at 800 dp a 36 pt line widowed its last word.
+    return layout.isTabletCanvas && layout.sizeClass == WindowSizeClass.expanded ? AppType.heroTablet : AppType.hero;
+  }
 
   /** Quote text: Newsreader italic at [AppType.headline]. */
   static TextStyle quoteText(BuildContext context) => TextStyle(

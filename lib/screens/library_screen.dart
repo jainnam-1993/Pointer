@@ -124,7 +124,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               // Featured: whole cards in a grid that fits the width, never a strip
               // that runs past an edge. In two panes it moves to the detail pane,
               // which it fills until a reading is chosen.
-              if (!WindowLayout.of(context).isTwoPane) ...[
+              if (!WindowLayout.of(context).showsListDetail) ...[
                 SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
                 SliverToBoxAdapter(
                   child: _FeaturedGrid(featured: featured, onOpen: (a) => _openArticle(context, a)),
@@ -169,10 +169,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
    */
   Widget _adaptiveBody(BuildContext context, Widget list) {
     final layout = WindowLayout.of(context);
-    if (!layout.isTwoPane) return layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list);
+    if (!layout.showsListDetail) return layout.sizeClass == WindowSizeClass.compact ? list : ContentWidth(child: list);
     final selected = _selectedArticleId;
     return TwoPane(
       key: const ValueKey('library-list-detail'),
+      twoPane: true,
       primaryFlex: 2,
       secondaryFlex: 3,
       // A 2:3 split leaves the list under 300 dp on an 815 dp unfolded fold,
@@ -182,7 +183,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       secondary: selected == null
           ? _FeaturedOverview(
               key: const ValueKey('library-detail-featured'),
-              featured: getFeaturedArticles(limit: 3),
+              featured: getFeaturedArticles(limit: featuredOverviewCount(layout)),
               onOpen: (article) => _openArticle(context, article),
             )
           : ArticleReaderScreen(
@@ -196,7 +197,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /** Navigates to the [ArticleReaderScreen] for the given article. */
   void _openArticle(BuildContext context, Article article) {
     Haptics.light();
-    if (WindowLayout.of(context).isTwoPane) {
+    if (WindowLayout.of(context).showsListDetail) {
       setState(() => _selectedArticleId = article.id);
       return;
     }
@@ -695,8 +696,7 @@ class _BrowseCard extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(fontSize: 13, color: colors.textSecondary),
-                    // Wrap rather than clip: the count column takes width from a narrow list column.
-                    maxLines: 2,
+                    maxLines: listSubtitleMaxLines(context),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -731,8 +731,11 @@ const double _featuredGap = 12;
 double _featuredCardHeight(BuildContext context) => (185 * MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.25)).clamp(185, 235).toDouble();
 
 /** Columns that fit [width] with every card at least [kFeaturedCardMinWidth]. */
-int featuredColumns(double width, int count) =>
-    ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
+int featuredColumns(double width, int count, {bool balanced = false}) {
+  final fit = ((width + _featuredGap) / (kFeaturedCardMinWidth + _featuredGap)).floor().clamp(1, count < 1 ? 1 : count);
+  // Tablets: every row full (balancedColumns); elsewhere the old fit, so the Fold and phones keep their grid.
+  return balanced ? balancedColumns(fit, count) : fit;
+}
 
 class _FeaturedHeader extends StatelessWidget {
   final PointerColors colors;
@@ -763,7 +766,7 @@ class _FeaturedGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cols = featuredColumns(constraints.maxWidth, featured.length);
+          final cols = featuredColumns(constraints.maxWidth, featured.length, balanced: WindowLayout.of(context).isTabletCanvas);
           final width = (constraints.maxWidth - _featuredGap * (cols - 1)) / cols;
           // Rows sized to their content: each row is as tall as its tallest card
           // (IntrinsicHeight), so cards line up without the empty band a fixed
@@ -817,20 +820,40 @@ class _FeaturedOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.only(top: 20, bottom: 48),
-        children: [
-          _FeaturedHeader(colors: colors),
-          _FeaturedGrid(featured: featured, onOpen: onOpen),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-            child: Text(
-              'Or choose a reading from the list.',
-              style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+      child: !WindowLayout.of(context).isTabletCanvas
+          ? ListView(
+              padding: const EdgeInsets.only(top: 20, bottom: 48),
+              children: [
+                _FeaturedHeader(colors: colors),
+                _FeaturedGrid(featured: featured, onOpen: onOpen),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  child: Text(
+                    'Or choose a reading from the list.',
+                    style: TextStyle(fontFamily: AppFonts.serif, fontStyle: FontStyle.italic, fontSize: AppType.callout, color: colors.textMuted),
+                  ),
+                ),
+              ],
+            )
+          : CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                SliverToBoxAdapter(child: _FeaturedHeader(colors: colors)),
+                SliverToBoxAdapter(
+                  child: _FeaturedGrid(featured: featured, onOpen: onOpen),
+                ),
+                // The rest of the pane: a real empty state for the reader, centred in the space left below Featured.
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyStateWidget(
+                    key: const ValueKey('library-detail-empty'),
+                    icon: AppIcons.library,
+                    title: 'Choose a reading',
+                    subtitle: 'Pick a teaching or article from the list, and it opens here.',
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

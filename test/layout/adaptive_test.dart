@@ -101,7 +101,13 @@ void main() {
         _setView(tester, Size(width, 918));
         await tester.pumpWidget(
           const MaterialApp(
-            home: TwoPane(primaryFlex: 2, secondaryFlex: 3, primaryMinWidth: kListPaneMinWidth, primary: SizedBox.expand(), secondary: SizedBox.expand()),
+            home: TwoPane(
+              primaryFlex: 2,
+              secondaryFlex: 3,
+              primaryMinWidth: kListPaneMinWidth,
+              primary: SizedBox.expand(),
+              secondary: SizedBox.expand(),
+            ),
           ),
         );
         return tester.getSize(find.byKey(const ValueKey('pane-primary'))).width;
@@ -191,7 +197,11 @@ void main() {
         _setView(tester, const Size(1376, 1032));
         await tester.pumpWidget(shellApp());
         await tester.pumpAndSettle();
-        for (final (digit, path) in [(LogicalKeyboardKey.digit2, '/library'), (LogicalKeyboardKey.digit3, '/saved'), (LogicalKeyboardKey.digit1, '/')]) {
+        for (final (digit, path) in [
+          (LogicalKeyboardKey.digit2, '/library'),
+          (LogicalKeyboardKey.digit3, '/saved'),
+          (LogicalKeyboardKey.digit1, '/'),
+        ]) {
           await tester.sendKeyDownEvent(modifier);
           await tester.sendKeyEvent(digit);
           await tester.sendKeyUpEvent(modifier);
@@ -201,7 +211,12 @@ void main() {
       });
     }
 
-    for (final (size, rail) in [(const Size(411, 923), false), (const Size(700, 900), true), (const Size(841, 884), true), (const Size(1024, 1366), true)]) {
+    for (final (size, rail) in [
+      (const Size(411, 923), false),
+      (const Size(700, 900), true),
+      (const Size(841, 884), true),
+      (const Size(1024, 1366), true),
+    ]) {
       testWidgets('${size.width.toInt()} wide uses ${rail ? 'the side rail' : 'the bottom bar'}', (tester) async {
         _setView(tester, size);
         await tester.pumpWidget(shellApp());
@@ -290,6 +305,107 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('sheet'), findsNothing, reason: '$size: Escape closes');
       }
+    });
+  });
+
+  group('tablet layouts', () {
+    const ipad13Portrait = Size(1032, 1376);
+    const ipad13Landscape = Size(1376, 1032);
+    const tablet10Portrait = Size(800, 1280);
+    const foldInner = Size(815, 903);
+    const foldFlat = DisplayFeature(bounds: Rect.fromLTWH(407, 0, 0, 903), type: DisplayFeatureType.fold, state: DisplayFeatureState.postureFlat);
+
+    test('tablets stack the hero; the Fold and short landscape windows keep two panes; phones keep one card', () {
+      expect(_layout(ipad13Portrait).heroComposition, HeroComposition.stacked);
+      expect(_layout(tablet10Portrait).heroComposition, HeroComposition.stacked);
+      expect(_layout(ipad13Landscape).heroComposition, HeroComposition.stacked);
+      expect(_layout(const Size(1280, 720)).heroComposition, HeroComposition.sideBySide, reason: 'a short landscape tablet keeps two panes');
+      expect(_layout(foldInner).heroComposition, HeroComposition.sideBySide);
+      expect(_layout(foldInner, [foldFlat]).heroComposition, HeroComposition.sideBySide);
+      expect(_layout(const Size(841, 884), [_bookFold]).heroComposition, HeroComposition.sideBySide);
+      expect(_layout(const Size(411, 923)).heroComposition, HeroComposition.single);
+    });
+
+    test('the Fold keeps two panes at 815 dp, the centered rail and the plain rail inset', () {
+      for (final layout in [
+        _layout(foldInner),
+        _layout(foldInner, [foldFlat]),
+      ]) {
+        expect([layout.isTwoPane, layout.isFoldableInnerScreen], [true, true]);
+        expect(layout.railAlignment, Alignment.centerLeft);
+        expect(layout.railContentInset, kRailWidth);
+      }
+    });
+
+    test('tablets get a top-aligned rail in its own margin column', () {
+      for (final size in [ipad13Portrait, ipad13Landscape, tablet10Portrait]) {
+        final layout = _layout(size);
+        expect(layout.railAlignment, Alignment.topLeft, reason: '$size');
+        expect(layout.railContentInset, kRailWidth + kRailGutter, reason: '$size');
+      }
+      expect(_layout(const Size(841, 884), [_tableFold]).railAlignment, Alignment.centerLeft, reason: 'tabletop keeps its rail below the fold');
+    });
+
+    test('Library list-detail from 720 dp medium; the Fold keeps it; phones, small tablets and tabletop do not', () {
+      expect(_layout(tablet10Portrait).showsListDetail, true);
+      expect(_layout(const Size(720, 1100)).showsListDetail, true);
+      expect(_layout(const Size(719, 1100)).showsListDetail, false);
+      expect(_layout(const Size(600, 960)).showsListDetail, false, reason: '7-inch tablet');
+      expect(_layout(const Size(411, 923)).showsListDetail, false);
+      expect(_layout(foldInner).showsListDetail, true);
+      expect(_layout(foldInner).isTwoPane, true, reason: 'the Fold is two-pane on every screen, as before');
+      expect(_layout(const Size(841, 884), [_tableFold]).showsListDetail, true, reason: 'expanded tabletop stays two-pane as before');
+    });
+
+    test('tablet canvas: iPad and Android tablets, not the Fold or phones', () {
+      expect(
+        [_layout(ipad13Portrait).isTabletCanvas, _layout(ipad13Landscape).isTabletCanvas, _layout(tablet10Portrait).isTabletCanvas],
+        [true, true, true],
+      );
+      expect(
+        [
+          _layout(foldInner).isTabletCanvas,
+          _layout(foldInner, [foldFlat]).isTabletCanvas,
+          _layout(const Size(411, 923)).isTabletCanvas,
+        ],
+        [false, false, false],
+      );
+    });
+
+    test('grid columns: Saved tiles fill the width, Featured rows are always full', () {
+      expect(tileColumns(360), 1);
+      expect(tileColumns(624), 2);
+      expect(tileColumns(1180), 3);
+      expect(balancedColumns(2, 3), 1, reason: 'three cards never leave a ragged 2 + 1');
+      expect(balancedColumns(3, 3), 3);
+      expect(balancedColumns(2, 6), 2);
+      expect(balancedColumns(5, 6), 3);
+      expect(balancedColumns(4, 1), 1);
+    });
+
+    testWidgets('SliverTileGrid lays tiles in columns on regular widths and a list on phones', (tester) async {
+      Future<void> pump(Size size) async {
+        _setView(tester, size);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: CustomScrollView(
+              slivers: [
+                SliverTileGrid(
+                  itemCount: 5,
+                  itemBuilder: (context, i) => SizedBox(height: 50.0 + 20 * i, child: Text('t$i')),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      await pump(const Size(1000, 1300));
+      expect(find.byKey(const ValueKey('tile-grid')), findsOneWidget);
+      expect(tester.getTopLeft(find.text('t1')).dy, tester.getTopLeft(find.text('t0')).dy, reason: 'second tile sits beside the first');
+      await pump(const Size(411, 923));
+      expect(find.byKey(const ValueKey('tile-grid')), findsNothing);
+      expect(tester.getTopLeft(find.text('t1')).dy, greaterThan(tester.getTopLeft(find.text('t0')).dy));
     });
   });
 }

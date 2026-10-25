@@ -141,6 +141,261 @@ class WindowLayout {
   }
 
   bool get isTwoPane => paneCount == 2;
+
+  /**
+   * An unfolded foldable's inner screen: a vertical fold in any state, book
+   * posture, or the near-square shape. These windows keep the layouts tuned on
+   * the Fold; the tablet rules below ([railAlignment], [railContentInset],
+   * [heroComposition]) apply only to the other regular windows.
+   */
+  bool get isFoldableInnerScreen => hasVerticalFold || posture == Posture.book || _isNearSquareInnerScreen;
+
+  /**
+   * Rail rule. Material 3 puts rail destinations at the top of their own
+   * margin column, and the iPadOS sidebar starts at the top too. On tablets the
+   * glass capsule sits top-left, clear of Today's centered card. The Fold and
+   * tabletop keep the centered capsule they had.
+   */
+  Alignment get railAlignment => isTabletCanvas ? Alignment.topLeft : Alignment.centerLeft;
+
+  /**
+   * Left padding the shell gives content beside the rail. Tablets also get
+   * [kRailGutter], so the rail has its own margin column and never touches
+   * content. The Fold keeps [kRailWidth] alone, because its 815 dp two panes
+   * need the width.
+   */
+  double get railContentInset => kRailWidth + (isTabletCanvas ? kRailGutter : 0);
+
+  /**
+   * A tablet canvas: a medium or expanded flat window that is not a foldable's
+   * inner screen. Today's card centres its pointing and sets it a type step up
+   * here ([AppType.heroTablet]); the Fold and phones keep their card.
+   */
+  bool get isTabletCanvas =>
+      sizeClass != WindowSizeClass.compact && posture == Posture.flat && !isFoldableInnerScreen && size.width >= kTabletMinWidth;
+
+  /**
+   * Library's list-detail: wherever the window is two-pane, and on medium
+   * windows from [kListDetailMinWidth] (a 10-inch tablet in portrait), which
+   * have room for a phone-width list beside the reader. Tabletop keeps one pane.
+   */
+  bool get showsListDetail => isTwoPane || (sizeClass == WindowSizeClass.medium && size.width >= kListDetailMinWidth && posture == Posture.flat);
+
+  /** How Today composes the hero card with its context. See [HeroComposition]. */
+  HeroComposition get heroComposition {
+    // Landscape tablets too, once the column fits: a side-by-side pair sagged left of centre on a 13-inch canvas.
+    if (isTabletCanvas && (size.height > size.width * kTallWindowAspect || size.height >= kStackedMinHeight)) return HeroComposition.stacked;
+    return isTwoPane ? HeroComposition.sideBySide : HeroComposition.single;
+  }
+}
+
+/**
+ * Today's hero composition. [single]: the card alone, as on phones.
+ * [sideBySide]: the card with context in a second pane (Fold, landscape
+ * tablets). [stacked]: one composed column on tall tablets, with the card at
+ * [kHeroCardMaxWidth], the actions below it, and the context beneath them. The
+ * group sits a little above center, so a portrait iPad has no empty band above
+ * a floating card.
+ */
+enum HeroComposition { single, sideBySide, stacked }
+
+/** Shortest tablet canvas that stacks Today in landscape: card, actions and context fit one column (iPad 11-inch landscape is 834). */
+const double kStackedMinHeight = 760;
+
+/** Height-to-width ratio past which a regular window counts as a tall (portrait) tablet. */
+const double kTallWindowAspect = 1.15;
+
+/**
+ * Narrowest tablet canvas ([WindowLayout.isTabletCanvas]) and medium window with Library's list-detail
+ * ([WindowLayout.showsListDetail]): a 10-inch tablet in portrait. Narrower regular windows (an iPad Split View half,
+ * the Fold) keep their layouts.
+ */
+const double kTabletMinWidth = 720;
+
+/** Library's list-detail threshold on medium windows; the same width as [kTabletMinWidth]. */
+const double kListDetailMinWidth = kTabletMinWidth;
+
+/** Share of the window height the pointing's area fills in a tablet hero card ([WindowLayout.isTabletCanvas]). */
+const double kTabletHeroBodyHeightShare = 0.2;
+
+/**
+ * The hero card's content: [header] on top, then [body]. On a tablet canvas
+ * ([centered]) the body gets at least [minBodyHeight] and sits centred in it,
+ * so the pointing holds the middle of the card rather than its top.
+ */
+class HeroCardBody extends StatelessWidget {
+  final Widget header;
+  final Widget body;
+  final bool centered;
+  final double minBodyHeight;
+
+  const HeroCardBody({super.key, required this.header, required this.body, this.centered = false, this.minBodyHeight = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        header,
+        if (centered)
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: minBodyHeight),
+            child: Center(key: const ValueKey('hero-card-centred'), child: body),
+          )
+        else
+          body,
+      ],
+    );
+  }
+}
+
+/** Extra gap between the rail column and content on tablets (Material 3 large-screen margin). */
+const double kRailGutter = 24;
+
+/**
+ * Top inset of a top-aligned rail: below the large-title row of the screens beside it, as the iPadOS sidebar starts
+ * under its navigation bar, so the capsule and the title never share a corner.
+ */
+const double kRailTopInset = 88;
+
+/** Widest a multi-column screen (Saved) gets; past this, tiles stop adding columns and center. */
+const double kWideContentMaxWidth = 1240;
+
+/** Featured readings in Library's detail pane: six fill a regular grid of two or three columns. */
+const int kFeaturedOverviewCount = 6;
+
+/** Featured readings in Library's reader pane: [kFeaturedOverviewCount] on a tablet canvas, three elsewhere (the Fold keeps its pane). */
+int featuredOverviewCount(WindowLayout layout) {
+  if (!layout.isTabletCanvas) return 3;
+  // A medium tablet's reader pane is about 330 dp: two columns, so four cards make a 2 x 2 grid and leave room for the empty state.
+  return layout.sizeClass == WindowSizeClass.expanded ? kFeaturedOverviewCount : 4;
+}
+
+/** Widest the Saved column gets: [kWideContentMaxWidth] on a tablet canvas, [kContentMaxWidth] elsewhere. */
+double wideContentMaxWidth(WindowLayout layout) => layout.isTabletCanvas ? kWideContentMaxWidth : kContentMaxWidth;
+
+/** Narrowest a Saved tile gets before the grid drops a column. */
+const double kTileMinWidth = 300;
+
+/** Columns of [minTileWidth]-wide tiles, separated by [gap], that fit in [width]. Never below one. */
+int tileColumns(double width, {double minTileWidth = kTileMinWidth, double gap = 12}) =>
+    ((width + gap) / (minTileWidth + gap)).floor().clamp(1, 1 << 20);
+
+/**
+ * Columns for a grid of [count] equal cards when at most [fit] fit: the most
+ * columns that leave every row full. Three cards in two columns would leave a
+ * ragged last row, so they go in three columns or one. Never above [count].
+ */
+int balancedColumns(int fit, int count) {
+  if (count <= 1) return 1;
+  final cap = fit.clamp(1, count);
+  for (var c = cap; c > 1; c--) {
+    if (count % c == 0) return c;
+  }
+  return 1;
+}
+
+/**
+ * The Saved tiles: a [SliverList] on one column, and on wider windows a
+ * masonry of [tileColumns] columns: each column is as tall as its own items.
+ * Items fill round-robin, so the reading order runs left to right, then top
+ * to bottom. Items bring their own bottom spacing, as in the list.
+ */
+class SliverTileGrid extends StatelessWidget {
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+  final double minTileWidth;
+  final double gap;
+
+  const SliverTileGrid({super.key, required this.itemCount, required this.itemBuilder, this.minTileWidth = kTileMinWidth, this.gap = 12});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final cols = !WindowLayout.of(context).isTabletCanvas
+            ? 1
+            : tileColumns(constraints.crossAxisExtent, minTileWidth: minTileWidth, gap: gap).clamp(1, itemCount < 1 ? 1 : itemCount);
+        if (cols == 1) return SliverList(delegate: SliverChildBuilderDelegate(itemBuilder, childCount: itemCount));
+        return SliverToBoxAdapter(
+          child: Row(
+            key: const ValueKey('tile-grid'),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var c = 0; c < cols; c++) ...[
+                if (c > 0) SizedBox(width: gap),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [for (var i = c; i < itemCount; i += cols) Builder(builder: (context) => itemBuilder(context, i))],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/**
+ * Widest the hero card gets in [HeroComposition.stacked]: a line of about 60
+ * characters a line of the pointing at [AppType.heroTablet] (36 pt
+ * Newsreader) plus the card's side padding. The type grows with the measure,
+ * so the line stays near the design panel's 600 to 640 pt reading width.
+ */
+const double kHeroReadingMeasureWidth = 760;
+
+/**
+ * Lines a list row's subtitle may take. Compact windows keep one line; beside
+ * a detail pane (a 360 dp list on a 10-inch tablet) the count and chevron
+ * leave too little room, so the subtitle wraps to a second line instead of
+ * truncating.
+ */
+int listSubtitleMaxLines(BuildContext context) => WindowLayout.of(context).isTabletCanvas ? 2 : 1;
+
+/** Inner side padding of the hero card on regular windows; the stacked context lines up with it. */
+const double kHeroCardInset = 28;
+
+/** Gap between the stacked hero group (card and actions) and the context beneath it. */
+const double kHeroContextGap = 56;
+
+/**
+ * The [HeroComposition.stacked] layout: [hero] (the card and its action row,
+ * as one group) with [below] (the context) [kHeroContextGap] under it, capped
+ * at [kHeroReadingMeasureWidth]. Free space splits evenly above and below, so the
+ * card and actions sit at the optical centre, a little above true centre, and
+ * the context reads as part of the same composition rather than a footer.
+ */
+class HeroStack extends StatelessWidget {
+  final Widget hero;
+  final Widget below;
+
+  const HeroStack({super.key, required this.hero, required this.below});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      key: const ValueKey('hero-stack'),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: kHeroReadingMeasureWidth),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Loose: the card takes the height it needs, and its quote scrolls past what the window has.
+            Flexible(child: hero),
+            const SizedBox(height: kHeroContextGap),
+            // Inset like the card's content and centred on the card's axis.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kHeroCardInset),
+              child: below,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /**
@@ -193,7 +448,11 @@ class TwoPane extends StatelessWidget {
    */
   final double primaryMinWidth;
 
+  /** Overrides [WindowLayout.isTwoPane], for a screen with its own rule such as [WindowLayout.showsListDetail]. */
+  final bool? twoPane;
+
   const TwoPane({
+    this.twoPane,
     super.key,
     required this.primary,
     required this.secondary,
@@ -206,7 +465,7 @@ class TwoPane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final layout = WindowLayout.of(context);
-    if (!layout.isTwoPane) return primary;
+    if (!(twoPane ?? layout.isTwoPane)) return primary;
     final left = MediaQuery.removePadding(
       context: context,
       removeRight: true,
@@ -427,7 +686,14 @@ class FormSheetPanel extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             child: Material(
               type: MaterialType.transparency,
-              child: MediaQuery.removePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: child),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                removeBottom: true,
+                removeLeft: true,
+                removeRight: true,
+                child: child,
+              ),
             ),
           ),
         ),

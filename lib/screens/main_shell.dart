@@ -176,8 +176,8 @@ class _MainShellState extends ConsumerState<MainShell> {
         children: [
           MediaQuery(
             data: media.copyWith(
-              padding: media.padding.copyWith(left: media.padding.left + kRailWidth),
-              viewPadding: media.viewPadding.copyWith(left: media.viewPadding.left + kRailWidth),
+              padding: media.padding.copyWith(left: media.padding.left + layout.railContentInset),
+              viewPadding: media.viewPadding.copyWith(left: media.viewPadding.left + layout.railContentInset),
             ),
             child: FocusTraversalGroup(child: content),
           ),
@@ -190,7 +190,7 @@ class _MainShellState extends ConsumerState<MainShell> {
               right: false,
               top: railTop == 0,
               child: FocusTraversalGroup(
-                child: _SideRail(currentIndex: currentIndex, onTap: (index) => _goBranch(index, currentIndex)),
+                child: _SideRail(alignment: layout.railAlignment, currentIndex: currentIndex, onTap: (index) => _goBranch(index, currentIndex)),
               ),
             ),
           ),
@@ -218,16 +218,22 @@ class _SideRail extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const _SideRail({required this.currentIndex, required this.onTap});
+  /** Where the capsule sits in its column: [WindowLayout.railAlignment]. */
+  final Alignment alignment;
+
+  const _SideRail({required this.currentIndex, required this.onTap, this.alignment = Alignment.centerLeft});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    final top = alignment.y < 0;
+    return Align(
       key: const ValueKey('side-rail'),
+      alignment: top ? Alignment.topLeft : Alignment.center,
       child: Padding(
-        padding: const EdgeInsets.only(left: LiquidGlass.railInset),
+        padding: EdgeInsets.only(left: LiquidGlass.railInset, top: top ? kRailTopInset : 0),
         child: Align(
-          alignment: Alignment.centerLeft,
+          alignment: alignment,
+          heightFactor: top ? 1 : null,
           child: LensTabBar(tabs: shellTabs, currentIndex: currentIndex, onTap: onTap, axis: Axis.vertical),
         ),
       ),
