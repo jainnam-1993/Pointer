@@ -553,12 +553,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
     // actions together in the middle instead of leaving the actions at the bottom.
     final stacked = layout.heroComposition == HeroComposition.stacked;
-    final grouped = stacked || (layout.isTwoPane && size.height > size.width);
+    // Tablets in landscape too: the actions stay under the card, never pinned to the bottom edge (the Fold keeps its layout).
+    final grouped = stacked || (layout.isTwoPane && (size.height > size.width || !layout.isFoldableInnerScreen));
     final card = Center(
       heightFactor: grouped ? 1.0 : null,
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
-        constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
+        constraints: BoxConstraints(maxWidth: stacked ? kHeroReadingMeasureWidth : (regular ? kHeroCardMaxWidth : kContentMaxWidth)),
         // The card may grow to all the height its slot has, not a fixed share of the
         // window: at text scale 2.0 a 58% cap cut long pointings off.
         child: LayoutBuilder(
@@ -620,7 +621,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           padding: EdgeInsets.fromLTRB(AppSpacing.xxl, 20, AppSpacing.xxl, bottomSpace),
           child: HeroStack(
             hero: column,
-            below: Padding(padding: const EdgeInsets.only(top: AppSpacing.xxl), child: _HomeContextPane(pointing: pointing)),
+            below: _HomeContextPane(pointing: pointing),
           ),
         ),
       );

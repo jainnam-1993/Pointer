@@ -193,7 +193,7 @@ const double kTallWindowAspect = 1.15;
 const double kRailGutter = 16;
 
 /** Top inset of a top-aligned rail, matching the large-title row of the screens beside it. */
-const double kRailTopInset = 20;
+const double kRailTopInset = 40;
 
 /** Widest a multi-column screen (Saved) gets; past this, tiles stop adding columns and center. */
 const double kWideContentMaxWidth = 1240;
@@ -267,9 +267,21 @@ class SliverTileGrid extends StatelessWidget {
 }
 
 /**
- * The [HeroComposition.stacked] column: [hero] over [below], capped at
- * [kHeroCardMaxWidth] and placed a little above center. [hero] shrinks
- * before [below] when the window is short.
+ * Widest the hero card gets in [HeroComposition.stacked]: a line of about 60
+ * to 70 characters of the pointing at [AppType.hero] (32 pt serif) plus the
+ * card's side padding, the design panel's 600 to 640 pt reading measure.
+ */
+const double kHeroReadingMeasureWidth = 640;
+
+/** Gap between the stacked hero group (card and actions) and the context beneath it. */
+const double kHeroContextGap = 56;
+
+/**
+ * The [HeroComposition.stacked] layout: [hero] (the card and its action row,
+ * as one group) with [below] (the context) [kHeroContextGap] under it, capped
+ * at [kHeroReadingMeasureWidth]. Free space splits evenly above and below, so the
+ * card and actions sit at the optical centre, a little above true centre, and
+ * the context reads as part of the same composition rather than a footer.
  */
 class HeroStack extends StatelessWidget {
   final Widget hero;
@@ -279,17 +291,24 @@ class HeroStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
+    return Center(
       key: const ValueKey('hero-stack'),
-      alignment: const Alignment(0, -0.3),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: kHeroCardMaxWidth),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(child: hero),
-            below,
-          ],
+        constraints: const BoxConstraints(maxWidth: kHeroReadingMeasureWidth),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            children: [
+              const Spacer(flex: 2),
+              // The card may grow to most of the height; past that its quote scrolls.
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: constraints.maxHeight * 0.7),
+                child: hero,
+              ),
+              const SizedBox(height: kHeroContextGap),
+              below,
+              const Spacer(flex: 2),
+            ],
+          ),
         ),
       ),
     );
@@ -580,7 +599,14 @@ class FormSheetPanel extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             child: Material(
               type: MaterialType.transparency,
-              child: MediaQuery.removePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: child),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                removeBottom: true,
+                removeLeft: true,
+                removeRight: true,
+                child: child,
+              ),
             ),
           ),
         ),

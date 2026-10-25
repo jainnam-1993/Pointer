@@ -97,6 +97,8 @@ const matrixDevices = <MatrixDevice>[
   MatrixDevice('ipad13l', Size(1376, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
   MatrixDevice('ipadthird', Size(375, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
   MatrixDevice('ipadhalf', Size(678, 1032), 2, safeArea: EdgeInsets.only(top: 24, bottom: 20)),
+  // A 10-inch Android tablet in portrait (Play Store tablet screenshots): medium width, tall.
+  MatrixDevice('tablet10', Size(800, 1280), 2, safeArea: EdgeInsets.only(top: 24, bottom: 24)),
 ];
 
 /// Device used only by the layout assertions: within 1 % of ipad13p, so it has no golden cells.
