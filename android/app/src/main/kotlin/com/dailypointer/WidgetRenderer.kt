@@ -89,7 +89,7 @@ object WidgetRenderer {
         context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
         look: WidgetLook,
     ): RemoteViews {
-        val views = RemoteViews(context.packageName, layoutFor(size))
+        val views = RemoteViews(context.packageName, layoutFor(size, look))
         paint(context, views, size, look)
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
@@ -126,7 +126,7 @@ object WidgetRenderer {
         views.setInt(R.id.widget_content_area, "setBackgroundResource", scrim)
         views.setInt(R.id.widget_teacher, "setBackgroundResource", scrim)
         when (look.surface) {
-            WidgetSurface.GLASS -> {
+            WidgetSurface.GLASS, WidgetSurface.CLEAR -> {
                 views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
                 views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
                 val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
@@ -167,7 +167,14 @@ object WidgetRenderer {
     }
 
     /** Each size has its own layout (small, medium, large) rather than one stretched layout. */
-    fun layoutFor(size: WidgetSize): Int = when (size) {
+    fun layoutFor(size: WidgetSize, look: WidgetLook = WidgetLook.SHIPPED): Int = if (look.surface == WidgetSurface.CLEAR) {
+        // Text shadows are XML-only in RemoteViews, so the clear look has its own layouts.
+        when (size) {
+            WidgetSize.COMPACT -> R.layout.pointer_widget_clear_small
+            WidgetSize.MEDIUM -> R.layout.pointer_widget_clear
+            WidgetSize.LARGE -> R.layout.pointer_widget_clear_large
+        }
+    } else when (size) {
         WidgetSize.COMPACT -> R.layout.pointer_widget_small
         WidgetSize.MEDIUM -> R.layout.pointer_widget
         WidgetSize.LARGE -> R.layout.pointer_widget_large

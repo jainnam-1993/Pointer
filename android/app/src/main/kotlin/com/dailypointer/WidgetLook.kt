@@ -9,6 +9,9 @@ enum class WidgetSurface {
     /** Translucent dark glass over the wallpaper, white text (GlassRule). */
     GLASS,
 
+    /** No panel: white text with a soft legibility shadow straight on the wallpaper (iOS clear style). */
+    CLEAR,
+
     /** Opaque Material You tonal card (system_accent2/neutral tones), dark text in light mode. */
     TONAL,
 }
@@ -31,6 +34,7 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "frosted" to WidgetLook(WidgetSurface.GLASS, 0.80, WidgetScrim.NONE),
             "tonal" to WidgetLook(WidgetSurface.TONAL, 1.0, WidgetScrim.NONE),
             "tonal-glass" to WidgetLook(WidgetSurface.TONAL, 0.85, WidgetScrim.NONE),
+            "clear" to WidgetLook(WidgetSurface.CLEAR, 0.0, WidgetScrim.NONE),
         )
     }
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Clear look (no panel, text with a legibility shadow). Small (2x1, 2x2): the pointing alone, set in serif. Tap opens it.
+     Only RemoteViews-allowlisted classes (WidgetLayoutTest). Colors and radii come from
+     values(-night)(-v31), so Android 12+ follows the wallpaper and older versions keep the house palette. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToOutline="true"
+    android:background="@drawable/widget_background">
+
+    <!-- Opaque frosted card painted from the wallpaper colors (FrostCard). -->
+    <ImageView
+        android:id="@+id/widget_frost_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_glass"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/widget_padding">
+
+    <LinearLayout
+        android:id="@+id/widget_content_area"
+        android:background="@drawable/widget_text_scrim"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_tradition"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <LinearLayout
+            android:id="@+id/widget_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/widget_content"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="serif"
+            android:textColor="@color/widget_text"
+            android:autoSizeTextType="uniform"
+            android:autoSizeStepGranularity="1sp"
+            android:gravity="top|start"
+            android:maxLines="4"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:lineSpacingMultiplier="1.2" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_teacher"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:background="@drawable/widget_text_scrim"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="12sp"
+        android:textColor="@color/widget_text_muted"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/widget_action_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+</LinearLayout>
+</FrameLayout>

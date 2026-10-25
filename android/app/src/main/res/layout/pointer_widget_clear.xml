@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Clear look (no panel, text with a legibility shadow). Medium (4x2): the pointing above one quiet footer row: teacher on the left, Save, Previous and Next on the right.
+     Only RemoteViews-allowlisted classes (WidgetLayoutTest). Colors and radii come from
+     values(-night)(-v31), so Android 12+ follows the wallpaper and older versions keep the house palette. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToOutline="true"
+    android:background="@drawable/widget_background">
+
+    <!-- Opaque frosted card painted from the wallpaper colors (FrostCard). -->
+    <ImageView
+        android:id="@+id/widget_frost_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_glass"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/widget_padding">
+
+    <LinearLayout
+        android:id="@+id/widget_content_area"
+        android:background="@drawable/widget_text_scrim"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_tradition"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <LinearLayout
+            android:id="@+id/widget_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/widget_content"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="serif"
+            android:textColor="@color/widget_text"
+            android:autoSizeTextType="uniform"
+            android:autoSizeStepGranularity="1sp"
+            android:gravity="top|start"
+            android:maxLines="5"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="18sp"
+            android:lineSpacingMultiplier="1.2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/widget_teacher"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:background="@drawable/widget_text_scrim"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="13sp"
+            android:textColor="@color/widget_text_muted" />
+
+        <ImageView
+            android:id="@+id/widget_save"
+            android:layout_width="@dimen/widget_touch_target"
+            android:layout_height="@dimen/widget_touch_target"
+            android:padding="13dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_heart_outline"
+            android:background="@drawable/widget_save_circle"
+            android:contentDescription="@string/widget_save" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/widget_touch_target"
+            android:layout_marginStart="4dp"
+            android:orientation="horizontal"
+            android:id="@+id/widget_pill"
+            android:background="@drawable/widget_pill_on_light">
+
+            <ImageView
+                android:id="@+id/widget_prev"
+                android:layout_width="@dimen/widget_touch_target"
+                android:layout_height="@dimen/widget_touch_target"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_chevron_left"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/widget_previous" />
+
+            <ImageView
+                android:id="@+id/widget_next"
+                android:layout_width="@dimen/widget_touch_target"
+                android:layout_height="@dimen/widget_touch_target"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_chevron_right"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/widget_next" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+</FrameLayout>
