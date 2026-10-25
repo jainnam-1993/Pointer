@@ -14,7 +14,7 @@ import android.util.Log
  *   adb -s emulator-5590 shell am broadcast -n com.dailypointer.test/com.dailypointer.DebugWallpaperReceiver --es path /data/local/tmp/wp.png
  *   ... --es color FF808080
  *   ... --es pointing zen-293   (show a given pointing on the widget, then redraw)
- *   ... --es glass_alpha 0.6   (debug-only fixed-alpha override for the measurement sweep; -1 clears)
+ *   ... --es look frosted      (debug-only look override for the design review: current|frosted|tonal|shipped)
  * Exported only to holders of android.permission.DUMP (adb shell). Refuses to run on real devices.
  * It sets the wallpaper and logs the WallpaperColors the widget renderer will read; it does NOT
  * redraw the widget, so the sweep can show the change arriving within one ordinary redraw.
@@ -26,10 +26,10 @@ class DebugWallpaperReceiver : BroadcastReceiver() {
             return
         }
         intent.getStringExtra("pointing")?.let { showPointing(context, it); return }
-        intent.getStringExtra("glass_alpha")?.toFloatOrNull()?.let {
-            context.getSharedPreferences(GlassAlpha.PREFS, Context.MODE_PRIVATE).edit().putFloat(GlassAlpha.KEY, it).commit()
+        intent.getStringExtra("look")?.let {
+            context.getSharedPreferences(WidgetLookSource.PREFS, Context.MODE_PRIVATE).edit().putString(WidgetLookSource.KEY, it).commit()
             WidgetRenderer.renderAll(context)
-            Log.i(TAG, "Glass alpha override $it")
+            Log.i(TAG, "Widget look override $it")
             return
         }
         val bitmap: Bitmap = intent.getStringExtra("path")?.let { BitmapFactory.decodeFile(it) }

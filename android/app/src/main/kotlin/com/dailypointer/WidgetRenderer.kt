@@ -61,36 +61,36 @@ object WidgetRenderer {
         val state = WidgetStore.forContext(context).update { it.tick(System.currentTimeMillis()) }
         val index = WidgetOrder.indexAt(state.seed, pointings.size, state.position)
         val pointing = if (index >= 0) pointings[index] else null
-        // The wallpaper colors are read on every render, so a wallpaper change shows on the next redraw.
-        // One fixed glass alpha, right for any wallpaper with no recompute: a wallpaper change
-        // redraws nothing, so a per-wallpaper value would go stale (see GlassRule.FIXED_ALPHA).
-        val glass = GlassAlpha.current(context)
+        // One look for every wallpaper, with nothing to recompute when the wallpaper changes (a
+        // wallpaper change redraws nothing). The tonal look's colours are system resources that
+        // the launcher re-resolves on a wallpaper or theme change.
+        val look = WidgetLookSource.current(context)
         for (id in ids) {
-            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, glass))
+            manager.updateAppWidget(id, build(context, id, manager.getAppWidgetOptions(id), pointing, state, look))
         }
     }
 
     private fun build(
         context: Context, widgetId: Int, options: Bundle, pointing: WidgetPointing?, state: WidgetState,
-        glass: Double,
+        look: WidgetLook,
     ): RemoteViews {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val variants = WidgetSize.BREAKPOINTS.associate { (size, dims) ->
-                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, glass)
+                SizeF(dims.first, dims.second) to views(context, widgetId, size, pointing, state, look)
             }
             return RemoteViews(variants)
         }
         val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250).toFloat()
         val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 110).toFloat()
-        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, glass) }
+        return WidgetSize.forSize(width, height).let { views(context, widgetId, it, pointing, state, look) }
     }
 
     private fun views(
         context: Context, widgetId: Int, size: WidgetSize, pointing: WidgetPointing?, state: WidgetState,
-        glass: Double,
+        look: WidgetLook,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, layoutFor(size))
-        paint(views, size, glass)
+        paint(context, views, size, look)
         if (pointing == null) {
             views.setTextViewText(R.id.widget_content, context.getString(R.string.widget_empty))
             views.setViewVisibility(R.id.widget_header, View.GONE)
@@ -120,16 +120,49 @@ object WidgetRenderer {
         return views
     }
 
-    /** Glass alpha (GlassRule) and the two text levels: white quote, 80% white teacher line. */
-    private fun paint(views: RemoteViews, size: WidgetSize, glass: Double) {
-        views.setInt(R.id.widget_frost_bg, "setImageAlpha", (glass * 255).toInt().coerceIn(0, 255))
-        val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
-        views.setTextColor(R.id.widget_content, GlassRule.INK)
-        views.setTextColor(R.id.widget_teacher, secondary)
-        views.setTextColor(R.id.widget_tradition, secondary)
-        if (size.showActions) {
-            for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", GlassRule.INK)
-            views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_on_dark)
+    /** Applies the look: surface, scrim, and the two text levels (quote, then teacher and eyebrow). */
+    private fun paint(context: Context, views: RemoteViews, size: WidgetSize, look: WidgetLook) {
+        val scrim = if (look.scrim == WidgetScrim.BOX) R.drawable.widget_text_scrim else 0
+        views.setInt(R.id.widget_content_area, "setBackgroundResource", scrim)
+        views.setInt(R.id.widget_teacher, "setBackgroundResource", scrim)
+        when (look.surface) {
+            WidgetSurface.GLASS -> {
+                views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_glass)
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", (look.bodyAlpha * 255).toInt().coerceIn(0, 255))
+                val secondary = (0xCC shl 24) or (GlassRule.INK and 0xFFFFFF)
+                views.setTextColor(R.id.widget_content, GlassRule.INK)
+                views.setTextColor(R.id.widget_teacher, secondary)
+                views.setTextColor(R.id.widget_tradition, secondary)
+                if (size.showActions) {
+                    for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) views.setInt(id, "setColorFilter", GlassRule.INK)
+                    views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_on_dark)
+                }
+            }
+            WidgetSurface.TONAL -> {
+                views.setImageViewResource(R.id.widget_frost_bg, R.drawable.widget_tonal)
+                views.setInt(R.id.widget_frost_bg, "setImageAlpha", 255)
+                tint(context, views, R.id.widget_content, "setTextColor", R.color.widget_text)
+                tint(context, views, R.id.widget_teacher, "setTextColor", R.color.widget_text_muted)
+                tint(context, views, R.id.widget_tradition, "setTextColor", R.color.widget_accent)
+                if (size.showActions) {
+                    for (id in intArrayOf(R.id.widget_save, R.id.widget_prev, R.id.widget_next)) tint(context, views, id, "setImageTintList", R.color.widget_accent)
+                    views.setInt(R.id.widget_pill, "setBackgroundResource", R.drawable.widget_pill_tonal)
+                }
+            }
+        }
+    }
+
+    /**
+     * Android 12+: pass the colour as a resource, so the launcher resolves it (and re-resolves it on
+     * a wallpaper or theme change) with no app code running. Older versions get the resolved colour.
+     */
+    private fun tint(context: Context, views: RemoteViews, id: Int, method: String, color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            views.setColorStateList(id, method, color)
+        } else if (method == "setTextColor") {
+            views.setTextColor(id, context.getColor(color))
+        } else {
+            views.setInt(id, "setColorFilter", context.getColor(color))
         }
     }
 
