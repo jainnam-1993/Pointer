@@ -249,11 +249,14 @@ class HeroCardBody extends StatelessWidget {
   }
 }
 
-/** Extra gap between the rail column and content on tablets. */
-const double kRailGutter = 16;
+/** Extra gap between the rail column and content on tablets (Material 3 large-screen margin). */
+const double kRailGutter = 24;
 
-/** Top inset of a top-aligned rail, matching the large-title row of the screens beside it. */
-const double kRailTopInset = 40;
+/**
+ * Top inset of a top-aligned rail: below the large-title row of the screens beside it, as the iPadOS sidebar starts
+ * under its navigation bar, so the capsule and the title never share a corner.
+ */
+const double kRailTopInset = 88;
 
 /** Widest a multi-column screen (Saved) gets; past this, tiles stop adding columns and center. */
 const double kWideContentMaxWidth = 1240;
@@ -262,7 +265,11 @@ const double kWideContentMaxWidth = 1240;
 const int kFeaturedOverviewCount = 6;
 
 /** Featured readings in Library's reader pane: [kFeaturedOverviewCount] on a tablet canvas, three elsewhere (the Fold keeps its pane). */
-int featuredOverviewCount(WindowLayout layout) => layout.isTabletCanvas ? kFeaturedOverviewCount : 3;
+int featuredOverviewCount(WindowLayout layout) {
+  if (!layout.isTabletCanvas) return 3;
+  // A medium tablet's reader pane is about 330 dp: two columns, so four cards make a 2 x 2 grid and leave room for the empty state.
+  return layout.sizeClass == WindowSizeClass.expanded ? kFeaturedOverviewCount : 4;
+}
 
 /** Widest the Saved column gets: [kWideContentMaxWidth] on a tablet canvas, [kContentMaxWidth] elsewhere. */
 double wideContentMaxWidth(WindowLayout layout) => layout.isTabletCanvas ? kWideContentMaxWidth : kContentMaxWidth;
