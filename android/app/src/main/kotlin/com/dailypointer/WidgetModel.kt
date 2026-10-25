@@ -120,12 +120,16 @@ object PointingsJson {
         }
     }
 
-    /** Decodes `pointer_favorites` (a JSON array of ids). Missing -> empty; malformed -> null. */
+    /**
+     * Decodes `pointer_favorites`, a JSON array of id strings: the one format Dart's
+     * StorageService and this widget both write. Missing -> empty; not a JSON array -> null,
+     * so the caller never writes over it; non-string elements are dropped.
+     */
     fun decodeIds(value: String?): List<String>? {
         if (value.isNullOrEmpty()) return emptyList()
         return try {
             val array = JSONArray(value)
-            List(array.length()) { array.getString(it) }
+            (0 until array.length()).mapNotNull { array.opt(it) as? String }
         } catch (e: JSONException) {
             null
         }
