@@ -300,7 +300,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                     final i = _pos.value.round().clamp(0, n - 1);
                     final label = Transform.scale(
                       scale: 1 + (Motion.lensMagnify - 1) * lift,
-                      child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: lift > 0.5 ? LensTabStyle.active : style.active),
+                      child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: style.active),
                     );
                     return Positioned.fromRect(
                       rect: rect,
