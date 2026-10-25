@@ -174,7 +174,8 @@ class ThemeOption extends StatelessWidget {
     // - Thicker border (2px selected vs 1px unselected)
     // - Stronger background fill
     // - High contrast border color
-    final bgColor = SelectionTint.fill(colors, selected: isSelected, isDark: isDark);
+    // One level inside the Appearance card: only the selected segment has a fill, like a segmented control.
+    final bgColor = isSelected ? SelectionTint.fill(colors, selected: true, isDark: isDark) : Colors.transparent;
 
     return Expanded(
       child: Semantics(
@@ -189,6 +190,7 @@ class ThemeOption extends StatelessWidget {
           child: AnimatedContainer(
             duration: Motion.reduce(context) ? Duration.zero : Motion.quick,
             curve: Motion.inOut,
+            constraints: const BoxConstraints(minHeight: AppSpacing.minTouchTarget),
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.md, horizontal: AppSpacing.sm),
             decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
             child: Column(

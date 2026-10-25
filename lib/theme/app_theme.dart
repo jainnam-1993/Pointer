@@ -496,6 +496,17 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     opaque: true,
   );
 
+  /**
+   * Fill of a bottom sheet body (notification schedule, time picker): the app's own
+   * surface, ink-tinted in dark, warm white in light, never a neutral grey. Text and
+   * the plain glass levels on it are checked in test/theme/contrast_test.dart.
+   */
+  static Color sheetSurface(PointerColors colors) {
+    if (identical(colors, PointerColors.dark)) return const Color(0xFA0C0A13);
+    if (identical(colors, PointerColors.light)) return const Color(0xF0FFFDF8);
+    return colors.surface;
+  }
+
   /** Index of each intensity in [levels]. */
   static const int lightLevel = 0, standardLevel = 1, heavyLevel = 2;
 
@@ -565,8 +576,12 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
 
   /** Top-edge sheen as a foreground gradient. */
-  LinearGradient get sheen =>
-      LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0, highlightExtent], colors: [highlight, highlight.withValues(alpha: 0)]);
+  LinearGradient get sheen => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0, highlightExtent],
+    colors: [highlight, highlight.withValues(alpha: 0)],
+  );
 
   /** Drop shadows, empty when [shadow] is transparent. */
   List<BoxShadow> get shadows => shadow.a == 0 ? const [] : [BoxShadow(color: shadow, blurRadius: shadowBlur, offset: const Offset(0, 6))];
@@ -813,7 +828,13 @@ TextTheme _textTheme(TextTheme base, PointerColors colors) {
         titleLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.headline, fontWeight: FontWeight.w600, color: colors.textPrimary),
         bodyLarge: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.body, color: colors.textPrimary),
         bodyMedium: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.callout, color: colors.textSecondary),
-        labelSmall: TextStyle(fontFamily: AppFonts.sans, fontSize: AppType.caption, fontWeight: FontWeight.w600, color: colors.textMuted, letterSpacing: 1),
+        labelSmall: TextStyle(
+          fontFamily: AppFonts.sans,
+          fontSize: AppType.caption,
+          fontWeight: FontWeight.w600,
+          color: colors.textMuted,
+          letterSpacing: 1,
+        ),
       );
 }
 
