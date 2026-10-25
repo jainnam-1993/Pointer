@@ -28,6 +28,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pointer/data/teachers.dart' show loadTeachers;
 import 'package:pointer/data/articles.dart';
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/layout/adaptive.dart';
@@ -521,6 +522,8 @@ void setUpMatrixSuite() {
     // Load the ambient FragmentProgram up front so goldens show the shader, not the fallback.
     expect(await AmbientShader.ensureLoaded(), isNotNull, reason: 'shaders/ambient.frag must load under flutter test');
     _loadArticlesWithReaderContent();
+    // The real teachers, as the app loads them at startup, so Today's fold pane shows their bios.
+    await loadTeachers();
     registerFallbackValue(const NotificationSchedule());
     _notifications = _MockNotificationService();
     when(() => _notifications.checkPermissions()).thenAnswer((_) async => true);

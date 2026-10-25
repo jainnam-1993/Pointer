@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/screens/home_screen.dart' show BalancedText;
 import 'package:pointer/data/pointings.dart';
 import 'package:pointer/layout/adaptive.dart';
 import 'package:pointer/screens/settings_screen.dart';
@@ -24,9 +25,9 @@ void main() {
 
     // The hero pointing: the serif Text keyed by the pointing id inside Home's AnimatedSwitcher.
     final heroPointing = find.byWidgetPredicate(
-      (w) => w is Text && w.key is ValueKey && w.style?.fontFamily == AppFonts.serif && (w.style?.fontSize ?? 0) >= AppType.display,
+      (w) => w is BalancedText && w.key is ValueKey && w.style.fontFamily == AppFonts.serif && (w.style.fontSize ?? 0) >= AppType.display,
     );
-    Key? pointingKey(WidgetTester tester) => tester.widgetList<Text>(heroPointing).last.key;
+    Key? pointingKey(WidgetTester tester) => tester.widgetList<BalancedText>(heroPointing).last.key;
 
     // "Nothing looks cut off": at rest, every Featured card and Today's card sits wholly
     // inside its pane (or the window when single pane), on every device class.
@@ -78,8 +79,8 @@ void main() {
         ('ipad13l', AppType.hero),
       ]) {
         await pumpAt(tester, screen('home'), device(name));
-        final text = tester.widgetList<Text>(heroPointing).last;
-        expect(text.style?.fontSize, size, reason: name);
+        final text = tester.widgetList<BalancedText>(heroPointing).last;
+        expect(text.style.fontSize, size, reason: name);
       }
     });
 

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../layout/adaptive.dart';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pointings.dart';
@@ -37,12 +36,6 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   /** Whether the share action is currently in progress. */
   bool _isSharing = false;
 
-  /** Cached preview image bytes for display (regenerated when template/format changes). */
-  Uint8List? _previewImage;
-
-  /** Whether a preview is currently being generated. */
-  bool _isGeneratingPreview = false;
-
   /** Last template used for preview (used to detect changes and trigger regeneration). */
   ShareTemplate? _lastTemplate;
 
@@ -53,38 +46,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
   void initState() {
     super.initState();
     // Generate initial preview after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _generatePreview();
-    });
-  }
-
-  /** Generates a preview image using [ShareService.captureWidget] at 1x pixel ratio. */
-  Future<void> _generatePreview() async {
-    final template = ref.read(shareTemplateProvider);
-    final format = ref.read(shareFormatProvider);
-
-    setState(() => _isGeneratingPreview = true);
-
-    try {
-      final shareService = ref.read(shareServiceProvider);
-      final card = ShareCard(pointing: widget.pointing, template: template, format: format);
-
-      // Use lower pixelRatio for preview (faster, still looks good)
-      final bytes = await shareService.captureWidget(card, pixelRatio: 1.0);
-
-      if (mounted) {
-        setState(() {
-          _previewImage = bytes;
-          _isGeneratingPreview = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('SharePreview: preview generation failed: $e');
-      if (mounted) {
-        setState(() => _isGeneratingPreview = false);
-        showErrorSnackBar(context, 'Could not generate preview');
-      }
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -98,9 +60,7 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
       _lastTemplate = template;
       _lastFormat = format;
       // Schedule regeneration after this frame
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _generatePreview();
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {});
     }
 
     return Scaffold(
@@ -194,7 +154,6 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
 
   /** Builds the preview image display with correct aspect ratio and shadow. */
   Widget _buildPreview(ShareTemplate template, ShareFormat format) {
-    final colors = context.colors;
     final aspectRatio = format.width / format.height;
 
     return LayoutBuilder(
@@ -222,19 +181,19 @@ class _SharePreviewScreenState extends ConsumerState<SharePreviewScreen> {
           height: previewHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
+            // The app's one glass lift; the old 30%, 10 dp drop showed as a dark slab under the preview.
+            boxShadow: GlassMaterial.of(context).shadows,
           ),
           clipBehavior: Clip.antiAlias,
-          child: _isGeneratingPreview || _previewImage == null
-              ? Container(
-                  color: colors.glassBackground,
-                  child: Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(colors.textMuted))),
-                )
-              : Image.memory(
-                  _previewImage!,
-                  fit: BoxFit.contain,
-                  gaplessPlayback: true, // Prevents flickering during updates
-                ),
+          // The live card, scaled to fit: the same widget the export rasterizes, so the
+          // preview is never an empty square while (or if) an image is being made.
+          child: IgnorePointer(
+            child: FittedBox(
+              key: const ValueKey('share-preview-live'),
+              fit: BoxFit.contain,
+              child: ShareCard(pointing: widget.pointing, template: template, format: format),
+            ),
+          ),
         );
       },
     );
