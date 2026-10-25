@@ -288,7 +288,8 @@ class AmbientPalette {
     fieldB: Color(0xFFF6EAD3),
     fieldC: Color(0xFFD2E1CE),
     aurora: 0.62,
-    motes: 0.55,
+    // Quieter in dark: at 0.55 the motes read as specks around the glass (design panel).
+    motes: 0.3,
     isDark: false,
   );
 

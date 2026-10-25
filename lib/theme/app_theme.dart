@@ -455,7 +455,7 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
     rimBottom: Color(0x173A2A1A),
     highlight: Color(0x59FFFFFF),
     // A warm, just-visible lift (about 10%), so the cream card reads as raised.
-    shadow: Color(0x1A4A3220),
+    shadow: Color(0x2E4A3220),
     shadowBlur: 28,
     // Sage and sand: a filled sage primary button with white text (Continue, Done).
     primaryFill: Color(0xFF3F6B52),
@@ -570,7 +570,9 @@ class GlassMaterial extends ThemeExtension<GlassMaterial> {
   );
 
   /** The rim gradient, lit from the top-left. */
-  LinearGradient get rim => LinearGradient(colors: [rimTop, rimBottom], begin: Alignment.topLeft, end: Alignment.bottomRight);
+  /** Top-weighted rim: light catches the top edge and fades down the sides, as on iOS glass. */
+  LinearGradient get rim =>
+      LinearGradient(colors: [rimTop, rimBottom, rimBottom], stops: const [0, 0.5, 1], begin: Alignment.topCenter, end: Alignment.bottomCenter);
 
   /** Top-edge sheen as a foreground gradient. */
   LinearGradient get sheen =>
@@ -775,11 +777,11 @@ class AppTextStyles {
   /** Footer and hint text. */
   static TextStyle footerText(BuildContext context) => TextStyle(
     fontFamily: AppFonts.sans,
-    fontSize: AppType.caption,
+    fontSize: AppType.callout,
     height: 1.4,
     letterSpacing: 0.2,
     fontWeight: FontWeight.w400,
-    color: _colors(context).textMuted,
+    color: _colors(context).textSecondary,
   );
 
   /** Headings and screen titles. */

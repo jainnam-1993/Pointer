@@ -301,14 +301,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       key: key,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ExcludeSemantics(child: Icon(traditionInfo.lineIcon, size: 14, color: colors.textMuted)),
+        ExcludeSemantics(child: Icon(traditionInfo.lineIcon, size: 14, color: colors.textSecondary)),
         const SizedBox(width: 6),
         Flexible(
           child: Text(
             traditionInfo.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w500, letterSpacing: 0.4),
+            style: TextStyle(color: colors.textSecondary, fontSize: AppType.callout, fontWeight: FontWeight.w500, letterSpacing: 0.2),
           ),
         ),
       ],
@@ -552,9 +552,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     final regular = layout.sizeClass != WindowSizeClass.compact;
     // A tall two-pane window (a 13-inch iPad in portrait) keeps the card and its
     // actions together in the middle instead of leaving the actions at the bottom.
-    final grouped = layout.isTwoPane && size.height > size.width;
+    // The card and its actions are one group, centered in the body, so the free
+    // space sits above and below the group rather than between card and actions
+    // (the phone left about 180 pt there).
     final card = Center(
-      heightFactor: grouped ? 1.0 : null,
+      heightFactor: 1.0,
       child: ConstrainedBox(
         // Width-driven measure: the plate never grows past a readable line length.
         constraints: BoxConstraints(maxWidth: regular ? kHeroCardMaxWidth : kContentMaxWidth),
@@ -600,11 +602,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       );
     }
     final column = Column(
-      mainAxisAlignment: grouped ? MainAxisAlignment.center : MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (grouped) Flexible(child: card) else Expanded(child: card),
+        Flexible(child: card),
         // Room for the card's soft shadow before the actions, on near-square screens too.
-        const SizedBox(height: AppSpacing.lg * 2),
+        const SizedBox(height: AppSpacing.lg + AppSpacing.xs),
         actions,
         if (!isSquareAspect && _isEarlySession && !_hasSwipedThisSession) ...[
           const SizedBox(height: AppSpacing.sm),
@@ -679,7 +681,7 @@ class _HomeContextPane extends StatelessWidget {
     final teacher = getTeacher(pointing.teacher);
     final related = getInquiriesByTradition(pointing.tradition);
     final inquiry = related.isEmpty ? null : related.first;
-    final label = TextStyle(color: colors.textMuted, fontSize: AppType.caption, fontWeight: FontWeight.w600, letterSpacing: 1.2);
+    final label = TextStyle(color: colors.textSecondary, fontSize: AppType.caption, fontWeight: FontWeight.w600, letterSpacing: 1.2);
     final body = TextStyle(color: colors.textSecondary, fontSize: AppType.callout, height: 1.5);
     if (compact) {
       return Text(
@@ -695,40 +697,25 @@ class _HomeContextPane extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('TRADITION', style: label),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              ExcludeSemantics(child: Icon(info.lineIcon, size: 16, color: colors.textSecondary)),
-              const SizedBox(width: AppSpacing.sm),
-              Flexible(
-                child: Text(
-                  info.name,
-                  style: TextStyle(color: colors.textPrimary, fontSize: AppType.headline),
-                ),
-              ),
-            ],
-          ),
-          if (pointing.teacher != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text('TEACHER', style: label),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              pointing.teacher!,
-              style: TextStyle(fontFamily: AppFonts.serif, color: colors.textPrimary, fontSize: AppType.title),
-            ),
-            if (teacher?.dates != null) ...[
+          // The card already names the tradition and the teacher; this pane adds what
+          // the card doesn't: who the teacher was, what the tradition is, and an
+          // inquiry to try (it no longer repeats the two names).
+          if (teacher?.bio != null) ...[
+            Text('ABOUT ${pointing.teacher!.toUpperCase()}', style: label),
+            if (teacher!.dates != null) ...[
               const SizedBox(height: 2),
               Text(
-                teacher!.dates!,
-                style: TextStyle(color: colors.textMuted, fontSize: AppType.caption),
+                teacher.dates!,
+                style: TextStyle(color: colors.textSecondary, fontSize: AppType.caption),
               ),
             ],
-            if (teacher?.bio != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(teacher!.bio!, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
-            ],
+            const SizedBox(height: AppSpacing.sm),
+            Text(teacher.bio!, maxLines: 5, overflow: TextOverflow.ellipsis, style: body),
+            const SizedBox(height: AppSpacing.xl),
           ],
+          Text('ABOUT ${info.name.toUpperCase()}', style: label),
+          const SizedBox(height: AppSpacing.sm),
+          Text(info.description, maxLines: 4, overflow: TextOverflow.ellipsis, style: body),
           if (inquiry != null) ...[
             const SizedBox(height: AppSpacing.xl),
             Text('RELATED INQUIRY', style: label),
@@ -877,7 +864,7 @@ class _SourceCitation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final match = _resolveSource();
-    final style = TextStyle(fontSize: AppType.caption, fontStyle: FontStyle.italic, color: context.colors.textMuted);
+    final style = TextStyle(fontSize: AppType.callout, fontStyle: FontStyle.italic, color: context.colors.textSecondary);
     return _AttributionLink(
       text: source,
       style: style,
