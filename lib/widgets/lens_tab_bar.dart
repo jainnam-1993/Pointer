@@ -37,6 +37,10 @@ abstract final class LensTabStyle {
   static const Color capsuleDark = Color(0xFF161618);
   static const Color hairlineDark = Color(0x29FFFFFF);
 
+  /** Dark glass bar: translucent violet-grey over a backdrop blur, and its light rim. */
+  static const Color capsuleDarkGlass = Color(0x6626233D);
+  static const Color rimDarkGlass = Color(0x24FFFFFF);
+
   /** High contrast: no glass; a solid bar and pill with clear borders. */
   static const Color hcBorder = Color(0xB3FFFFFF);
   static const Color hcPill = Color(0xFF2C2C30);
@@ -425,7 +429,8 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
                       final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
                       final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
                       final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                      final inset = thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
+                      final inset =
+                          thickness * 0.06 * lift; // only the lifted lens needs keeping inside the rounded ends; the rest pill is centred on its cell
                       final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
                       final rect = horizontal
                           ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
@@ -524,34 +529,40 @@ class LensBarLook {
     }
     if (dark) {
       return LensBarLook(
-        capsule: LensTabStyle.capsuleDark,
-        border: Border.all(color: LensTabStyle.hairlineDark, width: 1),
+        // Dark glass (store panel 1.3.0, item 1): a translucent violet-grey body over a backdrop blur, so the ambient
+        // sky shows through as it does under the light bar, with a thin light rim and the same soft shadow. Not an
+        // opaque slab.
+        capsule: LensTabStyle.capsuleDarkGlass,
+        border: Border.all(color: LensTabStyle.rimDarkGlass, width: 1),
         shadow: LensTabStyle.capsuleShadow,
-        frosted: false,
-        pill: const Color(0x29FFFFFF),
-        pillRim: const Color(0x59FFFFFF),
+        frosted: true,
+        // Selected: lavender-tinted glass (the dark accent), with a lavender rim at 3:1 or more against the bar.
+        pill: const Color(0x4DA597E0),
+        pillRim: const Color(0x99B9ADF0),
         pillHighlight: const Color(0x1FFFFFFF),
         pillShadow: const Color(0x33000000),
-        inactive: const Color(0xFF8E8E93),
+        inactive: const Color(0xFFB4B1C0),
         active: LensTabStyle.active,
       );
     }
     return LensBarLook(
       // Light glass that reads as glass on a pale field: a translucent body (not a solid fill), a 1 px warm-grey
       // hairline for the edge, and a soft two-step shadow for depth.
-      capsule: const Color(0x8CFFFFFF),
-      border: Border.all(color: const Color(0x1F3A3426), width: 1),
-      shadow: const [
-        BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1)),
-        BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 8)),
-      ],
+      // Warm cream glass (design panel: a cool grey body read as a pasted-on tray on the cream field), a white rim,
+      // and one diffuse shadow with no hard lip.
+      capsule: const Color(0xB8F6F0E2),
+      border: Border.all(color: const Color(0x99FFFFFF), width: 1),
+      shadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, 6))],
       frosted: true,
-      pill: const Color(0xB3F3F4EE), // frosted white glass, a hint of sage
-      pillRim: const Color(0xF2FFFFFF), // thin bright rim
-      pillHighlight: const Color(0x66FFFFFF), // soft top highlight
+      // Selected (store panel 1.3.0, item 2: white on cream barely showed): sage-tinted glass with a sage rim at 3:1 or
+      // more against the bar, and the label and icon in deep sage ink. Separation comes from the accent tint, not a
+      // heavier shadow.
+      pill: const Color(0x2E3F6B52),
+      pillRim: const Color(0xB33F6B52),
+      pillHighlight: const Color(0x59FFFFFF),
       pillShadow: const Color(0x1A1E2A1F),
-      inactive: const Color(0xFF6E6E73),
-      active: const Color(0xFF1C1C1E),
+      inactive: const Color(0xFF5A5F58),
+      active: const Color(0xFF24402F),
     );
   }
 }
