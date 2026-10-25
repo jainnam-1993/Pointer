@@ -31,8 +31,10 @@ object QuoteBitmap {
 
     /** The quote box inside the card, from the widget's current size minus the size's chrome. */
     fun boxFor(options: Bundle, size: WidgetSize): Box {
-        val w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 320).toFloat()
-        val h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 160).toFloat()
+        // Portrait size (min width, max height), as launchers report it; the max width is the
+        // landscape width, which made the bitmap too wide and the text tiny once scaled to fit.
+        val w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).toFloat()
+        val h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 160).toFloat()
         val chrome = when (size) {
             WidgetSize.COMPACT -> 32f
             WidgetSize.MEDIUM -> 32f + 8f + 48f
