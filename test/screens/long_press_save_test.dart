@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointer/services/notification_ask.dart';
 import 'package:pointer/theme/phosphor_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
@@ -68,6 +69,8 @@ void main() {
     return ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(mockPrefs),
+        // A Save now asks for notifications once (NotificationAskPolicy); no plugin in tests.
+        notificationAskProvider.overrideWithValue(NotificationAskPolicy(mockPrefs, requestPermission: () async => false, enableNotifications: () async {})),
         oledModeProvider.overrideWith((ref) => false),
         reduceMotionOverrideProvider.overrideWith((ref) => null),
         if (initialPointing != null)
@@ -236,6 +239,8 @@ void main() {
         ProviderScope(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(mockPrefs),
+            // A Save now asks for notifications once (NotificationAskPolicy); no plugin in tests.
+            notificationAskProvider.overrideWithValue(NotificationAskPolicy(mockPrefs, requestPermission: () async => false, enableNotifications: () async {})),
             oledModeProvider.overrideWith((ref) => false),
             reduceMotionOverrideProvider.overrideWith((ref) => null),
             currentPointingProvider.overrideWith((ref) {

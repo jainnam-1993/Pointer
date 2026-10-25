@@ -74,7 +74,6 @@ void main() {
       final listPane = tester.getSize(find.byKey(const ValueKey('pane-primary')));
       expect(listPane.width, greaterThanOrEqualTo(kListPaneMinWidth));
 
-
       // Guided Inquiry now leads the list, so scroll the Featured strip, then the topics, into view.
       final listScroll = find.descendant(of: find.byKey(const ValueKey('pane-primary')), matching: find.byType(Scrollable)).first;
       await tester.dragUntilVisible(find.byKey(const ValueKey('featured-edge-fade')), listScroll, const Offset(0, -200));

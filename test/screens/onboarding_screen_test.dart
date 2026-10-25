@@ -135,7 +135,7 @@ void main() {
       expect(find.text('Continue'), findsOneWidget);
     });
 
-    testWidgets('last page shows notification buttons', (tester) async {
+    testWidgets('three short pages, Skip on each, and the last one begins without a permission ask', (tester) async {
       setScreenSize(tester);
       addTearDown(() => resetScreenSize(tester));
 
@@ -143,18 +143,17 @@ void main() {
       await tester.pumpWidget(createOnboardingScreen(disableAnimations: true));
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Navigate through all pages to reach the last page (page 3)
-      for (var i = 0; i < 3; i++) {
-        final continueButton = find.text('Continue');
-        expect(continueButton, findsOneWidget, reason: 'Continue button should exist on page $i');
-        await tester.tap(continueButton);
-        // Wait for page animation - pumpAndSettle works since disableAnimations=true
+      for (var i = 0; i < 2; i++) {
+        expect(find.byKey(const ValueKey('onboarding-skip')), findsOneWidget, reason: 'Skip on page $i');
+        await tester.tap(find.text('Continue'));
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
 
-      // Verify last page buttons
-      expect(find.text('Enable Notifications'), findsOneWidget);
-      expect(find.text('Maybe Later'), findsOneWidget);
+      // Page 3 explains inquiry; it ends onboarding with Begin, and the first Save asks for notifications instead (P11).
+      expect(find.text('An inquiry'), findsOneWidget);
+      expect(find.byKey(const ValueKey('onboarding-skip')), findsOneWidget);
+      expect(find.text('Begin'), findsOneWidget);
+      expect(find.text('Enable Notifications'), findsNothing);
     });
   });
 
