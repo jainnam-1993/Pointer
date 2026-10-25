@@ -8,7 +8,7 @@
  *   magnified, where the lens passes the bar. A thin bright rim with a little colour split closes it.
  * - Inactive tabs are filled grey icons without labels; the active tab is a white glowing icon with its label, carried
  *   by the lens.
- * - The lens travels on Motion.liquid and stretches along its motion; under Reduce Motion it moves without travel.
+ * - The lens travels on Motion.lensMove and stretches along its motion; under Reduce Motion it moves without travel.
  */
 library;
 
@@ -88,10 +88,10 @@ class LensTabBar extends StatefulWidget {
  *
  * - rest: the selected tab sits on a flat, tinted pill. No lens, no refraction, no magnification.
  * - pressed: on touch-down the pill lifts into the liquid lens (scale [Motion.lensLiftX] x [Motion.lensLiftY], refraction,
- *   content magnified [Motion.lensMagnify]) at the touched tab, on [Motion.lift].
+ *   content magnified [Motion.lensMagnify]) at the touched tab on the raw pointer-down, reaching full scale in about 100 ms ([Motion.lensFlatten]).
  * - dragging: the lens follows the finger 1:1 across the tabs.
- * - settling: on release the lens springs to the nearest tab on [Motion.liquid], then flattens back to the rest pill
- *   on [Motion.settle] (no overshoot). A tap with no drag is a short lift, the move, then the settle.
+ * - settling: on release the tab under the finger is selected; the lens springs to it on [Motion.lensMove] while it
+ *   flattens back to the rest pill on [Motion.lensFlatten] (about 110 ms, no overshoot), as native does.
  * Reduce Motion: no lift or lens; the pill moves to the new tab without travel.
  */
 enum LensPhase { rest, pressed, dragging, settling }
@@ -136,7 +136,7 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       _pos.value = target;
       return;
     }
-    _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, target, _pos.velocity));
+    _pos.animateWith(SpringSimulation(Motion.lensMove, _pos.value, target, _pos.velocity));
   }
 
   void _liftTo(double v, SpringDescription spring) {
@@ -144,7 +144,10 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
       _lift.value = 0;
       return;
     }
-    _lift.animateWith(SpringSimulation(spring, _lift.value, v, _lift.velocity));
+    // Springs end within their tolerance of the target; snap so rest is exactly flat (scale 1.0, no lens).
+    _lift.animateWith(SpringSimulation(spring, _lift.value, v, _lift.velocity)).whenComplete(() {
+      if (mounted && !_lift.isAnimating && phase == LensPhase.rest && v == 0) _lift.value = 0;
+    });
   }
 
   double _cellAt(double mainOffset) => ((mainOffset - LensTabBar.pad) / _cell - 0.5).clamp(0.0, widget.tabs.length - 1.0);
@@ -156,38 +159,42 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
     phase = LensPhase.pressed;
     final at = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy);
     _touched = at.round();
-    _liftTo(1, Motion.lift);
+    _liftTo(1, Motion.lensFlatten);
     _moveTo(at);
   }
+
+  /** The finger's last position along the bar, in cell units: what a release selects. */
+  double _finger = 0;
 
   void _drag(Offset local) {
     // A drag can win the gesture arena before the tap's touch-down fires (the finger moved past the slop within
     // 100 ms), so a drag from rest lifts the lens itself.
-    if (phase == LensPhase.rest || phase == LensPhase.settling) _liftTo(1, Motion.lift);
+    if (phase == LensPhase.rest || phase == LensPhase.settling) _liftTo(1, Motion.lensFlatten);
     phase = LensPhase.dragging;
+    _finger = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy);
     _pos.stop();
-    _pos.value = _cellAt(widget.axis == Axis.horizontal ? local.dx : local.dy); // follows the finger 1:1
+    _pos.value = _finger; // follows the finger 1:1
   }
 
-  void _release() {
+  /**
+   * Release selects the tab under the finger where it lifted ([at], from the gesture's own end details), never the
+   * lens's animated position, which can lag a fast flick. The lens then moves to the selection on [Motion.lensMove] while
+   * it flattens in parallel on [Motion.lensFlatten] (about 110 ms, like native), with no overshoot.
+   */
+  void _release({Offset? at}) {
     if (phase == LensPhase.rest) return;
-    final i = (phase == LensPhase.dragging ? _pos.value.round() : _touched).clamp(0, widget.tabs.length - 1);
-    phase = LensPhase.settling;
+    if (at != null) _finger = _cellAt(widget.axis == Axis.horizontal ? at.dx : at.dy);
+    final i = (phase == LensPhase.dragging ? _finger.round() : _touched).clamp(0, widget.tabs.length - 1);
+    phase = LensPhase.rest;
     if (i != widget.currentIndex) Haptics.selection();
     widget.onTap(i);
-    final move = _reduce ? null : _pos.animateWith(SpringSimulation(Motion.liquid, _pos.value, i.toDouble(), _pos.velocity));
-    void flatten() {
-      if (!mounted || phase != LensPhase.settling) return;
-      _liftTo(0, Motion.settle);
-      phase = LensPhase.rest;
-    }
-
-    if (move == null) {
+    if (_reduce) {
       _pos.value = i.toDouble();
-      flatten();
-    } else {
-      move.whenComplete(flatten);
+      _lift.value = 0;
+      return;
     }
+    _pos.animateWith(SpringSimulation(Motion.lensMove, _pos.value, i.toDouble(), _pos.velocity));
+    _liftTo(0, Motion.lensFlatten);
   }
 
   @override
@@ -247,88 +254,89 @@ class _LensTabBarState extends State<LensTabBar> with TickerProviderStateMixin {
         return SizedBox(
           width: horizontal ? extent : thickness,
           height: horizontal ? thickness : extent,
-          child: GestureDetector(
+          // Lift on the raw pointer-down in the same frame: no tap slop, arena or long-press wait. Recognizers only
+          // track the drag; the pointer-up selects the tab under the finger.
+          child: Listener(
             behavior: HitTestBehavior.opaque,
-            onTapDown: (d) => _down(local(d.globalPosition)),
-            onTapUp: (_) => _release(),
-            onTapCancel: () {
-              if (phase == LensPhase.pressed) _release();
-            },
-            onHorizontalDragStart: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
-            onHorizontalDragUpdate: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
-            onHorizontalDragEnd: horizontal ? (_) => _release() : null,
-            onVerticalDragStart: horizontal ? null : (d) => _drag(local(d.globalPosition)),
-            onVerticalDragUpdate: horizontal ? null : (d) => _drag(local(d.globalPosition)),
-            onVerticalDragEnd: horizontal ? null : (_) => _release(),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(child: capsule),
-                for (var i = 0; i < n; i++)
-                  cellAt(
-                    i,
-                    Semantics(
-                      button: true,
-                      selected: i == widget.currentIndex,
-                      label: '${widget.tabs[i].$2} tab${i == widget.currentIndex ? ', selected' : ''}',
-                      excludeSemantics: true,
-                      onTap: () {
-                        if (i != widget.currentIndex) Haptics.selection();
-                        widget.onTap(i);
-                      },
-                      child: Center(
-                        child: AnimatedOpacity(
-                          opacity: i == widget.currentIndex ? 0 : 1,
-                          duration: reduce ? Duration.zero : Motion.quick,
-                          child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
+            onPointerDown: (e) => _down(e.localPosition),
+            onPointerUp: (e) => _release(at: e.localPosition),
+            onPointerCancel: (_) => _release(),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragStart: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
+              onHorizontalDragUpdate: horizontal ? (d) => _drag(local(d.globalPosition)) : null,
+              onVerticalDragStart: horizontal ? null : (d) => _drag(local(d.globalPosition)),
+              onVerticalDragUpdate: horizontal ? null : (d) => _drag(local(d.globalPosition)),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(child: capsule),
+                  for (var i = 0; i < n; i++)
+                    cellAt(
+                      i,
+                      Semantics(
+                        button: true,
+                        selected: i == widget.currentIndex,
+                        label: '${widget.tabs[i].$2} tab${i == widget.currentIndex ? ', selected' : ''}',
+                        excludeSemantics: true,
+                        onTap: () {
+                          if (i != widget.currentIndex) Haptics.selection();
+                          widget.onTap(i);
+                        },
+                        child: Center(
+                          child: AnimatedOpacity(
+                            opacity: i == widget.currentIndex ? 0 : 1,
+                            duration: reduce ? Duration.zero : Motion.quick,
+                            child: Icon(widget.tabs[i].$1, size: 24, color: style.inactive),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                AnimatedBuilder(
-                  animation: Listenable.merge([_pos, _lift]),
-                  builder: (context, _) {
-                    final lift = reduce ? 0.0 : _lift.value.clamp(0.0, 1.0);
-                    final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
-                    final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
-                    final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
-                    final inset = thickness * 0.06 * (1 - lift);
-                    final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
-                    final rect = horizontal
-                        ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
-                        : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
-                    final i = _pos.value.round().clamp(0, n - 1);
-                    final label = Transform.scale(
-                      scale: 1 + (Motion.lensMagnify - 1) * lift,
-                      child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: style.active),
-                    );
-                    return Positioned.fromRect(
-                      rect: rect,
-                      child: IgnorePointer(
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            // Rest pill, fading out as the lens lifts.
-                            Opacity(
-                              opacity: 1 - lift,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(color: style.pill, borderRadius: BorderRadius.circular(math.min(main, cross) / 2)),
-                              ),
-                            ),
-                            if (lift > 0.01)
+                  AnimatedBuilder(
+                    animation: Listenable.merge([_pos, _lift]),
+                    builder: (context, _) {
+                      final lift = reduce ? 0.0 : _lift.value.clamp(0.0, 1.0);
+                      final stretch = reduce || lift == 0 ? 0.0 : liquidStretch(_pos.velocity * cell);
+                      final main = (pillMain + (lensMain - pillMain) * lift) * (1 + stretch);
+                      final cross = (pillCross + (lensCross - pillCross) * lift) * (1 - LiquidGlass.squash * stretch / LiquidGlass.stretchMax);
+                      final inset = thickness * 0.06 * (1 - lift);
+                      final centreMain = (LensTabBar.pad + cell * (_pos.value + 0.5)).clamp(main / 2 + inset, extent - main / 2 - inset);
+                      final rect = horizontal
+                          ? Rect.fromCenter(center: Offset(centreMain, thickness / 2), width: main, height: cross)
+                          : Rect.fromCenter(center: Offset(thickness / 2, centreMain), width: cross, height: main);
+                      final i = _pos.value.round().clamp(0, n - 1);
+                      final label = Transform.scale(
+                        scale: 1 + (Motion.lensMagnify - 1) * lift,
+                        child: _ActiveLabel(tab: widget.tabs[i], showLabel: showLabel, color: style.active),
+                      );
+                      return Positioned.fromRect(
+                        rect: rect,
+                        child: IgnorePointer(
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Rest pill, fading out as the lens lifts.
                               Opacity(
-                                key: const ValueKey('tab-lens'),
-                                opacity: lift,
-                                child: _Lens(size: rect.size, plain: plain, child: const SizedBox.expand()),
+                                opacity: 1 - lift,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(color: style.pill, borderRadius: BorderRadius.circular(math.min(main, cross) / 2)),
+                                ),
                               ),
-                            label,
-                          ],
+                              if (lift > 0.01)
+                                Opacity(
+                                  key: const ValueKey('tab-lens'),
+                                  opacity: lift,
+                                  child: _Lens(size: rect.size, plain: plain, child: const SizedBox.expand()),
+                                ),
+                              label,
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
