@@ -45,6 +45,7 @@ data class WidgetLook(val surface: WidgetSurface, val bodyAlpha: Double, val scr
             "clear" to WidgetLook(WidgetSurface.CLEAR, 0.0, WidgetScrim.NONE),
             "app-55" to WidgetLook(WidgetSurface.APP, 0.55, WidgetScrim.NONE),
             "app-62" to WidgetLook(WidgetSurface.APP, 0.62, WidgetScrim.NONE),
+            "app-66" to WidgetLook(WidgetSurface.APP, 0.66, WidgetScrim.NONE),
             "app-70" to WidgetLook(WidgetSurface.APP, 0.70, WidgetScrim.NONE),
             "app-72" to WidgetLook(WidgetSurface.APP, 0.72, WidgetScrim.NONE),
             "app-82" to WidgetLook(WidgetSurface.APP, 0.82, WidgetScrim.NONE),
